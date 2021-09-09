@@ -16,7 +16,5 @@
 # Caution
 
 - Neither `Google Web Store`, nor `Microsoft Store` supports
-    - My country has blocked all `Google` services
-    - `Google` has a $5 fee, and `Microsoft` has a $18 fee
 - Embedded `popup.html` may not be powerful enough for advanced users
     - Alternative [`Aria2 WebUI`](https://ziahamza.github.io/webui-aria2/) or [`Yet Another Aria2 Web Frontend`](http://binux.github.io/yaaw/demo/)
