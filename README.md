@@ -1,6 +1,7 @@
-# What is this
+# About this
 
-- This extension is completely rewritten from [chrome-aria2-integration](https://github.com/robbielj/chrome-aria2-integration) 
+- This extension is completely rewritten from [chrome-aria2-integration](https://github.com/robbielj/chrome-aria2-integration)
+- Enhanced browser download monitoring, and built-in Aria2 Manager
 
 # Bug report
 
@@ -13,7 +14,7 @@
 - Extract source code and put `7z.exe` into the root folder
 - Run `Auto Build.cmd` and follow the instructions
 
-# Caution
+# Other
 
 - Neither `Google Web Store`, nor `Microsoft Store` supports
     - `Firefox Add-ons` hosted by [@ivysrono](https://addons.mozilla.org/en-US/firefox/addon/download-with-aria2/)
