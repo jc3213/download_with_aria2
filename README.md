@@ -17,6 +17,6 @@
 # Other
 
 - Neither `Google Web Store`, nor `Microsoft Store` supports
-    - `Firefox Add-on` hosted by [@ivysrono](https://addons.mozilla.org/en-US/firefox/addon/download-with-aria2/)
+    - `Firefox Add-on` hosted by [@ivysrono](https://addons.mozilla.org/firefox/addon/download-with-aria2/)
 - Built-in Aria2 Manager may not be powerful enough for advanced users
     - Alternative [`Aria2 WebUI`](https://ziahamza.github.io/webui-aria2/) or [`Yet Another Aria2 Web Frontend`](http://binux.github.io/yaaw/demo/)
