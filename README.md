@@ -5,7 +5,7 @@
 
 # Bug report
 
-- [File an issue](https://github.com/jc3213/download_with_aria2-firefox/issues)
+- [File an issue](https://github.com/jc3213/download_with_aria2-archived/issues/new/choose)
 
 # How to Build
 
@@ -17,6 +17,6 @@
 # Other
 
 - Neither `Google Web Store`, nor `Microsoft Store` supports
-    - `Firefox Add-ons` hosted by [@ivysrono](https://addons.mozilla.org/en-US/firefox/addon/download-with-aria2/)
-- Embedded `popup.html` may not be powerful enough for advanced users
+    - `Firefox Add-on` hosted by [@ivysrono](https://addons.mozilla.org/en-US/firefox/addon/download-with-aria2/)
+- Built-in Aria2 Manager may not be powerful enough for advanced users
     - Alternative [`Aria2 WebUI`](https://ziahamza.github.io/webui-aria2/) or [`Yet Another Aria2 Web Frontend`](http://binux.github.io/yaaw/demo/)
