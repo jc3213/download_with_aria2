@@ -1,0 +1,23 @@
+{
+    "jsonrpc": {
+        "uri": "http://localhost:6800/jsonrpc",
+        "token": "token:",
+        "refresh": 2000
+    },
+    "folder": {
+        "mode": "0",
+        "uri": ""
+    },
+    "useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0",
+    "proxy": {
+        "uri": "",
+        "resolve": []
+    },
+    "capture": {
+        "mode": "0",
+        "reject": [],
+        "resolve": [],
+        "fileExt": [],
+        "fileSize": 0
+    }
+}

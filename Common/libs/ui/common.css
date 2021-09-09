@@ -1,0 +1,74 @@
+[panel], [card] {
+    overflow-y: auto;
+}
+
+[panel] {
+    height: 400px;
+}
+
+[card] {
+    height: 360px;
+}
+
+.container > *:nth-child(n+2) {
+    margin-top: 15px;
+}
+
+label {
+    position: relative;
+}
+
+label .suffix, label .suffix2 {
+    position: absolute;
+    top: 0px;
+}
+
+label .suffix {
+    right: 8px;
+}
+
+label .suffix2 {
+    right: 28px;
+}
+
+.extend > input {
+    width: 90%;
+}
+
+.extend > [button] {
+    font-size: 13px;
+    padding: 4px;
+}
+
+.extend > .checked {
+    padding: 3px;
+    border: 2px inset #c48;
+}
+
+
+.submenu {
+    text-align: center;
+}
+
+input, textarea, select, option {
+    font-size: 15px;
+    padding: 3px;
+}
+
+input, textarea {
+    width: calc(100% - 10px);
+    resize: none;
+}
+
+textarea {
+    word-break: break-word;
+}
+
+select[aria2], select[task] {
+    width: 100%;
+}
+
+option:checked {
+    font-weight: bold;
+    color: #F00;
+}

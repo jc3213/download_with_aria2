@@ -1,0 +1,22 @@
+iframe {
+    background-color: #FFF;
+    border: none;
+    position: absolute;
+    width: 100%;
+    left: 0px;
+}
+
+#newTask {
+    top: 40px;
+    height: calc(100% - 80px);
+}
+
+#options, #taskMgr {
+    top: 0px;
+    height: calc(100% - 40px);
+}
+
+#aria2Opt {
+    top: 0px;
+    height: 100%;
+}

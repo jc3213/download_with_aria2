@@ -1,0 +1,79 @@
+.double > *:nth-child(2), .triple > *:nth-child(n+2) {
+    margin-left: 10px;
+}
+
+.double > *, .triple > * {
+    display: inline-block;
+}
+
+.double > * {
+    position: relative;
+    width: 48%;
+}
+
+.triple > * {
+    width: 31%;
+}
+
+.triple span {
+    margin-left: 4px;
+    border: 1px ridge #ccc;
+    display: inline-block;
+    width: 80%;
+    text-align: center;
+}
+
+.swap .suffix {
+    top: 3px;
+}
+
+#name {
+    padding: 0px;
+    height: 46px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+#name, #uris * {
+    word-break: break-word;
+}
+
+[swap] {
+    padding: 3px;
+}
+
+#uris > *:nth-child(n+2) {
+    margin-top: 3px;
+}
+
+#uris > *:active, #files #index:active {
+    filter: opacity(60%);
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    border: 1px outset #CCC;
+    padding: 5px;
+}
+
+#files #index {
+    width: 20px;
+    text-align: center;
+}
+
+#files #name {
+    width: calc(100% - 140px);
+}
+
+#files #size {
+    width: 70px;
+    text-align: center;
+}
+
+#files #ratio {
+    width: 50px;
+    text-align: center;
+}
