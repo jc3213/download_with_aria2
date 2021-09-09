@@ -2,9 +2,9 @@
 
 - This extension is completely rewritten from [chrome-aria2-integration](https://github.com/robbielj/chrome-aria2-integration) 
 
-# Firefox Quantum
+# Bug report
 
-- Visit [Download with Aria2 Firefox](https://github.com/jc3213/download_with_aria2-firefox)
+- [File an issue](https://github.com/jc3213/download_with_aria2-firefox/issues)
 
 # How to Build
 
