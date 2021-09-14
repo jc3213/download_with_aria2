@@ -1,5 +1,4 @@
 @ECHO OFF
-SETLOCAL EnableDelayedExpansion
 PUSHD %~DP0
 :Code
 ECHO Auto build script for extension ^<Download with Aria2^>
