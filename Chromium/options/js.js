@@ -31,7 +31,7 @@ document.querySelector('#aria2_btn').addEventListener('click', (event) => {
 });
 
 document.querySelector('#show_btn').addEventListener('click', (event) => {
-    document.querySelector('#token').setAttribute('type', event.target.className === 'checked' ? 'password' : 'text');
+    document.querySelector('[root="jsonrpc"][local="token"]').setAttribute('type', event.target.className === 'checked' ? 'password' : 'text');
     event.target.classList.toggle('checked');
 });
 
