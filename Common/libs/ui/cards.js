@@ -7,6 +7,9 @@ var wheelScroll = 0;
 cards.forEach(card => {
     card.style.display = card === cards[cardCurrent] ? 'block' : 'none';
     card.addEventListener('wheel', (event) => {
+        if (event.target.tagName === 'TEXTAREA') {
+            return;
+        }
         cardNext = event.deltaY > 0 && card.scrollHeight - card.scrollTop === card.clientHeight && cardCurrent !== cardLimit ?
             cardCurrent + 1 : event.deltaY < 0 && card.scrollTop === 0 && cardCurrent !== 0 ? cardCurrent - 1 : cardCurrent;
         switchCardView();
