@@ -10,9 +10,9 @@ document.querySelector('#submit_btn').addEventListener('click', (event) => {
         var name = field.getAttribute('aria2') ?? field.getAttribute('task');
         options[name] = field.value;
     });
-    document.querySelector('#entries').value.split('\n').forEach(result => {
+    document.querySelector('#entries').value.split('\n').forEach(url => {
         try {
-            var session = JSON.parse(result);
+            var session = JSON.parse(url);
             if (Array.isArray(session)) {
                 if (typeof session[0] === 'string') {
                     downloadWithAria2({url: session, referer}, options);
@@ -26,7 +26,7 @@ document.querySelector('#submit_btn').addEventListener('click', (event) => {
             }
         }
         catch(error) {
-            result.split('\n').forEach(url => downloadWithAria2({url, referer}, options));
+            downloadWithAria2({url, referer}, options);
         }
     });
     parent.document.querySelector('[module="' + frameElement.id + '"]').classList.remove('checked');
