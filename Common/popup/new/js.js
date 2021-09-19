@@ -15,21 +15,30 @@ document.querySelector('#submit_btn').addEventListener('click', (event) => {
             var session = JSON.parse(url);
             if (Array.isArray(session)) {
                 if (typeof session[0] === 'string') {
-                    downloadWithAria2({url: session, referer}, options);
+                    newDownloadRequest({url: session, referer}, options);
                 }
                 else {
-                    session.forEach(task => downloadWithAria2(referer ? {...task, referer} : task, options));
+                    session.forEach(task => newDownloadRequest(referer ? {...task, referer} : task, options));
                 }
             }
             else {
-                downloadWithAria2(referer ? {...session, referer} : session, options);
+                newDownloadRequest(referer ? {...session, referer} : session, options);
             }
         }
         catch(error) {
-            downloadWithAria2({url, referer}, options);
+            newDownloadRequest({url, referer}, options);
         }
     });
     parent.document.querySelector('[module="' + frameElement.id + '"]').classList.remove('checked');
     frameElement.style.display = 'none';
     setTimeout(() => frameElement.remove(), 500);
 });
+
+function newDownloadRequest(request, options) {
+    if (/^(https?|ftp):\/\/|^magnet:\?/i.test(request.url)) {
+        downloadWithAria2(request, options);
+    }
+    else {
+        showNotification('URI is invalid');
+    }
+}
