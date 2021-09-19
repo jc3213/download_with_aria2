@@ -6,13 +6,13 @@ function aria2RPCAssist() {
 document.querySelector('#submit_btn').addEventListener('click', (event) => {
     var referer = document.querySelector('#referer').value;
     var options = newTaskOptions();
-    document.querySelector('#entries').split('\n').forEach(url => newDownloadRequest({url, referer}, options));
+    document.querySelector('#entries').value.split('\n').forEach(url => newDownloadRequest({url, referer}, options));
     removeNewTaskWindow();
 });
 
 document.querySelector('#entries').addEventListener('drop', (event) => {
     var file = event.dataTransfer.files[0];
-    if (file.name.endsWith('metalink')) {
+    if (file.name.endsWith('metalink') || file.name.endsWith('meta4')) {
         var reader = new FileReader();
         reader.readAsText(file);
         reader.onload = () => {
