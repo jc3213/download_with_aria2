@@ -4,7 +4,8 @@ function aria2RPCAssist() {
 }
 
 document.querySelector('#submit_btn').addEventListener('click', (event) => {
-    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']]};
+    var header = ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']];
+    var options = newTaskOptions({header});
     document.querySelector('#entries').value.split('\n').forEach(url => downloadWithAria2(url, options));
     removeNewTaskWindow();
 });
