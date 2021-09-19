@@ -6,7 +6,7 @@ function aria2RPCAssist() {
 document.querySelector('#submit_btn').addEventListener('click', (event) => {
     var referer = document.querySelector('#referer').value;
     var options = newTaskOptions();
-    document.querySelector('#entries').value.split('\n').forEach(url => newDownloadRequest({url, referer}, options));
+    document.querySelector('#entries').value.split('\n').forEach(url => downloadWithAria2(url, options));
     removeNewTaskWindow();
 });
 
@@ -33,18 +33,10 @@ function removeNewTaskWindow() {
 }
 
 function newTaskOptions(options = {}) {
+    options['header'] = ['Referer: ' + referer, 'User-Agent: ' + aria2RPC['useragent']];
     document.querySelectorAll('[aria2], [task]').forEach(field => {
         var name = field.getAttribute('aria2') ?? field.getAttribute('task');
         options[name] = field.value;
     });
     return options;
-}
-
-function newDownloadRequest(request, options) {
-    if (/^(https?|ftp):\/\/|^magnet:\?/i.test(request.url)) {
-        downloadWithAria2(request, options);
-    }
-    else {
-        showNotification('URI is invalid');
-    }
 }

@@ -6,7 +6,7 @@ browser.contextMenus.create({
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
     if (info.menuItemId === 'downwitharia2firefox') {
-        downloadWithAria2({url: info.linkUrl, referer: info.pageUrl, storeId: tab.cookieStoreId, domain: getDomainFromUrl(info.pageUrl)});
+        startDownload({url: info.linkUrl, referer: info.pageUrl, storeId: tab.cookieStoreId, domain: getDomainFromUrl(info.pageUrl)});
     }
 });
 
@@ -32,13 +32,30 @@ browser.downloads.onCreated.addListener(item => {
             if (result) {
                 browser.downloads.cancel(item.id).then(() => {
                     browser.downloads.erase({id: item.id}).then(() => {
-                        downloadWithAria2({url, referer, domain, filename, folder, storeId});
+                        startDownload({url, referer, domain, filename, folder, storeId});
                     });
                 }).catch(error => showNotification('Download is already complete'));
             }
         }
     });
 });
+
+function startDownload({url, referer, domain, filename, folder, storeId}, options = {}) {
+    browser.cookies.getAll({url, storeId}).then(cookies => {
+        options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['useragent']];
+        cookies.forEach(cookie => options['header'][0] += ' ' + cookie.name + '=' + cookie.value + ';');
+        if (folder) {
+            options['dir'] = folder;
+        }
+        if (filename) {
+            options['out'] = filename;
+        }
+        if (!('all-proxy' in options) && aria2RPC.proxy['resolve'].includes(domain)) {
+            options['all-proxy'] = aria2RPC.proxy['uri'];
+        }
+        downloadWithAria2(url, options);
+    });
+}
 
 function captureDownload(domain, fileExt, url) {
     if (aria2RPC.capture['reject'].includes(domain)) {

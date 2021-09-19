@@ -64,20 +64,9 @@ function aria2RPCRequest(request, resolve, reject) {
     });
 }
 
-function downloadWithAria2({url, referer = '', domain, filename}, options = {}) {
-    var url = Array.isArray(url) ? url : [url];
-    chrome.cookies.getAll({url: url[0]}, cookies => {
-        options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['useragent']];
-        cookies.forEach(cookie => options['header'][0] += ' ' + cookie.name + '=' + cookie.value + ';');
-        if (filename) {
-            options['out'] = filename;
-        }
-        if (!('all-proxy' in options) && aria2RPC.proxy['resolve'].includes(domain)) {
-            options['all-proxy'] = aria2RPC.proxy['uri'];
-        }
-        aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [token, url, options]},
-        result => showNotification(url[0]), showNotification);
-    });
+function downloadWithAria2(url, options) {
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [token, [url], options]},
+    result => showNotification(url), showNotification);
 }
 
 function showNotification(message = '') {

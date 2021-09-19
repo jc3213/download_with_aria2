@@ -6,7 +6,7 @@ chrome.contextMenus.create({
 
 chrome.contextMenus.onClicked.addListener(info => {
     if (info.menuItemId === 'downwitharia2') {
-        downloadWithAria2({url: info.linkUrl, referer: info.pageUrl, domain: getDomainFromUrl(info.pageUrl)});
+        startDownload({url: info.linkUrl, referer: info.pageUrl, domain: getDomainFromUrl(info.pageUrl)});
     }
 });
 
@@ -26,12 +26,26 @@ chrome.downloads.onDeterminingFilename.addListener(item => {
         if (captureDownload(domain, getFileExtension(filename), item.fileSize)) {
             chrome.downloads.cancel(item.id, () => {
                 chrome.downloads.erase({id: item.id}, () => {
-                    downloadWithAria2({url, referer, domain, filename});
+                    startDownload({url, referer, domain, filename});
                 });
             });
         }
     });
 });
+
+function startDownload({url, referer, domain, filename}, options = {}) {
+    chrome.cookies.getAll({url}, cookies => {
+        options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['useragent']];
+        cookies.forEach(cookie => options['header'][0] += ' ' + cookie.name + '=' + cookie.value + ';');
+        if (filename) {
+            options['out'] = filename;
+        }
+        if (!('all-proxy' in options) && aria2RPC.proxy['resolve'].includes(domain)) {
+            options['all-proxy'] = aria2RPC.proxy['uri'];
+        }
+        downloadWithAria2(url, options);
+    });
+}
 
 function captureDownload(domain, fileExt, fileSize) {
     if (aria2RPC.capture['reject'].includes(domain)) {
