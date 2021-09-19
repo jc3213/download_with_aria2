@@ -26,16 +26,16 @@ document.querySelector('#entries').addEventListener('drop', (event) => {
     }
 });
 
-function removeNewTaskWindow() {
-    parent.document.querySelector('[module="' + frameElement.id + '"]').classList.remove('checked');
-    frameElement.style.display = 'none';
-    setTimeout(() => frameElement.remove(), 500);
-}
-
 function newTaskOptions(options = {}) {
     document.querySelectorAll('[aria2], [task]').forEach(field => {
         var name = field.getAttribute('aria2') ?? field.getAttribute('task');
         options[name] = field.value;
     });
     return options;
+}
+
+function removeNewTaskWindow() {
+    parent.document.querySelector('[module="' + frameElement.id + '"]').classList.remove('checked');
+    frameElement.style.display = 'none';
+    setTimeout(() => frameElement.remove(), 500);
 }
