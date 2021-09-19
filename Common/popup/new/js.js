@@ -4,8 +4,7 @@ function aria2RPCAssist() {
 }
 
 document.querySelector('#submit_btn').addEventListener('click', (event) => {
-    var referer = document.querySelector('#referer').value;
-    var options = newTaskOptions();
+    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']]};
     document.querySelector('#entries').value.split('\n').forEach(url => downloadWithAria2(url, options));
     removeNewTaskWindow();
 });
@@ -33,7 +32,6 @@ function removeNewTaskWindow() {
 }
 
 function newTaskOptions(options = {}) {
-    options['header'] = ['Referer: ' + referer, 'User-Agent: ' + aria2RPC['useragent']];
     document.querySelectorAll('[aria2], [task]').forEach(field => {
         var name = field.getAttribute('aria2') ?? field.getAttribute('task');
         options[name] = field.value;

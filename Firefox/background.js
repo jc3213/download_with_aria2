@@ -50,7 +50,7 @@ function startDownload({url, referer, domain, filename, folder, storeId}, option
         if (filename) {
             options['out'] = filename;
         }
-        if (!('all-proxy' in options) && aria2RPC.proxy['resolve'].includes(domain)) {
+        if (aria2RPC.proxy['resolve'].includes(domain)) {
             options['all-proxy'] = aria2RPC.proxy['uri'];
         }
         downloadWithAria2(url, options);
