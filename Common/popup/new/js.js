@@ -13,16 +13,14 @@ document.querySelector('#submit_btn').addEventListener('click', (event) => {
 document.querySelector('#entries').addEventListener('drop', (event) => {
     var file = event.dataTransfer.files[0];
     if (file.name.endsWith('metalink') || file.name.endsWith('meta4')) {
-        var reader = new FileReader();
-        reader.readAsText(file);
-        reader.onload = () => {
-            var metalink = btoa(unescape(encodeURIComponent(reader.result)));
+        fileReader(file, text => {
+            var metalink = btoa(unescape(encodeURIComponent(text)));
             aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addMetalink', params: [token, metalink, newTaskOptions()]},
             result => {
                 showNotification(file.name);
                 removeNewTaskWindow();
             });
-        };
+        });
     }
 });
 

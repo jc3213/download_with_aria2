@@ -1,3 +1,7 @@
+browser.runtime.getPlatformInfo(platform => {
+    aria2OS = platform.os;
+});
+
 browser.contextMenus.create({
     title: browser.i18n.getMessage('extension_name'),
     id: 'downwitharia2firefox',
@@ -95,7 +99,7 @@ function getDomainFromUrl(url) {
 }
 
 function getFileNameFromUri(uri) {
-    var index = uri.lastIndexOf('\\') === -1 ? uri.lastIndexOf('/') : uri.lastIndexOf('\\');
+    var index = aria2OS === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
     return uri.slice(index + 1);
 }
 
