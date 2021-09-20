@@ -16,10 +16,12 @@ FOR /F "USEBACKQ SKIP=3 TOKENS=1,2 DELIMS=,: " %%I IN ("%~DP0%Code%\manifest.jso
     )
 )
 :Build
-ECHO =================================================
 %~DP07z.exe a %Zip% %~DP0Common\* %~DP0%Code%\*
-ECHO =================================================
+GOTO :EXIT
 :Exit
+ECHO.
+ECHO.
+PING 127.0.0.1 -n 3 >NUL
 ECHO %Code% build completed
-PAUSE
+PING 127.0.0.1 -n 3 >NUL
 EXIT
