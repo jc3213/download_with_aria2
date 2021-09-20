@@ -9,8 +9,8 @@
 
 # How to Build
 
-- Download [7-zip](https://www.7-zip.org/)
 - Download [Source Code](https://github.com/jc3213/download_with_aria2/archive/refs/heads/master.zip)
+- Download [7-zip](https://www.7-zip.org/)
 - Extract source code and put `7z.exe` into the root folder
 - Run `Auto Build.cmd` and follow the instructions
 
