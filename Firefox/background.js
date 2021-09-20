@@ -1,5 +1,5 @@
 browser.runtime.getPlatformInfo(platform => {
-    aria2OS = platform.os;
+    aria2Windows = platform.os === 'win';
 });
 
 browser.contextMenus.create({
@@ -99,7 +99,7 @@ function getDomainFromUrl(url) {
 }
 
 function getFileNameFromUri(uri) {
-    var index = aria2OS === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
+    var index = aria2Windows ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
     return uri.slice(index + 1);
 }
 
