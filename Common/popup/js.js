@@ -61,8 +61,7 @@ function aria2RPCClient() {
         document.querySelector('[panel="active"]').innerHTML = '';
         document.querySelector('[panel="waiting"]').innerHTML = '';
         document.querySelector('[panel="stopped"]').innerHTML = '';
-        clearInterval(aria2KeepAlive);
-    });
+    }, true);
 }
 
 function printTaskDetails(result, index, queue) {

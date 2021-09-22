@@ -1,4 +1,4 @@
-function aria2RPCAssist() {
+function aria2RPCClient() {
     printGlobalOption();
     printFeedButton();
 }

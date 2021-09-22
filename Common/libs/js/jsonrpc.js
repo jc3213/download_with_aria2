@@ -2,7 +2,6 @@ var jsonrpc;
 var token;
 var aria2RPC;
 var aria2RPCClient;
-var aria2RPCAssist;
 var aria2KeepAlive;
 
 function aria2RPCStartUp() {
@@ -10,11 +9,6 @@ function aria2RPCStartUp() {
     token = aria2RPC.jsonrpc['token'];
     if (aria2RPCClient) {
         aria2RPCClient();
-        clearInterval(aria2KeepAlive);
-        aria2KeepAlive = setInterval(aria2RPCClient, aria2RPC.jsonrpc['refresh']);
-    }
-    if (aria2RPCAssist) {
-        aria2RPCAssist(aria2RPC);
     }
 }
 
@@ -41,7 +35,7 @@ chrome.storage.onChanged.addListener(changes => {
     });
 });
 
-function aria2RPCRequest(request, resolve, reject) {
+function aria2RPCRequest(request, resolve, reject, alive) {
     var requestJSON = Array.isArray(request) ? request : [request];
     fetch(jsonrpc, {method: 'POST', body: JSON.stringify(requestJSON)}).then(response => {
         if (response.ok) {
@@ -54,6 +48,9 @@ function aria2RPCRequest(request, resolve, reject) {
         var {result, error} = responseJSON[0];
         if (result && typeof resolve === 'function') {
             resolve(...responseJSON.map(item => item.result));
+            if (alive) {
+                aria2KeepAlive = setTimeout(() => aria2RPCRequest(request, resolve, reject, alive), aria2RPC.jsonrpc['refresh']);
+            }
         }
         if (error) {
             throw error;
@@ -61,6 +58,7 @@ function aria2RPCRequest(request, resolve, reject) {
     }).catch(error => {
         if (typeof reject === 'function') {
             reject(error.message);
+            clearTimeout(aria2KeepAlive);
         }
     });
 }

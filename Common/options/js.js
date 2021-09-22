@@ -35,7 +35,7 @@ document.querySelector('#show_btn').addEventListener('click', (event) => {
     event.target.classList.toggle('checked');
 });
 
-function aria2RPCAssist() {
+function aria2RPCClient() {
     document.querySelectorAll('[local]').forEach(field => {
         var name = field.getAttribute('local');
         var root = field.getAttribute('root');

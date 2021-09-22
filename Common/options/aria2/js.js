@@ -8,6 +8,6 @@ document.addEventListener('change', (event) => {
     changeGlobalOption(event.target.getAttribute('aria2'), event.target.value);
 });
 
-function aria2RPCAssist() {
+function aria2RPCClient() {
     printGlobalOption();
 }

@@ -1,12 +1,9 @@
 var gid = location.hash.slice(1);
 var type = location.search.slice(1);
 
-function aria2RPCAssist() {
+function aria2RPCClient() {
     printTaskOption(gid);
     printFeedButton();
-}
-
-function aria2RPCClient() {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.tellStatus', params: [token, gid]},
     result => {
         var disabled = ['complete', 'error'].includes(result.status);
@@ -26,7 +23,7 @@ function aria2RPCClient() {
         if (type === 'http') {
             result.files[0].uris.forEach(uri => printTaskUris(uri, document.querySelector('#uris')));
         }
-    });
+    }, null, true);
 }
 
 function printTaskUris(uri, table) {
