@@ -56,7 +56,7 @@ function aria2RPCRequest(request, resolve, reject) {
             resolve(...responseJSON.map(item => item.result));
         }
         if (error) {
-            throw(error)
+            throw error;
         }
     }).catch(error => {
         if (typeof reject === 'function') {
