@@ -48,7 +48,7 @@ function aria2RPCRequest(request, resolve, reject) {
             return response.json();
         }
         else {
-            throw(response.statusText);
+            throw new Error(response.statusText);
         }
     }).then(responseJSON => {
         var {result, error} = responseJSON[0];
@@ -56,11 +56,11 @@ function aria2RPCRequest(request, resolve, reject) {
             resolve(...responseJSON.map(item => item.result));
         }
         if (error) {
-            throw(error.message);
+            throw(error)
         }
     }).catch(error => {
         if (typeof reject === 'function') {
-            reject(error);
+            reject(error.message);
         }
     });
 }
