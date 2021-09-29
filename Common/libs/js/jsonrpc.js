@@ -29,10 +29,9 @@ chrome.storage.local.get(null, result => {
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         aria2RPC[key] = changes[key].newValue;
-        if (key === 'jsonrpc') {
-            aria2RPCStartUp();
-        }
     });
+    jsonrpc = aria2RPC.jsonrpc['uri'];
+    token = aria2RPC.jsonrpc['token'];
 });
 
 function aria2RPCRequest(request, resolve, reject, alive) {
