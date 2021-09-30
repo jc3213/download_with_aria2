@@ -1,11 +1,9 @@
-var jsonrpc;
 var token;
 var aria2RPC;
 var aria2RPCClient;
 var aria2KeepAlive;
 
 function aria2RPCStartUp() {
-    jsonrpc = aria2RPC.jsonrpc['uri'];
     token = aria2RPC.jsonrpc['token'];
     if (aria2RPCClient) {
         aria2RPCClient();
@@ -30,13 +28,12 @@ chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         aria2RPC[key] = changes[key].newValue;
     });
-    jsonrpc = aria2RPC.jsonrpc['uri'];
     token = aria2RPC.jsonrpc['token'];
 });
 
 function aria2RPCRequest(request, resolve, reject, alive) {
     var requestJSON = Array.isArray(request) ? request : [request];
-    fetch(jsonrpc, {method: 'POST', body: JSON.stringify(requestJSON)}).then(response => {
+    fetch(aria2RPC.jsonrpc['uri'], {method: 'POST', body: JSON.stringify(requestJSON)}).then(response => {
         if (response.ok) {
             return response.json();
         }
@@ -44,15 +41,14 @@ function aria2RPCRequest(request, resolve, reject, alive) {
             throw new Error(response.statusText);
         }
     }).then(responseJSON => {
-        var {result, error} = responseJSON[0];
-        if (result && typeof resolve === 'function') {
-            resolve(...responseJSON.map(item => item.result));
+        if (responseJSON[0].result && typeof resolve === 'function') {
+            resolve(...responseJSON.map(({result}) => result));
             if (alive) {
                 aria2KeepAlive = setTimeout(() => aria2RPCRequest(request, resolve, reject, alive), aria2RPC.jsonrpc['refresh']);
             }
         }
-        if (error) {
-            throw error;
+        if (responseJSON[0].error) {
+            throw responseJSON[0].error;
         }
     }).catch(error => {
         if (typeof reject === 'function') {
@@ -70,7 +66,7 @@ function downloadWithAria2(url, options) {
 function showNotification(message = '') {
     chrome.notifications.create({
         type: 'basic',
-        title: jsonrpc,
+        title: aria2RPC.jsonrpc['uri'],
         iconUrl: '/icons/icon48.png',
         message: message
     }, id => {
