@@ -17,7 +17,7 @@ document.querySelector('#export').addEventListener('click', (event) => {
 });
 
 document.querySelector('#import').addEventListener('click', (event) => {
-    readLocalFile('application/json', text => {
+    readLocalFile('.json', text => {
         var json = JSON.parse(text);
         chrome.storage.local.set(json);
         location.reload();

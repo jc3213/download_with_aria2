@@ -6,7 +6,10 @@ function readLocalFile(mime, callback) {
     }
     input.click();
     input.onchange = () => {
-        fileReader(input.files[0], callback === undefined ? mime : callback);
+        fileReader(input.files[0], text => {
+            input.remove();
+            typeof mime === 'function' ? mime(text, input.files[0].name) : callback(text, input.files[0].name);
+        });
     };
 }
 
