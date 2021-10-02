@@ -1,20 +1,16 @@
-function readLocalFile(mime, callback) {
+function readLocalFile(mime, callback, blob) {
     var input = document.createElement('input');
     input.type = 'file';
-    if (typeof mime === 'string') {
-        input.accept = mime;
-    }
+    input.accept = mime;
     input.click();
     input.onchange = () => {
-        fileReader(input.files[0], text => {
-            input.remove();
-            typeof mime === 'function' ? mime(text, input.files[0].name) : callback(text, input.files[0].name);
-        });
+        fileReader(input.files[0], callback, blob);
+        input.remove();
     };
 }
 
-function fileReader(file, callback) {
+function fileReader(file, callback, blob = false) {
     var reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = () => callback(reader.result);
+    reader.onload = () => callback(reader.result, file.name);
+    blob ? reader.readAsDataURL(file) : reader.readAsText(file);
 }

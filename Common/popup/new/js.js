@@ -12,15 +12,22 @@ document.querySelector('#submit_btn').addEventListener('click', (event) => {
 
 document.querySelector('#entries').addEventListener('drop', (event) => {
     var file = event.dataTransfer.files[0];
-    if (file.name.endsWith('metalink') || file.name.endsWith('meta4')) {
-        fileReader(file, text => {
-            var metalink = btoa(unescape(encodeURIComponent(text)));
-            aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addMetalink', params: [token, metalink, newTaskOptions()]},
-            result => {
-                showNotification(file.name);
-                removeNewTaskWindow();
-            });
-        });
+    if (file.name.endsWith('metalink') || file.name.endsWith('meta4') || file.name.endsWith('torrent')) {
+        fileReader(file, (blob, filename) => {
+            var base64 = blob.slice(blob.indexOf(',') + 1);
+            var options = newTaskOptions();
+            if (filename.endsWith('torrent')) {
+                var method = 'aria2.addTorrent';
+                var params = [token, base64];
+            }
+            else {
+                method = 'aria2.addMetalink';
+                params = [token, base64, options];
+            }
+            aria2RPCRequest({id: '', jsonrpc: 2, method, params},
+            result => showNotification(filename), showNotification);
+            removeNewTaskWindow();
+        }, true);
     }
 });
 
