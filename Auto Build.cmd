@@ -11,17 +11,19 @@ IF NOT DEFINED Code CLS && GOTO :Code
 IF NOT EXIST 7z.exe GOTO :Exit
 FOR /F "USEBACKQ SKIP=3 TOKENS=1,2 DELIMS=,: " %%I IN ("%~DP0%Code%\manifest.json") DO (
 	IF "%%~I"=="version" (
+        SET Version=%%~J
         SET Zip=%~DP0%Code%-%%~J.zip
         GOTO :Build
     )
 )
 :Build
-%~DP07z.exe a %Zip% %~DP0Common\* %~DP0%Code%\*
+%~DP07z.exe a %Zip% %~DP0Chromium\*
+IF %Option% EQU 2 %~DP07z.exe u %Zip% %~DP0Firefox\*
 GOTO :EXIT
 :Exit
 ECHO.
 ECHO.
 PING 127.0.0.1 -n 3 >NUL
-ECHO %Code% build completed
+ECHO %Code% %Version% build completed
 PING 127.0.0.1 -n 3 >NUL
 EXIT

@@ -1,0 +1,284 @@
+{
+    "extension_name": {
+        "message": "Download with Aria2"
+    },
+    "extension_description": {
+        "message": "The Aria2 Download Manager for Chromium / Firefox"
+    },
+    "common_default": {
+        "message": "Default"
+    },
+    "common_sample": {
+        "message": "Sample"
+    },
+    "common_disabled": {
+        "message": "Disabled"
+    },
+    "common_advanced": {
+        "message": "Advanced"
+    },
+    "common_back": {
+        "message": "Back"
+    },
+    "time_day": {
+        "message": "d"
+    },
+    "time_hour": {
+        "message": "h"
+    },
+    "time_minute": {
+        "message": "m"
+    },
+    "time_second": {
+        "message": "s"
+    },
+    "time_second_full": {
+        "message": "Second(s)"
+    },
+    "option_basic": {
+        "message": "Basic"
+    },
+    "option_download": {
+        "message": "Download"
+    },
+    "option_export": {
+        "message": "Export"
+    },
+    "option_import": {
+        "message": "Import"
+    },
+    "option_always": {
+        "message": "Always"
+    },
+    "option_protocol": {
+        "message": "Protocol"
+    },
+    "option_jsonrpc_uri": {
+        "message": "JSONRPC URI"
+    },
+    "option_jsonrpc_uri_desc": {
+        "message": "Set URI of JSON-RPC interface"
+    },
+    "option_jsonrpc_token": {
+        "message": "Secret Token"
+    },
+    "option_jsonrpc_token_desc": {
+        "message": "Set secret authorization \"token\""
+    },
+    "option_jsonrpc_refresh": {
+        "message": "Refresh Interval"
+    },
+    "option_jsonrpc_refresh_desc": {
+        "message": "Set task manager refresh interval"
+    },
+    "option_useragent": {
+        "message": "User Agent"
+    },
+    "option_useragent_desc": {
+        "message": "Customizable user agent for downloads"
+    },
+    "option_proxy_uri": {
+        "message": "Proxy Server"
+    },
+    "option_proxy_uri_desc": {
+        "message": "Setting server for \"all-proxy\" option"
+    },
+    "option_proxy_resolve": {
+        "message": "Domains over Proxy"
+    },
+    "option_proxy_resolve_desc": {
+        "message": "Automatically add \"all-proxy\" option for these domains"
+    },
+    "option_capture_mode": {
+        "message": "Capturing"
+    },
+    "option_capture_mode_filters": {
+        "message": "Built-in Filters"
+    },
+    "option_capture_mode_desc": {
+        "message": "Capture browser downloads based on filters below"
+    },
+    "option_capture_fileSize": {
+        "message": "File Size"
+    },
+    "option_capture_fileSize_desc": {
+        "message": "Capture download larger than your setting"
+    },
+    "option_capture_fileExt": {
+        "message": "File Extensions"
+    },
+    "option_capture_fileExt_desc": {
+        "message": "Capture download with these file extensions"
+    },
+    "option_capture_resolve": {
+        "message": "Monitor Domains"
+    },
+    "option_capture_resolve_desc": {
+        "message": "Monitor download from these domains"
+    },
+    "option_capture_reject": {
+        "message": "Ignore Domains"
+    },
+    "option_capture_reject_desc": {
+        "message": "Ignore download from these domains"
+    },
+    "option_folder_mode": {
+        "message": "Save Folder"
+    },
+    "option_folder_browser": {
+        "message": "Browser"
+    },
+    "option_folder_custom": {
+        "message": "Custom"
+    },
+    "option_folder_mode_desc": {
+        "message": "Download folder for captured downloads"
+    },
+    "popup_active_button": {
+        "message": "Active"
+    },
+    "popup_waiting_button": {
+        "message": "Waiting"
+    },
+    "popup_stopped_button": {
+        "message": "Stopped"
+    },
+    "popup_new_button": {
+        "message": "New Task"
+    },
+    "popup_purge_button": {
+        "message": "Purge"
+    },
+    "popup_options_button": {
+        "message": "Options"
+    },
+    "popup_download": {
+        "message": "Download"
+    },
+    "popup_upload": {
+        "message": "Upload"
+    },
+    "task_referer": {
+        "message": "Referer"
+    },
+    "task_referer_desc": {
+        "message": "Add \"Referer\" and \"Cookies\" headers to this download session"
+    },
+    "task_batch": {
+        "message": "Download Urls"
+    },
+    "task_batch_desc": {
+        "message": "The urls to be downloaded, one entry per line"
+    },
+    "task_proxy": {
+        "message": "Proxy Server"
+    },
+    "task_proxy_desc": {
+        "message": "Add \"all-proxy\" option to this download session"
+    },
+    "task_submit": {
+        "message": "Submit"
+    },
+    "task_download": {
+        "message": "Download Speed"
+    },
+    "task_download_desc": {
+        "message": "Limit maximum download speed via \"max-download-limit\" option"
+    },
+    "task_upload": {
+        "message": "Upload Speed"
+    },
+    "task_upload_desc": {
+        "message": "Limit maximum upload speed via \"max-upload-limit\" option"
+    },
+    "aria2_http": {
+        "message": "HTTP/FTP"
+    },
+    "aria2_bittorrent": {
+        "message": "BitTorrent"
+    },
+    "aria2_http_retry": {
+        "message": "Max Retries"
+    },
+    "aria2_http_retry_desc": {
+        "message": "Set maximum number of retries"
+    },
+    "aria2_http_wait": {
+        "message": "Retry Interval"
+    },
+    "aria2_http_wait_desc": {
+        "message": "Set the interval time between retries (SEC)"
+    },
+    "aria2_http_split": {
+        "message": "Download Sections"
+    },
+    "aria2_http_split_desc": {
+        "message": "Set the maximum download sections of each download"
+    },
+    "aria2_http_size": {
+        "message": "Section Size"
+    },
+    "aria2_http_size_desc": {
+        "message": "Set the minimum size of each download section"
+    },
+    "aria2_bt_port": {
+        "message": "Listening Port"
+    },
+    "aria2_bt_port_desc": {
+        "message": "Set the listening port for DHT and UDP tracker"
+    },
+    "aria2_bt_peers": {
+        "message": "Max Peers"
+    },
+    "aria2_bt_peers_desc": {
+        "message": "Set the maximum peers of each torrent"
+    },
+    "aria2_bt_remove": {
+        "message": "Remove Unselected Files"
+    },
+    "aria2_bt_remove_desc": {
+        "message": "Remove the unselected files when bittorrent is completed"
+    },
+    "aria2_bt_ratio": {
+        "message": "Seeding Ratio"
+    },
+    "aria2_bt_ratio_desc": {
+        "message": "Set the share ratio of each torrent"
+    },
+    "aria2_bt_seed": {
+        "message": "Seeding Time"
+    },
+    "aria2_bt_seed_desc": {
+        "message": "Set the share time of each torrent (MIN)"
+    },
+    "aria2_adv_dir": {
+        "message": "Download Directory"
+    },
+    "aria2_adv_dir_desc": {
+        "message": "Set the directory where the files are saved"
+    },
+    "aria2_adv_cache": {
+        "message": "Disk Cache"
+    },
+    "aria2_adv_cache_desc": {
+        "message": "Set memory cache to reduce disk I/O"
+    },
+    "aria2_max_task": {
+        "message": "Max Concurrent Tasks"
+    },
+    "aria2_max_task_desc": {
+        "message": "Set the maximum number of concurrent tasks"
+    },
+    "aria2_max_download": {
+        "message": "Global Download Speed"
+    },
+    "aria2_max_download_desc": {
+        "message": "Set the maximum download speed for all concurrent tasks"
+    },
+    "aria2_max_upload": {
+        "message": "Global Upload Speed"
+    },
+    "aria2_max_upload_desc": {
+        "message": "Set the maximum upload speed for all concurrent tasks"
+    }
+}

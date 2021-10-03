@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/libs/css/common.css">
+        <link rel="stylesheet" href="/libs/ui/common.css">
+    </head>
+    <body>
+        <div class="frame">
+            <div class="container">
+                <span tab="http" i18n>aria2_http</span>
+                <span tab="bt" i18n>aria2_bittorrent</span>
+                <span tab="advanced" i18n>common_advanced</span>
+            </div>
+            <div class="offside">
+                <span id="version"></span>
+                <span id="back_btn" button i18n>common_back</span>
+            </div>
+        </div>
+        <hr>
+        <div panel="http" class="container">
+            <div title="aria2_http_retry_desc" i18n_title>
+                <div class="title" i18n>aria2_http_retry</div>
+                <div>
+                    <input aria2="max-tries" type="number">
+                </div>
+                <span i18n>common_default</span>: <u><i>5</i></u>
+            </div>
+            <div title="aria2_http_wait_desc" i18n_title>
+                <div class="title" i18n>aria2_http_wait</div>
+                <div>
+                    <input aria2="retry-wait" type="number">
+                </div>
+                <span i18n>common_default</span>: <u><i>0</i></u>
+            </div>
+            <div title="aria2_http_split_desc" i18n_title>
+                <div class="title" i18n>aria2_http_split</div>
+                <div>
+                    <input aria2="split" type="number">
+                </div>
+                <span i18n>common_default</span>: <u><i>5</i></u>
+            </div>
+            <div title="aria2_http_size_desc" i18n_title>
+                <div class="title" i18n>aria2_http_size</div>
+                <label>
+                    <span class="suffix">B</span>
+                    <input aria2="min-split-size" calc type="text">
+                </label>
+                <span i18n>common_default</span>: <u><i>20M</i></u>
+            </div>
+        </div>
+        <div panel="bt" class="container">
+            <div title="aria2_bt_port_desc" i18n_title>
+                <div class="title" i18n>aria2_bt_port</div>
+                <div>
+                    <input aria2="listen-port" type="text">
+                </div>
+                <span i18n>common_default</span>: <u><i>6881-6999</i></u>
+            </div>
+            <div title="aria2_bt_peers_desc" i18n_title>
+                <div class="title" i18n>aria2_bt_peers</div>
+                <div>
+                    <input aria2="bt-max-peers" type="number">
+                </div>
+                <span i18n>common_default</span>: <u><i>55</i></u>
+            </div>
+            <div title="aria2_bt_remove_desc" i18n_title>
+                <div class="title" i18n>aria2_bt_remove</div>
+                <div>
+                    <select aria2="bt-remove-unselected-file" aria2>
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                    </select>
+                </div>
+                <span i18n>common_default</span>: <u><i>False</i></u>
+            </div>
+            <div title="aria2_bt_ratio_desc" i18n_title>
+                <div class="title" i18n>aria2_bt_ratio</div>
+                <div>
+                    <input aria2="seed-ratio" type="text">
+                </div>
+                <span i18n>common_default</span>: <u><i>1.0</i></u>
+            </div>
+            <div title="aria2_bt_seed_desc" i18n_title>
+                <div class="title" i18n>aria2_bt_seed</div>
+                <div>
+                    <input aria2="seed-time" type="number">
+                </div>
+                <span i18n>common_sample</span>: <u><i>30</i></u>
+            </div>
+        </div>
+        <div panel="advanced" class="container">
+            <div title="aria2_adv_dir_desc" i18n_title>
+                <div class="title" i18n>aria2_adv_dir</div>
+                <div>
+                    <input aria2="dir" type="text">
+                </div>
+                <span i18n>common_sample</span>: <u><i>C:\Aria2\Downloads</i></u>
+            </div>
+            <div title="aria2_adv_cache_desc" i18n_title>
+                <div class="title" i18n>aria2_adv_cache</div>
+                <label>
+                    <span class="suffix">B</span>
+                    <input aria2="disk-cache" calc type="text">
+                </label>
+                <span i18n>common_default</span>: <u><i>16M</i></u>
+            </div>
+            <div title="aria2_max_task_desc" i18n_title>
+                <div class="title" i18n>aria2_max_task</div>
+                <div>
+                    <input aria2="max-concurrent-downloads" type="number">
+                </div>
+                <span i18n>common_default</span>: <u><i>5</i></u>
+            </div>
+            <div title="aria2_max_download_desc" i18n_title>
+                <div class="title" i18n>aria2_max_download</div>
+                <label>
+                    <span class="suffix">B/s</span>
+                    <input aria2="max-overall-download-limit" calc type="text">
+                </label>
+                <span i18n>common_disabled</span>: <u><i>0</i></u>
+            </div>
+            <div title="aria2_max_upload_desc" i18n_title>
+                <div class="title" i18n>aria2_max_upload</div>
+                <label>
+                    <span class="suffix">B/s</span>
+                    <input aria2="max-overall-upload-limit" calc type="text">
+                </label>
+                <span i18n>common_disabled</span>: <u><i>0</i></u>
+            </div>
+        </div>
+        <script src="/libs/ui/i18n.js"></script>
+        <script src="/libs/ui/tabs.js"></script>
+        <script src="/libs/ui/calc.js"></script>
+        <script src="/libs/js/jsonrpc.js"></script>
+        <script src="/libs/js/options.js"></script>
+        <script src="js.js"></script>
+    </body>
+</html>
