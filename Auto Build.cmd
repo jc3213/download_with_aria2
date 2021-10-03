@@ -23,7 +23,6 @@ GOTO :EXIT
 :Exit
 ECHO.
 ECHO.
-PING 127.0.0.1 -n 3 >NUL
-ECHO %Code% %Version% build completed
-PING 127.0.0.1 -n 3 >NUL
+ECHO %Code% %Version% build completed, script will be terminated in 5 seconds...
+PING 127.0.0.1 -n 5 >NUL
 EXIT
