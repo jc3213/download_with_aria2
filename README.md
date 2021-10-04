@@ -10,9 +10,15 @@
 # How to Build
 
 - Download [Source Code](https://github.com/jc3213/download_with_aria2/archive/refs/heads/master.zip)
-- Download [7-zip](https://www.7-zip.org/)
-- Extract source code and put `7z.exe` into the root folder
+- Download 7-zip standalone console `v21.03 beta` [Windows](https://www.7-zip.org/a/7z2103-extra.7z) | [Linux 64bit](https://www.7-zip.org/a/7z2103-linux-x64.tar.xz) | [Linux 32bit](https://www.7-zip.org/a/7z2103-linux-x86.tar.xz) | [Linux ARM](https://www.7-zip.org/a/7z2103-linux-arm64.tar.xz)
+- Extract source code
+
+#### Windows
+- Put `7za.exe` into the same folder with `Auto Build.cmd`
 - Run `Auto Build.cmd` and follow the instructions
+
+#### Linux
+- Unknown
 
 # Other
 
