@@ -9,7 +9,7 @@
 
 # How to Build
 
-- Download [Source Code](https://github.com/jc3213/download_with_aria2/archive/refs/heads/master.zip)
+- Download latest released [source code](https://github.com/jc3213/download_with_aria2/releases/latest)
 - Download 7-zip standalone console `v21.03 beta` [Windows](https://www.7-zip.org/a/7z2103-extra.7z) | [Linux 64bit](https://www.7-zip.org/a/7z2103-linux-x64.tar.xz) | [Linux 32bit](https://www.7-zip.org/a/7z2103-linux-x86.tar.xz) | [Linux ARM](https://www.7-zip.org/a/7z2103-linux-arm64.tar.xz)
 - Extract source code
 
