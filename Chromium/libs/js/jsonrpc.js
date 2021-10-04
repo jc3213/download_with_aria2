@@ -1,11 +1,9 @@
-var token;
 var aria2RPC;
 var aria2RPCClient;
 var aria2KeepAlive;
 
 function aria2RPCStartUp() {
-    token = aria2RPC.jsonrpc['token'];
-    if (aria2RPCClient) {
+    if (typeof aria2RPCClient === 'function') {
         aria2RPCClient();
     }
 }
@@ -27,8 +25,11 @@ chrome.storage.local.get(null, result => {
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         aria2RPC[key] = changes[key].newValue;
+        if (key === 'jsonrpc') {
+            clearTimeout(aria2KeepAlive);
+            aria2RPCStartUp();
+        }
     });
-    token = aria2RPC.jsonrpc['token'];
 });
 
 function aria2RPCRequest(request, resolve, reject, alive) {
@@ -59,7 +60,7 @@ function aria2RPCRequest(request, resolve, reject, alive) {
 }
 
 function downloadWithAria2(url, options) {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [token, [url], options]},
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [aria2RPC.jsonrpc['token'], [url], options]},
     result => showNotification(url), showNotification);
 }
 

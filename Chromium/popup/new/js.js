@@ -5,8 +5,10 @@ function aria2RPCClient() {
 
 document.querySelector('#submit_btn').addEventListener('click', (event) => {
     var header = ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']];
+    var entries = document.querySelector('#entries').value;
     var options = newTaskOptions({header});
-    document.querySelector('#entries').value.split('\n').forEach(url => downloadWithAria2(url, options));
+    var request = entries.split('\n').map(url => ({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [aria2RPC.jsonrpc['token'], [url], options]}));
+    aria2RPCRequest(request, result => showNotification(entries), showNotification);
     removeNewTaskWindow();
 });
 
@@ -14,15 +16,14 @@ document.querySelector('#entries').addEventListener('drop', (event) => {
     var file = event.dataTransfer.files[0];
     if (file.name.endsWith('metalink') || file.name.endsWith('meta4') || file.name.endsWith('torrent')) {
         fileReader(file, (blob, filename) => {
-            var base64 = blob.slice(blob.indexOf(',') + 1);
+            var params = [aria2RPC.jsonrpc['token'], blob.slice(blob.indexOf(',') + 1)];
             var options = newTaskOptions();
             if (filename.endsWith('torrent')) {
                 var method = 'aria2.addTorrent';
-                var params = [token, base64];
             }
             else {
                 method = 'aria2.addMetalink';
-                params = [token, base64, options];
+                params = [...params, options];
             }
             aria2RPCRequest({id: '', jsonrpc: 2, method, params},
             result => showNotification(filename), showNotification);

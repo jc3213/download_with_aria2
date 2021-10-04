@@ -22,14 +22,14 @@ function parseValueToOption(field, type, options) {
 }
 
 function printGlobalOption() {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getGlobalOption', params: [token]},
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getGlobalOption', params: [aria2RPC.jsonrpc['token']]},
     options => {
         document.querySelectorAll('[aria2]').forEach(aria2 => parseValueToOption(aria2, 'aria2', options));
     });
 }
 
 function printTaskOption(gid) {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getOption', params: [token, gid]},
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getOption', params: [aria2RPC.jsonrpc['token'], gid]},
     options => {
         document.querySelectorAll('[task]').forEach(task => parseValueToOption(task, 'task', options));
     });
@@ -37,10 +37,10 @@ function printTaskOption(gid) {
 
 function changeGlobalOption(name, value, options = {}) {
     options[name] = value;
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeGlobalOption', params: [token, options]});
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeGlobalOption', params: [aria2RPC.jsonrpc['token'], options]});
 }
 
 function changeTaskOption(gid, name, value, options = {}) {
     options[name] = value;
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [token, gid, options]});
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, options]});
 }

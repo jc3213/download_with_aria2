@@ -4,7 +4,7 @@ var type = location.search.slice(1);
 function aria2RPCClient() {
     printTaskOption(gid);
     printFeedButton();
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.tellStatus', params: [token, gid]},
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.tellStatus', params: [aria2RPC.jsonrpc['token'], gid]},
     result => {
         var disabled = ['complete', 'error'].includes(result.status);
         document.querySelector('#name').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) || result.files[0].uris[0].uri;
@@ -121,5 +121,5 @@ document.querySelector('#files').addEventListener('click', (event) => {
 });
 
 function changeTaskUri({add, remove}) {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeUri', params: [token, gid, 1, remove ? [remove] : [], add ? [add] : []]});
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeUri', params: [aria2RPC.jsonrpc['token'], gid, 1, remove ? [remove] : [], add ? [add] : []]});
 }

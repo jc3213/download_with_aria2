@@ -33,16 +33,16 @@ document.querySelectorAll('[module]').forEach(module => {
 });
 
 document.querySelector('#purdge_btn').addEventListener('click', (event) => {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.purgeDownloadResult', params: [token]},
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.purgeDownloadResult', params: [aria2RPC.jsonrpc['token']]},
     result => document.querySelector('[panel="stopped"]').innerHTML = '');
 });
 
 function aria2RPCClient() {
     aria2RPCRequest([
-        {id: '', jsonrpc: 2, method: 'aria2.getGlobalStat', params: [token]},
-        {id: '', jsonrpc: 2, method: 'aria2.tellActive', params: [token]},
-        {id: '', jsonrpc: 2, method: 'aria2.tellWaiting', params: [token, 0, 999]},
-        {id: '', jsonrpc: 2, method: 'aria2.tellStopped', params: [token, 0, 999]}
+        {id: '', jsonrpc: 2, method: 'aria2.getGlobalStat', params: [aria2RPC.jsonrpc['token']]},
+        {id: '', jsonrpc: 2, method: 'aria2.tellActive', params: [aria2RPC.jsonrpc['token']]},
+        {id: '', jsonrpc: 2, method: 'aria2.tellWaiting', params: [aria2RPC.jsonrpc['token'], 0, 999]},
+        {id: '', jsonrpc: 2, method: 'aria2.tellStopped', params: [aria2RPC.jsonrpc['token'], 0, 999]}
     ], (global, active, waiting, stopped) => {
         document.querySelector('#active').innerText = global.numActive;
         document.querySelector('#waiting').innerText = global.numWaiting;
@@ -118,7 +118,7 @@ function calcEstimatedTime(task, number) {
 }
 
 function aria2TaskRequest(method, gid, purge) {
-    aria2RPCRequest({id: '', jsonrpc: 2, method, params: [token, gid]}, 
+    aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], gid]}, 
     result => purge ? document.getElementById(gid).remove() : result);
 }
 
@@ -138,11 +138,11 @@ function openTaskMgrWindow(gid, type) {
 
 function removeTaskAndRetry(gid) {
     aria2RPCRequest([
-        {id: '', jsonrpc: 2, method: 'aria2.getFiles', params: [token, gid]},
-        {id: '', jsonrpc: 2, method: 'aria2.getOption', params: [token, gid]},
-        {id: '', jsonrpc: 2, method: 'aria2.removeDownloadResult', params: [token, gid]}
+        {id: '', jsonrpc: 2, method: 'aria2.getFiles', params: [aria2RPC.jsonrpc['token'], gid]},
+        {id: '', jsonrpc: 2, method: 'aria2.getOption', params: [aria2RPC.jsonrpc['token'], gid]},
+        {id: '', jsonrpc: 2, method: 'aria2.removeDownloadResult', params: [aria2RPC.jsonrpc['token'], gid]}
     ], (files, options) => {
-        aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [token, files[0].uris.map(uri => uri.uri), options]},
+        aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [aria2RPC.jsonrpc['token'], files[0].uris.map(uri => uri.uri), options]},
         result => document.getElementById(gid).remove());
     });
 }
