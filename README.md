@@ -14,7 +14,7 @@
 - Extract source code
 
 #### Windows
-- Put `7za.exe` into the same folder with `Windows Auto Build.cmd`
+- Put `7za.exe` and `7za.dll` into the same folder with `Windows Auto Build.cmd`
 - Run `Windows Auto Build.cmd` and follow the instructions
 
 #### Linux
