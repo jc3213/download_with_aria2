@@ -4,10 +4,8 @@ function aria2RPCClient() {
 }
 
 document.querySelector('#submit_btn').addEventListener('click', (event) => {
-    var entries = document.querySelector('#entries').value;
     var options = newTaskOptions();
-    var request = entries.split('\n').map(url => ({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [aria2RPC.jsonrpc['token'], [url], options]}));
-    aria2RPCRequest(request, result => showNotification(entries), showNotification);
+    document.querySelector('#entries').value.split('\n').forEach(url => downloadWithAria2(url, options));
     removeNewTaskWindow();
 });
 
