@@ -17,8 +17,7 @@ document.querySelector('#entries').addEventListener('drop', (event) => {
         fileReader(file, (blob, filename) => {
             var params = [aria2RPC.jsonrpc['token'], blob.slice(blob.indexOf(',') + 1)];
             var method = filename.endsWith('torrent') ? 'aria2.addTorrent' : params.push(newTaskOptions()) && 'aria2.addMetalink';
-            aria2RPCRequest({id: '', jsonrpc: 2, method, params},
-            result => showNotification(filename), showNotification);
+            aria2RPCRequest({id: '', jsonrpc: 2, method, params}, result => showNotification(filename), showNotification);
             removeNewTaskWindow();
         }, true);
     }
