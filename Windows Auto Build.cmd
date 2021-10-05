@@ -24,5 +24,5 @@ GOTO :EXIT
 ECHO.
 ECHO.
 ECHO %Code% %Version% build completed, script will be terminated in 5 seconds...
-PING 127.0.0.1 -n 5 >NUL
+TIMEOUT /T 5
 EXIT
