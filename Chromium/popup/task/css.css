@@ -52,6 +52,7 @@
 
 table {
     border-collapse: collapse;
+    width: 100%;
 }
 
 td {
@@ -59,21 +60,21 @@ td {
     padding: 5px;
 }
 
-#files #index {
+td#index {
     width: 20px;
     text-align: center;
 }
 
-#files #name {
+td#name {
     width: calc(100% - 140px);
 }
 
-#files #size {
+td#size {
     width: 70px;
     text-align: center;
 }
 
-#files #ratio {
+td#ratio {
     width: 50px;
     text-align: center;
 }
