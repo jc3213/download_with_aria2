@@ -120,7 +120,7 @@ function removeTaskFromQueue(gid, status) {
     var purge = ['complete', 'error', 'paused', 'removed'].includes(status) ? true : false;
     var method = ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
     aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], gid]},
-    resule => purge ? document.getElementById(gid).remove() : document.getElementById(gid).setAttribute('status', 'removed'), error => console.log(error));
+    resule => purge ? document.getElementById(gid).remove() : document.getElementById(gid).setAttribute('status', 'removed'));
 }
 
 function openTaskMgrWindow(gid, type) {
@@ -139,8 +139,12 @@ function removeTaskAndRetry(gid) {
 }
 
 function pauseOrUnpauseTask(gid, status) {
-    var method = ['active', 'waiting'].includes(status) ? 'aria2.pause' : status === 'paused' ? 'aria2.unpause' : null;
-    if (method) {
-        aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], gid]});
+    if (['active', 'waiting'].includes(status)) {
+        aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.pause', params: [aria2RPC.jsonrpc['token'], gid]},
+        result => document.getElementById(gid).setAttribute('status', 'paused'));
+    }
+    else if (status === 'paused') {
+        aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.unpause', params: [aria2RPC.jsonrpc['token'], gid]},
+        result => document.getElementById(gid).setAttribute('status', 'active'));
     }
 }
