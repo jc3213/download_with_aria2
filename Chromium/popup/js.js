@@ -117,10 +117,8 @@ function calcEstimatedTime(task, number) {
 }
 
 function removeTaskFromQueue(gid, status) {
-    var purge = ['complete', 'error', 'paused', 'removed'].includes(status) ? true : false;
-    var method = ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
-    aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], gid]},
-    resule => purge ? document.getElementById(gid).remove() : document.getElementById(gid).setAttribute('status', 'removed'));
+    aria2RPCRequest({id: '', jsonrpc: 2, method: ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult', params: [aria2RPC.jsonrpc['token'], gid]},
+    resule => ['complete', 'error', 'paused', 'removed'].includes(status) ? document.getElementById(gid).remove() : document.getElementById(gid).setAttribute('status', 'removed'));
 }
 
 function openTaskMgrWindow(gid, type) {
@@ -133,7 +131,7 @@ function removeTaskAndRetry(gid) {
         {id: '', jsonrpc: 2, method: 'aria2.getOption', params: [aria2RPC.jsonrpc['token'], gid]},
         {id: '', jsonrpc: 2, method: 'aria2.removeDownloadResult', params: [aria2RPC.jsonrpc['token'], gid]}
     ], (files, options) => {
-        aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [aria2RPC.jsonrpc['token'], files[0].uris.map(uri => uri.uri), options]},
+        aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [aria2RPC.jsonrpc['token'], files[0].uris.map(({uri}) => uri), options]},
         result => document.getElementById(gid).remove());
     });
 }
