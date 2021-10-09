@@ -68,7 +68,7 @@ function printTaskDetails(result, index, queue) {
     var task = document.getElementById(result.gid) ?? appendTaskDetails(result);
     if (task.status !== result.status) {
         queue.insertBefore(task, queue.childNodes[index]);
-        task.status = result.status;
+        task.setAttribute('status', result.status);
     }
     task.querySelector('#name').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path ? result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) : result.files[0].uris[0] ? result.files[0].uris[0].uri : result.gid;
     task.querySelector('#error').innerText = result.errorMessage ?? '';
@@ -78,7 +78,6 @@ function printTaskDetails(result, index, queue) {
     task.querySelector('#connect').innerText = result.bittorrent ? result.numSeeders + ' (' + result.connections + ')' : result.connections;
     task.querySelector('#download').innerText = bytesToFileSize(result.downloadSpeed) + '/s';
     task.querySelector('#upload').innerText = bytesToFileSize(result.uploadSpeed) + '/s';
-    task.querySelector('#fancybar').className = result.status + 'Box';
     task.querySelector('#ratio').innerText = task.querySelector('#ratio').style.width = ((result.completedLength / result.totalLength * 10000 | 0) / 100) + '%';
     task.querySelector('#ratio').className = result.status;
     task.querySelector('#retry_btn').style.display = !result.bittorrent && ['error', 'removed'].includes(result.status) ? 'inline-block' : 'none';
@@ -88,10 +87,10 @@ function appendTaskDetails(result) {
     var task = document.querySelector('#template').cloneNode(true);
     task.id = result.gid;
     task.querySelector('#upload').parentNode.style.display = result.bittorrent ? 'inline-block' : 'none';
-    task.querySelector('#remove_btn').addEventListener('click', (event) => removeTaskFromQueue(result.gid, task.status));
+    task.querySelector('#remove_btn').addEventListener('click', (event) => removeTaskFromQueue(result.gid, task.getAttribute('status')));
     task.querySelector('#invest_btn').addEventListener('click', (event) => openTaskMgrWindow(result.gid, result.bittorrent ? 'bt' : 'http'));
     task.querySelector('#retry_btn').addEventListener('click', (event) => removeTaskAndRetry(result.gid));
-    task.querySelector('#fancybar').addEventListener('click', (event) => pauseOrUnpauseTask(result.gid, task.status));
+    task.querySelector('#fancybar').addEventListener('click', (event) => pauseOrUnpauseTask(result.gid, task.getAttribute('status')));
     return task;
 }
 
@@ -117,19 +116,11 @@ function calcEstimatedTime(task, number) {
     }
 }
 
-function aria2TaskRequest(method, gid, purge) {
-    aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], gid]}, 
-    result => purge ? document.getElementById(gid).remove() : result);
-}
-
 function removeTaskFromQueue(gid, status) {
     var purge = ['complete', 'error', 'paused', 'removed'].includes(status) ? true : false;
-    if (['active', 'waiting', 'paused'].includes(status)) {
-        aria2TaskRequest('aria2.forceRemove', gid, purge);
-    }
-    else if (['complete', 'error', 'removed'].includes(status)) {
-        aria2TaskRequest('aria2.removeDownloadResult', gid, purge);
-    }
+    var method = ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
+    aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], gid]},
+    resule => purge ? document.getElementById(gid).remove() : document.getElementById(gid).setAttribute('status', 'removed'), error => console.log(error));
 }
 
 function openTaskMgrWindow(gid, type) {
@@ -148,11 +139,8 @@ function removeTaskAndRetry(gid) {
 }
 
 function pauseOrUnpauseTask(gid, status) {
-    if (['active', 'waiting'].includes(status)) {
-        aria2TaskRequest('aria2.pause', gid);
-    }
-    else if (status === 'paused') {
-        aria2TaskRequest('aria2.unpause', gid);
-        method = 'aria2.unpause';
+    var method = ['active', 'waiting'].includes(status) ? 'aria2.pause' : status === 'paused' ? 'aria2.unpause' : null;
+    if (method) {
+        aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], gid]});
     }
 }

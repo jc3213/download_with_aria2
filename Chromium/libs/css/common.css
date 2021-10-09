@@ -46,3 +46,27 @@ body {
 #template {
     display: none;
 }
+
+.active {
+    background-color: #44c;
+}
+
+.waiting, .paused {
+    background-color: #cc4;
+}
+
+.complete {
+    background-color: #4c4;
+}
+
+.error {
+    background-color: #c44;
+}
+
+.removed {
+    background-color: #c4c;
+}
+
+.active, .waiting, .paused, .error, .complete, .removed {
+    color: #fff;
+}
