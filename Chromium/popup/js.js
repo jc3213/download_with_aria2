@@ -118,7 +118,8 @@ function calcEstimatedTime(task, number) {
 
 function removeTaskFromQueue(gid, status) {
     aria2RPCRequest({id: '', jsonrpc: 2, method: ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult', params: [aria2RPC.jsonrpc['token'], gid]},
-    resule => ['complete', 'error', 'paused', 'removed'].includes(status) ? document.getElementById(gid).remove() : document.getElementById(gid).setAttribute('status', 'removed'));
+    result => ['complete', 'error', 'paused', 'removed'].includes(status) ? document.getElementById(gid).remove() : document.getElementById(gid).setAttribute('status', 'removed'),
+    error => document.getElementById(gid).remove());
 }
 
 function openTaskMgrWindow(gid, type) {
