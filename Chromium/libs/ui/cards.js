@@ -10,9 +10,7 @@ cards.forEach(card => {
         if (event.target.tagName === 'TEXTAREA') {
             return;
         }
-        cardNext = event.deltaY > 0 && card.scrollHeight - card.scrollTop === card.clientHeight && cardCurrent !== cardLimit ?
-            cardCurrent + 1 : event.deltaY < 0 && card.scrollTop === 0 && cardCurrent !== 0 ? cardCurrent - 1 : cardCurrent;
-        switchCardView();
+        switchCardView(event.deltaY > 0 && card.scrollHeight - card.scrollTop === card.clientHeight, event.deltaY < 0 && card.scrollTop === 0);
     }, {passive: true});
 });
 
@@ -20,12 +18,11 @@ document.addEventListener('keydown', (event) => {
     if (event.target.tagName === 'TEXTAREA') {
         return;
     }
-    cardNext = event.key === 'PageDown' && cardCurrent !== cardLimit ? cardCurrent + 1 :
-        event.key === 'PageUp' && cardCurrent !== 0 ? cardCurrent - 1 : cardCurrent;
-    switchCardView();
+    switchCardView(event.key === 'PageDown', event.key === 'PageUp');
 });
 
-function switchCardView() {
+function switchCardView(next, previous) {
+    cardNext = next && cardCurrent !== cardLimit ? cardCurrent + 1 : previous && cardCurrent !== 0 ? cardCurrent - 1 : cardCurrent;
     cards[cardCurrent].style.display = 'none';
     cards[cardNext].style.display = 'block';
     cardCurrent = cardNext;
