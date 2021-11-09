@@ -36,7 +36,7 @@ document.querySelector('#purdge_btn').addEventListener('click', (event) => {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.purgeDownloadResult', params: [aria2RPC.jsonrpc['token']]},
     result => {
         document.querySelector('[panel="stopped"]').innerHTML = '';
-        document.querySelectorAll('.queue [status]').forEach(task => ['complete', 'error', 'paused', 'removed'].includes(task.getAttribute('status')) ? task.remove() : null);
+        document.querySelectorAll('.queue [status]').forEach(task => ['complete', 'error', 'removed'].includes(task.getAttribute('status')) ? task.remove() : null);
     });
 });
 
