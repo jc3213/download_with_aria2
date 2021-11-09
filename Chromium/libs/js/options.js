@@ -12,9 +12,9 @@ function printFeedButton() {
 
 function parseValueToOption(field, type, options) {
     var name = field.getAttribute(type);
-    if (field.hasAttribute('calc')) {
-        var calc = bytesToFileSize(options[name]);
-        field.value = calc.slice(0, calc.indexOf(' ')) + calc.slice(calc.indexOf(' ') + 1, -1);
+    if (field.hasAttribute('size')) {
+        var size = bytesToFileSize(options[name]);
+        field.value = size.slice(0, size.indexOf(' ')) + size.slice(size.indexOf(' ') + 1, -1);
     }
     else {
         field.value = options[name] ?? '';
