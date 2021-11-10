@@ -1,11 +1,11 @@
 document.querySelectorAll('[tab]').forEach(tab => {
     var active = tab.getAttribute('tab');
     tab.addEventListener('click', (event) => {
-        document.querySelectorAll('[panel]').forEach(panel => {
-            var id = panel.getAttribute('panel');
-            tab.classList.contains('checked') ? panel.style.display = 'block' :
-                id === active ? panel.style.display = 'block' :
-                panel.style.display = document.querySelector('[tab="' + id + '"]').classList.remove('checked') ?? 'none';
+        document.querySelectorAll('[queue]').forEach(queue => {
+            var id = queue.getAttribute('queue');
+            tab.classList.contains('checked') ? queue.style.display = 'block' :
+                id === active ? queue.style.display = 'block' :
+                queue.style.display = document.querySelector('[tab="' + id + '"]').classList.remove('checked') ?? 'none';
         });
         tab.classList.toggle('checked');
     });
@@ -23,7 +23,7 @@ document.querySelectorAll('[module]').forEach(module => {
 document.querySelector('#purdge_btn').addEventListener('click', (event) => {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.purgeDownloadResult', params: [aria2RPC.jsonrpc['token']]},
     result => {
-        document.querySelector('[panel="stopped"]').innerHTML = '';
+        document.querySelector('[queue="stopped"]').innerHTML = '';
         document.querySelectorAll('.queue [status]').forEach(task => ['complete', 'error', 'removed'].includes(task.getAttribute('status')) ? task.remove() : null);
     });
 });
@@ -42,16 +42,16 @@ function aria2RPCClient() {
         document.querySelector('#upload').innerText = bytesToFileSize(global.uploadSpeed) + '/s';
         document.querySelector('#menus').style.display = 'block';
         document.querySelector('#caution').style.display = 'none';
-        active.forEach((active, index) => printTaskDetails(active, index, document.querySelector('[panel="active"]')));
-        waiting.forEach((waiting, index) => printTaskDetails(waiting, index, document.querySelector('[panel="waiting"]')));
-        stopped.forEach((stopped, index) => printTaskDetails(stopped, index, document.querySelector('[panel="stopped"]')));
+        active.forEach((active, index) => printTaskDetails(active, index, document.querySelector('[queue="active"]')));
+        waiting.forEach((waiting, index) => printTaskDetails(waiting, index, document.querySelector('[queue="waiting"]')));
+        stopped.forEach((stopped, index) => printTaskDetails(stopped, index, document.querySelector('[queue="stopped"]')));
     }, error => {
         document.querySelector('#menus').style.display = 'none';
         document.querySelector('#caution').innerText = error;
         document.querySelector('#caution').style.display = 'block';
-        document.querySelector('[panel="active"]').innerHTML = '';
-        document.querySelector('[panel="waiting"]').innerHTML = '';
-        document.querySelector('[panel="stopped"]').innerHTML = '';
+        document.querySelector('[queue="active"]').innerHTML = '';
+        document.querySelector('[queue="waiting"]').innerHTML = '';
+        document.querySelector('[queue="stopped"]').innerHTML = '';
     }, true);
 }
 
@@ -78,6 +78,7 @@ function appendTaskDetails(result) {
     var task = document.querySelector('#template').cloneNode(true);
     var gid = result.gid;
     task.id = gid;
+    task.removeAttribute('template');
     task.querySelector('#upload').parentNode.style.display = result.bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', (event) => {
         var status = task.getAttribute('status');

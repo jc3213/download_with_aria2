@@ -5,9 +5,6 @@ document.querySelectorAll('[tab]').forEach((tab, index) => {
         document.querySelector('[panel="' + name + '"]').style.display = 'block';
         activeTab = name;
     }
-    else {
-        document.querySelector('[panel="' + name + '"]').style.display = 'none';
-    }
     tab.addEventListener('click', (event) => {
         if (!tab.classList.contains('checked')) {
             document.querySelector('[tab="' + name + '"]').classList.add('checked');

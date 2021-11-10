@@ -38,13 +38,13 @@ body {
     filter: opacity(30%);
 }
 
+[panel], #template {
+    display: none;
+}
+
 .checked {
     padding: 2px 4px;
     border: 2px inset #c48;
-}
-
-#template {
-    display: none;
 }
 
 .active {
