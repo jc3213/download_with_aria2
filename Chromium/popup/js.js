@@ -78,7 +78,6 @@ function appendTaskDetails(result) {
     var task = document.querySelector('#template').cloneNode(true);
     var gid = result.gid;
     task.id = gid;
-    task.removeAttribute('template');
     task.querySelector('#upload').parentNode.style.display = result.bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', (event) => {
         var status = task.getAttribute('status');
