@@ -57,8 +57,7 @@ function aria2RPCClient() {
 
 function printTaskDetails(result, index, queue) {
     var task = document.getElementById(result.gid) ?? appendTaskDetails(result);
-    var status = task.getAttribute('status');
-    if (status !== result.status) {
+    if (task.getAttribute('status') !== result.status) {
         queue.insertBefore(task, queue.childNodes[index]);
         task.setAttribute('status', result.status);
     }
