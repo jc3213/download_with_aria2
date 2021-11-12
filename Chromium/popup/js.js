@@ -61,7 +61,7 @@ function printTaskDetails(result, index, queue) {
         queue.insertBefore(task, queue.childNodes[index]);
         task.setAttribute('status', result.status);
     }
-    if (queue.getAttribute('queue') === 'stopped' && result.downloadSpeed === 0 && result.uploadSpeed === 0 && result.connections === 0) {
+    if (queue.getAttribute('queue') === 'stopped' && result.connections === 0) {
         return;
     }
     task.querySelector('#name').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path ? result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) : result.files[0].uris[0] ? result.files[0].uris[0].uri : result.gid;
