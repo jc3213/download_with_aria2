@@ -57,9 +57,13 @@ function aria2RPCClient() {
 
 function printTaskDetails(result, index, queue) {
     var task = document.getElementById(result.gid) ?? appendTaskDetails(result);
-    if (task.status !== result.status) {
+    var status = task.getAttribute('status') ?? 'unknown';
+    if (!queue.getAttribute('status').includes(status)) {
         queue.insertBefore(task, queue.childNodes[index]);
         task.setAttribute('status', result.status);
+    }
+    if (status === 'complete' && result.totalLength === result.completedLength) {
+        return;
     }
     task.querySelector('#name').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path ? result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) : result.files[0].uris[0] ? result.files[0].uris[0].uri : result.gid;
     task.querySelector('#error').innerText = result.errorMessage ?? '';
