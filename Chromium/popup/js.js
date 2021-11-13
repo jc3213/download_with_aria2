@@ -40,8 +40,8 @@ function aria2RPCClient() {
         {id: '', jsonrpc: 2, method: 'aria2.tellWaiting', params: [aria2RPC.jsonrpc['token'], 0, 999]},
         {id: '', jsonrpc: 2, method: 'aria2.tellStopped', params: [aria2RPC.jsonrpc['token'], 0, 999]}
     ], (global, active, waiting, stopped) => {
-        if (runState !== 'active') {
-            runState = 'active'
+        if (runState !== 'ok') {
+            runState = 'ok';
             document.querySelector('#menus').style.display = 'block';
             document.querySelector('#caution').style.display = 'none';
         }
