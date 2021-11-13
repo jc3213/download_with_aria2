@@ -1,6 +1,7 @@
 var activeQueue = document.querySelector('[queue="active"]');
 var waitingQueue = document.querySelector('[queue="waiting"]');
 var stoppedQueue = document.querySelector('[queue="stopped"]');
+var runState;
 
 document.querySelectorAll('[tab]').forEach(tab => {
     var active = tab.getAttribute('tab');
@@ -39,23 +40,29 @@ function aria2RPCClient() {
         {id: '', jsonrpc: 2, method: 'aria2.tellWaiting', params: [aria2RPC.jsonrpc['token'], 0, 999]},
         {id: '', jsonrpc: 2, method: 'aria2.tellStopped', params: [aria2RPC.jsonrpc['token'], 0, 999]}
     ], (global, active, waiting, stopped) => {
+        if (runState !== 'active') {
+            runState = 'active'
+            document.querySelector('#menus').style.display = 'block';
+            document.querySelector('#caution').style.display = 'none';
+        }
         document.querySelector('#active').innerText = global.numActive;
         document.querySelector('#waiting').innerText = global.numWaiting;
         document.querySelector('#stopped').innerText = global.numStopped;
         document.querySelector('#download').innerText = bytesToFileSize(global.downloadSpeed) + '/s';
         document.querySelector('#upload').innerText = bytesToFileSize(global.uploadSpeed) + '/s';
-        document.querySelector('#menus').style.display = 'block';
-        document.querySelector('#caution').style.display = 'none';
         active.forEach((active, index) => printTaskDetails(active, index, activeQueue));
         waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue));
         stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue));
     }, error => {
-        document.querySelector('#menus').style.display = 'none';
-        document.querySelector('#caution').innerText = error;
-        document.querySelector('#caution').style.display = 'block';
-        activeQueue.innerHTML = '';
-        waitingQueue.innerHTML = '';
-        stoppedQueue.innerHTML = '';
+        if (runState !== 'error') {
+            runState = 'error';
+            document.querySelector('#caution').innerText = error;
+            document.querySelector('#caution').style.display = 'block';
+            document.querySelector('#menus').style.display = 'none';
+            activeQueue.innerHTML = '';
+            waitingQueue.innerHTML = '';
+            stoppedQueue.innerHTML = '';
+        }
     }, true);
 }
 
