@@ -1,3 +1,7 @@
+var activeQueue = document.querySelector('[queue="active"]');
+var waitingQueue = document.querySelector('[queue="waiting"]');
+var stoppedQueue = document.querySelector('[queue="stopped"]');
+
 document.querySelectorAll('[tab]').forEach(tab => {
     var active = tab.getAttribute('tab');
     tab.addEventListener('click', (event) => {
@@ -23,7 +27,7 @@ document.querySelectorAll('[module]').forEach(module => {
 document.querySelector('#purdge_btn').addEventListener('click', (event) => {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.purgeDownloadResult', params: [aria2RPC.jsonrpc['token']]},
     result => {
-        document.querySelector('[queue="stopped"]').innerHTML = '';
+        stoppedQueue.innerHTML = '';
         document.querySelectorAll('.queue [status]').forEach(task => ['complete', 'error', 'removed'].includes(task.getAttribute('status')) ? task.remove() : null);
     });
 });
@@ -42,16 +46,16 @@ function aria2RPCClient() {
         document.querySelector('#upload').innerText = bytesToFileSize(global.uploadSpeed) + '/s';
         document.querySelector('#menus').style.display = 'block';
         document.querySelector('#caution').style.display = 'none';
-        active.forEach((active, index) => printTaskDetails(active, index, document.querySelector('[queue="active"]')));
-        waiting.forEach((waiting, index) => printTaskDetails(waiting, index, document.querySelector('[queue="waiting"]')));
-        stopped.forEach((stopped, index) => printTaskDetails(stopped, index, document.querySelector('[queue="stopped"]')));
+        active.forEach((active, index) => printTaskDetails(active, index, activeQueue));
+        waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue));
+        stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue));
     }, error => {
         document.querySelector('#menus').style.display = 'none';
         document.querySelector('#caution').innerText = error;
         document.querySelector('#caution').style.display = 'block';
-        document.querySelector('[queue="active"]').innerHTML = '';
-        document.querySelector('[queue="waiting"]').innerHTML = '';
-        document.querySelector('[queue="stopped"]').innerHTML = '';
+        activeQueue.innerHTML = '';
+        waitingQueue.innerHTML = '';
+        stoppedQueue.innerHTML = '';
     }, true);
 }
 
