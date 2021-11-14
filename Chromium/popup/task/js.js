@@ -23,7 +23,7 @@ function aria2RPCClient() {
         if (type === 'http') {
             result.files[0].uris.forEach(uri => printTaskUris(uri, document.querySelector('#uris')));
         }
-    }, null, true);
+    }, error => frameElement.remove(), true);
 }
 
 function printTaskUris(uri, table) {
