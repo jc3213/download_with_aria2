@@ -43,6 +43,14 @@
     padding: 1px;
 }
 
+#caution {
+    position: absolute;
+    top: 4px;
+    width: 420px;
+    padding: 5px;
+    display: none;
+}
+
 #error {
     color: #f00;
     font-size: 11px;
