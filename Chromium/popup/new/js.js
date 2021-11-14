@@ -31,7 +31,7 @@ function newTaskOptions() {
 }
 
 function removeNewTaskWindow() {
-    parent.document.querySelector('[module="' + frameElement.id + '"]').classList.remove('checked');
+    parent.document.querySelector('[module="newTask"]').classList.remove('checked');
     frameElement.style.display = 'none';
     setTimeout(() => frameElement.remove(), 500);
 }
