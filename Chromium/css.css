@@ -1,0 +1,89 @@
+[highlight] {
+    padding: 3px 5px;
+}
+
+[info]:nth-child(2n) {
+    margin-right: 10px;
+}
+
+.queue {
+    height: 410px;
+    overflow-y: auto;
+}
+
+.session {
+    border: 1px outset #CCC;
+    padding: 3px;
+    margin-bottom: 5px;
+}
+
+.details {
+    width: calc(100% - 25px);
+}
+
+.details, .menu, .result * {
+    display: inline-block;
+}
+
+.result > * {
+    width: 32%;
+}
+
+.result > * > * {
+    margin-left: 4px;
+}
+
+.menu {
+    vertical-align: top;
+    width: 20px;
+}
+
+.menu [button] {
+    font-size: 12px;
+    padding: 1px;
+}
+
+#caution {
+    position: absolute;
+    top: 4px;
+    width: 420px;
+    padding: 5px;
+    display: none;
+}
+
+#error {
+    color: #f00;
+    font-size: 11px;
+}
+
+#estimate > * {
+    margin-left: -4px;
+}
+
+#fancybar {
+    text-align: center;
+}
+
+#fancybar:active {
+    filter: opacity(30%);
+}
+
+[status="active"] #fancybar {
+    background-color: #4cc;
+}
+
+[status="waiting"] #fancybar {
+    background-color: #488;
+}
+
+[status="paused"] #fancybar {
+    background-color: #888;
+}
+
+[status="removed"] #fancybar {
+    background-color: #844;
+}
+
+[status="error"] #fancybar {
+    background-color: #400;
+}
