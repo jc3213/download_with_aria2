@@ -54,15 +54,13 @@ function aria2RPCClient() {
         waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue));
         stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue));
     }, error => {
-        if (runState !== 'error') {
-            runState = 'error';
-            document.querySelector('#caution').innerText = error;
-            document.querySelector('#caution').style.display = 'block';
-            document.querySelector('#menus').style.display = 'none';
-            activeQueue.innerHTML = '';
-            waitingQueue.innerHTML = '';
-            stoppedQueue.innerHTML = '';
-        }
+        runState = 'error';
+        document.querySelector('#caution').innerText = error;
+        document.querySelector('#caution').style.display = 'block';
+        document.querySelector('#menus').style.display = 'none';
+        activeQueue.innerHTML = '';
+        waitingQueue.innerHTML = '';
+        stoppedQueue.innerHTML = '';
     }, true);
 }
 
