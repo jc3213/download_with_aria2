@@ -1,7 +1,6 @@
 var activeQueue = document.querySelector('[queue="active"]');
 var waitingQueue = document.querySelector('[queue="waiting"]');
 var stoppedQueue = document.querySelector('[queue="stopped"]');
-var caution = document.querySelector('#caution');
 
 document.querySelectorAll('[tab]').forEach(tab => {
     var active = tab.getAttribute('tab');
@@ -40,38 +39,39 @@ function aria2RPCClient() {
         {id: '', jsonrpc: 2, method: 'aria2.tellWaiting', params: [aria2RPC.jsonrpc['token'], 0, 999]},
         {id: '', jsonrpc: 2, method: 'aria2.tellStopped', params: [aria2RPC.jsonrpc['token'], 0, 999]}
     ], (global, active, waiting, stopped) => {
-        caution.style.display = 'none';
+        document.querySelector('#caution').style.display = 'none';
+        document.querySelector('#menus').style.display = 'block';
         document.querySelector('#active').innerText = global.numActive;
         document.querySelector('#waiting').innerText = global.numWaiting;
         document.querySelector('#stopped').innerText = global.numStopped;
         document.querySelector('#download').innerText = bytesToFileSize(global.downloadSpeed) + '/s';
         document.querySelector('#upload').innerText = bytesToFileSize(global.uploadSpeed) + '/s';
         active.forEach((active, index) => printTaskDetails(active, index, activeQueue));
-        waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue));
-        stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue));
+        waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue, true));
+        stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue, true));
     }, error => {
-        caution.innerText = error;
-        caution.style.display = 'block';
+        document.querySelector('#menus').style.display = 'none';
+        document.querySelector('#caution').innerText = error;
+        document.querySelector('#caution').style.display = 'block';
         activeQueue.innerHTML = '';
         waitingQueue.innerHTML = '';
         stoppedQueue.innerHTML = '';
     }, true);
 }
 
-function printTaskDetails(result, index, queue) {
+function printTaskDetails(result, index, queue, throttle) {
     var task = document.getElementById(result.gid) ?? appendTaskDetails(result);
     if (task.parentNode !== queue) {
         queue.insertBefore(task, queue.childNodes[index]);
         task.setAttribute('status', result.status);
     }
-    if (queue.getAttribute('queue') !== 'active' && result.connections === 0) {
+    if (throttle && result.connections === 0) {
         return;
     }
     task.querySelector('#name').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path ? result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) : result.files[0].uris[0] ? result.files[0].uris[0].uri : result.gid;
     task.querySelector('#error').innerText = result.errorMessage ?? '';
     task.querySelector('#local').innerText = bytesToFileSize(result.completedLength);
     calcEstimatedTime(task, (result.totalLength - result.completedLength) / result.downloadSpeed);
-    task.querySelector('#remote').innerText = bytesToFileSize(result.totalLength);
     task.querySelector('#connect').innerText = result.bittorrent ? result.numSeeders + ' (' + result.connections + ')' : result.connections;
     task.querySelector('#download').innerText = bytesToFileSize(result.downloadSpeed) + '/s';
     task.querySelector('#upload').innerText = bytesToFileSize(result.uploadSpeed) + '/s';
@@ -84,6 +84,7 @@ function appendTaskDetails(result) {
     var task = document.querySelector('#template').cloneNode(true);
     var gid = result.gid;
     task.id = gid;
+    task.querySelector('#remote').innerText = bytesToFileSize(result.totalLength);
     task.querySelector('#upload').parentNode.style.display = result.bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', (event) => {
         var status = task.getAttribute('status');
