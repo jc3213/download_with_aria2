@@ -2,11 +2,9 @@ var gid = location.hash.slice(1);
 var type = location.search.slice(1);
 
 function aria2RPCClient() {
-    printFeedButton();
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getOption', params: [aria2RPC.jsonrpc['token'], gid]},
-    options => {
-        document.querySelectorAll('[task]').forEach(task => parseValueToOption(task, 'task', options));
-    });
+    options => document.querySelectorAll('[task]').forEach(task => parseValueToOption(task, 'task', options)));
+    printFeedButton();
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.tellStatus', params: [aria2RPC.jsonrpc['token'], gid]},
     result => {
         var disabled = ['complete', 'error'].includes(result.status);
