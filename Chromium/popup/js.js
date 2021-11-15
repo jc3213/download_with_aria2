@@ -33,14 +33,14 @@ document.querySelector('#purdge_btn').addEventListener('click', (event) => {
 });
 
 function aria2RPCClient() {
+    document.querySelector('#caution').style.display = 'none';
+    document.querySelector('#menus').style.display = 'block';
     aria2RPCRequest([
         {id: '', jsonrpc: 2, method: 'aria2.getGlobalStat', params: [aria2RPC.jsonrpc['token']]},
         {id: '', jsonrpc: 2, method: 'aria2.tellActive', params: [aria2RPC.jsonrpc['token']]},
         {id: '', jsonrpc: 2, method: 'aria2.tellWaiting', params: [aria2RPC.jsonrpc['token'], 0, 999]},
         {id: '', jsonrpc: 2, method: 'aria2.tellStopped', params: [aria2RPC.jsonrpc['token'], 0, 999]}
     ], (global, active, waiting, stopped) => {
-        document.querySelector('#caution').style.display = 'none';
-        document.querySelector('#menus').style.display = 'block';
         document.querySelector('#active').innerText = global.numActive;
         document.querySelector('#waiting').innerText = global.numWaiting;
         document.querySelector('#stopped').innerText = global.numStopped;
@@ -53,6 +53,7 @@ function aria2RPCClient() {
         document.querySelector('#menus').style.display = 'none';
         document.querySelector('#caution').innerText = error;
         document.querySelector('#caution').style.display = 'block';
+        document.querySelectorAll('iframes').forEach(sub => sub.id !== 'options' ? sub.remove() : null);
         activeQueue.innerHTML = '';
         waitingQueue.innerHTML = '';
         stoppedQueue.innerHTML = '';
