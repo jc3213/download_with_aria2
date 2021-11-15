@@ -2,8 +2,11 @@ var gid = location.hash.slice(1);
 var type = location.search.slice(1);
 
 function aria2RPCClient() {
-    printTaskOption(gid);
     printFeedButton();
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getOption', params: [aria2RPC.jsonrpc['token'], gid]},
+    options => {
+        document.querySelectorAll('[task]').forEach(task => parseValueToOption(task, 'task', options));
+    });
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.tellStatus', params: [aria2RPC.jsonrpc['token'], gid]},
     result => {
         var disabled = ['complete', 'error'].includes(result.status);
@@ -23,7 +26,7 @@ function aria2RPCClient() {
         if (type === 'http') {
             result.files[0].uris.forEach(uri => printTaskUris(uri, document.querySelector('#uris')));
         }
-    }, error => frameElement.remove(), true);
+    }, null, true);
 }
 
 function printTaskUris(uri, table) {
@@ -119,6 +122,11 @@ document.querySelector('#files').addEventListener('click', (event) => {
         changeTaskOption(gid, 'select-file', checked.slice(1));
     }
 });
+
+function changeTaskOption(gid, name, value, options = {}) {
+    options[name] = value;
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, options]});
+}
 
 function changeTaskUri({add, remove}) {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeUri', params: [aria2RPC.jsonrpc['token'], gid, 1, remove ? [remove] : [], add ? [add] : []]});

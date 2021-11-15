@@ -5,7 +5,7 @@ document.querySelector('#back_btn').addEventListener('click', (event) => {
 });
 
 document.addEventListener('change', (event) => {
-    changeGlobalOption(event.target.getAttribute('aria2'), event.target.value);
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeGlobalOption', params: [aria2RPC.jsonrpc['token'], {[event.target.getAttribute('aria2')]: event.target.value}]});
 });
 
 function aria2RPCClient() {

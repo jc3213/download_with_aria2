@@ -53,7 +53,7 @@ function aria2RPCClient() {
         document.querySelector('#menus').style.display = 'none';
         document.querySelector('#caution').innerText = error;
         document.querySelector('#caution').style.display = 'block';
-        document.querySelectorAll('iframes').forEach(sub => sub.id !== 'options' ? sub.remove() : null);
+        document.querySelectorAll('iframes').forEach(iframe => iframe.id !== 'options' ? iframe.remove() : null);
         activeQueue.innerHTML = '';
         waitingQueue.innerHTML = '';
         stoppedQueue.innerHTML = '';
