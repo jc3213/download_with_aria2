@@ -123,9 +123,8 @@ document.querySelector('#files').addEventListener('click', (event) => {
     }
 });
 
-function changeTaskOption(gid, name, value, options = {}) {
-    options[name] = value;
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, options]});
+function changeTaskOption(gid, name, value) {
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, {[name]: value}]});
 }
 
 function changeTaskUri({add, remove}) {
