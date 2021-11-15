@@ -98,12 +98,7 @@ document.querySelector('[feed="all-proxy"]').addEventListener('click', (event) =
 });
 
 document.querySelector('#uris').addEventListener('click', (event) => {
-    if (event.ctrlKey) {
-        changeTaskUri({remove: event.target.innerText});
-    }
-    else {
-        navigator.clipboard.writeText(event.target.innerText);
-    }
+    event.ctrlKey ? changeTaskUri({remove: event.target.innerText}) : navigator.clipboard.writeText(event.target.innerText);
 });
 
 document.querySelector('#source > span').addEventListener('click', (event) => {
