@@ -27,14 +27,19 @@ document.querySelectorAll('[module]').forEach(module => {
 document.querySelector('#purdge_btn').addEventListener('click', (event) => {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.purgeDownloadResult', params: [aria2RPC.jsonrpc['token']]},
     result => {
-        stoppedQueue.innerHTML = '';
-        document.querySelectorAll('.queue [status]').forEach(task => ['complete', 'error', 'removed'].includes(task.getAttribute('status')) ? task.remove() : null);
+        activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
+        clearTimeout(aria2KeepAlive);
+        printMainFrame();
     });
 });
 
 function aria2RPCClient() {
     document.querySelector('#caution').style.display = 'none';
     document.querySelector('#menus').style.display = 'block';
+    printMainFrame();
+}
+
+function printMainFrame() {
     aria2RPCRequest([
         {id: '', jsonrpc: 2, method: 'aria2.getGlobalStat', params: [aria2RPC.jsonrpc['token']]},
         {id: '', jsonrpc: 2, method: 'aria2.tellActive', params: [aria2RPC.jsonrpc['token']]},
@@ -54,9 +59,7 @@ function aria2RPCClient() {
         document.querySelector('#caution').innerText = error;
         document.querySelector('#caution').style.display = 'block';
         document.querySelectorAll('iframes').forEach(iframe => iframe.id !== 'options' ? iframe.remove() : null);
-        activeQueue.innerHTML = '';
-        waitingQueue.innerHTML = '';
-        stoppedQueue.innerHTML = '';
+        activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
     }, true);
 }
 
@@ -106,10 +109,10 @@ function appendTaskDetails(result) {
     });
     task.querySelector('#fancybar').addEventListener('click', (event) => {
         var status = task.getAttribute('status');
-        var access = ['active', 'waiting'].includes(status) ? {method: 'aria2.pause', status: 'paused'} : status === 'paused' ? {method: 'aria2.unpause', status: 'waiting'} : null;
-        if (access) {
-            aria2RPCRequest({id: '', jsonrpc: 2, method: access.method, params: [aria2RPC.jsonrpc['token'], gid]},
-            result => task.setAttribute('status', access.status));
+        var method = ['active', 'waiting'].includes(status) ? 'aria2.pause' : status === 'paused' ? 'aria2.unpause' : null;
+        if (method) {
+            aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], gid]},
+            result => task.setAttribute('status', method === 'aria2.pause' ? 'paused' : 'active'));
         }
     });
     return task;
