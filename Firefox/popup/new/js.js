@@ -3,7 +3,7 @@ function aria2RPCClient() {
     printFeedButton();
 }
 
-document.querySelector('#submit_btn').addEventListener('click', (event) => {
+document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']]};
     document.querySelectorAll('[aria2], [task]').forEach(field => {
         var name = field.getAttribute('aria2') ?? field.getAttribute('task');
