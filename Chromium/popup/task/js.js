@@ -61,7 +61,7 @@ function appendFileToTable(file, table) {
     return cell;
 }
 
-document.querySelector('#name[button]').addEventListener('click', (event) => {
+document.querySelector('#name[button]').addEventListener('click', event => {
     frameElement.remove();
 });
 
@@ -69,21 +69,21 @@ document.querySelectorAll('[http], [bt]').forEach(field => {
     field.style.display = field.hasAttribute(type) ? 'block' : 'none';
 });
 
-document.querySelector('[card].container').addEventListener('change', (event) => {
+document.querySelector('[card].container').addEventListener('change', event => {
     changeTaskOption(gid, event.target.getAttribute('task'), event.target.value);
 });
 
 document.querySelectorAll('[swap]').forEach(swap => {
     var name = swap.getAttribute('swap');
     var field = document.querySelector('[task="' + name + '"]');
-    swap.addEventListener('click', (event) => {
+    swap.addEventListener('click', event => {
         if (!field.disabled) {
             swap.style.display = 'none';
             field.parentNode.style.display = 'block';
             field.focus();
         }
     });
-    field.addEventListener('keydown', (event) => {
+    field.addEventListener('keydown', event => {
         if (event.keyCode === 13) {
             field.parentNode.style.display = 'none';
             swap.style.display = 'block';
@@ -91,20 +91,20 @@ document.querySelectorAll('[swap]').forEach(swap => {
     });
 });
 
-document.querySelector('[feed="all-proxy"]').addEventListener('click', (event) => {
+document.querySelector('[feed="all-proxy"]').addEventListener('click', event => {
     changeTaskOption(gid, 'all-proxy', aria2RPC.proxy['uri']);
 });
 
-document.querySelector('#uris').addEventListener('click', (event) => {
+document.querySelector('#uris').addEventListener('click', event => {
     event.ctrlKey ? changeTaskUri({remove: event.target.innerText}) : navigator.clipboard.writeText(event.target.innerText);
 });
 
-document.querySelector('#source > span').addEventListener('click', (event) => {
+document.querySelector('#source > span').addEventListener('click', event => {
     changeTaskUri({add: document.querySelector('#source > input').value});
     document.querySelector('#source > input').value = '';
 });
 
-document.querySelector('#files').addEventListener('click', (event) => {
+document.querySelector('#files').addEventListener('click', event => {
     if (event.target.className) {
         var checked = '';
         document.querySelectorAll('td:nth-child(1)').forEach(file => {

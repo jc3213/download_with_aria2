@@ -3,13 +3,13 @@ function aria2RPCClient() {
     printFeedButton();
 }
 
-document.querySelector('#submit_btn').addEventListener('click', (event) => {
+document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = newTaskOptions();
     document.querySelector('#entries').value.split('\n').forEach(url => downloadWithAria2(url, options));
     removeNewTaskWindow();
 });
 
-document.querySelector('#entries').addEventListener('drop', (event) => {
+document.querySelector('#entries').addEventListener('drop', event => {
     var file = event.dataTransfer.files[0];
     if (file.name.endsWith('metalink') || file.name.endsWith('meta4') || file.name.endsWith('torrent')) {
         fileReader(file, (blob, filename) => {
