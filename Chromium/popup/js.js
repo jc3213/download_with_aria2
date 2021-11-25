@@ -96,11 +96,7 @@ function appendTaskDetails(result) {
         result => ['complete', 'error', 'paused', 'removed'].includes(status) ? task.remove() : task.querySelector('#ratio').innerText === '100%' ? task.querySelector('#ratio').className = task.setAttribute('status', 'complete') ?? 'complete' : task.setAttribute('status', 'removed'),
         error => task.remove());
     });
-    task.querySelector('#invest_btn').addEventListener('click', event => {
-        openModuleWindow('taskMgr', 'task/index.html?' + (result.bittorrent ? 'bt' : 'http') + '#' + gid).then(iframe => {
-            console.log(iframe.contentWindow);
-        });
-    });
+    task.querySelector('#invest_btn').addEventListener('click', event => openModuleWindow('taskMgr', 'task/index.html?' + (result.bittorrent ? 'bt' : 'http') + '#' + gid));
     task.querySelector('#retry_btn').addEventListener('click', event => {
         aria2RPCRequest([
             {id: '', jsonrpc: 2, method: 'aria2.getFiles', params: [aria2RPC.jsonrpc['token'], gid]},
