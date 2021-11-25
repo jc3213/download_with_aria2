@@ -4,7 +4,7 @@ function printFeedButton() {
         var name = field.getAttribute('local');
         var root = field.getAttribute('root');
         root ? {[root]: {[name] : value}} = aria2RPC : {[name] : value} = aria2RPC;
-        field.addEventListener('click', (event) => {
+        field.addEventListener('click', event => {
             document.querySelector('[task="' + feed + '"]').value = value;
         });
     });
