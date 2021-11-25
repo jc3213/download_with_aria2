@@ -6,7 +6,7 @@ var wheelScroll = 0;
 
 cards.forEach(card => {
     card.style.display = card === cards[cardCurrent] ? 'block' : 'none';
-    card.addEventListener('wheel', (event) => {
+    card.addEventListener('wheel', event => {
         if (event.target.tagName === 'TEXTAREA') {
             return;
         }
