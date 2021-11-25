@@ -14,7 +14,7 @@ cards.forEach(card => {
     }, {passive: true});
 });
 
-document.addEventListener('keydown', (event) => {
+document.addEventListener('keydown', event => {
     if (event.target.tagName === 'TEXTAREA') {
         return;
     }
