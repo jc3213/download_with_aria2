@@ -13,12 +13,12 @@
 - Extract source code
 
 #### Windows
-- Download 7-zip standalone console `v21.03 beta` [Windows](https://www.7-zip.org/a/7z2103-extra.7z)
+- Download 7-zip standalone console `v21.06` [Windows](https://www.7-zip.org/a/7z2106-extra.7z)
 - Put `7za.exe` and `7za.dll` into the same folder with `Windows Auto Build.cmd`
 - Run `Windows Auto Build.cmd` and follow the instructions
 
 #### Linux
-- Download 7-zip standalone console `v21.03 beta` [Linux 64bit](https://www.7-zip.org/a/7z2103-linux-x64.tar.xz) | [Linux 32bit](https://www.7-zip.org/a/7z2103-linux-x86.tar.xz) | [Linux ARM](https://www.7-zip.org/a/7z2103-linux-arm64.tar.xz)
+- Download 7-zip standalone console `v21.06` [Linux 64bit](https://www.7-zip.org/a/7z2106-linux-x64.tar.xz) | [Linux 32bit](https://www.7-zip.org/a/7z2106-linux-x86.tar.xz) | [Linux ARM](https://www.7-zip.org/a/7z2106-linux-arm64.tar.xz)
 - Put `7zz` into the same folder with `Linux Auto Build.sh`
 - Need help to complete shell script
 
