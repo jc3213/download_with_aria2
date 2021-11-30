@@ -1,6 +1,4 @@
-browser.runtime.getPlatformInfo(platform => {
-    aria2Windows = platform.os === 'win';
-});
+browser.runtime.getPlatformInfo(platform => aria2Platform = platform.os);
 
 browser.contextMenus.create({
     title: browser.i18n.getMessage('extension_name'),
@@ -16,52 +14,46 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 
 browser.browserAction.setBadgeBackgroundColor({color: '#3cc'});
 
-browser.downloads.onCreated.addListener(item => {
+browser.downloads.onCreated.addListener(async item => {
     if (aria2RPC.capture['mode'] === '0' || item.url.startsWith('blob') || item.url.startsWith('data')) {
         return;
     }
 
-    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
-        var url = item.url;
-        var referer = item.referrer && item.referrer !== 'about:blank' ? item.referrer : tabs[0].url;
-        var domain = getDomainFromUrl(referer);
-        var filename = getFileNameFromUri(item.filename);
-        var folder = aria2RPC.folder['mode'] === '1' ? item.filename.slice(0, item.filename.indexOf(filename)) : aria2RPC.folder['mode'] === '2' ? aria2RPC.folder['uri'] : null;
-        var storeId = tabs[0].cookieStoreId;
+    var tabs = await browser.tabs.query({active: true, currentWindow: true});
+    var url = item.url;
+    var referer = item.referrer && item.referrer !== 'about:blank' ? item.referrer : tabs[0].url;
+    var domain = getDomainFromUrl(referer);
+    var filename = getFileNameFromUri(item.filename);
+    var folder = aria2RPC.folder['mode'] === '1' ? item.filename.slice(0, item.filename.indexOf(filename)) : aria2RPC.folder['mode'] === '2' ? aria2RPC.folder['uri'] : null;
+    var storeId = tabs[0].cookieStoreId;
 
-        var captureCheck = captureDownload(domain, getFileExtension(filename), url);
-        captureCheck.constructor.name === 'Boolean' ? captureProcess(captureCheck) : captureCheck.then(captureProcess);
-
-        function captureProcess(result) {
-            if (result) {
-                browser.downloads.cancel(item.id).then(() => {
-                    browser.downloads.erase({id: item.id}).then(() => {
-                        startDownload({url, referer, domain, filename, folder, storeId});
-                    });
-                }).catch(error => showNotification('Download is already complete'));
-            }
-        }
-    });
+    if (await captureDownload(domain, getFileExtension(filename), url)) {
+        browser.downloads.cancel(item.id).then(() => {
+            browser.downloads.erase({id: item.id}).then(() => {
+                startDownload({url, referer, domain, filename, folder, storeId});
+            });
+        }).catch(error => showNotification('Download is already complete'));
+    }
 });
 
-function startDownload({url, referer, domain, filename, folder, storeId}, options = {}) {
-    browser.cookies.getAll({url, storeId}).then(cookies => {
-        options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['useragent']];
-        cookies.forEach(cookie => options['header'][0] += ' ' + cookie.name + '=' + cookie.value + ';');
-        if (folder) {
-            options['dir'] = folder;
-        }
-        if (filename) {
-            options['out'] = filename;
-        }
-        if (aria2RPC.proxy['resolve'].includes(domain)) {
-            options['all-proxy'] = aria2RPC.proxy['uri'];
-        }
-        downloadWithAria2(url, options);
-    });
+async function startDownload({url, referer, domain, filename, folder, storeId}, options = {}) {
+    var cookies = await browser.cookies.getAll({url, storeId});
+    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['useragent']];
+    cookies.forEach(cookie => options['header'][0] += ' ' + cookie.name + '=' + cookie.value + ';');
+    if (folder) {
+        options['dir'] = folder;
+    }
+    if (filename) {
+        options['out'] = filename;
+    }
+    if (aria2RPC.proxy['resolve'].includes(domain)) {
+        options['all-proxy'] = aria2RPC.proxy['uri'];
+    }
+console.log(options);
+    downloadWithAria2(url, options);
 }
 
-function captureDownload(domain, fileExt, url) {
+async function captureDownload(domain, fileExt, url) {
     if (aria2RPC.capture['reject'].includes(domain)) {
         return false;
     }
@@ -75,13 +67,12 @@ function captureDownload(domain, fileExt, url) {
         return true;
     }
 // Use Fetch to resolve fileSize untill Mozilla fixes downloadItem.fileSize
+// Some websites will not support this workaround due to their access policy
 // See https://bugzilla.mozilla.org/show_bug.cgi?id=1666137 for more details
-    return fetch(url, {method: 'HEAD'}).then(response => response.headers.get('content-length')).then(fileSize => {
-        if (aria2RPC.capture['fileSize'] > 0 && fileSize >= aria2RPC.capture['fileSize']) {
-            return true;
-        }
-        return false;
-    });
+    if (aria2RPC.capture['fileSize'] > 0 && await fetch(url, {method: 'HEAD'}).then(response => response.headers.get('content-length')) >= aria2RPC.capture['fileSize']) {
+        return true;
+    }
+    return false;
 }
 
 function getDomainFromUrl(url) {
@@ -99,7 +90,7 @@ function getDomainFromUrl(url) {
 }
 
 function getFileNameFromUri(uri) {
-    var index = aria2Windows ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
+    var index = aria2Platform === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
     return uri.slice(index + 1);
 }
 
