@@ -11,7 +11,7 @@ document.querySelector('#export').addEventListener('click', event => {
 document.querySelector('#import').addEventListener('click', event => document.querySelector('#options').click());
 
 document.querySelector('#options').addEventListener('change', event => {
-    fileReader(event.target.files[0], bin => chrome.storage.local.set(JSON.parse(atob(bin))));
+    fileReader(event.target.files[0], data => chrome.storage.local.set(JSON.parse(atob(data))));
     location.reload();
 });
 
