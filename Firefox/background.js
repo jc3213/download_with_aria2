@@ -109,6 +109,6 @@ function getFileExtension(filename) {
 
 function aria2RPCClient() {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getGlobalStat', params: [aria2RPC.jsonrpc['token']]},
-    global => chrome.browserAction.setBadgeText({text: global.numActive === '0' ? '' : global.numActive}),
-    showNotification, true);
+    global => browser.browserAction.setBadgeText({text: global.numActive === '0' ? '' : global.numActive}),
+    error => aria2Error = aria2Error ?? showNotification(error), true);
 }

@@ -28,18 +28,13 @@ document.querySelector('#purdge_btn').addEventListener('click', event => {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.purgeDownloadResult', params: [aria2RPC.jsonrpc['token']]},
     result => {
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
-        clearTimeout(aria2KeepAlive);
-        printMainFrame();
+        aria2RPCRefresh();
     });
 });
 
 function aria2RPCClient() {
     document.querySelector('#caution').style.display = 'none';
     document.querySelector('#menus').style.display = 'block';
-    printMainFrame();
-}
-
-function printMainFrame() {
     aria2RPCRequest([
         {id: '', jsonrpc: 2, method: 'aria2.getGlobalStat', params: [aria2RPC.jsonrpc['token']]},
         {id: '', jsonrpc: 2, method: 'aria2.tellActive', params: [aria2RPC.jsonrpc['token']]},

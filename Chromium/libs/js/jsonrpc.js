@@ -1,36 +1,26 @@
 var aria2RPC;
+var aria2Error;
 var aria2RPCClient;
 var aria2KeepAlive;
 
-function aria2RPCStartUp() {
-    if (typeof aria2RPCClient === 'function') {
-        aria2RPCClient();
-    }
-}
-
-chrome.storage.local.get(null, result => {
-    if ('jsonrpc' in result) {
-        aria2RPC = result;
-        aria2RPCStartUp();
-    }
-    else {
-        fetch('options.json').then(response => response.json()).then(json => {
-            aria2RPC = json;
-            aria2RPCStartUp();
-            chrome.storage.local.set(json);
-        });
-    }
+chrome.storage.local.get(null, async result => {
+    aria2RPC = 'jsonrpc' in result ? result : await fetch('/options.json').then(response => response.json());
+    aria2RPCClient();
 });
 
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         aria2RPC[key] = changes[key].newValue;
         if (key === 'jsonrpc') {
-            clearTimeout(aria2KeepAlive);
-            aria2RPCStartUp();
+            aria2RPCRefresh();
         }
     });
 });
+
+function aria2RPCRefresh() {
+    clearTimeout(aria2KeepAlive);
+    aria2RPCClient();
+}
 
 function aria2RPCRequest(request, resolve, reject, alive) {
     var requestJSON = Array.isArray(request) ? request : [request];
@@ -54,7 +44,6 @@ function aria2RPCRequest(request, resolve, reject, alive) {
     }).catch(error => {
         if (typeof reject === 'function') {
             reject(error.message);
-            clearTimeout(aria2KeepAlive);
         }
     });
 }
@@ -69,10 +58,6 @@ function showNotification(message = '') {
         type: 'basic',
         title: aria2RPC.jsonrpc['uri'],
         iconUrl: '/icons/icon48.png',
-        message: message
-    }, id => {
-        setTimeout(() => {
-            chrome.notifications.clear(id);
-        }, 5000);
+        message
     });
 }
