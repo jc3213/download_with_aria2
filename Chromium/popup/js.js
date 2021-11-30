@@ -50,10 +50,11 @@ function aria2RPCClient() {
         waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue, true));
         stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue, true));
     }, error => {
+        clearTimeout(aria2KeepAlive);
         document.querySelector('#menus').style.display = 'none';
         document.querySelector('#caution').innerText = error;
         document.querySelector('#caution').style.display = 'block';
-        document.querySelectorAll('iframes').forEach(iframe => iframe.id !== 'options' ? iframe.remove() : null);
+        document.querySelectorAll('iframes').forEach(iframe => if (iframe.id !== 'options') {iframe.remove()});
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
     }, true);
 }

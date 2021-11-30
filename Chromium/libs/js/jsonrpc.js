@@ -19,6 +19,7 @@ chrome.storage.onChanged.addListener(changes => {
 
 function aria2RPCRefresh() {
     clearTimeout(aria2KeepAlive);
+    aria2Error = 0;
     aria2RPCClient();
 }
 
@@ -34,9 +35,6 @@ function aria2RPCRequest(request, resolve, reject, alive) {
     }).then(responseJSON => {
         if (responseJSON[0].result && typeof resolve === 'function') {
             resolve(...responseJSON.map(({result}) => result));
-            if (alive) {
-                aria2KeepAlive = setTimeout(() => aria2RPCRequest(request, resolve, reject, alive), aria2RPC.jsonrpc['refresh']);
-            }
         }
         if (responseJSON[0].error) {
             throw responseJSON[0].error;
@@ -46,6 +44,9 @@ function aria2RPCRequest(request, resolve, reject, alive) {
             reject(error.message);
         }
     });
+    if (alive) {
+        aria2KeepAlive = setTimeout(() => aria2RPCRequest(request, resolve, reject, alive), aria2RPC.jsonrpc['refresh']);
+    }
 }
 
 function downloadWithAria2(url, options) {
