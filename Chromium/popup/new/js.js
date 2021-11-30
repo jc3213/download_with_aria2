@@ -10,15 +10,13 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#entries').addEventListener('drop', event => {
-    var file = event.dataTransfer.files[0];
-    if (file.name.endsWith('metalink') || file.name.endsWith('meta4') || file.name.endsWith('torrent')) {
-        fileReader(file, (blob, filename) => {
-            var params = [aria2RPC.jsonrpc['token'], blob.slice(blob.indexOf(',') + 1)];
-            var method = filename.endsWith('torrent') ? 'aria2.addTorrent' : params.push(newTaskOptions()) && 'aria2.addMetalink';
-            aria2RPCRequest({id: '', jsonrpc: 2, method, params}, result => showNotification(filename));
-            removeNewTaskWindow();
-        }, true);
-    }
+    [...event.dataTransfer.files].forEach(file => {
+        var method = file.name.endsWith('torrent') ? 'aria2.addTorrent' : file.name.endsWith('metalink') || file.name.endsWith('meta4') ? 'aria2.addMetalink' : null;
+        if (method) {
+            fileReader(file, bin => aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], bin]}, result => showNotification(file.name)));
+        }
+    });
+    removeNewTaskWindow();
 });
 
 function newTaskOptions() {

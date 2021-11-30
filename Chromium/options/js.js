@@ -8,12 +8,11 @@ document.querySelector('#export').addEventListener('click', event => {
     saver.click();
 });
 
-document.querySelector('#import').addEventListener('click', event => {
-    readLocalFile('.json', text => {
-        var json = JSON.parse(text);
-        chrome.storage.local.set(json);
-        location.reload();
-    });
+document.querySelector('#import').addEventListener('click', event => document.querySelector('#options').click());
+
+document.querySelector('#options').addEventListener('change', event => {
+    fileReader(event.target.files[0], bin => chrome.storage.local.set(JSON.parse(atob(bin))));
+    location.reload();
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
