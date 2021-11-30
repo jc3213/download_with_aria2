@@ -49,7 +49,6 @@ async function startDownload({url, referer, domain, filename, folder, storeId}, 
     if (aria2RPC.proxy['resolve'].includes(domain)) {
         options['all-proxy'] = aria2RPC.proxy['uri'];
     }
-console.log(options);
     downloadWithAria2(url, options);
 }
 
