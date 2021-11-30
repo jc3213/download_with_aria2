@@ -13,8 +13,8 @@ IF NOT DEFINED Code CLS && GOTO :Code
 :Version
 FOR /F "USEBACKQ SKIP=3 TOKENS=1,2 DELIMS=,: " %%I IN ("%~DP0%Code%\manifest.json") DO (IF %%~I EQU version SET Version=%%~J)
 :Build
-7za.exe a %Code%-%Version%.zip Chromium\*
-IF %Option% EQU 2 7za.exe u %Code%-%Version%.zip Firefox\*
+7za.exe a %Code%-%Version%.zip %~DP0Chromium\*
+IF %Option% EQU 2 7za.exe u %Code%-%Version%.zip %~DP0Firefox\*
 ECHO.
 ECHO.
 ECHO %Code% %Version% build completed, script will be terminated in 5 seconds...
