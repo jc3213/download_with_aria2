@@ -19,8 +19,8 @@ chrome.storage.onChanged.addListener(changes => {
 
 function aria2RPCRefresh() {
     clearTimeout(aria2KeepAlive);
-    aria2Error = 0;
     aria2RPCClient();
+    aria2Error = 0;
 }
 
 function aria2RPCRequest(request, resolve, reject, alive) {
