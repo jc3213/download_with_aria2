@@ -8,9 +8,7 @@ document.querySelector('#export').addEventListener('click', event => {
     saver.click();
 });
 
-document.querySelector('#import').addEventListener('click', event => document.querySelector('#options').click());
-
-document.querySelector('#options').addEventListener('change', event => {
+document.querySelector('#import').addEventListener('change', event => {
     fileReader(event.target.files[0], data => chrome.storage.local.set(JSON.parse(atob(data))));
     location.reload();
 });
