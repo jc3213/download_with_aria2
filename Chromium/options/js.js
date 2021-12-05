@@ -9,8 +9,10 @@ document.querySelector('#export').addEventListener('click', event => {
 });
 
 document.querySelector('#import').addEventListener('change', event => {
-    fileReader(event.target.files[0], data => chrome.storage.local.set(JSON.parse(atob(data))));
-    location.reload();
+    fileReader(event.target.files[0], data => {
+        chrome.storage.local.set(JSON.parse(atob(data)));
+        location.reload();
+    });
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
