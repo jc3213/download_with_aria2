@@ -26,8 +26,6 @@
                     <span local="uri" root="proxy" feed="all-proxy" button>📷</span>
                 </div>
             </div>
-        </div>
-        <div card class="container">
             <div title="aria2_adv_dir_desc" i18n_title>
                 <div class="title" i18n>aria2_adv_dir</div>
                 <div>
@@ -35,20 +33,22 @@
                 </div>
                 <span i18n>common_sample</span>: <u><i>C:\Aria2\Downloads</i></u>
             </div>
-            <div title="aria2_http_split_desc" i18n_title>
-                <div class="title" i18n>aria2_http_split</div>
-                <div>
-                    <input aria2="split" type="number">
+            <div class="double">
+                <div title="aria2_http_split_desc" i18n_title>
+                    <div class="title" i18n>aria2_http_split</div>
+                    <div>
+                        <input aria2="split" type="number">
+                    </div>
+                    <span i18n>common_default</span>: <u><i>5</i></u>
                 </div>
-                <span i18n>common_default</span>: <u><i>5</i></u>
-            </div>
-            <div title="aria2_http_size_desc" i18n_title>
-                <div class="title" i18n>aria2_http_size</div>
-                <label>
-                    <span class="suffix">B</span>
-                    <input aria2="min-split-size" size type="text">
-                </label>
-                <span i18n>common_default</span>: <u><i>20M</i></u>
+                <div title="aria2_http_size_desc" i18n_title>
+                    <div class="title" i18n>aria2_http_size</div>
+                    <label>
+                        <span class="suffix">B</span>
+                        <input aria2="min-split-size" size type="text">
+                    </label>
+                    <span i18n>common_default</span>: <u><i>20M</i></u>
+                </div>
             </div>
             <div title="task_download_desc" i18n_title>
                 <div class="title" i18n>task_download</div>
@@ -64,7 +64,6 @@
             <span id="submit_btn" button i18n>task_submit</span>
         </div>
         <script src="/libs/ui/i18n.js"></script>
-        <script src="/libs/ui/cards.js"></script>
         <script src="/libs/ui/size.js"></script>
         <script src="/libs/js/options.js"></script>
         <script src="/libs/js/reader.js"></script>

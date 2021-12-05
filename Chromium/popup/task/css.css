@@ -1,20 +1,3 @@
-.double > *:nth-child(2), .triple > *:nth-child(n+2) {
-    margin-left: 10px;
-}
-
-.double > *, .triple > * {
-    display: inline-block;
-}
-
-.double > * {
-    position: relative;
-    width: 48%;
-}
-
-.triple > * {
-    width: 31%;
-}
-
 .triple span {
     margin-left: 4px;
     border: 1px ridge #ccc;
