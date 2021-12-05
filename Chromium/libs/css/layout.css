@@ -14,23 +14,6 @@
     margin-bottom: 15px;
 }
 
-.double > *:nth-child(2), .triple > *:nth-child(n+2) {
-    margin-left: 10px;
-}
-
-.double > *, .triple > * {
-    position: relative;
-    display: inline-block;
-}
-
-.double > * {
-    width: 48%;
-}
-
-.triple > * {
-    width: 31%;
-}
-
 label {
     position: relative;
 }

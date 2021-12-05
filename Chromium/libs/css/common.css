@@ -23,6 +23,23 @@ body {
     text-align: right;
 }
 
+.double > *, .triple > * {
+    position: relative;
+    display: inline-block;
+}
+
+.double > * {
+    width: 48%;
+}
+
+.triple > * {
+    width: 32.6%;
+}
+
+.double > *:nth-child(2) {
+    margin-left: 10px;
+}
+
 [tab], [button] {
     border: 1px outset #ccc;
     border-radius: 3px;
