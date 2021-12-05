@@ -162,7 +162,7 @@
         "message": "引用页"
     },
     "task_referer_desc": {
-        "message": "为当前下载任务添加\"Referer\"及对应\"Cookies\"请求头"
+        "message": "为本次下载任务添加\"Referer\"请求头"
     },
     "task_batch": {
         "message": "下载链接"
@@ -174,7 +174,7 @@
         "message": "代理服务器"
     },
     "task_proxy_desc": {
-        "message": "用于\"all-proxy\"选项的代理服务器, 仅限\"http\"或\"https\"协议"
+        "message": "为本次下载任务添加\"all-proxy\"选项, 仅限\"http\"或\"https\"协议"
     },
     "task_submit": {
         "message": "确认"
@@ -190,6 +190,18 @@
     },
     "task_upload_desc": {
         "message": "通过\"max-upload-limit\"选项限制最大上传速度"
+    },
+    "task_urls": {
+        "message": "任务链接"
+    },
+    "task_urls_desc": {
+        "message": "管理本次下载任务所使用的链接"
+    },
+    "task_files": {
+        "message": "任务文件"
+    },
+    "task_files_desc": {
+        "message": "管理本次下载任务所下载的文件"
     },
     "aria2_http": {
         "message": "HTTP/FTP"
