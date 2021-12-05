@@ -21,15 +21,11 @@
     width: calc(100% - 25px);
 }
 
-.details, .menu, .result * {
+.details, .menu {
     display: inline-block;
 }
 
-.result > * {
-    width: 32%;
-}
-
-.result > * > * {
+.triple > * > * {
     margin-left: 4px;
 }
 
