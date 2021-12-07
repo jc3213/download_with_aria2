@@ -1,4 +1,4 @@
-[panel], [card] {
+[panel], .taskmenu {
     overflow-y: auto;
 }
 
@@ -6,7 +6,7 @@
     height: 400px;
 }
 
-[card] {
+.taskmenu {
     height: 360px;
 }
 

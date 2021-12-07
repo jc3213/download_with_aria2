@@ -12,15 +12,14 @@ body {
 }
 
 .frame {
+    position: relative;
     height: 20px;
 }
 
-.frame * {
-    height: 0px;
-}
-
-.offside {
-    text-align: right;
+.sidemenu {
+    position: absolute;
+    top: 0px;
+    right: 0px;
 }
 
 .double > *, .triple > * {
