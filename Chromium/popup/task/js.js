@@ -69,24 +69,24 @@ document.querySelectorAll('[http], [bt]').forEach(field => {
     field.style.display = field.hasAttribute(type) ? 'block' : 'none';
 });
 
-document.querySelector('[card].container').addEventListener('change', event => {
+document.querySelector('.taskmenu').addEventListener('change', event => {
     changeTaskOption(gid, event.target.getAttribute('task'), event.target.value);
 });
 
-document.querySelectorAll('[swap]').forEach(swap => {
-    var name = swap.getAttribute('swap');
-    var field = document.querySelector('[task="' + name + '"]');
-    swap.addEventListener('click', event => {
+document.querySelectorAll('[edit]').forEach(node => {
+    var label = node.parentNode.querySelector('label');
+    var field = label.querySelector('input');
+    node.addEventListener('click', event => {
         if (!field.disabled) {
-            swap.style.display = 'none';
-            field.parentNode.style.display = 'block';
+            node.style.display = 'none';
+            label.style.display = 'block';
             field.focus();
         }
     });
     field.addEventListener('keydown', event => {
         if (event.keyCode === 13) {
-            field.parentNode.style.display = 'none';
-            swap.style.display = 'block';
+            label.style.display = 'none';
+            node.style.display = 'block';
         }
     });
 });

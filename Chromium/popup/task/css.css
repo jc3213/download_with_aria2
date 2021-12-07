@@ -6,8 +6,12 @@
     text-align: center;
 }
 
-.swap .suffix {
-    top: 3px;
+[edit] {
+    padding: 3px;
+}
+
+.suffix {
+    margin-top: 3px;
 }
 
 #name {
@@ -21,9 +25,6 @@
     word-break: break-word;
 }
 
-[swap] {
-    padding: 3px;
-}
 
 #uris > *:nth-child(n+2) {
     margin-top: 3px;
