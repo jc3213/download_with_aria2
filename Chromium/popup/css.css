@@ -17,24 +17,24 @@
     margin-bottom: 5px;
 }
 
-.details {
-    width: calc(100% - 25px);
+.details, .submenu {
+    display: inline-block;
 }
 
-.details, .menu {
-    display: inline-block;
+.details {
+    width: calc(100% - 25px);
 }
 
 .triple > * > * {
     margin-left: 4px;
 }
 
-.menu {
+.submenu {
     vertical-align: top;
     width: 20px;
 }
 
-.menu [button] {
+.submenu [button] {
     font-size: 12px;
     padding: 1px;
 }
