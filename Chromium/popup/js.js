@@ -65,7 +65,7 @@ function printTaskDetails(result, index, queue, throttle) {
         queue.insertBefore(task, queue.childNodes[index]);
         task.setAttribute('status', result.status);
     }
-    if (throttle && result.connections === 0) {
+    if (throttle && result.connections === '0') {
         return;
     }
     task.querySelector('#name').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path ? result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) : result.files[0].uris[0] ? result.files[0].uris[0].uri : result.gid;
