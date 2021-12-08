@@ -1,4 +1,6 @@
-browser.runtime.getPlatformInfo(platform => aria2Platform = platform.os);
+browser.runtime.getPlatformInfo(platform => {
+    aria2Platform = platform.os
+});
 
 browser.contextMenus.create({
     title: browser.i18n.getMessage('extension_name'),
