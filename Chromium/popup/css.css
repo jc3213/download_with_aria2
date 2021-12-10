@@ -1,9 +1,9 @@
-[highlight] {
-    padding: 3px 5px;
+.stats {
+    margin-right: 10px;
 }
 
-[info]:nth-child(2n) {
-    margin-right: 10px;
+.light {
+    padding: 3px 5px;
 }
 
 .queue {
