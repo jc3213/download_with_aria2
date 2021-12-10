@@ -64,11 +64,11 @@ function printTaskDetails(result, index, queue) {
     if (task.parentNode !== queue) {
         queue.insertBefore(task, queue.childNodes[index]);
         task.setAttribute('status', result.status);
-        if (['complete', 'waiting', 'removed', 'error'].includes(result.status)) {
+        if (result.status !== 'active') {
             updateTaskDetails(task, result);
         }
     }
-    if (!['complete', 'waiting', 'removed', 'error'].includes(result.status)) {
+    if (result.status === 'active') {
         updateTaskDetails(task, result);
     }
 }
