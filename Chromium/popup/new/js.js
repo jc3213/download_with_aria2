@@ -25,7 +25,6 @@ function newTaskOptions() {
         var name = field.getAttribute('aria2') ?? field.getAttribute('task');
         options[name] = field.value;
     });
-    console.log(options);
     return options;
 }
 

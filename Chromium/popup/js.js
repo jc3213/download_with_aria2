@@ -47,8 +47,8 @@ function aria2RPCClient() {
         document.querySelector('#download').innerText = bytesToFileSize(global.downloadSpeed) + '/s';
         document.querySelector('#upload').innerText = bytesToFileSize(global.uploadSpeed) + '/s';
         active.forEach((active, index) => printTaskDetails(active, index, activeQueue));
-        waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue, true));
-        stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue, true));
+        waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue));
+        stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue));
     }, error => {
         clearTimeout(aria2KeepAlive);
         document.querySelector('#menus').style.display = 'none';
@@ -59,13 +59,16 @@ function aria2RPCClient() {
     }, true);
 }
 
-function printTaskDetails(result, index, queue, throttle) {
+function printTaskDetails(result, index, queue) {
     var task = document.getElementById(result.gid) ?? createTaskList(result);
     if (task.parentNode !== queue) {
         queue.insertBefore(task, queue.childNodes[index]);
         task.setAttribute('status', result.status);
+        if (['complete', 'waiting', 'removed', 'error'].includes(result.status)) {
+            updateTaskDetails(task, result);
+        }
     }
-    if (!throttle || result.connections !== '0') {
+    if (!['complete', 'waiting', 'removed', 'error'].includes(result.status)) {
         updateTaskDetails(task, result);
     }
 }
