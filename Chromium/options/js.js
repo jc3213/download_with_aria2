@@ -22,7 +22,7 @@ document.querySelector('#aria2_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#show_btn').addEventListener('click', event => {
-    document.querySelector('[root="jsonrpc"][local="token"]').setAttribute('type', event.target.className === 'checked' ? 'password' : 'text');
+    document.querySelector('[root="jsonrpc"][local="token"]').setAttribute('type', event.target.classList.contains('checked') ? 'password' : 'text');
     event.target.classList.toggle('checked');
 });
 
@@ -30,7 +30,7 @@ function aria2RPCClient() {
     document.querySelectorAll('[local]').forEach(field => {
         var name = field.getAttribute('local');
         var root = field.getAttribute('root');
-        root ? {[root]: {[name] : value}} = aria2RPC : {[name] : value} = aria2RPC;
+        var value = root ? aria2RPC[root][name] : aria2RPC[name] ?? '';
         var array = Array.isArray(value);
         var token = field.getAttribute('token');
         var multi = field.getAttribute('multi');
