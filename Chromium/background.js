@@ -87,9 +87,5 @@ function getFileExtension(filename) {
 function aria2RPCClient() {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getGlobalStat', params: [aria2RPC.jsonrpc['token']]},
     global => chrome.browserAction.setBadgeText({text: global.numActive === '0' ? '' : global.numActive}),
-    error => {
-        if (aria2Error === 0) {
-            aria2Error = showNotification(error) ?? 1;
-        }
-    }, true);
+    showNotification, true);
 }

@@ -1,5 +1,5 @@
 var aria2RPC;
-var aria2Error;
+var aria2Error = 0;
 var aria2RPCClient;
 var aria2KeepAlive;
 
@@ -19,8 +19,8 @@ chrome.storage.onChanged.addListener(changes => {
 
 function aria2RPCRefresh() {
     clearTimeout(aria2KeepAlive);
-    aria2RPCClient();
     aria2Error = 0;
+    aria2RPCClient();
 }
 
 function aria2RPCRequest(request, resolve, reject, alive) {
@@ -40,8 +40,8 @@ function aria2RPCRequest(request, resolve, reject, alive) {
             throw responseJSON[0].error;
         }
     }).catch(error => {
-        if (typeof reject === 'function') {
-            reject(error.message);
+        if (typeof reject === 'function' && aria2Error === 0) {
+            aria2Error = reject(error.message) ?? 1;
         }
     });
     if (alive) {
