@@ -1,13 +1,6 @@
 [panel], .taskmenu {
     overflow-y: auto;
-}
-
-[panel] {
     height: 400px;
-}
-
-.taskmenu {
-    height: 360px;
 }
 
 .container > * {
