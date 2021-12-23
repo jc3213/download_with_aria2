@@ -62,7 +62,7 @@ function appendFileToTable(file, table) {
 }
 
 document.querySelector('#name[button]').addEventListener('click', event => {
-    frameElement.remove();
+    history.back();
 });
 
 document.querySelectorAll('[http], [bt]').forEach(field => {

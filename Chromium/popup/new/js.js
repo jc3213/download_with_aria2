@@ -5,8 +5,12 @@ function aria2RPCClient() {
 
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = newTaskOptions();
-    document.querySelector('#entries').value.split('\n').forEach(url => /^http|^ftp|^magnet/.test(url) ? downloadWithAria2(url, options) : null);
-    removeNewTaskWindow();
+    var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
+    if (Array.isArray(entries)) {
+        entries.forEach(url => downloadWithAria2(url, options));
+        showNotification(entries.join());
+    }
+    history.back();
 });
 
 document.querySelector('#entries').addEventListener('drop', event => {
@@ -16,7 +20,7 @@ document.querySelector('#entries').addEventListener('drop', event => {
             fileReader(file, data => aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], data, newTaskOptions()]}, result => showNotification(file.name)));
         }
     });
-    removeNewTaskWindow();
+    history.back();
 });
 
 function newTaskOptions() {
@@ -26,10 +30,4 @@ function newTaskOptions() {
         options[name] = field.value;
     });
     return options;
-}
-
-function removeNewTaskWindow() {
-    parent.document.querySelector('[module="newTask"]').classList.remove('checked');
-    frameElement.style.display = 'none';
-    setTimeout(() => frameElement.remove(), 500);
 }

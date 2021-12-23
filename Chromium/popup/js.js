@@ -16,11 +16,8 @@ document.querySelectorAll('[tab]').forEach(tab => {
 });
 
 document.querySelectorAll('[module]').forEach(module => {
-    var id = module.getAttribute('module');
-    var url = module.getAttribute('link') + '?popup';
     module.addEventListener('click', event => {
-        event.target.classList.contains('checked') ? document.getElementById(id).remove() : openModuleWindow(id, url);
-        module.classList.toggle('checked');
+        open(module.getAttribute('module') + '?popup', '_self');
     });
 });
 
@@ -97,7 +94,7 @@ function createTaskList(result) {
         result => ['complete', 'error', 'paused', 'removed'].includes(status) ? task.remove() : task.querySelector('#ratio').innerText === '100%' ? task.querySelector('#ratio').className = task.setAttribute('status', 'complete') ?? 'complete' : task.setAttribute('status', 'removed'),
         error => task.remove());
     });
-    task.querySelector('#invest_btn').addEventListener('click', event => openModuleWindow('taskMgr', 'task/index.html?' + (result.bittorrent ? 'bt' : 'http') + '#' + gid));
+    task.querySelector('#invest_btn').addEventListener('click', event => open('task/index.html?' + (result.bittorrent ? 'bt' : 'http') + '#' + gid, '_self'));
     task.querySelector('#retry_btn').addEventListener('click', event => {
         aria2RPCRequest([
             {id: '', jsonrpc: 2, method: 'aria2.getFiles', params: [aria2RPC.jsonrpc['token'], gid]},
