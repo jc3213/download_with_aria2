@@ -17,7 +17,7 @@ document.querySelector('#import').addEventListener('change', event => {
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getVersion', params: [aria2RPC.jsonrpc['token']]},
-    version => openModuleWindow('aria2Opt', 'aria2/index.html?' + version.version),
+    version => open('aria2/index.html?' + version.version, '_self'),
     error => showNotification(error));
 });
 
