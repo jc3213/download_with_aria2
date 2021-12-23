@@ -67,7 +67,7 @@ function captureDownload(domain, fileExt, fileSize) {
 }
 
 function getDomainFromUrl(url) {
-    var host = /^https?:\/\/([^\/]+)\//.exec(url)[1];
+    var host = /^[^:]+:\/\/([^\/]+)\//.exec(url)[1];
     var hostname = /:\d{2,5}$/.test(host) ? host.slice(0, host.lastIndexOf(':')) : host;
     if (hostname.includes(':')) {
         return hostname.slice(1, -1);
