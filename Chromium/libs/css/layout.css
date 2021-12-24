@@ -1,8 +1,3 @@
-[panel], .container {
-    overflow-y: auto;
-    max-height: 420px;
-}
-
 .container > * {
     margin-bottom: 15px;
 }
