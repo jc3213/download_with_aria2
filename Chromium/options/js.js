@@ -1,4 +1,9 @@
 document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'block';
+document.querySelector('#back').parentNode.style.display = location.search === '?popup' ? 'block' : 'none';
+
+document.querySelector('#back').addEventListener('click', event => {
+    history.back();
+});
 
 document.querySelector('#export').addEventListener('click', event => {
     var blob = new Blob([JSON.stringify(aria2RPC)], {type: 'application/json; charset=utf-8'});
