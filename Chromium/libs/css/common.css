@@ -3,6 +3,7 @@ body {
     font-size: 15px;
     user-select: none;
     width: 430px;
+    height: 484px;
     margin: 8px;
 }
 
@@ -20,6 +21,10 @@ body {
     position: absolute;
     top: 0px;
     right: 0px;
+}
+
+.footmenu {
+    text-align: center;
 }
 
 .double > *, .triple > * {

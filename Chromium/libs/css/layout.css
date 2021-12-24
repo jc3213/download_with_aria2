@@ -1,6 +1,6 @@
-[panel], .taskmenu {
+[panel], .container {
     overflow-y: auto;
-    height: 400px;
+    max-height: 420px;
 }
 
 .container > * {
@@ -36,10 +36,6 @@ label .suffix2 {
 .extend > .checked {
     padding: 3px;
     border: 2px inset #c48;
-}
-
-.footmenu {
-    text-align: center;
 }
 
 input, textarea, select, option {
