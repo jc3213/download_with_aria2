@@ -9,8 +9,10 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
         var name = field.getAttribute('aria2') ?? field.getAttribute('task');
         options[name] = field.value;
     });
-    document.querySelector('#entries').value.split('\n').forEach(url => /^http|^ftp|^magnet/.test(url) ? downloadWithAria2(url, options) : null);
-    parent.document.querySelector('[module="' + frameElement.id + '"]').classList.remove('checked');
-    frameElement.style.display = 'none';
-    setTimeout(() => frameElement.remove(), 500);
+    var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
+    if (Array.isArray(entries)) {
+        entries.forEach(url => downloadWithAria2(url, options));
+        showNotification(entries.join());
+    }
+    history.back();
 });
