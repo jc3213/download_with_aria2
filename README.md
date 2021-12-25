@@ -9,7 +9,7 @@
 
 # How to Build
 
-- Download latest released [source code](https://github.com/jc3213/download_with_aria2/releases/latest)
+- Download latest stable [source code](https://github.com/jc3213/download_with_aria2/releases/latest)
 - Extract source code
 
 #### Windows
