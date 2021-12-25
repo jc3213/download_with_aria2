@@ -9,10 +9,12 @@
 
 # How to Build
 
-- Download latest stable [source code](https://github.com/jc3213/download_with_aria2/releases/latest)
+- Download latest released [source code](https://github.com/jc3213/download_with_aria2/releases/latest)
 - Extract source code
 
 #### Windows
+- Download 7-zip standalone console `v21.06` [Windows](https://www.7-zip.org/a/7z2106-extra.7z)
+- Put `7za.exe` and `7za.dll` into the same folder with `Windows Auto Build.cmd`
 - Run `Windows Auto Build.cmd` and follow the instructions
 
 #### Linux
