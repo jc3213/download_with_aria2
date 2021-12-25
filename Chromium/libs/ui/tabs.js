@@ -1,17 +1,15 @@
-document.querySelectorAll('[tab]').forEach((tab, index) => {
-    var name = tab.getAttribute('tab');
-    if (index === 0) {
-        tab.classList.add('checked');
-        document.querySelector('[panel="' + name + '"]').style.display = 'block';
-        activeTab = name;
-    }
+var activeTab = 0;
+var tabs = document.querySelectorAll('[tab]');
+var panels = document.querySelectorAll('[panel]');
+tabs[activeTab].classList.add('checked');
+panels[activeTab].style.display = 'block';
+
+tabs.forEach((tab, index) => {
     tab.addEventListener('click', event => {
-        if (!tab.classList.contains('checked')) {
-            document.querySelector('[tab="' + name + '"]').classList.add('checked');
-            document.querySelector('[panel="' + name + '"]').style.display = 'block';
-            document.querySelector('[tab="' + activeTab + '"]').classList.remove('checked');
-            document.querySelector('[panel="' + activeTab + '"]').style.display = 'none';
-            activeTab = name;
-        }
+        tabs[activeTab].classList.remove('checked');
+        panels[activeTab].style.display = 'none';
+        activeTab = index;
+        tabs[index].classList.add('checked');
+        panels[index].style.display = 'block';
     });
 });
