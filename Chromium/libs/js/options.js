@@ -1,11 +1,11 @@
 function printFeedButton() {
-    document.querySelectorAll('[feed]').forEach(field => {
-        var feed = field.getAttribute('feed');
-        var name = field.getAttribute('local');
-        var root = field.getAttribute('root');
-        root ? {[root]: {[name] : value}} = aria2RPC : {[name] : value} = aria2RPC;
-        field.addEventListener('click', event => {
-            document.querySelector('[task="' + feed + '"]').value = value;
+    document.querySelectorAll('[button][local]').forEach(button => {
+        var field = button.parentNode.querySelector('input');
+        var name = button.getAttribute('local');
+        var root = button.getAttribute('root');
+        var value = root ? aria2RPC[root][name] : aria2RPC[name];
+        button.addEventListener('click', event => {
+            field.value = value;
         });
     });
 }
