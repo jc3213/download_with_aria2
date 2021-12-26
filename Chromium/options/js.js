@@ -46,15 +46,13 @@ function aria2RPCClient() {
             chrome.storage.local.set(aria2RPC);
         });
     });
-    document.querySelectorAll('[gear]').forEach(gear => {
-        var rule = gear.getAttribute('gear').split('&');
-        var gate = rule[0].split(','), term = rule[1];
-        var name = gate[0], root = gate[1];
-        root ? {[root]: {[name] : value}} = aria2RPC : {[name] : value} = aria2RPC;
-        var field = root ? '[local="' + name + '"][root="' + root + '"]' : '[local="' + name + '"]';
-        gear.style.display = term.includes(value) ? 'block' : 'none';
-        document.querySelector(field).addEventListener('change', event => {
-            gear.style.display = term.includes(event.target.value) ? 'block' : 'none';
+    document.querySelectorAll('[tree]').forEach(menu => {
+        var root = menu.getAttribute('tree');
+        var rule = menu.getAttribute('rule');
+        var value = aria2RPC[root]['mode'];
+        menu.style.display = rule.includes(value) ? 'block' : 'none';
+        document.querySelector('[local="mode"][root="' + root + '"]').addEventListener('change', event => {
+            menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });
 }
