@@ -91,7 +91,7 @@ document.querySelectorAll('[edit]').forEach(node => {
     });
 });
 
-document.querySelector('[feed="all-proxy"]').addEventListener('click', event => {
+document.querySelector('[button][local="uri"]').addEventListener('click', event => {
     changeTaskOption(gid, 'all-proxy', aria2RPC.proxy['uri']);
 });
 

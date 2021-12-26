@@ -14,7 +14,7 @@ document.querySelector('#export').addEventListener('click', event => {
 });
 
 document.querySelector('#import').addEventListener('change', event => {
-    fileReader(event.target.files[0], data => {
+    readFileAsBinary(event.target.files[0], data => {
         chrome.storage.local.set(JSON.parse(atob(data)));
         location.reload();
     });
@@ -51,7 +51,7 @@ function aria2RPCClient() {
         var rule = menu.getAttribute('rule');
         var value = aria2RPC[root]['mode'];
         menu.style.display = rule.includes(value) ? 'block' : 'none';
-        document.querySelector('[local="mode"][root="' + root + '"]').addEventListener('change', event => {
+        document.querySelector('[root="' + root + '"][local="mode"]').addEventListener('change', event => {
             menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });
