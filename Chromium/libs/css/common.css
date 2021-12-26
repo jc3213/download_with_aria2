@@ -6,9 +6,67 @@ body {
     margin: 8px;
 }
 
+label {
+    position: relative;
+}
+
+label .suffix, label .suffix2 {
+    position: absolute;
+    top: 0px;
+}
+
+label .suffix {
+    right: 8px;
+}
+
+label .suffix2 {
+    right: 28px;
+}
+
+input, textarea, select, option {
+    font-size: 15px;
+    padding: 3px;
+}
+
+input, textarea {
+    width: calc(100% - 10px);
+    resize: none;
+}
+
+textarea {
+    word-break: break-word;
+}
+
+select[aria2], select[task] {
+    width: 100%;
+}
+
+option:checked {
+    font-weight: bold;
+    color: #F00;
+}
+
 .title {
     font-weight: bold;
     word-break: break-word;
+}
+
+.container > * {
+    margin-bottom: 15px;
+}
+
+.extend > input {
+    width: calc(100% - 44px);
+}
+
+.extend > [button] {
+    font-size: 13px;
+    padding: 4px;
+}
+
+.extend > .checked {
+    padding: 3px;
+    border: 2px inset #c48;
 }
 
 .menubar {
@@ -58,7 +116,7 @@ body {
     filter: opacity(30%);
 }
 
-[panel], #template {
+#template, [panel] {
     display: none;
 }
 
