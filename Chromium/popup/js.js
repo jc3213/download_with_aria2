@@ -59,11 +59,11 @@ function printTaskDetails(result, index, queue) {
     if (task.parentNode !== queue) {
         queue.insertBefore(task, queue.childNodes[index]);
         task.setAttribute('status', result.status);
-        if (result.status === '0') {
+        if (result.status !== 'active') {
             updateTaskDetails(task, result);
         }
     }
-    if (result.connections !== '0') {
+    if (result.status === 'active') {
         updateTaskDetails(task, result);
     }
 }
@@ -91,9 +91,9 @@ function createTaskList(result) {
     task.querySelector('#remove_btn').addEventListener('click', event => {
         var status = task.getAttribute('status');
         aria2RPCRequest({id: '', jsonrpc: 2, method: ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult', params: [aria2RPC.jsonrpc['token'], gid]},
-        result => ['complete', 'error', 'paused', 'removed'].includes(status) ? task.remove() : (
+        result => ['complete', 'error', 'paused', 'removed'].includes(status) ? task.remove() :
             task.querySelector('#ratio').innerText === '100%' ? task.querySelector('#ratio').className = task.setAttribute('status', 'complete') ?? 'complete' :
-            task.setAttribute('status', 'removed')) && stoppedQueue.appendChild(task),
+            task.setAttribute('status', 'removed'),
         error => task.remove());
     });
     task.querySelector('#invest_btn').addEventListener('click', event => open('task/index.html?' + (result.bittorrent ? 'bt' : 'http') + '#' + gid, '_self'));
@@ -111,7 +111,7 @@ function createTaskList(result) {
         var status = task.getAttribute('status');
         var action = status === 'paused' ? {method :'aria2.unpause', queue: activeQueue, status: 'active'} : {method: 'aria2.pause', queue: waitingQueue, status: 'paused'};
         aria2RPCRequest({id: '', jsonrpc: 2, method: action.method, params: [aria2RPC.jsonrpc['token'], gid]},
-        result => task.setAttribute('status', action.status) ?? action.queue.appendChild(task));
+        result => task.setAttribute('status', action.status));
     });
     return task;
 }
