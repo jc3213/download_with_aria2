@@ -4,7 +4,7 @@ var stoppedQueue = document.querySelector('.queue > #stopped');
 
 document.querySelectorAll('[tab]').forEach((tab, current, tabs) => {
     tab.addEventListener('click', event => {
-        document.querySelectorAll('.queue > *').forEach((queue, index) => {
+        [activeQueue, waitingQueue, stoppedQueue].forEach((queue, index) => {
             tab.classList.contains('checked') ? queue.style.display = 'block' :
                 current === index ? queue.style.display = 'block' :
                 queue.style.display = tabs[index].classList.remove('checked') ?? 'none';
