@@ -1,15 +1,14 @@
-var activeQueue = document.querySelector('[queue="active"]');
-var waitingQueue = document.querySelector('[queue="waiting"]');
-var stoppedQueue = document.querySelector('[queue="stopped"]');
+var activeQueue = document.querySelector('.queue > #active');
+var waitingQueue = document.querySelector('.queue > #waiting');
+var stoppedQueue = document.querySelector('.queue > #stopped');
 
 document.querySelectorAll('[tab]').forEach(tab => {
     var active = tab.getAttribute('tab');
     tab.addEventListener('click', event => {
-        document.querySelectorAll('[queue]').forEach(queue => {
-            var id = queue.getAttribute('queue');
+        document.querySelectorAll('.queue > *').forEach(queue => {
             tab.classList.contains('checked') ? queue.style.display = 'block' :
-                id === active ? queue.style.display = 'block' :
-                queue.style.display = document.querySelector('[tab="' + id + '"]').classList.remove('checked') ?? 'none';
+                queue.id === active ? queue.style.display = 'block' :
+                queue.style.display = document.querySelector('[tab="' + queue.id + '"]').classList.remove('checked') ?? 'none';
         });
         tab.classList.toggle('checked');
     });
