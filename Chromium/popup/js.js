@@ -90,8 +90,7 @@ function createTaskList(result) {
     updateTaskDetails(task, result);
     task.querySelector('#remove_btn').addEventListener('click', event => {
         aria2RPCRequest({id: '', jsonrpc: 2, method: ['active', 'waiting', 'paused'].includes(task.status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult', params: [aria2RPC.jsonrpc['token'], gid]},
-        result => ['complete', 'error', 'paused', 'removed'].includes(task.status) ? task.remove() : null,
-        error => task.remove());
+        result => ['complete', 'error', 'paused', 'removed'].includes(task.status) ? task.remove() : task.querySelector('#name').innerText = '⏳');
     });
     task.querySelector('#invest_btn').addEventListener('click', event => open('task/index.html?' + (result.bittorrent ? 'bt' : 'http') + '#' + gid, '_self'));
     task.querySelector('#retry_btn').addEventListener('click', event => {
@@ -105,7 +104,8 @@ function createTaskList(result) {
         });
     });
     task.querySelector('#fancybar').addEventListener('click', event => {
-        aria2RPCRequest({id: '', jsonrpc: 2, method: task.status === 'paused' ? 'aria2.unpause' : 'aria2.pause', params: [aria2RPC.jsonrpc['token'], gid]});
+        aria2RPCRequest({id: '', jsonrpc: 2, method: task.status === 'paused' ? 'aria2.unpause' : 'aria2.pause', params: [aria2RPC.jsonrpc['token'], gid]},
+        result => task.querySelector('#name').innerText = '⏳');
     });
     return task;
 }
