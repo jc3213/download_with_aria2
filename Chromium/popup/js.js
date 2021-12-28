@@ -2,13 +2,12 @@ var activeQueue = document.querySelector('.queue > #active');
 var waitingQueue = document.querySelector('.queue > #waiting');
 var stoppedQueue = document.querySelector('.queue > #stopped');
 
-document.querySelectorAll('[tab]').forEach(tab => {
-    var active = tab.getAttribute('tab');
+document.querySelectorAll('[tab]').forEach((tab, current, tabs) => {
     tab.addEventListener('click', event => {
-        document.querySelectorAll('.queue > *').forEach(queue => {
+        document.querySelectorAll('.queue > *').forEach((queue, index) => {
             tab.classList.contains('checked') ? queue.style.display = 'block' :
-                queue.id === active ? queue.style.display = 'block' :
-                queue.style.display = document.querySelector('[tab="' + queue.id + '"]').classList.remove('checked') ?? 'none';
+                current === index ? queue.style.display = 'block' :
+                queue.style.display = tabs[index].classList.remove('checked') ?? 'none';
         });
         tab.classList.toggle('checked');
     });
