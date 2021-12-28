@@ -54,22 +54,22 @@
     filter: opacity(30%);
 }
 
-#fancybar.active {
+[status="active"] #fancybar {
     background-color: #4cc;
 }
 
-#fancybar.waiting {
+[status="waiting"] #fancybar {
     background-color: #488;
 }
 
-#fancybar.paused {
+[status="paused"] #fancybar {
     background-color: #888;
 }
 
-#fancybar.removed {
+[status="removed"] #fancybar {
     background-color: #844;
 }
 
-#fancybar.error {
+[status="error"] #fancybar {
     background-color: #400;
 }
