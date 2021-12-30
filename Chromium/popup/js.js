@@ -101,7 +101,7 @@ function createTaskList(result) {
             result => task.remove());
         });
     });
-    task.querySelector('#fancybar').addEventListener('click', event => {
+    task.querySelector('#meter').addEventListener('click', event => {
         aria2RPCRequest({id: '', jsonrpc: 2, method: task.getAttribute('status') === 'paused' ? 'aria2.unpause' : 'aria2.pause', params: [aria2RPC.jsonrpc['token'], gid]},
         result => task.querySelector('#name').innerText = '⏳');
     });

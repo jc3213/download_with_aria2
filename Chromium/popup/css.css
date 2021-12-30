@@ -46,30 +46,30 @@
     margin-left: -4px;
 }
 
-#fancybar {
+#meter {
     text-align: center;
 }
 
-#fancybar:active {
+#meter:active {
     filter: opacity(30%);
 }
 
-[status="active"] #fancybar {
+[status="active"] #meter {
     background-color: #4cc;
 }
 
-[status="waiting"] #fancybar {
+[status="waiting"] #meter {
     background-color: #488;
 }
 
-[status="paused"] #fancybar {
+[status="paused"] #meter {
     background-color: #888;
 }
 
-[status="removed"] #fancybar {
+[status="removed"] #meter {
     background-color: #844;
 }
 
-[status="error"] #fancybar {
+[status="error"] #meter {
     background-color: #400;
 }
