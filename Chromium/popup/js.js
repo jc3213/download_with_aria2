@@ -1,14 +1,14 @@
 var activeQueue = document.querySelector('.queue > #active');
 var waitingQueue = document.querySelector('.queue > #waiting');
 var stoppedQueue = document.querySelector('.queue > #stopped');
+var currentTab = -1;
 
-document.querySelectorAll('[tab]').forEach((tab, current, tabs) => {
-    tab.addEventListener('click', event => {
-        [activeQueue, waitingQueue, stoppedQueue].forEach((queue, index) => {
-            tab.classList.contains('checked') ? queue.style.display = 'block' :
-                current === index ? queue.style.display = 'block' :
-                queue.style.display = tabs[index].classList.remove('checked') ?? 'none';
-        });
+document.querySelectorAll('[tab]').forEach((tab, index, tabs) => {
+    tab.addEventListener('click', async event => {
+        currentTab = currentTab === index ? -1 : (tabs[currentTab] ? tabs[currentTab].classList.remove('checked') : null) ?? index;
+        activeQueue.style.display = [-1, 0].includes(currentTab) ? 'block' : 'none';
+        waitingQueue.style.display = [-1, 1].includes(currentTab) ? 'block' : 'none';
+        stoppedQueue.style.display = [-1, 2].includes(currentTab) ? 'block' : 'none';
         tab.classList.toggle('checked');
     });
 });
