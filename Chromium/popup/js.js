@@ -4,7 +4,7 @@ var stoppedQueue = document.querySelector('.queue > #stopped');
 var currentTab = -1;
 
 document.querySelectorAll('[tab]').forEach((tab, index, tabs) => {
-    tab.addEventListener('click', async event => {
+    tab.addEventListener('click', event => {
         currentTab = currentTab === index ? -1 : (tabs[currentTab] ? tabs[currentTab].classList.remove('checked') : null) ?? index;
         activeQueue.style.display = [-1, 0].includes(currentTab) ? 'block' : 'none';
         waitingQueue.style.display = [-1, 1].includes(currentTab) ? 'block' : 'none';
