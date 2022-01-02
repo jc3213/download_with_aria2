@@ -9,11 +9,6 @@
     margin-right: 10px;
 }
 
-.queue {
-    height: 410px;
-    overflow-y: auto;
-}
-
 .session {
     position: relative;
     border: 1px outset #CCC;

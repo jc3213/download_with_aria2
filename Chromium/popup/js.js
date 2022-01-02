@@ -1,6 +1,6 @@
-var activeQueue = document.querySelector('.queue > #active');
-var waitingQueue = document.querySelector('.queue > #waiting');
-var stoppedQueue = document.querySelector('.queue > #stopped');
+var activeQueue = document.querySelector('#content > #active');
+var waitingQueue = document.querySelector('#content > #waiting');
+var stoppedQueue = document.querySelector('#content > #stopped');
 var currentTab = -1;
 
 document.querySelectorAll('[tab]').forEach((tab, index, tabs) => {
@@ -35,11 +35,11 @@ function aria2RPCClient() {
         {id: '', jsonrpc: 2, method: 'aria2.tellStopped', params: [aria2RPC.jsonrpc['token'], 0, 999]}
     ], (global, active, waiting, stopped) => {
         document.querySelector('#suspend').style.display = 'none';
-        document.querySelector('body > div > #active').innerText = global.numActive;
-        document.querySelector('body > div > #waiting').innerText = global.numWaiting;
-        document.querySelector('body > div > #stopped').innerText = global.numStopped;
-        document.querySelector('body > div > #download').innerText = bytesToFileSize(global.downloadSpeed) + '/s';
-        document.querySelector('body > div > #upload').innerText = bytesToFileSize(global.uploadSpeed) + '/s';
+        document.querySelector('#active.stats').innerText = global.numActive;
+        document.querySelector('#waiting.stats').innerText = global.numWaiting;
+        document.querySelector('#stopped.stats').innerText = global.numStopped;
+        document.querySelector('#download.stats').innerText = bytesToFileSize(global.downloadSpeed) + '/s';
+        document.querySelector('#upload.stats').innerText = bytesToFileSize(global.uploadSpeed) + '/s';
         active.forEach((active, index) => printTaskDetails(active, index, activeQueue));
         waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue));
         stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue));

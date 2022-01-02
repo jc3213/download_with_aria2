@@ -54,6 +54,10 @@ button {
     border-width: 1px;
 }
 
+button:hover {
+    filter: opacity(75%);
+}
+
 button:disabled {
     padding: 6px;
     border: none;
@@ -63,12 +67,20 @@ button.checked {
     border: 1px #ccc inset;
 }
 
+#content {
+    overflow-y: auto;
+}
+
+#template, [panel] {
+    display: none;
+}
+
 .title {
     font-weight: bold;
     word-break: break-word;
 }
 
-.container > * {
+.submenu > *:not(:last-child) {
     margin-bottom: 15px;
 }
 
@@ -103,12 +115,8 @@ button.checked {
     width: 32.6%;
 }
 
-.double > *:nth-child(2) {
-    margin-left: 10px;
-}
-
-#template, [panel] {
-    display: none;
+.double > *:first-child {
+    margin-right: 10px;
 }
 
 .active {

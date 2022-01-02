@@ -69,7 +69,7 @@ document.querySelectorAll('[http], [bt]').forEach(field => {
     field.style.display = field.hasAttribute(type) ? 'block' : 'none';
 });
 
-document.querySelector('body > .container').addEventListener('change', event => {
+document.querySelector('body > .submenu').addEventListener('change', event => {
     changeTaskOption(gid, event.target.getAttribute('task'), event.target.value);
 });
 
