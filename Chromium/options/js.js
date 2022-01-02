@@ -1,4 +1,4 @@
-//document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'block';
+document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'block';
 document.querySelector('#back').parentNode.style.display = location.search === '?popup' ? 'block' : 'none';
 
 document.querySelector('#back').addEventListener('click', event => {
