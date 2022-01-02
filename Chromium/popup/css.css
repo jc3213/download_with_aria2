@@ -1,9 +1,12 @@
-.stats {
-    margin-right: 10px;
+#suspend {
+    position: absolute;
+    top: 0px;
+    height: 29px;
+    width: 100%;
 }
 
-.light {
-    padding: 3px 5px;
+.stats {
+    margin-right: 10px;
 }
 
 .queue {
@@ -37,7 +40,7 @@
     padding: 0px;
 }
 
-#error {
+.session #error {
     color: #f00;
     font-size: 11px;
 }
