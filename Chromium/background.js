@@ -5,9 +5,7 @@ chrome.contextMenus.create({
 });
 
 chrome.contextMenus.onClicked.addListener(info => {
-    if (info.menuItemId === 'downwitharia2') {
-        startDownload({url: info.linkUrl, referer: info.pageUrl, domain: getDomainFromUrl(info.pageUrl)});
-    }
+    startDownload({url: info.linkUrl, referer: info.pageUrl, domain: getDomainFromUrl(info.pageUrl)});
 });
 
 chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
