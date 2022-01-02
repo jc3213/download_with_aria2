@@ -6,8 +6,8 @@
         <link rel="stylesheet" href="css.css">
     </head>
     <body>
-        <div id="name" button></div>
-        <div class="container">
+        <button id="name"></button>
+        <div class="container" style="height: 439px; overflow-y: auto;">
             <div class="triple">
                 <div>🖥️<span id="local"></span></div>
                 <div>🛰️<span id="ratio"></span></div>
@@ -35,7 +35,7 @@
                 <div class="title" i18n>task_proxy</div>
                 <div class="extend">
                     <input task="all-proxy" type="url">
-                    <span local="uri" root="proxy" button>💾</span>
+                    <button local="uri" root="proxy">💾</button>
                 </div>
             </div>
             <div http class="double">
@@ -85,7 +85,7 @@
                 <div class="title" i18n>task_urls</div>
                 <div id="source" class="extend">
                     <input type="url">
-                    <span button>➕</span>
+                    <button>➕</button>
                 </div>
                 <div id="uris">
                     <div id="template"></div>

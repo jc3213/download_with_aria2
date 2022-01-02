@@ -15,8 +15,9 @@
 }
 
 #name {
-    padding: 0px;
     height: 46px;
+    width: 100%;
+    padding: 0px;
     overflow-y: auto;
     margin-bottom: 15px;
 }
@@ -24,7 +25,6 @@
 #name, #uris * {
     word-break: break-word;
 }
-
 
 #uris > *:nth-child(n+2) {
     margin-top: 3px;

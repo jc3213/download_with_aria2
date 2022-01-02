@@ -27,14 +27,14 @@
 }
 
 .session .sidemenu {
-    top: 3px;
-    right: 3px;
+    top: 1px;
+    right: 1px;
     width: 20px;
 }
 
-.session [button] {
+.session button {
     font-size: 12px;
-    padding: 1px;
+    padding: 0px;
 }
 
 #error {

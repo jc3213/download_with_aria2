@@ -61,7 +61,7 @@ function appendFileToTable(file, table) {
     return cell;
 }
 
-document.querySelector('#name[button]').addEventListener('click', event => {
+document.querySelector('button#name').addEventListener('click', event => {
     history.back();
 });
 
@@ -91,7 +91,7 @@ document.querySelectorAll('[edit]').forEach(node => {
     });
 });
 
-document.querySelector('[button][local="uri"]').addEventListener('click', event => {
+document.querySelector('button[local="uri"]').addEventListener('click', event => {
     changeTaskOption(gid, 'all-proxy', aria2RPC.proxy['uri']);
 });
 
@@ -99,7 +99,7 @@ document.querySelector('#uris').addEventListener('click', event => {
     event.ctrlKey ? changeTaskUri({remove: event.target.innerText}) : navigator.clipboard.writeText(event.target.innerText);
 });
 
-document.querySelector('#source > span').addEventListener('click', event => {
+document.querySelector('#source > button').addEventListener('click', event => {
     changeTaskUri({add: document.querySelector('#source > input').value});
     document.querySelector('#source > input').value = '';
 });

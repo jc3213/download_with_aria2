@@ -36,11 +36,11 @@ function aria2RPCClient() {
         {id: '', jsonrpc: 2, method: 'aria2.tellWaiting', params: [aria2RPC.jsonrpc['token'], 0, 999]},
         {id: '', jsonrpc: 2, method: 'aria2.tellStopped', params: [aria2RPC.jsonrpc['token'], 0, 999]}
     ], (global, active, waiting, stopped) => {
-        document.querySelector('.menubar > #active').innerText = global.numActive;
-        document.querySelector('.menubar > #waiting').innerText = global.numWaiting;
-        document.querySelector('.menubar > #stopped').innerText = global.numStopped;
-        document.querySelector('.menubar > #download').innerText = bytesToFileSize(global.downloadSpeed) + '/s';
-        document.querySelector('.menubar > #upload').innerText = bytesToFileSize(global.uploadSpeed) + '/s';
+        document.querySelector('body > div > #active').innerText = global.numActive;
+        document.querySelector('body > div > #waiting').innerText = global.numWaiting;
+        document.querySelector('body > div > #stopped').innerText = global.numStopped;
+        document.querySelector('body > div > #download').innerText = bytesToFileSize(global.downloadSpeed) + '/s';
+        document.querySelector('body > div > #upload').innerText = bytesToFileSize(global.uploadSpeed) + '/s';
         active.forEach((active, index) => printTaskDetails(active, index, activeQueue));
         waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue));
         stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue));

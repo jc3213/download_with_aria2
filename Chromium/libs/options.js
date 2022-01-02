@@ -1,5 +1,5 @@
 function printFeedButton() {
-    document.querySelectorAll('[button][local]').forEach(button => {
+    document.querySelectorAll('button[local]').forEach(button => {
         var field = button.parentNode.querySelector('input');
         var name = button.getAttribute('local');
         var root = button.getAttribute('root');

@@ -1,12 +1,16 @@
 body {
     font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 15px;
     user-select: none;
-    width: 430px;
+    width: 500px;
+    height: 500px;
     margin: 8px;
 }
 
-label {
+body, input, textarea, select, option, button {
+    font-size: 15px;
+}
+
+label, div {
     position: relative;
 }
 
@@ -24,7 +28,6 @@ label .suffix2 {
 }
 
 input, textarea, select, option {
-    font-size: 15px;
     padding: 3px;
 }
 
@@ -46,6 +49,20 @@ option:checked {
     color: #F00;
 }
 
+button {
+    padding: 5px;
+    border-width: 1px;
+}
+
+button:disabled {
+    padding: 6px;
+    border: none;
+}
+
+button.checked {
+    border: 1px #ccc inset;
+}
+
 .title {
     font-weight: bold;
     word-break: break-word;
@@ -59,19 +76,9 @@ option:checked {
     width: calc(100% - 44px);
 }
 
-.extend > [button] {
+.extend > button {
     font-size: 13px;
     padding: 4px;
-}
-
-.extend > .checked {
-    padding: 3px;
-    border: 2px inset #c48;
-}
-
-.menubar {
-    position: relative;
-    height: 20px;
 }
 
 .sidemenu {
@@ -85,7 +92,6 @@ option:checked {
 }
 
 .double > *, .triple > * {
-    position: relative;
     display: inline-block;
 }
 
@@ -101,28 +107,8 @@ option:checked {
     margin-left: 10px;
 }
 
-[tab], [button] {
-    border: 1px outset #ccc;
-    border-radius: 3px;
-    cursor: pointer;
-    padding: 3px 5px;
-}
-
-[tab]:hover, [button]:hover {
-    filter: opacity(60%);
-}
-
-[tab]:active, [button]:active {
-    filter: opacity(30%);
-}
-
 #template, [panel] {
     display: none;
-}
-
-.checked {
-    padding: 2px 4px;
-    border: 2px inset #c48;
 }
 
 .active {

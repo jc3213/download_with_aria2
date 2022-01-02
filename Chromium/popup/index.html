@@ -6,16 +6,16 @@
         <link rel="stylesheet" href="css.css">
     </head>
     <body>
-        <div id="menus" class="menubar">
-            <span class="active" tab i18n>popup_active_button</span>
+        <div id="menus">
+            <button class="active" tab i18n>popup_active_button</button>
             <span id="active" class="stats">0</span>
-            <span class="waiting" tab i18n>popup_waiting_button</span>
+            <button class="waiting" tab i18n>popup_waiting_button</button>
             <span id="waiting" class="stats">0</span>
-            <span class="removed" tab i18n>popup_stopped_button</span>
+            <button class="removed" tab i18n>popup_stopped_button</button>
             <span id="stopped" class="stats">0</span>
             <div class="sidemenu">
-                <span module="new/index.html" button i18n>popup_new_button</span>
-                <span id="purdge_btn" button i18n>popup_purge_button</span>
+                <button module="new/index.html" i18n>popup_new_button</button>
+                <button id="purdge_btn" i18n>popup_purge_button</button>
             </div>
         </div>
         <div id="caution" class="error"></div>
@@ -48,22 +48,22 @@
                 </div>
             </div>
             <div class="sidemenu">
-                <span id="remove_btn" button>❌</span>
-                <span id="invest_btn" button>🔍</span>
-                <span id="retry_btn" button>🌌</span>
+                <button id="remove_btn">❌</button>
+                <button id="invest_btn">🔍</button>
+                <button id="retry_btn">🌌</button>
             </div>
             <div id="meter">
                 <div id="ratio"></div>
             </div>
         </div>
         <hr>
-        <div class="menubar">
-            <span class="active light" i18n>popup_download</span>
+        <div>
+            <button class="active" disabled i18n>popup_download</button>
             <span id="download" class="stats">0 B/s</span>
-            <span class="complete light" i18n>popup_upload</span>
+            <button class="complete" disabled i18n>popup_upload</button>
             <span id="upload" class="stats">0 B/s</span>
             <div class="sidemenu">
-                <span module="/options/index.html" button i18n>popup_options_button</span>
+                <button module="/options/index.html" i18n>popup_options_button</button>
             </div>
         </div>
         <script src="/libs/io.js"></script>

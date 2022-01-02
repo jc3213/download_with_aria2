@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="/libs/style.css">
     </head>
     <body>
-        <div class="container">
+        <div class="container" style="height: 455px; overflow-y: auto;">
             <div title="task_referer_desc" i18n_title>
                 <div class="title" i18n>task_referer</div>
                 <div>
@@ -22,7 +22,7 @@
                 <div class="title" i18n>task_proxy</div>
                 <div class="extend">
                     <input task="all-proxy" type="url">
-                    <span local="uri" root="proxy" button>💾</span>
+                    <button local="uri" root="proxy">💾</button>
                 </div>
             </div>
             <div title="aria2_adv_dir_desc" i18n_title>
@@ -60,7 +60,7 @@
         </div>
         <hr>
         <div class="footmenu">
-            <span id="submit_btn" button i18n>task_submit</span>
+            <button id="submit_btn" i18n>task_submit</button>
         </div>
         <script src="/libs/io.js"></script>
         <script src="/libs/options.js"></script>
