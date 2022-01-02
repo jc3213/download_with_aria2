@@ -1,6 +1,6 @@
-var activeQueue = document.querySelector('#content > #active');
-var waitingQueue = document.querySelector('#content > #waiting');
-var stoppedQueue = document.querySelector('#content > #stopped');
+var activeQueue = document.querySelector('div#active');
+var waitingQueue = document.querySelector('div#waiting');
+var stoppedQueue = document.querySelector('div#stopped');
 var currentTab = -1;
 
 document.querySelectorAll('[tab]').forEach((tab, index, tabs) => {

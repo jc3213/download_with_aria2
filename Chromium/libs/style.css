@@ -67,10 +67,6 @@ button.checked {
     border: 1px #ccc inset;
 }
 
-#content {
-    overflow-y: auto;
-}
-
 #template, [panel] {
     display: none;
 }
@@ -78,6 +74,11 @@ button.checked {
 .title {
     font-weight: bold;
     word-break: break-word;
+}
+
+.submenu {
+    max-height: 456px;
+    overflow-y: auto;
 }
 
 .submenu > *:not(:last-child) {
