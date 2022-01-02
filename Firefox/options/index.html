@@ -6,18 +6,18 @@
     </head>
     <body>
         <div class="menubar">
-            <span tab i18n>option_basic</span>
-            <span tab i18n>common_advanced</span>
-            <span tab i18n>option_download</span>
+            <button tab i18n>option_basic</button>
+            <button tab i18n>common_advanced</button>
+            <button tab i18n>option_download</button>
             <div class="sidemenu">
-                <span id="back" button i18n>common_back</span>
+                <button id="back" i18n>common_back</button>
             </div>
             <div id="manager" class="sidemenu">
-                <span id="export" button i18n>option_export</span>
-                <label button>
+                <button id="export" button i18n>option_export</button>
+                <button><label>
                     <span i18n>option_import</span>
                     <input id="import" type="file" accept=".json" style="display: none">
-                </label>
+                </label></button>
             </div>
         </div>
         <hr>
@@ -26,7 +26,7 @@
                 <div class="title" i18n>option_jsonrpc_uri</div>
                 <div class="extend">
                     <input local="uri" root="jsonrpc" type="url">
-                    <span id="aria2_btn" button>⚙️</span>
+                    <button id="aria2_btn">⚙️</button>
                 </div>
                 <span i18n>common_default</span>: <u><i>http://localhost:6800/jsonrpc</i></u>
             </div>
@@ -34,7 +34,7 @@
                 <div class="title" i18n>option_jsonrpc_token</div>
                 <div class="extend">
                     <input local="token" root="jsonrpc" token="token:" type="password" placeholder="$$secret$$">
-                    <span id="show_btn" button>👁️</span>
+                    <button id="show_btn">👁️</button>
                 </div>
             </div>
             <div title="option_jsonrpc_refresh_desc" i18n_title>
@@ -58,7 +58,7 @@
                 <div class="title" i18n>option_proxy_uri</div>
                 <div>
                     <input local="uri" root="proxy" type="url" placeholder="http://127.0.0.1:1180/">
-                    <span i18n>option_protocol</span>: <u><i>http</i></u>/<u><i>https</i></u>
+                    <span i18n>option_protocol</span>: <u><i>http</i></u> / <u><i>https</i></u>
                 </div>
             </div>
             <div title="option_proxy_resolve_desc" i18n_title>
