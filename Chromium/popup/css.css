@@ -1,8 +1,9 @@
-#suspend {
+.block {
     position: absolute;
     top: 0px;
     height: 100%;
     width: 100%;
+    background-color: #fff;
 }
 
 .stats {

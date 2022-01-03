@@ -34,7 +34,7 @@ function aria2RPCClient() {
         {id: '', jsonrpc: 2, method: 'aria2.tellWaiting', params: [aria2RPC.jsonrpc['token'], 0, 999]},
         {id: '', jsonrpc: 2, method: 'aria2.tellStopped', params: [aria2RPC.jsonrpc['token'], 0, 999]}
     ], (global, active, waiting, stopped) => {
-        document.querySelector('#suspend').style.display = 'none';
+        document.querySelector('#message').style.display = 'none';
         document.querySelector('#active.stats').innerText = global.numActive;
         document.querySelector('#waiting.stats').innerText = global.numWaiting;
         document.querySelector('#stopped.stats').innerText = global.numStopped;
@@ -44,8 +44,8 @@ function aria2RPCClient() {
         waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue));
         stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue));
     }, error => {
-        document.querySelector('#suspend').innerText = error;
-        document.querySelector('#suspend').style.display = 'block';
+        document.querySelector('#message').innerText = error;
+        document.querySelector('#message').style.display = 'block';
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
     }, true);
 }
@@ -109,7 +109,6 @@ function createTaskList(result) {
 function calcEstimatedTime(task, number) {
     if (isNaN(number) || number === Infinity) {
         task.querySelector('#infinite').style.display = 'inline-block';
-        task.querySelector('#estimate').style.display = 'none';
     }
     else {
         var days = number / 86400 | 0;
@@ -124,6 +123,5 @@ function calcEstimatedTime(task, number) {
         task.querySelector('#minute').parentNode.style.display = minutes > 0 ? 'inline-block' : 'none';
         task.querySelector('#second').innerText = seconds;
         task.querySelector('#infinite').style.display = 'none';
-        task.querySelector('#estimate').style.display = 'inline-block';
     }
 }
