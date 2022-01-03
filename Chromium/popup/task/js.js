@@ -1,6 +1,7 @@
 var gid = location.hash.slice(1);
 var type = location.search.slice(1);
-var uri = [];
+var files = document.querySelector('#files');
+var uris = document.querySelector('#uris');
 
 document.querySelector('#session').addEventListener('click', event => {
     history.back();
@@ -73,10 +74,10 @@ function aria2RPCClient() {
         document.querySelector('[task="max-upload-limit"]').disabled = disabled || type === 'http';
         document.querySelector('[task="all-proxy"]').disabled = disabled;
         if (type === 'bt') {
-            result.files.forEach(file => printTaskFiles(file, document.querySelector('#files')));
+            result.files.forEach(file => printTaskFiles(file, files));
         }
         if (type === 'http') {
-            result.files[0].uris.forEach(uri => printTaskUris(uri, document.querySelector('#uris')));
+            result.files[0].uris.forEach(uri => printTaskUris(uri, uris));
         }
     }, null, true);
 }
@@ -86,7 +87,7 @@ function printTaskUris(uri, table) {
     var uris = [...cells].map(cell => cell.innerText);
     var index = uris.indexOf(uri.uri);
     var cell = index === -1 ? appendUriToTable(uri, table) : cells[index];
-    cell.className = 'uris ' + (uri.status === 'used' ? 'active' : 'waiting');
+    cell.className = uri.status === 'used' ? 'active' : 'waiting';
 }
 
 function appendUriToTable(uri, table) {
