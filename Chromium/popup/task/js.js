@@ -47,7 +47,7 @@ document.querySelector('#append button').addEventListener('click', event => {
 document.querySelector('#files').addEventListener('click', event => {
     if (event.target.className) {
         var checked = '';
-        document.querySelectorAll('td:nth-child(1)').forEach(file => {
+        document.querySelectorAll('.files > #index').forEach(file => {
             if (file === event.target && file.className !== 'active' || file !== event.target && file.className === 'active') {
                 checked += ',' + file.innerText;
             }
