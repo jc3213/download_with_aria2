@@ -1,7 +1,7 @@
 var gid = location.hash.slice(1);
 var type = location.search.slice(1);
 
-document.querySelector('button#name').addEventListener('click', event => {
+document.querySelector('#session').addEventListener('click', event => {
     history.back();
 });
 
@@ -61,8 +61,8 @@ function aria2RPCClient() {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.tellStatus', params: [aria2RPC.jsonrpc['token'], gid]},
     result => {
         var disabled = ['complete', 'error'].includes(result.status);
-        document.querySelector('#name').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) || result.files[0].uris[0].uri;
-        document.querySelector('#name').className = result.status;
+        document.querySelector('#session').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) || result.files[0].uris[0].uri;
+        document.querySelector('#session').className = result.status;
         document.querySelector('#local').innerText = bytesToFileSize(result.completedLength);
         document.querySelector('#ratio').innerText = ((result.completedLength / result.totalLength * 10000 | 0) / 100) + '%';
         document.querySelector('#remote').innerText = bytesToFileSize(result.totalLength);
@@ -77,7 +77,7 @@ function aria2RPCClient() {
         if (type === 'http') {
             result.files[0].uris.forEach(uri => printTaskUris(uri, document.querySelector('#uris')));
         }
-    }, null, true);
+    }, null, false);
 }
 
 function printTaskUris(uri, table) {

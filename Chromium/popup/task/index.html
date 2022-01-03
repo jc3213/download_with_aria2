@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="css.css">
     </head>
     <body>
-        <button id="name"></button>
+        <button id="session"></button>
         <div class="submenu" style="height: calc(100% - 61px);">
             <div class="module3">
                 <div>🖥️<span id="local"></span></div>
@@ -93,16 +93,14 @@
             </div>
             <div bt title="task_files_desc" i18n_title>
                 <div class="title" i18n>task_files</div>
-                <table id="files">
-                    <tbody>
-                        <tr id="template">
-                            <td id="index"></td>
-                            <td id="name"></td>
-                            <td id="size"></td>
-                            <td id="ratio"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div id="files">
+                    <div id="template" class="files">
+                        <span id="index"></span>
+                        <span id="name"></span>
+                        <span id="size"></span>
+                        <span id="ratio"></span>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="/libs/io.js"></script>

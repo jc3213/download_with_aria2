@@ -11,7 +11,7 @@
     margin-top: 3px;
 }
 
-#name {
+#session {
     height: 46px;
     width: 100%;
     padding: 0px;
@@ -19,7 +19,7 @@
     margin-bottom: 15px;
 }
 
-#name, #uris * {
+#session, #uris * {
     word-break: break-word;
 }
 
@@ -31,31 +31,22 @@
     filter: opacity(60%);
 }
 
-table {
-    border-collapse: collapse;
-    width: 100%;
+.files {
+    display: grid;
+    grid-template-columns: 40px auto 80px 60px;
+    grid-template-rows: 46px;
 }
 
-td {
-    border: 1px outset #CCC;
-    padding: 5px;
+.files > * {
+    border: 1px ridge #ccc;
+    height: 46px;
 }
 
-td#index {
-    width: 20px;
+.files > *:not(#name) {
+    line-height: 46px;
     text-align: center;
 }
 
-td#name {
-    width: calc(100% - 140px);
-}
-
-td#size {
-    width: 70px;
-    text-align: center;
-}
-
-td#ratio {
-    width: 50px;
-    text-align: center;
+.files #name {
+    overflow-y: auto;
 }
