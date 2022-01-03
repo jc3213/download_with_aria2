@@ -11,42 +11,41 @@
     margin-top: 3px;
 }
 
-#session {
-    height: 46px;
+#session, #uris > * {
     width: 100%;
     padding: 0px;
+    word-break: break-word;
+}
+
+#session {
     overflow-y: auto;
     margin-bottom: 15px;
 }
 
-#session, #uris * {
-    word-break: break-word;
+#session, #uris > *, .files > * {
+    height: 46px;
 }
 
-#uris > *:nth-child(n+2) {
-    margin-top: 3px;
-}
-
-#uris > *:active, #files #index:active {
-    filter: opacity(60%);
+#uris > * {
+    overflow-y: hidden;
+    margin-top: 5px;
+    text-align: left;
 }
 
 .files {
     display: grid;
     grid-template-columns: 40px auto 80px 60px;
-    grid-template-rows: 46px;
 }
 
-.files > * {
+.files > *:not(#index) {
     border: 1px ridge #ccc;
-    height: 46px;
 }
 
-.files > *:not(#name) {
+.files > *:not(#name, #index) {
     line-height: 46px;
     text-align: center;
 }
 
-.files #name {
+.files > #name {
     overflow-y: auto;
 }

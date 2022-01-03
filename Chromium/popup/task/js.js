@@ -1,5 +1,6 @@
 var gid = location.hash.slice(1);
 var type = location.search.slice(1);
+var uri = [];
 
 document.querySelector('#session').addEventListener('click', event => {
     history.back();
@@ -9,7 +10,7 @@ document.querySelectorAll('[http], [bt]').forEach(field => {
     field.style.display = field.hasAttribute(type) ? field.classList.contains('module') ? 'grid' : 'block' : 'none';
 });
 
-document.querySelector('body > .submenu').addEventListener('change', event => {
+document.querySelector('.submenu').addEventListener('change', event => {
     changeTaskOption(gid, event.target.getAttribute('task'), event.target.value);
 });
 
@@ -37,9 +38,9 @@ document.querySelector('#uris').addEventListener('click', event => {
     event.ctrlKey ? changeTaskUri({remove: event.target.innerText}) : navigator.clipboard.writeText(event.target.innerText);
 });
 
-document.querySelector('#source > button').addEventListener('click', event => {
-    changeTaskUri({add: document.querySelector('#source > input').value});
-    document.querySelector('#source > input').value = '';
+document.querySelector('#append button').addEventListener('click', event => {
+    changeTaskUri({add: document.querySelector('#append input').value});
+    document.querySelector('#append input').value = '';
 });
 
 document.querySelector('#files').addEventListener('click', event => {
@@ -77,7 +78,7 @@ function aria2RPCClient() {
         if (type === 'http') {
             result.files[0].uris.forEach(uri => printTaskUris(uri, document.querySelector('#uris')));
         }
-    }, null, false);
+    }, null, true);
 }
 
 function printTaskUris(uri, table) {
@@ -85,7 +86,7 @@ function printTaskUris(uri, table) {
     var uris = [...cells].map(cell => cell.innerText);
     var index = uris.indexOf(uri.uri);
     var cell = index === -1 ? appendUriToTable(uri, table) : cells[index];
-    cell.className = uri.status === 'used' ? 'active' : 'waiting';
+    cell.className = 'uris ' + (uri.status === 'used' ? 'active' : 'waiting');
 }
 
 function appendUriToTable(uri, table) {
