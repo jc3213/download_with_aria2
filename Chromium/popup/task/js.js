@@ -73,47 +73,40 @@ function aria2RPCClient() {
         document.querySelector('[task="max-download-limit"]').disabled = disabled;
         document.querySelector('[task="max-upload-limit"]').disabled = disabled || type === 'http';
         document.querySelector('[task="all-proxy"]').disabled = disabled;
-        if (type === 'bt') {
-            result.files.forEach(file => printTaskFiles(file, files));
-        }
-        if (type === 'http') {
-            result.files[0].uris.forEach(uri => printTaskUris(uri, uris));
-        }
+        type === 'bt' ? printTaskFiles(result.files, files) : type === 'http' ? printTaskUris(result.files[0].uris, uris) : null;
     }, null, true);
 }
 
-function printTaskUris(uri, table) {
-    var cells = table.querySelectorAll('div');
-    var uris = [...cells].map(cell => cell.innerText);
-    var index = uris.indexOf(uri.uri);
-    var cell = index === -1 ? appendUriToTable(uri, table) : cells[index];
-    cell.className = uri.status === 'used' ? 'active' : 'waiting';
+function printTaskUris(uris, table) {
+    var cells = table.querySelectorAll('button');
+    uris.forEach((uri, index) => {
+        var cell = cells[index] ?? printTableCell(table, index, uri);
+        cell.innerText = uri.uri;
+        cell.className = uri.status === 'used' ? 'active' : 'waiting';
+    });
+    cells.forEach((cell, index) => index > uris.length ? cell.remove() : null);
 }
 
-function appendUriToTable(uri, table) {
+function printTableCell(table, id, object, resolve) {
     var cell = table.parentNode.querySelector('#template').cloneNode(true);
-    cell.removeAttribute('id');
-    cell.innerText = uri.uri;
-    table.appendChild(cell);
-    return cell;
-}
-
-function printTaskFiles(file, table) {
-    var cell = appendFileToTable(file, table);
-    cell.querySelector('#index').className = file.selected === 'true' ? 'active' : 'error';
-    cell.querySelector('#ratio').innerText = ((file.completedLength / file.length * 10000 | 0) / 100) + '%';
-}
-
-function appendFileToTable(file, table) {
-    var id = file.index + file.length;
-    var cell = document.getElementById(id) ?? table.parentNode.querySelector('#template').cloneNode(true);
     cell.id = id;
-    cell.querySelector('#index').innerText = file.index;
-    cell.querySelector('#name').innerText = file.path.slice(file.path.lastIndexOf('/') + 1);
-    cell.querySelector('#name').title = file.path;
-    cell.querySelector('#size').innerText = bytesToFileSize(file.length);
+    typeof resolve === 'function' ? resolve(cell, object) : null;
     table.appendChild(cell);
     return cell;
+}
+
+function printTaskFiles(files, table) {
+    var cells = table.querySelectorAll('.file');
+    files.forEach((file, index) => {
+        var cell = cells[index] ?? printTableCell(table, index, file, (cell, file) => {
+            cell.querySelector('#index').innerText = file.index;
+            cell.querySelector('#name').innerText = file.path.slice(file.path.lastIndexOf('/') + 1);
+            cell.querySelector('#name').title = file.path;
+            cell.querySelector('#size').innerText = bytesToFileSize(file.length);
+        });
+        cell.querySelector('#index').className = file.selected === 'true' ? 'active' : 'error';
+        cell.querySelector('#ratio').innerText = ((file.completedLength / file.length * 10000 | 0) / 100) + '%';
+    });
 }
 
 function changeTaskOption(gid, name, value) {
