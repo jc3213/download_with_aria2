@@ -3,7 +3,6 @@
     top: 0px;
     height: 100%;
     width: 100%;
-    background-color: #fff;
 }
 
 .stats {
@@ -35,6 +34,10 @@
 #error {
     color: #f00;
     font-size: 11px;
+}
+
+#infinite {
+    background-color: #fff;
 }
 
 #estimate > * {
