@@ -35,19 +35,19 @@ document.querySelector('button[local="uri"]').addEventListener('click', event =>
     changeTaskOption(gid, 'all-proxy', aria2RPC.proxy['uri']);
 });
 
-document.querySelector('#uris').addEventListener('click', event => {
-    event.ctrlKey ? changeTaskUri({remove: event.target.innerText}) : navigator.clipboard.writeText(event.target.innerText);
-});
-
 document.querySelector('#append button').addEventListener('click', event => {
     changeTaskUri({add: document.querySelector('#append input').value});
     document.querySelector('#append input').value = '';
 });
 
-document.querySelector('#files').addEventListener('click', event => {
-    if (event.target.className) {
+uris.addEventListener('click', event => {
+    event.ctrlKey ? changeTaskUri({remove: event.target.innerText}) : navigator.clipboard.writeText(event.target.innerText);
+});
+
+files.addEventListener('click', event => {
+    if (event.target.tagName === 'BUTTON') {
         var checked = '';
-        document.querySelectorAll('.files > #index').forEach(file => {
+        files.querySelectorAll('#index').forEach(file => {
             if (file === event.target && file.className !== 'active' || file !== event.target && file.className === 'active') {
                 checked += ',' + file.innerText;
             }
