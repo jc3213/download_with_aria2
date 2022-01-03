@@ -80,16 +80,16 @@ function aria2RPCClient() {
 function printTaskUris(uris, table) {
     var cells = table.querySelectorAll('button');
     uris.forEach((uri, index) => {
-        var cell = cells[index] ?? printTableCell(table, index, uri);
+        var cell = cells[index] ?? printTableCell(table, uri);
         cell.innerText = uri.uri;
         cell.className = uri.status === 'used' ? 'active' : 'waiting';
     });
     cells.forEach((cell, index) => index > uris.length ? cell.remove() : null);
 }
 
-function printTableCell(table, id, object, resolve) {
+function printTableCell(table, object, resolve) {
     var cell = table.parentNode.querySelector('#template').cloneNode(true);
-    cell.id = id;
+    cell.removeAttribute('id');
     typeof resolve === 'function' ? resolve(cell, object) : null;
     table.appendChild(cell);
     return cell;
@@ -98,7 +98,7 @@ function printTableCell(table, id, object, resolve) {
 function printTaskFiles(files, table) {
     var cells = table.querySelectorAll('.file');
     files.forEach((file, index) => {
-        var cell = cells[index] ?? printTableCell(table, index, file, (cell, file) => {
+        var cell = cells[index] ?? printTableCell(table, file, (cell, file) => {
             cell.querySelector('#index').innerText = file.index;
             cell.querySelector('#name').innerText = file.path.slice(file.path.lastIndexOf('/') + 1);
             cell.querySelector('#name').title = file.path;
