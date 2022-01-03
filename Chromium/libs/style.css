@@ -59,7 +59,7 @@ button {
     border-width: 1px;
 }
 
-button:hover {
+button:not(:disabled):hover {
     filter: opacity(75%);
 }
 
