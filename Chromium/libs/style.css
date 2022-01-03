@@ -108,10 +108,6 @@ button.checked {
     display: grid;
 }
 
-.module > * > span, .module3 > * > span {
-    margin-left: 5px;
-}
-
 .module {
     grid-template-columns: 49% 49%;
     grid-column-gap: 2%;
@@ -120,6 +116,11 @@ button.checked {
 .module3 {
     grid-template-columns: 33% 33% 33%;
     grid-column-gap: 0.5%;
+}
+
+.module > * > span, .module3 > * > span {
+    margin-left: 5px;
+    background-color: #fff;
 }
 
 .active {
