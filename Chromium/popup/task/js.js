@@ -62,7 +62,7 @@ function appendFileToTable(file, table) {
 }
 
 document.querySelector('button#name').addEventListener('click', event => {
-    history.back();
+    open('/popup/index.html', '_self');
 });
 
 document.querySelectorAll('[http], [bt]').forEach(field => {

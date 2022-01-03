@@ -2,7 +2,7 @@ document.querySelector('#manager').style.display = location.search === '?popup' 
 document.querySelector('#back').parentNode.style.display = location.search === '?popup' ? 'block' : 'none';
 
 document.querySelector('#back').addEventListener('click', event => {
-    history.back();
+    open('/popup/index.html', '_self');
 });
 
 document.querySelector('#export').addEventListener('click', event => {
