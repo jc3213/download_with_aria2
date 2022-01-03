@@ -1,12 +1,9 @@
-.triple span {
-    margin-left: 4px;
+.module3 > div {
     border: 1px ridge #ccc;
-    display: inline-block;
-    width: 80%;
-    text-align: center;
+    padding: 5px;
 }
 
-[edit] {
+.plate {
     padding: 4px;
 }
 

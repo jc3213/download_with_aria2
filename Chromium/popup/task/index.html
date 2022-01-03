@@ -8,19 +8,19 @@
     <body>
         <button id="name"></button>
         <div class="submenu" style="height: calc(100% - 61px);">
-            <div class="triple">
+            <div class="module3">
                 <div>🖥️<span id="local"></span></div>
                 <div>🛰️<span id="ratio"></span></div>
                 <div>📦<span id="remote"></span></div>
             </div>
-            <div class="double">
+            <div class="module">
                 <div title="task_download_desc" i18n_title>
                     <div class="title" i18n>task_download</div>
                     <label style="display: none;">
                         <span class="suffix">B/s</span>
                         <input task="max-download-limit" size type="text">
                     </label>
-                    <div id="download" edit class="active"></div>
+                    <div id="download" class="plate active"></div>
                 </div>
                 <div title="task_upload_desc" i18n_title>
                     <div class="title" i18n>task_upload</div>
@@ -28,7 +28,7 @@
                         <span class="suffix">B/s</span>
                         <input task="max-upload-limit" size type="text">
                     </label>
-                    <div id="upload" edit class="complete"></div>
+                    <div id="upload" class="plate complete"></div>
                 </div>
             </div>
             <div title="task_proxy_desc" i18n_title>
@@ -38,7 +38,7 @@
                     <button local="uri" root="proxy">💾</button>
                 </div>
             </div>
-            <div http class="double">
+            <div http class="module">
                 <div title="aria2_http_split_desc" i18n_title>
                     <div class="title" i18n>aria2_http_split</div>
                     <div>
@@ -55,7 +55,7 @@
                     <span i18n>common_default</span>: <u><i>20M</i></u>
                 </div>
             </div>
-            <div bt class="double">
+            <div bt class="module">
                 <div title="aria2_bt_ratio_desc" i18n_title>
                     <div class="title" i18n>aria2_bt_ratio</div>
                     <div>

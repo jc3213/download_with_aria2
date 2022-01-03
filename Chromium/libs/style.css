@@ -104,20 +104,22 @@ button.checked {
     text-align: center;
 }
 
-.double > *, .triple > * {
-    display: inline-block;
+.module, .module3 {
+    display: grid;
 }
 
-.double > * {
-    width: 48%;
+.module > * > span, .module3 > * > span {
+    margin-left: 5px;
 }
 
-.triple > * {
-    width: 32.6%;
+.module {
+    grid-template-columns: 49% 49%;
+    grid-column-gap: 2%;
 }
 
-.double > *:first-child {
-    margin-right: 10px;
+.module3 {
+    grid-template-columns: 33% 33% 33%;
+    grid-column-gap: 0.5%;
 }
 
 .active {

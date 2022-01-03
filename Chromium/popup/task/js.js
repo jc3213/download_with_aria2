@@ -1,6 +1,59 @@
 var gid = location.hash.slice(1);
 var type = location.search.slice(1);
 
+document.querySelector('button#name').addEventListener('click', event => {
+    history.back();
+});
+
+document.querySelectorAll('[http], [bt]').forEach(field => {
+    field.style.display = field.hasAttribute(type) ? field.classList.contains('module') ? 'grid' : 'block' : 'none';
+});
+
+document.querySelector('body > .submenu').addEventListener('change', event => {
+    changeTaskOption(gid, event.target.getAttribute('task'), event.target.value);
+});
+
+document.querySelectorAll('.plate').forEach(node => {
+    var label = node.parentNode.querySelector('label');
+    var field = label.querySelector('input');
+    node.addEventListener('click', event => {
+        if (!field.disabled) {
+            node.style.display = 'none';
+            label.style.display = 'block';
+            field.focus();
+        }
+    });
+    field.addEventListener('change', event => {
+        label.style.display = 'none';
+        node.style.display = 'block';
+    });
+});
+
+document.querySelector('button[local="uri"]').addEventListener('click', event => {
+    changeTaskOption(gid, 'all-proxy', aria2RPC.proxy['uri']);
+});
+
+document.querySelector('#uris').addEventListener('click', event => {
+    event.ctrlKey ? changeTaskUri({remove: event.target.innerText}) : navigator.clipboard.writeText(event.target.innerText);
+});
+
+document.querySelector('#source > button').addEventListener('click', event => {
+    changeTaskUri({add: document.querySelector('#source > input').value});
+    document.querySelector('#source > input').value = '';
+});
+
+document.querySelector('#files').addEventListener('click', event => {
+    if (event.target.className) {
+        var checked = '';
+        document.querySelectorAll('td:nth-child(1)').forEach(file => {
+            if (file === event.target && file.className !== 'active' || file !== event.target && file.className === 'active') {
+                checked += ',' + file.innerText;
+            }
+        });
+        changeTaskOption(gid, 'select-file', checked.slice(1));
+    }
+});
+
 function aria2RPCClient() {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getOption', params: [aria2RPC.jsonrpc['token'], gid]},
     options => document.querySelectorAll('[task]').forEach(task => parseValueToOption(task, 'task', options)));
@@ -60,61 +113,6 @@ function appendFileToTable(file, table) {
     table.appendChild(cell);
     return cell;
 }
-
-document.querySelector('button#name').addEventListener('click', event => {
-    open('/popup/index.html', '_self');
-});
-
-document.querySelectorAll('[http], [bt]').forEach(field => {
-    field.style.display = field.hasAttribute(type) ? 'block' : 'none';
-});
-
-document.querySelector('body > .submenu').addEventListener('change', event => {
-    changeTaskOption(gid, event.target.getAttribute('task'), event.target.value);
-});
-
-document.querySelectorAll('[edit]').forEach(node => {
-    var label = node.parentNode.querySelector('label');
-    var field = label.querySelector('input');
-    node.addEventListener('click', event => {
-        if (!field.disabled) {
-            node.style.display = 'none';
-            label.style.display = 'block';
-            field.focus();
-        }
-    });
-    field.addEventListener('keydown', event => {
-        if (event.keyCode === 13) {
-            label.style.display = 'none';
-            node.style.display = 'block';
-        }
-    });
-});
-
-document.querySelector('button[local="uri"]').addEventListener('click', event => {
-    changeTaskOption(gid, 'all-proxy', aria2RPC.proxy['uri']);
-});
-
-document.querySelector('#uris').addEventListener('click', event => {
-    event.ctrlKey ? changeTaskUri({remove: event.target.innerText}) : navigator.clipboard.writeText(event.target.innerText);
-});
-
-document.querySelector('#source > button').addEventListener('click', event => {
-    changeTaskUri({add: document.querySelector('#source > input').value});
-    document.querySelector('#source > input').value = '';
-});
-
-document.querySelector('#files').addEventListener('click', event => {
-    if (event.target.className) {
-        var checked = '';
-        document.querySelectorAll('td:nth-child(1)').forEach(file => {
-            if (file === event.target && file.className !== 'active' || file !== event.target && file.className === 'active') {
-                checked += ',' + file.innerText;
-            }
-        });
-        changeTaskOption(gid, 'select-file', checked.slice(1));
-    }
-});
 
 function changeTaskOption(gid, name, value) {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, {[name]: value}]});

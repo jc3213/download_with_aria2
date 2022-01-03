@@ -20,10 +20,6 @@
     width: calc(100% - 20px);
 }
 
-.triple > * > * {
-    margin-left: 4px;
-}
-
 .session .sidemenu {
     top: 1px;
     right: 1px;
