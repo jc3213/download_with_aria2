@@ -10,7 +10,7 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
         entries.forEach(url => downloadWithAria2(url, options));
         showNotification(entries.join());
     }
-    open('/popup/index.html', '_self');
+    history.back();
 });
 
 document.querySelector('#entries').addEventListener('drop', event => {
@@ -21,7 +21,7 @@ document.querySelector('#entries').addEventListener('drop', event => {
             result => showNotification(file.name)));
         }
     });
-    open('/popup/index.html', '_self');
+    history.back();
 });
 
 function newTaskOptions() {
