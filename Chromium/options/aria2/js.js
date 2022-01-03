@@ -1,7 +1,7 @@
 document.querySelector('#version').innerText = location.search.slice(1);
 
 document.querySelector('#back_btn').addEventListener('click', event => {
-    open('/options/index.html', '_self');
+    history.back();
 });
 
 document.addEventListener('change', event => {
