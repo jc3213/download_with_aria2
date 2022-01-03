@@ -10,6 +10,11 @@ body, input, textarea, select, option, button {
     font-size: 15px;
 }
 
+body > div {
+    max-height: calc(100% - 46px);
+    overflow-y: auto;
+}
+
 label, div {
     position: relative;
 }
@@ -74,11 +79,6 @@ button.checked {
 .title {
     font-weight: bold;
     word-break: break-word;
-}
-
-.submenu {
-    max-height: 454px;
-    overflow-y: auto;
 }
 
 .submenu > *:not(:last-child) {
