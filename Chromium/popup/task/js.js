@@ -91,7 +91,7 @@ function printTaskUris(uri, table) {
 }
 
 function appendUriToTable(uri, table) {
-    var cell = table.querySelector('#template').cloneNode(true);
+    var cell = table.parentNode.querySelector('#template').cloneNode(true);
     cell.removeAttribute('id');
     cell.innerText = uri.uri;
     table.appendChild(cell);
@@ -106,7 +106,7 @@ function printTaskFiles(file, table) {
 
 function appendFileToTable(file, table) {
     var id = file.index + file.length;
-    var cell = document.getElementById(id) ?? table.querySelector('#template').cloneNode(true);
+    var cell = document.getElementById(id) ?? table.parentNode.querySelector('#template').cloneNode(true);
     cell.id = id;
     cell.querySelector('#index').innerText = file.index;
     cell.querySelector('#name').innerText = file.path.slice(file.path.lastIndexOf('/') + 1);

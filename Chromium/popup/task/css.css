@@ -22,7 +22,7 @@
     margin-bottom: 15px;
 }
 
-#session, #uris > *, .files > * {
+#session, #uris > *, .file > * {
     height: 46px;
 }
 
@@ -32,20 +32,20 @@
     text-align: left;
 }
 
-.files {
+.file {
     display: grid;
     grid-template-columns: 40px auto 80px 60px;
 }
 
-.files > *:not(#index) {
+.file > *:not(#index) {
     border: 1px ridge #ccc;
 }
 
-.files > *:not(#name, #index) {
+.file > *:not(#name, #index) {
     line-height: 46px;
     text-align: center;
 }
 
-.files > #name {
+.file > #name {
     overflow-y: auto;
 }
