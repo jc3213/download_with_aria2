@@ -7,16 +7,22 @@
     border: 1px outset #CCC;
     padding: 3px;
     margin-bottom: 5px;
+    display: grid;
+    grid-template-columns: calc(100% - 20px) 20px;
+    grid-template-areas: 'name menu' 'detail menu' 'meter meter';
 }
 
-.details {
-    width: calc(100% - 20px);
+.menu {
+    grid-area: menu;
 }
 
-.session .sidemenu {
-    top: 1px;
-    right: 1px;
-    width: 20px;
+#meter {
+    grid-area: meter;
+    text-align: center;
+}
+
+#meter:active {
+    filter: opacity(50%);
 }
 
 .session button {
@@ -31,14 +37,6 @@
 
 #estimate > * {
     margin-left: -4px;
-}
-
-#meter {
-    text-align: center;
-}
-
-#meter:active {
-    filter: opacity(30%);
 }
 
 [status="active"] #meter {
