@@ -16,19 +16,19 @@
             <div class="module">
                 <div title="task_download_desc" i18n_title>
                     <div class="title" i18n>task_download</div>
-                    <label style="display: none;">
+                    <div>
                         <span class="suffix">B/s</span>
                         <input task="max-download-limit" size type="text">
-                    </label>
-                    <div id="download" class="plate active"></div>
+                        <div id="download" class="block active"></div>
+                    </div>
                 </div>
                 <div title="task_upload_desc" i18n_title>
                     <div class="title" i18n>task_upload</div>
-                    <label style="display: none;">
+                    <div>
                         <span class="suffix">B/s</span>
                         <input task="max-upload-limit" size type="text">
-                    </label>
-                    <div id="upload" class="plate complete"></div>
+                        <div id="upload" class="block complete"></div>
+                    </div>
                 </div>
             </div>
             <div title="task_proxy_desc" i18n_title>
@@ -48,10 +48,10 @@
                 </div>
                 <div title="aria2_http_size_desc" i18n_title>
                     <div class="title" i18n>aria2_http_size</div>
-                    <label>
+                    <div>
                         <span class="suffix">B</span>
                         <input task="min-split-size" size type="text">
-                    </label>
+                    </div>
                     <span i18n>common_default</span>: <u><i>20M</i></u>
                 </div>
             </div>

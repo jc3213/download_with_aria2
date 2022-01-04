@@ -3,12 +3,8 @@
     padding: 5px;
 }
 
-.plate {
-    padding: 4px;
-}
-
-.suffix {
-    margin-top: 3px;
+.block {
+    line-height: 27px;
 }
 
 #session, #uris > * {

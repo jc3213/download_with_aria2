@@ -15,21 +15,8 @@ body > div {
     overflow-y: auto;
 }
 
-label, div {
+div {
     position: relative;
-}
-
-label .suffix, label .suffix2 {
-    position: absolute;
-    top: 0px;
-}
-
-label .suffix {
-    right: 8px;
-}
-
-label .suffix2 {
-    right: 28px;
 }
 
 input, textarea, select, option {
@@ -95,6 +82,13 @@ button.checked {
     text-align: center;
 }
 
+.block {
+    position: absolute;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+}
+
 .module, .module3, .addon {
     display: grid;
 }
@@ -122,6 +116,12 @@ button.checked {
 .addon > button {
     font-size: 14px;
     padding: 1px;
+}
+
+.suffix {
+    position: absolute;
+    right: 0px;
+    padding: 3px 8px;
 }
 
 .active {

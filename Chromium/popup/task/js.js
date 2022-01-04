@@ -15,19 +15,16 @@ document.querySelector('.submenu').addEventListener('change', event => {
     changeTaskOption(gid, event.target.getAttribute('task'), event.target.value);
 });
 
-document.querySelectorAll('.plate').forEach(node => {
-    var label = node.parentNode.querySelector('label');
-    var field = label.querySelector('input');
-    node.addEventListener('click', event => {
+document.querySelectorAll('.block').forEach(block => {
+    var field = block.parentNode.querySelector('input');
+    block.addEventListener('click', event => {
         if (!field.disabled) {
-            node.style.display = 'none';
-            label.style.display = 'block';
+            block.style.display = 'none';
             field.focus();
         }
     });
-    field.addEventListener('change', event => {
-        label.style.display = 'none';
-        node.style.display = 'block';
+    field.addEventListener('blur', event => {
+        block.style.display = 'block';
     });
 });
 
@@ -77,16 +74,6 @@ function aria2RPCClient() {
     }, null, true);
 }
 
-function printTaskUris(uris, table) {
-    var cells = table.querySelectorAll('button');
-    uris.forEach((uri, index) => {
-        var cell = cells[index] ?? printTableCell(table, uri);
-        cell.innerText = uri.uri;
-        cell.className = uri.status === 'used' ? 'active' : 'waiting';
-    });
-    cells.forEach((cell, index) => index > uris.length ? cell.remove() : null);
-}
-
 function printTableCell(table, object, resolve) {
     var cell = table.parentNode.querySelector('#template').cloneNode(true);
     cell.removeAttribute('id');
@@ -95,10 +82,18 @@ function printTableCell(table, object, resolve) {
     return cell;
 }
 
+function printTaskUris(uris, table) {
+    uris.forEach((uri, index) => {
+        var cell = table.querySelector('button:nth-child(' + (index + 1) + ')') ?? printTableCell(table, uri);
+        cell.innerText = uri.uri;
+        cell.className = uri.status === 'used' ? 'active' : 'waiting';
+    });
+    table.querySelectorAll('button').forEach((cell, index) => index > uris.length ? cell.remove() : null);
+}
+
 function printTaskFiles(files, table) {
-    var cells = table.querySelectorAll('.file');
     files.forEach((file, index) => {
-        var cell = cells[index] ?? printTableCell(table, file, (cell, file) => {
+        var cell = table.querySelector('.file:nth-child(' + (index + 1) + ')') ?? printTableCell(table, file, (cell, file) => {
             cell.querySelector('#index').innerText = file.index;
             cell.querySelector('#name').innerText = file.path.slice(file.path.lastIndexOf('/') + 1);
             cell.querySelector('#name').title = file.path;
