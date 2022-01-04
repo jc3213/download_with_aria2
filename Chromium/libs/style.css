@@ -95,23 +95,13 @@ button.checked {
     text-align: center;
 }
 
-.module, .module2, .module3 {
+.module, .module3, .addon {
     display: grid;
 }
 
 .module {
     grid-template-columns: 49% 49%;
     grid-column-gap: 2%;
-}
-
-.module2 {
-    grid-template-columns: calc(100% - 34px) auto;
-    grid-column-gap: 3px;
-}
-
-.module2 > button {
-    font-size: 13px;
-    padding: 3px;
 }
 
 .module3 {
@@ -122,6 +112,16 @@ button.checked {
 .module > * > span, .module3 > * > span {
     margin-left: 5px;
     background-color: #fff;
+}
+
+.addon {
+    grid-template-columns: calc(100% - 30px) 27px;
+    grid-column-gap: 3px;
+}
+
+.addon > button {
+    font-size: 14px;
+    padding: 1px;
 }
 
 .active {
