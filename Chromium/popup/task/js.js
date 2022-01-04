@@ -79,7 +79,7 @@ function aria2RPCClient() {
 
 function printTaskUris(uris, table) {
     var cells = table.querySelectorAll('button');
-    uris.forEach((uri, index) => {
+    uris.forEach(uri => {
         var cell = cells[index] ?? printTableCell(table, uri);
         cell.innerText = uri.uri;
         cell.className = uri.status === 'used' ? 'active' : 'waiting';
@@ -97,7 +97,7 @@ function printTableCell(table, object, resolve) {
 
 function printTaskFiles(files, table) {
     var cells = table.querySelectorAll('.file');
-    files.forEach((file, index) => {
+    files.forEach(file => {
         var cell = cells[index] ?? printTableCell(table, file, (cell, file) => {
             cell.querySelector('#index').innerText = file.index;
             cell.querySelector('#name').innerText = file.path.slice(file.path.lastIndexOf('/') + 1);
