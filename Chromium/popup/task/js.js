@@ -83,17 +83,19 @@ function printTableCell(table, object, resolve) {
 }
 
 function printTaskUris(uris, table) {
+    var cells = table.querySelectorAll('button');
     uris.forEach((uri, index) => {
-        var cell = table.querySelector('button:nth-child(' + (index + 1) + ')') ?? printTableCell(table, uri);
+        var cell = cells[index] ?? printTableCell(table, uri);
         cell.innerText = uri.uri;
         cell.className = uri.status === 'used' ? 'active' : 'waiting';
     });
-    table.querySelectorAll('button').forEach((cell, index) => index > uris.length ? cell.remove() : null);
+    cells.forEach((cell, index) => index > uris.length ? cell.remove() : null);
 }
 
 function printTaskFiles(files, table) {
+    var cells = table.querySelectorAll('.file');
     files.forEach((file, index) => {
-        var cell = table.querySelector('.file:nth-child(' + (index + 1) + ')') ?? printTableCell(table, file, (cell, file) => {
+        var cell = cells[index] ?? printTableCell(table, file, (cell, file) => {
             cell.querySelector('#index').innerText = file.index;
             cell.querySelector('#name').innerText = file.path.slice(file.path.lastIndexOf('/') + 1);
             cell.querySelector('#name').title = file.path;
