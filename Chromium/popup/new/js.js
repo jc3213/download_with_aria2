@@ -3,6 +3,12 @@ function aria2RPCClient() {
     printFeedButton();
 }
 
+document.querySelector('#add_btn').addEventListener('click', event => {
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        document.querySelector('#referer').value = tabs[0].url;
+    });
+});
+
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = newTaskOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);

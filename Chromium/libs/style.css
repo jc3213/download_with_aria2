@@ -85,15 +85,6 @@ button.checked {
     margin-bottom: 15px;
 }
 
-.extend > input {
-    width: calc(100% - 44px);
-}
-
-.extend > button {
-    font-size: 13px;
-    padding: 4px;
-}
-
 .sidemenu {
     position: absolute;
     top: 0px;
@@ -104,13 +95,23 @@ button.checked {
     text-align: center;
 }
 
-.module, .module3 {
+.module, .module2, .module3 {
     display: grid;
 }
 
 .module {
     grid-template-columns: 49% 49%;
     grid-column-gap: 2%;
+}
+
+.module2 {
+    grid-template-columns: calc(100% - 34px) auto;
+    grid-column-gap: 3px;
+}
+
+.module2 > button {
+    font-size: 13px;
+    padding: 3px;
 }
 
 .module3 {
