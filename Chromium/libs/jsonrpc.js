@@ -24,27 +24,19 @@ function aria2RPCRefresh() {
 function aria2RPCRequest(request, resolve, reject, alive) {
     var requestJSON = Array.isArray(request) ? request : [request];
     fetch(aria2RPC.jsonrpc['uri'], {method: 'POST', body: JSON.stringify(requestJSON)}).then(response => {
-        if (response.ok) {
-            return response.json();
-        }
-        else {
+        if (!response.ok) {
             throw new Error(response.statusText);
         }
+        return response.json();
     }).then(responseJSON => {
-        if (responseJSON[0].result && typeof resolve === 'function') {
-            resolve(...responseJSON.map(({result}) => result));
-        }
         if (responseJSON[0].error) {
             throw responseJSON[0].error;
         }
+        responseJSON[0].result && typeof resolve === 'function' && resolve(...responseJSON.map(({result}) => result));
     }).catch(error => {
-        if (typeof reject === 'function' && aria2Error === 0) {
-            aria2Error = reject(error.message) ?? 1;
-        }
+        aria2Error === 0 && typeof reject === 'function' && (aria2Error = reject(error.message) ?? 1);
     });
-    if (alive) {
-        aria2KeepAlive = setTimeout(() => aria2RPCRequest(request, resolve, reject, alive), aria2RPC.jsonrpc['refresh']);
-    }
+    alive && (aria2KeepAlive = setTimeout(() => aria2RPCRequest(request, resolve, reject, alive), aria2RPC.jsonrpc['refresh']));
 }
 
 function downloadWithAria2(url, options) {
