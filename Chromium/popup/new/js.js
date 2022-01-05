@@ -12,10 +12,7 @@ document.querySelector('#add_btn').addEventListener('click', event => {
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = newTaskOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    if (Array.isArray(entries)) {
-        entries.forEach(url => downloadWithAria2(url, options));
-        showNotification(entries.join());
-    }
+    Array.isArray(entries) && entries.forEach(url => downloadWithAria2(url, options));
     history.back();
 });
 
