@@ -25,7 +25,7 @@ browser.downloads.onCreated.addListener(async item => {
     var folder = aria2RPC.folder['mode'] === '1' ? item.filename.slice(0, item.filename.indexOf(filename)) : aria2RPC.folder['mode'] === '2' ? aria2RPC.folder['uri'] : null;
     var storeId = tabs[0].cookieStoreId;
 
-    captureDownload(domain, getFileExtension(filename), url) &&
+    captureDownload(domain, getFileExtension(filename)) &&
         browser.downloads.cancel(item.id).then(() => {
             browser.downloads.erase({id: item.id}).then(() => {
                 startDownload({url, referer, domain, filename, folder, storeId});
@@ -43,7 +43,7 @@ async function startDownload({url, referer, domain, filename, folder, storeId}, 
     downloadWithAria2(url, options);
 }
 
-function captureDownload(domain, fileExt, url) {
+function captureDownload(domain, fileExt) {
     return aria2RPC.capture['reject'].includes(domain) ? false :
         aria2RPC.capture['mode'] === '2' ? true :
         aria2RPC.capture['resolve'].includes(domain) ? true :
