@@ -69,7 +69,7 @@ function printTaskDetails(result, index, queue) {
 function updateTaskDetails(task, result) {
     task.querySelector('#name').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path ? result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) : result.files[0].uris[0] ? result.files[0].uris[0].uri : result.gid;
     task.querySelector('#local').innerText = bytesToFileSize(result.completedLength);
-    calcEstimatedTime(task, (result.totalLength - result.completedLength) / result.downloadSpeed);
+    updateEstimated(task, (result.totalLength - result.completedLength) / result.downloadSpeed);
     task.querySelector('#connect').innerText = result.bittorrent ? result.numSeeders + ' (' + result.connections + ')' : result.connections;
     task.querySelector('#download').innerText = bytesToFileSize(result.downloadSpeed) + '/s';
     task.querySelector('#upload').innerText = bytesToFileSize(result.uploadSpeed) + '/s';
@@ -106,7 +106,7 @@ function createTaskList(result) {
     return task;
 }
 
-function calcEstimatedTime(task, number) {
+function updateEstimated(task, number) {
     if (isNaN(number) || number === Infinity) {
         task.querySelector('#infinite').style.display = 'inline-block';
     }
