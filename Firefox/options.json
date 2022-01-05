@@ -17,7 +17,6 @@
         "mode": "0",
         "reject": [],
         "resolve": [],
-        "fileExt": [],
-        "fileSize": 0
+        "fileExt": []
     }
 }
