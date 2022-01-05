@@ -1,7 +1,8 @@
 var gid = location.hash.slice(1);
 var type = location.search.slice(1);
-var files = document.querySelector('#files');
 var uris = document.querySelector('#uris');
+var files = document.querySelector('#files');
+var torrent = [];
 
 document.querySelector('#session').addEventListener('click', event => {
     history.back();
@@ -12,7 +13,7 @@ document.querySelectorAll('[http], [bt]').forEach(field => {
 });
 
 document.querySelector('.submenu').addEventListener('change', event => {
-    changeTaskOption(gid, event.target.getAttribute('task'), event.target.value);
+    changeTaskOption({[event.target.getAttribute('task')]: event.target.value});
 });
 
 document.querySelectorAll('.block').forEach(block => {
@@ -29,7 +30,7 @@ document.querySelectorAll('.block').forEach(block => {
 });
 
 document.querySelector('button[local="uri"]').addEventListener('click', event => {
-    changeTaskOption(gid, 'all-proxy', aria2RPC.proxy['uri']);
+    changeTaskOption({'all-proxy': aria2RPC.proxy['uri']});
 });
 
 document.querySelector('#append button').addEventListener('click', event => {
@@ -42,14 +43,10 @@ uris.addEventListener('click', event => {
 });
 
 files.addEventListener('click', event => {
-    if (event.target.tagName === 'BUTTON') {
-        var checked = '';
-        files.querySelectorAll('#index').forEach(file => {
-            if (file === event.target && file.className !== 'active' || file !== event.target && file.className === 'active') {
-                checked += ',' + file.innerText;
-            }
-        });
-        changeTaskOption(gid, 'select-file', checked.slice(1));
+    if (event.target.id === 'index') {
+        var index = torrent.indexOf(event.target.innerText);
+        var files = index !== -1 ? [...torrent.slice(0, index), ...torrent.slice(index + 1)] : [...torrent, event.target.innerText];
+        changeTaskOption({'select-file': files.join()}, result => torrent = files);
     }
 });
 
@@ -70,7 +67,7 @@ function aria2RPCClient() {
         document.querySelector('[task="max-download-limit"]').disabled = disabled;
         document.querySelector('[task="max-upload-limit"]').disabled = disabled || type === 'http';
         document.querySelector('[task="all-proxy"]').disabled = disabled;
-        type === 'bt' ? printTaskFiles(result.files, files) : type === 'http' ? printTaskUris(result.files[0].uris, uris) : null;
+        type === 'http' ? printTaskUris(result.files[0].uris, uris) : type === 'bt' ? printTaskFiles(result.files, files) : null;
     }, null, true);
 }
 
@@ -100,14 +97,15 @@ function printTaskFiles(files, table) {
             cell.querySelector('#name').innerText = file.path.slice(file.path.lastIndexOf('/') + 1);
             cell.querySelector('#name').title = file.path;
             cell.querySelector('#size').innerText = bytesToFileSize(file.length);
+            file.selected === 'true' ? torrent.push(file.index) : null;
         });
         cell.querySelector('#index').className = file.selected === 'true' ? 'active' : 'error';
         cell.querySelector('#ratio').innerText = ((file.completedLength / file.length * 10000 | 0) / 100) + '%';
     });
 }
 
-function changeTaskOption(gid, name, value) {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, {[name]: value}]});
+function changeTaskOption(options, resolve) {
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, options]}, resolve);
 }
 
 function changeTaskUri({add, remove}) {
