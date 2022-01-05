@@ -12,8 +12,6 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
     startDownload({url: info.linkUrl, referer: info.pageUrl, storeId: tab.cookieStoreId, domain: getDomainFromUrl(info.pageUrl)});
 });
 
-browser.browserAction.setBadgeBackgroundColor({color: '#3cc'});
-
 browser.downloads.onCreated.addListener(async item => {
     if (aria2RPC.capture['mode'] === '0' || item.url.startsWith('blob') || item.url.startsWith('data')) {
         return;
