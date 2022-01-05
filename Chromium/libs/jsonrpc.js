@@ -11,9 +11,7 @@ chrome.storage.local.get(null, async result => {
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         aria2RPC[key] = changes[key].newValue;
-        if (key === 'jsonrpc') {
-            aria2RPCRefresh();
-        }
+        key === 'jsonrpc' && aria2RPCRefresh();
     });
 });
 
