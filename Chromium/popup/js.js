@@ -40,9 +40,9 @@ function aria2RPCClient() {
         document.querySelector('#stopped.stats').innerText = global.numStopped;
         document.querySelector('#download.stats').innerText = bytesToFileSize(global.downloadSpeed) + '/s';
         document.querySelector('#upload.stats').innerText = bytesToFileSize(global.uploadSpeed) + '/s';
-        active.forEach((active, index) => printTaskDetails(active, index, activeQueue));
-        waiting.forEach((waiting, index) => printTaskDetails(waiting, index, waitingQueue));
-        stopped.forEach((stopped, index) => printTaskDetails(stopped, index, stoppedQueue));
+        active.forEach((active, index) => printTaskDetail(active, index, activeQueue));
+        waiting.forEach((waiting, index) => printTaskDetail(waiting, index, waitingQueue));
+        stopped.forEach((stopped, index) => printTaskDetail(stopped, index, stoppedQueue));
     }, error => {
         document.querySelector('#message').innerText = error;
         document.querySelector('#message').style.display = 'block';
@@ -50,23 +50,23 @@ function aria2RPCClient() {
     }, true);
 }
 
-function printTaskDetails(result, index, queue) {
-    var task = document.getElementById(result.gid) ?? createTaskList(result);
+function printTaskDetail(result, index, queue) {
+    var task = document.getElementById(result.gid) ?? appendTaskDetail(result);
     if (task.parentNode !== queue) {
         queue.insertBefore(task, queue.childNodes[index]);
         task.setAttribute('status', result.status);
         task.querySelector('#error').innerText = result.errorMessage ?? '';
         task.querySelector('#retry_btn').style.display = !result.bittorrent && ['error', 'removed'].includes(result.status) ? 'inline-block' : 'none';
         if (result.status !== 'active') {
-            updateTaskDetails(task, result);
+            updateTaskDetail(task, result);
         }
     }
     if (result.status === 'active') {
-        updateTaskDetails(task, result);
+        updateTaskDetail(task, result);
     }
 }
 
-function updateTaskDetails(task, result) {
+function updateTaskDetail(task, result) {
     task.querySelector('#name').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path ? result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) : result.files[0].uris[0] ? result.files[0].uris[0].uri : result.gid;
     task.querySelector('#local').innerText = bytesToFileSize(result.completedLength);
     updateEstimated(task, (result.totalLength - result.completedLength) / result.downloadSpeed);
@@ -77,13 +77,12 @@ function updateTaskDetails(task, result) {
     task.querySelector('#ratio').className = result.status;
 }
 
-function createTaskList(result) {
+function appendTaskDetail(result) {
     var task = document.querySelector('#template').cloneNode(true);
     var gid = result.gid;
     task.id = gid;
     task.querySelector('#remote').innerText = bytesToFileSize(result.totalLength);
     task.querySelector('#upload').parentNode.style.display = result.bittorrent ? 'inline-block' : 'none';
-    updateTaskDetails(task, result);
     task.querySelector('#remove_btn').addEventListener('click', event => {
         aria2RPCRequest({id: '', jsonrpc: 2, method: ['active', 'waiting', 'paused'].includes(task.getAttribute('status')) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult', params: [aria2RPC.jsonrpc['token'], gid]},
         result => ['complete', 'error', 'paused', 'removed'].includes(task.getAttribute('status')) ? task.remove() : task.querySelector('#name').innerText = '⏳');
