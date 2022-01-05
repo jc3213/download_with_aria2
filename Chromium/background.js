@@ -21,13 +21,12 @@ chrome.downloads.onDeterminingFilename.addListener(item => {
         var domain = getDomainFromUrl(referer);
         var filename = item.filename;
 
-        if (captureDownload(domain, getFileExtension(filename), item.fileSize)) {
+        captureDownload(domain, getFileExtension(filename), item.fileSize) && 
             chrome.downloads.cancel(item.id, () => {
                 chrome.downloads.erase({id: item.id}, () => {
                     startDownload({url, referer, domain, filename});
                 });
             });
-        }
     });
 });
 
@@ -35,33 +34,18 @@ function startDownload({url, referer, domain, filename}, options = {}) {
     chrome.cookies.getAll({url}, cookies => {
         options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['useragent']];
         cookies.forEach(cookie => options['header'][0] += ' ' + cookie.name + '=' + cookie.value + ';');
-        if (filename) {
-            options['out'] = filename;
-        }
-        if (aria2RPC.proxy['resolve'].includes(domain)) {
-            options['all-proxy'] = aria2RPC.proxy['uri'];
-        }
+        options['out'] = filename;
+        options['all-proxy'] = aria2RPC.proxy['resolve'].includes(domain) ? aria2RPC.proxy['uri'] : '';
         downloadWithAria2(url, options);
     });
 }
 
 function captureDownload(domain, fileExt, fileSize) {
-    if (aria2RPC.capture['reject'].includes(domain)) {
-        return false;
-    }
-    if (aria2RPC.capture['mode'] === '2') {
-        return true;
-    }
-    if (aria2RPC.capture['resolve'].includes(domain)) {
-        return true;
-    }
-    if (aria2RPC.capture['fileExt'].includes(fileExt)) {
-        return true;
-    }
-    if (aria2RPC.capture['fileSize'] > 0 && fileSize >= aria2RPC.capture['fileSize']) {
-        return true;
-    }
-    return false;
+    return aria2RPC.capture['reject'].includes(domain) ? false :
+        aria2RPC.capture['mode'] === '2' ? true :
+        aria2RPC.capture['resolve'].includes(domain) ? true :
+        aria2RPC.capture['fileExt'].includes(fileExt) ? true :
+        aria2RPC.capture['fileSize'] > 0 && fileSize >= aria2RPC.capture['fileSize'] ? true : false;
 }
 
 function getDomainFromUrl(url) {
