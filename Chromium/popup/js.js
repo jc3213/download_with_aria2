@@ -55,6 +55,8 @@ function printTaskDetails(result, index, queue) {
     if (task.parentNode !== queue) {
         queue.insertBefore(task, queue.childNodes[index]);
         task.setAttribute('status', result.status);
+        task.querySelector('#error').innerText = result.errorMessage ?? '';
+        task.querySelector('#retry_btn').style.display = !result.bittorrent && ['error', 'removed'].includes(result.status) ? 'inline-block' : 'none';
         if (result.status !== 'active') {
             updateTaskDetails(task, result);
         }
@@ -66,7 +68,6 @@ function printTaskDetails(result, index, queue) {
 
 function updateTaskDetails(task, result) {
     task.querySelector('#name').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path ? result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) : result.files[0].uris[0] ? result.files[0].uris[0].uri : result.gid;
-    task.querySelector('#error').innerText = result.errorMessage ?? '';
     task.querySelector('#local').innerText = bytesToFileSize(result.completedLength);
     calcEstimatedTime(task, (result.totalLength - result.completedLength) / result.downloadSpeed);
     task.querySelector('#connect').innerText = result.bittorrent ? result.numSeeders + ' (' + result.connections + ')' : result.connections;
@@ -74,7 +75,6 @@ function updateTaskDetails(task, result) {
     task.querySelector('#upload').innerText = bytesToFileSize(result.uploadSpeed) + '/s';
     task.querySelector('#ratio').innerText = task.querySelector('#ratio').style.width = ((result.completedLength / result.totalLength * 10000 | 0) / 100) + '%';
     task.querySelector('#ratio').className = result.status;
-    task.querySelector('#retry_btn').style.display = !result.bittorrent && ['error', 'removed'].includes(result.status) ? 'inline-block' : 'none';
 }
 
 function createTaskList(result) {
