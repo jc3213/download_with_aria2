@@ -1,7 +1,6 @@
 var aria2RPC;
-var aria2Error = 0;
+var aria2Log = {error: 0, alive: -1};
 var aria2RPCClient;
-var aria2KeepAlive;
 
 chrome.storage.local.get(null, async result => {
     aria2RPC = 'jsonrpc' in result ? result : await fetch('/options.json').then(response => response.json());
@@ -16,8 +15,8 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 function aria2RPCRefresh() {
-    clearTimeout(aria2KeepAlive);
-    aria2Error = 0;
+    clearTimeout(aria2Log.alive);
+    aria2Log.error = 0;
     aria2RPCClient();
 }
 
@@ -34,9 +33,9 @@ function aria2RPCRequest(request, resolve, reject, alive) {
         }
         responseJSON[0].result && typeof resolve === 'function' && resolve(...responseJSON.map(({result}) => result));
     }).catch(error => {
-        aria2Error === 0 && typeof reject === 'function' && (aria2Error = reject(error.message) ?? 1);
+        aria2Log.error = aria2Log.error === 0 && typeof reject === 'function' && reject(error.message) || 1;
     });
-    alive && (aria2KeepAlive = setTimeout(() => aria2RPCRequest(request, resolve, reject, alive), aria2RPC.jsonrpc['refresh']));
+    aria2Log.alive = alive && setTimeout(() => aria2RPCRequest(request, resolve, reject, alive), aria2RPC.jsonrpc['refresh']);
 }
 
 function downloadWithAria2(url, options) {
