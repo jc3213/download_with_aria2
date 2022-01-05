@@ -8,8 +8,6 @@ chrome.contextMenus.onClicked.addListener(info => {
     startDownload({url: info.linkUrl, referer: info.pageUrl, domain: getDomainFromUrl(info.pageUrl)});
 });
 
-chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
-
 chrome.downloads.onDeterminingFilename.addListener(item => {
     if (aria2RPC.capture['mode'] === '0' || item.finalUrl.startsWith('blob') || item.finalUrl.startsWith('data')) {
         return;
@@ -68,6 +66,13 @@ function getFileExtension(filename) {
 
 function aria2RPCClient() {
     aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getGlobalStat', params: [aria2RPC.jsonrpc['token']]},
-    global => chrome.browserAction.setBadgeText({text: global.numActive === '0' ? '' : global.numActive}),
-    error => chrome.browserAction.setBadgeText({text: 'E'}) ?? showNotification(error), true);
+    global => {
+        chrome.browserAction.setBadgeBackgroundColor({color: global.numActive === '0' ? '#cc3' : '#3cc'});
+        chrome.browserAction.setBadgeText({text: global.numActive});
+    },
+    error => {
+        chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
+        chrome.browserAction.setBadgeText({text: 'E'});
+        showNotification(error);
+    }, true);
 }
