@@ -67,14 +67,14 @@ function aria2RPCClient() {
         document.querySelector('[task="max-download-limit"]').disabled = disabled;
         document.querySelector('[task="max-upload-limit"]').disabled = disabled || type === 'http';
         document.querySelector('[task="all-proxy"]').disabled = disabled;
-        type === 'http' ? printTaskUris(result.files[0].uris, uris) : type === 'bt' ? printTaskFiles(result.files, files) : null;
+        type === 'http' && printTaskUris(result.files[0].uris, uris) || type === 'bt' && printTaskFiles(result.files, files);
     }, null, true);
 }
 
 function printTableCell(table, object, resolve) {
     var cell = table.parentNode.querySelector('#template').cloneNode(true);
     cell.removeAttribute('id');
-    typeof resolve === 'function' ? resolve(cell, object) : null;
+    typeof resolve === 'function' && resolve(cell, object);
     table.appendChild(cell);
     return cell;
 }
@@ -86,7 +86,7 @@ function printTaskUris(uris, table) {
         cell.innerText = uri.uri;
         cell.className = uri.status === 'used' ? 'active' : 'waiting';
     });
-    cells.forEach((cell, index) => index > uris.length ? cell.remove() : null);
+    cells.forEach((cell, index) => index > uris.length && cell.remove());
 }
 
 function printTaskFiles(files, table) {
@@ -97,7 +97,7 @@ function printTaskFiles(files, table) {
             cell.querySelector('#name').innerText = file.path.slice(file.path.lastIndexOf('/') + 1);
             cell.querySelector('#name').title = file.path;
             cell.querySelector('#size').innerText = bytesToFileSize(file.length);
-            file.selected === 'true' ? torrent.push(file.index) : null;
+            file.selected === 'true' && torrent.push(file.index);
         });
         cell.querySelector('#index').className = file.selected === 'true' ? 'active' : 'error';
         cell.querySelector('#ratio').innerText = ((file.completedLength / file.length * 10000 | 0) / 100) + '%';
