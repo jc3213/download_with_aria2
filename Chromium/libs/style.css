@@ -124,6 +124,10 @@ button.checked {
     padding: 3px 8px;
 }
 
+.extend {
+    padding-right: 24px;
+}
+
 .active {
     background-color: #44c;
 }
