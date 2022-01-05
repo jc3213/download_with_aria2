@@ -21,7 +21,7 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
 
 document.querySelector('#entries').addEventListener('drop', event => {
     [...event.dataTransfer.files].forEach(file => {
-        var method = file.name.endsWith('torrent') && 'aria2.addTorrent' || file.name.endsWith('metalink') || file.name.endsWith('meta4') && 'aria2.addMetalink';
+        var method = file.name.endsWith('torrent') && 'aria2.addTorrent' || file.name.endsWith('metalink') && 'aria2.addMetalink' || file.name.endsWith('meta4') && 'aria2.addMetalink';
         if (method) {
             readFileAsBinary(file, data => aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], data, newTaskOptions()]},
             result => showNotification(file.name)));
