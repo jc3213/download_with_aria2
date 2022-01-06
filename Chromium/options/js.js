@@ -33,8 +33,8 @@ function aria2RPCClient() {
     document.querySelectorAll('[local]').forEach(field => {
         var name = field.getAttribute('local');
         var root = field.getAttribute('root');
-        var value = root ? aria2RPC[root][name] : aria2RPC[name] ?? '';
-        var array = Array.isArray(value);
+        var value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name] ?? '';
+        var array = value.constructor === Array;
         var token = field.getAttribute('token');
         var multi = field.getAttribute('multi');
         field.value = array ? value.join(' ') : token ? value.slice(token.length) : multi ? value / multi : value;
