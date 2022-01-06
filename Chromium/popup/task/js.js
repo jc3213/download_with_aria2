@@ -13,7 +13,7 @@ document.querySelectorAll('[http], [bt]').forEach(field => {
 });
 
 document.querySelector('.submenu').addEventListener('change', event => {
-    changeTaskOption({[event.target.getAttribute('task')]: event.target.value});
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, {[event.target.getAttribute('task')]: event.target.value}]});
 });
 
 document.querySelectorAll('.block').forEach(block => {
@@ -30,23 +30,24 @@ document.querySelectorAll('.block').forEach(block => {
 });
 
 document.querySelector('button[local="uri"]').addEventListener('click', event => {
-    changeTaskOption({'all-proxy': aria2RPC.proxy['uri']});
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, {'all-proxy': aria2RPC.proxy['uri']}]});
 });
 
 document.querySelector('#append button').addEventListener('click', event => {
-    changeTaskUri({add: document.querySelector('#append input').value});
-    document.querySelector('#append input').value = '';
+    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeUri', params: [aria2RPC.jsonrpc['token'], gid, 1, [], [document.querySelector('#append input').value]]},
+    result => document.querySelector('#append input').value = '');
 });
 
 uris.addEventListener('click', event => {
-    event.ctrlKey ? changeTaskUri({remove: event.target.innerText}) : navigator.clipboard.writeText(event.target.innerText);
+    event.ctrlKey ? aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeUri', params: [aria2RPC.jsonrpc['token'], gid, 1, [event.target.innerText], []]}) : navigator.clipboard.writeText(event.target.innerText);
 });
 
 files.addEventListener('click', event => {
     if (event.target.id === 'index') {
         var index = torrent.indexOf(event.target.innerText);
         var files = index !== -1 ? [...torrent.slice(0, index), ...torrent.slice(index + 1)] : [...torrent, event.target.innerText];
-        changeTaskOption({'select-file': files.join()}, result => torrent = files);
+        aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, {'select-file': files.join()}]},
+        result => torrent = files);
     }
 });
 
@@ -102,12 +103,4 @@ function printTaskFiles(files, table) {
         cell.querySelector('#index').className = file.selected === 'true' ? 'active' : 'error';
         cell.querySelector('#ratio').innerText = ((file.completedLength / file.length * 10000 | 0) / 100) + '%';
     });
-}
-
-function changeTaskOption(options, resolve) {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, options]}, resolve);
-}
-
-function changeTaskUri({add, remove}) {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeUri', params: [aria2RPC.jsonrpc['token'], gid, 1, remove ? [remove] : [], add ? [add] : []]});
 }
