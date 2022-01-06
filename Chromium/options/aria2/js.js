@@ -5,9 +5,10 @@ document.querySelector('#back_btn').addEventListener('click', event => {
 });
 
 document.addEventListener('change', event => {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeGlobalOption', params: [aria2RPC.jsonrpc['token'], {[event.target.getAttribute('aria2')]: event.target.value}]});
+    aria2RPCCall({method: 'aria2.changeGlobalOption', params: [{[event.target.getAttribute('aria2')]: event.target.value}]});
 });
 
 function aria2RPCClient() {
-    printGlobalOption();
+    aria2RPCCall({method: 'aria2.getGlobalOption'},
+    options => document.querySelectorAll('[aria2]').forEach(aria2 => parseValueToOption(aria2, 'aria2', options)));
 }

@@ -20,8 +20,3 @@ function parseValueToOption(field, type, options) {
         field.value = options[name] ?? '';
     }
 }
-
-function printGlobalOption() {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getGlobalOption', params: [aria2RPC.jsonrpc['token']]},
-    options => document.querySelectorAll('[aria2]').forEach(aria2 => parseValueToOption(aria2, 'aria2', options)));
-}

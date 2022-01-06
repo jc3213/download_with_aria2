@@ -20,20 +20,17 @@ document.querySelectorAll('[module]').forEach(module => {
 });
 
 document.querySelector('#purdge_btn').addEventListener('click', event => {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.purgeDownloadResult', params: [aria2RPC.jsonrpc['token']]},
-    result => {
+    aria2RPCCall({method: 'aria2.purgeDownloadResult'}, result => {
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
         aria2RPCRefresh();
     });
 });
 
 function aria2RPCClient() {
-    aria2RPCRequest([
-        {id: '', jsonrpc: 2, method: 'aria2.getGlobalStat', params: [aria2RPC.jsonrpc['token']]},
-        {id: '', jsonrpc: 2, method: 'aria2.tellActive', params: [aria2RPC.jsonrpc['token']]},
-        {id: '', jsonrpc: 2, method: 'aria2.tellWaiting', params: [aria2RPC.jsonrpc['token'], 0, 999]},
-        {id: '', jsonrpc: 2, method: 'aria2.tellStopped', params: [aria2RPC.jsonrpc['token'], 0, 999]}
-    ], (global, active, waiting, stopped) => {
+    aria2RPCCall([
+        {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
+        {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]}
+    ], ([[global], [active], [waiting], [stopped]]) => {
         document.querySelector('#message').style.display = 'none';
         document.querySelector('#active.stats').innerText = global.numActive;
         document.querySelector('#waiting.stats').innerText = global.numWaiting;
@@ -84,22 +81,21 @@ function appendTaskDetail(result) {
     task.querySelector('#remote').innerText = bytesToFileSize(result.totalLength);
     task.querySelector('#upload').parentNode.style.display = result.bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', event => {
-        aria2RPCRequest({id: '', jsonrpc: 2, method: ['active', 'waiting', 'paused'].includes(task.getAttribute('status')) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult', params: [aria2RPC.jsonrpc['token'], gid]},
+        aria2RPCCall({method: ['active', 'waiting', 'paused'].includes(task.getAttribute('status')) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult', params: [gid]},
         result => ['complete', 'error', 'paused', 'removed'].includes(task.getAttribute('status')) ? task.remove() : task.querySelector('#name').innerText = '⏳');
     });
     task.querySelector('#invest_btn').addEventListener('click', event => open('task/index.html?' + (result.bittorrent ? 'bt' : 'http') + '#' + gid, '_self'));
     task.querySelector('#retry_btn').addEventListener('click', event => {
-        aria2RPCRequest([
-            {id: '', jsonrpc: 2, method: 'aria2.getFiles', params: [aria2RPC.jsonrpc['token'], gid]},
-            {id: '', jsonrpc: 2, method: 'aria2.getOption', params: [aria2RPC.jsonrpc['token'], gid]},
-            {id: '', jsonrpc: 2, method: 'aria2.removeDownloadResult', params: [aria2RPC.jsonrpc['token'], gid]}
-        ], (files, options) => {
-            aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [aria2RPC.jsonrpc['token'], files[0].uris.map(({uri}) => uri), options]},
+        aria2RPCCall([
+            {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]},
+            {method: 'aria2.removeDownloadResult', params: [gid]}
+        ], ([[files], [options]]) => {
+            aria2RPCCall({method: 'aria2.addUri', params: [files[0].uris.map(({uri}) => uri), options]},
             result => task.remove());
         });
     });
     task.querySelector('#meter').addEventListener('click', event => {
-        aria2RPCRequest({id: '', jsonrpc: 2, method: task.getAttribute('status') === 'paused' ? 'aria2.unpause' : 'aria2.pause', params: [aria2RPC.jsonrpc['token'], gid]},
+        aria2RPCCall({method: task.getAttribute('status') === 'paused' ? 'aria2.unpause' : 'aria2.pause', params: [gid]},
         result => task.querySelector('#name').innerText = '⏳');
     });
     return task;

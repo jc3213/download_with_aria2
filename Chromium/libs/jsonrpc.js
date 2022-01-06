@@ -19,18 +19,24 @@ function aria2RPCRefresh() {
     aria2RPCClient();
 }
 
+function aria2RPCCall(call, resolve, reject, alive) {
+    var json = Array.isArray(call) ? {id: '', jsonrpc: 2, method: 'system.multicall', params: [ call.map(({method, params = []}) => ({methodName: method, params: [aria2RPC.jsonrpc['token'], ...params]})) ]}
+        : {id: '', jsonrpc: 2, method: call.method, params: [aria2RPC.jsonrpc['token']].concat(call.params ?? [])};
+    aria2RPCRequest(json, resolve, reject, alive);
+}
+
 function aria2RPCRequest(json, resolve, reject, alive) {
-    fetch(aria2RPC.jsonrpc['uri'], {method: 'POST', body: JSON.stringify(Array.isArray(json) ? json : [json])})
+    fetch(aria2RPC.jsonrpc['uri'], {method: 'POST', body: JSON.stringify(json)})
     .then(response => {
         if (!response.ok) {
             throw new Error(response.statusText);
         }
         return response.json();
     }).then(json => {
-        if (json[0].error) {
-            throw json[0].error;
+        if (json.error) {
+            throw json.error;
         }
-        json[0].result && typeof resolve === 'function' && resolve(...json.map(({result}) => result));
+        json.result && typeof resolve === 'function' && resolve(json.result);
     }).catch(error => {
         aria2Log.error = aria2Log.error === 0 && typeof reject === 'function' && reject(error.message) || 1;
     });

@@ -13,7 +13,7 @@ document.querySelectorAll('[http], [bt]').forEach(field => {
 });
 
 document.querySelector('.submenu').addEventListener('change', event => {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, {[event.target.getAttribute('task')]: event.target.value}]});
+    aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[event.target.getAttribute('task')]: event.target.value}]});
 });
 
 document.querySelectorAll('.block').forEach(block => {
@@ -30,32 +30,32 @@ document.querySelectorAll('.block').forEach(block => {
 });
 
 document.querySelector('button[local="uri"]').addEventListener('click', event => {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, {'all-proxy': aria2RPC.proxy['uri']}]});
+    aria2RPCCall({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2RPC.proxy['uri']}]});
 });
 
 document.querySelector('#append button').addEventListener('click', event => {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeUri', params: [aria2RPC.jsonrpc['token'], gid, 1, [], [document.querySelector('#append input').value]]},
+    aria2RPCCall({method: 'aria2.changeUri', params: [gid, 1, [], [document.querySelector('#append input').value]]},
     result => document.querySelector('#append input').value = '');
 });
 
 uris.addEventListener('click', event => {
-    event.ctrlKey ? aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeUri', params: [aria2RPC.jsonrpc['token'], gid, 1, [event.target.innerText], []]}) : navigator.clipboard.writeText(event.target.innerText);
+    event.ctrlKey ? aria2RPCCall({method: 'aria2.changeUri', params: [gid, 1, [event.target.innerText], []]}) : navigator.clipboard.writeText(event.target.innerText);
 });
 
 files.addEventListener('click', event => {
     if (event.target.id === 'index') {
         var index = torrent.indexOf(event.target.innerText);
         var files = index !== -1 ? [...torrent.slice(0, index), ...torrent.slice(index + 1)] : [...torrent, event.target.innerText];
-        aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.changeOption', params: [aria2RPC.jsonrpc['token'], gid, {'select-file': files.join()}]},
+        aria2RPCCall({method: 'aria2.changeOption', params: [gid, {'select-file': files.join()}]},
         result => torrent = files);
     }
 });
 
 function aria2RPCClient() {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getOption', params: [aria2RPC.jsonrpc['token'], gid]},
+    aria2RPCCall({method: 'aria2.getOption', params: [gid]},
     options => document.querySelectorAll('[task]').forEach(task => parseValueToOption(task, 'task', options)));
     printFeedButton();
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.tellStatus', params: [aria2RPC.jsonrpc['token'], gid]},
+    aria2RPCCall({method: 'aria2.tellStatus', params: [gid]},
     result => {
         var disabled = ['complete', 'error'].includes(result.status);
         document.querySelector('#session').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) || result.files[0].uris[0].uri;

@@ -1,5 +1,6 @@
 function aria2RPCClient() {
-    printGlobalOption();
+    aria2RPCCall({method: 'aria2.getGlobalOption'},
+    options => document.querySelectorAll('[aria2]').forEach(aria2 => parseValueToOption(aria2, 'aria2', options)));
     printFeedButton();
 }
 
@@ -20,7 +21,7 @@ document.querySelector('#entries').addEventListener('drop', event => {
     [...event.dataTransfer.files].forEach(file => {
         var method = file.name.endsWith('torrent') ? 'aria2.addTorrent' : file.name.endsWith('metalink') || file.name.endsWith('meta4') ? 'aria2.addMetalink' : null;
         if (method) {
-            readFileAsBinary(file, data => aria2RPCRequest({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], data, newTaskOptions()]},
+            readFileAsBinary(file, data => aria2RPCCall({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], data, newTaskOptions()]},
             result => showNotification(file.name)));
         }
     });
