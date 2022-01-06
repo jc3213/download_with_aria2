@@ -40,7 +40,7 @@ async function startDownload({url, referer, domain, filename, folder, storeId}, 
     options['out'] = filename;
     options['all-proxy'] = aria2RPC.proxy['resolve'].includes(domain) ? aria2RPC.proxy['uri'] : '';
     folder && (options['dir'] = folder);
-    downloadWithAria2(url, options);
+    aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url), showNotification);
 }
 
 function captureDownload(domain, fileExt) {
@@ -74,12 +74,10 @@ function getFileExtension(filename) {
 }
 
 function aria2RPCClient() {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.getGlobalStat', params: [aria2RPC.jsonrpc['token']]},
-    global => {
+    aria2RPCCall({method: 'aria2.getGlobalStat'}, global => {
         browser.browserAction.setBadgeBackgroundColor({color: global.numActive === '0' ? '#cc3' : '#3cc'});
         browser.browserAction.setBadgeText({text: global.numActive});
-    },
-    error => {
+    }, error => {
         browser.browserAction.setBadgeBackgroundColor({color: '#c33'});
         browser.browserAction.setBadgeText({text: 'E'});
         showNotification(error);
