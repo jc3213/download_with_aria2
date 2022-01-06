@@ -20,8 +20,8 @@ function aria2RPCRefresh() {
 }
 
 function aria2RPCCall(call, resolve, reject, alive) {
-    var json = Array.isArray(call) ? {id: '', jsonrpc: 2, method: 'system.multicall', params: [ call.map(({method, params = []}) => ({methodName: method, params: [aria2RPC.jsonrpc['token'], ...params]})) ]}
-        : {id: '', jsonrpc: 2, method: call.method, params: [aria2RPC.jsonrpc['token']].concat(call.params ?? [])};
+    var json = 'method' in call ? {id: '', jsonrpc: 2, method: call.method, params: [aria2RPC.jsonrpc['token']].concat(call.params ?? [])}
+        : {id: '', jsonrpc: 2, method: 'system.multicall', params: [ call.map(({method, params = []}) => ({methodName: method, params: [aria2RPC.jsonrpc['token'], ...params]})) ]};
     aria2RPCRequest(json, resolve, reject, alive);
 }
 
