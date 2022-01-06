@@ -27,7 +27,7 @@ function aria2RPCCall(call, resolve, reject, alive) {
 
 function aria2RPCRequest(json, resolve, reject, alive) {
     fetch(aria2RPC.jsonrpc['uri'], {method: 'POST', body: JSON.stringify(json)}).then(response => {
-        if (!response.ok) {
+        if (response.status !== 200) {
             throw new Error(response.statusText);
         }
         return response.json();
