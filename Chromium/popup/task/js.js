@@ -48,7 +48,7 @@ bt.addEventListener('click', event => {
 
 function aria2RPCClient() {
     printButton();
-    aria2RPCCall({method: 'aria2.getOption', params: [gid]}, printOptions, e => console.log(e));
+    aria2RPCCall({method: 'aria2.getOption', params: [gid]}, printOptions);
     aria2RPCCall({method: 'aria2.tellStatus', params: [gid]}, ({status, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, files}) => {
         var disabled = ['complete', 'error'].includes(status);
         document.querySelector('#session').innerText = bittorrent && bittorrent.info ? bittorrent.info.name : files[0].path.slice(files[0].path.lastIndexOf('/') + 1) || files[0].uris[0].uri;
