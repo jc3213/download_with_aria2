@@ -19,10 +19,7 @@ document.querySelector('.submenu').addEventListener('change', event => {
 document.querySelectorAll('.block').forEach(block => {
     var field = block.parentNode.querySelector('input');
     block.addEventListener('click', event => {
-        if (!field.disabled) {
-            block.style.display = 'none';
-            field.focus();
-        }
+        !field.disabled && (block.style.display = field.focus() ?? 'none');
     });
     field.addEventListener('blur', event => {
         block.style.display = 'block';
