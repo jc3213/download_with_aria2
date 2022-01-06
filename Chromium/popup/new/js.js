@@ -7,7 +7,7 @@ document.querySelector('#add_btn').addEventListener('click', event => {
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = newTaskOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    Array.isArray(entries) && aria2RPCCall(entries.map(url => ({method: 'aria2.addUri', params: [[url], options]})), showNotification(entries.join()));
+    entries && aria2RPCCall(entries.map(url => ({method: 'aria2.addUri', params: [[url], options]})), showNotification(entries.join()));
     history.back();
 });
 
