@@ -84,7 +84,7 @@
         "message": "设置 \"all-proxy\" 选项的服务器"
     },
     "option_proxy_resolve": {
-        "message": "需代理域名"
+        "message": "代理规则"
     },
     "option_proxy_resolve_desc": {
         "message": "为来自列表中的域名的下载添加 \"all-proxy\" 选项"
