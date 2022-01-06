@@ -4,16 +4,16 @@
     margin-bottom: 15px;
 }
 
-#session, #uris > * {
+#session, .uri > * {
     width: 100%;
     word-break: break-word;
 }
 
-#session, #uris > *, .file > * {
+#session, .uri > *, .file > * {
     height: 46px;
 }
 
-#uris > * {
+.uri > * {
     overflow-y: hidden;
     margin-top: 5px;
     text-align: left;
