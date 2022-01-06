@@ -19,10 +19,7 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
 document.querySelector('#entries').addEventListener('drop', event => {
     [...event.dataTransfer.files].forEach(file => {
         var method = file.name.endsWith('torrent') ? 'aria2.addTorrent' : file.name.endsWith('metalink') || file.name.endsWith('meta4') ? 'aria2.addMetalink' : null;
-        if (method) {
-            readFileAsBinary(file, data => aria2RPCCall({id: '', jsonrpc: 2, method, params: [aria2RPC.jsonrpc['token'], data, newTaskOptions()]},
-            result => showNotification(file.name)));
-        }
+        method && readFileAsBinary(file, data => aria2RPCCall({method, params: [data, newTaskOptions()]}, result => showNotification(file.name)));
     });
     history.back();
 });
