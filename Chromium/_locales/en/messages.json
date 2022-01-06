@@ -84,7 +84,7 @@
         "message": "Setting server for \"all-proxy\" option"
     },
     "option_proxy_resolve": {
-        "message": "Proxy Rule"
+        "message": "Proxy Rules"
     },
     "option_proxy_resolve_desc": {
         "message": "Automatically add \"all-proxy\" option for these domains"
