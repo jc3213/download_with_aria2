@@ -3,6 +3,24 @@
 - This extension is completely rewritten from [chrome-aria2-integration](https://github.com/robbielj/chrome-aria2-integration)
 - Enhanced browser download monitoring, and built-in Aria2 Manager
 
+# Usage
+- Indicate running status over toolbar icon
+    - Idle: Yellow `0`
+    - Active: Blue `Number`
+    - Error: Red `E`
+- Built-in `Aria2 Web Manager`
+    - Filtering tasks with queues `Active`, `Stopped`, and `Removed`
+    - `New Task` page with extra options
+        - Drop `.metalink`, or `.meta4`, or `.torrent` on `Download Urls` to download [**Chrome Only**]
+    - `Task Manager` that can change options for downloads
+        - Change selected files for bittorrent downloads
+        - Add or remove download uris for http/ftp downloads
+    - `Options` page for the extension
+    - `Global Options` page for Aria2
+- Capturing browser downloads
+    - Save captured downloads to other directories [**Firefox Only**]
+- Support proxy and auto-proxy
+
 # Bug report
 
 - [File an issue](https://github.com/jc3213/download_with_aria2-archived/issues/new/choose)
