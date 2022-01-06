@@ -18,7 +18,7 @@
     - `Global Options` page for Aria2
 - Capturing browser downloads
     - Save captured downloads to other directories [**Firefox Only**]
-- Support proxy and auto-proxy
+- Support proxy setting and provide auto matching rule
 
 # Feedback
 
@@ -42,7 +42,7 @@
 # Others
 
 - The extension is not published on `Google Web Store`, or `Microsoft Store`.
-    - `Firefox Add-on` hosted by [@ivysrono](https://addons.mozilla.org/firefox/addon/download-with-aria2/)
-- Built-in `Aria2 Web Manager` is not powerfule enough
+    - `Firefox Add-on` by [@ivysrono](https://addons.mozilla.org/firefox/addon/download-with-aria2/)
+- Alternative of built-in `Aria2 Web Manager`
     - [`Aria2 WebUI`](https://ziahamza.github.io/webui-aria2/)
     - [`Yet Another Aria2 Web Frontend`](http://binux.github.io/yaaw/demo/)
