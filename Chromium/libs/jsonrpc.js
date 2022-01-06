@@ -1,6 +1,5 @@
 var aria2RPC;
 var aria2Log = {error: 0, alive: -1};
-var aria2RPCClient;
 
 chrome.storage.local.get(null, async result => {
     aria2RPC = 'jsonrpc' in result ? result : await fetch('/options.json').then(response => response.json());
@@ -20,22 +19,22 @@ function aria2RPCRefresh() {
     aria2RPCClient();
 }
 
-function aria2RPCRequest(request, resolve, reject, alive) {
-    var requestJSON = Array.isArray(request) ? request : [request];
-    fetch(aria2RPC.jsonrpc['uri'], {method: 'POST', body: JSON.stringify(requestJSON)}).then(response => {
+function aria2RPCRequest(json, resolve, reject, alive) {
+    fetch(aria2RPC.jsonrpc['uri'], {method: 'POST', body: JSON.stringify(Array.isArray(json) ? json : [json])})
+    .then(response => {
         if (!response.ok) {
             throw new Error(response.statusText);
         }
         return response.json();
-    }).then(responseJSON => {
-        if (responseJSON[0].error) {
-            throw responseJSON[0].error;
+    }).then(json => {
+        if (json[0].error) {
+            throw json[0].error;
         }
-        responseJSON[0].result && typeof resolve === 'function' && resolve(...responseJSON.map(({result}) => result));
+        json[0].result && typeof resolve === 'function' && resolve(...json.map(({result}) => result));
     }).catch(error => {
         aria2Log.error = aria2Log.error === 0 && typeof reject === 'function' && reject(error.message) || 1;
     });
-    aria2Log.alive = alive && setTimeout(() => aria2RPCRequest(request, resolve, reject, alive), aria2RPC.jsonrpc['refresh']);
+    aria2Log.alive = alive && setTimeout(() => aria2RPCRequest(json, resolve, reject, alive), aria2RPC.jsonrpc['refresh']);
 }
 
 function downloadWithAria2(url, options) {
