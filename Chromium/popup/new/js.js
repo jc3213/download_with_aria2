@@ -17,11 +17,10 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#entries').addEventListener('drop', event => {
-    [...event.dataTransfer.files].forEach(file => {
+    [...event.dataTransfer.files].forEach((file, index, files) => {
         var method = file.name.endsWith('torrent') ? 'aria2.addTorrent' : file.name.endsWith('metalink') || file.name.endsWith('meta4') ? 'aria2.addMetalink' : null;
-        method && readFileAsBinary(file, data => aria2RPCCall({method, params: [data, newTaskOptions()]}, result => showNotification(file.name)));
+        method && readFileAsBinary(file, data => aria2RPCCall({method, params: [data, newTaskOptions()]}, result => showNotification(file.name) || index === files.length - 1 && history.back()));
     });
-    history.back();
 });
 
 function newTaskOptions() {
