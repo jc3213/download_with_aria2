@@ -1,7 +1,7 @@
 var gid = location.hash.slice(1);
 var type = location.search.slice(1);
-var uris = document.querySelector('#uris');
-var files = document.querySelector('#files');
+var http = document.querySelector('[http] #form');
+var bt = document.querySelector('[bt] #form');
 var torrent = [];
 
 document.querySelector('#session').addEventListener('click', event => {
@@ -34,11 +34,11 @@ document.querySelector('#append button').addEventListener('click', event => {
     aria2RPCCall({method: 'aria2.changeUri', params: [gid, 1, [], [document.querySelector('#append input').value]]}, result => document.querySelector('#append input').value = '');
 });
 
-uris.addEventListener('click', event => {
+http.addEventListener('click', event => {
     event.ctrlKey ? aria2RPCCall({method: 'aria2.changeUri', params: [gid, 1, [event.target.innerText], []]}) : navigator.clipboard.writeText(event.target.innerText);
 });
 
-files.addEventListener('click', event => {
+bt.addEventListener('click', event => {
     if (event.target.id === 'index') {
         var index = torrent.indexOf(event.target.innerText);
         var files = index !== -1 ? [...torrent.slice(0, index), ...torrent.slice(index + 1)] : [...torrent, event.target.innerText];
@@ -62,7 +62,7 @@ function aria2RPCClient() {
         document.querySelector('[task="max-download-limit"]').disabled = disabled;
         document.querySelector('[task="max-upload-limit"]').disabled = disabled || type === 'http';
         document.querySelector('[task="all-proxy"]').disabled = disabled;
-        type === 'http' && printTaskUris(files[0].uris, uris) || type === 'bt' && printTaskFiles(files, files);
+        type === 'http' && printTaskUris(http, files[0].uris) || type === 'bt' && printTaskFiles(bt, files);
     }, null, true);
 }
 
@@ -74,17 +74,17 @@ function printTableCell(table, object, resolve) {
     return cell;
 }
 
-function printTaskUris(uris, table) {
+function printTaskUris(table, uris) {
     var cells = table.querySelectorAll('button');
-    uris.forEach((uri, index) => {
-        var cell = cells[index] ?? printTableCell(table, uri);
-        cell.innerText = uri.uri;
-        cell.className = uri.status === 'used' ? 'active' : 'waiting';
+    uris.forEach(({uri, status}, index) => {
+        var cell = cells[index] ?? printTableCell(table);
+        cell.innerText = uri;
+        cell.className = status === 'used' ? 'active' : 'waiting';
     });
     cells.forEach((cell, index) => index > uris.length && cell.remove());
 }
 
-function printTaskFiles(files, table) {
+function printTaskFiles(table, files) {
     var cells = table.querySelectorAll('.file');
     files.forEach((file, index) => {
         var cell = cells[index] ?? printTableCell(table, file, (cell, file) => {
