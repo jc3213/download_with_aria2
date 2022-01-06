@@ -4,7 +4,7 @@
 
 # Usage
 - Indicate running status over toolbar icon
-    - Idle: Yellow `0`
+    - Idle: `Empty`
     - Active: Blue `Number`
     - Error: Red `E`
 - Built-in `Aria2 Web Manager`

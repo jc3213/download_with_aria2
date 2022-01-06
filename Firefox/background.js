@@ -75,8 +75,8 @@ function getFileExtension(filename) {
 
 function aria2RPCClient() {
     aria2RPCCall({method: 'aria2.getGlobalStat'}, global => {
-        browser.browserAction.setBadgeBackgroundColor({color: global.numActive === '0' ? '#cc3' : '#3cc'});
-        browser.browserAction.setBadgeText({text: global.numActive});
+        browser.browserAction.setBadgeBackgroundColor({color: '#3cc'});
+        browser.browserAction.setBadgeText({text: global.numActive === '0' ? '' : global.numActive});
     }, error => {
         browser.browserAction.setBadgeBackgroundColor({color: '#c33'});
         browser.browserAction.setBadgeText({text: 'E'});
