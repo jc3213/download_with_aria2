@@ -5,7 +5,7 @@
 # Usage
 - Indicate running status over toolbar icon
     - Idle: `Empty`
-    - Active: Blue `Number`
+    - Active: Light Blue `Number`
     - Error: Red `E`
 - Built-in `Aria2 Web Manager`
     - Filtering tasks with queues `Active`, `Stopped`, and `Removed`
