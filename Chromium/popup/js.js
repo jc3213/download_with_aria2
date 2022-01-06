@@ -54,13 +54,9 @@ function printTaskDetail(result, index, queue) {
         task.setAttribute('status', result.status);
         task.querySelector('#error').innerText = result.errorMessage ?? '';
         task.querySelector('#retry_btn').style.display = !result.bittorrent && ['error', 'removed'].includes(result.status) ? 'inline-block' : 'none';
-        if (result.status !== 'active') {
-            updateTaskDetail(task, result);
-        }
+        result.status !== 'active' && updateTaskDetail(task, result);
     }
-    if (result.status === 'active') {
-        updateTaskDetail(task, result);
-    }
+    result.status === 'active' && updateTaskDetail(task, result);
 }
 
 function updateTaskDetail(task, {gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
@@ -94,8 +90,7 @@ function appendTaskDetail({gid, bittorrent, totalLength}) {
         });
     });
     task.querySelector('#meter').addEventListener('click', event => {
-        aria2RPCCall({method: task.getAttribute('status') === 'paused' ? 'aria2.unpause' : 'aria2.pause', params: [gid]},
-        result => task.querySelector('#name').innerText = '⏳');
+        aria2RPCCall({method: task.getAttribute('status') === 'paused' ? 'aria2.unpause' : 'aria2.pause', params: [gid]}, result => task.querySelector('#name').innerText = '⏳');
     });
     return task;
 }
