@@ -9,6 +9,5 @@ document.addEventListener('change', event => {
 });
 
 function aria2RPCClient() {
-    aria2RPCCall({method: 'aria2.getGlobalOption'},
-    options => document.querySelectorAll('[aria2]').forEach(aria2 => parseValueToOption(aria2, 'aria2', options)));
+    aria2RPCCall({method: 'aria2.getGlobalOption'}, options => document.querySelectorAll('[aria2]').forEach(aria2 => parseValueToOption(aria2, 'aria2', options)));
 }

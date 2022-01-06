@@ -34,7 +34,7 @@ function startDownload({url, referer, domain, filename}, options = {}) {
         cookies.forEach(cookie => options['header'][0] += ' ' + cookie.name + '=' + cookie.value + ';');
         options['out'] = filename;
         options['all-proxy'] = aria2RPC.proxy['resolve'].includes(domain) ? aria2RPC.proxy['uri'] : '';
-        downloadWithAria2(url, options);
+        aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url), showNotification);
     });
 }
 

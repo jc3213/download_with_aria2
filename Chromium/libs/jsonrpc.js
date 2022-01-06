@@ -43,11 +43,6 @@ function aria2RPCRequest(json, resolve, reject, alive) {
     aria2Log.alive = alive && setTimeout(() => aria2RPCRequest(json, resolve, reject, alive), aria2RPC.jsonrpc['refresh']);
 }
 
-function downloadWithAria2(url, options) {
-    aria2RPCRequest({id: '', jsonrpc: 2, method: 'aria2.addUri', params: [aria2RPC.jsonrpc['token'], [url], options]},
-    result => showNotification(url), showNotification);
-}
-
 function showNotification(message = '') {
     chrome.notifications.create({
         type: 'basic',
