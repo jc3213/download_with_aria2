@@ -1,7 +1,6 @@
 # About
 
 - This extension is completely rewritten from [chrome-aria2-integration](https://github.com/robbielj/chrome-aria2-integration)
-- Enhanced browser download monitoring, and built-in Aria2 Manager
 
 # Usage
 - Indicate running status over toolbar icon
