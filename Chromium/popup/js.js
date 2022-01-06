@@ -63,28 +63,27 @@ function printTaskDetail(result, index, queue) {
     }
 }
 
-function updateTaskDetail(task, result) {
-    task.querySelector('#name').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path ? result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) : result.files[0].uris[0] ? result.files[0].uris[0].uri : result.gid;
-    task.querySelector('#local').innerText = bytesToFileSize(result.completedLength);
-    updateEstimated(task, (result.totalLength - result.completedLength) / result.downloadSpeed);
-    task.querySelector('#connect').innerText = result.bittorrent ? result.numSeeders + ' (' + result.connections + ')' : result.connections;
-    task.querySelector('#download').innerText = bytesToFileSize(result.downloadSpeed) + '/s';
-    task.querySelector('#upload').innerText = bytesToFileSize(result.uploadSpeed) + '/s';
-    task.querySelector('#ratio').innerText = task.querySelector('#ratio').style.width = ((result.completedLength / result.totalLength * 10000 | 0) / 100) + '%';
-    task.querySelector('#ratio').className = result.status;
+function updateTaskDetail(task, {gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
+    task.querySelector('#name').innerText = bittorrent && bittorrent.info ? bittorrent.info.name : files[0].path ? files[0].path.slice(files[0].path.lastIndexOf('/') + 1) : files[0].uris[0] ? files[0].uris[0].uri : gid;
+    task.querySelector('#local').innerText = bytesToFileSize(completedLength);
+    updateEstimated(task, (totalLength - completedLength) / downloadSpeed);
+    task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
+    task.querySelector('#download').innerText = bytesToFileSize(downloadSpeed) + '/s';
+    task.querySelector('#upload').innerText = bytesToFileSize(uploadSpeed) + '/s';
+    task.querySelector('#ratio').innerText = task.querySelector('#ratio').style.width = ((completedLength / totalLength * 10000 | 0) / 100) + '%';
+    task.querySelector('#ratio').className = status;
 }
 
-function appendTaskDetail(result) {
+function appendTaskDetail({gid, bittorrent, totalLength}) {
     var task = document.querySelector('#template').cloneNode(true);
-    var gid = result.gid;
     task.id = gid;
-    task.querySelector('#remote').innerText = bytesToFileSize(result.totalLength);
-    task.querySelector('#upload').parentNode.style.display = result.bittorrent ? 'inline-block' : 'none';
+    task.querySelector('#remote').innerText = bytesToFileSize(totalLength);
+    task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', event => {
         aria2RPCCall({method: ['active', 'waiting', 'paused'].includes(task.getAttribute('status')) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult', params: [gid]},
         result => ['complete', 'error', 'paused', 'removed'].includes(task.getAttribute('status')) ? task.remove() : task.querySelector('#name').innerText = '⏳');
     });
-    task.querySelector('#invest_btn').addEventListener('click', event => open('task/index.html?' + (result.bittorrent ? 'bt' : 'http') + '#' + gid, '_self'));
+    task.querySelector('#invest_btn').addEventListener('click', event => open('task/index.html?' + (bittorrent ? 'bt' : 'http') + '#' + gid, '_self'));
     task.querySelector('#retry_btn').addEventListener('click', event => {
         aria2RPCCall([
             {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]},

@@ -50,19 +50,19 @@ function aria2RPCClient() {
     aria2RPCCall({method: 'aria2.getOption', params: [gid]},
     options => document.querySelectorAll('[task]').forEach(task => parseValueToOption(task, 'task', options)));
     printFeedButton();
-    aria2RPCCall({method: 'aria2.tellStatus', params: [gid]}, result => {
-        var disabled = ['complete', 'error'].includes(result.status);
-        document.querySelector('#session').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) || result.files[0].uris[0].uri;
-        document.querySelector('#session').className = result.status;
-        document.querySelector('#local').innerText = bytesToFileSize(result.completedLength);
-        document.querySelector('#ratio').innerText = ((result.completedLength / result.totalLength * 10000 | 0) / 100) + '%';
-        document.querySelector('#remote').innerText = bytesToFileSize(result.totalLength);
-        document.querySelector('#download').innerText = bytesToFileSize(result.downloadSpeed) + '/s';
-        document.querySelector('#upload').innerText = bytesToFileSize(result.uploadSpeed) + '/s';
+    aria2RPCCall({method: 'aria2.tellStatus', params: [gid]}, ({status, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, files}) => {
+        var disabled = ['complete', 'error'].includes(status);
+        document.querySelector('#session').innerText = bittorrent && bittorrent.info ? bittorrent.info.name : files[0].path.slice(files[0].path.lastIndexOf('/') + 1) || files[0].uris[0].uri;
+        document.querySelector('#session').className = status;
+        document.querySelector('#local').innerText = bytesToFileSize(completedLength);
+        document.querySelector('#ratio').innerText = ((completedLength / totalLength * 10000 | 0) / 100) + '%';
+        document.querySelector('#remote').innerText = bytesToFileSize(totalLength);
+        document.querySelector('#download').innerText = bytesToFileSize(downloadSpeed) + '/s';
+        document.querySelector('#upload').innerText = bytesToFileSize(uploadSpeed) + '/s';
         document.querySelector('[task="max-download-limit"]').disabled = disabled;
         document.querySelector('[task="max-upload-limit"]').disabled = disabled || type === 'http';
         document.querySelector('[task="all-proxy"]').disabled = disabled;
-        type === 'http' && printTaskUris(result.files[0].uris, uris) || type === 'bt' && printTaskFiles(result.files, files);
+        type === 'http' && printTaskUris(files[0].uris, uris) || type === 'bt' && printTaskFiles(files, files);
     }, null, true);
 }
 
