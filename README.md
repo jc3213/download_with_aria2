@@ -15,8 +15,8 @@
         - Change selected files for bittorrent downloads
         - Add or remove download uris for http/ftp downloads
     - `Options` page for the extension
-    - `Global Options` page for Aria2
-- Capturing browser downloads
+    - `Global Options` page for aria2 jsonrpc
+- Capture browser downloads
     - Save captured downloads to other directories [**Firefox Only**]
 - Support proxy setting and provide auto matching rule
 
