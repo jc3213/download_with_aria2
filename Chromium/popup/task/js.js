@@ -66,10 +66,10 @@ function aria2RPCClient() {
     }, null, true);
 }
 
-function printTableCell(table, object, resolve) {
+function printTableCell(table, resolve) {
     var cell = table.parentNode.querySelector('#template').cloneNode(true);
     cell.removeAttribute('id');
-    typeof resolve === 'function' && resolve(cell, object);
+    typeof resolve === 'function' && resolve(cell);
     table.appendChild(cell);
     return cell;
 }
@@ -86,15 +86,15 @@ function printTaskUris(table, uris) {
 
 function printTaskFiles(table, files) {
     var cells = table.querySelectorAll('.file');
-    files.forEach((file, index) => {
-        var cell = cells[index] ?? printTableCell(table, file, (cell, file) => {
-            cell.querySelector('#index').innerText = file.index;
-            cell.querySelector('#name').innerText = file.path.slice(file.path.lastIndexOf('/') + 1);
-            cell.querySelector('#name').title = file.path;
-            cell.querySelector('#size').innerText = bytesToFileSize(file.length);
-            file.selected === 'true' && torrent.push(file.index);
+    files.forEach(({index, selected, path, length, completedLength}, at) => {
+        var cell = cells[at] ?? printTableCell(table, cell => {
+            cell.querySelector('#index').innerText = index;
+            cell.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
+            cell.querySelector('#name').title = path;
+            cell.querySelector('#size').innerText = bytesToFileSize(length);
+            selected === 'true' && torrent.push(index);
         });
-        cell.querySelector('#index').className = file.selected === 'true' ? 'active' : 'error';
-        cell.querySelector('#ratio').innerText = ((file.completedLength / file.length * 10000 | 0) / 100) + '%';
+        cell.querySelector('#index').className = selected === 'true' ? 'active' : 'error';
+        cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
     });
 }
