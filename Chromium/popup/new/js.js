@@ -29,9 +29,6 @@ document.querySelector('#entries').addEventListener('drop', event => {
 
 function newTaskOptions() {
     var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']]};
-    document.querySelectorAll('[aria2], [task]').forEach(field => {
-        var name = field.getAttribute('aria2') ?? field.getAttribute('task');
-        options[name] = field.value;
-    });
+    document.querySelectorAll('[aria2], [task]').forEach(field => options[field.getAttribute('aria2') ?? field.getAttribute('task')] = field.value);
     return options;
 }
