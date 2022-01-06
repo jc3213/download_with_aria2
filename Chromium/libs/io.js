@@ -18,3 +18,25 @@ function bytesToFileSize(bytes) {
         bytes < 1073741824 ? (bytes / 10485.76 | 0) / 100 + ' MB' :
         bytes < 1099511627776 ? (bytes / 10737418.24 | 0) / 100 + ' GB' : (bytes / 10995116277.76 | 0) / 100 + ' TB';
 }
+
+function printButton() {
+    document.querySelectorAll('button[local]').forEach(button => {
+        var field = button.parentNode.querySelector('input');
+        var name = button.getAttribute('local');
+        var root = button.getAttribute('root');
+        var value = root ? aria2RPC[root][name] : aria2RPC[name];
+        button.addEventListener('click', event => {
+            field.value = value;
+        });
+    });
+}
+
+function printOptions(options) {
+    document.querySelectorAll('[aria2]').forEach(field => {
+        field.value = options[field.getAttribute('aria2')] ?? '';
+        if (field.hasAttribute('size')) {
+            var size = bytesToFileSize(field.value);
+            field.value = size.slice(0, size.indexOf(' ')) + size.slice(size.indexOf(' ') + 1, -1);
+        }
+    });
+}

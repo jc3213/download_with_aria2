@@ -26,6 +26,6 @@ function newTaskOptions() {
 }
 
 function aria2RPCClient() {
-    aria2RPCCall({method: 'aria2.getGlobalOption'}, options => document.querySelectorAll('[aria2]').forEach(aria2 => parseValueToOption(aria2, 'aria2', options)));
-    printFeedButton();
+    aria2RPCCall({method: 'aria2.getGlobalOption'}, printOptions);
+    printButton();
 }
