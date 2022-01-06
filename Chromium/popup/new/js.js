@@ -1,8 +1,3 @@
-function aria2RPCClient() {
-    aria2RPCCall({method: 'aria2.getGlobalOption'}, options => document.querySelectorAll('[aria2]').forEach(aria2 => parseValueToOption(aria2, 'aria2', options)));
-    printFeedButton();
-}
-
 document.querySelector('#add_btn').addEventListener('click', event => {
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
         document.querySelector('#referer').value = tabs[0].url;
@@ -17,14 +12,18 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#entries').addEventListener('drop', event => {
-    [...event.dataTransfer.files].forEach((file, index, files) => {
-        var method = file.name.endsWith('torrent') ? 'aria2.addTorrent' : file.name.endsWith('metalink') || file.name.endsWith('meta4') ? 'aria2.addMetalink' : null;
-        method && readFileAsBinary(file, data => aria2RPCCall({method, params: [data, newTaskOptions()]}, result => showNotification(file.name) || index === files.length - 1 && history.back()));
-    });
+    var file = event.dataTransfer.files[0];
+    var method = file.name.endsWith('torrent') ? 'aria2.addTorrent' : file.name.endsWith('metalink') || file.name.endsWith('meta4') ? 'aria2.addMetalink' : null;
+    method && readFileAsBinary(file, data => aria2RPCCall({method, params: [data, newTaskOptions()]}, result => showNotification(file.name) ?? history.back()));
 });
 
 function newTaskOptions() {
     var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']]};
     document.querySelectorAll('[aria2], [task]').forEach(field => options[field.getAttribute('aria2') ?? field.getAttribute('task')] = field.value);
     return options;
+}
+
+function aria2RPCClient() {
+    aria2RPCCall({method: 'aria2.getGlobalOption'}, options => document.querySelectorAll('[aria2]').forEach(aria2 => parseValueToOption(aria2, 'aria2', options)));
+    printFeedButton();
 }
