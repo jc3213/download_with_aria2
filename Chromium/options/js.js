@@ -21,7 +21,7 @@ document.querySelector('#import').addEventListener('change', event => {
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
-    aria2RPCCall({method: 'aria2.getVersion'}, version => open('aria2/index.html?' + version.version, '_self'), error => showNotification(error));
+    aria2RPCCall({method: 'aria2.getVersion'}, version => open('aria2/index.html?' + version.version, '_self'), showNotification);
 });
 
 document.querySelector('#show_btn').addEventListener('click', event => {
