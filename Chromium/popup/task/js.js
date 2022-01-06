@@ -13,7 +13,7 @@ document.querySelectorAll('[http], [bt]').forEach(field => {
 });
 
 document.querySelector('.submenu').addEventListener('change', event => {
-    aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[event.target.getAttribute('task')]: event.target.value}]});
+    event.target.hasAttribute('task') && aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[event.target.getAttribute('task')]: event.target.value}]});
 });
 
 document.querySelectorAll('.block').forEach(block => {
@@ -31,8 +31,7 @@ document.querySelector('button[local="uri"]').addEventListener('click', event =>
 });
 
 document.querySelector('#append button').addEventListener('click', event => {
-    aria2RPCCall({method: 'aria2.changeUri', params: [gid, 1, [], [document.querySelector('#append input').value]]},
-    result => document.querySelector('#append input').value = '');
+    aria2RPCCall({method: 'aria2.changeUri', params: [gid, 1, [], [document.querySelector('#append input').value]]}, result => document.querySelector('#append input').value = '');
 });
 
 uris.addEventListener('click', event => {
@@ -43,8 +42,7 @@ files.addEventListener('click', event => {
     if (event.target.id === 'index') {
         var index = torrent.indexOf(event.target.innerText);
         var files = index !== -1 ? [...torrent.slice(0, index), ...torrent.slice(index + 1)] : [...torrent, event.target.innerText];
-        aria2RPCCall({method: 'aria2.changeOption', params: [gid, {'select-file': files.join()}]},
-        result => torrent = files);
+        aria2RPCCall({method: 'aria2.changeOption', params: [gid, {'select-file': files.join()}]}, result => torrent = files);
     }
 });
 
@@ -52,8 +50,7 @@ function aria2RPCClient() {
     aria2RPCCall({method: 'aria2.getOption', params: [gid]},
     options => document.querySelectorAll('[task]').forEach(task => parseValueToOption(task, 'task', options)));
     printFeedButton();
-    aria2RPCCall({method: 'aria2.tellStatus', params: [gid]},
-    result => {
+    aria2RPCCall({method: 'aria2.tellStatus', params: [gid]}, result => {
         var disabled = ['complete', 'error'].includes(result.status);
         document.querySelector('#session').innerText = result.bittorrent && result.bittorrent.info ? result.bittorrent.info.name : result.files[0].path.slice(result.files[0].path.lastIndexOf('/') + 1) || result.files[0].uris[0].uri;
         document.querySelector('#session').className = result.status;
