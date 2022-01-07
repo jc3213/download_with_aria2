@@ -21,7 +21,7 @@ function bytesToFileSize(bytes) {
 
 function printButton() {
     document.querySelectorAll('[data-feed]').forEach(button => {
-        var rule = button.getAttribute('data-feed').match(/[^,]+/g);
+        var rule = button.getAttribute('data-feed').match(/[^:]+/g);
         var name = rule[0], root = rule[1];
         var field = button.parentNode.querySelector('input');
         button.addEventListener('click', event => {
