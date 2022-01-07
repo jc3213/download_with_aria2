@@ -1,0 +1,7 @@
+[data-mode="normal"] [data-normal], [data-mode="global"] [data-global] {
+    display: block;
+}
+
+[data-mode="normal"] [data-global], [data-mode="global"] [data-normal], .submenu:not(:first-child) {
+    display: none;
+}

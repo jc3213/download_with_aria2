@@ -20,6 +20,9 @@
     "common_back": {
         "message": "Back"
     },
+    "common_global": {
+        "message": "Global"
+    },
     "time_day": {
         "message": "d"
     },

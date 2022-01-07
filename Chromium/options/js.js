@@ -1,5 +1,21 @@
 document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'block';
-document.querySelector('#back').parentNode.style.display = location.search === '?popup' ? 'block' : 'none';
+document.querySelector('#back').style.display = location.search === '?popup' ? 'inline-block' : 'none';
+
+[
+    {active: 0, tabs: document.querySelectorAll('[data-normal] > button'), subs: document.querySelectorAll('[data-normal] > .submenu')},
+    {active: 0, tabs: document.querySelectorAll('[data-global] > button'), subs: document.querySelectorAll('[data-global] > .submenu')}
+].forEach(({active, tabs, subs}, index) => {
+    tabs[active].classList.add('checked');
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', event => {
+            tabs[active].classList.remove('checked');
+            subs[active].style.display = 'none';
+            active = index;
+            tabs[index].classList.add('checked');
+            subs[index].style.display = 'block';
+        });
+    });
+});
 
 document.querySelector('#back').addEventListener('click', event => {
     history.back();
@@ -20,13 +36,19 @@ document.querySelector('#import').addEventListener('change', event => {
     });
 });
 
-document.querySelector('#aria2_btn').addEventListener('click', event => {
-    aria2RPCCall({method: 'aria2.getVersion'}, version => open('aria2/index.html?' + version.version, '_self'), showNotification);
+document.querySelector('#global_btn').addEventListener('click', event => {
+    document.body.getAttribute('data-mode') !== 'normal' ? document.body.setAttribute('data-mode', 'normal')
+        : aria2RPCCall({method: 'aria2.getGlobalOption'}, options => document.body.setAttribute('data-mode', 'global') ?? printOptions(options), showNotification);
+    event.target.classList.toggle('checked');
 });
 
 document.querySelector('#show_btn').addEventListener('click', event => {
     event.target.parentNode.querySelector('input').setAttribute('type', event.target.classList.contains('checked') ? 'password' : 'text');
     event.target.classList.toggle('checked');
+});
+
+document.querySelector('[data-global]').addEventListener('change', event => {
+    aria2RPCCall({method: 'aria2.changeGlobalOption', params: [{[event.target.getAttribute('aria2')]: event.target.value}]});
 });
 
 function aria2RPCClient() {

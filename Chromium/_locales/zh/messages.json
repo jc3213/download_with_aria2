@@ -20,6 +20,9 @@
     "common_back": {
         "message": "返回"
     },
+    "common_global": {
+        "message": "全局"
+    },
     "time_day": {
         "message": "天"
     },
