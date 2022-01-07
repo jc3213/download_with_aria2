@@ -1,15 +1,13 @@
 var gid = location.hash.slice(1);
 var type = location.search.slice(1);
-var http = document.querySelector('[http] #form');
-var bt = document.querySelector('[bt] #form');
+var http = document.querySelector('[data-http] #form');
+var bt = document.querySelector('[data-bt] #form');
 var torrent = [];
+
+document.body.setAttribute('data-mode', type);
 
 document.querySelector('#session').addEventListener('click', event => {
     history.back();
-});
-
-document.querySelectorAll('[http], [bt]').forEach(field => {
-    field.style.display = field.hasAttribute(type) ? field.classList.contains('module') ? 'grid' : 'block' : 'none';
 });
 
 document.querySelector('.submenu').addEventListener('change', event => {

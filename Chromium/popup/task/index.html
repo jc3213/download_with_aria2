@@ -18,7 +18,7 @@
                     <div class="title" i18n>task_download</div>
                     <div>
                         <span class="suffix">B/s</span>
-                        <input name="max-download-limit" size type="text">
+                        <input name="max-download-limit" data-size type="text">
                         <div id="download" class="block active"></div>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                     <div class="title" i18n>task_upload</div>
                     <div>
                         <span class="suffix">B/s</span>
-                        <input name="max-upload-limit" size type="text">
+                        <input name="max-upload-limit" data-size type="text">
                         <div id="upload" class="block complete"></div>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                     <button data-feed="uri:proxy">💾</button>
                 </div>
             </div>
-            <div http class="module">
+            <div data-http class="module">
                 <div title="aria2_http_split_desc" i18n_title>
                     <div class="title" i18n>aria2_http_split</div>
                     <div>
@@ -50,12 +50,12 @@
                     <div class="title" i18n>aria2_http_size</div>
                     <div>
                         <span class="suffix">B</span>
-                        <input name="min-split-size" size type="text">
+                        <input name="min-split-size" data-size type="text">
                     </div>
                     <span i18n>common_default</span>: <u><i>20M</i></u>
                 </div>
             </div>
-            <div bt class="module">
+            <div data-bt class="module">
                 <div title="aria2_bt_ratio_desc" i18n_title>
                     <div class="title" i18n>aria2_bt_ratio</div>
                     <div>
@@ -71,7 +71,7 @@
                     <span i18n>common_sample</span>: <u><i>30</i></u>
                 </div>
             </div>
-            <div bt title="aria2_bt_remove_desc" i18n_title>
+            <div data-bt title="aria2_bt_remove_desc" i18n_title>
                 <div class="title" i18n>aria2_bt_remove</div>
                 <div>
                     <select name="bt-remove-unselected-file">
@@ -81,7 +81,7 @@
                 </div>
                 <span i18n>common_default</span>: <u><i>False</i></u>
             </div>
-            <div http title="task_urls_desc" i18n_title>
+            <div data-http title="task_urls_desc" i18n_title>
                 <div class="title" i18n>task_urls</div>
                 <div id="append" class="addon">
                     <input type="url">
@@ -90,7 +90,7 @@
                 <div id="form" class="uri"></div>
                 <button id="template"></button>
             </div>
-            <div bt title="task_files_desc" i18n_title>
+            <div data-bt title="task_files_desc" i18n_title>
                 <div class="title" i18n>task_files</div>
                 <div id="form"></div>
                 <div id="template" class="file">

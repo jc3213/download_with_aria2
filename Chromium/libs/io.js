@@ -31,9 +31,9 @@ function printButton() {
 }
 
 function printOptions(options) {
-    document.querySelectorAll('input[name]:not([id])').forEach(field => {
+    document.querySelectorAll('[name]:not([id])').forEach(field => {
         field.value = options[field.name] ?? '';
-        if (field.hasAttribute('size')) {
+        if (field.hasAttribute('data-size')) {
             var size = bytesToFileSize(field.value);
             field.value = size.slice(0, size.indexOf(' ')) + size.slice(size.indexOf(' ') + 1, -1);
         }
