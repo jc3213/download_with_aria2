@@ -36,7 +36,7 @@ document.querySelector('#import').addEventListener('change', event => {
     });
 });
 
-document.querySelector('#global_btn').addEventListener('click', event => {
+document.querySelector('#aria2_btn').addEventListener('click', event => {
     document.body.getAttribute('data-mode') !== 'normal' ? document.body.setAttribute('data-mode', 'normal')
         : aria2RPCCall({method: 'aria2.getGlobalOption'}, options => document.body.setAttribute('data-mode', 'global') ?? printOptions(options), showNotification);
     event.target.classList.toggle('checked');
@@ -47,7 +47,7 @@ document.querySelector('#show_btn').addEventListener('click', event => {
     event.target.classList.toggle('checked');
 });
 
-document.querySelector('[data-global]').addEventListener('change', event => {
+document.querySelector('#global').addEventListener('change', event => {
     aria2RPCCall({method: 'aria2.changeGlobalOption', params: [{[event.target.getAttribute('aria2')]: event.target.value}]});
 });
 
