@@ -62,7 +62,7 @@ function aria2RPCClient() {
         document.querySelector('[name="max-upload-limit"]').disabled = disabled || type === 'http';
         document.querySelector('[name="all-proxy"]').disabled = disabled;
         type === 'http' && printTaskUris(http, files[0].uris) || type === 'bt' && printTaskFiles(bt, files);
-    }, error => console.log(error), true);
+    }, null, true);
 }
 
 function printTableCell(table, resolve) {
