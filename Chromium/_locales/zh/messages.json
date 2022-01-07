@@ -17,9 +17,6 @@
     "common_advanced": {
         "message": "进阶"
     },
-    "common_back": {
-        "message": "返回"
-    },
     "time_day": {
         "message": "天"
     },
@@ -35,8 +32,8 @@
     "time_second_full": {
         "message": "秒"
     },
-    "option_manager": {
-        "message": "管理设置"
+    "option_back": {
+        "message": "返回"
     },
     "option_expert": {
         "message": "专家"
@@ -46,6 +43,9 @@
     },
     "option_download": {
         "message": "下载"
+    },
+    "option_manager": {
+        "message": "管理设置"
     },
     "option_export": {
         "message": "导出"
@@ -185,13 +185,16 @@
     "task_submit": {
         "message": "确认"
     },
+    "task_upload_file": {
+        "message": "上传"
+    },
     "task_download": {
         "message": "下载速度"
     },
     "task_download_desc": {
         "message": "通过\"max-download-limit\"选项限制最大下载速度"
     },
-    "task_upload": {
+    "task_metalink": {
         "message": "上传速度"
     },
     "task_upload_desc": {
