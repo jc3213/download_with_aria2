@@ -20,8 +20,8 @@
     "common_back": {
         "message": "Back"
     },
-    "common_global": {
-        "message": "Global"
+    "common_expert": {
+        "message": "Expert"
     },
     "time_day": {
         "message": "d"

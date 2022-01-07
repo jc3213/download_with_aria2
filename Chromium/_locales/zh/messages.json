@@ -15,13 +15,13 @@
         "message": "禁用"
     },
     "common_advanced": {
-        "message": "高级"
+        "message": "进阶"
     },
     "common_back": {
         "message": "返回"
     },
-    "common_global": {
-        "message": "全局"
+    "common_expert": {
+        "message": "专家"
     },
     "time_day": {
         "message": "天"
