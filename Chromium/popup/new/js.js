@@ -21,7 +21,7 @@ document.querySelector('#entries').addEventListener('drop', event => {
 
 function newTaskOptions() {
     var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']]};
-    document.querySelectorAll('[aria2], [task]').forEach(field => options[field.getAttribute('aria2') ?? field.getAttribute('task')] = field.value);
+    document.querySelectorAll('input:not([id])').forEach(field => options[field.name] = field.value);
     return options;
 }
 

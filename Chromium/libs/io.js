@@ -20,10 +20,10 @@ function bytesToFileSize(bytes) {
 }
 
 function printButton() {
-    document.querySelectorAll('button[local]').forEach(button => {
+    document.querySelectorAll('[data-feed]').forEach(button => {
+        var rule = button.getAttribute('data-feed').match(/[^,]+/g);
+        var name = rule[0], root = rule[1];
         var field = button.parentNode.querySelector('input');
-        var name = button.getAttribute('local');
-        var root = button.getAttribute('root');
         button.addEventListener('click', event => {
             field.value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name];
         });
@@ -31,7 +31,7 @@ function printButton() {
 }
 
 function printOptions(options) {
-    document.querySelectorAll('input[name]').forEach(field => {
+    document.querySelectorAll('input[name]:not([id])').forEach(field => {
         field.value = options[field.name] ?? '';
         if (field.hasAttribute('size')) {
             var size = bytesToFileSize(field.value);
