@@ -42,7 +42,6 @@ option:checked {
 }
 
 button {
-    display: inline-block !important;
     padding: 5px;
     border-width: 1px;
 }
@@ -153,11 +152,11 @@ button.checked {
     color: #fff;
 }
 
-[data-prefs="option"] [data-option], [data-prefs="global"] [data-global], [data-referer="popup"] [data-popup], [data-referer="chrome"] [data-chrome] {
+[data-prefs="option"] [data-option], [data-prefs="global"] [data-global] {
     display: block;
 }
 
-[data-prefs="option"] [data-global], [data-prefs="global"] [data-option], [data-referer="popup"] [data-chrome], [data-referer="chrome"] [data-popup], [data-prefs] .submenu:not(:first-child),
+[data-prefs="option"] [data-global], [data-prefs="global"] [data-option], [data-prefs] .submenu:not(:first-child),
 [data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http] {
-    display: none !important;
+    display: none;
 }

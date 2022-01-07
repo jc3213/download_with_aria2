@@ -2,6 +2,7 @@
     {active: 0, tabs: document.querySelectorAll('[data-option] > button'), subs: document.querySelectorAll('[data-option] > .submenu')},
     {active: 0, tabs: document.querySelectorAll('[data-global] > button'), subs: document.querySelectorAll('[data-global] > .submenu')}
 ].forEach(({active, tabs, subs}, index) => {
+console.log(tabs, subs);
     tabs[active].classList.add('checked');
     tabs.forEach((tab, index) => {
         tab.addEventListener('click', event => {
@@ -14,7 +15,8 @@
     });
 });
 
-document.body.setAttribute('data-referer', location.search === '?popup' ? 'popup' : 'chrome');
+//document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'block';
+document.querySelector('#back_btn').style.display = location.search === '?popup' ? 'inline-block' : 'none';
 
 document.querySelector('#back_btn').addEventListener('click', event => {
     history.back();
@@ -51,7 +53,7 @@ document.querySelector('#global').addEventListener('change', event => {
 });
 
 function aria2RPCClient() {
-    document.querySelectorAll('#normal [id]:not(button)').forEach(field => {
+    document.querySelectorAll('#option [id]:not(button)').forEach(field => {
         var name = field.id;
         var root = field.name;
         var value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name] ?? '';

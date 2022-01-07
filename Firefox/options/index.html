@@ -3,11 +3,10 @@
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" href="/libs/style.css">
-        <link rel="stylesheet" href="css.css">
     </head>
-    <body data-mode="normal">
+    <body data-prefs="option">
         <div>
-            <div data-normal>
+            <div data-option>
                 <button i18n>option_basic</button>
                 <button i18n>common_advanced</button>
                 <button i18n>option_download</button>
@@ -18,19 +17,12 @@
                 <button i18n>common_advanced</button>
             </div>
             <div class="sidemenu">
-                <div id="manager">
-                    <button id="export" button i18n>option_export</button>
-                    <button id="import"><label>
-                        <span i18n>option_import</span>
-                        <input type="file" accept=".json" style="display: none">
-                    </label></button>
-                </div>
                 <button id="back_btn" i18n>common_back</button>
                 <button id="aria2_btn" i18n>common_expert</button>
             </div>
         </div>
         <hr>
-        <div id="normal" data-normal>
+        <div id="option" data-option>
             <div class="submenu">
                 <div title="option_jsonrpc_uri_desc" i18n_title>
                     <div class="title" i18n>option_jsonrpc_uri</div>
@@ -54,6 +46,14 @@
                             <input id="refresh" name="jsonrpc" multi="1000" type="number" min="1" max="10">
                         </div>
                     </div>
+                </div>
+                <div id="manager">
+                    <span class="title" i18n>option_manager</span>
+                    <button id="export" button i18n>option_export</button>
+                    <button id="import"><label>
+                        <span i18n>option_import</span>
+                        <input type="file" accept=".json" style="display: none">
+                    </label></button>
                 </div>
             </div>
             <div class="submenu">
