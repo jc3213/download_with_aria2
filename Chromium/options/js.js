@@ -21,7 +21,7 @@ document.querySelector('#back_btn').addEventListener('click', event => {
     history.back();
 });
 
-document.querySelector('#export').addEventListener('click', event => {
+document.querySelector('#export_btn').addEventListener('click', event => {
     var blob = new Blob([JSON.stringify(aria2RPC)], {type: 'application/json; charset=utf-8'});
     var saver = document.createElement('a');
     saver.href = URL.createObjectURL(blob);
@@ -29,7 +29,7 @@ document.querySelector('#export').addEventListener('click', event => {
     saver.click();
 });
 
-document.querySelector('#import').addEventListener('change', event => {
+document.querySelector('#import_btn').addEventListener('change', event => {
     readFileAsBinary(event.target.files[0], data => {
         chrome.storage.local.set(JSON.parse(atob(data)));
         location.reload();

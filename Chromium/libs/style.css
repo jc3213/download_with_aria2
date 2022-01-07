@@ -152,11 +152,13 @@ button.checked {
     color: #fff;
 }
 
-[data-prefs="option"] [data-option], [data-prefs="global"] [data-global] {
+[data-prefs="option"] [data-option], [data-prefs="global"] [data-global],
+[data-popup="main"] [data-main], [data-popup="task"] [data-task] {
     display: block;
 }
 
 [data-prefs="option"] [data-global], [data-prefs="global"] [data-option], [data-prefs] .submenu:not(:first-child),
+[data-popup="main"] [data-task], [data-popup="task"] [data-main],
 [data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http] {
     display: none;
 }
