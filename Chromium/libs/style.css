@@ -42,6 +42,7 @@ option:checked {
 }
 
 button {
+    display: inline-block !important;
     padding: 5px;
     border-width: 1px;
 }
@@ -51,7 +52,6 @@ button:not(:disabled):hover {
 }
 
 button:disabled {
-    display: inline-block !important;
     padding: 6px;
     border: none;
 }
