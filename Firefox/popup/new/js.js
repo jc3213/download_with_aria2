@@ -5,7 +5,7 @@ document.querySelector('#add_btn').addEventListener('click', async event => {
 
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']]};
-    document.querySelectorAll('[aria2], [task]').forEach(field => options[field.getAttribute('aria2') ?? field.getAttribute('task')] = field.value);
+    document.querySelectorAll('input:not([id])').forEach(field => options[field.name] = field.value);
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
     entries && aria2RPCCall(entries.map(url => ({method: 'aria2.addUri', params: [[url], options]})), showNotification(entries.join()));
     history.back();
