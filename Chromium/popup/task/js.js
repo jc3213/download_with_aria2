@@ -6,7 +6,7 @@ var torrent = [];
 
 document.body.setAttribute('data-aria2', type);
 
-document.addEventListener('change', event => {
+document.querySelector('#manager').addEventListener('change', event => {
     event.target.name && aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[event.target.name]: event.target.value}]});
 });
 
@@ -22,10 +22,6 @@ document.querySelectorAll('.block').forEach(block => {
     field.addEventListener('blur', event => {
         block.style.display = 'block';
     });
-});
-
-document.querySelector('[data-feed]').addEventListener('click', event => {
-    aria2RPCCall({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2RPC.proxy['uri']}]});
 });
 
 document.querySelector('#append button').addEventListener('click', event => {
@@ -45,8 +41,8 @@ bt.addEventListener('click', event => {
 });
 
 function aria2RPCClient() {
-    printButton();
-    aria2RPCCall({method: 'aria2.getOption', params: [gid]}, printOptions);
+    printButton(document.querySelector('#manager [data-feed]'), (name, value) => aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[name]: value}]}));
+    aria2RPCCall({method: 'aria2.getOption', params: [gid]}, options => printOptions(document.querySelectorAll('#manager input[name]'), options));
     aria2RPCCall({method: 'aria2.tellStatus', params: [gid]}, ({status, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, files}) => {
         var disabled = ['complete', 'error'].includes(status);
         document.querySelector('#session').innerText = bittorrent && bittorrent.info ? bittorrent.info.name : files[0].path.slice(files[0].path.lastIndexOf('/') + 1) || files[0].uris[0].uri;

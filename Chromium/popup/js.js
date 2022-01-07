@@ -53,8 +53,8 @@ document.querySelector('#upload_btn').addEventListener('change', event => {
 });
 
 function aria2RPCClient() {
-    aria2RPCCall({method: 'aria2.getGlobalOption'}, options => printOptions(document.querySelectorAll('#create input[name]'), options));
     printButton(document.querySelector('#create [data-feed]'));
+    aria2RPCCall({method: 'aria2.getGlobalOption'}, options => printOptions(document.querySelectorAll('#create input[name]'), options));
     aria2RPCCall([
         {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
         {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]}
