@@ -56,7 +56,7 @@ function aria2RPCClient() {
         printOptions(document.querySelectorAll('#global [name]'), options);
     }, error => {
         document.querySelector('#aria2_btn').style.display = 'none';
-        showNotification(error)；
+        showNotification(error);
     });
     document.querySelectorAll('#option [id]:not(button)').forEach(field => {
         var name = field.id;
