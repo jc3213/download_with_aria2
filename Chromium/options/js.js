@@ -1,4 +1,4 @@
-document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'block';
+document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'inline-block';
 document.querySelector('#back_btn').style.display = location.search === '?popup' ? 'inline-block' : 'none';
 
 [
