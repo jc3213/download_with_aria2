@@ -18,31 +18,31 @@
                 <button i18n>common_advanced</button>
             </div>
             <div class="sidemenu">
-                <button id="aria2_btn" i18n>common_global</button>
-                <div id="manager" >
+                <div id="manager">
                     <button id="export" button i18n>option_export</button>
-                    <button><label>
+                    <button id="import"><label>
                         <span i18n>option_import</span>
-                        <input id="import" type="file" accept=".json" style="display: none">
+                        <input type="file" accept=".json" style="display: none">
                     </label></button>
                 </div>
-                <button id="back" i18n>common_back</button>
+                <button id="back_btn" i18n>common_back</button>
+                <button id="aria2_btn" i18n>common_global</button>
             </div>
         </div>
         <hr>
-        <div data-normal>
+        <div id="normal" data-normal>
             <div class="submenu">
                 <div title="option_jsonrpc_uri_desc" i18n_title>
                     <div class="title" i18n>option_jsonrpc_uri</div>
                     <div>
-                        <input local="uri" root="jsonrpc" type="url">
+                        <input id="uri" name="jsonrpc" type="url">
                     </div>
                     <span i18n>common_default</span>: <u><i>http://localhost:6800/jsonrpc</i></u>
                 </div>
                 <div title="option_jsonrpc_token_desc" i18n_title>
                     <div class="title" i18n>option_jsonrpc_token</div>
                     <div class="addon">
-                        <input local="token" root="jsonrpc" token="token:" type="password" placeholder="$$secret$$">
+                        <input id="token" name="jsonrpc" token="token:" type="password" placeholder="$$secret$$">
                         <button id="show_btn">👁️</button>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                     <div>
                         <div>
                             <span class="suffix extend" i18n>time_second_full</span>
-                            <input local="refresh" root="jsonrpc" multi="1000" type="number" min="1" max="10">
+                            <input id="refresh" name="jsonrpc" multi="1000" type="number" min="1" max="10">
                         </div>
                     </div>
                 </div>
@@ -60,59 +60,59 @@
                 <div title="option_useragent_desc" i18n_title>
                     <div class="title" i18n>option_useragent</div>
                     <div>
-                        <textarea local="useragent" rows="3"></textarea>
+                        <textarea id="useragent" rows="3"></textarea>
                     </div>
                 </div>
                 <div title="option_proxy_uri_desc" i18n_title>
                     <div class="title" i18n>option_proxy_uri</div>
                     <div>
-                        <input local="uri" root="proxy" type="url" placeholder="http://127.0.0.1:1180/">
+                        <input id="uri" name="proxy" type="url" placeholder="http://127.0.0.1:1180/">
                         <span i18n>option_protocol</span>: <u><i>http</i></u> / <u><i>https</i></u>
                     </div>
                 </div>
                 <div title="option_proxy_resolve_desc" i18n_title>
                     <div class="title" i18n>option_proxy_resolve</div>
                     <div>
-                        <textarea local="resolve" root="proxy" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
+                        <textarea id="resolve" name="proxy" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                     </div>
                 </div>
             </div>
             <div class="submenu">
                 <div title="option_capture_mode_desc" i18n_title>
                     <span class="title" i18n>option_capture_mode</span>
-                    <select local="mode" root="capture">
+                    <select id="mode" name="capture">
                         <option value="0" i18n>common_disabled</option>
                         <option value="1" i18n>option_capture_mode_filters</option>
                         <option value="2" i18n>option_always</option>
                     </select>
                 </div>
-                <div tree="capture" rule="1" class="submenu">
+                <div data-rule="capture,1" class="submenu">
                     <div title="option_capture_fileSize_desc" i18n_title>
                         <div class="title" i18n>option_capture_fileSize</div>
                         <div>
                             <span class="suffix extend">MB</span>
-                            <input local="fileSize" root="capture" multi="1048576" type="number" min="0">
+                            <input id="fileSize" name="capture" multi="1048576" type="number" min="0">
                         </div>
                         <span i18n>common_disabled</span>: <u><i>0</i></u>
                     </div>
                     <div title="option_capture_fileExt_desc" i18n_title>
                         <div class="title" i18n>option_capture_fileExt</div>
                         <div>
-                            <input local="fileExt" root="capture" placeholder="zip&ensp;exe&ensp;jpg">
+                            <input id="fileExt" name="capture" placeholder="zip&ensp;exe&ensp;jpg">
                         </div>
                     </div>
                     <div title="option_capture_resolve_desc" i18n_title>
                         <div class="title" i18n>option_capture_resolve</div>
                         <div>
-                            <textarea local="resolve" root="capture" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
+                            <textarea id="resolve" name="capture" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                         </div>
                     </div>
                 </div>
-                <div tree="capture" rule="1,2" class="submenu">
+                <div data-rule="capture,1,2" class="submenu">
                     <div title="option_capture_reject_desc" i18n_title>
                         <div class="title" i18n>option_capture_reject</div>
                         <div>
-                            <textarea local="reject" root="capture" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
+                            <textarea id="reject" name="capture" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                         </div>
                     </div>
                 </div>
@@ -123,21 +123,21 @@
                 <div title="aria2_http_retry_desc" i18n_title>
                     <div class="title" i18n>aria2_http_retry</div>
                     <div>
-                        <input aria2="max-tries" type="number">
+                        <input name="max-tries" type="number">
                     </div>
                     <span i18n>common_default</span>: <u><i>5</i></u>
                 </div>
                 <div title="aria2_http_wait_desc" i18n_title>
                     <div class="title" i18n>aria2_http_wait</div>
                     <div>
-                        <input aria2="retry-wait" type="number">
+                        <input name="retry-wait" type="number">
                     </div>
                     <span i18n>common_default</span>: <u><i>0</i></u>
                 </div>
                 <div title="aria2_http_split_desc" i18n_title>
                     <div class="title" i18n>aria2_http_split</div>
                     <div>
-                        <input aria2="split" type="number">
+                        <input name="split" type="number">
                     </div>
                     <span i18n>common_default</span>: <u><i>5</i></u>
                 </div>
@@ -145,7 +145,7 @@
                     <div class="title" i18n>aria2_http_size</div>
                     <div>
                         <span class="suffix">B</span>
-                        <input aria2="min-split-size" size type="text">
+                        <input name="min-split-size" size type="text">
                     </div>
                     <span i18n>common_default</span>: <u><i>20M</i></u>
                 </div>
@@ -154,21 +154,21 @@
                 <div title="aria2_bt_port_desc" i18n_title>
                     <div class="title" i18n>aria2_bt_port</div>
                     <div>
-                        <input aria2="listen-port" type="text">
+                        <input name="listen-port" type="text">
                     </div>
                     <span i18n>common_default</span>: <u><i>6881-6999</i></u>
                 </div>
                 <div title="aria2_bt_peers_desc" i18n_title>
                     <div class="title" i18n>aria2_bt_peers</div>
                     <div>
-                        <input aria2="bt-max-peers" type="number">
+                        <input name="bt-max-peers" type="number">
                     </div>
                     <span i18n>common_default</span>: <u><i>55</i></u>
                 </div>
                 <div title="aria2_bt_remove_desc" i18n_title>
                     <div class="title" i18n>aria2_bt_remove</div>
                     <div>
-                        <select aria2="bt-remove-unselected-file" aria2>
+                        <select name="bt-remove-unselected-file" aria2>
                             <option value="true">True</option>
                             <option value="false">False</option>
                         </select>
@@ -178,14 +178,14 @@
                 <div title="aria2_bt_ratio_desc" i18n_title>
                     <div class="title" i18n>aria2_bt_ratio</div>
                     <div>
-                        <input aria2="seed-ratio" type="text">
+                        <input name="seed-ratio" type="text">
                     </div>
                     <span i18n>common_default</span>: <u><i>1.0</i></u>
                 </div>
                 <div title="aria2_bt_seed_desc" i18n_title>
                     <div class="title" i18n>aria2_bt_seed</div>
                     <div>
-                        <input aria2="seed-time" type="number">
+                        <input name="seed-time" type="number">
                     </div>
                     <span i18n>common_sample</span>: <u><i>30</i></u>
                 </div>
@@ -194,7 +194,7 @@
                 <div title="aria2_adv_dir_desc" i18n_title>
                     <div class="title" i18n>aria2_adv_dir</div>
                     <div>
-                        <input aria2="dir" type="text">
+                        <input name="dir" type="text">
                     </div>
                     <span i18n>common_sample</span>: <u><i>C:\Aria2\Downloads</i></u>
                 </div>
@@ -202,14 +202,14 @@
                     <div class="title" i18n>aria2_adv_cache</div>
                     <div>
                         <span class="suffix">B</span>
-                        <input aria2="disk-cache" size type="text">
+                        <input name="disk-cache" size type="text">
                     </div>
                     <span i18n>common_default</span>: <u><i>16M</i></u>
                 </div>
                 <div title="aria2_max_task_desc" i18n_title>
                     <div class="title" i18n>aria2_max_task</div>
                     <div>
-                        <input aria2="max-concurrent-downloads" type="number">
+                        <input name="max-concurrent-downloads" type="number">
                     </div>
                     <span i18n>common_default</span>: <u><i>5</i></u>
                 </div>
@@ -217,7 +217,7 @@
                     <div class="title" i18n>aria2_max_download</div>
                     <div>
                         <span class="suffix">B/s</span>
-                        <input aria2="max-overall-download-limit" size type="text">
+                        <input name="max-overall-download-limit" size type="text">
                     </div>
                     <span i18n>common_disabled</span>: <u><i>0</i></u>
                 </div>
@@ -225,7 +225,7 @@
                     <div class="title" i18n>aria2_max_upload</div>
                     <div>
                         <span class="suffix">B/s</span>
-                        <input aria2="max-overall-upload-limit" size type="text">
+                        <input name="max-overall-upload-limit" size type="text">
                     </div>
                     <span i18n>common_disabled</span>: <u><i>0</i></u>
                 </div>

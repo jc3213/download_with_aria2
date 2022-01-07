@@ -1,5 +1,5 @@
-document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'inline-block';
-document.querySelector('#back').style.display = location.search === '?popup' ? 'inline-block' : 'none';
+document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'block';
+document.querySelector('#back_btn').style.display = location.search === '?popup' ? 'inline-block' : 'none';
 
 [
     {active: 0, tabs: document.querySelectorAll('[data-normal] > button'), subs: document.querySelectorAll('[data-normal] > .submenu')},
@@ -17,7 +17,7 @@ document.querySelector('#back').style.display = location.search === '?popup' ? '
     });
 });
 
-document.querySelector('#back').addEventListener('click', event => {
+document.querySelector('#back_btn').addEventListener('click', event => {
     history.back();
 });
 
@@ -48,13 +48,13 @@ document.querySelector('#show_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#global').addEventListener('change', event => {
-    aria2RPCCall({method: 'aria2.changeGlobalOption', params: [{[event.target.getAttribute('aria2')]: event.target.value}]});
+    aria2RPCCall({method: 'aria2.changeGlobalOption', params: [{[event.target.name]: event.target.value}]});
 });
 
 function aria2RPCClient() {
-    document.querySelectorAll('[local]').forEach(field => {
-        var name = field.getAttribute('local');
-        var root = field.getAttribute('root');
+    document.querySelectorAll('#normal [id]:not(button)').forEach(field => {
+        var name = field.id;
+        var root = field.name;
         var value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name] ?? '';
         var array = value.constructor === Array;
         var token = field.getAttribute('token');
@@ -66,12 +66,12 @@ function aria2RPCClient() {
             chrome.storage.local.set(aria2RPC);
         });
     });
-    document.querySelectorAll('[tree]').forEach(menu => {
-        var root = menu.getAttribute('tree');
-        var rule = menu.getAttribute('rule');
+    document.querySelectorAll('[data-rule]').forEach(menu => {
+        var rule = menu.getAttribute('data-rule').match(/[^,]+/g);
+        var root = rule.shift();
         var value = aria2RPC[root]['mode'];
         menu.style.display = rule.includes(value) ? 'block' : 'none';
-        document.querySelector('[root="' + root + '"][local="mode"]').addEventListener('change', event => {
+        document.querySelector('#mode[name="' + root + '"]').addEventListener('change', event => {
             menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });

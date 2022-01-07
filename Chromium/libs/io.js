@@ -31,8 +31,8 @@ function printButton() {
 }
 
 function printOptions(options) {
-    document.querySelectorAll('[aria2]').forEach(field => {
-        field.value = options[field.getAttribute('aria2')] ?? '';
+    document.querySelectorAll('input[name]').forEach(field => {
+        field.value = options[field.name] ?? '';
         if (field.hasAttribute('size')) {
             var size = bytesToFileSize(field.value);
             field.value = size.slice(0, size.indexOf(' ')) + size.slice(size.indexOf(' ') + 1, -1);
