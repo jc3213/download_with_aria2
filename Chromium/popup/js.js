@@ -1,9 +1,9 @@
-var activeQueue = document.querySelector('div#active');
-var waitingQueue = document.querySelector('div#waiting');
-var stoppedQueue = document.querySelector('div#stopped');
+var activeQueue = document.querySelector('#queue #active');
+var waitingQueue = document.querySelector('#queue #waiting');
+var stoppedQueue = document.querySelector('#queue #stopped');
 var currentTab = -1;
 
-document.querySelectorAll('[tab]').forEach((tab, index, tabs) => {
+document.querySelectorAll('[data-tab]').forEach((tab, index, tabs) => {
     tab.addEventListener('click', event => {
         currentTab !== - 1 && tabs[currentTab].classList.remove('checked');
         currentTab = currentTab === index ? tab.classList.remove('checked') ?? -1 : tab.classList.add('checked') ?? index;
@@ -13,10 +13,8 @@ document.querySelectorAll('[tab]').forEach((tab, index, tabs) => {
     });
 });
 
-document.querySelectorAll('[data-open]').forEach(module => {
-    module.addEventListener('click', event => {
-        open(module.getAttribute('data-open') + '?popup', '_self');
-    });
+document.querySelector('#task_btn').addEventListener('click', event => {
+    document.body.setAttribute('data-popup', 'task');
 });
 
 document.querySelector('#purdge_btn').addEventListener('click', event => {
@@ -26,7 +24,39 @@ document.querySelector('#purdge_btn').addEventListener('click', event => {
     });
 });
 
+document.querySelectorAll('[data-open]').forEach(module => {
+    module.addEventListener('click', event => {
+        open(module.getAttribute('data-open') + '?popup', '_self');
+    });
+});
+
+document.querySelector('#create').addEventListener('change', event => {
+    event.target.name && (option[event.target.name] = event.target.value);
+});
+
+document.querySelector('#referer_btn').addEventListener('click', event => {
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        document.querySelector('#referer').value = tabs[0].url;
+    });
+});
+
+document.querySelector('#submit_btn').addEventListener('click', event => {
+    var options = createOptions();
+    var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
+    entries && aria2RPCCall(entries.map(url => ({method: 'aria2.addUri', params: [[url], options]})), result => document.querySelector('#entries').value = showNotification(entries.join()) ?? '');
+    document.body.setAttribute('data-popup', 'main');
+});
+
+document.querySelector('#upload_btn').addEventListener('change', event => {
+    var options = createOptions();
+    var file = event.target.files[0];
+    readFileAsBinary(file, data => aria2RPCCall({method: file.name.endsWith('torrent') ? 'aria2.addTorrent' : 'aria2.addMetalink', params: [data, options]}, result => showNotification(file.name)));
+    document.body.setAttribute('data-popup', 'main');
+});
+
 function aria2RPCClient() {
+    aria2RPCCall({method: 'aria2.getGlobalOption'}, options => printOptions(document.querySelectorAll('#create input[name]'), options));
+    printButton(document.querySelector('#create [data-feed]'));
     aria2RPCCall([
         {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
         {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]}
@@ -113,4 +143,10 @@ function updateEstimated(task, number) {
         task.querySelector('#second').innerText = seconds;
         task.querySelector('#infinite').style.display = 'none';
     }
+}
+
+function createOptions() {
+    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']]};
+    document.querySelectorAll('#create input[name]').forEach(field => options[field.name] = field.value);
+    return options;
 }

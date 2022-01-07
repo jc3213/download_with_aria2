@@ -19,15 +19,13 @@ function bytesToFileSize(bytes) {
         bytes < 1099511627776 ? (bytes / 10737418.24 | 0) / 100 + ' GB' : (bytes / 10995116277.76 | 0) / 100 + ' TB';
 }
 
-function printButton(resolve) {
-    document.querySelectorAll('[data-feed]').forEach(button => {
-        var rule = button.getAttribute('data-feed').match(/[^:]+/g);
-        var name = rule[0], root = rule[1];
-        var entry = button.parentNode.querySelector('input');
-        button.addEventListener('click', event => {
-            entry.value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name];
-            typeof resolve === 'function' && resolve(entry.value);
-        });
+function printButton(button, resolve) {
+    var rule = button.getAttribute('data-feed').match(/[^:]+/g);
+    var name = rule[0], root = rule[1];
+    var entry = button.parentNode.querySelector('input');
+    button.addEventListener('click', event => {
+        entry.value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name];
+        typeof resolve === 'function' && resolve(entry.name, entry.value);
     });
 }
 
