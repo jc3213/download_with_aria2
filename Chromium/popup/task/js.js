@@ -13,7 +13,7 @@ document.querySelectorAll('[http], [bt]').forEach(field => {
 });
 
 document.querySelector('.submenu').addEventListener('change', event => {
-    event.target.hasAttribute('aria2') && aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[event.target.getAttribute('aria2')]: event.target.value}]});
+    event.target.name && aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[event.target.name]: event.target.value}]});
 });
 
 document.querySelectorAll('.block').forEach(block => {
@@ -26,7 +26,7 @@ document.querySelectorAll('.block').forEach(block => {
     });
 });
 
-document.querySelector('button[local="uri"]').addEventListener('click', event => {
+document.querySelector('[data-feed]').addEventListener('click', event => {
     aria2RPCCall({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2RPC.proxy['uri']}]});
 });
 
@@ -58,11 +58,11 @@ function aria2RPCClient() {
         document.querySelector('#remote').innerText = bytesToFileSize(totalLength);
         document.querySelector('#download').innerText = bytesToFileSize(downloadSpeed) + '/s';
         document.querySelector('#upload').innerText = bytesToFileSize(uploadSpeed) + '/s';
-        document.querySelector('[aria2="max-download-limit"]').disabled = disabled;
-        document.querySelector('[aria2="max-upload-limit"]').disabled = disabled || type === 'http';
-        document.querySelector('[aria2="all-proxy"]').disabled = disabled;
+        document.querySelector('[name="max-download-limit"]').disabled = disabled;
+        document.querySelector('[name="max-upload-limit"]').disabled = disabled || type === 'http';
+        document.querySelector('[name="all-proxy"]').disabled = disabled;
         type === 'http' && printTaskUris(http, files[0].uris) || type === 'bt' && printTaskFiles(bt, files);
-    }, null, true);
+    }, error => console.log(error), true);
 }
 
 function printTableCell(table, resolve) {
