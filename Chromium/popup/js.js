@@ -24,10 +24,8 @@ document.querySelector('#purdge_btn').addEventListener('click', event => {
     });
 });
 
-document.querySelectorAll('[data-open]').forEach(module => {
-    module.addEventListener('click', event => {
-        open(module.getAttribute('data-open') + '?popup', '_self');
-    });
+document.querySelector('#options_btn').addEventListener('click', event => {
+    open('/options/index.html?popup', '_self');
 });
 
 document.querySelector('#create').addEventListener('change', event => {

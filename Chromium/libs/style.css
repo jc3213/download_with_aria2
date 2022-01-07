@@ -46,6 +46,10 @@ button {
     border-width: 1px;
 }
 
+button input[type="file"] {
+    display: none;
+}
+
 button:not(:disabled):hover {
     filter: opacity(75%);
 }
