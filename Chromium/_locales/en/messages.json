@@ -20,9 +20,6 @@
     "common_back": {
         "message": "Back"
     },
-    "common_expert": {
-        "message": "Expert"
-    },
     "time_day": {
         "message": "d"
     },
@@ -40,6 +37,9 @@
     },
     "option_manager": {
         "message": "Manage Options"
+    },
+    "option_expert": {
+        "message": "Expert"
     },
     "option_basic": {
         "message": "Basic"

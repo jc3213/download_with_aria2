@@ -20,9 +20,6 @@
     "common_back": {
         "message": "返回"
     },
-    "common_expert": {
-        "message": "专家"
-    },
     "time_day": {
         "message": "天"
     },
@@ -40,6 +37,9 @@
     },
     "option_manager": {
         "message": "管理设置"
+    },
+    "option_expert": {
+        "message": "专家"
     },
     "option_basic": {
         "message": "基础"
