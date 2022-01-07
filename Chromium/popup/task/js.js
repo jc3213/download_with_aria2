@@ -4,7 +4,7 @@ var http = document.querySelector('[data-http] #form');
 var bt = document.querySelector('[data-bt] #form');
 var torrent = [];
 
-document.body.setAttribute('data-mode', type);
+document.body.setAttribute('data-aria2', type);
 
 document.querySelector('#session').addEventListener('click', event => {
     history.back();

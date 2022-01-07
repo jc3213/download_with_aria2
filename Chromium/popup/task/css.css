@@ -1,4 +1,4 @@
-[data-mode="http"] [data-bt], [data-mode="bt"] [data-http] {
+[data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http] {
     display: none;
 }
 
