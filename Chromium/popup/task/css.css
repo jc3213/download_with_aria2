@@ -1,7 +1,3 @@
-[data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http] {
-    display: none;
-}
-
 #session {
     overflow-y: auto;
     padding: 0px;

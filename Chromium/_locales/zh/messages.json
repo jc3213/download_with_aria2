@@ -38,6 +38,9 @@
     "time_second_full": {
         "message": "秒"
     },
+    "option_manager": {
+        "message": "管理设置"
+    },
     "option_basic": {
         "message": "基础"
     },

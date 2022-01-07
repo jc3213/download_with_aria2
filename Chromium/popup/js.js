@@ -13,9 +13,9 @@ document.querySelectorAll('[tab]').forEach((tab, index, tabs) => {
     });
 });
 
-document.querySelectorAll('[module]').forEach(module => {
+document.querySelectorAll('[data-open]').forEach(module => {
     module.addEventListener('click', event => {
-        open(module.getAttribute('module') + '?popup', '_self');
+        open(module.getAttribute('data-open') + '?popup', '_self');
     });
 });
 

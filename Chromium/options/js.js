@@ -1,8 +1,5 @@
-document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'inline-block';
-document.querySelector('#back_btn').style.display = location.search === '?popup' ? 'inline-block' : 'none';
-
 [
-    {active: 0, tabs: document.querySelectorAll('[data-normal] > button'), subs: document.querySelectorAll('[data-normal] > .submenu')},
+    {active: 0, tabs: document.querySelectorAll('[data-option] > button'), subs: document.querySelectorAll('[data-option] > .submenu')},
     {active: 0, tabs: document.querySelectorAll('[data-global] > button'), subs: document.querySelectorAll('[data-global] > .submenu')}
 ].forEach(({active, tabs, subs}, index) => {
     tabs[active].classList.add('checked');
@@ -16,6 +13,8 @@ document.querySelector('#back_btn').style.display = location.search === '?popup'
         });
     });
 });
+
+document.body.setAttribute('data-referer', location.search === '?popup' ? 'popup' : 'chrome');
 
 document.querySelector('#back_btn').addEventListener('click', event => {
     history.back();
@@ -37,8 +36,8 @@ document.querySelector('#import').addEventListener('change', event => {
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
-    document.body.getAttribute('data-mode') !== 'normal' ? document.body.setAttribute('data-mode', 'normal')
-        : aria2RPCCall({method: 'aria2.getGlobalOption'}, options => document.body.setAttribute('data-mode', 'global') ?? printOptions(options), showNotification);
+    document.body.getAttribute('data-prefs') !== 'option' ? document.body.setAttribute('data-prefs', 'option')
+        : aria2RPCCall({method: 'aria2.getGlobalOption'}, options => document.body.setAttribute('data-prefs', 'global') ?? printOptions(options), showNotification);
     event.target.classList.toggle('checked');
 });
 
