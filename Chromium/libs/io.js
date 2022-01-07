@@ -19,23 +19,24 @@ function bytesToFileSize(bytes) {
         bytes < 1099511627776 ? (bytes / 10737418.24 | 0) / 100 + ' GB' : (bytes / 10995116277.76 | 0) / 100 + ' TB';
 }
 
-function printButton() {
+function printButton(resolve) {
     document.querySelectorAll('[data-feed]').forEach(button => {
         var rule = button.getAttribute('data-feed').match(/[^:]+/g);
         var name = rule[0], root = rule[1];
-        var field = button.parentNode.querySelector('input');
+        var entry = button.parentNode.querySelector('input');
         button.addEventListener('click', event => {
-            field.value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name];
+            entry.value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name];
+            typeof resolve === 'function' && resolve(entry.value);
         });
     });
 }
 
-function printOptions(options) {
-    document.querySelectorAll('[name]:not([id])').forEach(field => {
-        field.value = options[field.name] ?? '';
-        if (field.hasAttribute('data-size')) {
-            var size = bytesToFileSize(field.value);
-            field.value = size.slice(0, size.indexOf(' ')) + size.slice(size.indexOf(' ') + 1, -1);
+function printOptions(entries, options) {
+    entries.forEach(entry => {
+        entry.value = options[entry.name] ?? '';
+        if (entry.hasAttribute('data-size')) {
+            var size = bytesToFileSize(entry.value);
+            entry.value = size.slice(0, size.indexOf(' ')) + size.slice(size.indexOf(' ') + 1, -1);
         }
     });
 }

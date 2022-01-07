@@ -37,8 +37,7 @@ document.querySelector('#import_btn').addEventListener('change', event => {
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
-    document.body.getAttribute('data-prefs') !== 'option' ? document.body.setAttribute('data-prefs', 'option')
-        : aria2RPCCall({method: 'aria2.getGlobalOption'}, options => document.body.setAttribute('data-prefs', 'global') ?? printOptions(options), showNotification);
+    document.body.getAttribute('data-prefs') === 'option' ? document.body.setAttribute('data-prefs', 'global') : document.body.setAttribute('data-prefs', 'option');
     event.target.classList.toggle('checked');
 });
 
@@ -52,6 +51,13 @@ document.querySelector('#global').addEventListener('change', event => {
 });
 
 function aria2RPCClient() {
+    aria2RPCCall({method: 'aria2.getGlobalOption'}, options => {
+        document.querySelector('#aria2_btn').style.display = 'inline-block';
+        printOptions(document.querySelectorAll('#global [name]'), options);
+    }, error => {
+        document.querySelector('#aria2_btn').style.display = 'none';
+        showNotification(error)；
+    });
     document.querySelectorAll('#option [id]:not(button)').forEach(field => {
         var name = field.id;
         var root = field.name;
