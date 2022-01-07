@@ -6,12 +6,12 @@ var torrent = [];
 
 document.body.setAttribute('data-aria2', type);
 
-document.querySelector('#session').addEventListener('click', event => {
-    history.back();
+document.addEventListener('change', event => {
+    event.target.name && aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[event.target.name]: event.target.value}]});
 });
 
-document.querySelector('.submenu').addEventListener('change', event => {
-    event.target.name && aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[event.target.name]: event.target.value}]});
+document.querySelector('#session').addEventListener('click', event => {
+    history.back();
 });
 
 document.querySelectorAll('.block').forEach(block => {
