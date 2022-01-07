@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/libs/style.css">
+        <link rel="stylesheet" href="css.css">
+    </head>
+    <body data-popup="main">
+        <div data-main>
+            <button class="active" data-tab i18n>popup_active_button</button>
+            <span id="active" class="stats">0</span>
+            <button class="waiting" data-tab i18n>popup_waiting_button</button>
+            <span id="waiting" class="stats">0</span>
+            <button class="removed" data-tab i18n>popup_stopped_button</button>
+            <span id="stopped" class="stats">0</span>
+            <div class="sidemenu">
+                <button id="task_btn" i18n>popup_new_button</button>
+                <button id="purdge_btn" i18n>popup_purge_button</button>
+            </div>
+            <div id="message" class="block error" style="display: none;"></div>
+        </div>
+        <hr data-main>
+        <div id="queue" data-main style="height: calc(100% - 92px);">
+            <div id="active"></div>
+            <div id="waiting"></div>
+            <div id="stopped"></div>
+            <div id="template" class="session">
+                <div>
+                    <span id="name" class="title"></span>
+                    <span id="error"></span>
+                </div>
+                <div class="module3">
+                    <div>🖥️<span id="local"></span></div>
+                    <div>⏲️<span id="infinite" class="block">∞</span>
+                        <span id="estimate">
+                            <span><span id="day"></span><sub i18n>time_day</sub></span>
+                            <span><span id="hour"></span><sub i18n>time_hour</sub></span>
+                            <span><span id="minute"></span><sub i18n>time_minute</sub></span>
+                            <span><span id="second"></span><sub i18n>time_second</sub></span>
+                        </span>
+                    </div>
+                    <div>📦<span id="remote"></span></div>
+                    <div>📶️<span id="connect"></span></div>
+                    <div>⏬<span id="download"></span></div>
+                    <div>⏫<span id="upload"></span></div>
+                </div>
+                <div class="menu">
+                    <button id="remove_btn">❌</button>
+                    <button id="invest_btn">🔍</button>
+                    <button id="retry_btn">🌌</button>
+                </div>
+                <div id="meter">
+                    <div id="ratio"></div>
+                </div>
+            </div>
+        </div>
+        <div id="create" data-task class="submenu">
+            <div title="task_referer_desc" i18n_title>
+                <div class="title" i18n>task_referer</div>
+                <div class="addon">
+                    <input id="referer" type="text">
+                    <button id="referer_btn">➕</button>
+                </div>
+            </div>
+            <div title="task_batch_desc" i18n_title>
+                <div class="title" i18n>task_batch</div>
+                <div>
+                    <textarea id="entries" rows="10"></textarea>
+                </div>
+            </div>
+            <div title="task_proxy_desc" i18n_title>
+                <div class="title" i18n>task_proxy</div>
+                <div class="addon">
+                    <input name="all-proxy" type="url">
+                    <button data-feed="uri:proxy">💾</button>
+                </div>
+            </div>
+            <div title="aria2_adv_dir_desc" i18n_title>
+                <div class="title" i18n>aria2_adv_dir</div>
+                <div>
+                    <input name="dir" type="text">
+                </div>
+                <span i18n>common_sample</span>: <u><i>C:\Aria2\Downloads</i></u>
+            </div>
+            <div class="module">
+                <div title="aria2_http_split_desc" i18n_title>
+                    <div class="title" i18n>aria2_http_split</div>
+                    <div>
+                        <input name="split" type="number">
+                    </div>
+                    <span i18n>common_default</span>: <u><i>5</i></u>
+                </div>
+                <div title="aria2_http_size_desc" i18n_title>
+                    <div class="title" i18n>aria2_http_size</div>
+                    <div>
+                        <span class="suffix">B</span>
+                        <input name="min-split-size" data-size type="text">
+                    </div>
+                    <span i18n>common_default</span>: <u><i>20M</i></u>
+                </div>
+            </div>
+            <div title="task_download_desc" i18n_title>
+                <div class="title" i18n>task_download</div>
+                <div>
+                    <span class="suffix">B/s</span>
+                    <input name="max-download-limit" data-size type="text">
+                </div>
+                <span i18n>common_disabled</span>: <u><i>0</i></u>
+            </div>
+        </div>
+        <hr>
+        <div data-main>
+            <button class="active" disabled i18n>popup_download</button>
+            <span id="download" class="stats">0 B/s</span>
+            <button class="complete" disabled i18n>popup_upload</button>
+            <span id="upload" class="stats">0 B/s</span>
+            <div class="sidemenu">
+                <button id="options_btn" i18n>popup_options_button</button>
+            </div>
+        </div>
+        <div data-task class="footmenu">
+            <button id="submit_btn" i18n>task_submit</button>
+            <button id="upload_btn"><label>
+                <span i18n>task_metalink</span>
+                <input type="file" accept=".metalink,.torrent,.meta4">
+            </label></button>
+        </div>
+        <script src="/libs/io.js"></script>
+        <script src="/libs/jsonrpc.js"></script>
+        <script src="js.js"></script>
+    </body>
+</html>
