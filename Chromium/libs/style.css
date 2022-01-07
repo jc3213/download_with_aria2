@@ -59,7 +59,7 @@ button.checked {
     border: 1px #ccc inset;
 }
 
-#template, [panel] {
+#template {
     display: none;
 }
 
