@@ -86,15 +86,18 @@
                         <option value="2" i18n>option_always</option>
                     </select>
                 </div>
-                <div data-rule="capture,1" class="submenu">
-                    <div title="option_capture_fileSize_desc" i18n_title>
-                        <div class="title" i18n>option_capture_fileSize</div>
-                        <div>
-                            <span class="suffix extend">MB</span>
-                            <input id="fileSize" name="capture" multi="1048576" type="number" min="0">
-                        </div>
-                        <span i18n>common_disabled</span>: <u><i>0</i></u>
+                <div data-rule="capture,1,2" title="option_folder_mode_desc" i18n_title>
+                    <span class="title" i18n>option_folder_mode</span>
+                    <select id="mode" name="folder">
+                        <option value="0" i18n>common_default</option>
+                        <option value="1" i18n>option_folder_browser</option>
+                        <option value="2" i18n>option_folder_custom</option>
+                    </select>
+                    <div data-rule="folder,2">
+                        <input id="uri" name="folder" type="text" placeholder="C:\Aria2 Downloads">
                     </div>
+                </div>
+                <div data-rule="capture,1" class="submenu">
                     <div title="option_capture_fileExt_desc" i18n_title>
                         <div class="title" i18n>option_capture_fileExt</div>
                         <div>

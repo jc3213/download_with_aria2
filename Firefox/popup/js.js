@@ -39,16 +39,10 @@ document.querySelector('#referer_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#submit_btn').addEventListener('click', event => {
-    var options = createOptions();
+    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']]};
+    document.querySelectorAll('#create input[name]').forEach(field => options[field.name] = field.value);
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
     entries && aria2RPCCall(entries.map(url => ({method: 'aria2.addUri', params: [[url], options]})), result => document.querySelector('#entries').value = showNotification(entries.join()) ?? '');
-    document.body.setAttribute('data-popup', 'main');
-});
-
-document.querySelector('#upload_btn').addEventListener('change', event => {
-    var options = createOptions();
-    var file = event.target.files[0];
-    readFileAsBinary(file, data => aria2RPCCall({method: file.name.endsWith('torrent') ? 'aria2.addTorrent' : 'aria2.addMetalink', params: [data, options]}, result => showNotification(file.name)));
     document.body.setAttribute('data-popup', 'main');
 });
 
@@ -141,10 +135,4 @@ function updateEstimated(task, number) {
         task.querySelector('#second').innerText = seconds;
         task.querySelector('#infinite').style.display = 'none';
     }
-}
-
-function createOptions() {
-    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']]};
-    document.querySelectorAll('#create input[name]').forEach(field => options[field.name] = field.value);
-    return options;
 }
