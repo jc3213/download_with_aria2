@@ -205,7 +205,6 @@ function updateTaskDetail(task, {status, bittorrent, completedLength, totalLengt
 function printTableCell(table, type, resolve) {
     var cell = table.parentNode.querySelector('[data-' + type + '="template"]').cloneNode(true);
     cell.removeAttribute('data-' + type);
-console.log(resolve, typeof resolve);
     typeof resolve === 'function' && resolve(cell);
     table.appendChild(cell);
     return cell;
