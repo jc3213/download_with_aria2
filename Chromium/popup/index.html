@@ -19,12 +19,13 @@
             </div>
             <div id="message" class="block error" style="display: none;"></div>
         </div>
+        <div data-aria2><button id="name_btn"></button></div>
         <hr data-main>
         <div id="queue" data-main style="height: calc(100% - 92px);">
             <div id="active"></div>
             <div id="waiting"></div>
             <div id="stopped"></div>
-            <div id="template" class="session">
+            <div data-gid="template" class="session">
                 <div>
                     <span id="name" class="title"></span>
                     <span id="error"></span>
@@ -108,7 +109,7 @@
                 <span i18n>common_disabled</span>: <u><i>0</i></u>
             </div>
         </div>
-        <hr>
+        <hr data-main data-task>
         <div data-main>
             <button class="active" disabled i18n>popup_download</button>
             <span id="download" class="stats">0 B/s</span>
@@ -124,6 +125,100 @@
                 <span i18n>task_metalink</span>
                 <input type="file" accept=".metalink,.torrent,.meta4">
             </label></button>
+        </div>
+        <div id="manager" data-aria2 class="submenu" style="height: calc(100% - 61px);">
+            <div class="module3">
+                <div>🖥️<span id="local"></span></div>
+                <div>🛰️<span id="ratio"></span></div>
+                <div>📦<span id="remote"></span></div>
+            </div>
+            <div class="module">
+                <div title="task_download_desc" i18n_title>
+                    <div class="title" i18n>task_download</div>
+                    <div>
+                        <span class="suffix">B/s</span>
+                        <input name="max-download-limit" data-size type="text">
+                        <div id="download" class="block active"></div>
+                    </div>
+                </div>
+                <div title="task_upload_desc" i18n_title>
+                    <div class="title" i18n>task_upload</div>
+                    <div>
+                        <span class="suffix">B/s</span>
+                        <input name="max-upload-limit" data-size type="text">
+                        <div id="upload" class="block complete"></div>
+                    </div>
+                </div>
+            </div>
+            <div title="task_proxy_desc" i18n_title>
+                <div class="title" i18n>task_proxy</div>
+                <div class="addon">
+                    <input name="all-proxy" type="url">
+                    <button data-feed="uri:proxy">💾</button>
+                </div>
+            </div>
+            <div data-http class="module">
+                <div title="aria2_http_split_desc" i18n_title>
+                    <div class="title" i18n>aria2_http_split</div>
+                    <div>
+                        <input name="split" type="number">
+                    </div>
+                    <span i18n>common_default</span>: <u><i>5</i></u>
+                </div>
+                <div title="aria2_http_size_desc" i18n_title>
+                    <div class="title" i18n>aria2_http_size</div>
+                    <div>
+                        <span class="suffix">B</span>
+                        <input name="min-split-size" data-size type="text">
+                    </div>
+                    <span i18n>common_default</span>: <u><i>20M</i></u>
+                </div>
+            </div>
+            <div data-bt class="module">
+                <div title="aria2_bt_ratio_desc" i18n_title>
+                    <div class="title" i18n>aria2_bt_ratio</div>
+                    <div>
+                        <input name="seed-ratio" type="text">
+                    </div>
+                    <span i18n>common_default</span>: <u><i>1.0</i></u>
+                </div>
+                <div title="aria2_bt_seed_desc" i18n_title>
+                    <div class="title" i18n>aria2_bt_seed</div>
+                    <div>
+                        <input name="seed-time" type="number">
+                    </div>
+                    <span i18n>common_sample</span>: <u><i>30</i></u>
+                </div>
+            </div>
+            <div data-bt title="aria2_bt_remove_desc" i18n_title>
+                <div class="title" i18n>aria2_bt_remove</div>
+                <div>
+                    <select name="bt-remove-unselected-file">
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                    </select>
+                </div>
+                <span i18n>common_default</span>: <u><i>False</i></u>
+            </div>
+            <div data-http title="task_urls_desc" i18n_title>
+                <div class="title" i18n>task_urls</div>
+                <div id="append" class="addon">
+                    <input type="url">
+                    <button>➕</button>
+                </div>
+                <div id="form" class="uri"></div>
+                <button data-uri="template"></button>
+            </div>
+            <div data-bt title="task_files_desc" i18n_title>
+                <div class="title" i18n>task_files</div>
+                <div id="form"></div>
+                <div data-file="template" class="file">
+                    <button id="index"></button>
+                    <div id="name"></div>
+                    <div id="size"></div>
+                    <div id="ratio"></div>
+                </div>
+            </div>
         </div>
         <script src="/libs/io.js"></script>
         <script src="/libs/jsonrpc.js"></script>

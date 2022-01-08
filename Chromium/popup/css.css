@@ -1,3 +1,27 @@
+.active {
+    background-color: #44c;
+}
+
+.waiting, .paused {
+    background-color: #cc4;
+}
+
+.complete {
+    background-color: #4c4;
+}
+
+.error {
+    background-color: #c44;
+}
+
+.removed {
+    background-color: #c4c;
+}
+
+.active, .waiting, .paused, .error, .complete, .removed {
+    color: #fff;
+}
+
 .stats {
     margin-right: 10px;
 }
@@ -57,4 +81,56 @@
 
 [status="error"] #meter {
     background-color: #400;
+}
+
+#name_btn {
+    overflow-y: auto;
+    padding: 0px;
+    margin-bottom: 15px;
+}
+
+#name_btn, .uri > * {
+    width: 100%;
+    word-break: break-word;
+}
+
+#name_btn, .uri > *, .file > * {
+    height: 46px;
+}
+
+.uri > * {
+    overflow-y: hidden;
+    margin-top: 5px;
+    text-align: left;
+}
+
+#manager .module3 > div {
+    border: 1px ridge #ccc;
+    padding: 5px;
+}
+
+.block {
+    line-height: 27px;
+}
+
+.file {
+    display: grid;
+    grid-template-columns: 40px auto 80px 60px;
+}
+
+.file > *:not(#index) {
+    border: 1px ridge #ccc;
+}
+
+.file > *:not(#name, #index) {
+    line-height: 46px;
+    text-align: center;
+}
+
+.file > #name {
+    overflow-y: auto;
+}
+
+[data-gid="template"], [data-uri="template"], [data-file="template"] {
+    display: none;
 }
