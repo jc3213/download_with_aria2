@@ -14,6 +14,8 @@
     });
 });
 
+'browser' in this ? document.querySelector('[data-chrome]').remove() : document.querySelector('[data-firefox]').remove();
+
 document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'block';
 document.querySelector('#back_btn').style.display = location.search === '?popup' ? 'inline-block' : 'none';
 
