@@ -80,6 +80,5 @@ function aria2RPCClient() {
     }, error => {
         browser.browserAction.setBadgeBackgroundColor({color: '#c33'});
         browser.browserAction.setBadgeText({text: 'E'});
-        showNotification(error);
     }, true);
 }
