@@ -63,10 +63,6 @@ button.checked {
     border: 1px #ccc inset;
 }
 
-#template {
-    display: none;
-}
-
 .title {
     font-weight: bold;
     word-break: break-word;
@@ -132,37 +128,13 @@ button.checked {
     padding-right: 24px;
 }
 
-.active {
-    background-color: #44c;
-}
-
-.waiting, .paused {
-    background-color: #cc4;
-}
-
-.complete {
-    background-color: #4c4;
-}
-
-.error {
-    background-color: #c44;
-}
-
-.removed {
-    background-color: #c4c;
-}
-
-.active, .waiting, .paused, .error, .complete, .removed {
-    color: #fff;
+[data-prefs="option"] [data-global], [data-prefs="global"] [data-option], [data-prefs] .submenu:not(:first-child),
+[data-popup="main"] [data-task], [data-popup="main"] [data-aria2], [data-popup="task"] [data-main], [data-popup="task"] [data-aria2],
+[data-popup="aria2"] [data-main], [data-popup="aria2"] [data-task], [data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http] {
+    display: none;
 }
 
 [data-prefs="option"] [data-option], [data-prefs="global"] [data-global],
-[data-popup="main"] [data-main], [data-popup="task"] [data-task] {
+[data-popup="main"] [data-main], [data-popup="task"] [data-task], [data-popup="aria2"] [data-aria2] {
     display: block;
-}
-
-[data-prefs="option"] [data-global], [data-prefs="global"] [data-option], [data-prefs] .submenu:not(:first-child),
-[data-popup="main"] [data-task], [data-popup="task"] [data-main],
-[data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http] {
-    display: none;
 }
