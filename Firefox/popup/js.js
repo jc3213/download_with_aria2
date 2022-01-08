@@ -1,15 +1,15 @@
 var activeQueue = document.querySelector('#queue #active');
 var waitingQueue = document.querySelector('#queue #waiting');
 var stoppedQueue = document.querySelector('#queue #stopped');
-var currentTab = -1;
+var activeTab = -1;
 
 document.querySelectorAll('[data-tab]').forEach((tab, index, tabs) => {
     tab.addEventListener('click', event => {
-        currentTab !== - 1 && tabs[currentTab].classList.remove('checked');
-        currentTab = currentTab === index ? tab.classList.remove('checked') ?? -1 : tab.classList.add('checked') ?? index;
-        activeQueue.style.display = [-1, 0].includes(currentTab) ? 'block' : 'none';
-        waitingQueue.style.display = [-1, 1].includes(currentTab) ? 'block' : 'none';
-        stoppedQueue.style.display = [-1, 2].includes(currentTab) ? 'block' : 'none';
+        activeTab !== - 1 && tabs[activeTab].classList.remove('checked');
+        activeTab = activeTab === index ? tab.classList.remove('checked') ?? -1 : tab.classList.add('checked') ?? index;
+        activeQueue.style.display = [-1, 0].includes(activeTab) ? 'block' : 'none';
+        waitingQueue.style.display = [-1, 1].includes(activeTab) ? 'block' : 'none';
+        stoppedQueue.style.display = [-1, 2].includes(activeTab) ? 'block' : 'none';
     });
 });
 
@@ -28,14 +28,9 @@ document.querySelector('#options_btn').addEventListener('click', event => {
     open('/options/index.html?popup', '_self');
 });
 
-document.querySelector('#create').addEventListener('change', event => {
-    event.target.name && (option[event.target.name] = event.target.value);
-});
-
-document.querySelector('#referer_btn').addEventListener('click', event => {
-    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-        document.querySelector('#referer').value = tabs[0].url;
-    });
+document.querySelector('#referer_btn').addEventListener('click', async event => {
+    var tabs = await browser.tabs.query({active: true, currentWindow: true});
+    document.querySelector('#referer').value = tabs[0].url;
 });
 
 document.querySelector('#submit_btn').addEventListener('click', event => {
@@ -84,7 +79,7 @@ function printTaskDetail(result, index, queue) {
 function updateTaskDetail(task, {gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
     task.querySelector('#name').innerText = bittorrent && bittorrent.info ? bittorrent.info.name : files[0].path ? files[0].path.slice(files[0].path.lastIndexOf('/') + 1) : files[0].uris[0] ? files[0].uris[0].uri : gid;
     task.querySelector('#local').innerText = bytesToFileSize(completedLength);
-    updateEstimated(task, (totalLength - completedLength) / downloadSpeed);
+    task.querySelector('#infinite').style.display = totalLength === completedLength || downloadSpeed === '0' ? 'inline-block' : updateEstimated(task, (totalLength - completedLength) / downloadSpeed) ?? 'none';
     task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
     task.querySelector('#download').innerText = bytesToFileSize(downloadSpeed) + '/s';
     task.querySelector('#upload').innerText = bytesToFileSize(uploadSpeed) + '/s';
@@ -118,21 +113,15 @@ function appendTaskDetail({gid, bittorrent, totalLength}) {
 }
 
 function updateEstimated(task, number) {
-    if (isNaN(number) || number === Infinity) {
-        task.querySelector('#infinite').style.display = 'inline-block';
-    }
-    else {
-        var days = number / 86400 | 0;
-        var hours = number / 3600 - days * 24 | 0;
-        var minutes = number / 60 - days * 1440 - hours * 60 | 0;
-        var seconds = number - days * 86400 - hours * 3600 - minutes * 60 | 0;
-        task.querySelector('#day').innerText = days;
-        task.querySelector('#day').parentNode.style.display = days > 0 ? 'inline-block' : 'none';
-        task.querySelector('#hour').innerText = hours;
-        task.querySelector('#hour').parentNode.style.display = hours > 0 ? 'inline-block' : 'none';
-        task.querySelector('#minute').innerText = minutes;
-        task.querySelector('#minute').parentNode.style.display = minutes > 0 ? 'inline-block' : 'none';
-        task.querySelector('#second').innerText = seconds;
-        task.querySelector('#infinite').style.display = 'none';
-    }
+    var days = number / 86400 | 0;
+    var hours = number / 3600 - days * 24 | 0;
+    var minutes = number / 60 - days * 1440 - hours * 60 | 0;
+    var seconds = number - days * 86400 - hours * 3600 - minutes * 60 | 0;
+    task.querySelector('#day').innerText = days;
+    task.querySelector('#day').parentNode.style.display = days > 0 ? 'inline-block' : 'none';
+    task.querySelector('#hour').innerText = hours;
+    task.querySelector('#hour').parentNode.style.display = hours > 0 ? 'inline-block' : 'none';
+    task.querySelector('#minute').innerText = minutes;
+    task.querySelector('#minute').parentNode.style.display = minutes > 0 ? 'inline-block' : 'none';
+    task.querySelector('#second').innerText = seconds;
 }
