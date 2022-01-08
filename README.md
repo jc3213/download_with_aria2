@@ -10,7 +10,7 @@
 - Built-in `Aria2 Web Manager`
     - Filtering tasks with queues `Active`, `Stopped`, and `Removed`
     - `New Task` page with extra options
-        - Drop `.metalink`, or `.meta4`, or `.torrent` on `Download Urls` to download [**Chrome Only**]
+        - Support upload `.metalink`, `.meta4`, and `.torrent` files [**Chromium Only**]
     - `Task Manager` that can change options for downloads
         - Change selected files for bittorrent downloads
         - Add or remove download uris for http/ftp downloads
@@ -18,6 +18,9 @@
     - `Global Options` page for aria2 jsonrpc
 - Capture browser downloads
     - Save captured downloads to other directories [**Firefox Only**]
+    - Capture filter based on file size [**Chromium Only**]
+    - Capture filter based on file extension
+    - Capture filter based on domain names of current tab
 - Support proxy setting and provide auto matching rule
 
 # Feedback
