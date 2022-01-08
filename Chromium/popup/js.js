@@ -159,6 +159,7 @@ function printQueueItem({gid, bittorrent, totalLength}) {
             updateTaskDetail(result);
             document.body.setAttribute('data-popup', 'aria2');
             document.querySelector('#manager').setAttribute('data-aria2', bittorrent ? 'bt' : 'http');
+            document.querySelector('#manager #remote').innerText = task.querySelector('#remote').innerText;
         });
     });
     task.querySelector('#retry_btn').addEventListener('click', event => {
@@ -212,7 +213,6 @@ function updateTaskDetail({status, bittorrent, completedLength, totalLength, dow
     document.querySelector('#name_btn').className = status;
     document.querySelector('#manager #local').innerText = bytesToFileSize(completedLength);
     document.querySelector('#manager #ratio').innerText = ((completedLength / totalLength * 10000 | 0) / 100) + '%';
-    document.querySelector('#manager #remote').innerText = bytesToFileSize(totalLength);
     document.querySelector('#manager #download').innerText = bytesToFileSize(downloadSpeed) + '/s';
     document.querySelector('#manager #upload').innerText = bytesToFileSize(uploadSpeed) + '/s';
     document.querySelector('#manager [name="max-download-limit"]').disabled = disabled;
