@@ -18,7 +18,10 @@ document.querySelectorAll('[data-tab]').forEach((tab, index, tabs) => {
 });
 
 document.querySelector('#task_btn').addEventListener('click', event => {
-    document.body.setAttribute('data-popup', 'task');
+    aria2RPCCall({method: 'aria2.getGlobalOption'}, options => {
+        printOptions(document.querySelectorAll('#create input[name]'), options);
+        document.body.setAttribute('data-popup', 'task');
+    });
 });
 
 document.querySelector('#purdge_btn').addEventListener('click', event => {
@@ -38,6 +41,8 @@ document.querySelector('#referer_btn').addEventListener('click', event => {
     });
 });
 
+printButton(document.querySelector('#create [data-feed]'));
+
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
@@ -56,6 +61,7 @@ document.querySelector('#upload_btn').addEventListener('change', event => {
 document.querySelector('#name_btn').addEventListener('click', event => {
     gid = null;
     document.body.setAttribute('data-popup', 'main');
+    aria2RPCRefresh();
 });
 
 document.querySelectorAll('#manager .block').forEach(block => {
@@ -66,6 +72,10 @@ document.querySelectorAll('#manager .block').forEach(block => {
     field.addEventListener('blur', event => {
         block.style.display = 'block';
     });
+});
+
+printButton(document.querySelector('#manager [data-feed]'), (name, value) => {
+    aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[name]: value}]});
 });
 
 document.querySelector('#append button').addEventListener('click', event => {
@@ -85,9 +95,6 @@ bt.addEventListener('click', event => {
 });
 
 function aria2RPCClient() {
-    printButton(document.querySelector('#create [data-feed]'));
-    printButton(document.querySelector('#manager [data-feed]'), (name, value) => aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[name]: value}]}));
-    aria2RPCCall({method: 'aria2.getGlobalOption'}, options => printOptions(document.querySelectorAll('#create input[name]'), options));
     aria2RPCCall([
         {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
         {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]}
@@ -109,6 +116,9 @@ function aria2RPCClient() {
 }
 
 function printPopupItem(result, index, queue) {
+    if (gid) {
+        return gid === result.gid && updateTaskDetail(document.querySelector('#manager'), result);
+    }
     var task = document.querySelector('[data-gid="' + result.gid + '"]') ?? printQueueItem(result);
     if (task.parentNode !== queue) {
         queue.insertBefore(task, queue.childNodes[index]);
@@ -118,7 +128,6 @@ function printPopupItem(result, index, queue) {
         result.status !== 'active' && updatePopupItem(task, result);
     }
     result.status === 'active' && updatePopupItem(task, result);
-    gid === result.gid && updateTaskDetail(document.querySelector('#manager'), result);
 }
 
 function updatePopupItem(task, {gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
@@ -179,6 +188,16 @@ function printEstimatedTime(task, number) {
     task.querySelector('#minute').innerText = minutes;
     task.querySelector('#minute').parentNode.style.display = minutes > 0 ? 'inline-block' : 'none';
     task.querySelector('#second').innerText = seconds;
+}
+
+function printButton(button, resolve) {
+    var rule = button.getAttribute('data-feed').match(/[^:]+/g);
+    var name = rule[0], root = rule[1];
+    var entry = button.parentNode.querySelector('input');
+    button.addEventListener('click', event => {
+        entry.value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name];
+        typeof resolve === 'function' && resolve(entry.name, entry.value);
+    });
 }
 
 function createOptions() {
