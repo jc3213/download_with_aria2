@@ -28,10 +28,6 @@ document.querySelector('#options_btn').addEventListener('click', event => {
     open('/options/index.html?popup', '_self');
 });
 
-document.querySelector('#create').addEventListener('change', event => {
-    event.target.name && (option[event.target.name] = event.target.value);
-});
-
 document.querySelector('#referer_btn').addEventListener('click', event => {
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
         document.querySelector('#referer').value = tabs[0].url;
