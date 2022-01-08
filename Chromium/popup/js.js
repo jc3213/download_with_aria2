@@ -41,7 +41,7 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
     document.body.setAttribute('data-popup', 'main');
 });
 
-document.querySelect('#upload_btn').style.display = 'browser' in this ? 'none' : 'inline-block';
+document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none' : 'inline-block';
 document.querySelector('#upload_btn').addEventListener('change', event => {
     var options = createOptions();
     var file = event.target.files[0];
