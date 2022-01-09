@@ -125,7 +125,6 @@ function printPopupItem(result, index, queue) {
         result.status !== 'active' && updatePopupItem(task, result);
     }
     result.status === 'active' && updatePopupItem(task, result);
-    gid === result.gid && updateTaskDetail(task, result);
 }
 
 function updatePopupItem(task, {gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
@@ -137,6 +136,7 @@ function updatePopupItem(task, {gid, status, files, bittorrent, completedLength,
     task.querySelector('#upload').innerText = bytesToFileSize(uploadSpeed) + '/s';
     task.querySelector('#ratio').innerText = task.querySelector('#ratio').style.width = ((completedLength / totalLength * 10000 | 0) / 100) + '%';
     task.querySelector('#ratio').className = status;
+    this.gid === gid && updateTaskDetail(task, status, bittorrent, files);
 }
 
 function printQueueItem({gid, bittorrent, totalLength}) {
@@ -151,10 +151,10 @@ function printQueueItem({gid, bittorrent, totalLength}) {
     task.querySelector('#invest_btn').addEventListener('click', event => {
         aria2RPCCall([
             {method: 'aria2.getOption', params: [gid]}, {method: 'aria2.tellStatus', params: [gid]}
-        ], ([[options], [result]]) => {
+        ], ([[options], [{status, bittorrent, files}]]) => {
             this.gid = gid;
             printOptions(document.querySelectorAll('#manager input[name]'), options);
-            updateTaskDetail(task, result);
+            updateTaskDetail(task, status, bittorrent, files);
             document.body.setAttribute('data-popup', 'aria2');
             document.querySelector('#manager').setAttribute('data-aria2', bittorrent ? 'bt' : 'http');
             document.querySelector('#manager #remote').innerText = task.querySelector('#remote').innerText;
@@ -205,7 +205,7 @@ function createOptions() {
     return options;
 }
 
-function updateTaskDetail(task, {status, bittorrent, files}) {
+function updateTaskDetail(task, status, bittorrent, files) {
     var disabled = ['complete', 'error'].includes(status);
     document.querySelector('#name_btn').innerText = task.querySelector('#name').innerText;
     document.querySelector('#name_btn').className = task.querySelector('#ratio').className;
