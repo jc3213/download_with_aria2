@@ -6,7 +6,7 @@ var stoppedQueue = document.querySelector('section#stopped');
 var http = document.querySelector('section#http');
 var bt = document.querySelector('section#bt');
 
-document.querySelectorAll('[data-tab]').forEach((tab, index) => {
+document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) => {
     tab.addEventListener('click', event => {
         var value = (tab.parentNode.getAttribute('data-main') | 0) === index + 1 ? 0 : index + 1;
         tab.parentNode.setAttribute('data-main', value);
