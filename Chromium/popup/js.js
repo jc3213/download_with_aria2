@@ -217,7 +217,7 @@ function updateTaskDetail(task, status, bittorrent, files) {
 }
 
 function printTableCell(table, type, resolve) {
-    var cell = table.parentNode.querySelector('[data-' + type + '="template"]').cloneNode(true);
+    var cell = document.querySelector('[data-' + type + '="template"]').cloneNode(true);
     cell.removeAttribute('data-' + type);
     typeof resolve === 'function' && resolve(cell);
     table.appendChild(cell);

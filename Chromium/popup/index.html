@@ -26,35 +26,6 @@
             <section id="waiting"></section>
             <section id="stopped"></section>
         </div>
-        <div data-gid="template" class="session">
-            <div>
-                <span id="name" class="title"></span>
-                <span id="error"></span>
-            </div>
-            <div class="module3">
-                <div>🖥️<span id="local"></span></div>
-                <div>⏲️<span id="infinite" class="block">∞</span>
-                    <span id="estimate">
-                        <span><span id="day"></span><sub i18n>time_day</sub></span>
-                        <span><span id="hour"></span><sub i18n>time_hour</sub></span>
-                        <span><span id="minute"></span><sub i18n>time_minute</sub></span>
-                        <span><span id="second"></span><sub i18n>time_second</sub></span>
-                    </span>
-                </div>
-                <div>📦<span id="remote"></span></div>
-                <div>📶️<span id="connect"></span></div>
-                <div>⏬<span id="download"></span></div>
-                <div>⏫<span id="upload"></span></div>
-            </div>
-            <div class="menu">
-                <button id="remove_btn">❌</button>
-                <button id="invest_btn">🔍</button>
-                <button id="retry_btn">🌌</button>
-            </div>
-            <div id="meter">
-                <div id="ratio"></div>
-            </div>
-        </div>
         <div id="create" data-task class="submenu">
             <div title="task_referer_desc" i18n_title>
                 <div class="title" i18n>task_referer</div>
@@ -207,18 +178,47 @@
                     <button>➕</button>
                 </div>
                 <div id="form" class="uri"></div>
-                <button data-uri="template"></button>
             </div>
             <div data-bt title="task_files_desc" i18n_title>
                 <div class="title" i18n>task_files</div>
                 <div id="form"></div>
-                <div data-file="template" class="file">
-                    <button id="index"></button>
-                    <div id="name"></div>
-                    <div id="size"></div>
-                    <div id="ratio"></div>
-                </div>
             </div>
+        </div>
+        <div data-gid="template" class="session">
+            <div>
+                <span id="name" class="title"></span>
+                <span id="error"></span>
+            </div>
+            <div class="module3">
+                <div>🖥️<span id="local"></span></div>
+                <div>⏲️<span id="infinite" class="block">∞</span>
+                    <span id="estimate">
+                        <span><span id="day"></span><sub i18n>time_day</sub></span>
+                        <span><span id="hour"></span><sub i18n>time_hour</sub></span>
+                        <span><span id="minute"></span><sub i18n>time_minute</sub></span>
+                        <span><span id="second"></span><sub i18n>time_second</sub></span>
+                    </span>
+                </div>
+                <div>📦<span id="remote"></span></div>
+                <div>📶️<span id="connect"></span></div>
+                <div>⏬<span id="download"></span></div>
+                <div>⏫<span id="upload"></span></div>
+            </div>
+            <div class="menu">
+                <button id="remove_btn">❌</button>
+                <button id="invest_btn">🔍</button>
+                <button id="retry_btn">🌌</button>
+            </div>
+            <div id="meter">
+                <div id="ratio"></div>
+            </div>
+        </div>
+        <button data-uri="template"></button>
+        <div data-file="template" class="file">
+            <button id="index"></button>
+            <div id="name"></div>
+            <div id="size"></div>
+            <div id="ratio"></div>
         </div>
         <script src="/libs/io.js"></script>
         <script src="/libs/jsonrpc.js"></script>
