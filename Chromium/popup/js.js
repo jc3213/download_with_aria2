@@ -1,4 +1,4 @@
-var gid;
+var activeId;
 var manager = [];
 var activeQueue = document.querySelector('section#active');
 var waitingQueue = document.querySelector('section#waiting');
@@ -56,7 +56,7 @@ document.querySelector('#upload_btn').addEventListener('change', event => {
 });
 
 document.querySelector('#name_btn').addEventListener('click', event => {
-    gid = null;
+    activeId = null;
     document.body.setAttribute('data-popup', 'main');
     aria2RPCRefresh();
 });
@@ -72,22 +72,22 @@ document.querySelectorAll('#manager .block').forEach(block => {
 });
 
 printButton(document.querySelector('#manager [data-feed]'), (name, value) => {
-    aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[name]: value}]});
+    aria2RPCCall({method: 'aria2.changeOption', params: [activeId, {[name]: value}]});
 });
 
 document.querySelector('#append button').addEventListener('click', event => {
-    aria2RPCCall({method: 'aria2.changeUri', params: [gid, 1, [], [document.querySelector('#append input').value]]}, result => document.querySelector('#append input').value = '');
+    aria2RPCCall({method: 'aria2.changeUri', params: [activeId, 1, [], [document.querySelector('#append input').value]]}, result => document.querySelector('#append input').value = '');
 });
 
 http.addEventListener('click', event => {
-    event.ctrlKey ? aria2RPCCall({method: 'aria2.changeUri', params: [gid, 1, [event.target.innerText], []]}) : navigator.clipboard.writeText(event.target.innerText);
+    event.ctrlKey ? aria2RPCCall({method: 'aria2.changeUri', params: [activeId, 1, [event.target.innerText], []]}) : navigator.clipboard.writeText(event.target.innerText);
 });
 
 bt.addEventListener('click', event => {
     if (event.target.id === 'index') {
         var index = manager.indexOf(event.target.innerText);
         var files = index !== -1 ? [...manager.slice(0, index), ...manager.slice(index + 1)] : [...manager, event.target.innerText];
-        aria2RPCCall({method: 'aria2.changeOption', params: [gid, {'select-file': files.join()}]}, result => manager = files);
+        aria2RPCCall({method: 'aria2.changeOption', params: [activeId, {'select-file': files.join()}]}, result => manager = files);
     }
 });
 
@@ -133,7 +133,7 @@ function updatePopupItem(task, {gid, status, files, bittorrent, completedLength,
     task.querySelector('#upload').innerText = bytesToFileSize(uploadSpeed) + '/s';
     task.querySelector('#ratio').innerText = task.querySelector('#ratio').style.width = ((completedLength / totalLength * 10000 | 0) / 100) + '%';
     task.querySelector('#ratio').className = status;
-    this.gid === gid && updateTaskDetail(task, status, bittorrent, files);
+    activeId === gid && updateTaskDetail(task, status, bittorrent, files);
 }
 
 function printQueueItem({gid, bittorrent, totalLength}) {
@@ -149,7 +149,7 @@ function printQueueItem({gid, bittorrent, totalLength}) {
         aria2RPCCall([
             {method: 'aria2.getOption', params: [gid]}, {method: 'aria2.tellStatus', params: [gid]}
         ], ([[options], [{status, bittorrent, files}]]) => {
-            this.gid = gid;
+            activeId = gid;
             printOptions(document.querySelectorAll('#manager input[name]'), options);
             updateTaskDetail(task, status, bittorrent, files);
             document.body.setAttribute('data-popup', 'aria2');
