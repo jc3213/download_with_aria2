@@ -150,7 +150,7 @@ function printQueueItem({gid, bittorrent, totalLength}) {
             {method: 'aria2.getOption', params: [gid]}, {method: 'aria2.tellStatus', params: [gid]}
         ], ([[options], [{status, bittorrent, files}]]) => {
             activeId = gid;
-            printOptions(document.querySelectorAll('#manager input[name]'), options);
+            printOptions(document.querySelectorAll('#manager [name]'), options);
             updateTaskDetail(task, status, bittorrent, files);
             document.body.setAttribute('data-popup', 'aria2');
             document.querySelector('#manager').setAttribute('data-aria2', bittorrent ? 'bt' : 'http');
