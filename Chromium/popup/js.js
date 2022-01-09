@@ -116,9 +116,6 @@ function aria2RPCClient() {
 }
 
 function printPopupItem(result, index, queue) {
-    if (gid) {
-        return gid === result.gid && updateTaskDetail(result);
-    }
     var task = document.querySelector('[data-gid="' + result.gid + '"]') ?? printQueueItem(result);
     if (task.parentNode !== queue) {
         queue.insertBefore(task, queue.childNodes[index]);
@@ -128,6 +125,7 @@ function printPopupItem(result, index, queue) {
         result.status !== 'active' && updatePopupItem(task, result);
     }
     result.status === 'active' && updatePopupItem(task, result);
+    gid === result.gid && updateTaskDetail(task, result);
 }
 
 function updatePopupItem(task, {gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
@@ -156,7 +154,7 @@ function printQueueItem({gid, bittorrent, totalLength}) {
         ], ([[options], [result]]) => {
             this.gid = gid;
             printOptions(document.querySelectorAll('#manager input[name]'), options);
-            updateTaskDetail(result);
+            updateTaskDetail(task, result);
             document.body.setAttribute('data-popup', 'aria2');
             document.querySelector('#manager').setAttribute('data-aria2', bittorrent ? 'bt' : 'http');
             document.querySelector('#manager #remote').innerText = task.querySelector('#remote').innerText;
@@ -207,14 +205,14 @@ function createOptions() {
     return options;
 }
 
-function updateTaskDetail({status, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, files}) {
+function updateTaskDetail(task, {status, bittorrent, files}) {
     var disabled = ['complete', 'error'].includes(status);
-    document.querySelector('#name_btn').innerText = bittorrent && bittorrent.info ? bittorrent.info.name : files[0].path.slice(files[0].path.lastIndexOf('/') + 1) || files[0].uris[0].uri;
-    document.querySelector('#name_btn').className = status;
-    document.querySelector('#manager #local').innerText = bytesToFileSize(completedLength);
-    document.querySelector('#manager #ratio').innerText = ((completedLength / totalLength * 10000 | 0) / 100) + '%';
-    document.querySelector('#manager #download').innerText = bytesToFileSize(downloadSpeed) + '/s';
-    document.querySelector('#manager #upload').innerText = bytesToFileSize(uploadSpeed) + '/s';
+    document.querySelector('#name_btn').innerText = task.querySelector('#name').innerText;
+    document.querySelector('#name_btn').className = task.querySelector('#ratio').className;
+    document.querySelector('#manager #local').innerText = task.querySelector('#local').innerText;
+    document.querySelector('#manager #ratio').innerText = task.querySelector('#ratio').innerText;
+    document.querySelector('#manager #download').innerText = task.querySelector('#download').innerText;
+    document.querySelector('#manager #upload').innerText = task.querySelector('#upload').innerText;
     document.querySelector('#manager [name="max-download-limit"]').disabled = disabled;
     document.querySelector('#manager [name="max-upload-limit"]').disabled = disabled || !bittorrent;
     document.querySelector('#manager [name="all-proxy"]').disabled = disabled;
