@@ -74,17 +74,6 @@ button:disabled {
     right: 0px;
 }
 
-.footmenu {
-    text-align: center;
-}
-
-.block {
-    position: absolute;
-    top: 0px;
-    height: 100%;
-    width: 100%;
-}
-
 .module, .module3, .addon {
     display: grid;
 }
@@ -142,6 +131,7 @@ button:disabled {
     display: block;
 }
 
+[data-prefs="global"] #aria2_btn,
 [data-option="1"] > button:nth-child(1), [data-option="2"] > button:nth-child(2), [data-option="3"] > button:nth-child(3),
 [data-global="1"] > button:nth-child(1), [data-global="2"] > button:nth-child(2), [data-global="3"] > button:nth-child(3),
 [data-main="1"] > button:nth-child(1), [data-main="2"] > button:nth-child(3), [data-main="3"] > button:nth-child(5) {

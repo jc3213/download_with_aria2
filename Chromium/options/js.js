@@ -33,7 +33,6 @@ document.querySelector('#import_btn').addEventListener('change', event => {
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
     document.body.getAttribute('data-prefs') === 'option' ? document.body.setAttribute('data-prefs', 'global') : document.body.setAttribute('data-prefs', 'option');
-    event.target.classList.toggle('checked');
 });
 
 document.querySelector('#show_btn').addEventListener('click', event => {
