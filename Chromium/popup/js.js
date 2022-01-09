@@ -206,7 +206,7 @@ function createOptions() {
 }
 
 function updateTaskDetail(task, status, bittorrent, files) {
-    var disabled = ['complete', 'error'].includes(status);
+    var disabled = ['complete', 'error', 'removed'].includes(status);
     document.querySelector('#name_btn').innerText = task.querySelector('#name').innerText;
     document.querySelector('#name_btn').className = task.querySelector('#ratio').className;
     document.querySelector('#manager #local').innerText = task.querySelector('#local').innerText;
