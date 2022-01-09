@@ -129,8 +129,8 @@ button.checked {
 }
 
 [data-prefs="option"] [data-global], [data-prefs="global"] [data-option], [data-prefs] .submenu:not(:first-child),
-[data-popup="main"] [data-task], [data-popup="main"] [data-aria2], [data-popup="task"] [data-main], [data-popup="task"] [data-aria2],
-[data-popup="aria2"] [data-main], [data-popup="aria2"] [data-task], [data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http] {
+[data-popup="main"] > *:not([data-main]), [data-popup="task"] > *:not([data-task]), [data-popup="aria2"] > *:not([data-aria2]),
+[data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http] {
     display: none;
 }
 
