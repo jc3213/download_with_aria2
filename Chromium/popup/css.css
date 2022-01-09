@@ -130,7 +130,3 @@
 .file > #name {
     overflow-y: auto;
 }
-
-[data-gid="template"], [data-uri="template"], [data-file="template"] {
-    display: none;
-}

@@ -59,10 +59,6 @@ button:disabled {
     border: none;
 }
 
-button.checked {
-    border: 1px #ccc inset;
-}
-
 .title {
     font-weight: bold;
     word-break: break-word;
@@ -128,13 +124,26 @@ button.checked {
     padding-right: 24px;
 }
 
-[data-prefs="option"] [data-global], [data-prefs="global"] [data-option], [data-prefs] .submenu:not(:first-child),
+[data-prefs="option"] [data-global], [data-prefs="global"] [data-option],
+[data-option="1"] > .submenu:not(:nth-child(1)), [data-option="2"] > .submenu:not(:nth-child(2)), [data-option="3"] > .submenu:not(:nth-child(3)),
+[data-global="1"] > .submenu:not(:nth-child(1)), [data-global="2"] > .submenu:not(:nth-child(2)), [data-global="3"] > .submenu:not(:nth-child(3)),
 [data-popup="main"] > *:not([data-main]), [data-popup="task"] > *:not([data-task]), [data-popup="aria2"] > *:not([data-aria2]),
-[data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http] {
+[data-main="1"] > section:not(:nth-child(1)), [data-main="2"] > section:not(:nth-child(2)), [data-main="3"] > section:not(:nth-child(3)),
+[data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http],
+[data-gid="template"], [data-uri="template"], [data-file="template"] {
     display: none;
 }
 
 [data-prefs="option"] [data-option], [data-prefs="global"] [data-global],
+[data-option="1"] > .submenu:nth-child(1), [data-option="2"] > .submenu:nth-child(2), [data-option="3"] > .submenu:nth-child(3),
+[data-global="1"] > .submenu:nth-child(1), [data-global="2"] > .submenu:nth-child(2), [data-global="3"] > .submenu:nth-child(3),
+[data-main="1"] > section:nth-child(1), [data-main="2"] > section:nth-child(2), [data-main="3"] > section:nth-child(3),
 [data-popup="main"] [data-main], [data-popup="task"] [data-task], [data-popup="aria2"] [data-aria2] {
     display: block;
+}
+
+[data-option="1"] > button:nth-child(1), [data-option="2"] > button:nth-child(2), [data-option="3"] > button:nth-child(3),
+[data-global="1"] > button:nth-child(1), [data-global="2"] > button:nth-child(2), [data-global="3"] > button:nth-child(3),
+[data-main="1"] > button:nth-child(1), [data-main="2"] > button:nth-child(3), [data-main="3"] > button:nth-child(5) {
+    border: 1px #ccc inset;
 }

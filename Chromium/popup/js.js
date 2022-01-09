@@ -1,19 +1,16 @@
 var gid;
 var manager = [];
-var activeTab = -1;
 var activeQueue = document.querySelector('#queue #active');
 var waitingQueue = document.querySelector('#queue #waiting');
 var stoppedQueue = document.querySelector('#queue #stopped');
 var http = document.querySelector('[data-http] #form');
 var bt = document.querySelector('[data-bt] #form');
 
-document.querySelectorAll('[data-tab]').forEach((tab, index, tabs) => {
+document.querySelectorAll('[data-tab]').forEach((tab, index) => {
     tab.addEventListener('click', event => {
-        activeTab !== - 1 && tabs[activeTab].classList.remove('checked');
-        activeTab = activeTab === index ? tab.classList.remove('checked') ?? -1 : tab.classList.add('checked') ?? index;
-        activeQueue.style.display = [-1, 0].includes(activeTab) ? 'block' : 'none';
-        waitingQueue.style.display = [-1, 1].includes(activeTab) ? 'block' : 'none';
-        stoppedQueue.style.display = [-1, 2].includes(activeTab) ? 'block' : 'none';
+        var value = (tab.parentNode.getAttribute('data-main') | 0) === index + 1 ? 0 : index + 1;
+        tab.parentNode.setAttribute('data-main', value);
+        document.querySelector('#queue').setAttribute('data-main', value);
     });
 });
 

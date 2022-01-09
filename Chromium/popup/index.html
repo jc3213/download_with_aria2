@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="css.css">
     </head>
     <body data-popup="main">
-        <div data-main>
+        <div data-main="0">
             <button class="active" data-tab i18n>popup_active_button</button>
             <span id="active" class="stats">0</span>
             <button class="waiting" data-tab i18n>popup_waiting_button</button>
@@ -21,38 +21,38 @@
         </div>
         <button id="name_btn" data-aria2></button>
         <hr data-main>
-        <div id="queue" data-main style="height: calc(100% - 92px);">
-            <div id="active"></div>
-            <div id="waiting"></div>
-            <div id="stopped"></div>
-            <div data-gid="template" class="session">
-                <div>
-                    <span id="name" class="title"></span>
-                    <span id="error"></span>
+        <div id="queue" data-main="0" style="height: calc(100% - 92px);">
+            <section id="active"></section>
+            <section id="waiting"></section>
+            <section id="stopped"></section>
+        </div>
+        <div data-gid="template" class="session">
+            <div>
+                <span id="name" class="title"></span>
+                <span id="error"></span>
+            </div>
+            <div class="module3">
+                <div>🖥️<span id="local"></span></div>
+                <div>⏲️<span id="infinite" class="block">∞</span>
+                    <span id="estimate">
+                        <span><span id="day"></span><sub i18n>time_day</sub></span>
+                        <span><span id="hour"></span><sub i18n>time_hour</sub></span>
+                        <span><span id="minute"></span><sub i18n>time_minute</sub></span>
+                        <span><span id="second"></span><sub i18n>time_second</sub></span>
+                    </span>
                 </div>
-                <div class="module3">
-                    <div>🖥️<span id="local"></span></div>
-                    <div>⏲️<span id="infinite" class="block">∞</span>
-                        <span id="estimate">
-                            <span><span id="day"></span><sub i18n>time_day</sub></span>
-                            <span><span id="hour"></span><sub i18n>time_hour</sub></span>
-                            <span><span id="minute"></span><sub i18n>time_minute</sub></span>
-                            <span><span id="second"></span><sub i18n>time_second</sub></span>
-                        </span>
-                    </div>
-                    <div>📦<span id="remote"></span></div>
-                    <div>📶️<span id="connect"></span></div>
-                    <div>⏬<span id="download"></span></div>
-                    <div>⏫<span id="upload"></span></div>
-                </div>
-                <div class="menu">
-                    <button id="remove_btn">❌</button>
-                    <button id="invest_btn">🔍</button>
-                    <button id="retry_btn">🌌</button>
-                </div>
-                <div id="meter">
-                    <div id="ratio"></div>
-                </div>
+                <div>📦<span id="remote"></span></div>
+                <div>📶️<span id="connect"></span></div>
+                <div>⏬<span id="download"></span></div>
+                <div>⏫<span id="upload"></span></div>
+            </div>
+            <div class="menu">
+                <button id="remove_btn">❌</button>
+                <button id="invest_btn">🔍</button>
+                <button id="retry_btn">🌌</button>
+            </div>
+            <div id="meter">
+                <div id="ratio"></div>
             </div>
         </div>
         <div id="create" data-task class="submenu">

@@ -1,16 +1,9 @@
-[
-    {active: 0, tabs: document.querySelectorAll('[data-option] > button'), subs: document.querySelectorAll('[data-option] > .submenu')},
-    {active: 0, tabs: document.querySelectorAll('[data-global] > button'), subs: document.querySelectorAll('[data-global] > .submenu')}
-].forEach(({active, tabs, subs}, index) => {
-    tabs[active].classList.add('checked');
-    tabs.forEach((tab, index) => {
-        tab.addEventListener('click', event => {
-            tabs[active].classList.remove('checked');
-            subs[active].style.display = 'none';
-            active = index;
-            tabs[index].classList.add('checked');
-            subs[index].style.display = 'block';
-        });
+document.querySelectorAll('[data-option] > button, [data-global] > button').forEach((tab, index) => {
+    var type = index < 3 ? 'option' : 'global';
+    var value = index < 3 ? index + 1 : index - 2;
+    tab.addEventListener('click', event => {
+        tab.parentNode.setAttribute('data-' + type, value);
+        document.querySelector('#' + type).setAttribute('data-' + type, value);
     });
 });
 
