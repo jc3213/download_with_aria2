@@ -1,10 +1,10 @@
 var gid;
 var manager = [];
-var activeQueue = document.querySelector('#queue #active');
-var waitingQueue = document.querySelector('#queue #waiting');
-var stoppedQueue = document.querySelector('#queue #stopped');
-var http = document.querySelector('[data-http] #form');
-var bt = document.querySelector('[data-bt] #form');
+var activeQueue = document.querySelector('section#active');
+var waitingQueue = document.querySelector('section#waiting');
+var stoppedQueue = document.querySelector('section#stopped');
+var http = document.querySelector('section#http');
+var bt = document.querySelector('section#bt');
 
 document.querySelectorAll('[data-tab]').forEach((tab, index) => {
     tab.addEventListener('click', event => {
