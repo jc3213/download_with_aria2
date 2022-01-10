@@ -35,10 +35,6 @@ document.querySelector('#aria2_btn').addEventListener('click', event => {
     document.body.getAttribute('data-prefs') === 'option' ? document.body.setAttribute('data-prefs', 'global') : document.body.setAttribute('data-prefs', 'option');
 });
 
-document.querySelector('#show_btn').addEventListener('click', event => {
-    event.target.parentNode.querySelector('input').setAttribute('type', event.target.classList.contains('checked') ? 'password' : 'text');
-});
-
 document.querySelector('#global').addEventListener('change', event => {
     aria2RPCCall({method: 'aria2.changeGlobalOption', params: [{[event.target.name]: event.target.value}]});
 });
@@ -53,11 +49,11 @@ function aria2RPCClient() {
         var root = field.name;
         var value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name] ?? '';
         var array = value.constructor === Array;
-        var token = field.getAttribute('token');
-        var multi = field.getAttribute('multi');
+        var token = field.getAttribute('data-token');
+        var multi = field.getAttribute('data-multi');
         field.value = array ? value.join(' ') : token ? value.slice(token.length) : multi ? value / multi : value;
         field.addEventListener('change', event => {
-            var value = array ? field.value.split(/[\s\n,]+/) : token ? 'token:' + field.value : multi ? field.value * multi : field.value;
+            var value = array ? field.value.split(/[\s\n,]+/) : token ? token + field.value : multi ? field.value * multi : field.value;
             root ? aria2RPC[root][name] = value : aria2RPC[name] = value;
             chrome.storage.local.set(aria2RPC);
         });

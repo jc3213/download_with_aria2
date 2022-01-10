@@ -28,6 +28,24 @@ input, textarea {
     resize: none;
 }
 
+input ~ span, show {
+    position: absolute;
+    top: 3px;
+    right: 8px;
+}
+
+input[type="number"] ~ span {
+    right: 24px;
+}
+
+input[data-token] {
+    -webkit-text-security: disc;
+}
+
+show:hover:active ~ input[data-token] {
+    -webkit-text-security: none;
+}
+
 textarea {
     word-break: break-word;
 }
@@ -101,16 +119,6 @@ button:disabled {
 .addon > button {
     font-size: 14px;
     padding: 1px;
-}
-
-.suffix {
-    position: absolute;
-    right: 0px;
-    padding: 3px 8px;
-}
-
-.extend {
-    padding-right: 24px;
 }
 
 [data-prefs="option"] [data-global], [data-prefs="global"] [data-option],

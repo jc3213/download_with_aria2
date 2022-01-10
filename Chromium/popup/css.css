@@ -29,10 +29,6 @@
     width: 100%;
 }
 
-.footmenu {
-    text-align: center;
-}
-
 .stats {
     margin-right: 10px;
 }
@@ -92,6 +88,10 @@
 
 [status="error"] #meter {
     background-color: #400;
+}
+
+.footmenu {
+    text-align: center;
 }
 
 #name_btn {
