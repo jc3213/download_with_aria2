@@ -37,7 +37,6 @@ document.querySelector('#aria2_btn').addEventListener('click', event => {
 
 document.querySelector('#show_btn').addEventListener('click', event => {
     event.target.parentNode.querySelector('input').setAttribute('type', event.target.classList.contains('checked') ? 'password' : 'text');
-    event.target.classList.toggle('checked');
 });
 
 document.querySelector('#global').addEventListener('change', event => {
