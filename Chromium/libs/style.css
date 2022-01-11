@@ -28,13 +28,13 @@ input, textarea {
     resize: none;
 }
 
-input ~ span, show {
+input ~ data, show {
     position: absolute;
     top: 3px;
     right: 8px;
 }
 
-input[type="number"] ~ span {
+input[type="number"] ~ data {
     right: 24px;
 }
 

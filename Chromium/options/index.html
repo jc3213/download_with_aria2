@@ -102,14 +102,14 @@
                         <div class="title" i18n>option_capture_fileSize</div>
                         <div>
                             <input id="fileSize" name="capture" data-multi="1048576" type="number" min="0">
-                            <span>MB</span>
+                            <data>MB</data>
                         </div>
                         <span i18n>common_disabled</span>: <u><i>0</i></u>
                     </div>
                     <div title="option_capture_fileExt_desc" i18n_title>
                         <div class="title" i18n>option_capture_fileExt</div>
                         <div>
-                            <input id="fileExt" name="capture" placeholder="zip&ensp;exe&ensp;jpg">
+                            <textarea id="fileExt" name="capture" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
                         </div>
                     </div>
                     <div title="option_capture_resolve_desc" i18n_title>
@@ -156,7 +156,7 @@
                     <div class="title" i18n>aria2_http_size</div>
                     <div>
                         <input name="min-split-size" data-size>
-                        <span>B</span>
+                        <data>B</data>
                     </div>
                     <span i18n>common_default</span>: <u><i>20M</i></u>
                 </div>
@@ -213,7 +213,7 @@
                     <div class="title" i18n>aria2_adv_cache</div>
                     <div>
                         <input name="disk-cache" data-size>
-                        <span>B</span>
+                        <data>B</data>
                     </div>
                     <span i18n>common_default</span>: <u><i>16M</i></u>
                 </div>
@@ -228,7 +228,7 @@
                     <div class="title" i18n>aria2_max_download</div>
                     <div>
                         <input name="max-overall-download-limit" data-size>
-                        <span>B/s</span>
+                        <data>B/s</data>
                     </div>
                     <span i18n>common_disabled</span>: <u><i>0</i></u>
                 </div>
@@ -236,7 +236,7 @@
                     <div class="title" i18n>aria2_max_upload</div>
                     <div>
                         <input name="max-overall-upload-limit" data-size>
-                        <span>B/s</span>
+                        <data>B/s</data>
                     </div>
                     <span i18n>common_disabled</span>: <u><i>0</i></u>
                 </div>
