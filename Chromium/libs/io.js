@@ -6,10 +6,12 @@ document.querySelectorAll('[i18n_title]').forEach(item => {
     item.title = chrome.i18n.getMessage(item.title);
 });
 
-function readFileAsBinary(file, resolve) {
-    var reader = new FileReader();
-    reader.onload = () => resolve(reader.result.slice(reader.result.indexOf(',') + 1));
-    reader.readAsDataURL(file);
+function readFileAsBinary(file) {
+    return new Promise(resolve => {
+        var reader = new FileReader();
+        reader.onload = () => resolve(reader.result.slice(reader.result.indexOf(',') + 1));
+        reader.readAsDataURL(file);
+    });
 }
 
 function bytesToFileSize(bytes) {

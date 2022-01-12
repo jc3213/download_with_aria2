@@ -48,10 +48,10 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none' : 'inline-block';
-document.querySelector('#upload_btn').addEventListener('change', event => {
+document.querySelector('#upload_btn').addEventListener('change', async event => {
     var options = createOptions();
     var file = event.target.files[0];
-    readFileAsBinary(file, data => aria2RPCCall({method: file.name.endsWith('torrent') ? 'aria2.addTorrent' : 'aria2.addMetalink', params: [data, options]}, result => showNotification(file.name)));
+    aria2RPCCall({method: file.name.endsWith('torrent') ? 'aria2.addTorrent' : 'aria2.addMetalink', params: [await readFileAsBinary(file), options]}, result => showNotification(file.name));
     document.body.setAttribute('data-popup', 'main');
 });
 
