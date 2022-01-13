@@ -13,7 +13,7 @@ document.querySelector('#manager').style.display = location.search === '?popup' 
 document.querySelector('#back_btn').style.display = location.search === '?popup' ? 'inline-block' : 'none';
 
 document.querySelector('#back_btn').addEventListener('click', event => {
-    history.back();
+    open('/popup/index.html', '_self');
 });
 
 document.querySelector('#export_btn').addEventListener('click', event => {
