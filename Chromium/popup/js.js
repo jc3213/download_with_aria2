@@ -43,16 +43,16 @@ printButton(document.querySelector('#create [data-feed]'));
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    entries && aria2RPCCall(entries.map(url => ({method: 'aria2.addUri', params: [[url], options]})), result => document.querySelector('#entries').value = showNotification(entries.join(', ')) ?? '');
+    entries && entries.forEach(url => aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url)));
+    document.querySelector('#entries').value = '';
     document.body.setAttribute('data-popup', 'main');
 });
 
 document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none' : 'inline-block';
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var options = createOptions();
-    var files = [...event.target.files];
-    var json = await Promise.all(files.map(async file => ({method: file.name.endsWith('torrent') ? 'aria2.addTorrent' : 'aria2.addMetalink', params: [await readFileAsBinary(file), options]})));
-    aria2RPCCall(json, result => showNotification(files.map(({name}) => name).join(', ')));
+    [...event.target.files].forEach(async file => aria2RPCCall({method: file.name.endsWith('torrent') ? 'aria2.addTorrent' : 'aria2.addMetalink', params: [await readFileAsBinary(file), options]}, result => showNotification(file.name)));
+    event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
 
