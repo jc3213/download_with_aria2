@@ -38,11 +38,14 @@ document.querySelector('#global').addEventListener('change', event => {
     aria2RPCCall({method: 'aria2.changeGlobalOption', params: [{[event.target.name]: event.target.value}]});
 });
 
-function aria2RPCClient() {
+function aria2RPCRefresh() {
     aria2RPCCall({method: 'aria2.getGlobalOption'}, options => {
         document.querySelector('#aria2_btn').style.display = 'inline-block';
         printOptions(document.querySelectorAll('#global [name]'), options);
     }, error => document.querySelector('#aria2_btn').style.display = 'none');
+}
+
+function aria2RPCClient() {
     document.querySelectorAll('#option [id]:not(button)').forEach(field => {
         var name = field.id;
         var root = field.name;
@@ -66,4 +69,5 @@ function aria2RPCClient() {
             menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });
+    aria2RPCRefresh();
 }
