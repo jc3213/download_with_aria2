@@ -93,20 +93,19 @@ bt.addEventListener('click', event => {
 });
 
 function aria2RPCClient() {
-    aria2RPCCall({method: 'aria2.getGlobalStat'}, ({numActive, numWaiting, numStopped, downloadSpeed, uploadSpeed}) => {
+    aria2RPCCall([
+        {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
+        {method: 'aria2.tellWaiting', params: [0, 99]}, {method: 'aria2.tellStopped', params: [0, 99]}
+    ], ([[{numActive, numWaiting, numStopped, downloadSpeed, uploadSpeed}], [active], [waiting], [stopped]]) => {
         document.querySelector('#active.stats').innerText = numActive;
         document.querySelector('#waiting.stats').innerText = numWaiting;
         document.querySelector('#stopped.stats').innerText = numStopped;
         document.querySelector('#download.stats').innerText = bytesToFileSize(downloadSpeed) + '/s';
         document.querySelector('#upload.stats').innerText = bytesToFileSize(uploadSpeed) + '/s';
         document.querySelector('#message').style.display = 'none';
-        aria2RPCCall([
-            {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, numWaiting | 0]}, {method: 'aria2.tellStopped', params: [0, numStopped | 0]}
-        ], ([[active], [waiting], [stopped]]) => {
-            active.forEach((active, index) => printPopupItem(active, index, activeQueue));
-            waiting.forEach((waiting, index) => printPopupItem(waiting, index, waitingQueue));
-            stopped.forEach((stopped, index) => printPopupItem(stopped, index, stoppedQueue));
-        });
+        active.forEach((active, index) => printPopupItem(active, index, activeQueue));
+        waiting.forEach((waiting, index) => printPopupItem(waiting, index, waitingQueue));
+        stopped.forEach((stopped, index) => printPopupItem(stopped, index, stoppedQueue));
     }, error => {
         document.querySelector('#message').innerText = error;
         document.querySelector('#message').style.display = 'block';

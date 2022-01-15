@@ -32,6 +32,9 @@ function aria2RPCRequest(json, resolve, reject, alive) {
         }
         return response.json();
     }).then(({result}) => {
+        if (result.constructor === Array && result[0].constructor === Object) {
+            throw result[0];
+        }
         typeof resolve === 'function' && resolve(result);
     }).catch(({message}) => {
         aria2Log.error = aria2Log.error === 0 && typeof reject === 'function' && reject(message) || 1;
