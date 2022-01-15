@@ -31,13 +31,10 @@ function aria2RPCRequest(json, resolve, reject, alive) {
             throw new Error(response.statusText);
         }
         return response.json();
-    }).then(json => {
-        if (json.error) {
-            throw json.error;
-        }
-        json.result && typeof resolve === 'function' && resolve(json.result);
-    }).catch(error => {
-        aria2Log.error = aria2Log.error === 0 && typeof reject === 'function' && reject(error.message) || 1;
+    }).then(({result}) => {
+        typeof resolve === 'function' && resolve(result);
+    }).catch(({message}) => {
+        aria2Log.error = aria2Log.error === 0 && typeof reject === 'function' && reject(message) || 1;
     });
     aria2Log.alive = alive && setTimeout(() => aria2RPCRequest(json, resolve, reject, alive), aria2RPC.jsonrpc['refresh']);
 }

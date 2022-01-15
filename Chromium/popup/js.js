@@ -93,19 +93,20 @@ bt.addEventListener('click', event => {
 });
 
 function aria2RPCClient() {
-    aria2RPCCall([
-        {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
-        {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]}
-    ], ([[global], [active], [waiting], [stopped]]) => {
+    aria2RPCCall({method: 'aria2.getGlobalStat'}, ({numActive, numWaiting, numStopped, downloadSpeed, uploadSpeed}) => {
+        document.querySelector('#active.stats').innerText = numActive;
+        document.querySelector('#waiting.stats').innerText = numWaiting;
+        document.querySelector('#stopped.stats').innerText = numStopped;
+        document.querySelector('#download.stats').innerText = bytesToFileSize(downloadSpeed) + '/s';
+        document.querySelector('#upload.stats').innerText = bytesToFileSize(uploadSpeed) + '/s';
         document.querySelector('#message').style.display = 'none';
-        document.querySelector('#active.stats').innerText = global.numActive;
-        document.querySelector('#waiting.stats').innerText = global.numWaiting;
-        document.querySelector('#stopped.stats').innerText = global.numStopped;
-        document.querySelector('#download.stats').innerText = bytesToFileSize(global.downloadSpeed) + '/s';
-        document.querySelector('#upload.stats').innerText = bytesToFileSize(global.uploadSpeed) + '/s';
-        active.forEach((active, index) => printPopupItem(active, index, activeQueue));
-        waiting.forEach((waiting, index) => printPopupItem(waiting, index, waitingQueue));
-        stopped.forEach((stopped, index) => printPopupItem(stopped, index, stoppedQueue));
+        aria2RPCCall([
+            {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, numWaiting | 0]}, {method: 'aria2.tellStopped', params: [0, numStopped | 0]}
+        ], ([[active], [waiting], [stopped]]) => {
+            active.forEach((active, index) => printPopupItem(active, index, activeQueue));
+            waiting.forEach((waiting, index) => printPopupItem(waiting, index, waitingQueue));
+            stopped.forEach((stopped, index) => printPopupItem(stopped, index, stoppedQueue));
+        });
     }, error => {
         document.querySelector('#message').innerText = error;
         document.querySelector('#message').style.display = 'block';
