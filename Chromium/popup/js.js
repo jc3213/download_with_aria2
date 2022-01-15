@@ -107,7 +107,6 @@ function aria2RPCClient() {
         waiting.forEach((waiting, index) => printPopupItem(waiting, index, waitingQueue));
         stopped.forEach((stopped, index) => printPopupItem(stopped, index, stoppedQueue));
     }, error => {
-        document.querySelector('#message').innerText = error;
         document.querySelector('#message').style.display = 'block';
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
     }, true);
