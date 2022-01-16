@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    if (reason === 'update' && previousVersion < '3.7.5') {
+    reason === 'update' && previousVersion < '3.7.5' && setTimeout(() => {
         var patch = {
             'jsonrpc_uri': aria2RPC.jsonrpc.uri,
             'secret_token': aria2RPC.jsonrpc.token,
@@ -16,7 +16,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         aria2RPC = patch;
         chrome.storage.local.clear();
         chrome.storage.local.set(aria2RPC);
-    }
+    }, 300);
 });
 
 chrome.contextMenus.create({

@@ -59,9 +59,9 @@ function aria2RPCClient() {
     });
     document.querySelectorAll('[data-rule]').forEach(menu => {
         var rule = menu.getAttribute('data-rule').match(/[^,]+/g);
-        var id = rule.shift();
-        menu.style.display = rule.includes(aria2RPC[id]) ? 'block' : 'none';
-        document.querySelector('[name="' + id + '"]').addEventListener('change', event => {
+        var name = rule.shift();
+        menu.style.display = rule.includes(aria2RPC[name]) ? 'block' : 'none';
+        document.querySelector('#option [name="' + name + '"]').addEventListener('change', event => {
             menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });
