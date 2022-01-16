@@ -11,9 +11,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
             'capture_type': aria2RPC.capture.fileExt,
             'capture_size': aria2RPC.capture.fileSize,
             'capture_resolve': aria2RPC.capture.resolve,
-            'capture_reject': aria2RPC.capture.reject,
-            //'folder_mode': aria2RPC.folder.mode,
-            //'folder_path': aria2RPC.folder.uri
+            'capture_reject': aria2RPC.capture.reject
         };
         aria2RPC = patch;
         chrome.storage.local.clear();
@@ -27,24 +25,23 @@ chrome.contextMenus.create({
     contexts: ['link']
 });
 
-chrome.contextMenus.onClicked.addListener(info => {
-    startDownload({url: info.linkUrl, referer: info.pageUrl, domain: getDomainFromUrl(info.pageUrl)});
+chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
+    startDownload({url: linkUrl, referer: pageUrl, domain: getDomainFromUrl(pageUrl)});
 });
 
-chrome.downloads.onDeterminingFilename.addListener(item => {
-    if (aria2RPC['capture_mode'] === '0' || item.finalUrl.startsWith('blob') || item.finalUrl.startsWith('data')) {
+chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, filename, fileSize}) => {
+    if (aria2RPC['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
 
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-        var url = item.finalUrl;
-        var referer = item.referrer && item.referrer !== 'about:blank' ? item.referrer : tabs[0].url;
+        var url = finalUrl;
+        var referer = referrer && referrer !== 'about:blank' ? referrer : tabs[0].url;
         var domain = getDomainFromUrl(referer);
-        var filename = item.filename;
 
-        captureDownload(domain, getFileExtension(filename), item.fileSize) && 
-            chrome.downloads.cancel(item.id, () => {
-                chrome.downloads.erase({id: item.id}, () => {
+        captureDownload(domain, getFileExtension(filename), fileSize) && 
+            chrome.downloads.cancel(id, () => {
+                chrome.downloads.erase({id}, () => {
                     startDownload({url, referer, domain, filename});
                 });
             });
@@ -54,19 +51,19 @@ chrome.downloads.onDeterminingFilename.addListener(item => {
 function startDownload({url, referer, domain, filename}, options = {}) {
     chrome.cookies.getAll({url}, cookies => {
         options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['user_agent']];
-        cookies.forEach(cookie => options['header'][0] += ' ' + cookie.name + '=' + cookie.value + ';');
+        cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
         options['out'] = filename;
         options['all-proxy'] = aria2RPC['proxy_resolve'].includes(domain) ? aria2RPC['proxy_server'] : '';
-        aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url), showNotification);
+        aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
     });
 }
 
-function captureDownload(domain, fileExt, fileSize) {
+function captureDownload(domain, type, size) {
     return aria2RPC['capture_reject'].includes(domain) ? false :
         aria2RPC['capture_mode'] === '2' ? true :
         aria2RPC['capture_resolve'].includes(domain) ? true :
-        aria2RPC['capture_type'].includes(fileExt) ? true :
-        aria2RPC['capture_size'] > 0 && fileSize >= aria2RPC['capture_size'] ? true : false;
+        aria2RPC['capture_type'].includes(type) ? true :
+        aria2RPC['capture_size'] > 0 && size >= aria2RPC['capture_size'] ? true : false;
 }
 
 function getDomainFromUrl(url) {
