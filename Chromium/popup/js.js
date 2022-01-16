@@ -63,7 +63,7 @@ document.querySelector('#name_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#manager').addEventListener('change', event => {
-    event.target.name && aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[event.target.name]: event.target.value}]});
+    event.target.name && aria2RPCCall({method: 'aria2.changeOption', params: [activeId, {[event.target.name]: event.target.value}]});
 });
 
 document.querySelectorAll('#manager .block').forEach(block => {
