@@ -62,6 +62,10 @@ document.querySelector('#name_btn').addEventListener('click', event => {
     aria2RPCRefresh();
 });
 
+document.querySelector('#manager').addEventListener('change', event => {
+    event.target.name && aria2RPCCall({method: 'aria2.changeOption', params: [gid, {[event.target.name]: event.target.value}]});
+});
+
 document.querySelectorAll('#manager .block').forEach(block => {
     var field = block.parentNode.querySelector('input');
     block.addEventListener('click', event => {
