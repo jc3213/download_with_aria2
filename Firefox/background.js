@@ -1,5 +1,28 @@
-browser.runtime.getPlatformInfo(platform => {
-    aria2Platform = platform.os
+browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
+    if (reason === 'update' && previousVersion < '3.7.5') {
+        var patch = {
+            'jsonrpc_uri': aria2RPC.jsonrpc.uri,
+            'secret_token': aria2RPC.jsonrpc.token,
+            'refresh_interval': aria2RPC.jsonrpc.refresh,
+            'user_agent': aria2RPC.useragent,
+            'proxy_server': aria2RPC.proxy.uri,
+            'proxy_resolve': aria2RPC.proxy.resolve,
+            'capture_mode': aria2RPC.capture.mode,
+            'capture_type': aria2RPC.capture.fileExt,
+            //'capture_size': aria2RPC.capture.fileSize,
+            'capture_resolve': aria2RPC.capture.resolve,
+            'capture_reject': aria2RPC.capture.reject,
+            'folder_mode': aria2RPC.folder.mode,
+            'folder_path': aria2RPC.folder.uri
+        };
+        aria2RPC = patch;
+        chrome.storage.local.clear();
+        chrome.storage.local.set(aria2RPC);
+    }
+});
+
+browser.runtime.getPlatformInfo(({os}) => {
+    aria2Log.win === os;
 });
 
 browser.contextMenus.create({
@@ -13,7 +36,7 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 });
 
 browser.downloads.onCreated.addListener(async item => {
-    if (aria2RPC.capture['mode'] === '0' || item.url.startsWith('blob') || item.url.startsWith('data')) {
+    if (aria2RPC['capture_mode'] === '0' || item.url.startsWith('blob') || item.url.startsWith('data')) {
         return;
     }
 
@@ -35,19 +58,19 @@ browser.downloads.onCreated.addListener(async item => {
 
 async function startDownload({url, referer, domain, filename, folder, storeId}, options = {}) {
     var cookies = await browser.cookies.getAll({url, storeId});
-    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['useragent']];
+    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['user_agent']];
     cookies.forEach(cookie => options['header'][0] += ' ' + cookie.name + '=' + cookie.value + ';');
     options['out'] = filename;
-    options['all-proxy'] = aria2RPC.proxy['resolve'].includes(domain) ? aria2RPC.proxy['uri'] : '';
+    options['all-proxy'] = aria2RPC['proxy_resolve'].includes(domain) ? aria2RPC['proxy_server'] : '';
     folder && (options['dir'] = folder);
     aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url), showNotification);
 }
 
 function captureDownload(domain, fileExt) {
-    return aria2RPC.capture['reject'].includes(domain) ? false :
-        aria2RPC.capture['mode'] === '2' ? true :
-        aria2RPC.capture['resolve'].includes(domain) ? true :
-        aria2RPC.capture['fileExt'].includes(fileExt) ? true : false;
+    return aria2RPC['capture_reject'].includes(domain) ? false :
+        aria2RPC['capture_mode'] === '2' ? true :
+        aria2RPC['capture_resolve'].includes(domain) ? true :
+        aria2RPC['capture_type'].includes(fileExt) ? true : false;
 }
 
 function getDomainFromUrl(url) {
@@ -65,7 +88,7 @@ function getDomainFromUrl(url) {
 }
 
 function getFileNameFromUri(uri) {
-    var index = aria2Platform === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
+    var index = aria2Log.win === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
     return uri.slice(index + 1);
 }
 
