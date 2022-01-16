@@ -2,7 +2,7 @@ var aria2RPC;
 var aria2Log = {error: 0, alive: -1};
 
 chrome.storage.local.get(null, async result => {
-    aria2RPC = 'jsonrpc' in result ? result : await fetch('/options.json').then(response => response.json());
+    aria2RPC = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
     aria2RPCClient();
 });
 
