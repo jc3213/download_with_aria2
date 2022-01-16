@@ -150,10 +150,10 @@ function printQueueItem({gid, bittorrent, totalLength}) {
         result => ['complete', 'error', 'paused', 'removed'].includes(task.getAttribute('status')) ? task.remove() : task.querySelector('#name').innerText = '⏳');
     });
     task.querySelector('#invest_btn').addEventListener('click', event => {
+        activeId = gid;
         aria2RPCCall([
             {method: 'aria2.getOption', params: [gid]}, {method: 'aria2.tellStatus', params: [gid]}
         ], ([[options], [{status, bittorrent, files}]]) => {
-            activeId = gid;
             printOptions(document.querySelectorAll('#manager [name]'), options);
             updateTaskDetail(task, status, bittorrent, files);
             document.body.setAttribute('data-popup', 'aria2');
