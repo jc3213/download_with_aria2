@@ -1,19 +1,13 @@
 {
-    "jsonrpc": {
-        "uri": "http://localhost:6800/jsonrpc",
-        "token": "token:",
-        "refresh": 2000
-    },
-    "useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
-    "proxy": {
-        "uri": "",
-        "resolve": []
-    },
-    "capture": {
-        "mode": "0",
-        "reject": [],
-        "resolve": [],
-        "fileExt": [],
-        "fileSize": 0
-    }
+    "jsonrpc_uri": "http://localhost:6800/jsonrpc",
+    "secret_token": "token:",
+    "refresh_interval": 2000,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
+    "proxy_server": "",
+    "proxy_resolve": [],
+    "capture_mode": "0",
+    "capture_type": [],
+    "capture_size": 0,
+    "capture_resolve": [],
+    "capture_reject": []
 }

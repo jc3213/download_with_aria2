@@ -9,7 +9,7 @@ chrome.storage.local.get(null, async result => {
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         aria2RPC[key] = changes[key].newValue;
-        key === 'jsonrpc' && aria2RPCRefresh();
+        [].includes(key) && aria2RPCRefresh();
     });
 });
 
@@ -20,13 +20,13 @@ function aria2RPCRefresh() {
 }
 
 function aria2RPCCall(call, resolve, reject, alive) {
-    var json = 'method' in call ? {id: '', jsonrpc: 2, method: call.method, params: [aria2RPC.jsonrpc['token']].concat(call.params ?? [])}
-        : {id: '', jsonrpc: 2, method: 'system.multicall', params: [ call.map(({method, params = []}) => ({methodName: method, params: [aria2RPC.jsonrpc['token'], ...params]})) ]};
+    var json = 'method' in call ? {id: '', jsonrpc: 2, method: call.method, params: [aria2RPC['secret_token']].concat(call.params ?? [])}
+        : {id: '', jsonrpc: 2, method: 'system.multicall', params: [ call.map(({method, params = []}) => ({methodName: method, params: [aria2RPC['secret_token'], ...params]})) ]};
     aria2RPCRequest(json, resolve, reject, alive);
 }
 
 function aria2RPCRequest(json, resolve, reject, alive) {
-    fetch(aria2RPC.jsonrpc['uri'], {method: 'POST', body: JSON.stringify(json)}).then(response => {
+    fetch(aria2RPC['jsonrpc_uri'], {method: 'POST', body: JSON.stringify(json)}).then(response => {
         if (response.status !== 200) {
             throw new Error(response.statusText);
         }
@@ -36,13 +36,13 @@ function aria2RPCRequest(json, resolve, reject, alive) {
     }).catch(error => {
         aria2Log.error = aria2Log.error === 0 && typeof reject === 'function' && reject(error) || 1;
     });
-    aria2Log.alive = alive && setTimeout(() => aria2RPCRequest(json, resolve, reject, alive), aria2RPC.jsonrpc['refresh']);
+    aria2Log.alive = alive && setTimeout(() => aria2RPCRequest(json, resolve, reject, alive), aria2RPC['refresh_interval']);
 }
 
 function showNotification(message = '') {
     chrome.notifications.create({
         type: 'basic',
-        title: aria2RPC.jsonrpc['uri'],
+        title: aria2RPC['jsonrpc_uri'],
         iconUrl: '/icons/icon48.png',
         message
     });
