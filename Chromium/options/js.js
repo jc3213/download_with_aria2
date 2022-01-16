@@ -46,26 +46,22 @@ function aria2RPCRefresh() {
 }
 
 function aria2RPCClient() {
-    document.querySelectorAll('#option [id]:not(button)').forEach(field => {
-        var name = field.id;
-        var root = field.name;
-        var value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name] ?? '';
+    document.querySelectorAll('#option [name]').forEach(field => {
+        var value = aria2RPC[field.name];
         var array = value.constructor === Array;
         var token = field.getAttribute('data-token');
         var multi = field.getAttribute('data-multi');
         field.value = array ? value.join(' ') : token ? value.slice(token.length) : multi ? value / multi : value;
         field.addEventListener('change', event => {
-            var value = array ? field.value.split(/[\s\n,]+/) : token ? token + field.value : multi ? field.value * multi : field.value;
-            root ? aria2RPC[root][name] = value : aria2RPC[name] = value;
+            aria2RPC[field.name] = array ? field.value.split(/[\s\n,]+/) : token ? token + field.value : multi ? field.value * multi : field.value;
             chrome.storage.local.set(aria2RPC);
         });
     });
     document.querySelectorAll('[data-rule]').forEach(menu => {
         var rule = menu.getAttribute('data-rule').match(/[^,]+/g);
-        var root = rule.shift();
-        var value = aria2RPC[root]['mode'];
-        menu.style.display = rule.includes(value) ? 'block' : 'none';
-        document.querySelector('#mode[name="' + root + '"]').addEventListener('change', event => {
+        var id = rule.shift();
+        menu.style.display = rule.includes(aria2RPC[id]) ? 'block' : 'none';
+        document.querySelector('[name="' + id + '"]').addEventListener('change', event => {
             menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });

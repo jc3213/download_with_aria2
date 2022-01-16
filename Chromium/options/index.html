@@ -27,7 +27,7 @@
                 <div title="option_jsonrpc_uri_desc" i18n_title>
                     <div class="title" i18n>option_jsonrpc_uri</div>
                     <div>
-                        <input id="uri" name="jsonrpc" type="url">
+                        <input name="jsonrpc_uri" type="url">
                     </div>
                     <span i18n>common_default</span>: <u><i>http://localhost:6800/jsonrpc</i></u>
                 </div>
@@ -35,16 +35,14 @@
                     <div class="title" i18n>option_jsonrpc_token</div>
                     <div>
                         <show>👁️</show>
-                        <input id="token" name="jsonrpc" data-token="token:" placeholder="$$secret$$">
+                        <input name="secret_token" data-token="token:" placeholder="$$secret$$">
                     </div>
                 </div>
                 <div title="option_jsonrpc_refresh_desc" i18n_title>
                     <div class="title" i18n>option_jsonrpc_refresh</div>
                     <div>
-                        <div>
-                            <input id="refresh" name="jsonrpc" data-multi="1000" type="number" min="1" max="10">
-                            <data i18n>time_second_full</data>
-                        </div>
+                        <input name="refresh_interval" data-multi="1000" type="number" min="1" max="10">
+                        <data i18n>time_second_full</data>
                     </div>
                 </div>
                 <div id="manager">
@@ -60,27 +58,27 @@
                 <div title="option_useragent_desc" i18n_title>
                     <div class="title" i18n>option_useragent</div>
                     <div>
-                        <textarea id="useragent" rows="3"></textarea>
+                        <textarea name="user_agent" rows="3"></textarea>
                     </div>
                 </div>
                 <div title="option_proxy_uri_desc" i18n_title>
                     <div class="title" i18n>option_proxy_uri</div>
                     <div>
-                        <input id="uri" name="proxy" type="url" placeholder="http://127.0.0.1:1180/">
+                        <input name="proxy_server" type="url" placeholder="http://127.0.0.1:1180/">
                     </div>
                     <span i18n>option_protocol</span>: <u><i>http</i></u> / <u><i>https</i></u>
                 </div>
                 <div title="option_proxy_resolve_desc" i18n_title>
                     <div class="title" i18n>option_proxy_resolve</div>
                     <div>
-                        <textarea id="resolve" name="proxy" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
+                        <textarea name="proxy_resolve" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                     </div>
                 </div>
             </div>
             <div class="submenu">
                 <div title="option_capture_mode_desc" i18n_title>
                     <span class="title" i18n>option_capture_mode</span>
-                    <select id="mode" name="capture">
+                    <select name="capture_mode">
                         <option value="0" i18n>common_disabled</option>
                         <option value="1" i18n>option_capture_mode_filters</option>
                         <option value="2" i18n>option_always</option>
@@ -88,20 +86,20 @@
                 </div>
                 <div data-firefox data-rule="capture,1,2" title="option_folder_mode_desc" i18n_title>
                     <span class="title" i18n>option_folder_mode</span>
-                    <select id="mode" name="folder">
+                    <select name="folder_mode">
                         <option value="0" i18n>common_default</option>
                         <option value="1" i18n>option_folder_browser</option>
                         <option value="2" i18n>option_folder_custom</option>
                     </select>
-                    <div data-rule="folder,2">
-                        <input id="uri" name="folder" placeholder="C:\Aria2 Downloads">
+                    <div data-rule="folder_mode,2">
+                        <input name="folder_path" placeholder="C:\Aria2 Downloads">
                     </div>
                 </div>
-                <div data-rule="capture,1" class="submenu">
+                <div data-rule="capture_mode,1" class="submenu">
                     <div data-chrome title="option_capture_fileSize_desc" i18n_title>
                         <div class="title" i18n>option_capture_fileSize</div>
                         <div>
-                            <input id="fileSize" name="capture" data-multi="1048576" type="number" min="0">
+                            <input name="capture_size" data-multi="1048576" type="number" min="0">
                             <data>MB</data>
                         </div>
                         <span i18n>common_disabled</span>: <u><i>0</i></u>
@@ -109,21 +107,21 @@
                     <div title="option_capture_fileExt_desc" i18n_title>
                         <div class="title" i18n>option_capture_fileExt</div>
                         <div>
-                            <textarea id="fileExt" name="capture" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
+                            <textarea name="capture_type" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
                         </div>
                     </div>
                     <div title="option_capture_resolve_desc" i18n_title>
                         <div class="title" i18n>option_capture_resolve</div>
                         <div>
-                            <textarea id="resolve" name="capture" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
+                            <textarea name="capture_resolve" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                         </div>
                     </div>
                 </div>
-                <div data-rule="capture,1,2" class="submenu">
+                <div data-rule="capture_mode,1,2" class="submenu">
                     <div title="option_capture_reject_desc" i18n_title>
                         <div class="title" i18n>option_capture_reject</div>
                         <div>
-                            <textarea id="reject" name="capture" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
+                            <textarea name="capture_reject" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                         </div>
                     </div>
                 </div>
