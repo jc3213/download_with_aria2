@@ -31,26 +31,25 @@ browser.contextMenus.create({
     contexts: ['link']
 });
 
-browser.contextMenus.onClicked.addListener((info, tab) => {
-    startDownload({url: info.linkUrl, referer: info.pageUrl, storeId: tab.cookieStoreId, domain: getDomainFromUrl(info.pageUrl)});
+browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId}) => {
+    startDownload({url: linkUrl, referer: pageUrl, storeId: cookieStoreId, domain: getDomainFromUrl(pageUrl)});
 });
 
-browser.downloads.onCreated.addListener(async item => {
-    if (aria2RPC['capture_mode'] === '0' || item.url.startsWith('blob') || item.url.startsWith('data')) {
+browser.downloads.onCreated.addListener(async item({id, url, referrer, filename}) => {
+    if (aria2RPC['capture_mode'] === '0' || url.startsWith('blob') || url.startsWith('data')) {
         return;
     }
 
     var tabs = await browser.tabs.query({active: true, currentWindow: true});
-    var url = item.url;
-    var referer = item.referrer && item.referrer !== 'about:blank' ? item.referrer : tabs[0].url;
+    var referer = referrer && referrer !== 'about:blank' ? referrer : tabs[0].url;
     var domain = getDomainFromUrl(referer);
-    var filename = getFileNameFromUri(item.filename);
-    var folder = aria2RPC.folder['mode'] === '1' ? item.filename.slice(0, item.filename.indexOf(filename)) : aria2RPC.folder['mode'] === '2' ? aria2RPC.folder['uri'] : null;
+    var {filename, folder} = getFileNameFromUri(filename);
+    folder = aria2RPC['folder_mode'] === '1' ? folder : aria2RPC.folder['mode'] === '2' ? aria2RPC['folder_path'] : null;
     var storeId = tabs[0].cookieStoreId;
 
     captureDownload(domain, getFileExtension(filename)) &&
-        browser.downloads.cancel(item.id).then(() => {
-            browser.downloads.erase({id: item.id}).then(() => {
+        browser.downloads.cancel(id).then(() => {
+            browser.downloads.erase({id}).then(() => {
                 startDownload({url, referer, domain, filename, folder, storeId});
             });
         }).catch(error => showNotification('Download is already complete'));
@@ -59,18 +58,18 @@ browser.downloads.onCreated.addListener(async item => {
 async function startDownload({url, referer, domain, filename, folder, storeId}, options = {}) {
     var cookies = await browser.cookies.getAll({url, storeId});
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['user_agent']];
-    cookies.forEach(cookie => options['header'][0] += ' ' + cookie.name + '=' + cookie.value + ';');
+    cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     options['out'] = filename;
     options['all-proxy'] = aria2RPC['proxy_resolve'].includes(domain) ? aria2RPC['proxy_server'] : '';
     folder && (options['dir'] = folder);
-    aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url), showNotification);
+    aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
 }
 
-function captureDownload(domain, fileExt) {
+function captureDownload(domain, type) {
     return aria2RPC['capture_reject'].includes(domain) ? false :
         aria2RPC['capture_mode'] === '2' ? true :
         aria2RPC['capture_resolve'].includes(domain) ? true :
-        aria2RPC['capture_type'].includes(fileExt) ? true : false;
+        aria2RPC['capture_type'].includes(type) ? true : false;
 }
 
 function getDomainFromUrl(url) {
@@ -89,7 +88,7 @@ function getDomainFromUrl(url) {
 
 function getFileNameFromUri(uri) {
     var index = aria2Log.win === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
-    return uri.slice(index + 1);
+    return {folder: uri.slice(0, index + 1), filename: uri.slice(index + 1)};
 }
 
 function getFileExtension(filename) {
