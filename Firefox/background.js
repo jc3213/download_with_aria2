@@ -74,9 +74,9 @@ function getFileExtension(filename) {
 }
 
 function aria2RPCClient() {
-    browser.browserAction.setBadgeBackgroundColor({color: '#3cc'});
-    aria2RPCCall({method: 'aria2.getGlobalStat'}, global => {
-        browser.browserAction.setBadgeText({text: global.numActive === '0' ? '' : global.numActive});
+    aria2RPCCall({method: 'aria2.getGlobalStat'}, ({numActive}) => {
+        browser.browserAction.setBadgeBackgroundColor({color: '#3cc'});
+        browser.browserAction.setBadgeText({text: numActive === '0' ? '' : numActive});
     }, error => {
         browser.browserAction.setBadgeBackgroundColor({color: '#c33'});
         browser.browserAction.setBadgeText({text: 'E'});
