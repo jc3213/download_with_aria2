@@ -1,5 +1,5 @@
 browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    if (reason === 'update' && previousVersion < '3.7.5') {
+    reason === 'update' && previousVersion < '3.7.5' && setTimeout(() => {
         var patch = {
             'jsonrpc_uri': aria2RPC.jsonrpc.uri,
             'secret_token': aria2RPC.jsonrpc.token,
@@ -9,7 +9,6 @@ browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
             'proxy_resolve': aria2RPC.proxy.resolve,
             'capture_mode': aria2RPC.capture.mode,
             'capture_type': aria2RPC.capture.fileExt,
-            //'capture_size': aria2RPC.capture.fileSize,
             'capture_resolve': aria2RPC.capture.resolve,
             'capture_reject': aria2RPC.capture.reject,
             'folder_mode': aria2RPC.folder.mode,
@@ -18,11 +17,7 @@ browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         aria2RPC = patch;
         chrome.storage.local.clear();
         chrome.storage.local.set(aria2RPC);
-    }
-});
-
-browser.runtime.getPlatformInfo(({os}) => {
-    aria2Log.win === os;
+    }, 300);
 });
 
 browser.contextMenus.create({
@@ -43,25 +38,22 @@ browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) =>
     var tabs = await browser.tabs.query({active: true, currentWindow: true});
     var referer = referrer && referrer !== 'about:blank' ? referrer : tabs[0].url;
     var domain = getDomainFromUrl(referer);
-    var {filename, folder} = getFileNameFromUri(filename);
-    folder = aria2RPC['folder_mode'] === '1' ? folder : aria2RPC.folder['mode'] === '2' ? aria2RPC['folder_path'] : null;
     var storeId = tabs[0].cookieStoreId;
 
     captureDownload(domain, getFileExtension(filename)) &&
         browser.downloads.cancel(id).then(() => {
             browser.downloads.erase({id}).then(() => {
-                startDownload({url, referer, domain, filename, folder, storeId});
+                startDownload({url, referer, domain, filename, storeId});
             });
         }).catch(error => showNotification('Download is already complete'));
 });
 
-async function startDownload({url, referer, domain, filename, folder, storeId}, options = {}) {
+async function startDownload({url, referer, domain, filename, storeId}, options = {}) {
     var cookies = await browser.cookies.getAll({url, storeId});
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
-    options['out'] = filename;
+    filename && (options = {...options, ...await getFirefoxExclusive(filename)});
     options['all-proxy'] = aria2RPC['proxy_resolve'].includes(domain) ? aria2RPC['proxy_server'] : '';
-    folder && (options['dir'] = folder);
     aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
 }
 
@@ -86,9 +78,15 @@ function getDomainFromUrl(url) {
     return gSLD.includes(suffix[2]) ? suffix[1] + '.' + suffix[2] + '.' + suffix[3] : suffix[2] + '.' + suffix[3];
 }
 
-function getFileNameFromUri(uri) {
-    var index = aria2Log.win === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
-    return {folder: uri.slice(0, index + 1), filename: uri.slice(index + 1)};
+async function getFirefoxExclusive(uri) {
+    var platform = await browser.runtime.getPlatformInfo();
+    var index = platform.os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
+    var out = uri.slice(index + 1);
+    var dir = aria2RPC['folder_mode'] === '1' ? uri.slice(0, index + 1) : aria2RPC.folder['mode'] === '2' ? aria2RPC['folder_path'] : null;
+    if (dir) {
+        return {dir, out};
+    }
+    return {out};
 }
 
 function getFileExtension(filename) {
