@@ -65,9 +65,9 @@ function getFileExtension(filename) {
 }
 
 function aria2RPCClient() {
-    chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
-    aria2RPCCall({method: 'aria2.getGlobalStat'}, global => {
-        chrome.browserAction.setBadgeText({text: global.numActive === '0' ? '' : global.numActive});
+    aria2RPCCall({method: 'aria2.getGlobalStat'}, ({numActive}) => {
+        chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
+        chrome.browserAction.setBadgeText({text: numActive === '0' ? '' : numActive});
     }, error => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
         chrome.browserAction.setBadgeText({text: 'E'});
