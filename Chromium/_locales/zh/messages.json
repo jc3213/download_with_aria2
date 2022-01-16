@@ -185,7 +185,7 @@
     "task_submit": {
         "message": "确认"
     },
-    "task_upload_file": {
+    "task_metaurl": {
         "message": "上传"
     },
     "task_download": {
@@ -194,7 +194,7 @@
     "task_download_desc": {
         "message": "通过\"max-download-limit\"选项限制最大下载速度"
     },
-    "task_metaurl": {
+    "task_upload": {
         "message": "上传速度"
     },
     "task_upload_desc": {
