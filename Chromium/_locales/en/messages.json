@@ -60,7 +60,7 @@
         "message": "Protocol"
     },
     "option_jsonrpc_uri": {
-        "message": "JSONRPC URI"
+        "message": "JSON-RPC URI"
     },
     "option_jsonrpc_uri_desc": {
         "message": "Set URI of JSON-RPC interface"
@@ -140,22 +140,22 @@
     "option_folder_mode_desc": {
         "message": "Download folder for captured downloads"
     },
-    "popup_active_button": {
+    "popup_active": {
         "message": "Active"
     },
-    "popup_waiting_button": {
+    "popup_waiting": {
         "message": "Waiting"
     },
-    "popup_stopped_button": {
+    "popup_stopped": {
         "message": "Stopped"
     },
-    "popup_new_button": {
+    "popup_create": {
         "message": "New Task"
     },
-    "popup_purge_button": {
+    "popup_purge": {
         "message": "Purge"
     },
-    "popup_options_button": {
+    "popup_options": {
         "message": "Options"
     },
     "popup_download": {
@@ -185,7 +185,7 @@
     "task_submit": {
         "message": "Submit"
     },
-    "task_metalink": {
+    "task_metaurl": {
         "message": "Upload"
     },
     "task_download": {
