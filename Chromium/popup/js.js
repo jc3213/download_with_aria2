@@ -187,11 +187,9 @@ function printEstimatedTime(task, number) {
 }
 
 function printButton(button, resolve) {
-    var rule = button.getAttribute('data-feed').match(/[^:]+/g);
-    var name = rule[0], root = rule[1];
     var entry = button.parentNode.querySelector('input');
     button.addEventListener('click', event => {
-        entry.value = root in aria2RPC ? aria2RPC[root][name] : aria2RPC[name];
+        entry.value = aria2RPC[button.getAttribute('data-feed')];
         typeof resolve === 'function' && resolve(entry.name, entry.value);
     });
 }
