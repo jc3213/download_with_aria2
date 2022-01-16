@@ -35,7 +35,7 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
     startDownload({url: linkUrl, referer: pageUrl, storeId: cookieStoreId, domain: getDomainFromUrl(pageUrl)});
 });
 
-browser.downloads.onCreated.addListener(async item({id, url, referrer, filename}) => {
+browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) => {
     if (aria2RPC['capture_mode'] === '0' || url.startsWith('blob') || url.startsWith('data')) {
         return;
     }
