@@ -9,7 +9,7 @@ chrome.storage.local.get(null, async result => {
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         aria2RPC[key] = changes[key].newValue;
-        [].includes(key) && aria2RPCRefresh();
+        ['jsonrpc_uri', 'secret_token', 'refresh_interval'].includes(key) && aria2RPCRefresh();
     });
 });
 
