@@ -17,7 +17,7 @@ document.querySelector('#back_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#show_btn').addEventListener('click', event => {
-    document.querySelector('input[name="secret_token"]').type = document.querySelector('input[name="secret_token"]').type === 'password' ? 'text' : 'password';
+    event.target.parentNode.querySelector('input').type = event.target.parentNode.querySelector('input').type === 'password' ? 'text' : 'password';
 });
 
 document.querySelector('#export_btn').addEventListener('click', event => {
