@@ -28,7 +28,7 @@ input, textarea {
     resize: none;
 }
 
-input ~ data, show {
+input ~ data {
     position: absolute;
     top: 3px;
     right: 8px;
@@ -36,14 +36,6 @@ input ~ data, show {
 
 input[type="number"] ~ data {
     right: 24px;
-}
-
-input[data-token] {
-    -webkit-text-security: disc;
-}
-
-show:hover:active ~ input[data-token] {
-    -webkit-text-security: none;
 }
 
 textarea {

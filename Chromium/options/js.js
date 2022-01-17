@@ -16,6 +16,10 @@ document.querySelector('#back_btn').addEventListener('click', event => {
     open('/popup/index.html', '_self');
 });
 
+document.querySelector('#show_btn').addEventListener('click', event => {
+    document.querySelector('input[name="secret_token"]').type = document.querySelector('input[name="secret_token"]').type === 'password' ? 'text' : 'password';
+});
+
 document.querySelector('#export_btn').addEventListener('click', event => {
     var blob = new Blob([JSON.stringify(aria2RPC)], {type: 'application/json; charset=utf-8'});
     var saver = document.createElement('a');
