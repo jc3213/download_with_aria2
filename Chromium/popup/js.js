@@ -57,8 +57,7 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
 });
 
 document.querySelector('#name_btn').addEventListener('click', event => {
-    activeId = null;
-    http.innerHTML = bt.innerHTML = '';
+    activeId = http.innerHTML = bt.innerHTML = '';
     document.body.setAttribute('data-popup', 'main');
 });
 
