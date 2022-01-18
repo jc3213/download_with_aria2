@@ -25,7 +25,7 @@
 
 # Feedback
 
-- [File an issue](https://github.com/jc3213/download_with_aria2-archived/issues/new/choose)
+- [File an issue](https://github.com/jc3213/download_with_aria2/issues/new/)
 
 # Build
 
