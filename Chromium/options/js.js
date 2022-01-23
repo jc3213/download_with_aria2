@@ -28,7 +28,7 @@ document.querySelector('#export_btn').addEventListener('click', event => {
     saver.click();
 });
 
-document.querySelector('#import_btn').addEventListener('change', async event => {
+document.querySelector('#import_btn').addEventListener('change', event => {
     readFileAsBinary(event.target.files[0], data => {
         chrome.storage.local.set(JSON.parse(atob(data)));
         location.reload();
