@@ -1,4 +1,11 @@
+importScripts('/libs/core.js');
+
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
+    chrome.contextMenus.create({
+        title: chrome.runtime.getManifest().name,
+        id: 'downwitharia2',
+        contexts: ['link']
+    });
     reason === 'update' && previousVersion < '3.7.5' && setTimeout(() => {
         var patch = {
             'jsonrpc_uri': aria2RPC.jsonrpc.uri,
@@ -21,43 +28,35 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }, 300);
 });
 
-chrome.contextMenus.create({
-    title: chrome.i18n.getMessage('extension_name'),
-    id: 'downwitharia2',
-    contexts: ['link']
-});
-
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
     startDownload({url: linkUrl, referer: pageUrl, domain: getDomainFromUrl(pageUrl)});
 });
 
-chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, filename, fileSize}) => {
+chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
     if (aria2RPC['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
 
-    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-        var url = finalUrl;
-        var referer = referrer && referrer !== 'about:blank' ? referrer : tabs[0].url;
-        var domain = getDomainFromUrl(referer);
+    var tabs = await chrome.tabs.query({active: true, currentWindow: true});
+    var url = finalUrl;
+    var referer = referrer && referrer !== 'about:blank' ? referrer : tabs[0].url;
+    var domain = getDomainFromUrl(referer);
 
-        captureDownload(domain, getFileExtension(filename), fileSize) && 
-            chrome.downloads.cancel(id, () => {
-                chrome.downloads.erase({id}, () => {
-                    startDownload({url, referer, domain, filename});
-                });
+    captureDownload(domain, getFileExtension(filename), fileSize) && 
+        chrome.downloads.cancel(id, () => {
+            chrome.downloads.erase({id}, () => {
+                startDownload({url, referer, domain, filename});
             });
-    });
+        });
 });
 
-function startDownload({url, referer, domain, filename}, options = {}) {
-    chrome.cookies.getAll({url}, cookies => {
-        options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['user_agent']];
-        cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
-        options['out'] = filename;
-        options['all-proxy'] = aria2RPC['proxy_resolve'].includes(domain) ? aria2RPC['proxy_server'] : '';
-        aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
-    });
+async function startDownload({url, referer, domain, filename}, options = {}) {
+    var cookies = await chrome.cookies.getAll({url});
+    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['user_agent']];
+    cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
+    options['out'] = filename;
+    options['all-proxy'] = aria2RPC['proxy_resolve'].includes(domain) ? aria2RPC['proxy_server'] : '';
+    aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
 }
 
 function captureDownload(domain, type, size) {
@@ -88,10 +87,10 @@ function getFileExtension(filename) {
 
 function aria2RPCClient() {
     aria2RPCCall({method: 'aria2.getGlobalStat'}, ({numActive}) => {
-        chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
-        chrome.browserAction.setBadgeText({text: numActive === '0' ? '' : numActive});
+        chrome.action.setBadgeBackgroundColor({color: '#3cc'});
+        chrome.action.setBadgeText({text: numActive === '0' ? '' : numActive});
     }, error => {
-        chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
-        chrome.browserAction.setBadgeText({text: 'E'});
+        chrome.action.setBadgeBackgroundColor({color: '#c33'});
+        chrome.action.setBadgeText({text: 'E'});
     }, true);
 }
