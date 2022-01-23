@@ -8,9 +8,7 @@ document.querySelectorAll('[data-option] > button, [data-global] > button').forE
 });
 
 'browser' in this ? document.querySelector('[data-chrome]').remove() : document.querySelector('[data-firefox]').remove();
-
-document.querySelector('#manager').style.display = location.search === '?popup' ? 'none' : 'block';
-document.querySelector('#back_btn').style.display = location.search === '?popup' ? 'inline-block' : 'none';
+location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#back_btn').style.display = 'none';
 
 document.querySelector('#back_btn').addEventListener('click', event => {
     open('/popup/index.html', '_self');
