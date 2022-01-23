@@ -11,7 +11,9 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
             'capture_type': aria2RPC.capture.fileExt,
             'capture_size': aria2RPC.capture.fileSize,
             'capture_resolve': aria2RPC.capture.resolve,
-            'capture_reject': aria2RPC.capture.reject
+            'capture_reject': aria2RPC.capture.reject,
+            'folder_mode': aria2RPC.folder.mode,
+            'folder_path': aria2RPC.folder.uri
         };
         aria2RPC = patch;
         chrome.storage.local.clear();
