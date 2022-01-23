@@ -33,8 +33,9 @@ document.querySelector('#options_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#referer_btn').addEventListener('click', async event => {
-    var tabs = await chrome.tabs.query({active: true, currentWindow: true});
-    document.querySelector('#referer').value = tabs[0].url;
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        document.querySelector('#referer').value = tabs[0].url;
+    });
 });
 
 printButton(document.querySelector('#create [data-feed]'));
