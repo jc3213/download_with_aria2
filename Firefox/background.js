@@ -9,7 +9,7 @@ browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
             'proxy_resolve': aria2RPC.proxy.resolve,
             'capture_mode': aria2RPC.capture.mode,
             'capture_type': aria2RPC.capture.fileExt,
-            'capture_size': aria2RPC.capture.fileSize,
+            'capture_size': aria2RPC.capture.fileSize ?? 0,
             'capture_resolve': aria2RPC.capture.resolve,
             'capture_reject': aria2RPC.capture.reject,
             'folder_mode': aria2RPC.folder.mode,
