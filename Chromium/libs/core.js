@@ -30,7 +30,7 @@ function aria2RPCCall(call, resolve, reject, alive) {
     };
     jsonrpc.onmessage = event => {
         var {result} = JSON.parse(event.data);
-        typeof resolve === 'function' && resolve(result);
+        result && typeof resolve === 'function' && resolve(result);
     };
     alive && (aria2Live = setInterval(() => jsonrpc.send(message), Storage['refresh_interval']));
 }
