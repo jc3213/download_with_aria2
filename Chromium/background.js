@@ -28,6 +28,14 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }, 300);
 });
 
+chrome.storage.local.get(null, result => {
+    'jsonrpc_uri' in result && (Storage = result) || fetch('/options.json').then(response => chrome.storage.local.set(Storage = response.json()));
+});
+
+chrome.storage.onChanged.addListener(changes => {
+    Object.entries(changes).forEach(([key, {newValue}]) => console.log(key, newValue) || (Storage[key] = newValue));
+});
+
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
     startDownload({url: linkUrl, referer: pageUrl, domain: getDomainFromUrl(pageUrl)});
 });

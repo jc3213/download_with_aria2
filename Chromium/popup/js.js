@@ -24,7 +24,8 @@ document.querySelector('#task_btn').addEventListener('click', event => {
 document.querySelector('#purdge_btn').addEventListener('click', event => {
     aria2RPCCall({method: 'aria2.purgeDownloadResult'}, result => {
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
-        aria2RPCRefresh();
+        aria2Error = clearInterval(aria2Live) ?? 0;
+        aria2RPCClient();
     });
 });
 
@@ -93,6 +94,11 @@ bt.addEventListener('click', event => {
         var files = index !== -1 ? [...manager.slice(0, index), ...manager.slice(index + 1)] : [...manager, event.target.innerText];
         aria2RPCCall({method: 'aria2.changeOption', params: [activeId, {'select-file': files.join()}]}, result => manager = files);
     }
+});
+
+chrome.storage.local.get(null, result => {
+    Storage = result;
+    aria2RPCClient();
 });
 
 function aria2RPCClient() {
