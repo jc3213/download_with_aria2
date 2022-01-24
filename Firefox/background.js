@@ -64,11 +64,12 @@ async function startDownload({url, referer, domain, filename, storeId}, options 
     aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
 }
 
-function captureDownload(domain, type) {
+function captureDownload(domain, type, size) {
     return aria2RPC['capture_reject'].includes(domain) ? false :
         aria2RPC['capture_mode'] === '2' ? true :
         aria2RPC['capture_resolve'].includes(domain) ? true :
-        aria2RPC['capture_type'].includes(type) ? true : false;
+        aria2RPC['capture_type'].includes(type) ? true :
+        aria2RPC['capture_size'] > 0 && size >= aria2RPC['capture_size'] ? true : false;
 }
 
 function getDomainFromUrl(url) {
