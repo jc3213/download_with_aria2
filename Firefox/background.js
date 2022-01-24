@@ -83,7 +83,7 @@ async function getFirefoxExclusive(uri) {
     var platform = await browser.runtime.getPlatformInfo();
     var index = platform.os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
     var out = uri.slice(index + 1);
-    var dir = aria2RPC['folder_mode'] === '1' ? uri.slice(0, index + 1) : aria2RPC.folder['mode'] === '2' ? aria2RPC['folder_path'] : null;
+    var dir = aria2RPC['folder_mode'] === '1' ? uri.slice(0, index + 1) : aria2RPC['folder_mode'] === '2' ? aria2RPC['folder_path'] : null;
     if (dir) {
         return {dir, out};
     }
