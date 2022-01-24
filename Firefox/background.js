@@ -39,16 +39,16 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     var application;
     var fileSize;
     responseHeaders.forEach(({name, value}) => {
-        name.toLowerCase() === 'content-disposition' && value.startsWith('attachment') && (attachment = value.slice(value.lastIndexOf('\'') + 1));
+        name.toLowerCase() === 'content-disposition' && (attachment = value);
         name.toLowerCase() === 'content-type' && (application = value);
-        name.toLowerCase() === 'content-length' && (fileSize = value ?? '-1');
+        name.toLowerCase() === 'content-length' && (fileSize = value);
     });
-    if (application.startsWith('application')) {
+    if (application.startsWith('application') || attachment.startsWith('attachment')) {
         var referer = originUrl;
-        var filename = attachment ?? url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') + 1: url.length + 1);
+        var filename = attachment ? attachment.slice(attachment.lastIndexOf('\'') + 1) : url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') + 1: url.length + 1);
         var domain = getDomainFromUrl(originUrl);
         var storeId = await browser.tabs.get(tabId).then(({cookieStoreId}) => cookieStoreId);
-        if (captureDownload(domain, getFileExtension(filename), fileSize)) {
+        if (captureDownload(domain, getFileExtension(filename), fileSize ?? -1)) {
             startDownload({url, referer, domain, filename, storeId});
             return {cancel: true};
         }
