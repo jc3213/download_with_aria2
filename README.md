@@ -17,10 +17,9 @@
     - `Options` page for the extension
     - `Global Options` page for aria2 jsonrpc
 - Capture browser downloads
-    - Save captured downloads to other directories [**Firefox Only**]
-    - Capture filter based on file size [**Chromium Only**]
-    - Capture filter based on file extension
-    - Capture filter based on domain names of current tab
+    - Capture filter based on file size
+    - Capture filter based on file extension [**Firefox only capture MIME type application**]
+    - Capture filter based on domain names of referer
 - Support proxy setting and provide auto matching rule
 
 # Feedback
