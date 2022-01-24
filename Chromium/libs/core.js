@@ -1,5 +1,6 @@
 var aria2RPC;
-var aria2Log = {error: 0, alive: -1};
+var aria2Error = 0;
+var aria2Live;
 
 chrome.storage.local.get(null, async result => {
     aria2RPC = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
@@ -14,8 +15,7 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 function aria2RPCRefresh() {
-    clearTimeout(aria2Log.alive);
-    aria2Log.error = 0;
+    aria2Error = clearTimeout(aria2Live) ?? 0;
     aria2RPCClient();
 }
 
@@ -34,9 +34,9 @@ function aria2RPCRequest(json, resolve, reject, alive) {
     }).then(({result}) => {
         typeof resolve === 'function' && resolve(result);
     }).catch(error => {
-        aria2Log.error = aria2Log.error === 0 && typeof reject === 'function' && reject(error) || 1;
+        aria2Error === 0 && typeof reject === 'function' && (aria2Error = reject(error) ?? 1);
     });
-    alive && (aria2Log.alive = setTimeout(() => aria2RPCRequest(json, resolve, reject, alive), aria2RPC['refresh_interval']));
+    alive && (aria2Live = setTimeout(() => aria2RPCRequest(json, resolve, reject, alive), aria2RPC['refresh_interval']));
 }
 
 function showNotification(message = '') {
