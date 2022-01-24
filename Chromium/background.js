@@ -29,7 +29,8 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 });
 
 chrome.storage.local.get(null, result => {
-    'jsonrpc_uri' in result && (Storage = result) || fetch('/options.json').then(response => chrome.storage.local.set(Storage = response.json()));
+    'jsonrpc_uri' in result && (Storage = result) ||
+        fetch('/options.json').then(response => response.json()).then(json => chrome.storage.local.set(Storage = json));
 });
 
 chrome.storage.onChanged.addListener(changes => {

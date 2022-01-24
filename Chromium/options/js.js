@@ -34,11 +34,11 @@ document.querySelector('#import_btn').addEventListener('change', event => {
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
     document.body.getAttribute('data-prefs') === 'global' ? document.body.setAttribute('data-prefs', 'option') :
-    aria2RPCCall({method: 'aria2.getGlobalOption'}, options => {
-        document.querySelector('#aria2_btn').style.display = 'inline-block';
-        printOptions(document.querySelectorAll('#global [name]'), options);
-        document.body.setAttribute('data-prefs', 'global');
-    });
+        aria2RPCCall({method: 'aria2.getGlobalOption'}, options => {
+            document.querySelector('#aria2_btn').style.display = 'inline-block';
+            printOptions(document.querySelectorAll('#global [name]'), options);
+            document.body.setAttribute('data-prefs', 'global');
+        });
 });
 
 document.querySelector('#global').addEventListener('change', event => {
