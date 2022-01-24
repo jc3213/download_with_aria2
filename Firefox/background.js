@@ -40,10 +40,10 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     var fileSize;
     responseHeaders.forEach(({name, value}) => {
         name.toLowerCase() === 'content-disposition' && value.startsWith('attachment') && (attachment = value.slice(value.lastIndexOf('\'') + 1));
-        name.toLowerCase() === 'content-type' && (value.startsWith('application') || value.startsWith('image')) && (application = true);
+        name.toLowerCase() === 'content-type' && (application = value);
         name.toLowerCase() === 'content-length' && (fileSize = value ?? '-1');
     });
-    if (application) {
+    if (application.startsWith('application')) {
         var referer = originUrl;
         var filename = attachment ?? url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') + 1: url.length + 1);
         var domain = getDomainFromUrl(originUrl);
