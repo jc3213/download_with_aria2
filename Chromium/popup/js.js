@@ -32,10 +32,9 @@ document.querySelector('#options_btn').addEventListener('click', event => {
     open('/options/index.html?popup', '_self');
 });
 
-document.querySelector('#referer_btn').addEventListener('click', event => {
-    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-        document.querySelector('#referer').value = tabs[0].url;
-    });
+document.querySelector('#referer_btn').addEventListener('click', async event => {
+    var tabs = await chrome.tabs.query({active: true, currentWindow: true});
+    document.querySelector('#referer').value = tabs[0].url;
 });
 
 printButton(document.querySelector('#create [data-feed]'));
@@ -192,13 +191,13 @@ function printEstimatedTime(task, number) {
 function printButton(button, resolve) {
     var entry = button.parentNode.querySelector('input');
     button.addEventListener('click', event => {
-        entry.value = aria2RPC[button.getAttribute('data-feed')];
+        entry.value = Storage[button.getAttribute('data-feed')];
         typeof resolve === 'function' && resolve(entry.name, entry.value);
     });
 }
 
 function createOptions() {
-    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2RPC['useragent']]};
+    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + Storage['useragent']]};
     document.querySelectorAll('#create input[name]').forEach(field => options[field.name] = field.value);
     return options;
 }
