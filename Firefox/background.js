@@ -19,6 +19,10 @@ browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         chrome.storage.local.clear();
         chrome.storage.local.set(Storage);
     }, 300);
+    reason === 'update' && previousVersion > '3.7.5' && previousVersion < '3.8.0' && setTimeout(() => {
+        Storage['capture_api'] = '1';
+        chrome.storage.local.set(Storage);
+    }, 500);
 });
 
 browser.contextMenus.create({
@@ -31,8 +35,27 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
     startDownload({url: linkUrl, referer: pageUrl, storeId: cookieStoreId, domain: getDomainFromUrl(pageUrl)});
 });
 
+browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) => {
+    if (Storage['capture_api'] === '1' || Storage['capture_mode'] === '0' || url.startsWith('blob') || url.startsWith('data')) {
+        return
+    }
+    var tabs = await browser.tabs.query({active: true, currentWindow: true});
+    var referer = referrer && referrer !== 'about:blank' ? referrer : tabs[0].url;
+    var domain = getDomainFromUrl(referer);
+    var storeId = tabs[0].cookieStoreId;
+
+    captureDownload(domain, getFileExtension(filename)) &&
+        browser.downloads.cancel(id).then(() => {
+            browser.downloads.erase({id}).then(() => {
+                getFirefoxExclusive(filename).then(options => {
+                    startDownload({url, referer, domain, storeId}, options);
+                });
+            });
+        }).catch(error => showNotification('Download is already complete'));
+});
+
 browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url, originUrl, responseHeaders}) => {
-    if (Storage['capture_mode'] === 0 || statusCode !== 200) {
+    if (Storage['capture_api'] === '0' || Storage['capture_mode'] === 0 || statusCode !== 200) {
         return;
     }
     var attachment;
@@ -62,6 +85,17 @@ async function startDownload({url, referer, domain, filename, storeId}, options 
     filename && (options['out'] = filename);
     options['all-proxy'] = Storage['proxy_resolve'].includes(domain) ? Storage['proxy_server'] : '';
     aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
+}
+
+async function getFirefoxExclusive(uri) {
+    var platform = await browser.runtime.getPlatformInfo();
+    var index = platform.os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
+    var out = uri.slice(index + 1);
+    var dir = Storage['folder_mode'] === '1' ? uri.slice(0, index + 1) : Storage['folder_mode'] === '2' ? Storage['folder_path'] : null;
+    if (dir) {
+        return {dir, out};
+    }
+    return {out};
 }
 
 function captureDownload(domain, type, size) {
