@@ -26,6 +26,10 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         chrome.storage.local.clear();
         chrome.storage.local.set(Storage);
     }, 300);
+    reason === 'update' && previousVersion >= '3.8.0' && previousVersion < '3.9.0' && setTimeout(() => {
+        Storage['jsonrpc_uri'] = Storage['jsonrpc_uri'].replace('http', 'ws');
+        chrome.storage.local.set(Storage);
+    }, 300);
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {

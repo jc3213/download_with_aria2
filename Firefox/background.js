@@ -23,6 +23,10 @@ browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         Storage['capture_api'] = '1';
         chrome.storage.local.set(Storage);
     }, 500);
+    reason === 'update' && previousVersion >= '3.8.0' && previousVersion < '3.9.0' && setTimeout(() => {
+        Storage['jsonrpc_uri'] = Storage['jsonrpc_uri'].replace('http', 'ws');
+        chrome.storage.local.set(Storage);
+    }, 300);
 });
 
 browser.contextMenus.create({
