@@ -34,7 +34,7 @@ chrome.storage.local.get(null, result => {
 });
 
 chrome.storage.onChanged.addListener(changes => {
-    Object.entries(changes).forEach(([key, {newValue}]) => console.log(key, newValue) || (Storage[key] = newValue));
+    Object.entries(changes).forEach(([key, {newValue}]) => Storage[key] = newValue);
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {

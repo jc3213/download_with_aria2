@@ -35,6 +35,15 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
     startDownload({url: linkUrl, referer: pageUrl, storeId: cookieStoreId, domain: getDomainFromUrl(pageUrl)});
 });
 
+browser.storage.local.get(null, result => {
+    'jsonrpc_uri' in result && (Storage = result) ||
+        fetch('/options.json').then(response => response.json()).then(json => browser.storage.local.set(Storage = json));
+});
+
+browser.storage.onChanged.addListener(changes => {
+    Object.entries(changes).forEach(([key, {newValue}]) => Storage[key] = newValue);
+});
+
 browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) => {
     if (Storage['capture_api'] === '1' || Storage['capture_mode'] === '0' || url.startsWith('blob') || url.startsWith('data')) {
         return
@@ -68,7 +77,7 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     });
     if (application.startsWith('application') || attachment.startsWith('attachment')) {
         var referer = originUrl;
-        var filename = attachment ? attachment.slice(attachment.lastIndexOf('\'') + 1) : url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') : url.length);
+        var filename = attachment ? attachment.slice(attachment.lastIndexOf('\'') + 1) : decodeURI(url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') : url.length));
         var domain = getDomainFromUrl(originUrl);
         var storeId = await browser.tabs.get(tabId).then(({cookieStoreId}) => cookieStoreId);
         if (captureDownload(domain, getFileExtension(filename), fileSize ?? -1)) {
