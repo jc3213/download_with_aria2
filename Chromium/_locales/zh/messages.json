@@ -128,18 +128,6 @@
     "option_capture_reject_desc": {
         "message": "忽略来自列表中的域名的下载"
     },
-    "option_folder_mode": {
-        "message": "保存目录"
-    },
-    "option_folder_browser": {
-        "message": "浏览器"
-    },
-    "option_folder_custom": {
-        "message": "自定义"
-    },
-    "option_folder_mode_desc": {
-        "message": "用于保存已抓取下载的目录"
-    },
     "popup_active": {
         "message": "下载中"
     },

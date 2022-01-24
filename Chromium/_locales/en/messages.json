@@ -128,18 +128,6 @@
     "option_capture_reject_desc": {
         "message": "Ignore download from these domains"
     },
-    "option_folder_mode": {
-        "message": "Save Folder"
-    },
-    "option_folder_browser": {
-        "message": "Browser"
-    },
-    "option_folder_custom": {
-        "message": "Custom"
-    },
-    "option_folder_mode_desc": {
-        "message": "Download folder for captured downloads"
-    },
     "popup_active": {
         "message": "Active"
     },
