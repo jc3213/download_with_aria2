@@ -15,9 +15,9 @@ browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
             'folder_mode': aria2RPC.folder.mode,
             'folder_path': aria2RPC.folder.uri
         };
-        aria2RPC = patch;
+        Storage = patch;
         chrome.storage.local.clear();
-        chrome.storage.local.set(aria2RPC);
+        chrome.storage.local.set(Storage);
     }, 300);
 });
 
@@ -32,7 +32,7 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
 });
 
 browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url, originUrl, responseHeaders}) => {
-    if (aria2RPC['capture_mode'] === 0 || statusCode !== 200) {
+    if (Storage['capture_mode'] === 0 || statusCode !== 200) {
         return;
     }
     var attachment;
@@ -57,19 +57,19 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
 
 async function startDownload({url, referer, domain, filename, storeId}, options = {}) {
     var cookies = await browser.cookies.getAll({url, storeId});
-    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2RPC['user_agent']];
+    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + Storage['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     filename && (options['out'] = filename);
-    options['all-proxy'] = aria2RPC['proxy_resolve'].includes(domain) ? aria2RPC['proxy_server'] : '';
+    options['all-proxy'] = Storage['proxy_resolve'].includes(domain) ? Storage['proxy_server'] : '';
     aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
 }
 
 function captureDownload(domain, type, size) {
-    return aria2RPC['capture_reject'].includes(domain) ? false :
-        aria2RPC['capture_mode'] === '2' ? true :
-        aria2RPC['capture_resolve'].includes(domain) ? true :
-        aria2RPC['capture_type'].includes(type) ? true :
-        aria2RPC['capture_size'] > 0 && size >= aria2RPC['capture_size'] ? true : false;
+    return Storage['capture_reject'].includes(domain) ? false :
+        Storage['capture_mode'] === '2' ? true :
+        Storage['capture_resolve'].includes(domain) ? true :
+        Storage['capture_type'].includes(type) ? true :
+        Storage['capture_size'] > 0 && size >= Storage['capture_size'] ? true : false;
 }
 
 function getDomainFromUrl(url) {
