@@ -84,13 +84,3 @@ function getDomainFromUrl(url) {
 function getFileExtension(filename) {
     return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
 }
-
-function aria2RPCClient() {
-    aria2RPCCall({method: 'aria2.getGlobalStat'}, ({numActive}) => {
-        chrome.action.setBadgeBackgroundColor({color: '#3cc'});
-        chrome.action.setBadgeText({text: numActive === '0' ? '' : numActive});
-    }, error => {
-        chrome.action.setBadgeBackgroundColor({color: '#c33'});
-        chrome.action.setBadgeText({text: 'E'});
-    }, true);
-}
