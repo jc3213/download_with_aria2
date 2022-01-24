@@ -21,13 +21,13 @@ function aria2RPCRefresh() {
 }
 
 function aria2RPCCall(call, resolve, reject, alive) {
-    var json = 'method' in call ? {id: '', jsonrpc: 2, method: call.method, params: [Storage['secret_token']].concat(call.params ?? [])}
-        : {id: '', jsonrpc: 2, method: 'system.multicall', params: [ call.map(({method, params = []}) => ({methodName: method, params: [Storage['secret_token'], ...params]})) ]};
+    var body = JSON.stringify( 'method' in call ? {id: '', jsonrpc: 2, method: call.method, params: [Storage['secret_token']].concat(call.params ?? [])}
+        : {id: '', jsonrpc: 2, method: 'system.multicall', params: [ call.map(({method, params = []}) => ({methodName: method, params: [Storage['secret_token'], ...params]})) ]} );
     aria2RPCRequest();
     alive && (aria2Live = setInterval(aria2RPCRequest, Storage['refresh_interval']));
 
     function aria2RPCRequest() {
-        fetch(Storage['jsonrpc_uri'], {method: 'POST', body: JSON.stringify(json)}).then(response => {
+        fetch(Storage['jsonrpc_uri'], {method: 'POST', body}).then(response => {
             if (response.status !== 200) {
                 throw new Error(response.statusText);
             }
