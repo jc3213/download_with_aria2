@@ -45,7 +45,7 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     });
     if (application.startsWith('application') || attachment.startsWith('attachment')) {
         var referer = originUrl;
-        var filename = attachment ? attachment.slice(attachment.lastIndexOf('\'') + 1) : url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') + 1: url.length + 1);
+        var filename = attachment ? attachment.slice(attachment.lastIndexOf('\'') + 1) : url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') : url.length);
         var domain = getDomainFromUrl(originUrl);
         var storeId = await browser.tabs.get(tabId).then(({cookieStoreId}) => cookieStoreId);
         if (captureDownload(domain, getFileExtension(filename), fileSize ?? -1)) {
