@@ -20,7 +20,7 @@
     - Capture filter based on file size
     - Capture filter based on file extension [**Firefox only capture MIME type application**]
     - Capture filter based on domain names of referer
-    - Read [#7](https://github.com/jc3213/download_with_aria2/issues/7) for legacy capture method [**Firefox Only**]
+    - Read [Issue #7](https://github.com/jc3213/download_with_aria2/issues/7) for legacy capture method [**Firefox Only**]
 - Support proxy setting and provide auto matching rule
 
 # Feedback
