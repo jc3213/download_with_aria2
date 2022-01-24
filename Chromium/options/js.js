@@ -7,7 +7,6 @@ document.querySelectorAll('[data-option] > button, [data-global] > button').forE
     });
 });
 
-'browser' in this ? document.querySelector('[data-chrome]').remove() : document.querySelector('[data-firefox]').remove();
 location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#back_btn').style.display = 'none';
 
 document.querySelector('#back_btn').addEventListener('click', event => {
