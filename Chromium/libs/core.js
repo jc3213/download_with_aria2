@@ -36,7 +36,7 @@ function aria2RPCRequest(json, resolve, reject, alive) {
     }).catch(error => {
         aria2Log.error = aria2Log.error === 0 && typeof reject === 'function' && reject(error) || 1;
     });
-    aria2Log.alive = alive && setTimeout(() => aria2RPCRequest(json, resolve, reject, alive), aria2RPC['refresh_interval']);
+    alive && (aria2Log.alive = setTimeout(() => aria2RPCRequest(json, resolve, reject, alive), aria2RPC['refresh_interval']));
 }
 
 function showNotification(message = '') {
