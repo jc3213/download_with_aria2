@@ -1,5 +1,6 @@
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     self.queue = [];
+    self.store;
     chrome.action.setBadgeBackgroundColor({color: '#3cc'});
     chrome.contextMenus.create({
         title: chrome.runtime.getManifest().name,
@@ -9,20 +10,20 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 });
 
 chrome.storage.local.get(null, result => {
-    'jsonrpc_uri' in result && (Storage = result) ||
-        fetch('/options.json').then(response => response.json()).then(json => chrome.storage.local.set(Storage = json));
+    'jsonrpc_uri' in result && (store = result) ||
+        fetch('/options.json').then(response => response.json()).then(json => chrome.storage.local.set(store = json));
 });
 
 chrome.storage.onChanged.addListener(changes => {
-    Object.entries(changes).forEach(([key, {newValue}]) => Storage[key] = newValue);
+    Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
-    webSocketMessage({url: linkUrl, referer: pageUrl, domain: getDomainFromUrl(pageUrl)});
+    startDownload({url: linkUrl, referer: pageUrl, domain: getDomainFromUrl(pageUrl)});
 });
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
-    if (Storage['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
+    if (store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
 
@@ -34,7 +35,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     captureDownload(domain, getFileExtension(filename), fileSize) && 
         chrome.downloads.cancel(id, () => {
             chrome.downloads.erase({id}, () => {
-                webSocketMessage({url, referer, domain, filename});
+                startDownload({url, referer, domain, filename});
             });
         });
 });
@@ -44,10 +45,10 @@ chrome.runtime.onMessage.addListener(({method, params, message}) => {
 });
 
 function aria2WebSocket(method, params, message) {
-    var jsonrpc = new WebSocket(Storage['jsonrpc_uri'].replace('http', 'ws'));
+    var jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
     var active = 0;
     var total = -1;
-    jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [Storage['secret_token'], ...params]}));
+    jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
     jsonrpc.onerror = event => () => showNotification(JSON.parse(event.data).error);
     jsonrpc.onmessage = event => {
         var {result, method, params} = JSON.parse(event.data);
@@ -66,21 +67,21 @@ function aria2WebSocket(method, params, message) {
     };
 }
 
-async function webSocketMessage({url, referer, domain, filename}, options = {}) {
+async function startDownload({url, referer, domain, filename}, options = {}) {
     var cookies = await chrome.cookies.getAll({url});
-    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + Storage['user_agent']];
+    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     options['out'] = filename;
-    options['all-proxy'] = Storage['proxy_resolve'].includes(domain) ? Storage['proxy_server'] : '';
+    options['all-proxy'] = store['proxy_resolve'].includes(domain) ? store['proxy_server'] : '';
     aria2WebSocket('aria2.addUri', [[url], options], url);
 }
 
 function captureDownload(domain, type, size) {
-    return Storage['capture_reject'].includes(domain) ? false :
-        Storage['capture_mode'] === '2' ? true :
-        Storage['capture_resolve'].includes(domain) ? true :
-        Storage['capture_type'].includes(type) ? true :
-        Storage['capture_size'] > 0 && size >= Storage['capture_size'] ? true : false;
+    return store['capture_reject'].includes(domain) ? false :
+        store['capture_mode'] === '2' ? true :
+        store['capture_resolve'].includes(domain) ? true :
+        store['capture_type'].includes(type) ? true :
+        store['capture_size'] > 0 && size >= store['capture_size'] ? true : false;
 }
 
 function getDomainFromUrl(url) {
@@ -104,7 +105,7 @@ function getFileExtension(filename) {
 function showNotification(message = '') {
     chrome.notifications.create({
         type: 'basic',
-        title: Storage['jsonrpc_uri'],
+        title: store['jsonrpc_uri'],
         iconUrl: '/icons/icon48.png',
         message
     });
