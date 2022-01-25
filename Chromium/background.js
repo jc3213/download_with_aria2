@@ -46,8 +46,16 @@ chrome.runtime.onMessage.addListener(({method, params, message}) => {
 
 function aria2WebSocket() {
     jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
-    aria2Wrapper(result => queue = result.map(({gid}) => gid));
     jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.tellActive', params: [store['secret_token']]}));
+    jsonrpc.once = resolve => {
+        jsonrpc.onmessage = event => {
+            var {result, error} = JSON.parse(event.data);
+            result && resolve(result);
+            error && showNotification(error.message);
+            jsonrpc.onmessage = null;
+        };
+    };
+    jsonrpc.once(result => queue = result.map(({gid}) => gid));
     jsonrpc.addEventListener('message', event => {
         var {method, params} = JSON.parse(event.data);
         method && method !=='aria2.onBtDownloadComplete' && (method === 'aria2.onDownloadStart' ? queue.push(params[0].gid) : queue.splice(queue.indexOf(params[0].gid), 1));
@@ -57,16 +65,7 @@ function aria2WebSocket() {
 
 function aria2Message(method, params, message) {
     jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
-    aria2Wrapper(result => showNotification(message));
-}
-
-function aria2Wrapper(resolve) {
-    jsonrpc.onmessage = event => {
-        var {result, error} = JSON.parse(event.data);
-        result && resolve(result);
-        error && showNotification(error.message);
-        jsonrpc.onmessage = null;
-    };
+    jsonrpc.once(result => showNotification(message));
 }
 
 async function startDownload({url, referer, domain, filename}, options = {}) {
