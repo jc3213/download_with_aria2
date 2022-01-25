@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    self.queue = [];
+    queue = [];
     chrome.action.setBadgeBackgroundColor({color: '#3cc'});
     chrome.contextMenus.create({
         title: chrome.runtime.getManifest().name,
@@ -8,9 +8,10 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     });
 });
 
-chrome.storage.local.get(null, async result => {
-    self.store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
-    self.jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
+chrome.storage.local.get(null, result => {
+    store = 'jsonrpc_uri' in result ? result await fetch('/options.json').then(response => response.json());
+    jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
+    !('jsonrpc_uri' in result) && chrome.storage.local.set(store = json));
 });
 
 chrome.storage.onChanged.addListener(changes => {
