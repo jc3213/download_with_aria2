@@ -34,7 +34,7 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
 browser.storage.local.get(null, async result => {
     store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
     aria2RPCClient();
-    if ('jsonrpc_uri' in result) {
+    if (result['jsonrpc_uri'] === undefined) {
         store['capture_api'] = store['capture_api'] ?? '1';
         browser.storage.local.set(store);
     }
