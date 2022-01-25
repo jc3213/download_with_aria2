@@ -15,13 +15,13 @@ browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
             'folder_mode': aria2RPC.folder.mode,
             'folder_path': aria2RPC.folder.uri
         };
-        Storage = patch;
+        store = patch;
         chrome.storage.local.clear();
-        chrome.storage.local.set(Storage);
+        chrome.storage.local.set(store);
     }, 300);
-    reason === 'update' && previousVersion > '3.7.5' && previousVersion < '3.8.0' && setTimeout(() => {
-        Storage['capture_api'] = '1';
-        chrome.storage.local.set(Storage);
+    reason === 'update' && previousVersion < '3.8.0' && setTimeout(() => {
+        store['capture_api'] = '1';
+        chrome.storage.local.set(store);
     }, 500);
 });
 
@@ -35,36 +35,39 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
     startDownload({url: linkUrl, referer: pageUrl, storeId: cookieStoreId, domain: getDomainFromUrl(pageUrl)});
 });
 
-browser.storage.local.get(null, result => {
-    'jsonrpc_uri' in result && (Storage = result) ||
-        fetch('/options.json').then(response => response.json()).then(json => browser.storage.local.set(Storage = json));
+browser.storage.local.get(null, async result => {
+    store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
+    aria2RPCClient();
+    !('jsonrpc_uri' in result) && browser.storage.local.set(store);
 });
 
 browser.storage.onChanged.addListener(changes => {
-    Object.entries(changes).forEach(([key, {newValue}]) => Storage[key] = newValue);
+    Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
+    clearInterval(keepAlive) ?? aria2RPCClient();
+});
+
+browser.runtime.onMessage.addListener(({method, params, message}) => {
+    aria2Message({method, params}, result => showNotification(message));
 });
 
 browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) => {
-    if (Storage['capture_api'] === '1' || Storage['capture_mode'] === '0' || url.startsWith('blob') || url.startsWith('data')) {
-        return
+    if (store['capture_api'] === '1' || store['capture_mode'] === '0' || url.startsWith('blob') || url.startsWith('data')) {
+        return;
     }
+
     var tabs = await browser.tabs.query({active: true, currentWindow: true});
     var referer = referrer && referrer !== 'about:blank' ? referrer : tabs[0].url;
     var domain = getDomainFromUrl(referer);
     var storeId = tabs[0].cookieStoreId;
 
-    captureDownload(domain, getFileExtension(filename)) &&
-        browser.downloads.cancel(id).then(() => {
-            browser.downloads.erase({id}).then(() => {
-                getFirefoxExclusive(filename).then(options => {
-                    startDownload({url, referer, domain, storeId}, options);
-                });
-            });
-        }).catch(error => showNotification('Download is already complete'));
+    captureDownload(domain, getFileExtension(filename)) && browser.downloads.cancel(id).then(async () => {
+        await browser.downloads.erase({id});
+        startDownload({url, referer, domain, storeId}, await getFirefoxExclusive(filename));
+    }).catch(error => showNotification('Download is already complete'));
 });
 
 browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url, originUrl, responseHeaders}) => {
-    if (Storage['capture_api'] === '0' || Storage['capture_mode'] === 0 || statusCode !== 200) {
+    if (store['capture_api'] === '0' || store['capture_mode'] === 0 || statusCode !== 200) {
         return;
     }
     var attachment;
@@ -87,20 +90,32 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
+function aria2Message({method, params = []}, resolve, reject, alive) {
+    var message = JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]});
+    var jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
+    jsonrpc.onopen = event => jsonrpc.send(message);
+    jsonrpc.onmessage = event => {
+        var {result, error} = JSON.parse(event.data);
+        result && typeof resolve === 'function' && resolve(result);
+        error && typeof reject === 'function' && reject(error);
+    };
+    alive && (keepAlive = setInterval(() => jsonrpc.send(message, resolve, reject), store['refresh_interval']));
+}
+
 async function startDownload({url, referer, domain, filename, storeId}, options = {}) {
     var cookies = await browser.cookies.getAll({url, storeId});
-    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + Storage['user_agent']];
+    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     filename && (options['out'] = filename);
-    options['all-proxy'] = Storage['proxy_resolve'].includes(domain) ? Storage['proxy_server'] : '';
-    aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
+    options['all-proxy'] = store['proxy_resolve'].includes(domain) ? store['proxy_server'] : '';
+    aria2Message({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
 }
 
 async function getFirefoxExclusive(uri) {
     var platform = await browser.runtime.getPlatformInfo();
     var index = platform.os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
     var out = uri.slice(index + 1);
-    var dir = Storage['folder_mode'] === '1' ? uri.slice(0, index + 1) : Storage['folder_mode'] === '2' ? Storage['folder_path'] : null;
+    var dir = store['folder_mode'] === '1' ? uri.slice(0, index + 1) : store['folder_mode'] === '2' ? store['folder_path'] : null;
     if (dir) {
         return {dir, out};
     }
@@ -108,11 +123,11 @@ async function getFirefoxExclusive(uri) {
 }
 
 function captureDownload(domain, type, size) {
-    return Storage['capture_reject'].includes(domain) ? false :
-        Storage['capture_mode'] === '2' ? true :
-        Storage['capture_resolve'].includes(domain) ? true :
-        Storage['capture_type'].includes(type) ? true :
-        Storage['capture_size'] > 0 && size >= Storage['capture_size'] ? true : false;
+    return store['capture_reject'].includes(domain) ? false :
+        store['capture_mode'] === '2' ? true :
+        store['capture_resolve'].includes(domain) ? true :
+        store['capture_type'].includes(type) ? true :
+        store['capture_size'] > 0 && size >= store['capture_size'] ? true : false;
 }
 
 function getDomainFromUrl(url) {
@@ -134,11 +149,20 @@ function getFileExtension(filename) {
 }
 
 function aria2RPCClient() {
-    aria2RPCCall({method: 'aria2.getGlobalStat'}, ({numActive}) => {
+    aria2Message({method: 'aria2.getGlobalStat'}, ({numActive}) => {
         browser.browserAction.setBadgeBackgroundColor({color: '#3cc'});
         browser.browserAction.setBadgeText({text: numActive === '0' ? '' : numActive});
     }, error => {
         browser.browserAction.setBadgeBackgroundColor({color: '#c33'});
         browser.browserAction.setBadgeText({text: 'E'});
     }, true);
+}
+
+function showNotification(message = '') {
+    browser.notifications.create({
+        type: 'basic',
+        title: store['jsonrpc_uri'],
+        iconUrl: '/icons/icon48.png',
+        message
+    });
 }
