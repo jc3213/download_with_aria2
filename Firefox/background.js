@@ -19,10 +19,6 @@ browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         chrome.storage.local.clear();
         chrome.storage.local.set(store);
     }, 300);
-    reason === 'update' && previousVersion < '3.8.0' && setTimeout(() => {
-        store['capture_api'] = '1';
-        chrome.storage.local.set(store);
-    }, 500);
 });
 
 browser.contextMenus.create({
@@ -38,7 +34,10 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
 browser.storage.local.get(null, async result => {
     store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
     aria2RPCClient();
-    !('jsonrpc_uri' in result) && browser.storage.local.set(store);
+    if ('jsonrpc_uri' in result) {
+        store['capture_api'] = store['capture_api'] ?? '1';
+        browser.storage.local.set(store);
+    }
 });
 
 browser.storage.onChanged.addListener(changes => {
