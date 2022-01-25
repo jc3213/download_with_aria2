@@ -1,3 +1,7 @@
+var store;
+var jsonrpc;
+var queue;
+
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     chrome.contextMenus.create({
         title: chrome.runtime.getManifest().name,
@@ -8,11 +12,13 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 
 chrome.storage.local.get(null, async result => {
     store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
+    aria2WebSocket();
     !('jsonrpc_uri' in result) && chrome.storage.local.set(store);
 });
 
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
+    'jsonrpc_uri' in changes && jsonrpc.close() || aria2WebSocket();
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
@@ -38,13 +44,28 @@ chrome.runtime.onMessage.addListener(({method, params, message}) => {
     aria2Message(method, params, message);
 });
 
+function aria2WebSocket() {
+    jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
+    aria2Wrapper(result => queue = result.map(({gid}) => gid));
+    jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.tellActive', params: [store['secret_token']]}));
+    jsonrpc.addEventListener('message', event => {
+        var {method, params} = JSON.parse(event.data);
+        method && method !=='aria2.onBtDownloadComplete' && (method === 'aria2.onDownloadStart' ? queue.push(params[0].gid) : queue.splice(queue.indexOf(params[0].gid), 1));
+        chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
+    });
+}
+
 function aria2Message(method, params, message) {
-    var jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
-    jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
+    jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
+    aria2Wrapper(result => showNotification(message));
+}
+
+function aria2Wrapper(resolve) {
     jsonrpc.onmessage = event => {
         var {result, error} = JSON.parse(event.data);
-        result && showNotification(message);
+        result && resolve(result);
         error && showNotification(error.message);
+        jsonrpc.onmessage = null;
     };
 }
 
