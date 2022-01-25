@@ -11,7 +11,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 chrome.storage.local.get(null, async result => {
     store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
     jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
-    !('jsonrpc_uri' in result) && chrome.storage.local.set(store = json);
+    !('jsonrpc_uri' in result) && chrome.storage.local.set(store);
 });
 
 chrome.storage.onChanged.addListener(changes => {
