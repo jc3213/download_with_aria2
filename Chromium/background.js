@@ -8,14 +8,14 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     });
 });
 
-chrome.storage.local.get(null, result => {
-    self.store = 'jsonrpc_uri' in result ? result : null;
-    store ? aria2WebSocket() : fetch('/options.json').then(response => response.json()).then(json => chrome.storage.local.set(store = json));
+chrome.storage.local.get(null, async result => {
+    self.store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
+    self.jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
 });
 
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    'jsonr_uri' in changes && (jsonrpc.close() ?? aria2WebSocket());
+    'jsonr_uri' in changes && jsonrpc.close() || (jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws')));
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
@@ -47,16 +47,9 @@ chrome.runtime.onMessage.addListener(({method, params, message}) => {
 function aria2Message(method, params, message) {
     jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
     jsonrpc.onmessage = event => {
-        var {result, error} = JSON.parse(event.data);
+        var {result, error, method, params} = JSON.parse(event.data);
         result && showNotification(message);
         error && showNotification(error.message);
-    }
-}
-
-function aria2WebSocket() {
-    self.jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
-    jsonrpc.addEventListener('message', event => {
-        var {method, params} = JSON.parse(event.data);
         if (method) {
             var gid = params[0].gid;
             method === 'aria2.onDownloadStart' ? (() => {
@@ -68,7 +61,7 @@ function aria2WebSocket() {
                 chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
             })();
         }
-    });
+    }
 }
 
 async function startDownload({url, referer, domain, filename}, options = {}) {
