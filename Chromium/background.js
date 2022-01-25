@@ -50,7 +50,7 @@ function aria2WebSocket() {
     jsonrpc.onmessage = event => {
         var {result} = JSON.parse(event.data);
         result && (() => {
-            queue = result.map(({gid}) => gid));
+            queue = result.map(({gid}) => gid);
             chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
             jsonrpc.onmessage = null;
         });
