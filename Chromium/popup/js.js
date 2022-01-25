@@ -44,7 +44,7 @@ printButton(document.querySelector('#create [data-feed]'));
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    entries && entries.forEach(url => aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url)));
+    entries && entries.forEach(url => chrome.runtime.sendMessage({method: 'aria2.addUri', params: [[url], options], message: url}));
     document.querySelector('#entries').value = '';
     document.body.setAttribute('data-popup', 'main');
 });
@@ -52,7 +52,7 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
 document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none' : 'inline-block';
 document.querySelector('#upload_btn').addEventListener('change', event => {
     var options = createOptions();
-    [...event.target.files].forEach(file => readFileAsBinary(file, data => aria2RPCCall({method: file.name.endsWith('torrent') ? 'aria2.addTorrent' : 'aria2.addMetalink', params: [data, options]}, result => showNotification(file.name))));
+    [...event.target.files].forEach(file => readFileAsBinary(file, data => chrome.runtime.sendMessage({method: file.name.endsWith('torrent') ? 'aria2.addTorrent' : 'aria2.addMetalink', params: [data, options], message: file.name})));
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
