@@ -12,10 +12,12 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 chrome.storage.local.get(null, result => {
     'jsonrpc_uri' in result && (store = result) ||
         fetch('/options.json').then(response => response.json()).then(json => chrome.storage.local.set(store = json));
+    self.jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
 });
 
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
+    'jsonr_uri' in changes && jsonrpc.close() || (jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws')));
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
@@ -45,26 +47,23 @@ chrome.runtime.onMessage.addListener(({method, params, message}) => {
 });
 
 function aria2WebSocket(method, params, message) {
-    var jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
-    var active = 0;
-    var total = -1;
-    jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
     jsonrpc.onerror = event => () => showNotification(JSON.parse(event.data).error);
     jsonrpc.onmessage = event => {
         var {result, method, params} = JSON.parse(event.data);
-        result && (total = showNotification(message) ?? typeof result === 'string' ? 1 : result.length);
-        method === 'aria2.onDownloadStart' && (() => {
-            queue.indexOf(params[0].gid) === -1 && queue.push(params[0].gid);
-            chrome.action.setBadgeText({text: queue.length + ''});
-        })();
-        method === 'aria2.onDownloadComplete' && (() => {
-            var index = queue.indexOf(params[0].gid);
-            index !== -1 && queue.splice(index, 1);
-            chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
-            active ++;
-            active === total && jsonrpc.close();
-        })();
+        result && showNotification(message);
+        if (method) {
+            var gid = params[0].gid;
+            method === 'aria2.onDownloadStart' ? (() => {
+                queue.indexOf(gid) === -1 && queue.push(gid);
+                chrome.action.setBadgeText({text: queue.length + ''});
+            })() : (() => {
+                var index = queue.indexOf(gid);
+                index !== -1 && queue.splice(index, 1);
+                chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
+            })();
+        }
     };
+    jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
 }
 
 async function startDownload({url, referer, domain, filename}, options = {}) {
