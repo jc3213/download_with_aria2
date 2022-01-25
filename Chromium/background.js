@@ -1,6 +1,5 @@
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     self.queue = [];
-    self.store;
     chrome.action.setBadgeBackgroundColor({color: '#3cc'});
     chrome.contextMenus.create({
         title: chrome.runtime.getManifest().name,
@@ -10,14 +9,13 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 });
 
 chrome.storage.local.get(null, result => {
-    'jsonrpc_uri' in result && (store = result) ||
-        fetch('/options.json').then(response => response.json()).then(json => chrome.storage.local.set(store = json));
-    self.jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
+    self.store = 'jsonrpc_uri' in result ? result : null;
+    store ? aria2WebSocket() : fetch('/options.json').then(response => response.json()).then(json => chrome.storage.local.set(store = json));
 });
 
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    'jsonr_uri' in changes && jsonrpc.close() || (jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws')));
+    'jsonr_uri' in changes && (jsonrpc.close() ?? aria2WebSocket());
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
@@ -43,14 +41,22 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
 });
 
 chrome.runtime.onMessage.addListener(({method, params, message}) => {
-    aria2WebSocket(method, params, message);
+    aria2Message(method, params, message);
 });
 
-function aria2WebSocket(method, params, message) {
-    jsonrpc.onerror = event => () => showNotification(JSON.parse(event.data).error);
+function aria2Message(method, params, message) {
+    jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
     jsonrpc.onmessage = event => {
-        var {result, method, params} = JSON.parse(event.data);
+        var {result, error} = JSON.parse(event.data);
         result && showNotification(message);
+        error && showNotification(error.message);
+    }
+}
+
+function aria2WebSocket() {
+    self.jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
+    jsonrpc.addEventListener('message', event => {
+        var {method, params} = JSON.parse(event.data);
         if (method) {
             var gid = params[0].gid;
             method === 'aria2.onDownloadStart' ? (() => {
@@ -62,8 +68,7 @@ function aria2WebSocket(method, params, message) {
                 chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
             })();
         }
-    };
-    jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
+    });
 }
 
 async function startDownload({url, referer, domain, filename}, options = {}) {
@@ -72,7 +77,7 @@ async function startDownload({url, referer, domain, filename}, options = {}) {
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     options['out'] = filename;
     options['all-proxy'] = store['proxy_resolve'].includes(domain) ? store['proxy_server'] : '';
-    aria2WebSocket('aria2.addUri', [[url], options], url);
+    aria2Message('aria2.addUri', [[url], options], url);
 }
 
 function captureDownload(domain, type, size) {
