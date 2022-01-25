@@ -1,5 +1,6 @@
+self.queue = [];
+
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    queue = [];
     chrome.action.setBadgeBackgroundColor({color: '#3cc'});
     chrome.contextMenus.create({
         title: chrome.runtime.getManifest().name,
@@ -10,13 +11,11 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 
 chrome.storage.local.get(null, async result => {
     store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
-    jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
     !('jsonrpc_uri' in result) && chrome.storage.local.set(store);
 });
 
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    'jsonr_uri' in changes && jsonrpc.close() || (jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws')));
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
@@ -33,12 +32,9 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     var referer = referrer && referrer !== 'about:blank' ? referrer : tabs[0].url;
     var domain = getDomainFromUrl(referer);
 
-    captureDownload(domain, getFileExtension(filename), fileSize) && 
-        chrome.downloads.cancel(id, () => {
-            chrome.downloads.erase({id}, () => {
-                startDownload({url, referer, domain, filename});
-            });
-        });
+    captureDownload(domain, getFileExtension(filename), fileSize) && chrome.downloads.cancel(id, async () => {
+        chrome.downloads.erase({id}, () => startDownload({url, referer, domain, filename}));
+    });
 });
 
 chrome.runtime.onMessage.addListener(({method, params, message}) => {
@@ -46,7 +42,8 @@ chrome.runtime.onMessage.addListener(({method, params, message}) => {
 });
 
 function aria2Message(method, params, message) {
-    jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
+    var jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
+    jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
     jsonrpc.onmessage = event => {
         var {result, error, method, params} = JSON.parse(event.data);
         result && showNotification(message);
