@@ -33,20 +33,18 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
 
 browser.storage.local.get(null, async result => {
     store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
-    aria2RPCClient();
-    if (result['jsonrpc_uri'] === undefined) {
-        store['capture_api'] = store['capture_api'] ?? '1';
-        browser.storage.local.set(store);
-    }
+    store['capture_api'] = store['capture_api'] ?? '1';
+    aria2WebSocket();
+    !('jsonrpc_uri' in result) && browser.storage.local.set(store);
 });
 
 browser.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    clearInterval(keepAlive) ?? aria2RPCClient();
+    'jsonrpc_uri' in changes && jsonrpc.close() || aria2WebSocket();
 });
 
 browser.runtime.onMessage.addListener(({method, params, message}) => {
-    aria2Message({method, params}, result => showNotification(message));
+    aria2Message(method, params, message);
 });
 
 browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) => {
@@ -89,16 +87,28 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
-function aria2Message({method, params = []}, resolve, reject, alive) {
-    var message = JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]});
-    var jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
-    jsonrpc.onopen = event => jsonrpc.send(message);
-    jsonrpc.onmessage = event => {
-        var {result, error} = JSON.parse(event.data);
-        result && typeof resolve === 'function' && resolve(result);
-        error && typeof reject === 'function' && reject(error);
+function aria2WebSocket() {
+    jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
+    jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.tellActive', params: [store['secret_token']]}));
+    jsonrpc.once = resolve => {
+        jsonrpc.onmessage = event => {
+            var {result, error} = JSON.parse(event.data);
+            result && resolve(result);
+            error && showNotification(error.message);
+            jsonrpc.onmessage = null;
+        };
     };
-    alive && (keepAlive = setInterval(() => jsonrpc.send(message, resolve, reject), store['refresh_interval']));
+    jsonrpc.once(result => queue = result.map(({gid}) => gid));
+    jsonrpc.addEventListener('message', event => {
+        var {method, params} = JSON.parse(event.data);
+        method && (method === 'aria2.onDownloadStart' ? (queue.indexOf(params[0].gid) !== -1 && queue.push(params[0].gid)) : (method !=='aria2.onBtDownloadComplete' && queue.splice(queue.indexOf(params[0].gid), 1)));
+        browser.browserAction.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
+    });
+}
+
+function aria2Message(method, params, message) {
+    jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
+    jsonrpc.once(result => showNotification(message));
 }
 
 async function startDownload({url, referer, domain, filename, storeId}, options = {}) {
@@ -107,7 +117,7 @@ async function startDownload({url, referer, domain, filename, storeId}, options 
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     filename && (options['out'] = filename);
     options['all-proxy'] = store['proxy_resolve'].includes(domain) ? store['proxy_server'] : '';
-    aria2Message({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
+    aria2Message('aria2.addUri', [[url], options], url);
 }
 
 async function getFirefoxExclusive(uri) {
@@ -145,16 +155,6 @@ function getDomainFromUrl(url) {
 
 function getFileExtension(filename) {
     return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
-}
-
-function aria2RPCClient() {
-    aria2Message({method: 'aria2.getGlobalStat'}, ({numActive}) => {
-        browser.browserAction.setBadgeBackgroundColor({color: '#3cc'});
-        browser.browserAction.setBadgeText({text: numActive === '0' ? '' : numActive});
-    }, error => {
-        browser.browserAction.setBadgeBackgroundColor({color: '#c33'});
-        browser.browserAction.setBadgeText({text: 'E'});
-    }, true);
 }
 
 function showNotification(message = '') {

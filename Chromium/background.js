@@ -58,7 +58,7 @@ function aria2WebSocket() {
     jsonrpc.once(result => queue = result.map(({gid}) => gid));
     jsonrpc.addEventListener('message', event => {
         var {method, params} = JSON.parse(event.data);
-        method && method !=='aria2.onBtDownloadComplete' && (method === 'aria2.onDownloadStart' ? queue.push(params[0].gid) : queue.splice(queue.indexOf(params[0].gid), 1));
+        method && (method === 'aria2.onDownloadStart' ? (queue.indexOf(params[0].gid) !== -1 && queue.push(params[0].gid)) : (method !=='aria2.onBtDownloadComplete' && queue.splice(queue.indexOf(params[0].gid), 1)));
         chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
     });
 }
