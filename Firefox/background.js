@@ -1,19 +1,19 @@
 browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     reason === 'update' && previousVersion < '3.7.5' && setTimeout(() => {
         var patch = {
-            'jsonrpc_uri': aria2RPC.jsonrpc.uri,
-            'secret_token': aria2RPC.jsonrpc.token,
-            'refresh_interval': aria2RPC.jsonrpc.refresh,
-            'user_agent': aria2RPC.useragent,
-            'proxy_server': aria2RPC.proxy.uri,
-            'proxy_resolve': aria2RPC.proxy.resolve,
-            'capture_mode': aria2RPC.capture.mode,
-            'capture_type': aria2RPC.capture.fileExt,
-            'capture_size': aria2RPC.capture.fileSize ?? 0,
-            'capture_resolve': aria2RPC.capture.resolve,
-            'capture_reject': aria2RPC.capture.reject,
-            'folder_mode': aria2RPC.folder.mode,
-            'folder_path': aria2RPC.folder.uri
+            'jsonrpc_uri': store.jsonrpc.uri,
+            'secret_token': store.jsonrpc.token,
+            'refresh_interval': store.jsonrpc.refresh,
+            'user_agent': store.useragent,
+            'proxy_server': store.proxy.uri,
+            'proxy_resolve': store.proxy.resolve,
+            'capture_mode': store.capture.mode,
+            'capture_type': store.capture.fileExt,
+            'capture_size': store.capture.fileSize ?? 0,
+            'capture_resolve': store.capture.resolve,
+            'capture_reject': store.capture.reject,
+            'folder_mode': store.folder.mode,
+            'folder_path': store.folder.uri
         };
         store = patch;
         chrome.storage.local.clear();
