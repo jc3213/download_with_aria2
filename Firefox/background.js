@@ -92,11 +92,7 @@ function aria2WebSocket() {
     jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.tellActive', params: [store['secret_token']]}));
     jsonrpc.onmessage = event => {
         var {result} = JSON.parse(event.data);
-        result && (() => {
-            queue = result.map(({gid}) => gid);
-            browser.browserAction.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
-            jsonrpc.onmessage = null;
-        });
+        result && (() => (queue = result.map(({gid}) => gid)) && browser.browserAction.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''}))();
     };
     jsonrpc.addEventListener('message', event => {
         var {method, params} = JSON.parse(event.data);
@@ -107,6 +103,11 @@ function aria2WebSocket() {
             browser.browserAction.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
         })();
     });
+}
+
+function aria2Message(method, params, message) {
+    jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
+    jsonrpc.onmessage = event => JSON.parse(event.data).result && (jsonrpc.onmessage = showNotification(message) ?? null);
 }
 
 async function startDownload({url, referer, domain, filename, storeId}, options = {}) {

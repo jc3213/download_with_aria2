@@ -49,11 +49,7 @@ function aria2WebSocket() {
     jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.tellActive', params: [store['secret_token']]}));
     jsonrpc.onmessage = event => {
         var {result} = JSON.parse(event.data);
-        result && (() => {
-            queue = result.map(({gid}) => gid);
-            chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
-            jsonrpc.onmessage = null;
-        });
+        result && (() => (queue = result.map(({gid}) => gid)) && chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''}))();
     };
     jsonrpc.addEventListener('message', event => {
         var {method, params} = JSON.parse(event.data);
