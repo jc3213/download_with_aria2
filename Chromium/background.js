@@ -51,17 +51,10 @@ function aria2Message(method, params, message) {
         var {result, error, method, params} = JSON.parse(event.data);
         result && showNotification(message);
         error && showNotification(error.message);
-        if (method) {
-            var gid = params[0].gid;
-            method === 'aria2.onDownloadStart' ? (() => {
-                queue.indexOf(gid) === -1 && queue.push(gid);
-                chrome.action.setBadgeText({text: queue.length + ''});
-            })() : (() => {
-                var index = queue.indexOf(gid);
-                index !== -1 && queue.splice(index, 1);
-                chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
-            })();
-        }
+        method && (() => {
+            method === 'aria2.onDownloadStart' ? queue.push(params[0].gid) : queue.splice(queue.indexOf(params[0].gid), 1);
+            chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
+        })();
     }
 }
 
