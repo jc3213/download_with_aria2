@@ -1,7 +1,4 @@
-self.queue = [];
-
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    chrome.action.setBadgeBackgroundColor({color: '#3cc'});
     chrome.contextMenus.create({
         title: chrome.runtime.getManifest().name,
         id: 'downwitharia2',
@@ -32,7 +29,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     var referer = referrer && referrer !== 'about:blank' ? referrer : tabs[0].url;
     var domain = getDomainFromUrl(referer);
 
-    captureDownload(domain, getFileExtension(filename), fileSize) && chrome.downloads.cancel(id, async () => {
+    captureDownload(domain, getFileExtension(filename), fileSize) && chrome.downloads.cancel(id, () => {
         chrome.downloads.erase({id}, () => startDownload({url, referer, domain, filename}));
     });
 });
@@ -45,14 +42,10 @@ function aria2Message(method, params, message) {
     var jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
     jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
     jsonrpc.onmessage = event => {
-        var {result, error, method, params} = JSON.parse(event.data);
+        var {result, error} = JSON.parse(event.data);
         result && showNotification(message);
         error && showNotification(error.message);
-        method && (() => {
-            method === 'aria2.onDownloadStart' ? queue.push(params[0].gid) : queue.splice(queue.indexOf(params[0].gid), 1);
-            chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
-        })();
-    }
+    };
 }
 
 async function startDownload({url, referer, domain, filename}, options = {}) {
