@@ -40,7 +40,7 @@ browser.storage.local.get(null, async result => {
 
 browser.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    'jsonrpc_uri' in changes && (jsonrpc.close() ?? aria2WebSocket());
+    'jsonrpc_uri' in changes && aria2WebSocket();
 });
 
 browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) => {
@@ -78,26 +78,24 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
 function aria2WebSocket() {
-    jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
-    jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.tellActive', params: [store['secret_token']]}));
-    jsonrpc.onmessage = event => {
-        var {result} = JSON.parse(event.data);
-        result && (() => (queue = result.map(({gid}) => gid)) && browser.browserAction.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''}))();
-    };
-    jsonrpc.addEventListener('message', event => {
-        var {method, params} = JSON.parse(event.data);
-        method && (() => {
-            var gid = params[0].gid;
-            var index = queue.indexOf(gid);
-            method === 'aria2.onDownloadStart' ? index === -1 && queue.push(gid) : method !=='aria2.onBtDownloadComplete' && index !== -1 && queue.splice(index, 1);
-            browser.browserAction.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
-        })();
+    fetch(store['jsonrpc_uri'], {method: 'POST', body: JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.tellActive', params: [store['secret_token']]})})
+    .then(response => response.json()).then(({result}) => {
+        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
+        var active = result.map(({gid}) => gid);
+        jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
+        jsonrpc.onmessage = event => {
+            var {method, [{gid}]} = JSON.parse(event.data);
+            var index = active.indexOf(gid);
+            method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) : method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1);
+            browser.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
+        };
+        browser.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
+        browser.browserAction.setBadgeBackgroundColor({color: '#3cc'});
+    }).catch(error => {
+        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
+        browser.browserAction.setBadgeText({text: 'E'});
+        browser.browserAction.setBadgeBackgroundColor({color: '#c33'});
     });
-}
-
-function aria2Message(method, params, message) {
-    jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
-    jsonrpc.onmessage = event => JSON.parse(event.data).result && (jsonrpc.onmessage = showNotification(message) ?? null);
 }
 
 async function startDownload(url, referer, domain, storeId, options = {}) {
@@ -105,8 +103,8 @@ async function startDownload(url, referer, domain, storeId, options = {}) {
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     options['all-proxy'] = store['proxy_resolve'].includes(domain) ? store['proxy_server'] : '';
-    jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.addUri', params: [store['secret_token'], [url], options]}));
-    jsonrpc.onmessage = event => JSON.parse(event.data).result && (jsonrpc.onmessage = showNotification(url) ?? null);
+    fetch(store['jsonrpc_uri'], {method: 'POST', body: JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.addUri', params: [store['secret_token'], [url], options]})})
+        .then(response => response.ok && showNotification(url)).catch(error => showNotification(error.message));
 }
 
 async function getFirefoxExclusive(uri) {
