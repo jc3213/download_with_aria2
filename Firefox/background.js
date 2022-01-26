@@ -43,10 +43,6 @@ browser.storage.onChanged.addListener(changes => {
     'jsonrpc_uri' in changes && (jsonrpc.close() ?? aria2WebSocket());
 });
 
-browser.runtime.onMessage.addListener(({method, params, message}) => {
-    aria2Message(method, params, message);
-});
-
 browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) => {
     if (store['capture_api'] === '1' || store['capture_mode'] === '0' || url.startsWith('blob') || url.startsWith('data')) {
         return;
@@ -71,7 +67,7 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
         name.toLowerCase() === 'content-type' && (application = value);
         name.toLowerCase() === 'content-length' && (fileSize = value);
     });
-    if (application.startsWith('application') || attachment) {
+    if (application.startsWith('application') || attachment && attachment.startsWith('attachment')) {
         var filename = attachment ? attachment.slice(attachment.lastIndexOf('\'') + 1) : decodeURI(url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') : url.length));
         var domain = getDomainFromUrl(originUrl);
         var storeId = await browser.tabs.get(tabId).then(({cookieStoreId}) => cookieStoreId);
@@ -109,7 +105,9 @@ async function startDownload(url, referer, domain, storeId, options = {}) {
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     options['all-proxy'] = store['proxy_resolve'].includes(domain) ? store['proxy_server'] : '';
-    aria2Message('aria2.addUri', [[url], options], url);
+    jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.addUri', params: [store['secret_token'], [url], options]}));
+    jsonrpc.onmessage = event => JSON.parse(event.data).result && (jsonrpc.onmessage = showNotification(url) ?? null);
+    console.log(jsonrpc, jsonrpc.onmessage);
 }
 
 async function getFirefoxExclusive(uri) {
