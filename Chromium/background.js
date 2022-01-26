@@ -20,17 +20,16 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
-    startDownload({url: linkUrl, referer: pageUrl, domain: getDomainFromUrl(pageUrl)});
+    startDownload(linkUrl, pageUrl, getDomainFromUrl(pageUrl));
 });
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
     if (store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
-    var url = finalUrl;
     var referer = referrer && referrer !== 'about:blank' ? referrer : await chrome.tabs.query({active: true, currentWindow: true}).then(([{url}]) => url);
     var domain = getDomainFromUrl(referer);
-    captureDownload(domain, getFileExtension(filename), fileSize) && await chrome.downloads.erase({id}) && startDownload({url, referer, domain, filename});
+    captureDownload(domain, getFileExtension(filename), fileSize) && await chrome.downloads.erase({id}) && startDownload(finalUrl, referer, domain, {out: filename});
 });
 
 chrome.runtime.onMessage.addListener(({method, params, message}) => {
@@ -60,11 +59,10 @@ function aria2Message(method, params, message) {
     jsonrpc.onmessage = event => JSON.parse(event.data).result && (jsonrpc.onmessage = showNotification(message) ?? null);
 }
 
-async function startDownload({url, referer, domain, filename}, options = {}) {
+async function startDownload(url, referer, domain, options = {}) {
     var cookies = await chrome.cookies.getAll({url});
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
-    options['out'] = filename;
     options['all-proxy'] = store['proxy_resolve'].includes(domain) ? store['proxy_server'] : '';
     aria2Message('aria2.addUri', [[url], options], url);
 }
