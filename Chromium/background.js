@@ -29,15 +29,10 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     if (store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
-
-    var tabs = await chrome.tabs.query({active: true, currentWindow: true});
     var url = finalUrl;
-    var referer = referrer && referrer !== 'about:blank' ? referrer : tabs[0].url;
+    var referer = referrer && referrer !== 'about:blank' ? referrer : await chrome.tabs.query({active: true, currentWindow: true}).then(([{url}]) => url);
     var domain = getDomainFromUrl(referer);
-
-    captureDownload(domain, getFileExtension(filename), fileSize) && chrome.downloads.cancel(id, () => {
-        chrome.downloads.erase({id}, () => startDownload({url, referer, domain, filename}));
-    });
+    captureDownload(domain, getFileExtension(filename), fileSize) && await chrome.downloads.erase({id}) && startDownload({url, referer, domain, filename});
 });
 
 chrome.runtime.onMessage.addListener(({method, params, message}) => {
