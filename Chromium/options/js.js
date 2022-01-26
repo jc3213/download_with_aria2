@@ -1,3 +1,5 @@
+location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#back_btn').style.display = 'none';
+
 document.querySelectorAll('[data-option] > button, [data-global] > button').forEach((tab, index) => {
     var type = index < 3 ? 'option' : 'global';
     var value = index < 3 ? index + 1 : index - 2;
@@ -6,8 +8,6 @@ document.querySelectorAll('[data-option] > button, [data-global] > button').forE
         document.querySelector('#' + type).setAttribute('data-' + type, value);
     });
 });
-
-location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#back_btn').style.display = 'none';
 
 document.querySelector('#back_btn').addEventListener('click', event => {
     open('/popup/index.html', '_self');
