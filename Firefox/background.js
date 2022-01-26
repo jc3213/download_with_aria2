@@ -113,8 +113,8 @@ async function startDownload(url, referer, domain, storeId, options = {}) {
 }
 
 async function getFirefoxExclusive(uri) {
-    var platform = await browser.runtime.getPlatformInfo();
-    var index = platform.os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
+    var {os} = await browser.runtime.getPlatformInfo();
+    var index = os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
     var out = uri.slice(index + 1);
     var dir = store['folder_mode'] === '1' ? uri.slice(0, index + 1) : store['folder_mode'] === '2' ? store['folder_path'] : null;
     return dir ? {dir, out} : {out};
