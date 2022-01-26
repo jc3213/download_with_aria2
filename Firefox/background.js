@@ -71,7 +71,7 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
         name.toLowerCase() === 'content-type' && (application = value);
         name.toLowerCase() === 'content-length' && (fileSize = value);
     });
-    if (application.startsWith('application') || attachment && attachment.startsWith('attachment')) {
+    if (application.startsWith('application') || attachment) {
         var filename = attachment ? attachment.slice(attachment.lastIndexOf('\'') + 1) : decodeURI(url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') : url.length));
         var domain = getDomainFromUrl(originUrl);
         var storeId = await browser.tabs.get(tabId).then(({cookieStoreId}) => cookieStoreId);
