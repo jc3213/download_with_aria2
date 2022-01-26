@@ -81,7 +81,7 @@ function aria2WebSocket() {
     fetch(store['jsonrpc_uri'], {method: 'POST', body: JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.tellActive', params: [store['secret_token']]})})
     .then(response => response.json()).then(({result}) => {
         self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
-        var active = result.map(({gid}) => gid);
+        active = result.map(({gid}) => gid);
         jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
         jsonrpc.onmessage = event => {
             var {method, params: [{gid}]} = JSON.parse(event.data);
