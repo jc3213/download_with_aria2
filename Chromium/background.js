@@ -6,21 +6,17 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     });
 });
 
+chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
+    startDownload(linkUrl, pageUrl, getDomainFromUrl(pageUrl));
+});
+
 chrome.storage.local.get(null, async result => {
-    self.store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
-    self.queue = [];
-    self.jsonrpc;
-    aria2WebSocket();
+    store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
     !('jsonrpc_uri' in result) && chrome.storage.local.set(store);
 });
 
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    'jsonrpc_uri' in changes && (jsonrpc.close() ?? aria2WebSocket());
-});
-
-chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
-    startDownload(linkUrl, pageUrl, getDomainFromUrl(pageUrl));
 });
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
@@ -33,30 +29,12 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
 });
 
 chrome.runtime.onMessage.addListener(({method, params, message}) => {
-    aria2Message(method, params, message);
+    aria2RPCCall(method, params, message);
 });
 
-function aria2WebSocket() {
-    jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
-    jsonrpc.onopen = event => jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.tellActive', params: [store['secret_token']]}));
-    jsonrpc.onmessage = event => {
-        var {result} = JSON.parse(event.data);
-        result && (() => (queue = result.map(({gid}) => gid)) && chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''}))();
-    };
-    jsonrpc.addEventListener('message', event => {
-        var {method, params} = JSON.parse(event.data);
-        method && (() => {
-            var gid = params[0].gid;
-            var index = queue.indexOf(gid);
-            method === 'aria2.onDownloadStart' ? index === -1 && queue.push(gid) : method !=='aria2.onBtDownloadComplete' && index !== -1 && queue.splice(index, 1);
-            chrome.action.setBadgeText({text: queue.length === 0 ? '' : queue.length + ''});
-        })();
-    });
-}
-
-function aria2Message(method, params, message) {
-    jsonrpc.send(JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]}));
-    jsonrpc.onmessage = event => JSON.parse(event.data).result && (jsonrpc.onmessage = showNotification(message) ?? null);
+function aria2RPCCall(method, params = [], message) {
+    fetch(store['jsonrpc_uri'], {method: 'POST', body: JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]})})
+        .then(response => response.ok && showNotification(message)).catch(error => showNotification(error.message));
 }
 
 async function startDownload(url, referer, domain, options = {}) {
@@ -64,7 +42,7 @@ async function startDownload(url, referer, domain, options = {}) {
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     options['all-proxy'] = store['proxy_resolve'].includes(domain) ? store['proxy_server'] : '';
-    aria2Message('aria2.addUri', [[url], options], url);
+    aria2RPCCall('aria2.addUri', [[url], options], url);
 }
 
 function captureDownload(domain, type, size) {
