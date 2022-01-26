@@ -16,7 +16,7 @@ chrome.storage.local.get(null, async result => {
 
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    'jsonrpc_uri' in changes && jsonrpc.close() || aria2WebSocket();
+    'jsonrpc_uri' in changes && (jsonrpc.close() ?? aria2WebSocket());
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
