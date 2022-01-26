@@ -1,7 +1,3 @@
-var store;
-var jsonrpc;
-var queue;
-
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     chrome.contextMenus.create({
         title: chrome.runtime.getManifest().name,
@@ -11,7 +7,9 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 });
 
 chrome.storage.local.get(null, async result => {
-    store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
+    self.store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
+    self.queue = [];
+    self.jsonrpc;
     aria2WebSocket();
     !('jsonrpc_uri' in result) && chrome.storage.local.set(store);
 });
