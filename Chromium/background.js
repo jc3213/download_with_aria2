@@ -28,21 +28,13 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     captureDownload(domain, getFileExtension(filename), fileSize) && await chrome.downloads.erase({id}) && startDownload(finalUrl, referer, domain, {out: filename});
 });
 
-chrome.runtime.onMessage.addListener(({method, params, message}) => {
-    aria2RPCCall(method, params, message);
-});
-
-function aria2RPCCall(method, params = [], message) {
-    fetch(store['jsonrpc_uri'], {method: 'POST', body: JSON.stringify({jsonrpc: '2.0', id: '', method, params: [store['secret_token'], ...params]})})
-        .then(response => response.ok && showNotification(message)).catch(error => showNotification(error.message));
-}
-
 async function startDownload(url, referer, domain, options = {}) {
     var cookies = await chrome.cookies.getAll({url});
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     options['all-proxy'] = store['proxy_resolve'].includes(domain) ? store['proxy_server'] : '';
-    aria2RPCCall('aria2.addUri', [[url], options], url);
+    fetch(store['jsonrpc_uri'], {method: 'POST', body: JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.addUri', params: [store['secret_token'], [url], options]})})
+        .then(response => response.ok && showNotification(url)).catch(error => showNotification(error.message));
 }
 
 function captureDownload(domain, type, size) {
