@@ -3,7 +3,7 @@
 - This extension is completely rewritten from [chrome-aria2-integration](https://github.com/robbielj/chrome-aria2-integration)
 
 # Usage
-- Indicate running status over toolbar icon [**Chromium is temporarily broken in MV3**]
+- Indicate running status over toolbar icon [**Not supported in Manifest V3**]
     - Idle: `Empty`
     - Active: Light Blue `Number`
     - Error: Red `E`
