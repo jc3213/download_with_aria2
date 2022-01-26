@@ -28,7 +28,7 @@ browser.contextMenus.create({
 });
 
 browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId}) => {
-    startDownload({url: linkUrl, referer: pageUrl, storeId: cookieStoreId, domain: getDomainFromUrl(pageUrl)});
+    startDownload(linkUrl, pageUrl, getDomainFromUrl(pageUrl), cookieStoreId);
 });
 
 browser.storage.local.get(null, async result => {
@@ -40,7 +40,7 @@ browser.storage.local.get(null, async result => {
 
 browser.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    'jsonrpc_uri' in changes && jsonrpc.close() || aria2WebSocket();
+    'jsonrpc_uri' in changes && (jsonrpc.close() ?? aria2WebSocket());
 });
 
 browser.runtime.onMessage.addListener(({method, params, message}) => {
@@ -51,15 +51,11 @@ browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) =>
     if (store['capture_api'] === '1' || store['capture_mode'] === '0' || url.startsWith('blob') || url.startsWith('data')) {
         return;
     }
-
-    var tabs = await browser.tabs.query({active: true, currentWindow: true});
-    var referer = referrer && referrer !== 'about:blank' ? referrer : tabs[0].url;
+    var {tabUrl, cookieStoreId} = await browser.tabs.query({active: true, currentWindow: true}).then(([{url, cookieStoreId}]) => ({tabUrl: url, cookieStoreId}));
+    var referer = referrer && referrer !== 'about:blank' ? referrer : tabUrl;
     var domain = getDomainFromUrl(referer);
-    var storeId = tabs[0].cookieStoreId;
-
     captureDownload(domain, getFileExtension(filename)) && browser.downloads.cancel(id).then(async () => {
-        await browser.downloads.erase({id});
-        startDownload({url, referer, domain, storeId}, await getFirefoxExclusive(filename));
+        await browser.downloads.erase({id}) && startDownload(url, referer, domain, cookieStoreId, await getFirefoxExclusive(filename));
     }).catch(error => showNotification('Download is already complete'));
 });
 
@@ -75,15 +71,13 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
         name.toLowerCase() === 'content-type' && (application = value);
         name.toLowerCase() === 'content-length' && (fileSize = value);
     });
-    if (application.startsWith('application') || attachment.startsWith('attachment')) {
-        var referer = originUrl;
+    if (application.startsWith('application') || attachment && attachment.startsWith('attachment')) {
         var filename = attachment ? attachment.slice(attachment.lastIndexOf('\'') + 1) : decodeURI(url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') : url.length));
         var domain = getDomainFromUrl(originUrl);
         var storeId = await browser.tabs.get(tabId).then(({cookieStoreId}) => cookieStoreId);
-        if (captureDownload(domain, getFileExtension(filename), fileSize ?? -1)) {
-            startDownload({url, referer, domain, filename, storeId});
-            return {cancel: true};
-        }
+        var captured = captureDownload(domain, getFileExtension(filename), fileSize ?? -1);
+        captured && startDownload(url, originUrl, domain, storeId, {out: filename});
+        return {cancel: captured ? true : false};
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
@@ -110,11 +104,10 @@ function aria2Message(method, params, message) {
     jsonrpc.onmessage = event => JSON.parse(event.data).result && (jsonrpc.onmessage = showNotification(message) ?? null);
 }
 
-async function startDownload({url, referer, domain, filename, storeId}, options = {}) {
+async function startDownload(url, referer, domain, storeId, options = {}) {
     var cookies = await browser.cookies.getAll({url, storeId});
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
-    filename && (options['out'] = filename);
     options['all-proxy'] = store['proxy_resolve'].includes(domain) ? store['proxy_server'] : '';
     aria2Message('aria2.addUri', [[url], options], url);
 }
@@ -124,10 +117,7 @@ async function getFirefoxExclusive(uri) {
     var index = platform.os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
     var out = uri.slice(index + 1);
     var dir = store['folder_mode'] === '1' ? uri.slice(0, index + 1) : store['folder_mode'] === '2' ? store['folder_path'] : null;
-    if (dir) {
-        return {dir, out};
-    }
-    return {out};
+    return dir ? {dir, out} : {out};
 }
 
 function captureDownload(domain, type, size) {
