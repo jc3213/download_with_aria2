@@ -142,10 +142,5 @@ function getFileExtension(filename) {
 }
 
 function showNotification(message = '') {
-    browser.notifications.create({
-        type: 'basic',
-        title: store['jsonrpc_uri'],
-        iconUrl: '/icons/icon48.png',
-        message
-    });
+    browser.notifications.create({type: 'basic', title: store['jsonrpc_uri'], iconUrl: '/icons/icon48.png', message});
 }
