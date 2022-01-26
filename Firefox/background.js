@@ -84,7 +84,7 @@ function aria2WebSocket() {
         var active = result.map(({gid}) => gid);
         jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
         jsonrpc.onmessage = event => {
-            var {method, [{gid}]} = JSON.parse(event.data);
+            var {method, params: [{gid}]} = JSON.parse(event.data);
             var index = active.indexOf(gid);
             method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) : method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1);
             browser.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
