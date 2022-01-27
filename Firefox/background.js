@@ -116,9 +116,12 @@ function getDomainFromUrl(url) {
     return gSLD.includes(suffix[2]) ? suffix[1] + '.' + suffix[2] + '.' + suffix[3] : suffix[2] + '.' + suffix[3];
 }
 
-function getFileName(attachment) {
-    console.log(attachment);
-    var trim = /^[^;]+;[^;]*filename=([^;]+);?/.exec(attachment)[1];
+function getFileName(data) {
+    console.log(data);
+    if (data.includes('filename*=utf-8')) {
+        return decodeURI(data.slice(data.lastIndexOf('\'') + 1));
+    }
+    var trim = /^[^;]+;[^;]*filename=([^;]+);?/.exec(data)[1];
     console.log(trim)
     var filename = trim.replaceAll('"', '');
     console.log(filename);
