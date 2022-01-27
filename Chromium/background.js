@@ -4,6 +4,16 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         id: 'downwitharia2',
         contexts: ['link']
     });
+    reason === 'update' && previousVersion < '3.9.4' && setTimeout(() => {
+        store['capture_include'] = store['capture_resolve'];
+        store['capture_exclude'] = store['capture_reject'];
+        store['capture_resolve'] = store['capture_type'];
+        store['capture_reject'] = [];
+        store['proxy_include'] = store['proxy_resolve'];
+        delete store['capture_type'];
+        delete store['proxy_resolve'];
+        chrome.storage.local.set(store);
+    }, 500);
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
@@ -32,16 +42,17 @@ async function startDownload(url, referer, domain, options = {}) {
     var cookies = await chrome.cookies.getAll({url});
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
-    options['all-proxy'] = store['proxy_resolve'].includes(domain) ? store['proxy_server'] : '';
+    options['all-proxy'] = store['proxy_include'].includes(domain) ? store['proxy_server'] : '';
     fetch(store['jsonrpc_uri'], {method: 'POST', body: JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.addUri', params: [store['secret_token'], [url], options]})})
         .then(response => response.ok && showNotification(url)).catch(error => showNotification(error.message));
 }
 
 function captureDownload(domain, type, size) {
-    return store['capture_reject'].includes(domain) ? false :
+    return store['capture_exclude'].includes(domain) ? false :
         store['capture_mode'] === '2' ? true :
-        store['capture_resolve'].includes(domain) ? true :
-        store['capture_type'].includes(type) ? true :
+        store['capture_include'].includes(domain) ? true :
+        store['capture_reject'].includes(type) ? false :
+        store['capture_resolve'].includes(type) ? true :
         store['capture_size'] > 0 && size >= store['capture_size'] ? true : false;
 }
 
