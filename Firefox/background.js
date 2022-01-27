@@ -1,24 +1,15 @@
 browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     reason === 'update' && previousVersion < '3.7.5' && setTimeout(() => {
-        var patch = {
-            'jsonrpc_uri': store.jsonrpc.uri,
-            'secret_token': store.jsonrpc.token,
-            'refresh_interval': store.jsonrpc.refresh,
-            'user_agent': store.useragent,
-            'proxy_server': store.proxy.uri,
-            'proxy_resolve': store.proxy.resolve,
-            'capture_mode': store.capture.mode,
-            'capture_type': store.capture.fileExt,
-            'capture_size': store.capture.fileSize ?? 0,
-            'capture_resolve': store.capture.resolve,
-            'capture_reject': store.capture.reject,
-            'folder_mode': store.folder.mode,
-            'folder_path': store.folder.uri
+        var patch = {'jsonrpc_uri': store.jsonrpc.uri, 'secret_token': store.jsonrpc.token,
+            'refresh_interval': store.jsonrpc.refresh, 'user_agent': store.useragent,
+            'proxy_server': store.proxy.uri, 'proxy_resolve': store.proxy.resolve,
+            'capture_mode': store.capture.mode, 'capture_type': store.capture.fileExt,
+            'capture_size': store.capture.fileSize ?? 0, 'capture_resolve': store.capture.resolve,
+            'capture_reject': store.capture.reject, 'folder_mode': store.folder.mode, 'folder_path': store.folder.uri
         };
         store = patch;
-        browser.storage.local.clear();
         browser.storage.local.set(store);
-    }, 300);
+    }, 500);
 });
 
 browser.contextMenus.create({
@@ -63,12 +54,13 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     responseHeaders.forEach(({name, value}) => match.includes(name = name.toLowerCase()) && (match[0][name.slice(name.indexOf('-') + 1)] = value));
     var {disposition, type, length} = match[0];
     if (type.startsWith('application') || disposition) {
-        var out = disposition ? disposition.slice(disposition.lastIndexOf('\'') + 1) : decodeURI(url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') : url.length));
+        var out = disposition ? getFileName(disposition) : decodeURI(url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') : url.length));
         var domain = getDomainFromUrl(originUrl);
         var {cookieStoreId} = await browser.tabs.get(tabId);
         var captured = captureDownload(domain, getFileExtension(out), length);
         captured && startDownload(url, originUrl, domain, cookieStoreId, {out});
         return {cancel: captured ? true : false};
+        console.log(url, responseHeaders);
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
@@ -102,14 +94,6 @@ async function startDownload(url, referer, domain, storeId, options = {}) {
         .then(response => response.ok && showNotification(url)).catch(error => showNotification(error.message));
 }
 
-async function getFirefoxExclusive(uri) {
-    var {os} = await browser.runtime.getPlatformInfo();
-    var index = os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
-    var out = uri.slice(index + 1);
-    var dir = store['folder_mode'] === '1' ? uri.slice(0, index + 1) : store['folder_mode'] === '2' ? store['folder_path'] : null;
-    return dir ? {dir, out} : {out};
-}
-
 function captureDownload(domain, type, size) {
     return store['capture_reject'].includes(domain) ? false :
         store['capture_mode'] === '2' ? true :
@@ -132,8 +116,25 @@ function getDomainFromUrl(url) {
     return gSLD.includes(suffix[2]) ? suffix[1] + '.' + suffix[2] + '.' + suffix[3] : suffix[2] + '.' + suffix[3];
 }
 
+function getFileName(attachment) {
+    console.log(attachment);
+    var trim = /^[^;]+;[^;]*filename=([^;]+);?/.exec(attachment)[1];
+    console.log(trim)
+    var filename = trim.replaceAll('"', '');
+    console.log(filename);
+    return filename;
+}
+
 function getFileExtension(filename) {
     return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
+}
+
+async function getFirefoxExclusive(uri) {
+    var {os} = await browser.runtime.getPlatformInfo();
+    var index = os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
+    var out = uri.slice(index + 1);
+    var dir = store['folder_mode'] === '1' ? uri.slice(0, index + 1) : store['folder_mode'] === '2' ? store['folder_path'] : null;
+    return dir ? {dir, out} : {out};
 }
 
 function showNotification(message = '') {
