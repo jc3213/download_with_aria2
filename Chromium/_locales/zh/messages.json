@@ -89,10 +89,10 @@
     "option_proxy_uri_desc": {
         "message": "设置 \"all-proxy\" 选项的服务器"
     },
-    "option_proxy_resolve": {
+    "option_proxy_include": {
         "message": "代理规则"
     },
-    "option_proxy_resolve_desc": {
+    "option_proxy_include_desc": {
         "message": "为来自列表中的域名的下载添加 \"all-proxy\" 选项"
     },
     "option_capture_mode": {
@@ -104,29 +104,35 @@
     "option_capture_mode_desc": {
         "message": "根据用户设置抓取浏览器的下载请求"
     },
-    "option_capture_fileSize": {
+    "option_capture_filesize": {
         "message": "文件大小"
     },
-    "option_capture_fileSize_desc": {
+    "option_capture_filesize_desc": {
         "message": "抓取文件大小超过设置的下载"
     },
-    "option_capture_fileExt": {
-        "message": "文件后缀"
-    },
-    "option_capture_fileExt_desc": {
-        "message": "抓取匹配列表中的文件后缀的下载"
-    },
-    "option_capture_resolve": {
+    "option_capture_include": {
         "message": "监视域名"
     },
-    "option_capture_resolve_desc": {
-        "message": "监视来自列表中的域名的下载"
+    "option_capture_include_desc": {
+        "message": "抓取来自所设置域名的下载"
     },
-    "option_capture_reject": {
+    "option_capture_exclude": {
         "message": "忽略域名"
     },
+    "option_capture_exclude_desc": {
+        "message": "无视来自所设置域名的下载"
+    },
+    "option_capture_resolve": {
+        "message": "监视文件后缀"
+    },
+    "option_capture_resolve_desc": {
+        "message": "抓取拥有所设置文件后缀的下载"
+    },
+    "option_capture_reject": {
+        "message": "忽略文件后缀"
+    },
     "option_capture_reject_desc": {
-        "message": "忽略来自列表中的域名的下载"
+        "message": "忽略拥有所设置文件后缀的下载"
     },
     "popup_active": {
         "message": "下载中"

@@ -89,10 +89,10 @@
     "option_proxy_uri_desc": {
         "message": "Setting server for \"all-proxy\" option"
     },
-    "option_proxy_resolve": {
+    "option_proxy_include": {
         "message": "Proxy Rules"
     },
-    "option_proxy_resolve_desc": {
+    "option_proxy_include_desc": {
         "message": "Automatically add \"all-proxy\" option for these domains"
     },
     "option_capture_mode": {
@@ -104,29 +104,35 @@
     "option_capture_mode_desc": {
         "message": "Capture browser downloads based on filters below"
     },
-    "option_capture_fileSize": {
+    "option_capture_filesize": {
         "message": "File Size"
     },
-    "option_capture_fileSize_desc": {
+    "option_capture_filesize_desc": {
         "message": "Capture download larger than your setting"
     },
-    "option_capture_fileExt": {
-        "message": "File Extensions"
+    "option_capture_include": {
+        "message": "Include Domain Names"
     },
-    "option_capture_fileExt_desc": {
-        "message": "Capture download with these file extensions"
+    "option_capture_include_desc": {
+        "message": "Capture download from these domain names"
+    },
+    "option_capture_exclude": {
+        "message": "Exclude Domain Names"
+    },
+    "option_capture_exclude_desc": {
+        "message": "Ignore download from these domain names"
     },
     "option_capture_resolve": {
-        "message": "Monitor Domains"
+        "message": "Includes File Extensions"
     },
     "option_capture_resolve_desc": {
-        "message": "Monitor download from these domains"
+        "message": "Capture download with these extensions"
     },
     "option_capture_reject": {
-        "message": "Ignore Domains"
+        "message": "Exclude File Extensions"
     },
     "option_capture_reject_desc": {
-        "message": "Ignore download from these domains"
+        "message": "Ignore download with these extensions"
     },
     "popup_active": {
         "message": "Active"
