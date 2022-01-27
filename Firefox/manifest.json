@@ -30,7 +30,7 @@
         "48": "icons/icon48.png"
     },
     "options_ui": {
-        "page": "manager/index.html",
+        "page": "options/main.html",
         "open_in_tab": false
     },
     "applications": {
