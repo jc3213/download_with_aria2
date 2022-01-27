@@ -111,16 +111,16 @@
         "message": "Capture download larger than your setting"
     },
     "option_capture_include": {
-        "message": "Include Domain Names"
+        "message": "Include Domains"
     },
     "option_capture_include_desc": {
-        "message": "Capture download from these domain names"
+        "message": "Capture download from these domains"
     },
     "option_capture_exclude": {
-        "message": "Exclude Domain Names"
+        "message": "Exclude Domains"
     },
     "option_capture_exclude_desc": {
-        "message": "Ignore download from these domain names"
+        "message": "Ignore download from these domains"
     },
     "option_capture_resolve": {
         "message": "Includes File Extensions"

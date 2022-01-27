@@ -95,9 +95,9 @@ async function startDownload(url, referer, domain, storeId, options = {}) {
 
 function captureDownload(domain, type, size) {
     return store['capture_exclude'].includes(domain) ? false :
+        store['capture_reject'].includes(type) ? false :
         store['capture_mode'] === '2' ? true :
         store['capture_include'].includes(domain) ? true :
-        store['capture_reject'].includes(type) ? false :
         store['capture_resolve'].includes(type) ? true :
         store['capture_size'] > 0 && size >= store['capture_size'] ? true : false;
 }
