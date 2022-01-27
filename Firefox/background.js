@@ -40,7 +40,7 @@ browser.storage.local.get(null, async result => {
 
 browser.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    'jsonrpc_uri' in changes && aria2WebSocket();
+    ('jsonrpc_uri' in changes || 'secret_token' in changes) && aria2WebSocket();
 });
 
 browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) => {
@@ -59,19 +59,14 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     if (store['capture_api'] === '0' || store['capture_mode'] === 0 || statusCode !== 200) {
         return;
     }
-    var attachment;
-    var application;
-    var fileSize;
-    responseHeaders.forEach(({name, value}) => {
-        name.toLowerCase() === 'content-disposition' && (attachment = value);
-        name.toLowerCase() === 'content-type' && (application = value);
-        name.toLowerCase() === 'content-length' && (fileSize = value);
-    });
-    if (application.startsWith('application') || attachment) {
-        var out = attachment ? attachment.slice(attachment.lastIndexOf('\'') + 1) : decodeURI(url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') : url.length));
+    var match = [{}, 'content-disposition', 'content-type', 'content-length'];
+    responseHeaders.forEach(({name, value}) => match.includes(name = name.toLowerCase()) && (match[0][name.slice(name.indexOf('-') + 1)] = value));
+    var {disposition, type, length} = match[0];
+    if (type.startsWith('application') || disposition) {
+        var out = disposition ? disposition.slice(disposition.lastIndexOf('\'') + 1) : decodeURI(url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') : url.length));
         var domain = getDomainFromUrl(originUrl);
         var {cookieStoreId} = await browser.tabs.get(tabId);
-        var captured = captureDownload(domain, getFileExtension(out), fileSize ?? -1);
+        var captured = captureDownload(domain, getFileExtension(out), length);
         captured && startDownload(url, originUrl, domain, cookieStoreId, {out});
         return {cancel: captured ? true : false};
     }
@@ -80,8 +75,8 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
 function aria2WebSocket() {
     fetch(store['jsonrpc_uri'], {method: 'POST', body: JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.tellActive', params: [store['secret_token']]})})
     .then(response => response.json()).then(({result}) => {
-        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
         active = result.map(({gid}) => gid);
+        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
         jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
         jsonrpc.onmessage = event => {
             var {method, params: [{gid}]} = JSON.parse(event.data);
