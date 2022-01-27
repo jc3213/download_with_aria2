@@ -90,7 +90,7 @@
         "message": "Setting server for \"all-proxy\" option"
     },
     "option_proxy_include": {
-        "message": "Proxy Rules"
+        "message": "Proxy Domain Rules"
     },
     "option_proxy_include_desc": {
         "message": "Automatically add \"all-proxy\" option for these domains"
