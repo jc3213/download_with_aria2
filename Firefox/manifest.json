@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "3.9.4",
+    "version": "3.9.5",
     "manifest_version": 2,
     "permissions": [
         "contextMenus",
@@ -30,7 +30,7 @@
         "48": "icons/icon48.png"
     },
     "options_ui": {
-        "page": "options/index.html",
+        "page": "manager/index.html",
         "open_in_tab": false
     },
     "applications": {
