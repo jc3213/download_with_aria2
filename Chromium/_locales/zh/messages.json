@@ -104,10 +104,10 @@
     "option_capture_mode_desc": {
         "message": "根据用户设置抓取浏览器的下载请求"
     },
-    "option_capture_filesize": {
+    "option_capture_size": {
         "message": "文件大小"
     },
-    "option_capture_filesize_desc": {
+    "option_capture_size_desc": {
         "message": "抓取文件大小超过设置的下载"
     },
     "option_capture_include": {

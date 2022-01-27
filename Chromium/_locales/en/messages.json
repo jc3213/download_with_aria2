@@ -104,10 +104,10 @@
     "option_capture_mode_desc": {
         "message": "Capture browser downloads based on filters below"
     },
-    "option_capture_filesize": {
+    "option_capture_size": {
         "message": "File Size"
     },
-    "option_capture_filesize_desc": {
+    "option_capture_size_desc": {
         "message": "Capture download larger than your setting"
     },
     "option_capture_include": {
