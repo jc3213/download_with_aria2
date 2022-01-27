@@ -68,10 +68,10 @@
                     </div>
                     <span i18n>option_protocol</span>: <u><i>http</i></u> / <u><i>https</i></u>
                 </div>
-                <div title="option_proxy_resolve_desc" i18n_title>
-                    <div class="title" i18n>option_proxy_resolve</div>
+                <div title="option_proxy_include_desc" i18n_title>
+                    <div class="title" i18n>option_proxy_include</div>
                     <div>
-                        <textarea name="proxy_resolve" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
+                        <textarea name="proxy_include" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                     </div>
                 </div>
             </div>
@@ -85,24 +85,24 @@
                     </select>
                 </div>
                 <div data-rule="capture_mode,1" class="submenu">
-                    <div title="option_capture_fileSize_desc" i18n_title>
-                        <div class="title" i18n>option_capture_fileSize</div>
+                    <div title="option_capture_filesize_desc" i18n_title>
+                        <div class="title" i18n>option_capture_filesize</div>
                         <div>
                             <input name="capture_size" data-multi="1048576" type="number" min="0">
                             <data>MB</data>
                         </div>
                         <span i18n>common_disabled</span>: <u><i>0</i></u>
                     </div>
-                    <div title="option_capture_fileExt_desc" i18n_title>
-                        <div class="title" i18n>option_capture_fileExt</div>
-                        <div>
-                            <textarea name="capture_type" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
-                        </div>
-                    </div>
                     <div title="option_capture_resolve_desc" i18n_title>
                         <div class="title" i18n>option_capture_resolve</div>
                         <div>
-                            <textarea name="capture_resolve" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
+                            <textarea name="capture_resolve" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
+                        </div>
+                    </div>
+                    <div title="option_capture_include_desc" i18n_title>
+                        <div class="title" i18n>option_capture_include</div>
+                        <div>
+                            <textarea name="capture_include" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                         </div>
                     </div>
                 </div>
@@ -110,7 +110,13 @@
                     <div title="option_capture_reject_desc" i18n_title>
                         <div class="title" i18n>option_capture_reject</div>
                         <div>
-                            <textarea name="capture_reject" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
+                            <textarea name="capture_reject" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
+                        </div>
+                    </div>
+                    <div title="option_capture_exclude_desc" i18n_title>
+                        <div class="title" i18n>option_capture_exclude</div>
+                        <div>
+                            <textarea name="capture_exclude" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                         </div>
                     </div>
                 </div>
