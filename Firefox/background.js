@@ -1,5 +1,5 @@
 browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    reason === 'update' && previousVersion < '3.9.4' && setTimeout(() => {
+    reason === 'update' && previousVersion < '3.9.9' && setTimeout(() => {
         store['capture_include'] = store['capture_resolve'];
         store['capture_exclude'] = store['capture_reject'];
         store['capture_resolve'] = store['capture_type'];
