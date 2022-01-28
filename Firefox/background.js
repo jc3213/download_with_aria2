@@ -134,7 +134,7 @@ console.log('Non-Standard Filename', filename)
         }
     }
     filename = url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.indexOf('?') : url.length);
-console.log(decodeURI(filename))
+console.log(url, decodeURI(filename))
     return decodeURI(filename);
 }
 
