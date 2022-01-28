@@ -1,5 +1,6 @@
 document.querySelector('iframe').addEventListener('load', async event => {
     var store = await browser.storage.local.get(null);
+    var {os} = await browser.runtime.getPlatformInfo();
     var danger = false;
     var i18n = {
         'en': {safe: 'Safe Mode', danger: 'Dangerous!', api: 'Capture API', folder: 'Capture Download Folder', '0': 'Default', '1': 'Browser', '2': 'Custom Folder'},
@@ -13,7 +14,7 @@ document.querySelector('iframe').addEventListener('load', async event => {
     var capture = iframe.querySelector('select[name="capture_mode"]');
     capture.addEventListener('change', event => {
         safe.style.display = ['1', '2'].includes(capture.value) ? 'inline-block' : 'none';
-        danger && (menu.style.display = ['1', '2'].includes(capture.value) ? 'block' : 'none');
+        menu.style.display = ['1', '2'].includes(capture.value) && danger ? 'block' : 'none';
     });
 
     var safe = document.createElement('button');
@@ -39,7 +40,7 @@ document.querySelector('iframe').addEventListener('load', async event => {
 
     var custom = document.createElement('div');
     custom.style.display = store['folder_mode'] === '2' ? 'block': 'none';
-    custom.innerHTML = '<input name="folder_path" placeholder="C:\Downloads\">';
+    custom.innerHTML = '<input name="folder_path" placeholder="' + (os === 'win' ? 'C:\\Downloads\\' : '/home/downloads/') + '">';
     folder.append(custom);
 
     var menu = document.createElement('div');
