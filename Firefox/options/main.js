@@ -39,9 +39,8 @@ document.querySelector('iframe').addEventListener('load', async event => {
 
     var custom = document.createElement('div');
     custom.style.display = store['folder_mode'] === '2' ? 'block': 'none';
-    custom.innerHTML = '<input name="folder_path">';
+    custom.innerHTML = '<input name="folder_path" placeholder="C:\Downloads\">';
     folder.append(custom);
-
 
     var menu = document.createElement('div');
     menu.className = 'submenu';
