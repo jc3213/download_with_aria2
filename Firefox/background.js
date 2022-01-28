@@ -52,14 +52,15 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     var match = [{}, 'content-disposition', 'content-type', 'content-length'];
     responseHeaders.forEach(({name, value}) => match.includes(name = name.toLowerCase()) && (match[0][name.slice(name.indexOf('-') + 1)] = value));
     var {disposition, type, length} = match[0];
-    if (type.startsWith('application') || disposition) {
-        var out = disposition ? getFileName(disposition) : decodeURI(url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.lastIndexOf('?') : url.length));
+    if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
+        var out = getFileName(disposition, url);
         var domain = getDomainFromUrl(originUrl);
         var {cookieStoreId} = await browser.tabs.get(tabId);
-        var captured = captureDownload(domain, getFileExtension(out), length);
-        captured && startDownload(url, originUrl, domain, cookieStoreId, {out});
-        return {cancel: captured ? true : false};
-        console.log(url, responseHeaders);
+        if (captureDownload(domain, getFileExtension(out), length)) {
+            startDownload(url, originUrl, domain, cookieStoreId, {out});
+            return {cancel: true};
+        }
+console.log('Failed to Capture', url, responseHeaders);
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
@@ -116,16 +117,22 @@ function getDomainFromUrl(url) {
     return gSLD.includes(suffix[2]) ? suffix[1] + '.' + suffix[2] + '.' + suffix[3] : suffix[2] + '.' + suffix[3];
 }
 
-function getFileName(data) {
-    console.log(data);
-    if (data.includes('filename*=utf-8')) {
-        return decodeURI(data.slice(data.lastIndexOf('\'') + 1));
+function getFileName(disposition, url) {
+    if (disposition) {
+console.log(disposition)
+        var match = /filename\*=[^;]*''([^;]+)/.exec(disposition) ?? /^[^;]+;[^;]*filename=([^;]+);?/.exec(disposition);
+console.log(match)
+        var data = match.pop().replaceAll('"', '');
+console.log(data)
+        var filename = decodeURI(data);
+        if (data !== filename) {
+            return decodeURI(filename);
+        }
+console.log('Non-Standard Filename', filename)
     }
-    var trim = /^[^;]+;[^;]*filename=([^;]+);?/.exec(data)[1];
-    console.log(trim)
-    var filename = trim.replaceAll('"', '');
-    console.log(filename);
-    return filename;
+    filename = url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.indexOf('?') : url.length);
+console.log(decodeURI(filename))
+    return decodeURI(filename);
 }
 
 function getFileExtension(filename) {
