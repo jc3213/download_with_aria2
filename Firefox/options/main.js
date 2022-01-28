@@ -1,6 +1,12 @@
 document.querySelector('iframe').addEventListener('load', async event => {
     var store = await browser.storage.local.get(null);
     var danger = false;
+    var i18n = {
+        'en': {safe: 'Safe Mode', api: 'Capture API', folder: 'Capture Download Folder', '0': 'Default', '1': 'Browser', '2': 'Custom Folder'},
+        'zh': {safe: '安全模式', api: '选择API', folder: '抓取下载文件夹', '0': '默认', '1': '浏览器', '2': '自定义'}
+    };
+    var accept = await browser.i18n.getAcceptLanguages().then(languages => languages.filter(lang => i18n[lang]));
+    i18n = i18n[accept[0]] ?? i18n['en'];
 
     var iframe = event.target.contentDocument;
     var filters = iframe.querySelector('#option > div:nth-child(3)');
@@ -11,7 +17,7 @@ document.querySelector('iframe').addEventListener('load', async event => {
     });
 
     var safe = document.createElement('button');
-    safe.innerText = 'Safe Mode';
+    safe.innerText = i18n['safe'];
     safe.style.display = ['1', '2'].includes(capture.value) ? 'inline-block' : 'none';
     safe.addEventListener('click', event =>  {
         if (confirm('Dangerous!')) {
@@ -23,10 +29,10 @@ document.querySelector('iframe').addEventListener('load', async event => {
     });
     
     var api = document.createElement('div');
-    api.innerHTML = '<span class="title">Capture API</span> <select name="capture_api" value="' + (store['capture_api'] ?? '1') + '"><option value="0">downloads API</option><option value="1">webRequest API</option></select>';
+    api.innerHTML = '<span class="title">' + i18n['api'] + '</span> <select name="capture_api" value="' + (store['capture_api'] ?? '1') + '"><option value="0">downloads API</option><option value="1">webRequest API</option></select>';
 
     var mode = document.createElement('div');
-    mode.innerHTML = '<span class="title">Capture Save Folder</span> <select name="folder_mode" value="' + (store['folder_mode'] ?? '0') + '"><option value="0">Default</option><option value="1">Browser</option><option value="2">Custom Folder</option></select>';
+    mode.innerHTML = '<span class="title">' + i18n['folder'] + '</span> <select name="folder_mode" value="' + (store['folder_mode'] ?? '0') + '"><option value="0">' + i18n['0'] + '</option><option value="1">' + i18n['1'] + '</option><option value="2">' + i18n['2'] + '</option></select>';
     mode.addEventListener('change', event => folder.style.display = mode.value === '2' ? 'block': 'none');
 
     var folder = document.createElement('div');
