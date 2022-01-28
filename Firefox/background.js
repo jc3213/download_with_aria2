@@ -54,15 +54,16 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     var {disposition, type, length} = match[0];
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
 console.log('--------------------------\n' + originUrl)
-        var out = getFileName(disposition, url);
+        var filename = getFileName(disposition);
         var domain = getDomainFromUrl(originUrl);
-        if (captureDownload(domain, getFileExtension(out), length)) {
+        if (captureDownload(domain, getFileExtension(filename), length)) {
 console.log(tabId);
             var {cookieStoreId} = await browser.tabs.get(tabId);
 console.log(cookieStoreId);
-            startDownload(url, originUrl, domain, cookieStoreId, {out});
+            startDownload(url, originUrl, domain, cookieStoreId, filename ? {out: filename} : {});
             return {cancel: true};
         }
+console.log('Failed to Capture', url, filename, responseHeaders);
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
@@ -87,7 +88,7 @@ function aria2WebSocket() {
     });
 }
 
-async function startDownload(url, referer, domain, storeId, options = {}) {
+async function startDownload(url, referer, domain, storeId = 'firefox-default', options = {}) {
     var cookies = await browser.cookies.getAll({url, storeId});
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
@@ -119,23 +120,18 @@ function getDomainFromUrl(url) {
     return gSLD.includes(suffix[2]) ? suffix[1] + '.' + suffix[2] + '.' + suffix[3] : suffix[2] + '.' + suffix[3];
 }
 
-function getFileName(disposition, url) {
-    if (disposition) {
+function getFileName(disposition) {
 console.log(disposition)
-        var match = /filename\*=[^;]*''([^;]+)/.exec(disposition) ?? /^[^;]+;[^;]*filename=([^;]+);?/.exec(disposition);
-        if (match) {
+    var match = /filename\*=[^;]*''([^;]+)/.exec(disposition) ?? /^[^;]+;[^;]*filename=([^;]+);?/.exec(disposition);
+    if (match) {
 console.log(match);
-            var filename = match.pop().replaceAll('"', '');
-            if (!/[^\u0000-\u007f]/g.test(filename)) {
+        var filename = match.pop().replaceAll('"', '');
+        if (!/[^\u0000-\u007f]/g.test(filename)) {
 console.log(decodeURI(filename))
-                return decodeURI(filename);
-            }
-console.log('Non-Standard Filename', filename)
+            return decodeURI(filename);
         }
     }
-    filename = url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.indexOf('?') : url.length);
-console.log(url, decodeURI(filename))
-    return decodeURI(filename);
+    return console.log('Non-Standard Filename', filename);
 }
 
 function getFileExtension(filename) {
