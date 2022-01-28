@@ -17,10 +17,12 @@
     - `Options` page for the extension
     - `Global Options` page for aria2 jsonrpc
 - Capture browser downloads
+    - Switchable APIs  [**Firefox Only**]
+        - `downloads API`
+        - `webRequest API` [**Default**]
     - Capture filter based on file size
-    - Capture filter based on file extension [**Firefox only capture MIME type application**]
+    - Capture filter based on file extension [**Firefox only capture MIME type application via webRequest API**]
     - Capture filter based on domain names of referer
-    - Read [Issue #7](https://github.com/jc3213/download_with_aria2/issues/7) for legacy capture method [**Firefox Only**]
 - Support proxy setting and provide auto matching rule
 
 # Feedback
