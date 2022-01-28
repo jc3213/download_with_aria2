@@ -46,7 +46,7 @@ document.querySelector('iframe').addEventListener('load', async event => {
     menu.style.display = 'none';
     menu.append(api, folder);
     menu.querySelectorAll('[name]').forEach(field => field.value = store[field.name] ?? field.value);
-    menu.addEventListener('change', event => (store[event.target.name] = event.target.value) && browser.storage.local.set(console.log(store) ?? store));
+    menu.addEventListener('change', event => (store[event.target.name] = event.target.value) && browser.storage.local.set(store));
 
     iframe.querySelector('#option > div:nth-child(3) > div:nth-child(1)').appendChild(safe);
     filters.insertBefore(menu, filters.childNodes[2]);
