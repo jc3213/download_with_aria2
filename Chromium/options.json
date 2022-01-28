@@ -4,11 +4,11 @@
     "refresh_interval": 5000,
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
     "proxy_server": "",
-    "proxy_includes": [],
+    "proxy_include": [],
     "capture_mode": "0",
     "capture_size": 0,
     "capture_resolve": [],
-    "capture_includes": [],
+    "capture_include": [],
     "capture_reject": [],
-    "capture_excludes": []
+    "capture_exclude": []
 }
