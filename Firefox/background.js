@@ -7,7 +7,7 @@ browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         store['proxy_include'] = store['proxy_resolve'];
         delete store['capture_type'];
         delete store['proxy_resolve'];
-        chrome.storage.local.set(store);
+        browser.storage.local.set(store);
     }, 500);
 });
 
@@ -56,12 +56,13 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
 console.log('--------------------------\n' + originUrl)
         var out = getFileName(disposition, url);
         var domain = getDomainFromUrl(originUrl);
-        var {cookieStoreId} = await browser.tabs.get(tabId);
         if (captureDownload(domain, getFileExtension(out), length)) {
+console.log(tabId);
+            var {cookieStoreId} = await browser.tabs.get(tabId);
+console.log(cookieStoreId);
             startDownload(url, originUrl, domain, cookieStoreId, {out});
             return {cancel: true};
         }
-console.log('Failed to Capture', url, responseHeaders);
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
