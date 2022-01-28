@@ -1,5 +1,5 @@
 browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    reason === 'update' && previousVersion < '3.9.9' && setTimeout(() => {
+    reason === 'update' && previousVersion < '3.9.4' && setTimeout(() => {
         store['capture_include'] = store['capture_resolve'];
         store['capture_exclude'] = store['capture_reject'];
         store['capture_resolve'] = store['capture_type'];
@@ -25,7 +25,7 @@ browser.storage.local.get(null, async result => {
     store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
     store['capture_api'] = store['capture_api'] ?? '1';
     aria2WebSocket();
-    !('jsonrpc_uri' in result) && browser.storage.local.set(store);
+    !('jsonrpc_uri' in result) && (store['capture_reject'] = ['xpi']) && browser.storage.local.set(store);
 });
 
 browser.storage.onChanged.addListener(changes => {
@@ -54,13 +54,13 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     var {disposition, type, length} = match[0];
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
 console.log('--------------------------\n' + originUrl)
-        var filename = getFileName(disposition);
+        var out = getFileName(disposition);
         var domain = getDomainFromUrl(originUrl);
-        if (captureDownload(domain, getFileExtension(filename), length)) {
+        if (captureDownload(domain, getFileExtension(out), length)) {
 console.log(tabId);
             var {cookieStoreId} = await browser.tabs.get(tabId);
 console.log(cookieStoreId);
-            startDownload(url, originUrl, domain, cookieStoreId, filename ? {out: filename} : {});
+            startDownload(url, originUrl, domain, cookieStoreId, {out});
             return {cancel: true};
         }
 console.log('Failed to Capture', url, filename, responseHeaders);
@@ -131,7 +131,7 @@ console.log(decodeURI(filename))
             return decodeURI(filename);
         }
     }
-    return console.log('Non-Standard Filename', filename);
+    return console.log('Non-Standard Filename', filename) ?? '';
 }
 
 function getFileExtension(filename) {
