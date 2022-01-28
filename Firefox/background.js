@@ -125,8 +125,7 @@ console.log(disposition)
         if (match) {
 console.log(match);
             var filename = match.pop().replaceAll('"', '');
-console.log(filename)
-            if (!/\\u\w{4}/.test(filename)) {
+            if (!/[^\u0000-\u007f]/g.test(filename)) {
 console.log(decodeURI(filename))
                 return decodeURI(filename);
             }
