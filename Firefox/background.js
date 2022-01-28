@@ -53,6 +53,7 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     responseHeaders.forEach(({name, value}) => match.includes(name = name.toLowerCase()) && (match[0][name.slice(name.indexOf('-') + 1)] = value));
     var {disposition, type, length} = match[0];
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
+console.log('--------------------------\n' + originUrl)
         var out = getFileName(disposition, url);
         var domain = getDomainFromUrl(originUrl);
         var {cookieStoreId} = await browser.tabs.get(tabId);
@@ -121,14 +122,16 @@ function getFileName(disposition, url) {
     if (disposition) {
 console.log(disposition)
         var match = /filename\*=[^;]*''([^;]+)/.exec(disposition) ?? /^[^;]+;[^;]*filename=([^;]+);?/.exec(disposition);
-console.log(match)
-        var data = match.pop().replaceAll('"', '');
+        if (match) {
+console.log(match);
+            var filename = match.pop().replaceAll('"', '');
 console.log(data)
-        var filename = decodeURI(data);
-        if (data !== filename) {
-            return decodeURI(filename);
-        }
+            if (/\u\w{4}/g.test(filename)) {
+console.log(decodeURI(filename))
+                return decodeURI(filename);
+            }
 console.log('Non-Standard Filename', filename)
+        }
     }
     filename = url.slice(url.lastIndexOf('/') + 1, url.includes('?') ? url.indexOf('?') : url.length);
 console.log(decodeURI(filename))
