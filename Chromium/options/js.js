@@ -49,7 +49,7 @@ chrome.storage.local.get(null, result => {
     Storage = result;
     document.querySelectorAll('#option [name]').forEach(field => {
         var value = Storage[field.name];
-        var array = value.constructor === Array;
+        var array = Array.isArray(value);
         var token = field.getAttribute('data-token');
         var multi = field.getAttribute('data-multi');
         field.value = array ? value.join(' ') : token ? value.slice(token.length) : multi ? value / multi : value;
