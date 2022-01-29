@@ -38,7 +38,7 @@ browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) =>
         return;
     }
     var {tabUrl, cookieStoreId} = await browser.tabs.query({active: true, currentWindow: true}).then(([{url, cookieStoreId}]) => ({tabUrl: url, cookieStoreId}));
-    var referer = referrer ?? tabUrl;
+    var referer = referrer ?? tabUrl ?? 'about:blank';
     var domain = getDomainFromUrl(referer);
     captureDownload(domain, getFileExtension(filename)) && browser.downloads.cancel(id).then(async () => {
         await browser.downloads.erase({id}) && startDownload(url, referer, domain, cookieStoreId, await getFirefoxExclusive(filename));
