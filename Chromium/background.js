@@ -23,11 +23,13 @@ chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
 
 chrome.storage.local.get(null, async json => {
     store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
+    statusIndicator();
     !json['jsonrpc_uri'] && chrome.storage.local.set(store);
 });
 
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
+    changes['jsonrpc_uri'] && statusIndicator();
 });
 
 chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, filename, fileSize}) => {
@@ -40,6 +42,26 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
         captureDownload(domain, getFileExtension(filename), fileSize) && chrome.downloads.erase({id}, () => startDownload(finalUrl, referer, domain, {out: filename}));
     });
 });
+
+function statusIndicator() {
+    aria2RPCCall({method: 'aria2.tellActive'}, result => {
+        active = result.map(({gid}) => gid);
+        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
+        jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
+        jsonrpc.onmessage = event => {
+            var {method, params: [{gid}]} = JSON.parse(event.data);
+            var index = active.indexOf(gid);
+            method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) : method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1);
+            chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
+        };
+        chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
+        chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
+    }, error => {
+        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
+        chrome.browserAction.setBadgeText({text: 'E'});
+        chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
+    });
+}
 
 function startDownload(url, referer, domain, options = {}) {
     chrome.cookies.getAll({url}, cookies => {
