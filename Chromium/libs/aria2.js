@@ -2,7 +2,7 @@ var aria2Error = 0;
 var aria2Live = -1;
 
 function aria2RPCCall(call, resolve, reject, alive) {
-    var {jsonrpc_uri, secret_token, refresh_interval} = store ?? Storage;
+    var {jsonrpc_uri, secret_token, refresh_interval} = this.store ?? this.Storage;
     var message = JSON.stringify( 'method' in call ? {id: '', jsonrpc: 2, method: call.method, params: [secret_token].concat(call.params ?? [])}
         : {id: '', jsonrpc: 2, method: 'system.multicall', params: [ call.map(({method, params = []}) => ({methodName: method, params: [secret_token, ...params]})) ]} );
     var worker = jsonrpc_uri.startsWith('http') ? aria2XMLRequest : aria2WebSocket;
