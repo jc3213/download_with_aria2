@@ -1,3 +1,7 @@
+chrome.storage.local.get(null, result => {
+    store = result;
+});
+
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     chrome.contextMenus.create({
         title: chrome.runtime.getManifest().name,
