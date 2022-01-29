@@ -2,28 +2,20 @@ chrome.storage.local.get(null, result => {
     store = result;
 });
 
-chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
+chrome.runtime.onInstalled.addListener(async ({reason, previousVersion}) => {
+    if (reason === 'install') {
+        store = await fetch('/options.json').then(response => response.json());
+        chrome.storage.local.set(store);
+    }
     chrome.contextMenus.create({
         title: chrome.runtime.getManifest().name,
         id: 'downwitharia2',
         contexts: ['link']
     });
-    reason === 'update' && previousVersion < '3.9.4' && setTimeout(() => {
-        store['capture_include'] = store['capture_resolve'];
-        store['capture_exclude'] = store['capture_reject'];
-        store['capture_resolve'] = store['capture_type'];
-        store['capture_reject'] = [];
-        store['proxy_include'] = store['proxy_resolve'];
-        delete store['capture_type'];
-        delete store['proxy_resolve'];
-        chrome.storage.local.set(store);
-    }, 1000);
 });
 
 chrome.runtime.onStartup.addListener(async () => {
-    var result = await chrome.storage.local.get(null);
-    store = result['jsonrpc_uri'] ? result : await fetch('/options.json').then(response => response.json());
-    !result['jsonrpc_uri'] && chrome.storage.local.set(store);
+    store = await chrome.storage.local.get(null);
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
@@ -82,5 +74,10 @@ function getFileExtension(filename) {
 }
 
 function showNotification(message = '') {
-    chrome.notifications.create({type: 'basic', title: store['jsonrpc_uri'], iconUrl: '/icons/icon48.png', message});
+    chrome.notifications.create({
+        type: 'basic',
+        title: store['jsonrpc_uri'],
+        iconUrl: '/icons/icon48.png',
+        message
+    });
 }
