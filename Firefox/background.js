@@ -12,7 +12,7 @@ browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 });
 
 browser.contextMenus.create({
-    title: browser.i18n.getMessage('extension_name'),
+    title: browser.runtime.getManifest().name,
     id: 'downwitharia2firefox',
     contexts: ['link']
 });
@@ -21,16 +21,16 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
     startDownload(linkUrl, pageUrl, getDomainFromUrl(pageUrl), cookieStoreId);
 });
 
-browser.storage.local.get(null, async result => {
-    store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
+browser.storage.local.get(null, async json => {
+    store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
     store['capture_api'] = store['capture_api'] ?? '1';
-    aria2WebSocket();
+    statusIndicator();
     !('jsonrpc_uri' in result) && (store['capture_reject'] = ['xpi']) && browser.storage.local.set(store);
 });
 
 browser.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    ('jsonrpc_uri' in changes || 'secret_token' in changes) && aria2WebSocket();
+    changes['jsonrpc_uri'] && statusIndicator();
 });
 
 browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) => {
@@ -67,9 +67,8 @@ console.log('Failed to Capture', url, filename, responseHeaders);
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
-function aria2WebSocket() {
-    fetch(store['jsonrpc_uri'], {method: 'POST', body: JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.tellActive', params: [store['secret_token']]})})
-    .then(response => response.json()).then(({result}) => {
+function statusIndicator() {
+    aria2RPCCall({method: 'aria2.tellActive'}, result => {
         active = result.map(({gid}) => gid);
         self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
         jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
@@ -81,7 +80,7 @@ function aria2WebSocket() {
         };
         browser.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
         browser.browserAction.setBadgeBackgroundColor({color: '#3cc'});
-    }).catch(error => {
+    }, error => {
         self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
         browser.browserAction.setBadgeText({text: 'E'});
         browser.browserAction.setBadgeBackgroundColor({color: '#c33'});
@@ -93,8 +92,7 @@ async function startDownload(url, referer, domain, storeId = 'firefox-default', 
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     options['all-proxy'] = store['proxy_include'].includes(domain) ? store['proxy_server'] : '';
-    fetch(store['jsonrpc_uri'], {method: 'POST', body: JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.addUri', params: [store['secret_token'], [url], options]})})
-        .then(response => response.ok && showNotification(url)).catch(error => showNotification(error.message));
+    aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
 }
 
 function captureDownload(domain, type, size) {
