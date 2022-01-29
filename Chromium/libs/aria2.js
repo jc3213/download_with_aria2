@@ -8,8 +8,8 @@ function aria2RPCCall(json, resolve, reject, alive) {
     alive && (aria2Alive = setInterval(() => worker(jsonrpc_uri, message, resolve, reject), refresh_interval)) || worker(jsonrpc_uri, message, resolve, reject);
 }
 
-function aria2XMLRequest(server, message, resolve, reject) {
-    fetch(server, {method: 'POST', body: message}).then(response => response.json())
+function aria2XMLRequest(server, body, resolve, reject) {
+    fetch(server, {method: 'POST', body}).then(response => response.json())
         .then(({result, error}) => result ? typeof resolve === 'function' && resolve(result) : typeof reject === 'function' && reject())
         .catch(reject);
 }
