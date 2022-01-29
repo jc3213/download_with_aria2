@@ -61,7 +61,7 @@ function getDomainFromUrl(url) {
         return url;
     }
     var hostname = new URL(url).hostname;
-    if (hostname.includes(':')) {
+    if (hostname.startsWith('[')) {
         return hostname.slice(1, -1);
     }
     var pattern = hostname.split('.');
