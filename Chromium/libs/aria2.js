@@ -10,7 +10,7 @@ function aria2RPCCall(json, resolve, reject, alive) {
 
 function aria2XMLRequest(server, message, resolve, reject) {
     fetch(server, {method: 'POST', body: message}).then(response => response.json())
-        .then(({result, error}) => typeof resolve === 'function' && resolve(result) : typeof reject === 'function' && reject())
+        .then(({result, error}) => result ? typeof resolve === 'function' && resolve(result) : typeof reject === 'function' && reject())
         .catch(reject);
 }
 
