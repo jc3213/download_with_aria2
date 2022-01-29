@@ -13,7 +13,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         delete store['capture_type'];
         delete store['proxy_resolve'];
         chrome.storage.local.set(store);
-    }, 500);
+    }, 1000);
 });
 
 chrome.runtime.onStartup.addListener(async () => {
