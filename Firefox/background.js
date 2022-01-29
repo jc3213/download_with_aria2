@@ -30,7 +30,7 @@ browser.storage.local.get(null, async json => {
 
 browser.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    changes['jsonrpc_uri'] && statusIndicator();
+    (changes['jsonrpc_uri'] || changes['secret_token']) && statusIndicator();
 });
 
 browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) => {
