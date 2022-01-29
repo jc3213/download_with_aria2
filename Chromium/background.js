@@ -33,7 +33,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     if (store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
-    var referer = referrer && referrer !== 'about:blank' ? referrer : await chrome.tabs.query({active: true, currentWindow: true}).then(([{url}]) => url);
+    var referer = referrer ?? await chrome.tabs.query({active: true, currentWindow: true}).then(([{url}]) => url);
     var domain = getDomainFromUrl(referer);
     captureDownload(domain, getFileExtension(filename), fileSize) && await chrome.downloads.erase({id}) && startDownload(finalUrl, referer, domain, {out: filename});
 });
@@ -57,7 +57,11 @@ function captureDownload(domain, type, size) {
 }
 
 function getDomainFromUrl(url) {
-    var host = /^[^:]+:\/\/([^\/]+)\//.exec(url)[1];
+    if (url.startsWith('about') || url.startsWith('chrome')) {
+        return url;
+    }
+    var link = url.slice(url.indexOf('/') + 2);
+    var host = link.slice(0, link.indexOf('/'));
     var hostname = /:\d{2,5}$/.test(host) ? host.slice(0, host.lastIndexOf(':')) : host;
     if (hostname.includes(':')) {
         return hostname.slice(1, -1);
