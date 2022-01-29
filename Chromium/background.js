@@ -1,6 +1,4 @@
-chrome.storage.local.get(null, result => {
-    store = result;
-});
+var store = store ?? chrome.storage.local.get(null).then(result => store = result);
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     chrome.contextMenus.create({
@@ -8,8 +6,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         id: 'downwitharia2',
         contexts: ['link']
     });
-    reason === 'install' && fetch('/options.json').then(response => response.json())
-        .then(json => chrome.storage.local.set(store = json));
+    reason === 'install' && fetch('/options.json').then(response => response.json()).then(json => chrome.storage.local.set(store = json));
     reason === 'update' && previousVersion < '3.9.4' && setTimeout(() => {
         store['capture_include'] = store['capture_resolve'];
         store['capture_exclude'] = store['capture_reject'];
@@ -20,10 +17,6 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         delete store['proxy_resolve'];
         chrome.storage.local.set(store);
     }, 1000);
-});
-
-chrome.runtime.onStartup.addListener(async () => {
-    store = await chrome.storage.local.get(null);
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
