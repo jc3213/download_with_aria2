@@ -8,14 +8,14 @@ function aria2RPCCall(json, resolve, reject, alive) {
     alive && (aria2Alive = setInterval(() => worker(jsonrpc_uri, message, resolve, reject), refresh_interval)) || worker(jsonrpc_uri, message, resolve, reject);
 }
 
-function aria2XMLRequest(jsonrpc, message, resolve, reject) {
-    fetch(jsonrpc, {method: 'POST', body: message}).then(response => response.json())
+function aria2XMLRequest(server, message, resolve, reject) {
+    fetch(server, {method: 'POST', body: message}).then(response => response.json())
         .then(({result, error}) => typeof resolve === 'function' && resolve(result) : typeof reject === 'function' && reject())
         .catch(reject);
 }
 
-function aria2WebSocket(jsonrpc, message, resolve, reject) {
-    var socket = new WebSocket(jsonrpc);
+function aria2WebSocket(server, message, resolve, reject) {
+    var socket = new WebSocket(server);
     socket.onopen = event => socket.send(message);
     socket.onmessage = event => {
         var {result, error} = JSON.parse(event.data);
