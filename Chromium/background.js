@@ -29,7 +29,7 @@ chrome.storage.local.get(null, async json => {
 
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    changes['jsonrpc_uri'] && statusIndicator();
+    (changes['jsonrpc_uri'] || changes['secret_token']) && statusIndicator();
 });
 
 chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, filename, fileSize}) => {

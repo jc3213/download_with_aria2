@@ -111,12 +111,10 @@ function aria2RPCClient() {
         document.querySelector('#stopped.stats').innerText = numStopped;
         document.querySelector('#download.stats').innerText = bytesToFileSize(downloadSpeed) + '/s';
         document.querySelector('#upload.stats').innerText = bytesToFileSize(uploadSpeed) + '/s';
-        document.querySelector('#message').style.display = 'none';
         active.forEach((active, index) => printPopupItem(active, index, activeQueue));
         waiting.forEach((waiting, index) => printPopupItem(waiting, index, waitingQueue));
         stopped.forEach((stopped, index) => printPopupItem(stopped, index, stoppedQueue));
     }, error => {
-        document.querySelector('#message').style.display = 'block';
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
     }, true);
 }
