@@ -7,7 +7,7 @@ function aria2RPCCall(json, resolve, reject, alive) {
         : {id: '', jsonrpc: 2, method: 'system.multicall', params: [ json.map(({method, params = []}) => ({methodName: method, params: [secret_token, ...params]})) ]} );
     var worker = jsonrpc_uri.startsWith('http') ? aria2XMLRequest : aria2WebSocket;
     worker(jsonrpc_uri, message, resolve, reject);
-    aria2Alive = alive ? setInterval(() => worker(jsonrpc_uri, message, resolve, reject), refresh_interval) : -1;
+    alive && (aria2Alive = setInterval(() => worker(jsonrpc_uri, message, resolve, reject), refresh_interval));
 }
 
 function aria2XMLRequest(jsonrpc, body, resolve, reject) {
