@@ -13,9 +13,8 @@ else
    exit
 fi 
 echo "$code"
-ps -aux | dpkg -l | grep zip
-if [ "$?" != "0" ];then
-   echo "NOT EXIST 7zip,exit"
+if ! command -v zip >/dev/null 2>&1; then 
+  echo "NOT EXIST zip,exit" 
    exit
 fi
 findContent="version"
