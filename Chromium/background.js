@@ -60,18 +60,18 @@ function getDomainFromUrl(url) {
     if (url.startsWith('about') || url.startsWith('chrome')) {
         return url;
     }
-    var link = url.slice(url.indexOf('/') + 2);
-    var host = link.slice(0, link.indexOf('/'));
-    var hostname = /:\d{2,5}$/.test(host) ? host.slice(0, host.lastIndexOf(':')) : host;
+    var hostname = new URL(url).hostname;
     if (hostname.includes(':')) {
         return hostname.slice(1, -1);
     }
-    if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$|^[^\.]+\.[^\.]+$/.test(hostname)) {
+    var pattern = hostname.split('.');
+    if (pattern.length === 2 || pattern.length === 4 && !isNaN(pattern[3])) {
         return hostname;
     }
-    var suffix = /([^\.]+)\.([^\.]+)\.([^\.]+)$/.exec(hostname);
-    var gSLD = ['com', 'net', 'org', 'edu', 'gov', 'co', 'ne', 'or', 'me'];
-    return gSLD.includes(suffix[2]) ? suffix[1] + '.' + suffix[2] + '.' + suffix[3] : suffix[2] + '.' + suffix[3];
+    if (['com', 'net', 'org', 'edu', 'gov', 'co', 'ne', 'or', 'me'].includes(pattern[pattern.length - 2])) {
+        return pattern.slice(-3).join('.');
+    }
+    return pattern.slice(-2).join('.');
 }
 
 function getFileExtension(filename) {
