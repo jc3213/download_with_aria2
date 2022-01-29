@@ -24,7 +24,7 @@ document.querySelector('#task_btn').addEventListener('click', event => {
 document.querySelector('#purdge_btn').addEventListener('click', event => {
     aria2RPCCall({method: 'aria2.purgeDownloadResult'}, result => {
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
-        aria2Error = clearInterval(aria2Live) ?? 0;
+        aria2Error = clearInterval(aria2Alive) ?? 0;
         aria2RPCClient();
     });
 });

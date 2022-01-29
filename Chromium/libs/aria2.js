@@ -1,5 +1,5 @@
 var aria2Error = 0;
-var aria2Live = -1;
+var aria2Alive = -1;
 
 function aria2RPCCall(call, resolve, reject, alive) {
     var {jsonrpc_uri, secret_token, refresh_interval} = this.store ?? this.Storage;
@@ -7,7 +7,7 @@ function aria2RPCCall(call, resolve, reject, alive) {
         : {id: '', jsonrpc: 2, method: 'system.multicall', params: [ call.map(({method, params = []}) => ({methodName: method, params: [secret_token, ...params]})) ]} );
     var worker = jsonrpc_uri.startsWith('http') ? aria2XMLRequest : aria2WebSocket;
     worker(jsonrpc_uri, message, resolve, reject);
-    aria2Live = alive ? setInterval(() => worker(jsonrpc_url, message, resolve, reject), refresh_interval) : -1;
+    aria2Alive = alive ? setInterval(() => worker(jsonrpc_uri, message, resolve, reject), refresh_interval) : -1;
 }
 
 function aria2XMLRequest(server, body, resolve, reject) {
