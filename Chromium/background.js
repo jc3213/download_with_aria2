@@ -16,13 +16,14 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }, 500);
 });
 
-chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
-    startDownload(linkUrl, pageUrl, getDomainFromUrl(pageUrl));
+chrome.runtime.onStartup.addListener(async () => {
+    var result = await chrome.storage.local.get(null);
+    store = result['jsonrpc_uri'] ? result : await fetch('/options.json').then(response => response.json());
+    !result['jsonrpc_uri'] && chrome.storage.local.set(store);
 });
 
-chrome.storage.local.get(null, async result => {
-    store = 'jsonrpc_uri' in result ? result : await fetch('/options.json').then(response => response.json());
-    !('jsonrpc_uri' in result) && chrome.storage.local.set(store);
+chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
+    startDownload(linkUrl, pageUrl, getDomainFromUrl(pageUrl));
 });
 
 chrome.storage.onChanged.addListener(changes => {
