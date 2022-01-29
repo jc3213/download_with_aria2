@@ -1,12 +1,4 @@
-var store = store ?? chrome.storage.local.get(null).then(result => store = result);
-
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    chrome.contextMenus.create({
-        title: chrome.runtime.getManifest().name,
-        id: 'downwitharia2',
-        contexts: ['link']
-    });
-    reason === 'install' && fetch('/options.json').then(response => response.json()).then(json => chrome.storage.local.set(store = json));
     reason === 'update' && previousVersion < '3.9.4' && setTimeout(() => {
         store['capture_include'] = store['capture_resolve'];
         store['capture_exclude'] = store['capture_reject'];
@@ -19,30 +11,43 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }, 1000);
 });
 
+chrome.contextMenus.create({
+    title: chrome.runtime.getManifest().name,
+    id: 'downwitharia2',
+    contexts: ['link']
+});
+
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
     startDownload(linkUrl, pageUrl, getDomainFromUrl(pageUrl));
+});
+
+chrome.storage.local.get(null, async json => {
+    store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
+    !json['jsonrpc_uri'] && chrome.storage.local.set(store);
 });
 
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
 });
 
-chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
+chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, filename, fileSize}) => {
     if (store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
-    var referer = referrer ?? await chrome.tabs.query({active: true, currentWindow: true}).then(([{url}]) => url) ?? 'about:blank';
-    var domain = getDomainFromUrl(referer);
-    captureDownload(domain, getFileExtension(filename), fileSize) && await chrome.downloads.erase({id}) && startDownload(finalUrl, referer, domain, {out: filename});
+    chrome.tabs.query({active: true, currentWindow: true}, ([{url}]) => {
+        var referer = referrer ?? url ?? 'about:blank';
+        var domain = getDomainFromUrl(referer);
+        captureDownload(domain, getFileExtension(filename), fileSize) && chrome.downloads.erase({id}, () => startDownload(finalUrl, referer, domain, {out: filename}));
+    });
 });
 
-async function startDownload(url, referer, domain, options = {}) {
-    var cookies = await chrome.cookies.getAll({url});
-    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
-    cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
-    options['all-proxy'] = store['proxy_include'].includes(domain) ? store['proxy_server'] : '';
-    fetch(store['jsonrpc_uri'], {method: 'POST', body: JSON.stringify({jsonrpc: '2.0', id: '', method: 'aria2.addUri', params: [store['secret_token'], [url], options]})})
-        .then(response => response.ok && showNotification(url)).catch(error => showNotification(error.message));
+function startDownload(url, referer, domain, options = {}) {
+    chrome.cookies.getAll({url}, cookies => {
+        options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
+        cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
+        options['all-proxy'] = store['proxy_include'].includes(domain) ? store['proxy_server'] : '';
+        aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url))
+    });
 }
 
 function captureDownload(domain, type, size) {

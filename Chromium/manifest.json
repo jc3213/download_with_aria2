@@ -1,24 +1,25 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "3.9.10",
-    "manifest_version": 3,
+    "version": "3.10.0",
+    "manifest_version": 2,
     "permissions": [
         "contextMenus",
         "downloads",
         "tabs",
         "cookies",
         "notifications",
-        "storage"
-    ],
-    "host_permissions": [
+        "storage",
         "<all_urls>"
     ],
     "default_locale" : "en",
     "background": {
-        "service_worker": "background.js"
+        "scripts": [
+            "libs/aria2.js",
+            "background.js"
+        ]
     },
-    "action": {
+    "browser_action": {
         "default_icon": {
             "24": "icons/icon24.png"
         },
