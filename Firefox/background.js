@@ -111,17 +111,15 @@ function getDomainFromUrl(url) {
         return url;
     }
     var hostname = new URL(url).hostname;
-    if (hostname.includes(':')) {
+    if (hostname.startsWith('[')) {
         return hostname.slice(1, -1);
     }
     var pattern = hostname.split('.');
     if (pattern.length === 2 || pattern.length === 4 && !isNaN(pattern[3])) {
         return hostname;
     }
-    if (['com', 'net', 'org', 'edu', 'gov', 'co', 'ne', 'or', 'me'].includes(pattern[pattern.length - 2])) {
-        return pattern.slice(-3).join('.');
-    }
-    return pattern.slice(-2).join('.');
+    var domain = ['com', 'net', 'org', 'edu', 'gov', 'co', 'ne', 'or', 'me'].includes(pattern[pattern.length - 2]) ? pattern.slice(-3) : pattern.slice(-2);
+    return domain.join('.');
 }
 
 function getFileName(disposition) {
