@@ -25,7 +25,7 @@ browser.storage.local.get(null, async json => {
     store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
     store['capture_api'] = store['capture_api'] ?? '1';
     statusIndicator();
-    !('jsonrpc_uri' in result) && (store['capture_reject'] = ['xpi']) && browser.storage.local.set(store);
+    !json['jsonrpc_uri'] && (store['capture_reject'] = ['xpi']) && browser.storage.local.set(store);
 });
 
 browser.storage.onChanged.addListener(changes => {
@@ -121,17 +121,17 @@ function getDomainFromUrl(url) {
 }
 
 function getFileName(disposition) {
-console.log(disposition)
     var match = /filename\*=[^;]*''([^;]+)/.exec(disposition) ?? /^[^;]+;[^;]*filename=([^;]+);?/.exec(disposition);
     if (match) {
-console.log(match);
+console.log(disposition, match);
         var filename = match.pop().replaceAll('"', '');
         if (!/[^\u0000-\u007f]/g.test(filename)) {
 console.log(decodeURI(filename))
             return decodeURI(filename);
         }
+console.log('Non-Standard Filename', filename);
     }
-    return console.log('Non-Standard Filename', filename) ?? '';
+    return '';
 }
 
 function getFileExtension(filename) {
