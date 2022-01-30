@@ -18,7 +18,7 @@ document.querySelector('#show_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#export_btn').addEventListener('click', event => {
-    var blob = new Blob([JSON.stringify(Storage)], {type: 'application/json; charset=utf-8'});
+    var blob = new Blob([JSON.stringify(aria2Store)], {type: 'application/json; charset=utf-8'});
     var saver = document.createElement('a');
     saver.href = URL.createObjectURL(blob);
     saver.download = 'downwitharia2_options-' + new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_') + '.json';
@@ -45,25 +45,24 @@ document.querySelector('#global').addEventListener('change', event => {
     aria2RPCCall({method: 'aria2.changeGlobalOption', params: [{[event.target.name]: event.target.value}]});
 });
 
-chrome.storage.local.get(null, result => {
-    Storage = result;
+function aria2RPCClient() {
     document.querySelectorAll('#option [name]').forEach(field => {
-        var value = Storage[field.name];
+        var value = aria2Store[field.name];
         var array = Array.isArray(value);
         var token = field.getAttribute('data-token');
         var multi = field.getAttribute('data-multi');
         field.value = array ? value.join(' ') : token ? value.slice(token.length) : multi ? value / multi : value;
         field.addEventListener('change', event => {
-            Storage[field.name] = array ? field.value.split(/[\s\n,]+/) : token ? token + field.value : multi ? field.value * multi : field.value;
-            chrome.storage.local.set(Storage);
+            aria2Store[field.name] = array ? field.value.split(/[\s\n,]+/) : token ? token + field.value : multi ? field.value * multi : field.value;
+            chrome.storage.local.set(aria2Store);
         });
     });
     document.querySelectorAll('[data-rule]').forEach(menu => {
         var rule = menu.getAttribute('data-rule').match(/[^,]+/g);
         var name = rule.shift();
-        menu.style.display = rule.includes(Storage[name]) ? 'block' : 'none';
+        menu.style.display = rule.includes(aria2Store[name]) ? 'block' : 'none';
         document.querySelector('#option [name="' + name + '"]').addEventListener('change', event => {
             menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });
-});
+}

@@ -6,6 +6,11 @@ document.querySelectorAll('[i18n_title]').forEach(item => {
     item.title = chrome.i18n.getMessage(item.title);
 });
 
+chrome.storage.local.get(null, json => {
+    aria2Store = json;
+    aria2RPCClient();
+});
+
 function readFileAsBinary(file, resolve) {
     var reader = new FileReader();
     reader.onload = () => resolve(reader.result.slice(reader.result.indexOf(',') + 1));

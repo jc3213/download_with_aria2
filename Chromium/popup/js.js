@@ -69,7 +69,7 @@ document.querySelector('#manager').addEventListener('change', event => {
 document.querySelectorAll('#manager .block').forEach(block => {
     var field = block.parentNode.querySelector('input');
     block.addEventListener('click', event => {
-        !field.disabled && (block.style.display = field.focus() ?? 'none');
+        block.style.display = field.disabled ? 'block' : field.focus() ?? 'none';
     });
     field.addEventListener('blur', event => {
         block.style.display = 'block';
@@ -94,11 +94,6 @@ bt.addEventListener('click', event => {
         var files = index !== -1 ? [...manager.slice(0, index), ...manager.slice(index + 1)] : [...manager, event.target.innerText];
         aria2RPCCall({method: 'aria2.changeOption', params: [activeId, {'select-file': files.join()}]}, result => manager = files);
     }
-});
-
-chrome.storage.local.get(null, result => {
-    Storage = result;
-    aria2RPCClient();
 });
 
 function aria2RPCClient() {
@@ -196,13 +191,13 @@ function printEstimatedTime(task, number) {
 function printButton(button, resolve) {
     var entry = button.parentNode.querySelector('input');
     button.addEventListener('click', event => {
-        entry.value = Storage[button.getAttribute('data-feed')];
+        entry.value = aria2Store[button.getAttribute('data-feed')];
         typeof resolve === 'function' && resolve(entry.name, entry.value);
     });
 }
 
 function createOptions() {
-    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + Storage['useragent']]};
+    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2Store['useragent']]};
     document.querySelectorAll('#create input[name]').forEach(field => options[field.name] = field.value);
     return options;
 }

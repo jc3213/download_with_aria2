@@ -1,16 +1,3 @@
-chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    reason === 'update' && previousVersion < '3.9.4' && setTimeout(() => {
-        store['capture_include'] = store['capture_resolve'];
-        store['capture_exclude'] = store['capture_reject'];
-        store['capture_resolve'] = store['capture_type'];
-        store['capture_reject'] = [];
-        store['proxy_include'] = store['proxy_resolve'];
-        delete store['capture_type'];
-        delete store['proxy_resolve'];
-        chrome.storage.local.set(store);
-    }, 1000);
-});
-
 chrome.contextMenus.create({
     title: chrome.runtime.getManifest().name,
     id: 'downwitharia2',
@@ -22,18 +9,20 @@ chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
 });
 
 chrome.storage.local.get(null, async json => {
-    store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
-    statusIndicator();
-    !json['jsonrpc_uri'] && chrome.storage.local.set(store);
+    aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
+    statusIndicator() || !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
 });
 
 chrome.storage.onChanged.addListener(changes => {
-    Object.entries(changes).forEach(([key, {newValue}]) => store[key] = newValue);
-    (changes['jsonrpc_uri'] || changes['secret_token']) && statusIndicator();
+    Object.entries(changes).forEach(([key, {newValue}]) => aria2Store[key] = newValue);
+    if (changes['jsonrpc_uri'] || changes['secret_token']) {
+        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
+        statusIndicator();
+    }
 });
 
 chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, filename, fileSize}) => {
-    if (store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
+    if (aria2Store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
     chrome.tabs.query({active: true, currentWindow: true}, ([{url}]) => {
@@ -43,42 +32,34 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
     });
 });
 
-function statusIndicator() {
-    aria2RPCCall({method: 'aria2.tellActive'}, result => {
-        active = result.map(({gid}) => gid);
-        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
-        jsonrpc = new WebSocket(store['jsonrpc_uri'].replace('http', 'ws'));
-        jsonrpc.onmessage = event => {
-            var {method, params: [{gid}]} = JSON.parse(event.data);
-            var index = active.indexOf(gid);
-            method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) : method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1);
-            chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
-        };
-        chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
-        chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
-    }, error => {
-        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
-        chrome.browserAction.setBadgeText({text: 'E'});
-        chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
+async function statusIndicator() {
+    jsonrpc = await aria2RPCStatus(aria2Store['jsonrpc_uri'],
+    text => {
+        chrome.browserAction.setBadgeText({text: text ? text === '0' ? '' : text : 'E'});
+        chrome.browserAction.setBadgeBackgroundColor({color: text ? '#3cc' : '#c33'});
+    }, gid => {
+        console.log('Download started!', gid)
+    }, gid => {
+        console.log('Download finished!', gid);
     });
 }
 
 function startDownload(url, referer, domain, options = {}) {
     chrome.cookies.getAll({url}, cookies => {
-        options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + store['user_agent']];
+        options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2Store['user_agent']];
         cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
-        options['all-proxy'] = store['proxy_include'].includes(domain) ? store['proxy_server'] : '';
+        options['all-proxy'] = aria2Store['proxy_include'].includes(domain) ? aria2Store['proxy_server'] : '';
         aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
     });
 }
 
 function captureDownload(domain, type, size) {
-    return store['capture_exclude'].includes(domain) ? false :
-        store['capture_reject'].includes(type) ? false :
-        store['capture_mode'] === '2' ? true :
-        store['capture_include'].includes(domain) ? true :
-        store['capture_resolve'].includes(type) ? true :
-        store['capture_size'] > 0 && size >= store['capture_size'] ? true : false;
+    return aria2Store['capture_exclude'].includes(domain) ? false :
+        aria2Store['capture_reject'].includes(type) ? false :
+        aria2Store['capture_mode'] === '2' ? true :
+        aria2Store['capture_include'].includes(domain) ? true :
+        aria2Store['capture_resolve'].includes(type) ? true :
+        aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size'] ? true : false;
 }
 
 function getDomainFromUrl(url) {
@@ -102,8 +83,6 @@ function getFileExtension(filename) {
 }
 
 function showNotification(body = '') {
-    var popup = new Notification(store['jsonrpc_uri'], {
-        badge: '/icons/icon16.png', body
-    });
+    var popup = new Notification(aria2Store['jsonrpc_uri'], {badge: '/icons/icon16.png', body});
     setTimeout(() => popup.close(), 5000);
 }
