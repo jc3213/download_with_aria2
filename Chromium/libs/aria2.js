@@ -17,10 +17,10 @@ function aria2XMLRequest(server, body, resolve, reject) {
 function aria2WebSocket(server, message, resolve, reject) {
     var socket = new WebSocket(server);
     socket.onopen = event => socket.send(message);
+    socket.onclose = reject;
     socket.onmessage = event => {
         var {result, error} = JSON.parse(event.data);
         result ? typeof resolve === 'function' && resolve(result) : typeof reject === 'function' && reject();
         socket.onclose = socket.close();
     };
-    socket.onclose = reject;
 }
