@@ -101,11 +101,9 @@ function getFileExtension(filename) {
     return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
 }
 
-function showNotification(message = '') {
-    chrome.notifications.create({
-        type: 'basic',
-        title: store['jsonrpc_uri'],
-        iconUrl: '/icons/icon48.png',
-        message
+function showNotification(body = '') {
+    var popup = new Notification(store['jsonrpc_uri'], {
+        badge: '/icons/icon16.png', body
     });
+    setTimeout(() => popup.close(), 5000);
 }
