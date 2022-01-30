@@ -33,8 +33,7 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
 });
 
 async function statusIndicator() {
-    jsonrpc = await aria2RPCStatus(aria2Store['jsonrpc_uri'],
-    text => {
+    jsonrpc = await aria2RPCStatus(text => {
         chrome.browserAction.setBadgeText({text: text ? text === '0' ? '' : text : 'E'});
         chrome.browserAction.setBadgeBackgroundColor({color: text ? '#3cc' : '#c33'});
     }, gid => {
