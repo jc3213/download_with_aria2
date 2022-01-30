@@ -1,22 +1,26 @@
 var aria2Alive = -1;
 
-function aria2RPCCall(json, resolve, reject, alive) {
-    var {jsonrpc_uri, secret_token, refresh_interval} = aria2Store;
-    var message = JSON.stringify( json.method ? {id: '', jsonrpc: 2, method: json.method, params: [secret_token].concat(json.params ?? [])}
-        : {id: '', jsonrpc: 2, method: 'system.multicall', params: [ json.map(({method, params = []}) => ({methodName: method, params: [secret_token, ...params]})) ]} );
-    var worker = jsonrpc_uri.startsWith('http') ? aria2XMLRequest : aria2WebSocket;
-    alive && (aria2Alive = setInterval(() => worker(jsonrpc_uri, message, resolve, reject), refresh_interval));
-    worker(jsonrpc_uri, message, resolve, reject);
+function aria2Message(json) {
+    var make = ({method, params = []}) => ({id: '', jsonrpc: 2, method, params: [aria2Store['secret_token'], ... params]});
+    var data = Array.isArray(json) ? {id: '', jsonrpc: 2, method: 'system.multicall', params: [json.map(make)]} : make(json);
+    return JSON.stringify(data);
 }
 
-function aria2XMLRequest(server, body, resolve, reject) {
-    fetch(server, {method: 'POST', body}).then(response => response.json())
+function aria2RPCCall(json, resolve, reject, alive) {
+    var message = aria2Message(json);
+    var worker = aria2Store['jsonrpc_uri'].startsWith('http') ? aria2XMLRequest : aria2WebSocket;
+    alive && (aria2Alive = setInterval(() => worker(message, resolve, reject), aria2Store['refresh_interval']));
+    worker(message, resolve, reject);
+}
+
+function aria2XMLRequest(body, resolve, reject) {
+    fetch(aria2Store['jsonrpc_uri'], {method: 'POST', body}).then(response => response.json())
         .then(({result, error}) => result ? typeof resolve === 'function' && resolve(result) : typeof reject === 'function' && reject())
         .catch(reject);
 }
 
-function aria2WebSocket(server, message, resolve, reject) {
-    var socket = new WebSocket(server);
+function aria2WebSocket(message, resolve, reject) {
+    var socket = new WebSocket(aria2Store['jsonrpc_uri']);
     socket.onopen = event => socket.send(message);
     socket.onclose = reject;
     socket.onmessage = event => {
