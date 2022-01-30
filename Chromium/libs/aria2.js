@@ -1,10 +1,8 @@
-var aria2Alive = -1;
-
 function aria2RPCCall(json, resolve, reject, alive) {
     var message = JSON.stringify( json.method ? {id: '', jsonrpc: 2, method: json.method, params: [aria2Store['secret_token']].concat(json.params ?? [])} :
         {id: '', jsonrpc: 2, method: 'system.multicall', params: [json.map( ({method, params = []}) => ({id: '', jsonrpc: 2, methodName: method, params: [aria2Store['secret_token'], ...params]}) )]} );
     var worker = aria2Store['jsonrpc_uri'].startsWith('http') ? aria2XMLRequest : aria2WebSocket;
-    alive && (aria2Alive = setInterval(() => worker(message, resolve, reject), aria2Store['refresh_interval']));
+    alive && setInterval(() => worker(message, resolve, reject), aria2Store['refresh_interval']);
     worker(message, resolve, reject);
 }
 
@@ -36,6 +34,7 @@ function aria2RPCStatus(indicate) {
                 var index = active.indexOf(gid);
                 method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) && aria2Start(gid) :
                     method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1) && method === 'aria2.onDownloadComplete' && aria2Complete(gid);
+                indicate(active.length + '') ?? resolve(socket);
             };
         }, error => indicate('E'));
     });
