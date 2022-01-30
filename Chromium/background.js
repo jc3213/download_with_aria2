@@ -34,12 +34,8 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
 
 async function statusIndicator() {
     jsonrpc = await aria2RPCStatus(text => {
-        chrome.browserAction.setBadgeText({text: text ? text === '0' ? '' : text : 'E'});
+        chrome.browserAction.setBadgeText({text: text === '0' ? '' : text});
         chrome.browserAction.setBadgeBackgroundColor({color: text ? '#3cc' : '#c33'});
-    }, gid => {
-        console.log('Download started!', gid)
-    }, gid => {
-        console.log('Download finished!', gid);
     });
 }
 

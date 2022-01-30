@@ -25,7 +25,7 @@ function aria2WebSocket(message, resolve, reject) {
     };
 }
 
-function aria2RPCStatus(indicate, onstart, onfinish) {
+function aria2RPCStatus(indicate) {
     return new Promise(resolve => {
         aria2RPCCall({method: 'aria2.tellActive'}, result => {
             var active = result.map(({gid}) => gid);
@@ -34,10 +34,17 @@ function aria2RPCStatus(indicate, onstart, onfinish) {
             socket.onmessage = event => {
                 var {method, params: [{gid}]} = JSON.parse(event.data);
                 var index = active.indexOf(gid);
-                method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) && onstart(gid):
-                    method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1) && onfinish(gid);
-                indicate(active.length + '') ?? resolve(socket);
+                method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) && aria2Start(gid) :
+                    method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1) && method === 'aria2.onDownloadComplete' && aria2Complete(gid);
             };
-        }, error => indicate());
+        }, error => indicate('E'));
     });
+}
+
+function aria2Start(gid) {
+    console.log('Download start!', gid);
+}
+
+function aria2Complete(gid) {
+    console.log('Download complete!', gid);
 }

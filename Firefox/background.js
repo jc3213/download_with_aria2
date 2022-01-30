@@ -61,10 +61,6 @@ async function statusIndicator() {
     jsonrpc = await aria2RPCStatus(text => {
         browser.browserAction.setBadgeText({text: text ? text === '0' ? '' : text : 'E'});
         browser.browserAction.setBadgeBackgroundColor({color: text ? '#3cc' : '#c33'});
-    }, gid => {
-        console.log('Download started!', gid)
-    }, gid => {
-        console.log('Download finished!', gid);
     });
 }
 
