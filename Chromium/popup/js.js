@@ -22,11 +22,8 @@ document.querySelector('#task_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#purdge_btn').addEventListener('click', event => {
-    aria2RPCCall({method: 'aria2.purgeDownloadResult'}, result => {
-        activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
-        aria2Error = clearInterval(aria2Alive) ?? 0;
-        aria2RPCClient();
-    });
+    aria2RPCCall({method: 'aria2.tellStopped', params: [0, 99]}, stopped => stopped.forEach(({gid}) => document.querySelector('[data-gid="' + gid + '"]').remove()));
+    aria2RPCCall({method: 'aria2.purgeDownloadResult'});
 });
 
 document.querySelector('#options_btn').addEventListener('click', event => {
