@@ -1,7 +1,7 @@
 var aria2Alive = -1;
 
 function aria2RPCCall(json, resolve, reject, alive) {
-    var message = JSON.stringify( json.method ? {id: '', jsonrpc: 2, method: json.method, params: [aria2Store['secert_token']].concat(json.params ?? [])} :
+    var message = JSON.stringify( json.method ? {id: '', jsonrpc: 2, method: json.method, params: [aria2Store['secret_token']].concat(json.params ?? [])} :
         {id: '', jsonrpc: 2, method: 'system.multicall', params: [json.map( ({method, params = []}) => ({id: '', jsonrpc: 2, methodName: method, params: [aria2Store['secret_token'], ...params]}) )]} );
     var worker = aria2Store['jsonrpc_uri'].startsWith('http') ? aria2XMLRequest : aria2WebSocket;
     alive && (aria2Alive = setInterval(() => worker(message, resolve, reject), aria2Store['refresh_interval']));
