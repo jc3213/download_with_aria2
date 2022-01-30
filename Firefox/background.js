@@ -59,7 +59,7 @@ console.log('Failed to Capture', url, filename, responseHeaders);
 
 async function statusIndicator() {
     jsonrpc = await aria2RPCStatus(text => {
-        browser.browserAction.setBadgeText({text: text ? text === '0' ? '' : text : 'E'});
+        browser.browserAction.setBadgeText({text: text === '0' ? '' : text});
         browser.browserAction.setBadgeBackgroundColor({color: text ? '#3cc' : '#c33'});
     });
 }
