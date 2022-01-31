@@ -14,8 +14,7 @@ function decodeRFC5987(text) {
         return decodeFileName(body);
     }
     var result = [];
-    var input = body.match(/%[0-9a-fA-F]{2}|./g) ?? [];
-    input.forEach(s => {
+    (body.match(/%[0-9a-fA-F]{2}|./g) ?? []).forEach(s => {
         var c = s.length === 3 ? parseInt(s.slice(1), 16) : s.charCodeAt(0);
         c < 256 && result.push(c);
     });
