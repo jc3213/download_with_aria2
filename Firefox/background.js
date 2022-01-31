@@ -102,11 +102,11 @@ function getDomainFromUrl(url) {
 }
 
 function getFileName(disposition) {
-    var RFC2047 = /filename="?(=\?[^;]+\?=)"?/.exec(disposition);
+    var RFC2047 = /filename="?(=\?[^;]+\?=)/.exec(disposition);
     if (RFC2047) {
         return decodeRFC2047(RFC2047[1]);
     }
-    var RFC5987 = /filename\*=([^;]+''[^;]+)/i.exec(disposition);
+    var RFC5987 = /filename\*="?([^;]+''[^";]+)/i.exec(disposition);
     if (RFC5987) {
         return decodeRFC5987(RFC5987[1]);
     }

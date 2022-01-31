@@ -1,29 +1,24 @@
-function decodeRFC5987(text) {
-    try {
-        var code = text.slice(0, text.indexOf('\''));
-        var body = text.slice(text.lastIndexOf('\'') + 1);
-        if (['utf-8', 'utf8'].includes(code.toLowerCase())) {
-            return decodeURI(body);
-        }
-        var result = [];
-        var input = body.match(/%[0-9a-fA-F]{2}|./g) ?? [];
-        input.forEach(b => {
-            var code = b.length === 3 ? parseInt(b.slice(1), 16) : b.charCodeAt(0);
-            code < 256 && result.push(code);
-        });
-        return new TextDecoder(code).decode(Uint8Array.from(result));
-    }
-    catch {
-        return undefined;
-    }
-}
-function decodeISO8859_1(text) {
+function decodeISO8859(text, code) {
     var result = [];
     [...text].forEach(c => {
         var code = c.charCodeAt(0);
         code < 256 && result.push(code);
     });
-    return new TextDecoder(document.characterSet ?? 'UTF-8').decode(Uint8Array.from(result));
+    return new TextDecoder(code ?? 'UTF-8').decode(Uint8Array.from(result));
+}
+function decodeRFC5987(text) {
+    var head = text.slice(0, text.indexOf('\''));
+    var body = text.slice(text.lastIndexOf('\'') + 1);
+    if (['utf-8', 'utf8'].includes(head.toLowerCase())) {
+        return body.includes('%') ? decodeURI(body) : decodeISO8859(body, 'UTF-8');
+    }
+    var result = [];
+    var input = body.match(/%[0-9a-fA-F]{2}|./g) ?? [];
+    input.forEach(b => {
+        var code = b.length === 3 ? parseInt(b.slice(1), 16) : b.charCodeAt(0);
+        code < 256 && result.push(code);
+    });
+    return new TextDecoder(head).decode(Uint8Array.from(result));
 }
 function decodeRFC2047Word(value) {
     try {
@@ -67,7 +62,7 @@ function decodeFileName(text) {
     }
     catch { }
     try {
-        return decodeISO8859_1(text);
+        return decodeISO8859(text);
     }
     catch {
         return '';
