@@ -1,14 +1,16 @@
-function parseRFC5987(value) {
+function decodeRFC5987(text) {
     try {
-        const parts = value.split('\'');
-        if (parts.length !== 3)
-            return undefined;
-        if (['utf-8', 'utf8'].includes(parts[0].toLowerCase()))
-            return decodeURIComponent(parts[2]);
-        const arr = (parts[2].match(/%[0-9a-fA-F]{2}|./g) || [])
-            .map(v => v.length === 3 ? parseInt(v.slice(1), 16) : v.charCodeAt(0))
-            .filter(v => v <= 255);
-        return (new TextDecoder(parts[0])).decode(Uint8Array.from(arr));
+        var code = text.slice(0, text.indexOf('\''));
+        var body = text.slice(text.lastIndexOf('\'') + 1);
+        if (['utf-8', 'utf8'].includes(code.toLowerCase())) {
+            return decodeURI(body);
+        }
+        var result = [];
+        var array = body.match(/%[0-9a-fA-F]{2}|./g).forEach(b => {
+            var code = b.length === 3 ? parseInt(b.slice(1), 16) : b.charCodeAt(0);
+            code < 256 && result.push(code);
+        });
+        return new TextDecoder(code).decode(Uint8Array.from(arr));
     }
     catch {
         return undefined;
@@ -59,14 +61,6 @@ function decodeRFC2047(text) {
     return result;
 }
 function decodeFileName(text) {
-    var RFC5987 = parseRFC5987(text);
-    if (RFC5987 !== undefined) {
-        return RFC5987;
-    }
-    var RFC2047 = decodeRFC2047(text);
-    if (RFC2047 !== undefined) {
-        return RFC2047;
-    }
     try {
         return decodeURIComponent(escape(text));
     }

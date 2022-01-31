@@ -102,15 +102,25 @@ function getDomainFromUrl(url) {
 }
 
 function getFileName(disposition) {
-    var match = /([^\?]+)\?.{0,3}$/i.exec(disposition) ?? /filename\*=[^;]*''([^;]+)/.exec(disposition) ?? /^[^;]+;[^;]*filename=([^;]+);?/.exec(disposition);
+    if (!disposition) {
+        return '';
+    }
+    var RFC2047 = /filename="?(=\?[^;]+\?=)"?/.exec(disposition);
+    if (RFC2047) {
+        return decodeRFC2047(RFC2047[1]);
+    }
+    var RFC5987 = /filename\*=([^;]+''[^;]+)/i.exec(disposition);
+    if (RFC5987) {
+        return decodeRFC5987(RFC5987[1]);
+    }
+    var match = /filename=([^;]+);?/.exec(disposition);
     if (match) {
         var result = match.pop();
-console.log(disposition + '\n' + result);
-        try { result = atob(result) } catch(error) {}
+console.log(disposition + '\n' + match + '\n' + result);
         var filename = decodeFileName(result.replaceAll('"', ''));
 console.log(filename);
     }
-    return filename;
+    return filename ?? '';
 }
 
 function getFileExtension(filename) {
