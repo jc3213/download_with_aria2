@@ -6,11 +6,12 @@ function decodeRFC5987(text) {
             return decodeURI(body);
         }
         var result = [];
-        var array = body.match(/%[0-9a-fA-F]{2}|./g).forEach(b => {
+        var input = body.match(/%[0-9a-fA-F]{2}|./g) ?? [];
+        input.forEach(b => {
             var code = b.length === 3 ? parseInt(b.slice(1), 16) : b.charCodeAt(0);
             code < 256 && result.push(code);
         });
-        return new TextDecoder(code).decode(Uint8Array.from(arr));
+        return new TextDecoder(code).decode(Uint8Array.from(result));
     }
     catch {
         return undefined;
