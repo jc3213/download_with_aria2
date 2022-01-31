@@ -100,10 +100,10 @@ function getFileName(disposition) {
         var result = match.pop();
 console.log(disposition + '\n' + result);
         try { result = atob(result) } catch(error) {}
-        var filename = decodeFilename(result);
+        var filename = decodeFilename(result.replaceAll('"', ''));
 console.log(filename);
     }
-    return filename ?? '';
+    return /[^\u0000-\u007f]/g.test(filename) ? filename : '';
 }
 
 function getFileExtension(filename) {
