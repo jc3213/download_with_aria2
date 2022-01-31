@@ -43,17 +43,15 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     responseHeaders.forEach(({name, value}) => match.includes(name = name.toLowerCase()) && (match[0][name.slice(name.indexOf('-') + 1)] = value));
     var {disposition, type, length} = match[0];
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
-console.log('--------------------------\n' + originUrl)
+console.log('--------------------------\n' + url + '\n' + originUrl);
         var out = getFileName(disposition);
+console.log(out.includes('?') || !/[^\u0000-\u007f]/g.test(out) ? 'Mal-formated filename: ' + out : out);
         var domain = getDomainFromUrl(originUrl);
         if (captureDownload(domain, getFileExtension(out), length)) {
-console.log(tabId);
             var {cookieStoreId} = await browser.tabs.get(tabId);
-console.log(cookieStoreId);
-            startDownload(url, originUrl, domain, cookieStoreId, {out});
+            startDownload(url, originUrl, domain, cookieStoreId, out.includes('?') || !/[^\u0000-\u007f]/g.test(out) ? {} : {out});
             return {cancel: true};
         }
-console.log('Failed to Capture', url, filename, responseHeaders);
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
@@ -98,17 +96,15 @@ function getDomainFromUrl(url) {
 }
 
 function getFileName(disposition) {
-    var match = /filename\*=[^;]*''([^;]+)/.exec(disposition) ?? /^[^;]+;[^;]*filename=([^;]+);?/.exec(disposition);
+    var match = /([^\?]+)\?.{0,3}$/i.exec(disposition) ?? /filename\*=[^;]*''([^;]+)/.exec(disposition) ?? /^[^;]+;[^;]*filename=([^;]+);?/.exec(disposition);
     if (match) {
-console.log(disposition, match);
-        var filename = match.pop().replaceAll('"', '');
-        if (!/[^\u0000-\u007f]/g.test(filename)) {
-console.log(decodeURI(filename))
-            return decodeURI(filename);
-        }
-console.log('Non-Standard Filename', filename);
+console.log(disposition + '\n' + match);
+        var result = match.pop();
+        try { result = atob(result) } catch(error) {}
+console.log(result);
+        var filename = decodeURI(result.replaceAll('"'));
     }
-    return '';
+    return filename ?? '';
 }
 
 function getFileExtension(filename) {
