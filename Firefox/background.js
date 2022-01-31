@@ -44,8 +44,8 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     var {disposition, type, length} = match[0];
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
 console.log('--------------------------\n' + url + '\n' + originUrl);
-        var out = getFileName(disposition);
-console.log(out.includes('?') || /[^\u0000-\u007f]/g.test(out) ? 'Mal-formated filename: ' + out : out);
+        var out = parseContentDisposition(disposition);
+console.log(out);
         var domain = getDomainFromUrl(originUrl);
         if (captureDownload(domain, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
@@ -101,8 +101,9 @@ function getFileName(disposition) {
 console.log(disposition + '\n' + match);
         var result = match.pop();
         try { result = atob(result) } catch(error) {}
-console.log(result);
         var filename = decodeURI(result.replaceAll('"'));
+        var encode = new TextEncoder()
+console.log(filename);
     }
     return filename ?? '';
 }
