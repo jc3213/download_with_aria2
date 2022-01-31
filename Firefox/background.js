@@ -107,7 +107,7 @@ function getFileName(disposition) {
         var result = match.pop();
 console.log(disposition + '\n' + result);
         try { result = atob(result) } catch(error) {}
-        var filename = decodeFilename(result.replaceAll('"', ''));
+        var filename = decodeFileName(result.replaceAll('"', ''));
 console.log(filename);
     }
     return filename;
