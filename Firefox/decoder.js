@@ -58,7 +58,7 @@ function decodeRFC2047(text) {
 }
 function decodeFileName(text) {
     try {
-        return /[^\u0000-\u007f]/.test(body) ? decodeISO8859(body) : decodeURI(body);
+        return /[^\u0000-\u007f]/.test(text) ? decodeISO8859(text) : decodeURI(text);
     }
     catch {
         return console.log(text) ?? '';
