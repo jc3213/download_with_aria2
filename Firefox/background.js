@@ -45,11 +45,11 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
 console.log('--------------------------\n' + url + '\n' + originUrl);
         var out = getFileName(disposition);
-console.log(out.includes('?') || !/[^\u0000-\u007f]/g.test(out) ? 'Mal-formated filename: ' + out : out);
+console.log(out.includes('?') || /[^\u0000-\u007f]/g.test(out) ? 'Mal-formated filename: ' + out : out);
         var domain = getDomainFromUrl(originUrl);
         if (captureDownload(domain, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            startDownload(url, originUrl, domain, cookieStoreId, out.includes('?') || !/[^\u0000-\u007f]/g.test(out) ? {} : {out});
+            startDownload(url, originUrl, domain, cookieStoreId, out.includes('?') || /[^\u0000-\u007f]/g.test(out) ? {} : {out});
             return {cancel: true};
         }
     }
