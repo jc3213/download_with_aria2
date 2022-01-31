@@ -22,28 +22,20 @@ function decodeRFC5987(text) {
     return new TextDecoder(head).decode(Uint8Array.from(result));
 }
 function decodeRFC2047Word(text) {
-    try {
-        const parts = text.split('?', 6);
-        if (parts.length !== 5 || parts[0] !== '=' || parts[4] !== '=')
-            return undefined;
-        if (!/^[-\w]+$/.test(parts[1]) || !/[!->@-~]*/.test(parts[3]))
-            return undefined;
-        let arr;
-        if (parts[2] === 'b' || parts[2] === 'B') {
-            arr = [...atob(parts[3])].map(v => v.charCodeAt(0));
+    if (text.startsWith('=?') && text.endsWith('?=')) {
+        var temp = text.slice(2, -2);
+        var qs = temp.indexOf('?');
+        var qe = temp.lastIndexOf('?');
+        if (qe - qs === 2) {
+            var code = temp.slice(0, qs);
+            var type = temp.slice(qs + 1, qe).toLowerCase();
+            var data = temp.slice(qe + 1);
+            var result = type === 'b' ? [...atob(data)].map(s => s.charCodeAt(0)) :
+                type === 'q' ? (parts[2].match(/=[0-9a-fA-F]{2}|./g) || []).map(v => v.length === 3 ?
+                    parseInt(v.slice(1), 16) : v === '_' ? 0x20 : v.charCodeAt(0)) : null;
         }
-        else if (parts[2] === 'q' || parts[2] === 'Q') {
-            arr = (parts[2].match(/=[0-9a-fA-F]{2}|./g) || [])
-                .map(v => v.length === 3 ? parseInt(v.slice(1), 16) :
-                v === '_' ? 0x20 : v.charCodeAt(0));
-        }
-        else
-            return undefined;
-        return new TextDecoder(parts[1]).decode(Uint8Array.from(arr));
     }
-    catch {
-        return undefined;
-    }
+    return result ? new TextDecoder(code).decode(Uint8Array.from(result)) : '';
 }
 function decodeRFC2047(text) {
     console.log('RFC2047', text);
