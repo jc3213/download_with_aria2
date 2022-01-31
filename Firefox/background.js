@@ -113,7 +113,7 @@ function getFileName(disposition) {
     }
     var match = /filename="?([^";]+);?/.exec(disposition);
     if (match) {
-        return decodeFileName(result.match.pop().replaceAll('"', ''));
+        return decodeFileName(result.match.pop());
     }
 console.log('Not supported', disposition);
     return '';
