@@ -52,6 +52,7 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
 console.log('--------------------------\n' + url + '\n' + originUrl + '\n');
         var out = disposition ? getFileName(disposition) : '';
+console.log(out);
         var domain = getDomainFromUrl(originUrl);
         if (captureDownload(domain, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
@@ -115,7 +116,7 @@ function getFileName(disposition) {
         var result = match.pop();
         return decodeFileName(result.replaceAll('"', ''));
     }
-console.log(disposition);
+console.log('Not supported', disposition);
     return '';
 }
 
