@@ -1,10 +1,10 @@
-function decodeISO8859(text, code) {
+function decodeISO8859(text) {
     var result = [];
-    [...text].forEach(c => {
-        var code = c.charCodeAt(0);
-        code < 256 && result.push(code);
+    [...text].forEach(s => {
+        var c = s.charCodeAt(0);
+        c < 256 && result.push(c);
     });
-    return new TextDecoder(code ?? 'UTF-8').decode(Uint8Array.from(result));
+    return new TextDecoder(document.characterSet ?? 'UTF-8').decode(Uint8Array.from(result));
 }
 function decodeRFC5987(text) {
     console.log('RFC5987', text);
@@ -15,9 +15,9 @@ function decodeRFC5987(text) {
     }
     var result = [];
     var input = body.match(/%[0-9a-fA-F]{2}|./g) ?? [];
-    input.forEach(b => {
-        var code = b.length === 3 ? parseInt(b.slice(1), 16) : b.charCodeAt(0);
-        code < 256 && result.push(code);
+    input.forEach(s => {
+        var c = s.length === 3 ? parseInt(s.slice(1), 16) : s.charCodeAt(0);
+        c < 256 && result.push(c);
     });
     return new TextDecoder(head).decode(Uint8Array.from(result));
 }
@@ -58,7 +58,7 @@ function decodeRFC2047(text) {
 }
 function decodeFileName(text) {
     try {
-        return /[^\u0000-\u007f]/.test(body) ? decodeISO8859(body, 'UTF-8') : decodeURI(body);
+        return /[^\u0000-\u007f]/.test(body) ? decodeISO8859(body) : decodeURI(body);
     }
     catch {
         return console.log(text) ?? '';
