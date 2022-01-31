@@ -43,13 +43,12 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     responseHeaders.forEach(({name, value}) => match.includes(name = name.toLowerCase()) && (match[0][name.slice(name.indexOf('-') + 1)] = value));
     var {disposition, type, length} = match[0];
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
-console.log('--------------------------\n' + url + '\n' + originUrl);
-        var out = parseContentDisposition(disposition);
-console.log(out);
+console.log('--------------------------\n' + url + '\n' + originUrl + '\n');
+        var out = getFileName(disposition);
         var domain = getDomainFromUrl(originUrl);
         if (captureDownload(domain, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            startDownload(url, originUrl, domain, cookieStoreId, out.includes('?') || /[^\u0000-\u007f]/g.test(out) ? {} : {out});
+            startDownload(url, originUrl, domain, cookieStoreId, {out});
             return {cancel: true};
         }
     }
@@ -98,11 +97,10 @@ function getDomainFromUrl(url) {
 function getFileName(disposition) {
     var match = /([^\?]+)\?.{0,3}$/i.exec(disposition) ?? /filename\*=[^;]*''([^;]+)/.exec(disposition) ?? /^[^;]+;[^;]*filename=([^;]+);?/.exec(disposition);
     if (match) {
-console.log(disposition + '\n' + match);
         var result = match.pop();
+console.log(disposition + '\n' + result);
         try { result = atob(result) } catch(error) {}
-        var filename = decodeURI(result.replaceAll('"'));
-        var encode = new TextEncoder()
+        var filename = decodeFilename(result);
 console.log(filename);
     }
     return filename ?? '';
@@ -120,7 +118,7 @@ async function getFirefoxExclusive(uri) {
     return dir ? {dir, out} : {out};
 }
 
-function showNotification(body = '') {
-    var popup = new Notification(aria2Store['jsonrpc_uri'], {badge: '/icons/icon16.png', body});
-    setTimeout(() => popup.close(), 5000);
+async function showNotification(message = '') {
+    var id = await browser.notifications.create({type: 'basic', iconUrl: '/icons/icon48.png', title: aria2Store['jsonrpc_uri'], message});
+    setTimeout(() => browser.notifications.clear(id), 5000);
 }

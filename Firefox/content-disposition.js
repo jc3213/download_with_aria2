@@ -1,6 +1,3 @@
-function getLegacyFilenameEncoding() {
-    return document.characterSet || 'UTF-8';
-}
 function parseRFC5987(value) {
     try {
         const parts = value.split('\'');
@@ -16,21 +13,6 @@ function parseRFC5987(value) {
     catch {
         return undefined;
     }
-}
-function parseURLEncodedFilename(s) {
-    try {
-        const decoded = decodeURIComponent(s);
-        if (decoded !== s)
-            return decoded;
-    }
-    catch { }
-    try {
-        const seq = unescape(s);
-        if (seq !== s)
-            return decodeISO8859_1(seq);
-    }
-    catch { }
-    return s;
 }
 function decodeISO8859_1(seq) {
     const arr = [...seq].map(v => v.charCodeAt(0)).filter(v => v <= 255);
@@ -73,11 +55,14 @@ function parseRFC2047(value) {
     }
     return result;
 }
-function parseLegacyFilename(value) {
-    {
-        const result = parseRFC2047(value);
-        if (result !== undefined)
-            return result;
+function decodeFilename(value) {
+    var RFC5987 = parseRFC5987(value);
+    if (RFC5987 !== undefined) {
+        return RFC5987;
+    }
+    var RFC2047 = parseRFC2047(value);
+    if (RFC2047 !== undefined) {
+        return RFC2047;
     }
     try {
         return decodeURIComponent(escape(value));
@@ -89,25 +74,4 @@ function parseLegacyFilename(value) {
     catch {
         return undefined;
     }
-}
-function parseContentDisposition(contentDisposition) {
-    const regex = /^\s*filename(\*?)\s*=\s*("[^"]+"?|(?:[-\w]+'[- \w]+')?[^\s;]+)(;?)/i;
-    let filename = '';
-    for (let match, s = contentDisposition.replace(/^\s*[-\w]+\s*(?:;|$)/, ''); match = regex.exec(s); s = s.replace(regex, '')) {
-        if (!filename || match[1]) {
-            let value = match[2].trim();
-            if (value.startsWith('"')) {
-                value = value.slice(1);
-                if (value.endsWith('"'))
-                    value = value.slice(0, -1);
-            }
-            filename = (match[1] ? parseRFC5987(value) :
-                parseLegacyFilename(value)) || value;
-            if (match[1])
-                break; // star
-        }
-        if (!match[3])
-            break; // semicolon
-    }
-    return filename || undefined;
 }
