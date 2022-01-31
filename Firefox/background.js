@@ -51,7 +51,7 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     var {disposition, type, length} = match[0];
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
 console.log('--------------------------\n' + url + '\n' + originUrl + '\n');
-        var out = getFileName(disposition);
+        var out = disposition ? getFileName(disposition) : '';
         var domain = getDomainFromUrl(originUrl);
         if (captureDownload(domain, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
@@ -102,9 +102,6 @@ function getDomainFromUrl(url) {
 }
 
 function getFileName(disposition) {
-    if (!disposition) {
-        return '';
-    }
     var RFC2047 = /filename="?(=\?[^;]+\?=)"?/.exec(disposition);
     if (RFC2047) {
         return decodeRFC2047(RFC2047[1]);
@@ -116,11 +113,10 @@ function getFileName(disposition) {
     var match = /filename=([^;]+);?/.exec(disposition);
     if (match) {
         var result = match.pop();
-console.log(disposition + '\n' + match + '\n' + result);
-        var filename = decodeFileName(result.replaceAll('"', ''));
-console.log(filename);
+        return decodeFileName(result.replaceAll('"', ''));
     }
-    return filename ?? '';
+console.log(disposition);
+    return '';
 }
 
 function getFileExtension(filename) {
