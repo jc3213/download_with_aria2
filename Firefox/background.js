@@ -111,10 +111,9 @@ function getFileName(disposition) {
     if (RFC5987) {
         return decodeRFC5987(RFC5987[1]);
     }
-    var match = /filename=([^;]+);?/.exec(disposition);
+    var match = /filename="?([^";]+);?/.exec(disposition);
     if (match) {
-        var result = match.pop();
-        return decodeFileName(result.replaceAll('"', ''));
+        return decodeFileName(result.match.pop().replaceAll('"', ''));
     }
 console.log('Not supported', disposition);
     return '';

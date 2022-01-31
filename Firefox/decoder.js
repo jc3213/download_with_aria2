@@ -11,7 +11,7 @@ function decodeRFC5987(text) {
     var head = text.slice(0, text.indexOf('\''));
     var body = text.slice(text.lastIndexOf('\'') + 1);
     if (['utf-8', 'utf8'].includes(head.toLowerCase())) {
-        return /[^\u0000-\u007f]/.test(body) ? decodeISO8859(body, 'UTF-8') : decodeURI(body);
+        return decodeFileName(body);
     }
     var result = [];
     var input = body.match(/%[0-9a-fA-F]{2}|./g) ?? [];
@@ -60,13 +60,9 @@ function decodeRFC2047(text) {
 }
 function decodeFileName(text) {
     try {
-        return decodeURIComponent(escape(text));
-    }
-    catch { }
-    try {
-        return decodeISO8859(text);
+        return /[^\u0000-\u007f]/.test(body) ? decodeISO8859(body, 'UTF-8') : decodeURI(body);
     }
     catch {
-        return '';
+        return console.log(text) ?? '';
     }
 }
