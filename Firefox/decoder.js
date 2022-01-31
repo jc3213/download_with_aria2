@@ -53,7 +53,7 @@ function decodeRFC2047(text) {
         if (decode) {
             result += decode;
         }
-    }
+    });
     return result;
 }
 function decodeFileName(text) {
