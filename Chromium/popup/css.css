@@ -36,7 +36,7 @@
     grid-column-gap: 0.5%;
 }
 
-.module > * > span, .detail > * > span {
+.detail > * > span {
     margin-left: 5px;
     background-color: #fff;
 }
@@ -54,7 +54,6 @@
 .block {
     position: absolute;
     top: 0px;
-    height: 100%;
     width: 100%;
 }
 
