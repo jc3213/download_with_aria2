@@ -14,9 +14,6 @@
     "common_disabled": {
         "message": "Disabled"
     },
-    "common_notification": {
-        "message": "Show Notification"
-    },
     "common_advanced": {
         "message": "Advanced"
     },
@@ -79,18 +76,6 @@
     },
     "option_jsonrpc_refresh_desc": {
         "message": "Set task manager refresh interval"
-    },
-    "option_download_start": {
-        "message": "When Download Starts"
-    },
-    "option_download_start_desc": {
-        "message": "What to do when a download starts"
-    },
-    "option_download_finish": {
-        "message": "When Download Finishes"
-    },
-    "option_download_finish_desc": {
-        "message": "What to do when a download finishes"
     },
     "option_useragent": {
         "message": "User Agent"

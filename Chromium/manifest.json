@@ -16,7 +16,6 @@
     "background": {
         "scripts": [
             "libs/aria2.js",
-            "libs/tools.js",
             "background.js"
         ]
     },

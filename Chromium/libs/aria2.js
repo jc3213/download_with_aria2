@@ -47,8 +47,3 @@ function aria2Start(gid) {
 function aria2Complete(gid) {
     console.log('Download complete!', gid);
 }
-
-function aria2Notification(body = '') {
-    var popup = new Notification(aria2Store['jsonrpc_uri'], {badge: '/icons/icon16.png', body});
-    setTimeout(() => popup.close(), 5000);
-}
