@@ -86,20 +86,12 @@ function captureDownload(domain, type, size) {
         aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size'] ? true : false;
 }
 
-function getDomainFromUrl(url) {
-    if (url.startsWith('about') || url.startsWith('chrome')) {
-        return url;
-    }
-    var hostname = new URL(url).hostname;
-    if (hostname.startsWith('[')) {
-        return hostname.slice(1, -1);
-    }
-    var pattern = hostname.split('.');
-    if (pattern.length === 2 || pattern.length === 4 && !isNaN(pattern[3])) {
-        return hostname;
-    }
-    var domain = ['com', 'net', 'org', 'edu', 'gov', 'co', 'ne', 'or', 'me'].includes(pattern[pattern.length - 2]) ? pattern.slice(-3) : pattern.slice(-2);
-    return domain.join('.');
+async function getFirefoxExclusive(uri) {
+    var {os} = await browser.runtime.getPlatformInfo();
+    var index = os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
+    var out = uri.slice(index + 1);
+    var dir = aria2Store['folder_mode'] === '1' ? uri.slice(0, index + 1) : aria2Store['folder_mode'] === '2' ? aria2Store['folder_path'] : null;
+    return dir ? {dir, out} : {out};
 }
 
 function getFileName(disposition) {
@@ -117,21 +109,4 @@ function getFileName(disposition) {
     }
 console.log('Not supported', disposition);
     return '';
-}
-
-function getFileExtension(filename) {
-    return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
-}
-
-async function getFirefoxExclusive(uri) {
-    var {os} = await browser.runtime.getPlatformInfo();
-    var index = os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
-    var out = uri.slice(index + 1);
-    var dir = aria2Store['folder_mode'] === '1' ? uri.slice(0, index + 1) : aria2Store['folder_mode'] === '2' ? aria2Store['folder_path'] : null;
-    return dir ? {dir, out} : {out};
-}
-
-async function showNotification(message = '') {
-    var id = await browser.notifications.create({type: 'basic', iconUrl: '/icons/icon48.png', title: aria2Store['jsonrpc_uri'], message});
-    setTimeout(() => browser.notifications.clear(id), 5000);
 }

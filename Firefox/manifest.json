@@ -18,6 +18,7 @@
     "background": {
         "scripts": [
             "libs/aria2.js",
+            "libs/tools.js",
             "decoder.js",
             "background.js"
         ]
