@@ -56,4 +56,3 @@ function captureDownload(domain, type, size) {
         aria2Store['capture_resolve'].includes(type) ? true :
         aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size'] ? true : false;
 }
-
