@@ -10,6 +10,8 @@ chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
 
 chrome.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
+    aria2Store['download_start'] = aria2Store['download_start'] ?? '1';
+    aria2Store['download_finish'] = aria2Store['download_finish'] ?? '0';
     statusIndicator() || !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
 });
 

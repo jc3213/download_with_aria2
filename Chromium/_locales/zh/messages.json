@@ -14,6 +14,9 @@
     "common_disabled": {
         "message": "禁用"
     },
+    "common_notification": {
+        "message": "提醒我"
+    },
     "common_advanced": {
         "message": "进阶"
     },
@@ -76,6 +79,18 @@
     },
     "option_jsonrpc_refresh_desc": {
         "message": "设置任务管理器刷新间隔"
+    },
+    "option_download_start": {
+        "message": "下载开始时"
+    },
+    "option_download_start_desc": {
+        "message": "当下载开始时应该做什么"
+    },
+    "option_download_finish": {
+        "message": "下载完成时"
+    },
+    "option_download_finish_desc": {
+        "message": "当下载完成时应该做什么"
     },
     "option_useragent": {
         "message": "用户代理"
