@@ -44,7 +44,7 @@ function startDownload(url, referer, domain, options = {}) {
         options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2Store['user_agent']];
         cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
         options['all-proxy'] = aria2Store['proxy_include'].includes(domain) ? aria2Store['proxy_server'] : '';
-        aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
+        aria2RPCCall({method: 'aria2.addUri', params: [[url], options]});
     });
 }
 
@@ -57,27 +57,3 @@ function captureDownload(domain, type, size) {
         aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size'] ? true : false;
 }
 
-function getDomainFromUrl(url) {
-    if (url.startsWith('about') || url.startsWith('chrome')) {
-        return url;
-    }
-    var hostname = new URL(url).hostname;
-    if (hostname.startsWith('[')) {
-        return hostname.slice(1, -1);
-    }
-    var pattern = hostname.split('.');
-    if (pattern.length === 2 || pattern.length === 4 && !isNaN(pattern[3])) {
-        return hostname;
-    }
-    var domain = ['com', 'net', 'org', 'edu', 'gov', 'co', 'ne', 'or', 'me'].includes(pattern[pattern.length - 2]) ? pattern.slice(-3) : pattern.slice(-2);
-    return domain.join('.');
-}
-
-function getFileExtension(filename) {
-    return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
-}
-
-function showNotification(body = '') {
-    var popup = new Notification(aria2Store['jsonrpc_uri'], {badge: '/icons/icon16.png', body});
-    setTimeout(() => popup.close(), 5000);
-}

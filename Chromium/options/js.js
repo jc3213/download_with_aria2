@@ -25,11 +25,10 @@ document.querySelector('#export_btn').addEventListener('click', event => {
     saver.click();
 });
 
-document.querySelector('#import_btn').addEventListener('change', event => {
-    readFileAsBinary(event.target.files[0], data => {
-        chrome.storage.local.set(JSON.parse(atob(data)));
-        setTimeout(() => location.reload(), 500);
-    });
+document.querySelector('#import_btn').addEventListener('change', async event => {
+    var text = await promiseFileReader(event.target.files[0]);
+    chrome.storage.local.set(JSON.parse(text));
+    setTimeout(() => location.reload(), 500);
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
