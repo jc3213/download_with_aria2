@@ -33,3 +33,12 @@ function promiseFileReader(file, method = 'readAsText') {
         reader[method](file);
     });
 }
+
+function showNotification(message = '') {
+    chrome.notifications.create({
+        type: 'basic',
+        title: store['jsonrpc_uri'],
+        iconUrl: '/icons/icon48.png',
+        message
+    });
+}
