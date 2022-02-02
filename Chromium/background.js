@@ -25,8 +25,8 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
     if (aria2Store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
-    chrome.tabs.query({active: true, currentWindow: true}, ([{url}]) => {
-        var referer = referrer ?? url ?? 'about:blank';
+    chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
+        var referer = referrer ? referrer : tab.url ?? 'about:blank';
         var domain = getDomainFromUrl(referer);
         captureDownload(domain, getFileExtension(filename), fileSize) && chrome.downloads.erase({id}, () => startDownload(finalUrl, referer, domain, {out: filename}));
     });
