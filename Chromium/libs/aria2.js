@@ -23,20 +23,20 @@ function aria2WebSocket(message, resolve, reject) {
     };
 }
 
-function aria2RPCStatus(indicate) {
+function aria2RPCStatus(worker) {
     return new Promise(resolve => {
         aria2RPCCall({method: 'aria2.tellActive'}, result => {
             var active = result.map(({gid}) => gid);
-            indicate(active.length + '');
             var socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
+            worker(active.length + '') ?? resolve(socket);
             socket.onmessage = event => {
                 var {method, params: [{gid}]} = JSON.parse(event.data);
                 var index = active.indexOf(gid);
                 method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) && aria2Start(gid) :
                     method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1) && method === 'aria2.onDownloadComplete' && aria2Complete(gid);
-                indicate(active.length + '') ?? resolve(socket);
+                worker(active.length + '');
             };
-        }, error => indicate('E'));
+        }, error => worker('E'));
     });
 }
 
