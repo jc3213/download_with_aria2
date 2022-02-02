@@ -41,7 +41,7 @@ printButton(document.querySelector('#create [data-feed]'));
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    entries && entries.forEach(url => aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}));
+    entries && entries.forEach(url => aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url)));
     document.querySelector('#entries').value = '';
     document.body.setAttribute('data-popup', 'main');
 });
@@ -50,8 +50,9 @@ document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none'
 document.querySelector('#upload_btn').addEventListener('change', event => {
     var options = createOptions();
     [...event.target.files].forEach(async file => {
+        var method = file.name.endsWith('torrent') ? 'aria2.addTorrent' : 'aria2.addMetalink';
         var data = await promiseFileReader(file, 'readAsDataURL');
-        aria2RPCCall({method: file.name.endsWith('torrent') ? 'aria2.addTorrent' : 'aria2.addMetalink', params: [data.slice(data.indexOf(',') + 1), options]});
+        aria2RPCCall({method, params: [data.slice(data.indexOf(',') + 1), options]}, result => showNotification(file.name));
     });
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
