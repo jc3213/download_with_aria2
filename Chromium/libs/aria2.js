@@ -32,23 +32,10 @@ function aria2RPCStatus(worker) {
             socket.onmessage = event => {
                 var {method, params: [{gid}]} = JSON.parse(event.data);
                 var index = active.indexOf(gid);
-                method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) && aria2Start(gid) :
-                    method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1) && method === 'aria2.onDownloadComplete' && aria2Complete(gid);
+                method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) && console.log('Download start!', gid) :
+                    method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1) && method === 'aria2.onDownloadComplete' && console.log('Download complete!', gid);
                 worker(active.length + '');
             };
         }, error => worker('E'));
     });
-}
-
-function aria2Start(gid) {
-    console.log('Download start!', gid);
-}
-
-function aria2Complete(gid) {
-    console.log('Download complete!', gid);
-}
-
-function aria2Notification(body = '') {
-    var popup = new Notification(aria2Store['jsonrpc_uri'], {badge: '/icons/icon16.png', body});
-    setTimeout(() => popup.close(), 5000);
 }
