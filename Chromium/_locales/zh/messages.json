@@ -8,9 +8,6 @@
     "common_default": {
         "message": "默认"
     },
-    "common_sample": {
-        "message": "样例"
-    },
     "common_disabled": {
         "message": "禁用"
     },

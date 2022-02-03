@@ -8,9 +8,6 @@
     "common_default": {
         "message": "Default"
     },
-    "common_sample": {
-        "message": "Sample"
-    },
     "common_disabled": {
         "message": "Disabled"
     },
