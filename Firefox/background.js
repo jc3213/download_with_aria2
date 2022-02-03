@@ -50,9 +50,9 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     responseHeaders.forEach(({name, value}) => match.includes(name = name.toLowerCase()) && (match[0][name.slice(name.indexOf('-') + 1)] = value));
     var {disposition, type, length} = match[0];
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
-console.log('--------------------------\n' + url + '\n' + originUrl + '\n');
+        console.log('--------------------------\n' + url + '\n' + originUrl + '\n');
         var out = disposition ? getFileName(disposition) : '';
-console.log(out);
+        console.log(out);
         var domain = getDomainFromUrl(originUrl);
         if (captureDownload(domain, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
@@ -107,7 +107,7 @@ function getFileName(disposition) {
     if (match) {
         return decodeFileName(match.pop());
     }
-console.log('Not supported', disposition);
+    console.log('Not supported', disposition);
     return '';
 }
 
@@ -119,6 +119,7 @@ function decodeISO8859(text) {
     });
     return new TextDecoder(document.characterSet ?? 'UTF-8').decode(Uint8Array.from(result));
 }
+
 function decodeRFC5987(text) {
     console.log('RFC5987', text);
     var head = text.slice(0, text.indexOf('\''));
@@ -133,33 +134,31 @@ function decodeRFC5987(text) {
     });
     return new TextDecoder(head).decode(Uint8Array.from(result));
 }
-function decodeRFC2047Word(text) {
-    if (text.startsWith('=?') && text.endsWith('?=')) {
-        var temp = text.slice(2, -2);
-        var qs = temp.indexOf('?');
-        var qe = temp.lastIndexOf('?');
-        if (qe - qs === 2) {
-            var code = temp.slice(0, qs);
-            var type = temp.slice(qs + 1, qe).toLowerCase();
-            var data = temp.slice(qe + 1);
-            var result = type === 'b' ? [...atob(data)].map(s => s.charCodeAt(0)) :
-                type === 'q' ? (parts[2].match(/=[0-9a-fA-F]{2}|./g) || []).map(v => v.length === 3 ?
-                    parseInt(v.slice(1), 16) : v === '_' ? 0x20 : v.charCodeAt(0)) : null;
-        }
-    }
-    return result ? new TextDecoder(code).decode(Uint8Array.from(result)) : '';
-}
+
 function decodeRFC2047(text) {
     console.log('RFC2047', text);
     var result = '';
     text.split(/\s+/).forEach(s => {
-        var decode = decodeRFC2047Word(s);
+        if (s.startsWith('=?') && s.endsWith('?=')) {
+            var temp = s.slice(2, -2);
+            var qs = temp.indexOf('?');
+            var qe = temp.lastIndexOf('?');
+            if (qe - qs === 2) {
+                var code = temp.slice(0, qs);
+                var type = temp.slice(qs + 1, qe).toLowerCase();
+                var data = temp.slice(qe + 1);
+                var decode = type === 'b' ? [...atob(data)].map(s => s.charCodeAt(0)) :
+                    type === 'q' ? (parts[2].match(/=[0-9a-fA-F]{2}|./g) || []).map(v => v.length === 3 ?
+                        parseInt(v.slice(1), 16) : v === '_' ? 0x20 : v.charCodeAt(0)) : null;
+            }
+        }
         if (decode) {
-            result += decode;
+            result += new TextDecoder(code).decode(Uint8Array.from(result));
         }
     });
     return result;
 }
+
 function decodeFileName(text) {
     try {
         return /[^\u0000-\u007f]/.test(text) ? decodeISO8859(text) : decodeURI(text);
