@@ -26,11 +26,6 @@ function getFileSize(bytes) {
         bytes < 1099511627776 ? (bytes / 10737418.24 | 0) / 100 + ' GB' : (bytes / 10995116277.76 | 0) / 100 + ' TB';
 }
 
-function getDownloadName(gid, [{path, uris}], bittorrent) {
-    return bittorrent ? bittorrent.info ? bittorrent.info.name : path :
-        path ? path.slice(path.lastIndexOf('/') + 1) : uris[0].uri ?? gid;
-}
-
 function promiseFileReader(file, method = 'readAsText') {
     return new Promise(resolve => {
         var reader = new FileReader();

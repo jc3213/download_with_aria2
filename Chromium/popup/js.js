@@ -128,7 +128,7 @@ function printPopupItem(result, index, queue) {
 }
 
 function updatePopupItem(task, {gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    task.querySelector('#name').innerText = getDownloadName(gid, files, bittorrent);
+    task.querySelector('#name').innerText = bittorrent ? bittorrent.info ? bittorrent.info.name : files[0].path : files[0].path ? files[0].path.slice(files[0].path.lastIndexOf('/') + 1) : files[0].uris[0].uri;
     task.querySelector('#local').innerText = getFileSize(completedLength);
     task.querySelector('#infinite').style.display = totalLength === completedLength || downloadSpeed === '0' ? 'inline-block' : printEstimatedTime(task, (totalLength - completedLength) / downloadSpeed) ?? 'none';
     task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
