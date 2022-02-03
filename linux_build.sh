@@ -1,18 +1,32 @@
 #!/bin/bash
-echo "Auto build script for extension <Download with Aria2>"
-echo 1. Chromium
-echo 2. Firefox
-echo -n "Build for "
-read num 
+if [ "$1" == "chromium" ];then 
+    num="1"
+elif [ "$1" == "firefox" ];then      
+    num="2"
+elif [ "$1" == "" ];then
+    echo "Auto build script for extension <Download with Aria2>"
+    echo 1. Chromium
+    echo 2. Firefox
+    echo -n "Build for "
+    read num
+else
+   echo "input error,end execution"
+   exit
+fi
+script_dir=$(cd $(dirname ${BASH_SOURCE[0]}); pwd)
 if [ "$num" == "1" ];then
-    code="Chromium"
+    code="chromium"
 elif [ "$num" == "2" ];then
-   code="Firefox"
+   code="firefox"
 else
    echo "input error,end execution"
    exit
 fi 
 echo "$code"
+build_dir="$script_dir/build/$code"
+if [ ! -d "$build_dir" ]; then
+        mkdir -p $build_dir
+fi
 if ! command -v zip >/dev/null 2>&1; then 
   echo "NOT EXIST zip,exit" 
    exit
@@ -36,13 +50,17 @@ verLen=${#version}
 verEnd=`expr $verLen - 3`
 version=${version:0:verEnd}
 zipFileName="$version.zip"
+zipPath=$build_dir/$zipFileName
+if [  -f "$zipPath" ]; then
+        rm -f $zipPath
+fi
 if [ $num == "2" ];then
-   cd ./Chromium/
-   zip  -r ../$code/$zipFileName ./*
+   cd ./chromium/
+   zip  -r $zipPath ./*
    cd ../
    sleep 3
 fi
 cd ./${code}/
-zip  -r $zipFileName ./*
+zip  -r $zipPath ./*
 sleep 3
 echo "the end"
