@@ -50,9 +50,9 @@ document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none'
 document.querySelector('#upload_btn').addEventListener('change', event => {
     var options = createOptions();
     [...event.target.files].forEach(async file => {
-        var method = file.name.endsWith('torrent') ? 'aria2.addTorrent' : 'aria2.addMetalink';
+        var {method, params = []} = file.name.endsWith('torrent') ? {method: 'aria2.addTorrent'} : {method: 'aria2.addMetalink', params: [options]};
         var data = await promiseFileReader(file, 'readAsDataURL');
-        aria2RPCCall({method, params: [data.slice(data.indexOf(',') + 1), options]}, result => showNotification(file.name));
+        aria2RPCCall({method, params: [data.slice(data.indexOf(',') + 1), ...params]}, result => showNotification(file.name));
     });
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
@@ -128,7 +128,7 @@ function printPopupItem(result, index, queue) {
 }
 
 function updatePopupItem(task, {gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    task.querySelector('#name').innerText = bittorrent && bittorrent.info ? bittorrent.info.name : files[0].path ? files[0].path.slice(files[0].path.lastIndexOf('/') + 1) : files[0].uris[0] ? files[0].uris[0].uri : gid;
+    task.querySelector('#name').innerText = getDownloadName(gid, files, bittorrent);
     task.querySelector('#local').innerText = getFileSize(completedLength);
     task.querySelector('#infinite').style.display = totalLength === completedLength || downloadSpeed === '0' ? 'inline-block' : printEstimatedTime(task, (totalLength - completedLength) / downloadSpeed) ?? 'none';
     task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
@@ -198,7 +198,7 @@ function printButton(button, resolve) {
 }
 
 function createOptions() {
-    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2Store['useragent']]};
+    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2Store['user_agent']]};
     document.querySelectorAll('#create input[name]').forEach(field => options[field.name] = field.value);
     return options;
 }
