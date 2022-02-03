@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "3.10.4",
+    "version": "3.10.5",
     "manifest_version": 2,
     "permissions": [
         "contextMenus",
@@ -19,7 +19,6 @@
         "scripts": [
             "libs/aria2.js",
             "libs/tools.js",
-            "decoder.js",
             "background.js"
         ]
     },
