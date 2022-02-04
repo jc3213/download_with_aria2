@@ -1,4 +1,33 @@
+var profile_manager = document.querySelector('#default_profile');
+var profile_name = document.querySelector('#jsonrpc_name');
+var profile_jsonrpc = document.querySelector('#jsonrpc_uri');
+var profile_secret = document.querySelector('#secret_token');
 location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#back_btn').style.display = 'none';
+
+profile_manager.addEventListener('change', event => {
+    var index = event.target.value;
+    if (index === '999') {
+        profile_name.value = 'New Profile(' + aria2Store['jsonrpc_profile'].length + '}';
+        profile_jsonrpc.value = 'http://localhost:6800/jsonrpc';
+        profile_secret.value = '';
+    }
+    else {
+        var {name, jsonrpc, secret} = aria2Store['jsonrpc_profile'][index];
+        profile_name.value = name;
+        profile_jsonrpc.value = jsonrpc;
+        profile_secret.value = secret.slice(6);
+    }
+});
+
+document.querySelector('#save_btn').addEventListener('click', event => {
+    var index = profile_manager.value === '999' ? aria2Store['jsonrpc_profile'].length : profile_manager.value;
+    aria2Store['jsonrpc_profile'][index] = {
+        name: profile_name.value,
+        jsonrpc: profile_jsonrpc.value,
+        secret: 'token:' + profile_secret.value
+    };
+    chrome.storage.local.set(aria2Store);
+});
 
 document.querySelectorAll('[data-option] > button, [data-global] > button').forEach((tab, index) => {
     var type = index < 3 ? 'option' : 'global';
@@ -45,14 +74,25 @@ document.querySelector('#global').addEventListener('change', event => {
 });
 
 function aria2RPCClient() {
+    aria2Store['jsonrpc_profile'].forEach(({name, jsonrpc, secret}, index) => {
+        var menu = document.createElement('option');
+        menu.value = index;
+        menu.innerText = name;
+        profile_manager.insertBefore(menu, profile_manager.childNodes[index]);
+        if (aria2Store['default_profile']) {
+            document.querySelector('#default_profile').value = index;
+            profile_name.value = name;
+            profile_jsonrpc.value = jsonrpc;
+            profile_secret.value = secret.slice(6);
+        }
+    });
     document.querySelectorAll('#option [name]').forEach(field => {
         var value = aria2Store[field.name];
         var array = Array.isArray(value);
-        var token = field.getAttribute('data-token');
         var multi = field.getAttribute('data-multi');
-        field.value = array ? value.join(' ') : token ? value.slice(token.length) : multi ? value / multi : value;
+        field.value = array ? value.join(' ') : multi ? value / multi : value;
         field.addEventListener('change', event => {
-            aria2Store[field.name] = array ? field.value.split(/[\s\n,]+/) : token ? token + field.value : multi ? field.value * multi : field.value;
+            aria2Store[field.name] = array ? field.value.split(/[\s\n,]+/) : multi ? field.value * multi : field.value;
             chrome.storage.local.set(aria2Store);
         });
     });
@@ -64,4 +104,8 @@ function aria2RPCClient() {
             menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });
+}
+
+function profileManager() {
+
 }

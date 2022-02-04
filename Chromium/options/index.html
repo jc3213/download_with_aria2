@@ -24,18 +24,36 @@
         <hr>
         <div id="option" data-option="1">
             <div class="submenu">
-                <div title="option_jsonrpc_uri_desc" i18n_title>
-                    <div class="title" i18n>option_jsonrpc_uri</div>
-                    <div>
-                        <input name="jsonrpc_uri" type="url">
-                    </div>
-                    <span i18n>option_default</span>: <u><i>http://localhost:6800/jsonrpc</i></u>
+                <div title="option_jsonrpc_profile_des" i18n_title>
+                    <span class="title">JSON-RPC Profile</span>
+                    <select id="default_profile">
+                        <option value="999">New Profile</button>
+                    </select>
+                    <button id="save_btn">Save</button>
+                    <button id="default_btn">Default</button>
+                    <button id="delete_btn">Delete</button>
                 </div>
-                <div title="option_jsonrpc_token_desc" i18n_title>
-                    <div class="title" i18n>option_jsonrpc_token</div>
+                <div class="submenu" style="border: 1px outset #333; padding: 15px;">
                     <div>
-                        <input name="secret_token" type="password" data-token="token:" placeholder="$$secret$$">
-                        <data id="show_btn">👁️</data>
+                        <div class="title">option_jsonrpc_name</div>
+                        <div>
+                            <input id="jsonrpc_name">
+                            <data></data>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="title" i18n>option_jsonrpc_uri</div>
+                        <div>
+                            <input id="jsonrpc_uri" type="url">
+                        </div>
+                        <span i18n>option_default</span>: <u><i>http://localhost:6800/jsonrpc</i></u>
+                    </div>
+                    <div>
+                        <div class="title" i18n>option_jsonrpc_token</div>
+                        <div>
+                            <input id="secret_token" type="password" placeholder="$$secret$$">
+                            <data id="show_btn">👁️</data>
+                        </div>
                     </div>
                 </div>
                 <div title="option_jsonrpc_refresh_desc" i18n_title>

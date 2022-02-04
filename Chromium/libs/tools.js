@@ -1,3 +1,10 @@
+function getRPCProfile(json) {
+    var {jsonrpc, secret, name} = json['jsonrpc_profile'][json['default_profile']];
+    aria2_name = name;
+    aria2_jsonrpc = jsonrpc;
+    aria2_secret = secret;
+}
+
 function getDomainFromUrl(url) {
     if (url.startsWith('about') || url.startsWith('chrome')) {
         return url;

@@ -7,7 +7,7 @@ document.querySelectorAll('[i18n_title]').forEach(item => {
 });
 
 chrome.storage.local.get(null, json => {
-    aria2Store = json;
+    aria2Store = getRPCProfile(json) ?? json;
     aria2RPCClient();
 });
 

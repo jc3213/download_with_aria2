@@ -9,15 +9,17 @@ chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
 });
 
 chrome.storage.local.get(null, async json => {
-    aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
+    aria2Store = json['jsonrpc_profile'] ? json : await fetch('/options.json').then(response => response.json());
+    getRPCProfile(aria2Store);
     statusIndicator();
     !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
 });
 
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => aria2Store[key] = newValue);
-    if (changes['jsonrpc_uri'] || changes['secret_token']) {
-        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
+    if (changes['jsonrpc_profile'] || changes['default_profile']) {
+        self.websocket && websocket.readyState === 1 && websocket.close();
+        getRPCProfile(aria2Store);
         statusIndicator();
     }
 });
@@ -34,7 +36,7 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
 });
 
 async function statusIndicator() {
-    jsonrpc = await aria2RPCStatus(text => {
+    websocket = await aria2RPCStatus(text => {
         chrome.browserAction.setBadgeText({text: text === '0' ? '' : text});
         chrome.browserAction.setBadgeBackgroundColor({color: text ? '#3cc' : '#c33'});
     });
