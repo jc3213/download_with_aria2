@@ -35,6 +35,9 @@
     "option_basic": {
         "message": "Basic"
     },
+    "option_advanced": {
+        "message": "Advanced"
+    },
     "option_download": {
         "message": "Download"
     },
@@ -43,9 +46,6 @@
     },
     "option_disabled": {
         "message": "Disabled"
-    },
-    "option_advanced": {
-        "message": "Advanced"
     },
     "option_always": {
         "message": "Always"
