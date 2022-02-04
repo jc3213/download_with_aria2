@@ -7,10 +7,7 @@ location.search === '?popup' ? document.querySelector('#manager').style.display 
 profile_manager.addEventListener('change', event => {
     var index = event.target.value | 0;
     if (index === 999) {
-        profile_name.disabled = false;
-        profile_name.value = 'New Profile(' + aria2Store['jsonrpc_profile'].length + ')';
-        profile_jsonrpc.value = 'http://localhost:6800/jsonrpc';
-        profile_secret.value = '';
+        printProfileDetail(index, 'New Profile(' + aria2Store['jsonrpc_profile'].length + ')', 'http://localhost:6800/jsonrpc', '');
     }
     else {
         var {name, jsonrpc, secret} = aria2Store['jsonrpc_profile'][index];
@@ -22,15 +19,18 @@ document.querySelector('#create_btn').addEventListener('click', event => {
     var index = profile_manager.value | 0;
     var profile = index === 999 ? aria2Store['jsonrpc_profile'].length : index;
     index === 999 ? printNewProfile(profile, profile_name.value) : profile_manager.querySelector('option:nth-child(' + (index + 1) + ')').innerText = profile_name.value;
-    setProfileDetail(index);
+    setProfileDetail(profile);
     chrome.storage.local.set(aria2Store);
 });
 
 document.querySelector('#remove_btn').addEventListener('click', event => {
     var index = profile_manager.value | 0;
     if (index !== 0 && confirm('Are you S ure?')) {
-        aria2Store['jsonrpc_profile'].splice(index, 1);
         profile_manager.querySelector('option[value="' + index + '"]').remove();
+        var {name, jsonrpc, secret} = aria2Store['jsonrpc_profile'][0];
+        printProfileDetail(0, name, jsonrpc, secret);
+        aria2Store['jsonrpc_profile'].splice(index, 1);
+        aria2Store['default_profile'] = '0';
         chrome.storage.local.set(aria2Store);
     }
 });
