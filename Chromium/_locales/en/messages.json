@@ -5,12 +5,6 @@
     "extension_description": {
         "message": "The Aria2 Download Manager for Chromium / Firefox"
     },
-    "download_start": {
-        "message": "Download Start"
-    },
-    "download_complete": {
-        "message": "Download Complete"
-    },
     "time_day": {
         "message": "d"
     },
@@ -50,15 +44,6 @@
     "option_always": {
         "message": "Always"
     },
-    "option_nothing": {
-        "message": "Do Nothing"
-    },
-    "option_notification": {
-        "message": "Notify Me"
-    },
-    "option_protocol": {
-        "message": "Protocol"
-    },
     "option_jsonrpc_uri": {
         "message": "JSON-RPC URI"
     },
@@ -86,18 +71,6 @@
     "option_import": {
         "message": "Import"
     },
-    "option_download_start": {
-        "message": "When Download Start"
-    },
-    "option_download_start_desc": {
-        "message": "What to do then a download start"
-    },
-    "option_download_complete": {
-        "message": "When Download Complete"
-    },
-    "option_download_complete_desc": {
-        "message": "What to do when a download complete"
-    },
     "option_useragent": {
         "message": "User Agent"
     },
@@ -109,6 +82,9 @@
     },
     "option_proxy_uri_desc": {
         "message": "Setting server for \"all-proxy\" option"
+    },
+    "option_protocol": {
+        "message": "Protocol"
     },
     "option_proxy_include": {
         "message": "Proxy Domain Rules"

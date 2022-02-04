@@ -41,7 +41,7 @@ printButton(document.querySelector('#create [data-feed]'));
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    entries && entries.forEach(url => aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}));
+    entries && entries.forEach(url => aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url)));
     document.querySelector('#entries').value = '';
     document.body.setAttribute('data-popup', 'main');
 });
@@ -52,7 +52,7 @@ document.querySelector('#upload_btn').addEventListener('change', event => {
     [...event.target.files].forEach(async file => {
         var {method, params = []} = file.name.endsWith('torrent') ? {method: 'aria2.addTorrent'} : {method: 'aria2.addMetalink', params: [options]};
         var data = await promiseFileReader(file, 'readAsDataURL');
-        aria2RPCCall({method, params: [data.slice(data.indexOf(',') + 1), ...params]});
+        aria2RPCCall({method, params: [data.slice(data.indexOf(',') + 1), ...params]}, result => showNotification(file.name));
     });
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
@@ -127,8 +127,8 @@ function printPopupItem(result, index, queue) {
     result.status === 'active' && updatePopupItem(task, result);
 }
 
-function updatePopupItem(task, {gid, status, bittorrent, files, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    task.querySelector('#name').innerText = getDownloadName(bittorrent, files[0].path, files[0].uris);
+function updatePopupItem(task, {gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
+    task.querySelector('#name').innerText = bittorrent ? bittorrent.info ? bittorrent.info.name : files[0].path : files[0].path ? files[0].path.slice(files[0].path.lastIndexOf('/') + 1) : files[0].uris[0].uri;
     task.querySelector('#local').innerText = getFileSize(completedLength);
     task.querySelector('#infinite').style.display = totalLength === completedLength || downloadSpeed === '0' ? 'inline-block' : printEstimatedTime(task, (totalLength - completedLength) / downloadSpeed) ?? 'none';
     task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;

@@ -5,12 +5,6 @@
     "extension_description": {
         "message": "基于 Chromium / Firefox 浏览器的 Aria2 下载管理器"
     },
-    "download_start": {
-        "message": "下载开始"
-    },
-    "download_complete": {
-        "message": "下载完成"
-    },
     "time_day": {
         "message": "天"
     },
@@ -49,15 +43,6 @@
     },
     "option_always": {
         "message": "总是"
-    },
-    "option_nothing": {
-        "message": "静止"
-    },
-    "option_notification": {
-        "message": "提醒我"
-    },
-    "option_protocol": {
-        "message": "协议"
     },
     "option_jsonrpc_uri": {
         "message": "JSON-RPC 链接"
@@ -109,6 +94,9 @@
     },
     "option_proxy_uri_desc": {
         "message": "设置 \"all-proxy\" 选项的服务器"
+    },
+    "option_protocol": {
+        "message": "协议"
     },
     "option_proxy_include": {
         "message": "代理域名规则"

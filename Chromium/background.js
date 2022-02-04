@@ -44,7 +44,7 @@ function startDownload(url, referer, domain, options = {}) {
         options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2Store['user_agent']];
         cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
         options['all-proxy'] = aria2Store['proxy_include'].includes(domain) ? aria2Store['proxy_server'] : '';
-        aria2RPCCall({method: 'aria2.addUri', params: [[url], options]});
+        aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
     });
 }
 
