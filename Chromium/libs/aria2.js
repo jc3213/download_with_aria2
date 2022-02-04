@@ -32,10 +32,24 @@ function aria2RPCStatus(worker) {
             socket.onmessage = event => {
                 var {method, params: [{gid}]} = JSON.parse(event.data);
                 var index = active.indexOf(gid);
-                method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) && console.log('Download start!', gid) :
-                    method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1) && method === 'aria2.onDownloadComplete' && console.log('Download complete!', gid);
+                method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) && aria2Notification('download_start', gid) :
+                    method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1) && method === 'aria2.onDownloadComplete' && aria2Notification('download_complete', gid);
                 worker(active.length + '');
             };
         }, error => worker('E'));
     });
+}
+
+function aria2Notification(action, gid) {
+    if (aria2Store[action] === '1') {
+        aria2RPCCall({method: 'aria2.tellStatus', params: [gid]}, ({bittorrent, files: [{path, uris}], totalLength, dir}) => {
+            chrome.runtime.getPlatformInfo(({os}) => {
+                var title = chrome.i18n.getMessage(action) + ' GID#' + gid;
+                var name = getDownloadName(bittorrent, path, uris);
+                var slash = os === 'win' ? '\\' : '/';
+                var message = action === 'download_start' ? name : dir + slash + name + ' (' + getFileSize(totalLength) + ')';
+                chrome.notifications.create({type: 'basic', iconUrl: '/icons/icon48.png', title, message});
+            });
+        });
+    }
 }
