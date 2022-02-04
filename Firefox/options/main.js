@@ -1,4 +1,5 @@
 document.querySelector('iframe').addEventListener('load', async event => {
+    event.target.contentWindow.confirm = confirm;
     var store = await browser.storage.local.get(null);
     var {os} = await browser.runtime.getPlatformInfo();
     var danger = false;
