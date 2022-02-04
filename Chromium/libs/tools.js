@@ -26,15 +26,19 @@ function getFileSize(bytes) {
         bytes < 1099511627776 ? (bytes / 10737418.24 | 0) / 100 + ' GB' : (bytes / 10995116277.76 | 0) / 100 + ' TB';
 }
 
-function getDownloadName(bittorrent, path, uris) {
-    return bittorrent ? bittorrent.info ? bittorrent.info.name : path :
-        path ? path.slice(path.lastIndexOf('/') + 1) : uris[0].uri;
-}
-
 function promiseFileReader(file, method = 'readAsText') {
     return new Promise(resolve => {
         var reader = new FileReader();
         reader.onload = () => resolve(reader.result);
         reader[method](file);
+    });
+}
+
+function showNotification(message = '') {
+    chrome.notifications.create({
+        type: 'basic',
+        title: aria2Store['jsonrpc_uri'],
+        iconUrl: '/icons/icon48.png',
+        message
     });
 }

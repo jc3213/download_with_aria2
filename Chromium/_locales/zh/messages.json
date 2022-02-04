@@ -71,18 +71,6 @@
     "option_import": {
         "message": "导入"
     },
-    "option_download_start": {
-        "message": "下载开始时"
-    },
-    "option_download_start_desc": {
-        "message": "下载任务开始时的动作"
-    },
-    "option_download_complete": {
-        "message": "下载完成时"
-    },
-    "option_download_complete_desc": {
-        "message": "下载任务完成时的动作"
-    },
     "option_useragent": {
         "message": "用户代理"
     },
