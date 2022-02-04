@@ -44,17 +44,32 @@
     "option_always": {
         "message": "总是"
     },
+    "option_jsonrpc_profile": {
+        "message": "JSON-RPC 档案"
+    },
+    "option_jsonrpc_profile_desc": {
+        "message": "管理用户的 JSON-RPC 档案"
+    },
+    "option_profile_create": {
+        "message": "新的档案..."
+    },
+    "option_profile_save": {
+        "message": "保存"
+    },
+    "option_profile_remove": {
+        "message": "删除"
+    },
+    "option_profile_confirm": {
+        "message": "你确定要这么做吗？"
+    },
+    "option_jsonrpc_name": {
+        "message": "档案名"
+    },
     "option_jsonrpc_uri": {
         "message": "JSON-RPC 链接"
     },
-    "option_jsonrpc_uri_desc": {
-        "message": "设置 JSON-RPC 界面的链接"
-    },
     "option_jsonrpc_token": {
         "message": "密钥"
-    },
-    "option_jsonrpc_token_desc": {
-        "message": "设置 JSON-RPC 的安全密钥"
     },
     "option_jsonrpc_refresh": {
         "message": "刷新间隔"

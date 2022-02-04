@@ -12,7 +12,7 @@ chrome.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_profile'] ? json : await fetch('/options.json').then(response => response.json());
     getRPCProfile(aria2Store);
     statusIndicator();
-    !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
+    !json['jsonrpc_profile'] && chrome.storage.local.set(aria2Store);
 });
 
 chrome.storage.onChanged.addListener(changes => {

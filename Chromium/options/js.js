@@ -2,6 +2,8 @@ var profile_manager = document.querySelector('#default_profile');
 var profile_name = document.querySelector('#jsonrpc_name');
 var profile_jsonrpc = document.querySelector('#jsonrpc_uri');
 var profile_secret = document.querySelector('#secret_token');
+var message = chrome.i18n.getMessage('option_profile_confirm');
+
 location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#back_btn').style.display = 'none';
 
 profile_manager.addEventListener('change', event => {
@@ -15,7 +17,7 @@ profile_manager.addEventListener('change', event => {
     }
 });
 
-document.querySelector('#create_btn').addEventListener('click', event => {
+document.querySelector('#save_btn').addEventListener('click', event => {
     var index = profile_manager.value | 0;
     var profile = index === 999 ? aria2Store['jsonrpc_profile'].length : index;
     index === 999 ? printNewProfile(profile, profile_name.value) : profile_manager.querySelector('option:nth-child(' + (index + 1) + ')').innerText = profile_name.value;
@@ -25,7 +27,7 @@ document.querySelector('#create_btn').addEventListener('click', event => {
 
 document.querySelector('#remove_btn').addEventListener('click', event => {
     var index = profile_manager.value | 0;
-    if (index !== 0 && confirm('Are you S ure?')) {
+    if (index !== 0 && confirm(message)) {
         profile_manager.querySelector('option[value="' + index + '"]').remove();
         var {name, jsonrpc, secret} = aria2Store['jsonrpc_profile'][0];
         printProfileDetail(0, name, jsonrpc, secret);
@@ -37,7 +39,7 @@ document.querySelector('#remove_btn').addEventListener('click', event => {
 
 document.querySelector('#default_btn').addEventListener('click', event => {
     var index = profile_manager.value;
-    if (index !== aria2Store['default_profile'] && confirm('Are you S ure?')) {
+    if (index !== aria2Store['default_profile'] && confirm(message)) {
         index = index | 0;
         var profile = index === 999 ? aria2Store['jsonrpc_profile'].length : index;
         index === 999 && printNewProfile(profile, profile_name.value);

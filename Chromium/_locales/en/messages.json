@@ -44,17 +44,32 @@
     "option_always": {
         "message": "Always"
     },
+    "option_jsonrpc_profile": {
+        "message": "JSON-RPC Profile"
+    },
+    "option_jsonrpc_profile_desc": {
+        "message": "Manage user profile of JSON-RPC"
+    },
+    "option_profile_create": {
+        "message": "Create New Profile..."
+    },
+    "option_profile_save": {
+        "message": "Save"
+    },
+    "option_profile_remove": {
+        "message": "Remove"
+    },
+    "option_profile_confirm": {
+        "message": "Are you sure... ?"
+    },
+    "option_jsonrpc_name": {
+        "message": "Profile Name"
+    },
     "option_jsonrpc_uri": {
         "message": "JSON-RPC URI"
     },
-    "option_jsonrpc_uri_desc": {
-        "message": "Set URI of JSON-RPC interface"
-    },
     "option_jsonrpc_token": {
         "message": "Secret Token"
-    },
-    "option_jsonrpc_token_desc": {
-        "message": "Set secret authorization \"token\""
     },
     "option_jsonrpc_refresh": {
         "message": "Refresh Interval"
