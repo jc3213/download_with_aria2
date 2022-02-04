@@ -22,12 +22,7 @@ document.querySelector('#create_btn').addEventListener('click', event => {
     var index = profile_manager.value | 0;
     var profile = index === 999 ? aria2Store['jsonrpc_profile'].length : index;
     index === 999 ? printNewProfile(profile, profile_name.value) : profile_manager.querySelector('option:nth-child(' + (index + 1) + ')').innerText = profile_name.value;
-    aria2Store['jsonrpc_profile'][profile] = {
-        name: profile_name.value,
-        jsonrpc: profile_jsonrpc.value,
-        secret: 'token:' + profile_secret.value
-    };
-    profile_manager.value = profile;
+    setProfileDetail(index);
     chrome.storage.local.set(aria2Store);
 });
 
@@ -41,10 +36,13 @@ document.querySelector('#remove_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#default_btn').addEventListener('click', event => {
-    if (confirm('Are you S ure?')) {
-        var index = profile_manager.value | 0;
-        var profie = index === 999 ? document.querySelector('#create_btn').click() ?? aria2Store['jsonrpc_profile'].length : index;
-        aria2Store['default_profile'] = index + '';
+    var index = profile_manager.value;
+    if (index !== aria2Store['default_profile'] && confirm('Are you S ure?')) {
+        index = index | 0;
+        var profile = index === 999 ? aria2Store['jsonrpc_profile'].length : index;
+        index === 999 && printNewProfile(profile, profile_name.value);
+        setProfileDetail(profile);
+        aria2Store['default_profile'] = profile + '';
         chrome.storage.local.set(aria2Store);
     }
 });
@@ -96,11 +94,9 @@ document.querySelector('#global').addEventListener('change', event => {
 function aria2RPCClient() {
     aria2Store['jsonrpc_profile'].forEach(({name, jsonrpc, secret}, index) => {
         printNewProfile(index, name);
-        if (aria2Store['default_profile'] === index + '') {
-            document.querySelector('#default_profile').value = index;
-            printProfileDetail(index, name, jsonrpc, secret);
-        }
+        aria2Store['default_profile'] === index + '' && printProfileDetail(index, name, jsonrpc, secret);
     });
+    document.querySelector('#default_profile').value = aria2Store['default_profile'];
     document.querySelectorAll('#option [name]').forEach(field => {
         var value = aria2Store[field.name];
         var array = Array.isArray(value);
@@ -127,6 +123,7 @@ function printNewProfile(index, name) {
     menu.value = index;
     menu.innerText = name;
     profile_manager.insertBefore(menu, options[index]);
+    profile_manager.value = index;
 }
 
 function printProfileDetail(index, name, jsonrpc, secret) {
@@ -134,4 +131,12 @@ function printProfileDetail(index, name, jsonrpc, secret) {
     profile_name.disabled = index === 0 ? true : false;
     profile_jsonrpc.value = jsonrpc;
     profile_secret.value = secret.slice(6);
+}
+
+function setProfileDetail(index) {
+    aria2Store['jsonrpc_profile'][index] = {
+        name: profile_name.value,
+        jsonrpc: profile_jsonrpc.value,
+        secret: 'token:' + profile_secret.value
+    };
 }
