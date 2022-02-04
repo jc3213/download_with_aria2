@@ -8,13 +8,13 @@
         <div>
             <div data-option="1">
                 <button i18n>option_basic</button>
-                <button i18n>common_advanced</button>
+                <button i18n>option_advanced</button>
                 <button i18n>option_download</button>
             </div>
             <div data-global="1">
                 <button i18n>aria2_http</button>
                 <button i18n>aria2_bittorrent</button>
-                <button i18n>common_advanced</button>
+                <button i18n>option_advanced</button>
             </div>
             <div class="sidemenu">
                 <button id="back_btn" i18n>option_back</button>
@@ -29,7 +29,7 @@
                     <div>
                         <input name="jsonrpc_uri" type="url">
                     </div>
-                    <span i18n>common_default</span>: <u><i>http://localhost:6800/jsonrpc</i></u>
+                    <span i18n>option_default</span>: <u><i>http://localhost:6800/jsonrpc</i></u>
                 </div>
                 <div title="option_jsonrpc_token_desc" i18n_title>
                     <div class="title" i18n>option_jsonrpc_token</div>
@@ -52,6 +52,20 @@
                         <span i18n>option_import</span>
                         <input type="file" accept=".json">
                     </label></button>
+                </div>
+                <div title="option_download_start_desc" i18n_title>
+                    <span class="title" i18n>option_download_start</span>
+                    <select name="download_start">
+                        <option value="0" i18n>option_nothing</option>
+                        <option value="1" i18n>option_notification</option>
+                    </select>
+                </div>
+                <div title="option_download_complete_desc" i18n_title>
+                    <span class="title" i18n>option_download_complete</span>
+                    <select name="download_complete">
+                        <option value="0" i18n>option_nothing</option>
+                        <option value="1" i18n>option_notification</option>
+                    </select>
                 </div>
             </div>
             <div class="submenu">
@@ -79,7 +93,7 @@
                 <div title="option_capture_mode_desc" i18n_title>
                     <span class="title" i18n>option_capture_mode</span>
                     <select name="capture_mode">
-                        <option value="0" i18n>common_disabled</option>
+                        <option value="0" i18n>option_disabled</option>
                         <option value="1" i18n>option_capture_mode_filters</option>
                         <option value="2" i18n>option_always</option>
                     </select>
@@ -91,7 +105,7 @@
                             <input name="capture_size" data-multi="1048576" type="number" min="0">
                             <data>MB</data>
                         </div>
-                        <span i18n>common_disabled</span>: <u><i>0</i></u>
+                        <span i18n>option_disabled</span>: <u><i>0</i></u>
                     </div>
                     <div title="option_capture_resolve_desc" i18n_title>
                         <div class="title" i18n>option_capture_resolve</div>
@@ -129,21 +143,21 @@
                     <div>
                         <input name="max-tries" type="number">
                     </div>
-                    <span i18n>common_default</span>: <u><i>5</i></u>
+                    <span i18n>option_default</span>: <u><i>5</i></u>
                 </div>
                 <div title="aria2_http_wait_desc" i18n_title>
                     <div class="title" i18n>aria2_http_wait</div>
                     <div>
                         <input name="retry-wait" type="number">
                     </div>
-                    <span i18n>common_default</span>: <u><i>0</i></u>
+                    <span i18n>option_default</span>: <u><i>0</i></u>
                 </div>
                 <div title="aria2_http_split_desc" i18n_title>
                     <div class="title" i18n>aria2_http_split</div>
                     <div>
                         <input name="split" type="number">
                     </div>
-                    <span i18n>common_default</span>: <u><i>5</i></u>
+                    <span i18n>option_default</span>: <u><i>5</i></u>
                 </div>
                 <div title="aria2_http_size_desc" i18n_title>
                     <div class="title" i18n>aria2_http_size</div>
@@ -151,7 +165,7 @@
                         <input name="min-split-size" data-size>
                         <data>B</data>
                     </div>
-                    <span i18n>common_default</span>: <u><i>20M</i></u>
+                    <span i18n>option_default</span>: <u><i>20M</i></u>
                 </div>
             </div>
             <div class="submenu">
@@ -160,14 +174,14 @@
                     <div>
                         <input name="listen-port">
                     </div>
-                    <span i18n>common_default</span>: <u><i>6881-6999</i></u>
+                    <span i18n>option_default</span>: <u><i>6881-6999</i></u>
                 </div>
                 <div title="aria2_bt_peers_desc" i18n_title>
                     <div class="title" i18n>aria2_bt_peers</div>
                     <div>
                         <input name="bt-max-peers" type="number">
                     </div>
-                    <span i18n>common_default</span>: <u><i>55</i></u>
+                    <span i18n>option_default</span>: <u><i>55</i></u>
                 </div>
                 <div title="aria2_bt_remove_desc" i18n_title>
                     <div class="title" i18n>aria2_bt_remove</div>
@@ -177,21 +191,21 @@
                             <option value="false">False</option>
                         </select>
                     </div>
-                    <span i18n>common_default</span>: <u><i>False</i></u>
+                    <span i18n>option_default</span>: <u><i>False</i></u>
                 </div>
                 <div title="aria2_bt_ratio_desc" i18n_title>
                     <div class="title" i18n>aria2_bt_ratio</div>
                     <div>
                         <input name="seed-ratio">
                     </div>
-                    <span i18n>common_default</span>: <u><i>1.0</i></u>
+                    <span i18n>option_default</span>: <u><i>1.0</i></u>
                 </div>
                 <div title="aria2_bt_seed_desc" i18n_title>
                     <div class="title" i18n>aria2_bt_seed</div>
                     <div>
                         <input name="seed-time" type="number">
                     </div>
-                    <span i18n>common_default</span>: <u><i>30</i></u>
+                    <span i18n>option_default</span>: <u><i>30</i></u>
                 </div>
             </div>
             <div class="submenu">
@@ -208,14 +222,14 @@
                         <input name="disk-cache" data-size>
                         <data>B</data>
                     </div>
-                    <span i18n>common_default</span>: <u><i>16M</i></u>
+                    <span i18n>option_default</span>: <u><i>16M</i></u>
                 </div>
                 <div title="aria2_max_task_desc" i18n_title>
                     <div class="title" i18n>aria2_max_task</div>
                     <div>
                         <input name="max-concurrent-downloads" type="number">
                     </div>
-                    <span i18n>common_default</span>: <u><i>5</i></u>
+                    <span i18n>option_default</span>: <u><i>5</i></u>
                 </div>
                 <div title="aria2_max_download_desc" i18n_title>
                     <div class="title" i18n>aria2_max_download</div>
@@ -223,7 +237,7 @@
                         <input name="max-overall-download-limit" data-size>
                         <data>B/s</data>
                     </div>
-                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                    <span i18n>option_disabled</span>: <u><i>0</i></u>
                 </div>
                 <div title="aria2_max_upload_desc" i18n_title>
                     <div class="title" i18n>aria2_max_upload</div>
@@ -231,7 +245,7 @@
                         <input name="max-overall-upload-limit" data-size>
                         <data>B/s</data>
                     </div>
-                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                    <span i18n>option_disabled</span>: <u><i>0</i></u>
                 </div>
             </div>
         </div>

@@ -5,15 +5,6 @@
     "extension_description": {
         "message": "基于 Chromium / Firefox 浏览器的 Aria2 下载管理器"
     },
-    "common_default": {
-        "message": "默认"
-    },
-    "common_disabled": {
-        "message": "禁用"
-    },
-    "common_advanced": {
-        "message": "进阶"
-    },
     "download_start": {
         "message": "下载开始"
     },
@@ -44,20 +35,26 @@
     "option_basic": {
         "message": "基础"
     },
+    "option_advanced": {
+        "message": "进阶"
+    },
     "option_download": {
         "message": "下载"
     },
-    "option_manager": {
-        "message": "管理设置"
+    "option_default": {
+        "message": "默认"
     },
-    "option_export": {
-        "message": "导出"
-    },
-    "option_import": {
-        "message": "导入"
+    "option_disabled": {
+        "message": "禁用"
     },
     "option_always": {
         "message": "总是"
+    },
+    "option_nothing": {
+        "message": "静止"
+    },
+    "option_notification": {
+        "message": "提醒我"
     },
     "option_protocol": {
         "message": "协议"
@@ -79,6 +76,27 @@
     },
     "option_jsonrpc_refresh_desc": {
         "message": "设置任务管理器刷新间隔"
+    },
+    "option_manager": {
+        "message": "管理设置"
+    },
+    "option_export": {
+        "message": "导出"
+    },
+    "option_import": {
+        "message": "导入"
+    },
+    "option_download_start": {
+        "message": "下载开始时"
+    },
+    "option_download_start_desc": {
+        "message": "下载任务开始时的动作"
+    },
+    "option_download_complete": {
+        "message": "下载完成时"
+    },
+    "option_download_complete_desc": {
+        "message": "下载任务完成时的动作"
     },
     "option_useragent": {
         "message": "用户代理"

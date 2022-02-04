@@ -5,15 +5,6 @@
     "extension_description": {
         "message": "The Aria2 Download Manager for Chromium / Firefox"
     },
-    "common_default": {
-        "message": "Default"
-    },
-    "common_disabled": {
-        "message": "Disabled"
-    },
-    "common_advanced": {
-        "message": "Advanced"
-    },
     "download_start": {
         "message": "Download Start"
     },
@@ -47,17 +38,23 @@
     "option_download": {
         "message": "Download"
     },
-    "option_manager": {
-        "message": "Manage Options"
+    "option_default": {
+        "message": "Default"
     },
-    "option_export": {
-        "message": "Export"
+    "option_disabled": {
+        "message": "Disabled"
     },
-    "option_import": {
-        "message": "Import"
+    "option_advanced": {
+        "message": "Advanced"
     },
     "option_always": {
         "message": "Always"
+    },
+    "option_nothing": {
+        "message": "Do Nothing"
+    },
+    "option_notification": {
+        "message": "Notify Me"
     },
     "option_protocol": {
         "message": "Protocol"
@@ -79,6 +76,27 @@
     },
     "option_jsonrpc_refresh_desc": {
         "message": "Set task manager refresh interval"
+    },
+    "option_manager": {
+        "message": "Manage Options"
+    },
+    "option_export": {
+        "message": "Export"
+    },
+    "option_import": {
+        "message": "Import"
+    },
+    "option_download_start": {
+        "message": "When Download Start"
+    },
+    "option_download_start_desc": {
+        "message": "What to do then a download start"
+    },
+    "option_download_complete": {
+        "message": "When Download Complete"
+    },
+    "option_download_complete_desc": {
+        "message": "What to do when a download complete"
     },
     "option_useragent": {
         "message": "User Agent"
