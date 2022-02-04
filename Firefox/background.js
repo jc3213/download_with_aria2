@@ -100,8 +100,7 @@ function getFileName(disposition) {
     if (match) {
         return decodeFileName(match.pop());
     }
-    console.log('Not supported', disposition);
-    return '';
+    return console.log('Not supported', disposition) ?? '';
 }
 
 function decodeISO8859(text) {
