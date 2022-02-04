@@ -10,16 +10,9 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
 
 browser.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
-    aria2Store['capture_api'] = aria2Store['capture_api'] ?? '1';
-    !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
     statusIndicator();
-    if (!aria2Store['proxy_include']) {
-        aria2Store['proxy_include'] = [];
-        aria2Store['capture_resolve'] = aria2Store['capture_resolve'] ?? aria2Store['type'] ?? [];
-        delete aria2Store['proxy_resolve'];
-        delete aria2Store['type'];
-        chrome.storage.local.set(aria2Store);
-    }
+    !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
+    aria2Store['capture_api'] = aria2Store['capture_api'] ?? '1';
 });
 
 browser.storage.onChanged.addListener(changes => {
