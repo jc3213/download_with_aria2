@@ -9,16 +9,18 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
 });
 
 browser.storage.local.get(null, async json => {
-    aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
+    aria2Store = json['jsonrpc_profile'] ? json : await fetch('/options.json').then(response => response.json());
+    getRPCProfile(aria2Store);
     statusIndicator();
-    !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
+    !json['jsonrpc_profile'] && chrome.storage.local.set(aria2Store);
     aria2Store['capture_api'] = aria2Store['capture_api'] ?? '1';
 });
 
 browser.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => aria2Store[key] = newValue);
-    if (changes['jsonrpc_uri'] || changes['secret_token']) {
-        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
+    if (changes['jsonrpc_profile'] || changes['default_profile']) {
+        self.websocket && websocket.readyState === 1 && websocket.close();
+        getRPCProfile(aria2Store);
         statusIndicator();
     }
 });
@@ -56,7 +58,7 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
 async function statusIndicator() {
-    jsonrpc = await aria2RPCStatus(text => {
+    websocket = await aria2RPCStatus(text => {
         browser.browserAction.setBadgeText({text: text === '0' ? '' : text});
         browser.browserAction.setBadgeBackgroundColor({color: text ? '#3cc' : '#c33'});
     });
