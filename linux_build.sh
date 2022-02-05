@@ -1,48 +1,72 @@
 #!/bin/bash
-echo "Auto build script for extension <Download with Aria2>"
-echo 1. Chromium
-echo 2. Firefox
-echo -n "Build for "
-read num 
+exists()
+{
+   command -v "$1" >/dev/null 2>&1
+}
+get_json_value()
+{
+     if [ "$3" == "text" ];then
+        grep -oE "\"$2\": \"[^\"]*" "$1" | grep -oE '[^"]*$'
+    elif [ "$3" == "id" ];then
+        grep -oE "\"$2\": [0-9]+" "$1" | grep -oE '[0-9]+'
+    fi
+}
+if [ "$1" == "chromium" ];then 
+   num="1"
+elif [ "$1" == "firefox" ];then	  
+   num="2"
+elif [ "$1" == "" ];then
+   echo "Auto build script for extension <Download with Aria2>"
+   echo 1. Chromium
+   echo 2. Firefox
+   echo -n "Build for "
+   read -r num
+else
+   echo "input error,end execution"
+   exit
+fi
+script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 if [ "$num" == "1" ];then
-    code="Chromium"
+   code="chromium"
 elif [ "$num" == "2" ];then
-   code="Firefox"
+   code="firefox"
 else
    echo "input error,end execution"
    exit
 fi 
 echo "$code"
-if ! command -v zip >/dev/null 2>&1; then 
-  echo "NOT EXIST zip,exit" 
+maincode_dir="$script_dir/chromium"
+build_dir="$script_dir/build/$code"
+code_dir="$script_dir/$code"
+manifestPath="$code_dir/manifest.json"
+if [ ! -d "$build_dir" ]; then
+		mkdir -p "$build_dir"
+fi
+if ! exists zip; then 
+   echo "NOT EXIST zip,exit" 
    exit
 fi
-findContent="version"
-versionFlag=0
-version=""
-for rows in  `cat $code/manifest.json`
-do
-  if [ $versionFlag == "1" ];then
-      version=$rows
-      break
-  fi
-  if [[ $rows == *$findContent* ]];then
-     versionFlag=`expr $versionFlag + 1`
-     continue
-  fi
-done
-version=${version:1}
-verLen=${#version}
-verEnd=`expr $verLen - 3`
-version=${version:0:verEnd}
-zipFileName="$version.zip"
-if [ $num == "2" ];then
-   cd ./Chromium/
-   zip  -r ../$code/$zipFileName ./*
-   cd ../
-   sleep 3
+if [ "$num" == "1" ];then 
+   suffix="crx"
+elif [ "$num" == "2" ];then   
+   suffix="xpi"
 fi
-cd ./${code}/
-zip  -r $zipFileName ./*
-sleep 3
+version="$(get_json_value "$manifestPath" version text)"
+addFileName="$version.$suffix"
+addPath="$build_dir/$addFileName"
+if [  -f "$addPath" ]; then
+   rm -f "$addPath"
+fi
+if [ "$num" == "2" ];then
+   cd "$maincode_dir" || exit
+   zip  -r "$addPath" ./*
+   cd "$script_dir" || exit
+fi
+cd "$code_dir" || exit
+zip  -r "$addPath" ./*
+if  exists firefox-developer-edition ; then 
+   if [ "$2" == "-i" ];then 
+      firefox-developer-edition "$addPath"
+   fi
+fi
 echo "the end"
