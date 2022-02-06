@@ -51,7 +51,7 @@
         "message": "Manage user profile of JSON-RPC"
     },
     "option_profile_create": {
-        "message": "Create New Profile..."
+        "message": "New Profile..."
     },
     "option_profile_save": {
         "message": "Save"

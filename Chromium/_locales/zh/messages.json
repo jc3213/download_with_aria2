@@ -51,7 +51,7 @@
         "message": "管理用户的 JSON-RPC 档案"
     },
     "option_profile_create": {
-        "message": "新的档案..."
+        "message": "新档案..."
     },
     "option_profile_save": {
         "message": "保存"

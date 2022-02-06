@@ -17,6 +17,10 @@ profile_manager.addEventListener('change', event => {
     }
 });
 
+profile_name.addEventListener('change', event => {
+    event.target.value = event.target.value.slice(0, 16);
+});
+
 document.querySelector('#save_btn').addEventListener('click', event => {
     var index = profile_manager.value | 0;
     var profile = index === 999 ? aria2Store['jsonrpc_profile'].length : index;
