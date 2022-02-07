@@ -151,8 +151,8 @@ function printQueueItem({gid, bittorrent, totalLength}) {
     task.querySelector('#invest_btn').addEventListener('click', event => {
         activeId = gid;
         aria2RPCCall([
-            {method: 'aria2.getOption', params: [gid]}, {method: 'aria2.tellStatus', params: [gid]}
-        ], ([[options], [{status, bittorrent, files}]]) => {
+            {method: 'aria2.tellStatus', params: [gid]}, {method: 'aria2.getOption', params: [gid]}
+        ], ([[{status, bittorrent, files}], [options]]) => {
             printOptions(document.querySelectorAll('#manager [name]'), options);
             updateTaskDetail(task, status, bittorrent, files);
             document.body.setAttribute('data-popup', 'aria2');
@@ -162,11 +162,11 @@ function printQueueItem({gid, bittorrent, totalLength}) {
     });
     task.querySelector('#retry_btn').addEventListener('click', event => {
         aria2RPCCall([
-            {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]},
-            {method: 'aria2.removeDownloadResult', params: [gid]}
-        ], ([[files], [options]]) => {
-            aria2RPCCall({method: 'aria2.addUri', params: [files[0].uris.map(({uri}) => uri), options]},
-            result => task.remove());
+            {method: 'aria2.tellStatus', params: [gid]}, {method: 'aria2.getOption', params: [gid]}
+        ], ([[{files: [{path, uris}]}], [options]]) => {
+            options['out'] = path ? path.slice(path.lastIndexOf('/') + 1) : '';
+            aria2RPCCall({method: 'aria2.addUri', params: [uris.map(({uri}) => uri), options]},
+            result => aria2RPCCall({method: 'aria2.removeDownloadResult', params: [gid]}, result => task.remove()));
         });
     });
     task.querySelector('#meter').addEventListener('click', event => {
