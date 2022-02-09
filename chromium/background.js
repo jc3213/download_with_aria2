@@ -10,8 +10,7 @@ chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
 
 chrome.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
-    statusIndicator();
-    !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
+    statusIndicator() || !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
 });
 
 chrome.storage.onChanged.addListener(changes => {
@@ -45,7 +44,7 @@ function startDownload(url, referer, domain, options = {}) {
         options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2Store['user_agent']];
         cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
         options['all-proxy'] = aria2Store['proxy_include'].includes(domain) ? aria2Store['proxy_server'] : '';
-        aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
+        aria2RPCCall('aria2.addUri', [[url], options]).then(result => showNotification(url));
     });
 }
 

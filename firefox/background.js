@@ -67,7 +67,7 @@ async function startDownload(url, referer, domain, storeId = 'firefox-default', 
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2Store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     options['all-proxy'] = aria2Store['proxy_include'].includes(domain) ? aria2Store['proxy_server'] : '';
-    aria2RPCCall({method: 'aria2.addUri', params: [[url], options]}, result => showNotification(url));
+    aria2RPCCall('aria2.addUri', [[url], options]).then(result => showNotification(url));
 }
 
 function captureDownload(domain, type, size) {
