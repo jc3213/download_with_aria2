@@ -112,8 +112,9 @@ function aria2RPCClient() {
     socket.onopen = event => socket.send(message);
     socket.onclose = printPopupError;
     socket.onmessage = event => {
-        try {
-            var [[{numActive, numWaiting, numStopped, downloadSpeed, uploadSpeed}], [active], [waiting], [stopped]] = JSON.parse(event.data).result;
+        var result = JSON.parse(event.data).result;
+        if (result && Array.isArray(result[0])) {
+            var [[{numActive, numWaiting, numStopped, downloadSpeed, uploadSpeed}], [active], [waiting], [stopped]] = result;
             document.querySelector('#active.stats').innerText = numActive;
             document.querySelector('#waiting.stats').innerText = numWaiting;
             document.querySelector('#stopped.stats').innerText = numStopped;
@@ -122,8 +123,6 @@ function aria2RPCClient() {
             active.forEach((active, index) => printPopupItem(active, index, activeQueue));
             waiting.forEach((waiting, index) => printPopupItem(waiting, index, waitingQueue));
             stopped.forEach((stopped, index) => printPopupItem(stopped, index, stoppedQueue));
-        } catch (error) {
-            printPopupError();
         }
     };
     setInterval(() => socket.send(message), aria2Store['refresh_interval']);
