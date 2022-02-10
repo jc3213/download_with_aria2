@@ -87,7 +87,7 @@ printButton(document.querySelector('#manager [data-feed]'), (name, value) => {
 
 document.querySelector('#append button').addEventListener('click', async event => {
     await aria2RPCCall('aria2.changeUri', [activeId, 1, [], [document.querySelector('#append input').value]]);
-    result => document.querySelector('#append input').value = '';
+    document.querySelector('#append input').value = '';
 });
 
 http.addEventListener('click', event => {
