@@ -110,7 +110,7 @@ function aria2RPCClient() {
     ]]});
     var socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
     socket.onopen = event => socket.send(message);
-    socket.onclose = printPopupError;
+    socket.onclose = event => activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
     socket.onmessage = event => {
         var result = JSON.parse(event.data).result;
         if (result && Array.isArray(result[0])) {
@@ -126,11 +126,6 @@ function aria2RPCClient() {
         }
     };
     setInterval(() => socket.send(message), aria2Store['refresh_interval']);
-}
-
-function printPopupError() {
-    activeQueue.innerHTML = 'Error';
-    waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
 }
 
 function printPopupItem(result, index, queue) {
