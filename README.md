@@ -18,8 +18,8 @@
     - `Global Options` page for aria2 jsonrpc
 - Capture browser downloads
     - Switchable APIs  [**Firefox Only**]
-        - `downloads API`
-        - `webRequest API` [**Default**]
+        - `downloads API` [**Default**]
+        - `webRequest API`
     - Capture filter based on file size
     - Capture filter based on file extension [**Firefox only capture MIME type application via webRequest API**]
     - Capture filter based on domain names of referer
