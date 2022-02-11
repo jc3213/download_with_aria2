@@ -13,7 +13,7 @@ class Aria2 {
         });
     }
     socket (message) {
-        return new Primise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             var socket = new WebSocket(this.jsonrpc);
             socket.onopen = event => socket.send(message);
             socket.onclose = reject;
