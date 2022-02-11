@@ -10,16 +10,16 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
 
 browser.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
-    statusIndicator();
+    aria2StartUp();
     !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
-    aria2Store['capture_api'] = aria2Store['capture_api'] ?? '1';
+    aria2Store['capture_api'] = aria2Store['capture_api'] ?? '0';
 });
 
 browser.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => aria2Store[key] = newValue);
     if (changes['jsonrpc_uri'] || changes['secret_token']) {
-        self.jsonrpc && jsonrpc.readyState === 1 && jsonrpc.close();
-        statusIndicator();
+        aria2RPC.terminate();
+        aria2StartUp();
     }
 });
 
@@ -55,8 +55,9 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
-async function statusIndicator() {
-    jsonrpc = await aria2RPCStatus(text => {
+function aria2StartUp() {
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    aria2RPCStatus(text => {
         browser.browserAction.setBadgeText({text: text === '0' ? '' : text});
         browser.browserAction.setBadgeBackgroundColor({color: text ? '#3cc' : '#c33'});
     });
@@ -67,7 +68,7 @@ async function startDownload(url, referer, domain, storeId = 'firefox-default', 
     options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2Store['user_agent']];
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     options['all-proxy'] = aria2Store['proxy_include'].includes(domain) ? aria2Store['proxy_server'] : '';
-    aria2RPCCall('aria2.addUri', [[url], options]).then(result => showNotification(url));
+    aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url));
 }
 
 function captureDownload(domain, type, size) {
