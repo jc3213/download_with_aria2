@@ -33,7 +33,7 @@ document.querySelector('#import_btn').addEventListener('change', async event => 
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
     document.body.getAttribute('data-prefs') === 'global' ? document.body.setAttribute('data-prefs', 'option') :
-        aria2RPCCall('aria2.getGlobalOption').then(options => {
+        aria2RPC.message('aria2.getGlobalOption').then(options => {
             document.querySelector('#aria2_btn').style.display = 'inline-block';
             printOptions(document.querySelectorAll('#global [name]'), options);
             document.body.setAttribute('data-prefs', 'global');
@@ -41,7 +41,13 @@ document.querySelector('#aria2_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#global').addEventListener('change', event => {
-    aria2RPCCall('aria2.changeGlobalOption', [{[event.target.name]: event.target.value}]);
+    aria2RPC.message('aria2.changeGlobalOption', [{[event.target.name]: event.target.value}]);
+});
+
+chrome.storage.onChanged.addListener(changes => {
+    if (changes['jsonrpc_uri'] || changes['secret_token']) {
+        aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    }
 });
 
 function aria2RPCClient() {
