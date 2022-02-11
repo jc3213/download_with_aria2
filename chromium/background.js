@@ -10,8 +10,7 @@ chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
 
 chrome.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    statusIndicator();
+    aria2StartUp();
     !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
 });
 
@@ -19,8 +18,7 @@ chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => aria2Store[key] = newValue);
     if (changes['jsonrpc_uri'] || changes['secret_token']) {
         aria2RPC.terminate();
-        aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-        statusIndicator();
+        aria2StartUp();
     }
 });
 
@@ -35,7 +33,8 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
     });
 });
 
-function statusIndicator() {
+function aria2StartUp() {
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     aria2RPC.indicator(text => {
         chrome.browserAction.setBadgeText({text: text === '0' ? '' : text});
         chrome.browserAction.setBadgeBackgroundColor({color: text ? '#3cc' : '#c33'});
