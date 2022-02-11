@@ -35,7 +35,7 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
     });
 });
 
-async function statusIndicator() {
+function statusIndicator() {
     aria2RPC.indicator(text => {
         chrome.browserAction.setBadgeText({text: text === '0' ? '' : text});
         chrome.browserAction.setBadgeBackgroundColor({color: text ? '#3cc' : '#c33'});
