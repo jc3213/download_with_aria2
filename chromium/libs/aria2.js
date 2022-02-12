@@ -1,7 +1,7 @@
 class Aria2 {
     constructor(jsonrpc, secret) {
         this.jsonrpc = jsonrpc;
-        this.secret = secret;
+        this.secret = 'token:' + secret;
         this.sender = jsonrpc.startsWith('http') ? this.http : this.socket;
     }
     http (body) {
