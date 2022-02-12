@@ -54,11 +54,10 @@ function aria2RPCClient() {
     document.querySelectorAll('#option [name]').forEach(field => {
         var value = aria2Store[field.name];
         var array = Array.isArray(value);
-        var token = field.getAttribute('data-token');
         var multi = field.getAttribute('data-multi');
-        field.value = array ? value.join(' ') : token ? value.slice(token.length) : multi ? value / multi : value;
+        field.value = array ? value.join(' ') : multi ? value / multi : value;
         field.addEventListener('change', event => {
-            aria2Store[field.name] = array ? field.value.split(/[\s\n,]+/) : token ? token + field.value : multi ? field.value * multi : field.value;
+            aria2Store[field.name] = array ? field.value.split(/[\s\n,]+/) : multi ? field.value * multi : field.value;
             chrome.storage.local.set(aria2Store);
         });
     });
