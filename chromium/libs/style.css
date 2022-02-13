@@ -28,13 +28,13 @@ input, textarea {
     resize: none;
 }
 
-input ~ data {
+input + data {
     position: absolute;
     top: 3px;
     right: 8px;
 }
 
-input[type="number"] ~ data {
+input[type="number"] + data {
     right: 24px;
 }
 
@@ -42,7 +42,7 @@ textarea {
     word-break: break-word;
 }
 
-div ~ div > select {
+div + div > select {
     width: 100%;
 }
 
