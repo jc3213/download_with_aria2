@@ -37,7 +37,7 @@ function promiseFileReader(file, method = 'readAsText') {
 function showNotification(message = '') {
     chrome.notifications.create({
         type: 'basic',
-        title: aria2Store['jsonrpc_uri'],
+        title: aria2RPC.jsonrpc,
         iconUrl: '/icons/icon48.png',
         message
     });
