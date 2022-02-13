@@ -17,8 +17,8 @@
     "time_second": {
         "message": "s"
     },
-    "time_second_full": {
-        "message": "Second(s)"
+    "time_millisecond": {
+        "message": "ms"
     },
     "option_back": {
         "message": "Back"

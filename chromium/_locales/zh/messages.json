@@ -17,8 +17,8 @@
     "time_second": {
         "message": "秒"
     },
-    "time_second_full": {
-        "message": "秒"
+    "time_millisecond": {
+        "message": "毫秒"
     },
     "option_back": {
         "message": "返回"
