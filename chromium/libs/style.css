@@ -42,7 +42,7 @@ textarea {
     word-break: break-word;
 }
 
-select:not(span ~ select) {
+div ~ div > select {
     width: 100%;
 }
 
