@@ -1,4 +1,4 @@
-location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#back_btn').style.display = 'none';
+location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#popup_btn').style.display = 'none';
 
 document.querySelectorAll('[data-option] > button, [data-global] > button').forEach((tab, index) => {
     var type = index < 3 ? 'option' : 'global';
