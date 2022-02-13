@@ -23,8 +23,8 @@
     "option_back": {
         "message": "Back"
     },
-    "option_expert": {
-        "message": "Expert"
+    "option_close": {
+        "message": "Close"
     },
     "option_basic": {
         "message": "Basic"

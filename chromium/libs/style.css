@@ -84,7 +84,7 @@ button:disabled {
     right: 0px;
 }
 
-[data-prefs="option"] [data-global], [data-prefs="global"] [data-option],
+[data-prefs="option"] [data-global], [data-prefs="global"] [data-option], [data-prefs="option"] #back_btn,
 [data-option="1"] > .submenu:not(:nth-child(1)), [data-option="2"] > .submenu:not(:nth-child(2)), [data-option="3"] > .submenu:not(:nth-child(3)),
 [data-global="1"] > .submenu:not(:nth-child(1)), [data-global="2"] > .submenu:not(:nth-child(2)), [data-global="3"] > .submenu:not(:nth-child(3)),
 [data-popup="main"] > *:not([data-main]), [data-popup="task"] > *:not([data-task]), [data-popup="aria2"] > *:not([data-aria2]),
@@ -104,6 +104,6 @@ button:disabled {
 
 [data-option="1"] > button:nth-child(1), [data-option="2"] > button:nth-child(2), [data-option="3"] > button:nth-child(3),
 [data-global="1"] > button:nth-child(1), [data-global="2"] > button:nth-child(2), [data-global="3"] > button:nth-child(3),
-[data-main="1"] > button:nth-child(1), [data-main="2"] > button:nth-child(3), [data-main="3"] > button:nth-child(5), [data-prefs="global"] #aria2_btn {
+[data-main="1"] > button:nth-child(1), [data-main="2"] > button:nth-child(3), [data-main="3"] > button:nth-child(5) {
     border: 1px #ccc inset;
 }

@@ -10,6 +10,10 @@ document.querySelectorAll('[data-option] > button, [data-global] > button').forE
 });
 
 document.querySelector('#back_btn').addEventListener('click', event => {
+    document.body.setAttribute('data-prefs', 'option');
+});
+
+document.querySelector('#popup_btn').addEventListener('click', event => {
     open('/popup/index.html', '_self');
 });
 
@@ -32,12 +36,10 @@ document.querySelector('#import_btn').addEventListener('change', async event => 
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
-    document.body.getAttribute('data-prefs') === 'global' ? document.body.setAttribute('data-prefs', 'option') :
-        aria2RPC.message('aria2.getGlobalOption').then(options => {
-            document.querySelector('#aria2_btn').style.display = 'inline-block';
-            printOptions(document.querySelectorAll('#global [name]'), options);
-            document.body.setAttribute('data-prefs', 'global');
-        });
+    aria2RPC.message('aria2.getGlobalOption').then(options => {
+        printOptions(document.querySelectorAll('#global [name]'), options);
+        document.body.setAttribute('data-prefs', 'global');
+    });
 });
 
 document.querySelector('#global').addEventListener('change', event => {

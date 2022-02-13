@@ -23,8 +23,8 @@
     "option_back": {
         "message": "返回"
     },
-    "option_expert": {
-        "message": "专家"
+    "option_close": {
+        "message": "关闭"
     },
     "option_basic": {
         "message": "基础"
