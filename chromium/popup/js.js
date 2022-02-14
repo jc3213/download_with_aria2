@@ -22,8 +22,8 @@ document.querySelector('#task_btn').addEventListener('click', async event => {
 
 document.querySelector('#purdge_btn').addEventListener('click', async event => {
     var stopped = await aria2RPC.message('aria2.tellStopped', [0, 99]);
+    await aria2RPC.message('aria2.purgeDownloadResult');
     stopped.forEach(({gid}) => document.querySelector('[data-gid="' + gid + '"]').remove());
-    aria2RPC.message('aria2.purgeDownloadResult');
 });
 
 document.querySelector('#options_btn').addEventListener('click', event => {
