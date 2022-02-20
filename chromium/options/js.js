@@ -32,6 +32,7 @@ document.querySelector('#export_btn').addEventListener('click', event => {
 document.querySelector('#import_btn').addEventListener('change', async event => {
     var text = await promiseFileReader(event.target.files[0]);
     chrome.storage.local.set(JSON.parse(text));
+    setTimeout(() => location.reload(), 500);
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
@@ -46,7 +47,6 @@ document.querySelector('#global').addEventListener('change', event => {
 });
 
 chrome.storage.onChanged.addListener(changes => {
-    Object.entries(changes).forEach(([key, {newValue}]) => document.querySelector('[name="' + key + '"]').value = newValue);
     if (changes['jsonrpc_uri'] || changes['secret_token']) {
         aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     }
