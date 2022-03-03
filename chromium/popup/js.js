@@ -15,7 +15,7 @@ document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) =
     tab.addEventListener('click', event => {
         var value = (tab.parentNode.getAttribute('data-main') | 0) === index + 1 ? 0 : index + 1;
         tab.parentNode.setAttribute('data-main', value);
-        document.querySelector('#queue').setAttribute('data-main', value);
+        document.querySelector('#session').setAttribute('data-main', value);
     });
 });
 
@@ -111,9 +111,9 @@ bt.addEventListener('click', async event => {
 });
 
 function aria2RPCClient() {
-    var activeTask = [];
-    var waitingTask = [];
-    var stoppedTask = [];
+    activeTask = [];
+    waitingTask = [];
+    stoppedTask = [];
     var download = 0;
     var upload = 0;
     aria2RPC.manager(async ({active, waiting, stopped, method, gid}) => {
@@ -208,6 +208,8 @@ function printQueueItem(gid, bittorrent) {
         options['out'] = path ? path.slice(path.lastIndexOf('/') + 1) : '';
         await aria2RPC.message('aria2.addUri', [uris.map(({uri}) => uri), options]);
         await aria2RPC.message('aria2.removeDownloadResult', [gid]);
+        stoppedTask.splice(stoppedTask.indexOf(gid), 1);
+        stoppedStat.innerText --;
         task.remove();
     });
     task.querySelector('#meter').addEventListener('click', async event => {
