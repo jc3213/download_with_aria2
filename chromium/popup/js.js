@@ -138,13 +138,13 @@ function aria2RPCClient() {
                     wi === -1 && si !== -1 ? stoppedTask.splice(si, 1) : null;
             }
             else if (method === 'aria2.onDownloadPause') {
-                waitingTask.push(gid);
                 activeTask.splice(activeTask.indexOf(gid), 1);
+                waitingTask.push(gid);
                 waitingQueue.appendChild(task);
             }
-            else if (['aria2.onDownloadStop', 'aria2.onDownloadError', 'aria2.onDownloadComplete'].includes(method)) {
-                stoppedTask.push(gid);
+            else if (method !== 'aria2.onBtDownloadComplete') {
                 activeTask.splice(activeTask.indexOf(gid), 1);
+                stoppedTask.push(gid);
                 stoppedQueue.appendChild(task);
             }
         }
@@ -154,7 +154,7 @@ function aria2RPCClient() {
         downloadStat.innerText = getFileSize(download) + '/s';
         uploadStat.innerText = getFileSize(upload) + '/s';
     }, error => {
-        activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = ''
+        activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
     }, aria2Store['refresh_interval']);
 }
 
