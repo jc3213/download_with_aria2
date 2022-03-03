@@ -25,10 +25,10 @@ document.querySelector('#task_btn').addEventListener('click', async event => {
 });
 
 document.querySelector('#purdge_btn').addEventListener('click', async event => {
-    var stopped = await aria2RPC.message('aria2.tellStopped', [0, 99]);
     await aria2RPC.message('aria2.purgeDownloadResult');
-    stopped.forEach(({gid}) => document.querySelector('[data-gid="' + gid + '"]').remove());
-    document.querySelector('#stopped.stats').innerText = '0';
+    stoppedTask = [];
+    stoppedQueue.innerHTML = '';
+    stoppedStat.innerText = '0';
 });
 
 document.querySelector('#options_btn').addEventListener('click', event => {
@@ -206,7 +206,8 @@ function printSession(gid, bittorrent) {
         var options = await aria2RPC.message('aria2.getOption', [gid]);
         options['out'] = path ? path.slice(path.lastIndexOf('/') + 1) : '';
         await aria2RPC.message('aria2.addUri', [uris.map(({uri}) => uri), options]);
-        aria2RPC.message('aria2.removeDownloadResult', [gid]).then(result => removeSession(task, gid));
+        await aria2RPC.message('aria2.removeDownloadResult', [gid]);
+        removeSession(task, gid);
     });
     task.querySelector('#meter').addEventListener('click', async event => {
         var method = task.getAttribute('status') === 'paused' ? 'aria2.unpause' : 'aria2.pause';
