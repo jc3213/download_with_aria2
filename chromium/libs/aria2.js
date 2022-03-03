@@ -43,10 +43,10 @@ class Aria2 {
         }).catch(error => callback('E'));
     }
     manager (resolve, reject, interval) {
-        this.message('aria2.getGlobalStat').then(async global => {
+        this.message('aria2.getGlobalStat').then(async ({numWaiting, numStopped}) => {
             var active = await this.message('aria2.tellActive');
-            var waiting = await this.message('aria2.tellWaiting', [0, global.numWaiting | 0]);
-            var stopped = await this.message('aria2.tellStopped', [0, global.numStopped | 0]);
+            var waiting = await this.message('aria2.tellWaiting', [0, numWaiting | 0]);
+            var stopped = await this.message('aria2.tellStopped', [0, numStopped | 0]);
             resolve({active, waiting, stopped});
             this.route = new WebSocket(this.jsonrpc.replace('http', 'ws'));
             this.route.onmessage = event => {
