@@ -120,16 +120,16 @@ function aria2RPCClient() {
         if (active) {
             download = upload = 0;
             active.forEach(result => {
-                resolvePopupItem(result, activeTask, activeQueue);
+                resolveSession(result, activeTask, activeQueue);
                 download += (result.downloadSpeed | 0);
                 upload += (result.uploadSpeed | 0);
             });
         }
-        waiting && waiting.forEach(result => resolvePopupItem(result, waitingTask, waitingQueue));
-        stopped && stopped.forEach(result => resolvePopupItem(result, stoppedTask, stoppedQueue));
+        waiting && waiting.forEach(result => resolveSession(result, waitingTask, waitingQueue));
+        stopped && stopped.forEach(result => resolveSession(result, stoppedTask, stoppedQueue));
         if (method && gid) {
             var result = await aria2RPC.message('aria2.tellStatus', [gid]);
-            var task = printPopupItem(result);
+            var task = updateSession(result);
             if (method === 'aria2.onDownloadStart') {
                 activeTask.push(gid);
                 activeQueue.appendChild(task)
@@ -159,14 +159,14 @@ function aria2RPCClient() {
     }, aria2Store['refresh_interval']);
 }
 
-function resolvePopupItem(result, array, queue) {
-    var task = printPopupItem(result);
+function resolveSession(result, array, queue) {
+    var task = updateSession(result);
     array.indexOf(result.gid) === -1 && array.push(result.gid);
     queue.append(task);
 }
 
-function printPopupItem({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    var task = document.querySelector('[data-gid="' + gid + '"]') ?? printQueueItem(gid, bittorrent);
+function updateSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
+    var task = document.querySelector('[data-gid="' + gid + '"]') ?? printSession(gid, bittorrent);
     task.setAttribute('status', status);
     task.querySelector('#name').innerText = bittorrent ? bittorrent.info ? bittorrent.info.name : files[0].path : files[0].path ? files[0].path.slice(files[0].path.lastIndexOf('/') + 1) : files[0].uris[0].uri;
     task.querySelector('#local').innerText = getFileSize(completedLength);
@@ -182,14 +182,14 @@ function printPopupItem({gid, status, files, bittorrent, completedLength, totalL
     return task;
 }
 
-function printQueueItem(gid, bittorrent) {
+function printSession(gid, bittorrent) {
     var task = document.querySelector('[data-gid="template"]').cloneNode(true);
     task.setAttribute('data-gid', gid);;
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
         var method = ['active', 'waiting', 'paused'].includes(task.getAttribute('status')) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
         await aria2RPC.message(method, [gid]);
-        ['complete', 'error', 'paused', 'removed'].includes(task.getAttribute('status')) && task.remove();
+        ['complete', 'error', 'removed', 'paused'].includes(task.getAttribute('status')) && removeSession(task, gid);
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
         activeId = gid;
@@ -207,16 +207,20 @@ function printQueueItem(gid, bittorrent) {
         var options = await aria2RPC.message('aria2.getOption', [gid]);
         options['out'] = path ? path.slice(path.lastIndexOf('/') + 1) : '';
         await aria2RPC.message('aria2.addUri', [uris.map(({uri}) => uri), options]);
-        await aria2RPC.message('aria2.removeDownloadResult', [gid]);
-        stoppedTask.splice(stoppedTask.indexOf(gid), 1);
-        stoppedStat.innerText --;
-        task.remove();
+        aria2RPC.message('aria2.removeDownloadResult', [gid]).then(result => removeSession(task, gid));
     });
     task.querySelector('#meter').addEventListener('click', async event => {
         var method = task.getAttribute('status') === 'paused' ? 'aria2.unpause' : 'aria2.pause';
         await aria2RPC.message(method, [gid]);
+        task.querySelector('#name').innerText = '⏳';
     });
     return task;
+}
+
+function removeSession(task, gid) {
+    stoppedTask.splice(stoppedTask.indexOf(gid), 1);
+    stoppedStat.innerText --;
+    task.remove();
 }
 
 function printEstimatedTime(task, number) {
