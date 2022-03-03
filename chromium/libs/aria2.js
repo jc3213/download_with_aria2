@@ -32,8 +32,8 @@ class Aria2 {
         this.message('aria2.tellActive').then(result => {
             var active = result.map(({gid}) => gid);
             callback(active.length + '');
-            this.alert = new WebSocket(this.jsonrpc.replace('http', 'ws'));
-            this.alert.onmessage = event => {
+            this.route = new WebSocket(this.jsonrpc.replace('http', 'ws'));
+            this.route.onmessage = event => {
                 var {method, params: [{gid}]} = JSON.parse(event.data);
                 var index = active.indexOf(gid);
                 method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) :
@@ -43,17 +43,21 @@ class Aria2 {
         }).catch(error => callback('E'));
     }
     manager (resolve, reject, interval) {
-        var message = JSON.stringify({
-            id: '', jsonrpc: 2, method: 'system.multicall', params: [[
-                {methodName: 'aria2.getGlobalStat', params: [this.secret]}, {methodName: 'aria2.tellActive', params: [this.secret]},
-                {methodName: 'aria2.tellWaiting', params: [this.secret, 0, 99]}, {methodName: 'aria2.tellStopped', params: [this.secret, 0, 99]}
-            ]]
-        });
-        this.sender(message).then(resolve).catch(reject);
-        this.alive = setInterval(() => this.sender(message).then(resolve).catch(reject), interval);
+        this.message('aria2.getGlobalStat').then(async global => {
+            var active = await this.message('aria2.tellActive');
+            var waiting = await this.message('aria2.tellWaiting', [0, global.numWaiting | 0]);
+            var stopped = await this.message('aria2.tellStopped', [0, global.numStopped | 0]);
+            resolve({active, waiting, stopped});
+            this.route = new WebSocket(this.jsonrpc.replace('http', 'ws'));
+            this.route.onmessage = event => {
+                var {method, params: [{gid}]} = JSON.parse(event.data);
+                resolve({method, gid});
+            };
+            this.alive = setInterval(async () => resolve({active: await this.message('aria2.tellActive')}), interval);
+        }).catch(reject);
     }
     terminate () {
-        this.alert && this.alert.readyState === 1 && this.alert.close();
+        this.route && this.route.readyState === 1 && this.route.close();
         this.alive && clearInterval(this.alive);
     }
 }
