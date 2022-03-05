@@ -5,7 +5,7 @@ browser.contextMenus.create({
 });
 
 browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId}) => {
-    startDownload(linkUrl, pageUrl, getDomainFromUrl(pageUrl), cookieStoreId);
+    startDownload(linkUrl, getDomainFromUrl(pageUrl), cookieStoreId, {referer: pageUrl});
 });
 
 browser.storage.local.get(null, async json => {
@@ -31,7 +31,9 @@ browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) =>
     var referer = referrer ? referrer : tabUrl ?? 'about:blank';
     var domain = getDomainFromUrl(referer);
     captureDownload(domain, getFileExtension(filename)) && browser.downloads.cancel(id).then(async () => {
-        await browser.downloads.erase({id}) && startDownload(url, referer, domain, cookieStoreId, await getFirefoxExclusive(filename));
+        await browser.downloads.erase({id});
+        var options = await getFirefoxExclusive(filename);
+        startDownload(url, domain, cookieStoreId, {referer, ...options});
     }).catch(error => showNotification('Download is already complete'));
 });
 
@@ -49,7 +51,7 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
         var domain = getDomainFromUrl(originUrl);
         if (captureDownload(domain, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            startDownload(url, originUrl, domain, cookieStoreId, {out});
+            startDownload(url, domain, cookieStoreId, {referer: originUrl, out});
             return {cancel: true};
         }
     }
@@ -63,11 +65,12 @@ function aria2StartUp() {
     });
 }
 
-async function startDownload(url, referer, domain, storeId = 'firefox-default', options = {}) {
+async function startDownload(url, domain, storeId = 'firefox-default', options = {}) {
     var cookies = await browser.cookies.getAll({url, storeId});
-    options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2Store['user_agent']];
-    cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
+    options['header'] = ['Cookie:'];
+    options['user-agent'] = aria2Store['user_agent'];
     options['all-proxy'] = aria2Store['proxy_include'].includes(domain) ? aria2Store['proxy_server'] : '';
+    cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url));
 }
 
