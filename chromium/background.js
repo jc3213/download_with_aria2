@@ -5,7 +5,7 @@ chrome.contextMenus.create({
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
-    startDownload(linkUrl, pageUrl, getDomainFromUrl(pageUrl));
+    startDownload(linkUrl, getDomainFromUrl(pageUrl), {referer: pageUrl});
 });
 
 chrome.storage.local.get(null, async json => {
@@ -29,7 +29,9 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
     chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
         var referer = referrer ? referrer : tab.url ?? 'about:blank';
         var domain = getDomainFromUrl(referer);
-        captureDownload(domain, getFileExtension(filename), fileSize) && chrome.downloads.erase({id}, () => startDownload(finalUrl, referer, domain, {out: filename}));
+        captureDownload(domain, getFileExtension(filename), fileSize) && chrome.downloads.erase({id}, () => {
+            startDownload(finalUrl, domain, {referer, out: filename});
+        });
     });
 });
 
@@ -41,11 +43,12 @@ function aria2StartUp() {
     });
 }
 
-function startDownload(url, referer, domain, options = {}) {
+function startDownload(url, domain, options = {}) {
     chrome.cookies.getAll({url}, cookies => {
-        options['header'] = ['Cookie:', 'Referer: ' + referer, 'User-Agent: ' + aria2Store['user_agent']];
-        cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
+        options['header'] = ['Cookie:'];
+        options['user-agent'] = aria2Store['user_agent'];
         options['all-proxy'] = aria2Store['proxy_include'].includes(domain) ? aria2Store['proxy_server'] : '';
+        cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
         aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url));
     });
 }

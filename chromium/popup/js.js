@@ -246,7 +246,7 @@ function printButton(button, resolve) {
 }
 
 function createOptions() {
-    var options = {'header': ['Referer: ' + document.querySelector('#referer').value, 'User-Agent: ' + aria2Store['user_agent']]};
+    var options = {'referer': document.querySelector('#referer').value, 'user-agent': aria2Store['user_agent']};
     document.querySelectorAll('#create input[name]').forEach(field => options[field.name] = field.value);
     return options;
 }
