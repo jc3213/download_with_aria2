@@ -113,46 +113,46 @@ function aria2RPCClient() {
     activeTask = [];
     waitingTask = [];
     stoppedTask = [];
-    var download = 0;
-    var upload = 0;
-    aria2RPC.manager(async ({active, waiting, stopped, method, gid}) => {
-        if (active) {
-            download = upload = 0;
-            active.forEach(result => {
-                resolveSession(result, activeTask, activeQueue);
-                download += (result.downloadSpeed | 0);
-                upload += (result.uploadSpeed | 0);
-            });
+    aria2RPC.manager(active => {
+        var download = 0;
+        var upload = 0;
+        active.forEach(result => {
+            resolveSession(result, activeTask, activeQueue);
+            download += (result.downloadSpeed | 0);
+            upload += (result.uploadSpeed | 0);
+        });
+        activeStat.innerText = activeTask.length;
+        downloadStat.innerText = getFileSize(download) + '/s';
+        uploadStat.innerText = getFileSize(upload) + '/s';
+    }, (waiting, stopped) => {
+        waiting.forEach(result => resolveSession(result, waitingTask, waitingQueue));
+        stopped.forEach(result => resolveSession(result, stoppedTask, stoppedQueue));
+        waitingStat.innerText = waitingTask.length;
+        stoppedStat.innerText = stoppedTask.length;
+    }, async (method, gid) => {
+        var result = await aria2RPC.message('aria2.tellStatus', [gid]);
+        var task = updateSession(result);
+        if (method === 'aria2.onDownloadStart') {
+            activeTask.push(gid);
+            activeQueue.appendChild(task)
+            var wi = waitingTask.indexOf(gid);
+            var si = stoppedTask.indexOf(gid);
+            wi !== -1 && si === -1 ? waitingTask.splice(wi, 1) :
+                wi === -1 && si !== -1 ? stoppedTask.splice(si, 1) : null;
         }
-        waiting && waiting.forEach(result => resolveSession(result, waitingTask, waitingQueue));
-        stopped && stopped.forEach(result => resolveSession(result, stoppedTask, stoppedQueue));
-        if (method && gid) {
-            var result = await aria2RPC.message('aria2.tellStatus', [gid]);
-            var task = updateSession(result);
-            if (method === 'aria2.onDownloadStart') {
-                activeTask.push(gid);
-                activeQueue.appendChild(task)
-                var wi = waitingTask.indexOf(gid);
-                var si = stoppedTask.indexOf(gid);
-                wi !== -1 && si === -1 ? waitingTask.splice(wi, 1) :
-                    wi === -1 && si !== -1 ? stoppedTask.splice(si, 1) : null;
-            }
-            else if (method === 'aria2.onDownloadPause') {
-                activeTask.splice(activeTask.indexOf(gid), 1);
-                waitingTask.push(gid);
-                waitingQueue.appendChild(task);
-            }
-            else if (method !== 'aria2.onBtDownloadComplete') {
-                activeTask.splice(activeTask.indexOf(gid), 1);
-                stoppedTask.push(gid);
-                stoppedQueue.appendChild(task);
-            }
+        else if (method === 'aria2.onDownloadPause') {
+            activeTask.splice(activeTask.indexOf(gid), 1);
+            waitingTask.push(gid);
+            waitingQueue.appendChild(task);
+        }
+        else if (method !== 'aria2.onBtDownloadComplete') {
+            activeTask.splice(activeTask.indexOf(gid), 1);
+            stoppedTask.push(gid);
+            stoppedQueue.appendChild(task);
         }
         activeStat.innerText = activeTask.length;
         waitingStat.innerText = waitingTask.length;
         stoppedStat.innerText = stoppedTask.length;
-        downloadStat.innerText = getFileSize(download) + '/s';
-        uploadStat.innerText = getFileSize(upload) + '/s';
     }, error => {
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
     }, aria2Store['refresh_interval']);
