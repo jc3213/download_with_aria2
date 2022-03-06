@@ -186,9 +186,15 @@ function printSession(gid, bittorrent) {
     task.setAttribute('data-gid', gid);;
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
-        var method = ['active', 'waiting', 'paused'].includes(task.getAttribute('status')) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
+        var status = task.getAttribute('status');
+        var method = ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
         await aria2RPC.message(method, [gid]);
-        if (['complete', 'error', 'removed', 'paused'].includes(task.getAttribute('status'))) {
+        if (['complete', 'error', 'removed'].includes(status)) {
+            waitingTask.splice(stoppedTask.indexOf(gid), 1);
+            waitingStat.innerText --;
+            task.remove();
+        }
+        else if (status === 'paused') {
             stoppedTask.splice(stoppedTask.indexOf(gid), 1);
             stoppedStat.innerText --;
             task.remove();
