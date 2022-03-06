@@ -27,7 +27,7 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
         return;
     }
     chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
-        var referer = referrer && referrer !== 'about:blank' ? referrer : tab.url ?? 'about:blank';
+        var referer = referrer && referrer !== 'about:blank' ? referrer : tab.url;
         var domain = getDomainFromUrl(referer);
         captureDownload(domain, getFileExtension(filename), fileSize) && chrome.downloads.erase({id}, () => {
             startDownload(finalUrl, domain, {referer, out: filename});

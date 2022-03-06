@@ -28,7 +28,7 @@ browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) =>
         return;
     }
     var {tabUrl, cookieStoreId} = await browser.tabs.query({active: true, currentWindow: true}).then(([{url, cookieStoreId}]) => ({tabUrl: url, cookieStoreId}));
-    var referer = referrer && referrer !== 'about:blank' ? referrer : tabUrl ?? 'about:blank';
+    var referer = referrer && referrer !== 'about:blank' ? referrer : tabUrl;
     var domain = getDomainFromUrl(referer);
     captureDownload(domain, getFileExtension(filename)) && browser.downloads.cancel(id).then(async () => {
         await browser.downloads.erase({id});

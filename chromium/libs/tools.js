@@ -1,4 +1,4 @@
-function getDomainFromUrl(url) {
+function getDomainFromUrl(url = 'about:blank') {
     if (url.startsWith('about') || url.startsWith('chrome')) {
         return url;
     }
