@@ -141,14 +141,14 @@ function aria2RPCClient() {
                 wi === -1 && si !== -1 ? stoppedTask.splice(si, 1) : null;
         }
         else if (method === 'aria2.onDownloadPause') {
-            activeTask.splice(activeTask.indexOf(gid), 1);
             waitingTask.push(gid);
             waitingQueue.appendChild(task);
+            activeTask.splice(activeTask.indexOf(gid), 1);
         }
         else if (method !== 'aria2.onBtDownloadComplete') {
-            activeTask.splice(activeTask.indexOf(gid), 1);
             stoppedTask.push(gid);
             stoppedQueue.appendChild(task);
+            activeTask.splice(activeTask.indexOf(gid), 1);
         }
         activeStat.innerText = activeTask.length;
         waitingStat.innerText = waitingTask.length;
@@ -188,7 +188,11 @@ function printSession(gid, bittorrent) {
     task.querySelector('#remove_btn').addEventListener('click', async event => {
         var method = ['active', 'waiting', 'paused'].includes(task.getAttribute('status')) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
         await aria2RPC.message(method, [gid]);
-        ['complete', 'error', 'removed', 'paused'].includes(task.getAttribute('status')) && removeSession(task, gid);
+        if (['complete', 'error', 'removed', 'paused'].includes(task.getAttribute('status'))) {
+            stoppedTask.splice(stoppedTask.indexOf(gid), 1);
+            stoppedStat.innerText --;
+            task.remove();
+        }
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
         activeId = gid;
@@ -207,20 +211,15 @@ function printSession(gid, bittorrent) {
         options['out'] = path ? path.slice(path.lastIndexOf('/') + 1) : '';
         await aria2RPC.message('aria2.addUri', [uris.map(({uri}) => uri), options]);
         await aria2RPC.message('aria2.removeDownloadResult', [gid]);
-        removeSession(task, gid);
+        stoppedTask.splice(stoppedTask.indexOf(gid), 1);
+        stoppedStat.innerText --;
+        task.remove();
     });
     task.querySelector('#meter').addEventListener('click', async event => {
         var method = task.getAttribute('status') === 'paused' ? 'aria2.unpause' : 'aria2.pause';
         await aria2RPC.message(method, [gid]);
-        task.querySelector('#name').innerText = '⏳';
     });
     return task;
-}
-
-function removeSession(task, gid) {
-    stoppedTask.splice(stoppedTask.indexOf(gid), 1);
-    stoppedStat.innerText --;
-    task.remove();
 }
 
 function printEstimatedTime(task, number) {
