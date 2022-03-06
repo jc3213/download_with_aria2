@@ -65,7 +65,7 @@ function aria2StartUp() {
     });
 }
 
-async function startDownload(url, domain, storeId = 'firefox-default', options = {}) {
+async function startDownload(url, domain, storeId, options) {
     var cookies = await browser.cookies.getAll({url, storeId});
     options['header'] = ['Cookie:'];
     options['user-agent'] = aria2Store['user_agent'];
