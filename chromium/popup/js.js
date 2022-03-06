@@ -190,13 +190,13 @@ function printSession(gid, bittorrent) {
         var method = ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
         await aria2RPC.message(method, [gid]);
         if (['complete', 'error', 'removed'].includes(status)) {
-            waitingTask.splice(stoppedTask.indexOf(gid), 1);
-            waitingStat.innerText --;
+            stoppedTask.splice(stoppedTask.indexOf(gid), 1);
+            stoppedStat.innerText --;
             task.remove();
         }
         else if (status === 'paused') {
-            stoppedTask.splice(stoppedTask.indexOf(gid), 1);
-            stoppedStat.innerText --;
+            waitingTask.splice(stoppedTask.indexOf(gid), 1);
+            waitingStat.innerText --;
             task.remove();
         }
     });
