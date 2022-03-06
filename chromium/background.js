@@ -43,7 +43,7 @@ function aria2StartUp() {
     });
 }
 
-function startDownload(url, domain, options = {}) {
+function startDownload(url, domain, options) {
     chrome.cookies.getAll({url}, cookies => {
         options['header'] = ['Cookie:'];
         options['user-agent'] = aria2Store['user_agent'];
