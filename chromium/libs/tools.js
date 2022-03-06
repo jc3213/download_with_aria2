@@ -1,8 +1,10 @@
-function getDomainFromUrl(url = 'about:blank') {
-    if (url.startsWith('about') || url.startsWith('chrome')) {
-        return url;
+function getDomainFromUrl(url) {
+    try {
+        var {hostname} = new URL(url);
     }
-    var hostname = new URL(url).hostname;
+    catch {
+        return;
+    }
     if (hostname.startsWith('[')) {
         return hostname.slice(1, -1);
     }
