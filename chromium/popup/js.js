@@ -195,7 +195,7 @@ function printSession(gid, bittorrent) {
             task.remove();
         }
         else if (status === 'paused') {
-            waitingTask.splice(stoppedTask.indexOf(gid), 1);
+            waitingTask.splice(waitingTask.indexOf(gid), 1);
             waitingStat.innerText --;
             task.remove();
         }
