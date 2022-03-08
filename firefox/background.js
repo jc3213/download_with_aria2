@@ -61,7 +61,7 @@ function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     aria2RPC.indicator(number => {
         browser.browserAction.setBadgeText({text: number === 0 ? '' : number + ''});
-        browser.browserAction.setBadgeBackgroundColor({color: number === 0 ? '#3cc' : '#c33'});
+        browser.browserAction.setBadgeBackgroundColor({color: number !== 'E' ? '#3cc' : '#c33'});
     });
 }
 
