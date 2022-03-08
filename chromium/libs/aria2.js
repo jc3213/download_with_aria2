@@ -28,30 +28,30 @@ class Aria2 {
         var message = JSON.stringify({id: '', jsonrpc: 2, method, params: [this.secret, ...params]});
         return this.sender(message);
     }
-    indicator (callback) {
+    indicator (onchange) {
         this.message('aria2.tellActive').then(result => {
             var active = result.map(({gid}) => gid);
-            callback(active.length + '');
+            onchange(active.length);
             this.route = new WebSocket(this.jsonrpc.replace('http', 'ws'));
             this.route.onmessage = event => {
                 var {method, params: [{gid}]} = JSON.parse(event.data);
                 var index = active.indexOf(gid);
                 method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) :
-                    method !=='aria2.onBtDownloadComplete' && index !== -1 && active.splice(index, 1);
-                callback(active.length + '');
+                    method !== 'aria2.onBtDownloadComplete' ? index !== -1 && active.splice(index, 1) : null;
+                onchange(active.length);
             };
-        }).catch(error => callback('E'));
+        }).catch(error => onchange('E'));
     }
-    manager (active, inactive, message, onerror, interval) {
+    manager (onactive, onstopped, onmessage, onerror, interval) {
         this.message('aria2.getGlobalStat').then(async ({numWaiting, numStopped}) => {
-            active(await this.message('aria2.tellActive'));
-            inactive(await this.message('aria2.tellWaiting', [0, numWaiting | 0]), await this.message('aria2.tellStopped', [0, numStopped | 0]));
+            onactive(await this.message('aria2.tellActive'));
+            onstopped(await this.message('aria2.tellWaiting', [0, numWaiting | 0]), await this.message('aria2.tellStopped', [0, numStopped | 0]));
             this.route = new WebSocket(this.jsonrpc.replace('http', 'ws'));
             this.route.onmessage = event => {
                 var {method, params: [{gid}]} = JSON.parse(event.data);
-                message(method, gid);
+                onmessage(method, gid);
             };
-            this.alive = setInterval(async () => active(await this.message('aria2.tellActive')), interval);
+            this.alive = setInterval(async () => onactive(await this.message('aria2.tellActive')), interval);
         }).catch(onerror);
     }
     terminate () {

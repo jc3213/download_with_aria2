@@ -37,9 +37,9 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
 
 function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2RPC.indicator(text => {
-        chrome.browserAction.setBadgeText({text: text === '0' ? '' : text});
-        chrome.browserAction.setBadgeBackgroundColor({color: text ? '#3cc' : '#c33'});
+    aria2RPC.indicator(number => {
+        chrome.browserAction.setBadgeText({text: number === 0 ? '' : number + ''});
+        chrome.browserAction.setBadgeBackgroundColor({color: number === 0 ? '#3cc' : '#c33'});
     });
 }
 
