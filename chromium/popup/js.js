@@ -133,12 +133,15 @@ function aria2RPCClient() {
         var result = await aria2RPC.message('aria2.tellStatus', [gid]);
         var task = updateSession(result);
         if (method === 'aria2.onDownloadStart') {
-            activeTask.push(gid);
-            activeQueue.appendChild(task)
-            var wi = waitingTask.indexOf(gid);
-            var si = stoppedTask.indexOf(gid);
-            wi !== -1 && si === -1 ? waitingTask.splice(wi, 1) :
-                wi === -1 && si !== -1 ? stoppedTask.splice(si, 1) : null;
+            if (activeTask.indexOf(gid) === -1) {
+                activeTask.push(gid);
+                activeQueue.appendChild(task)
+                var wi = waitingTask.indexOf(gid);
+                var si = stoppedTask.indexOf(gid);
+                wi !== -1 && si === -1 ? waitingTask.splice(wi, 1) :
+                wi === -1 && si !== -1 ? stoppedTask.splice(si, 1) :
+                null;
+            }
         }
         else if (method === 'aria2.onDownloadPause') {
             waitingTask.push(gid);
