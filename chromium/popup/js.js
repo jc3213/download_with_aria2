@@ -135,12 +135,10 @@ function aria2RPCClient() {
         if (method === 'aria2.onDownloadStart') {
             if (activeTask.indexOf(gid) === -1) {
                 activeTask.push(gid);
-                activeQueue.appendChild(task)
-                var wi = waitingTask.indexOf(gid);
-                var si = stoppedTask.indexOf(gid);
-                wi !== -1 && si === -1 ? waitingTask.splice(wi, 1) :
-                wi === -1 && si !== -1 ? stoppedTask.splice(si, 1) :
-                null;
+                activeQueue.appendChild(task);
+                var index = waitingTask.indexOf(gid);
+                index !== -1 ? waitingTask.splice(index, 1) : index = stoppedTask.indexOf(gid);
+                index !== -1 ? stoppedTask.splice(index, 1) : null;
             }
         }
         else if (method === 'aria2.onDownloadPause') {
