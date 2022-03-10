@@ -135,19 +135,19 @@ function aria2RPCClient() {
         if (method === 'aria2.onDownloadStart') {
             if (activeTask.indexOf(gid) === -1) {
                 activeTask.push(gid);
-                activeQueue.appendChild(task);
+                activeQueue.append(task);
                 waitingTask.includes(gid) ? waitingTask.splice(waitingTask.indexOf(gid), 1) :
                 stoppedTask.includes(gid) ? stoppedTask.splice(stoppedTask.indexOf(gid), 1) : null;
             }
         }
         else if (method === 'aria2.onDownloadPause') {
             waitingTask.push(gid);
-            waitingQueue.appendChild(task);
+            waitingQueue.append(task);
             activeTask.splice(activeTask.indexOf(gid), 1);
         }
         else if (method !== 'aria2.onBtDownloadComplete') {
             stoppedTask.push(gid);
-            stoppedQueue.appendChild(task);
+            stoppedQueue.append(task);
             activeTask.splice(activeTask.indexOf(gid), 1);
         }
         activeStat.innerText = activeTask.length;
@@ -159,13 +159,12 @@ function aria2RPCClient() {
 }
 
 function resolveSession(result, array, queue) {
-    var task = updateSession(result);
+    var task = updateSession(result, queue);
     array.indexOf(result.gid) === -1 && array.push(result.gid);
-    queue.append(task);
 }
 
-function updateSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    var task = document.querySelector('[data-gid="' + gid + '"]') ?? printSession(gid, bittorrent);
+function updateSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}, queue) {
+    var task = document.querySelector('[data-gid="' + gid + '"]') ?? printSession(gid, bittorrent, queue);
     task.setAttribute('status', status);
     task.querySelector('#name').innerText = bittorrent ? bittorrent.info ? bittorrent.info.name : files[0].path : files[0].path ? files[0].path.slice(files[0].path.lastIndexOf('/') + 1) : files[0].uris[0].uri;
     task.querySelector('#local').innerText = getFileSize(completedLength);
@@ -181,7 +180,7 @@ function updateSession({gid, status, files, bittorrent, completedLength, totalLe
     return task;
 }
 
-function printSession(gid, bittorrent) {
+function printSession(gid, bittorrent, queue) {
     var task = document.querySelector('[data-gid="template"]').cloneNode(true);
     task.setAttribute('data-gid', gid);;
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
@@ -225,6 +224,7 @@ function printSession(gid, bittorrent) {
         var method = task.getAttribute('status') === 'paused' ? 'aria2.unpause' : 'aria2.pause';
         await aria2RPC.message(method, [gid]);
     });
+    queue && queue.append(task);
     return task;
 }
 
@@ -274,7 +274,7 @@ function printTableCell(table, type, resolve) {
     var cell = document.querySelector('[data-' + type + '="template"]').cloneNode(true);
     cell.removeAttribute('data-' + type);
     typeof resolve === 'function' && resolve(cell);
-    table.appendChild(cell);
+    table.append(cell);
     return cell;
 }
 
