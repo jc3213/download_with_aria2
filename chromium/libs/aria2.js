@@ -28,15 +28,19 @@ class Aria2 {
         var message = JSON.stringify({id: '', jsonrpc: 2, method, params: [this.secret, ...params]});
         return this.sender(message);
     }
-    indicator (onactive, onmessage, onerror) {
+    indicator (onchange) {
         this.message('aria2.tellActive').then(result => {
-            onactive(result.map(({gid}) => gid));
+            var active = result.map(({gid}) => gid);
+            onchange(active.length);
             this.route = new WebSocket(this.jsonrpc.replace('http', 'ws'));
             this.route.onmessage = event => {
                 var {method, params: [{gid}]} = JSON.parse(event.data);
-                onmessage(method, gid);
+                var index = active.indexOf(gid);
+                method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) :
+                    method !== 'aria2.onBtDownloadComplete' ? index !== -1 && active.splice(index, 1) : null;
+                onchange(active.length);
             };
-        }).catch(onerror);
+        }).catch(error => onchange('E'));
     }
     manager (onactive, onstopped, onmessage, onerror, interval) {
         this.message('aria2.getGlobalStat').then(async ({numWaiting, numStopped}) => {
