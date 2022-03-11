@@ -41,7 +41,9 @@ document.querySelector('#referer_btn').addEventListener('click', event => {
     });
 });
 
-printButton(document.querySelector('#create [data-feed]'));
+document.querySelector('#proxy_new').addEventListener('click', event => {
+    event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
+});
 
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
@@ -87,8 +89,9 @@ document.querySelectorAll('#manager .block').forEach(block => {
     });
 });
 
-printButton(document.querySelector('#manager [data-feed]'), (name, value) => {
-    aria2RPC.message('aria2.changeOption', [activeId, {[name]: value}]);
+document.querySelector('#proxy_mgr').addEventListener('click', async event => {
+    await aria2RPC.message('aria2.changeOption', [activeId, {'all-proxy': aria2Store['proxy_server']}]);
+    event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
 });
 
 document.querySelector('#append button').addEventListener('click', async event => {
@@ -240,14 +243,6 @@ function printEstimatedTime(task, number) {
     task.querySelector('#minute').innerText = minutes;
     task.querySelector('#minute').parentNode.style.display = minutes > 0 ? 'inline-block' : 'none';
     task.querySelector('#second').innerText = seconds;
-}
-
-function printButton(button, resolve) {
-    var entry = button.parentNode.querySelector('input');
-    button.addEventListener('click', event => {
-        entry.value = aria2Store[button.getAttribute('data-feed')];
-        typeof resolve === 'function' && resolve(entry.name, entry.value);
-    });
 }
 
 function createOptions() {
