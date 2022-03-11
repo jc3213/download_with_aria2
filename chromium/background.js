@@ -42,13 +42,8 @@ function aria2StartUp() {
         chrome.browserAction.setBadgeText({text: activeTask.length === 0 ? '' : activeTask.length + ''});
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
     }, (method, gid, error) => {
-        if (method === 'aria2.onDownloadStart') {
-            activeTask.indexOf(gid) === -1 && activeTask.push(gid);
-        }
-        else if (method !== 'aria2.onBtDownloadComplete') {
-            activeTask.includes(gid) && activeTask.splice(activeTask.indexOf(gid), 1);
-            aria2Store['auto_purge'] === '1' && method === 'aria2.onDownloadComplete' && aria2RPC.message('aria2.removeDownloadResult', [gid]);
-        }
+        method === 'aria2.onDownloadStart' ? activeTask.indexOf(gid) === -1 && activeTask.push(gid);
+        method !== 'aria2.onBtDownloadComplete' ? activeTask.includes(gid) && activeTask.splice(activeTask.indexOf(gid), 1) : null;
         chrome.browserAction.setBadgeText({text: activeTask.length === 0 ? '' : activeTask.length + ''});
     }, error => {
         chrome.browserAction.setBadgeText({text: 'E'});
