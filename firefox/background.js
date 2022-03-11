@@ -59,9 +59,17 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
 
 function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2RPC.indicator(number => {
-        browser.browserAction.setBadgeText({text: number === 0 ? '' : number + ''});
-        browser.browserAction.setBadgeBackgroundColor({color: number !== 'E' ? '#3cc' : '#c33'});
+    aria2RPC.indicator(active => {
+        activeTask = active;
+        browser.browserAction.setBadgeText({text: activeTask.length === 0 ? '' : activeTask.length + ''});
+        browser.browserAction.setBadgeBackgroundColor({color: '#3cc'});
+    }, (method, gid, error) => {
+        method === 'aria2.onDownloadStart' ? activeTask.indexOf(gid) === -1 && activeTask.push(gid);
+        method !== 'aria2.onBtDownloadComplete' ? activeTask.includes(gid) && activeTask.splice(activeTask.indexOf(gid), 1) : null;
+        browser.browserAction.setBadgeText({text: activeTask.length === 0 ? '' : activeTask.length + ''});
+    }, error => {
+        browser.browserAction.setBadgeText({text: 'E'});
+        browser.browserAction.setBadgeBackgroundColor({color: '#c33'});
     });
 }
 
