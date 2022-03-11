@@ -37,9 +37,22 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
 
 function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2RPC.indicator(number => {
-        chrome.browserAction.setBadgeText({text: number === 0 ? '' : number + ''});
-        chrome.browserAction.setBadgeBackgroundColor({color: number !== 'E' ? '#3cc' : '#c33'});
+    aria2RPC.indicator(active => {
+        activeTask = active;
+        chrome.browserAction.setBadgeText({text: activeTask.length === 0 ? '' : activeTask.length + ''});
+        chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
+    }, (method, gid, error) => {
+        if (method === 'aria2.onDownloadStart') {
+            activeTask.indexOf(gid) === -1 && activeTask.push(gid);
+        }
+        else if (method !== 'aria2.onBtDownloadComplete') {
+            activeTask.includes(gid) && activeTask.splice(activeTask.indexOf(gid), 1);
+            aria2Store['auto_purge'] === '1' && method === 'aria2.onDownloadComplete' && aria2RPC.message('aria2.removeDownloadResult', [gid]);
+        }
+        chrome.browserAction.setBadgeText({text: activeTask.length === 0 ? '' : activeTask.length + ''});
+    }, error => {
+        chrome.browserAction.setBadgeText({text: 'E'});
+        chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
     });
 }
 
