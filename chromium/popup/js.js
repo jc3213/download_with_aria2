@@ -132,8 +132,7 @@ function aria2RPCClient() {
         stopped.forEach(result => resolveSession(result, stoppedTask, stoppedQueue));
         waitingStat.innerText = waitingTask.length;
         stoppedStat.innerText = stoppedTask.length;
-    }, async (method, gid) => {
-        var result = await aria2RPC.message('aria2.tellStatus', [gid]);
+    }, (method, gid, result) => {
         var task = updateSession(result);
         if (method === 'aria2.onDownloadStart') {
             if (activeTask.indexOf(gid) === -1) {

@@ -47,9 +47,9 @@ class Aria2 {
             onactive(await this.message('aria2.tellActive'));
             onstopped(await this.message('aria2.tellWaiting', [0, numWaiting | 0]), await this.message('aria2.tellStopped', [0, numStopped | 0]));
             this.route = new WebSocket(this.jsonrpc.replace('http', 'ws'));
-            this.route.onmessage = event => {
+            this.route.onmessage = async event => {
                 var {method, params: [{gid}]} = JSON.parse(event.data);
-                onmessage(method, gid);
+                onmessage(method, gid, await this.message('aria2.tellStatus', [gid]));
             };
             this.alive = setInterval(async () => onactive(await this.message('aria2.tellActive')), interval);
         }).catch(onerror);
