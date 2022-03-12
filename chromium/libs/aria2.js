@@ -32,8 +32,8 @@ class Aria2 {
         this.message('aria2.tellActive').then(result => {
             var active = result.map(({gid}) => gid);
             onchange(active.length);
-            this.route = new WebSocket(this.jsonrpc.replace('http', 'ws'));
-            this.route.onmessage = event => {
+            this.connect = this.connect ?? new WebSocket(this.jsonrpc.replace('http', 'ws'));
+            this.connect.onmessage = event => {
                 var {method, params: [{gid}]} = JSON.parse(event.data);
                 var index = active.indexOf(gid);
                 method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) :
@@ -46,8 +46,8 @@ class Aria2 {
         this.message('aria2.getGlobalStat').then(async ({numWaiting, numStopped}) => {
             onactive(await this.message('aria2.tellActive'));
             onstopped(await this.message('aria2.tellWaiting', [0, numWaiting | 0]), await this.message('aria2.tellStopped', [0, numStopped | 0]));
-            this.route = new WebSocket(this.jsonrpc.replace('http', 'ws'));
-            this.route.onmessage = async event => {
+            this.connect = this.connect ?? new WebSocket(this.jsonrpc.replace('http', 'ws'));
+            this.connect.onmessage = async event => {
                 var {method, params: [{gid}]} = JSON.parse(event.data);
                 onmessage(method, gid, await this.message('aria2.tellStatus', [gid]));
             };
@@ -55,7 +55,7 @@ class Aria2 {
         }).catch(onerror);
     }
     terminate () {
-        this.route && this.route.readyState === 1 && this.route.close();
+        this.connect && this.connect.readyState === 1 && this.connect.close();
         this.alive && clearInterval(this.alive);
     }
 }
