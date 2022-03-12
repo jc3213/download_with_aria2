@@ -120,7 +120,8 @@ function aria2RPCClient() {
         var download = 0;
         var upload = 0;
         active.forEach(result => {
-            resolveSession(result, activeTask, activeQueue);
+            updateSession(result, activeQueue);
+            activeTask.indexOf(result.gid) === -1 && activeTask.push(result.gid);
             download += (result.downloadSpeed | 0);
             upload += (result.uploadSpeed | 0);
         });
@@ -128,8 +129,14 @@ function aria2RPCClient() {
         downloadStat.innerText = getFileSize(download) + '/s';
         uploadStat.innerText = getFileSize(upload) + '/s';
     }, (waiting, stopped) => {
-        waiting.forEach(result => resolveSession(result, waitingTask, waitingQueue));
-        stopped.forEach(result => resolveSession(result, stoppedTask, stoppedQueue));
+        waiting.forEach(result => {
+            updateSession(result, waitingQueue);
+            waitingTask.push(result.gid);
+        });
+        stopped.forEach(result => {
+            updateSession(result, stoppedQueue);
+            stoppedTask.push(result.gid);
+        });
         waitingStat.innerText = waitingTask.length;
         stoppedStat.innerText = stoppedTask.length;
     }, (method, gid, result) => {
@@ -158,11 +165,6 @@ function aria2RPCClient() {
     }, error => {
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
     }, aria2Store['refresh_interval']);
-}
-
-function resolveSession(result, array, queue) {
-    var task = updateSession(result, queue);
-    array.indexOf(result.gid) === -1 && array.push(result.gid);
 }
 
 function updateSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}, queue) {
