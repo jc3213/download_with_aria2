@@ -5,7 +5,7 @@ class Aria2 {
             .then(response => response.json())
             .then(({result, error}) => result ? resolve(result) : reject())
             .catch(reject);
-        }): message => new Promise((resolve, reject) => {
+        }) : message => new Promise((resolve, reject) => {
             var socket = new WebSocket(this.jsonrpc);
             socket.onopen = event => socket.send(message);
             socket.onclose = reject;
