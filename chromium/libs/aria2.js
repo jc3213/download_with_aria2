@@ -16,9 +16,9 @@ class Aria2 {
             };
         });
         this.jsonrpc = jsonrpc;
-        this.secret = 'token:' + secret;
+        this.secret = secret;
         this.message = (method, params) => {
-            var message = JSON.stringify({id: '', jsonrpc: 2, method, params: [this.secret].concat(params ?? [])});
+            var message = JSON.stringify({id: '', jsonrpc: 2, method, params: ['token:' + this.secret].concat(params ?? [])});
             return sender(message);
         }
     }
