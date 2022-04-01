@@ -36,6 +36,30 @@ function promiseFileReader(file, method = 'readAsText') {
     });
 }
 
+function aria2Indicator() {
+    aria2RPC.message('aria2.tellActive').then(result => {
+        var active = result.map(({gid}) => gid);
+        chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
+        chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
+        aria2RPC.connect = new WebSocket(aria2RPC.jsonrpc.replace('http', 'ws'));
+        aria2RPC.connect.onmessage = event => {
+            var {method, params: [{gid}]} = JSON.parse(event.data);
+            var index = active.indexOf(gid);
+            method === 'aria2.onDownloadStart' ? index === -1 && active.push(gid) :
+                method !== 'aria2.onBtDownloadComplete' ? index !== -1 && active.splice(index, 1) : null;
+            chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
+        };
+    }).catch(error => {
+        chrome.browserAction.setBadgeText({text: 'E'});
+        chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
+    });
+}
+
+function aria2Terminate() {
+    aria2Socket && aria2Socket.readyState === 1 && aria2Socket.close();
+    aria2Alive && clearInterval(aria2Alive);
+}
+
 function showNotification(message = '') {
     chrome.notifications.create({
         type: 'basic',

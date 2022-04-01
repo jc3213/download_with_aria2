@@ -116,48 +116,56 @@ function aria2RPCClient() {
     activeTask = [];
     waitingTask = [];
     stoppedTask = [];
-    aria2RPC.manager(active => {
-        var download = 0;
-        var upload = 0;
-        active.forEach(result => {
-            updateSession(result, activeQueue, activeTask);
-            download += (result.downloadSpeed | 0);
-            upload += (result.uploadSpeed | 0);
-        });
-        activeStat.innerText = activeTask.length;
-        downloadStat.innerText = getFileSize(download) + '/s';
-        uploadStat.innerText = getFileSize(upload) + '/s';
-    }, (waiting, stopped) => {
-        waiting.forEach(result => updateSession(result, waitingQueue, waitingTask));
-        stopped.forEach(result => updateSession(result, stoppedQueue, stoppedTask));
+    aria2RPC.message('aria2.getGlobalStat').then(async ({numWaiting, numStopped}) => {
+        await aria2RPC.message('aria2.tellActive').then(refreshManager);
+        var waiting = await aria2RPC.message('aria2.tellWaiting', [0, numWaiting | 0]).then(waiting => waiting.forEach(result => updateSession(result, waitingQueue, waitingTask)));
+        var stopped = await aria2RPC.message('aria2.tellStopped', [0, numStopped | 0]).then(stopped => stopped.forEach(result => updateSession(result, stoppedQueue, stoppedTask)));
         waitingStat.innerText = waitingTask.length;
         stoppedStat.innerText = stoppedTask.length;
-    }, (method, gid, result) => {
-        var task = updateSession(result);
-        if (method === 'aria2.onDownloadStart') {
-            if (activeTask.indexOf(gid) === -1) {
-                activeTask.push(gid);
-                activeQueue.append(task);
-                waitingTask.includes(gid) ? waitingTask.splice(waitingTask.indexOf(gid), 1) :
-                stoppedTask.includes(gid) ? stoppedTask.splice(stoppedTask.indexOf(gid), 1) : null;
+        aria2Socket = new WebSocket(aria2RPC.jsonrpc.replace('http', 'ws'));
+        aria2Socket.onmessage = async event => {
+            var {method, params: [{gid}]} = JSON.parse(event.data);
+            var result = await aria2RPC.message('aria2.tellStatus', [gid]);
+            var task = updateSession(result);
+            if (method === 'aria2.onDownloadStart') {
+                if (activeTask.indexOf(gid) === -1) {
+                    activeTask.push(gid);
+                    activeQueue.append(task);
+                    waitingTask.includes(gid) ? waitingTask.splice(waitingTask.indexOf(gid), 1) :
+                    stoppedTask.includes(gid) ? stoppedTask.splice(stoppedTask.indexOf(gid), 1) : null;
+                }
             }
-        }
-        else if (method === 'aria2.onDownloadPause') {
-            waitingTask.push(gid);
-            waitingQueue.append(task);
-            activeTask.splice(activeTask.indexOf(gid), 1);
-        }
-        else if (method !== 'aria2.onBtDownloadComplete') {
-            stoppedTask.push(gid);
-            stoppedQueue.append(task);
-            activeTask.splice(activeTask.indexOf(gid), 1);
-        }
-        activeStat.innerText = activeTask.length;
-        waitingStat.innerText = waitingTask.length;
-        stoppedStat.innerText = stoppedTask.length;
-    }, error => {
+            else if (method === 'aria2.onDownloadPause') {
+                waitingTask.push(gid);
+                waitingQueue.append(task);
+                activeTask.splice(activeTask.indexOf(gid), 1);
+            }
+            else if (method !== 'aria2.onBtDownloadComplete') {
+                stoppedTask.push(gid);
+                stoppedQueue.append(task);
+                activeTask.splice(activeTask.indexOf(gid), 1);
+            }
+            activeStat.innerText = activeTask.length;
+            waitingStat.innerText = waitingTask.length;
+            stoppedStat.innerText = stoppedTask.length;
+        };
+        aria2Alive = setInterval(() => aria2RPC.message('aria2.tellActive').then(refreshManager), aria2Store['refresh_interval']);
+    }).catch(error => {
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
-    }, aria2Store['refresh_interval']);
+    });
+}
+
+function refreshManager(active) {
+    var download = 0;
+    var upload = 0;
+    active.forEach(result => {
+        updateSession(result, activeQueue, activeTask);
+        download += (result.downloadSpeed | 0);
+        upload += (result.uploadSpeed | 0);
+    });
+    activeStat.innerText = activeTask.length;
+    downloadStat.innerText = getFileSize(download) + '/s';
+    uploadStat.innerText = getFileSize(upload) + '/s';
 }
 
 function updateSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}, queue, array) {
