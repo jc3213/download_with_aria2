@@ -53,7 +53,7 @@ function aria2Indicator() {
             }
             else if (method !== 'aria2.onBtDownloadComplete'){
                 if (active.includes(gid)) {
-                    active.splice(index, 1);
+                    active.splice(active.indexOf(gid), 1);
                     number --;
                 }
             }
