@@ -52,10 +52,8 @@ function aria2Indicator() {
                 }
             }
             else if (method !== 'aria2.onBtDownloadComplete'){
-                if (active.includes(gid)) {
-                    active.splice(active.indexOf(gid), 1);
-                    number --;
-                }
+                active.splice(active.indexOf(gid), 1);
+                number --;
             }
             chrome.browserAction.setBadgeText({text: number === 0 ? '' : number + ''});
         };
