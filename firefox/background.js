@@ -18,7 +18,7 @@ browser.storage.local.get(null, async json => {
 browser.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => aria2Store[key] = newValue);
     if (changes['jsonrpc_uri'] || changes['secret_token']) {
-        aria2RPC.terminate();
+        aria2Terminate();
         aria2StartUp();
     }
 });
@@ -59,10 +59,7 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
 
 function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2RPC.indicator(number => {
-        browser.browserAction.setBadgeText({text: number === 0 ? '' : number + ''});
-        browser.browserAction.setBadgeBackgroundColor({color: number !== 'E' ? '#3cc' : '#c33'});
-    });
+    aria2Indicator();
 }
 
 async function startDownload(url, domain, storeId, options) {
