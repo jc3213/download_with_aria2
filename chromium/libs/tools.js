@@ -37,7 +37,6 @@ function promiseFileReader(file, method = 'readAsText') {
 }
 
 function aria2Indicator() {
-    aria2RPC = aria2Profile[aria2Store['default_profile']];
     aria2RPC.message('aria2.tellActive').then(result => {
         var active = result.map(({gid}) => gid);
         var number = active.length;
