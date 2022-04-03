@@ -187,6 +187,8 @@ function updateSession({gid, status, files, bittorrent, completedLength, totalLe
 
 function printSession(gid, bittorrent, queue, array) {
     var task = document.querySelector('[data-gid="template"]').cloneNode(true);
+    array && array.push(gid);
+    queue && queue.append(task);
     task.setAttribute('data-gid', gid);;
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
@@ -229,8 +231,6 @@ function printSession(gid, bittorrent, queue, array) {
         var method = task.getAttribute('status') === 'paused' ? 'aria2.unpause' : 'aria2.pause';
         await aria2RPC.message(method, [gid]);
     });
-    array && array.push(gid);
-    queue && queue.append(task);
     return task;
 }
 
