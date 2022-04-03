@@ -42,8 +42,8 @@ function aria2Indicator() {
         var number = active.length;
         chrome.browserAction.setBadgeText({text: number === 0 ? '' : number + ''});
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
-        aria2RPC.connect = new WebSocket(aria2RPC.jsonrpc.replace('http', 'ws'));
-        aria2RPC.connect.onmessage = event => {
+        aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
+        aria2Socket.onmessage = event => {
             var {method, params: [{gid}]} = JSON.parse(event.data);
             if (method === 'aria2.onDownloadStart') {
                 if (active.indexOf(gid) === -1) {
