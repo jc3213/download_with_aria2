@@ -166,8 +166,8 @@ async function updateManager() {
     var active = await aria2RPC.message('aria2.tellActive');
     active.forEach(result => {
         printSession(result, activeQueue, activeTask);
-        download += (result.downloadSpeed | 0);
-        upload += (result.uploadSpeed | 0);
+        download += result.downloadSpeed | 0;
+        upload += result.uploadSpeed | 0;
     });
     downloadStat.innerText = getFileSize(download) + '/s';
     uploadStat.innerText = getFileSize(upload) + '/s';
