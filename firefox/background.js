@@ -57,11 +57,6 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
-function aria2StartUp() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2Indicator();
-}
-
 async function startDownload(url, domain, storeId, options) {
     var cookies = await browser.cookies.getAll({url, storeId});
     options['header'] = ['Cookie:'];
@@ -69,15 +64,6 @@ async function startDownload(url, domain, storeId, options) {
     options['all-proxy'] = aria2Store['proxy_include'].includes(domain) ? aria2Store['proxy_server'] : '';
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url));
-}
-
-function captureDownload(domain, type, size) {
-    return aria2Store['capture_exclude'].includes(domain) ? false :
-        aria2Store['capture_reject'].includes(type) ? false :
-        aria2Store['capture_mode'] === '2' ? true :
-        aria2Store['capture_include'].includes(domain) ? true :
-        aria2Store['capture_resolve'].includes(type) ? true :
-        aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size'] ? true : false;
 }
 
 async function getFirefoxExclusive(uri) {
