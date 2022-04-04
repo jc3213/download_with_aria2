@@ -12,6 +12,13 @@ chrome.storage.local.get(null, json => {
     aria2RPCClient();
 });
 
+function getFileSize(bytes) {
+    return isNaN(bytes) ? '??' : bytes < 1024 ? bytes + ' B' :
+        bytes < 1048576 ? (bytes / 10.24 | 0) / 100 + ' KB' :
+        bytes < 1073741824 ? (bytes / 10485.76 | 0) / 100 + ' MB' :
+        bytes < 1099511627776 ? (bytes / 10737418.24 | 0) / 100 + ' GB' : (bytes / 10995116277.76 | 0) / 100 + ' TB';
+}
+
 function printOptions(entries, options) {
     entries.forEach(entry => {
         entry.value = options[entry.name] ?? '';
@@ -19,5 +26,13 @@ function printOptions(entries, options) {
             var size = getFileSize(entry.value);
             entry.value = size.slice(0, size.indexOf(' ')) + size.slice(size.indexOf(' ') + 1, -1);
         }
+    });
+}
+
+function promiseFileReader(file, method = 'readAsText') {
+    return new Promise(resolve => {
+        var reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader[method](file);
     });
 }

@@ -35,11 +35,6 @@ chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, fil
     });
 });
 
-function aria2StartUp() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2Indicator();
-}
-
 function startDownload(url, domain, options) {
     chrome.cookies.getAll({url}, cookies => {
         options['header'] = ['Cookie:'];
@@ -50,11 +45,3 @@ function startDownload(url, domain, options) {
     });
 }
 
-function captureDownload(domain, type, size) {
-    return aria2Store['capture_exclude'].includes(domain) ? false :
-        aria2Store['capture_reject'].includes(type) ? false :
-        aria2Store['capture_mode'] === '2' ? true :
-        aria2Store['capture_include'].includes(domain) ? true :
-        aria2Store['capture_resolve'].includes(type) ? true :
-        aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size'] ? true : false;
-}
