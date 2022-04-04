@@ -118,8 +118,8 @@ function aria2RPCClient() {
     stoppedTask = [];
     aria2RPC.message('aria2.getGlobalStat').then(async ({numActive, numWaiting, numStopped}) => {
         updateManager();
-        aria2RPC.message('aria2.tellWaiting', [0, numWaiting | 0]).then(waiting => waiting.forEach(result => parseSession(result, waitingQueue, waitingTask)));
-        aria2RPC.message('aria2.tellStopped', [0, numStopped | 0]).then(stopped => stopped.forEach(result => parseSession(result, stoppedQueue, stoppedTask)));        
+        aria2RPC.message('aria2.tellWaiting', [0, numWaiting | 0]).then(waiting => waiting.forEach(result => printSession(result, waitingQueue, waitingTask)));
+        aria2RPC.message('aria2.tellStopped', [0, numStopped | 0]).then(stopped => stopped.forEach(result => printSession(result, stoppedQueue, stoppedTask)));        
         activeStat.innerText = numActive;
         waitingStat.innerText = numWaiting;
         stoppedStat.innerText = numStopped;
@@ -148,7 +148,7 @@ function aria2RPCClient() {
 
 async function addSession(type, gid) {
     var result = await aria2RPC.message('aria2.tellStatus', [gid]);
-    var task = parseSession(result);
+    var task = printSession(result);
     self[type + 'Stat'].innerText ++;
     self[type + 'Task'].push(gid);
     self[type + 'Queue'].append(task);
@@ -165,7 +165,7 @@ async function updateManager() {
     var upload = 0;
     var active = await aria2RPC.message('aria2.tellActive');
     active.forEach(result => {
-        parseSession(result, activeQueue, activeTask);
+        printSession(result, activeQueue, activeTask);
         download += (result.downloadSpeed | 0);
         upload += (result.uploadSpeed | 0);
     });
@@ -174,8 +174,8 @@ async function updateManager() {
     aria2Alive = setTimeout(updateManager, aria2Store['refresh_interval']);
 }
 
-function parseSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}, queue, array) {
-    var task = document.querySelector('[data-gid="' + gid + '"]') ?? printSession(gid, bittorrent, queue, array);
+function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}, queue, array) {
+    var task = document.querySelector('[data-gid="' + gid + '"]') ?? parseSession(gid, bittorrent, queue, array);
     task.setAttribute('status', status);
     task.querySelector('#name').innerText = bittorrent ? bittorrent.info ? bittorrent.info.name : files[0].path : files[0].path ? files[0].path.slice(files[0].path.lastIndexOf('/') + 1) : files[0].uris[0].uri;
     task.querySelector('#local').innerText = getFileSize(completedLength);
@@ -191,7 +191,7 @@ function parseSession({gid, status, files, bittorrent, completedLength, totalLen
     return task;
 }
 
-function printSession(gid, bittorrent, queue, array) {
+function parseSession(gid, bittorrent, queue, array) {
     var task = document.querySelector('[data-gid="template"]').cloneNode(true);
     array && array.push(gid);
     queue && queue.append(task);
@@ -223,7 +223,7 @@ function printSession(gid, bittorrent, queue, array) {
         await aria2RPC.message('aria2.removeDownloadResult', [gid]);
         removeSession('stopped', gid, task);
     });
-    task.querySelector('#meter').addEventListener('click', async event => {
+    task.querySelector('#meter').addEventListener('click', event => {
         var status = task.getAttribute('status');
         ['active', 'waiting'].includes(status) ? aria2RPC.message('aria2.forcePause', [gid]) :
         status === 'paused' ? aria2RPC.message('aria2.unpause', [gid]) : null;
