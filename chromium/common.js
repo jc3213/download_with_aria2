@@ -28,7 +28,6 @@ function aria2StartUp() {
 
 function aria2Terminate() {
     self.aria2Socket && aria2Socket.readyState === 1 && aria2Socket.close();
-    self.aria2Alive && clearInterval(aria2Alive);
 }
 
 function getDomainFromUrl(url) {
