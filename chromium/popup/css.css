@@ -10,12 +10,8 @@
     background-color: #4c4;
 }
 
-.error {
-    background-color: #c44;
-}
-
-.removed {
-    background-color: #c4c;
+.removed, .error {
+    background-color: #c48;
 }
 
 .active, .waiting, .paused, .error, .complete, .removed {
@@ -111,11 +107,11 @@
 }
 
 [status="removed"] #meter {
-    background-color: #844;
+    background-color: #c84;
 }
 
 [status="error"] #meter {
-    background-color: #400;
+    background-color: #c44;
 }
 
 .footmenu {
