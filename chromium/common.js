@@ -26,6 +26,10 @@ function aria2StartUp() {
     });
 }
 
+function aria2Terminate() {
+    self.aria2Socket && aria2Socket.readyState === 1 && aria2Socket.close();
+}
+
 function getDomainFromUrl(url) {
     try {
         var {hostname} = new URL(url);
