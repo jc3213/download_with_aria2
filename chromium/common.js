@@ -5,7 +5,7 @@ function aria2StartUp() {
         text = text === 0 ? '' : text + '';
         chrome.browserAction.setBadgeText({text});
         chrome.browserAction.setBadgeBackgroundColor({color});
-    }
+    };
     aria2Update();
 }
 

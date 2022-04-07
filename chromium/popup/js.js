@@ -135,7 +135,7 @@ function aria2RPCClient() {
         if (remove) {
             self[remove + 'Stat'].innerText --;
         }
-    }
+    };
 }
 
 async function updateManager() {
