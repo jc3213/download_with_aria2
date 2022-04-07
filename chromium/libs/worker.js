@@ -48,9 +48,13 @@ function initPopup(port) {
     };
 }
 
-function sendPopup(message) {
+function management(add, result, remove, pos) {
+    self[add].push(result);
+    if (remove) {
+        self[remove].splice(pos, 1);
+    }
     if (popup) {
-        popup.postMessage(message);
+        popup.postMessage({add, result, remove});
     }
 }
 
@@ -74,31 +78,27 @@ function initManager(jsonrpc, secret) {
                 var ai = active.findIndex(result => result.gid === gid);
                 if (method === 'aria2.onDownloadStart') {
                     if (ai === -1) {
-                        active.push(result);
-                        sendPopup({add: 'active', result})
                         var wi = waiting.findIndex(result => result.gid === gid);
                         if (wi !== -1) {
-                            waiting.splice(wi, 1);
-                            sendPopup({remove: 'waiting'});
+                            management('active', result, 'waiting', wi);
                         }
                         else {
                             var si = stopped.findIndex(result => result.gid === gid);
                             if (si !== -1) {
-                                stopped.splice(si, 1);
-                                sendPopup({remove: 'stopped'});
+                                management('active', result, 'stopped', si);
+                            }
+                            else {
+                                management('active', result);
                             }
                         }
                     }
                 }
                 else {
-                    active.splice(ai, 1);
                     if (method === 'aria2.onDownloadPause') {
-                        waiting.push(result);
-                        sendPopup({add: 'waiting', result, remove: 'active'});
+                        management('waiting', result, 'active', ai);
                     }
                     else {
-                        stopped.push(result);
-                        sendPopup({add: 'stopped', result, remove: 'active'});
+                        management('stopped', result, 'active', ai);
                     }
                 }
                 core.postMessage({text: active.length, color: '#3cc'});
