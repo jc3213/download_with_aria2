@@ -1,3 +1,10 @@
+function startWorker(origin) {
+    var worker = new SharedWorker('/libs/worker.js');
+    worker.port.start();
+    worker.port.postMessage({origin});
+    return worker.port;
+}
+
 function showNotification(message = '') {
     chrome.notifications.create({
         type: 'basic',

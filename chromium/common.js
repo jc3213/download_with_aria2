@@ -1,33 +1,17 @@
 function aria2StartUp() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2RPC.message('aria2.tellActive').then(result => {
-        var active = result.map(({gid}) => gid);
-        var number = active.length;
-        chrome.browserAction.setBadgeText({text: number === 0 ? '' : number + ''});
-        chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
-        aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
-        aria2Socket.onmessage = event => {
-            var {method, params: [{gid}]} = JSON.parse(event.data);
-            if (method === 'aria2.onDownloadStart') {
-                if (active.indexOf(gid) === -1) {
-                    active.push(gid);
-                    number ++;
-                }
-            }
-            else if (method !== 'aria2.onBtDownloadComplete'){
-                active.splice(active.indexOf(gid), 1);
-                number --;
-            }
-            chrome.browserAction.setBadgeText({text: number === 0 ? '' : number + ''});
-        };
-    }).catch(error => {
-        chrome.browserAction.setBadgeText({text: 'E'});
-        chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
-    });
+    aria2Worker = startWorker('background');
+    aria2Worker.onmessage = event => {
+        var {text, color} = event.data;
+        text = text === 0 ? '' : text + '';
+        chrome.browserAction.setBadgeText({text});
+        chrome.browserAction.setBadgeBackgroundColor({color});
+    }
+    aria2Update();
 }
 
-function aria2Terminate() {
-    self.aria2Socket && aria2Socket.readyState === 1 && aria2Socket.close();
+function aria2Update() {
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    aria2Worker.postMessage({storage: [aria2Store['jsonrpc_uri'], aria2Store['secret_token']]});
 }
 
 function getDomainFromUrl(url) {
