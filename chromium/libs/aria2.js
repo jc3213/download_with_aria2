@@ -13,7 +13,7 @@ class Aria2 {
         let sender = jsonrpc.startsWith('http') ? body => new Promise((resolve, reject) => {
             fetch(jsonrpc, {method: 'POST', body})
             .then(response => response.json())
-            .then(({result, error}) => result ? resolve(result) : reject())
+            .then(({result, error}) => result ? resolve(result) : reject(error))
             .catch(reject);
         }) : message => new Promise((resolve, reject) => {
             var socket = new WebSocket(jsonrpc);
@@ -21,7 +21,7 @@ class Aria2 {
             socket.onclose = reject;
             socket.onmessage = event => {
                 var {result, error} = JSON.parse(event.data);
-                result ? resolve(result) : reject();
+                result ? resolve(result) : reject(error);
                 socket.close();
             };
         });
