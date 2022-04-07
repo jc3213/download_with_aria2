@@ -125,6 +125,8 @@ function aria2RPCClient() {
             stoppedStat.innerText = stopped.length;
         }
         if (typeof status === 'object') {
+            activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = '0';
+            downloadStat.innerText = uploadStat.innerText = '0 B/s';
             activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
         }
         if (add) {
