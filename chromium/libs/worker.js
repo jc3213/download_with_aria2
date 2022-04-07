@@ -4,7 +4,6 @@ var aria2;
 var core;
 var popup;
 var socket;
-var alive;
 var active;
 var waiting;
 var stopped;
@@ -62,7 +61,6 @@ function initManager(jsonrpc, secret) {
     if (socket && socket.readyState === 1) {
         socket.close();
     }
-    clearInterval(alive);
     aria2 = new Aria2(jsonrpc, secret);
     aria2.message('aria2.getGlobalStat').then(async ({numWaiting, numStopped}) => {
         active = await aria2.message('aria2.tellActive');
