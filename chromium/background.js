@@ -17,7 +17,6 @@ chrome.storage.local.get(null, async json => {
 chrome.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => aria2Store[key] = newValue);
     if (changes['jsonrpc_uri'] || changes['secret_token']) {
-        aria2Terminate();
         aria2StartUp();
     }
 });
