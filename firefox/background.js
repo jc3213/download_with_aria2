@@ -5,7 +5,7 @@ browser.contextMenus.create({
 });
 
 browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId}) => {
-    startDownload(linkUrl, getDomainFromUrl(pageUrl), cookieStoreId, {referer: pageUrl});
+    startDownload(linkUrl, getHostname(pageUrl), cookieStoreId, {referer: pageUrl});
 });
 
 browser.storage.local.get(null, async json => {
@@ -28,11 +28,11 @@ browser.downloads.onCreated.addListener(async ({id, url, referrer, filename}) =>
     }
     var {tabUrl, cookieStoreId} = await browser.tabs.query({active: true, currentWindow: true}).then(([{url, cookieStoreId}]) => ({tabUrl: url, cookieStoreId}));
     var referer = referrer && referrer !== 'about:blank' ? referrer : tabUrl;
-    var domain = getDomainFromUrl(referer);
-    captureDownload(domain, getFileExtension(filename)) && browser.downloads.cancel(id).then(async () => {
+    var hostname = getHostname(referer);
+    captureDownload(hostname, getFileExtension(filename)) && browser.downloads.cancel(id).then(async () => {
         await browser.downloads.erase({id});
         var options = await getFirefoxExclusive(filename);
-        startDownload(url, domain, cookieStoreId, {referer, ...options});
+        startDownload(url, hostname, cookieStoreId, {referer, ...options});
     }).catch(error => showNotification('Download is already complete'));
 });
 
@@ -47,20 +47,20 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
         console.log('--------------------------\n' + url + '\n' + originUrl + '\n');
         var out = disposition ? getFileName(disposition) : '';
         console.log(out);
-        var domain = getDomainFromUrl(originUrl);
-        if (captureDownload(domain, getFileExtension(out), length)) {
+        var hostname = getDomainFromUrl(originUrl);
+        if (captureDownload(hostname, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            startDownload(url, domain, cookieStoreId, {referer: originUrl, out});
+            startDownload(url, hostname, cookieStoreId, {referer: originUrl, out});
             return {cancel: true};
         }
     }
 }, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
 
-async function startDownload(url, domain, storeId, options) {
+async function startDownload(url, hostname, storeId, options) {
     var cookies = await browser.cookies.getAll({url, storeId});
     options['header'] = ['Cookie:'];
     options['user-agent'] = aria2Store['user_agent'];
-    options['all-proxy'] = aria2Store['proxy_include'].includes(domain) ? aria2Store['proxy_server'] : '';
+    options['all-proxy'] = aria2Store['proxy_include'].find(host => hostname.endsWith(host)) ? aria2Store['proxy_server'] : '';
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
     aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url));
 }
