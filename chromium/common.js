@@ -14,34 +14,24 @@ function aria2Update() {
     aria2Worker.postMessage({storage: [aria2Store['jsonrpc_uri'], aria2Store['secret_token']]});
 }
 
-function getDomainFromUrl(url) {
+function getHostname(url) {
     try {
-        var {hostname} = new URL(url);
+        return new URL(url).hostname;
     }
     catch {
-        return;
+        return 'about:blank';
     }
-    if (hostname.startsWith('[')) {
-        return hostname.slice(1, -1);
-    }
-    var tld = hostname.slice(hostname.lastIndexOf('.') + 1);
-    if (hostname.indexOf('.') === hostname.lastIndexOf('.') || !isNaN(tld)) {
-        return hostname;
-    }
-    var sld = hostname.slice(hostname.slice(0, - tld.length - 1).lastIndexOf('.') + 1, - tld.length - 1);
-    var sub = hostname.slice(hostname.slice(0, - tld.length - sld.length - 2).lastIndexOf('.') + 1, - tld.length - sld.length - 2);
-    return ['com', 'net', 'org', 'edu', 'gov', 'co', 'ne', 'or', 'me'].includes(sld) ? sub + '.' + sld + '.' + tld : sld + '.' + tld;
 }
 
 function getFileExtension(filename) {
     return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
 }
 
-function captureDownload(domain, type, size) {
-    return aria2Store['capture_exclude'].includes(domain) ? false :
+function captureDownload(hostname, type, size) {
+    return aria2Store['capture_exclude'].find(host => hostname.endsWith(host)) ? false :
         aria2Store['capture_reject'].includes(type) ? false :
         aria2Store['capture_mode'] === '2' ? true :
-        aria2Store['capture_include'].includes(domain) ? true :
+        aria2Store['capture_include'].find(host => hostname.endsWith(host)) ? true :
         aria2Store['capture_resolve'].includes(type) ? true :
         aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size'] ? true : false;
 }
