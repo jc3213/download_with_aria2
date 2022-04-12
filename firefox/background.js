@@ -47,7 +47,7 @@ browser.webRequest.onHeadersReceived.addListener(async ({statusCode, tabId, url,
         console.log('--------------------------\n' + url + '\n' + originUrl + '\n');
         var out = disposition ? getFileName(disposition) : '';
         console.log(out);
-        var hostname = getDomainFromUrl(originUrl);
+        var hostname = getHostname(originUrl);
         if (captureDownload(hostname, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
             startDownload(url, hostname, cookieStoreId, {referer: originUrl, out});
