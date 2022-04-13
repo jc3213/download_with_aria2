@@ -24,7 +24,7 @@
     - Capture filter based on file extension [**Firefox only capture MIME type application via webRequest API**]
     - Capture filter based on domain names of referer
         - site `www.google.com`, filter `com`, `google.com`, `www.google.com`
-        - site `www.university.org.eu`, filter `eu`, `org.eu`, `university.org.eu`, `www.university.eu
+        - site `www.university.org.eu`, filter `eu`, `org.eu`, `university.org.eu`, `www.university.eu`
 - Support proxy setting and provide auto matching rule
 
 # Feedback
