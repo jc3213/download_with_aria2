@@ -49,7 +49,7 @@ async function downloadsAPI({id, url, referrer, filename}) {
 }
 
 async function webRequestAPI({statusCode, tabId, url, originUrl, responseHeaders}) {
-    if (aria2Store['capture_mode'] === 0 || statusCode !== 200) {
+    if (aria2Store['capture_mode'] === '0' || statusCode !== 200) {
         return;
     }
     var match = [{}, 'content-disposition', 'content-type', 'content-length'];
