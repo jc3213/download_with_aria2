@@ -51,9 +51,14 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
     if (statusCode !== 200) {
         return;
     }
-    var match = [{}, 'content-disposition', 'content-type', 'content-length'];
-    responseHeaders.forEach(({name, value}) => match.includes(name = name.toLowerCase()) && (match[0][name.slice(name.indexOf('-') + 1)] = value));
-    var {disposition, type, length} = match[0];
+    var result = {};
+    responseHeaders.forEach(({name, value}) => {
+        name = name.toLowerCase();
+        if (['content-disposition', 'content-type', 'content-length'].includes(name)) {
+            result[name.slice(name.indexOf('-') + 1)] = value;
+        }
+    });
+    var {disposition, type, length} = result;
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
         var out = disposition ? getFileName(disposition) : '';
         var hostname = getHostname(originUrl);
