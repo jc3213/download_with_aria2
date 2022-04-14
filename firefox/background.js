@@ -11,17 +11,16 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
 browser.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
     aria2StartUp();
-    switchableAPI();
     !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
 });
 
 browser.storage.onChanged.addListener(changes => {
     Object.entries(changes).forEach(([key, {newValue}]) => aria2Store[key] = newValue);
     if (changes['jsonrpc_uri'] || changes['secret_token']) {
-        aria2StartUp();
+        aria2Update();
     }
-    if (changes['capture_api']) {
-        switchableAPI();
+    if (changes['capture_mode'] || changes['capture_api']) {
+        aria2Capture();
     }
 });
 
@@ -34,22 +33,22 @@ async function startDownload(url, hostname, storeId, options) {
     aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url));
 }
 
-async function downloadsAPI({id, url, referrer, filename}) {
-    if (aria2Store['capture_mode'] === '0' || url.startsWith('blob') || url.startsWith('data')) {
+async function downloadCapture({id, url, referrer, filename}) {
+    if (url.startsWith('blob') || url.startsWith('data')) {
         return;
     }
     var {tabUrl, cookieStoreId} = await browser.tabs.query({active: true, currentWindow: true}).then(([{url, cookieStoreId}]) => ({tabUrl: url, cookieStoreId}));
     var referer = referrer && referrer !== 'about:blank' ? referrer : tabUrl;
     var hostname = getHostname(referer);
-    captureDownload(hostname, getFileExtension(filename)) && browser.downloads.cancel(id).then(async () => {
+    getCaptureFilter(hostname, getFileExtension(filename)) && browser.downloads.cancel(id).then(async () => {
         await browser.downloads.erase({id});
         var options = await getFirefoxExclusive(filename);
         startDownload(url, hostname, cookieStoreId, {referer, ...options});
     }).catch(error => showNotification('Download is already complete'));
 }
 
-async function webRequestAPI({statusCode, tabId, url, originUrl, responseHeaders}) {
-    if (aria2Store['capture_mode'] === '0' || statusCode !== 200) {
+async function webRequestCapture({statusCode, tabId, url, originUrl, responseHeaders}) {
+    if (statusCode !== 200) {
         return;
     }
     var match = [{}, 'content-disposition', 'content-type', 'content-length'];
@@ -58,7 +57,7 @@ async function webRequestAPI({statusCode, tabId, url, originUrl, responseHeaders
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
         var out = disposition ? getFileName(disposition) : '';
         var hostname = getHostname(originUrl);
-        if (captureDownload(hostname, getFileExtension(out), length)) {
+        if (getCaptureFilter(hostname, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
             startDownload(url, hostname, cookieStoreId, {referer: originUrl, out});
             return {cancel: true};
@@ -66,14 +65,20 @@ async function webRequestAPI({statusCode, tabId, url, originUrl, responseHeaders
     }
 }
 
-function switchableAPI() {
-    if (aria2Store['capture_api'] === '0') {
-        browser.webRequest.onHeadersReceived.removeListener(webRequestAPI);
-        browser.downloads.onCreated.addListener(downloadsAPI);
+function aria2Capture() {
+    if (aria2Store['capture_mode'] !== '0') {
+        if (aria2Store['capture_api'] === '0') {
+            browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
+            browser.downloads.onCreated.addListener(downloadCapture);
+        }
+        else {
+            browser.downloads.onCreated.removeListener(downloadCapture);
+            browser.webRequest.onHeadersReceived.addListener(webRequestCapture, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
+        }
     }
     else {
-        browser.downloads.onCreated.removeListener(downloadsAPI);
-        browser.webRequest.onHeadersReceived.addListener(webRequestAPI, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
+        browser.downloads.onCreated.removeListener(downloadCapture);
+        browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
     }
 }
 
