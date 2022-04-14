@@ -19,20 +19,32 @@ chrome.storage.onChanged.addListener(changes => {
     if (changes['jsonrpc_uri'] || changes['secret_token']) {
         aria2StartUp();
     }
+    if (changes['capture_mode']) {
+        aria2Capture();
+    }
 });
 
-chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, filename, fileSize}) => {
-    if (aria2Store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
+function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
+    if (finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
     chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
         var referer = referrer && referrer !== 'about:blank' ? referrer : tab.url;
         var hostname = getHostname(referer);
-        captureDownload(hostname, getFileExtension(filename), fileSize) && chrome.downloads.erase({id}, () => {
+        getCaptureFilter(hostname, getFileExtension(filename), fileSize) && chrome.downloads.erase({id}, () => {
             startDownload(finalUrl, hostname, {referer, out: filename});
         });
     });
-});
+}
+
+function aria2Capture() {
+    if (aria2Store['capture_mode'] !== '0') {
+        chrome.downloads.onDeterminingFilename.addListener(downloadCapture);
+    }
+    else {
+        chrome.downloads.onDeterminingFilename.removeListener(downloadCapture);
+    }
+}
 
 function startDownload(url, hostname, options) {
     chrome.cookies.getAll({url}, cookies => {
@@ -43,4 +55,3 @@ function startDownload(url, hostname, options) {
         aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url));
     });
 }
-

@@ -7,6 +7,7 @@ function aria2StartUp() {
         chrome.browserAction.setBadgeBackgroundColor({color});
     };
     aria2Update();
+    aria2Capture();
 }
 
 function aria2Update() {
@@ -27,7 +28,7 @@ function getFileExtension(filename) {
     return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
 }
 
-function captureDownload(hostname, type, size) {
+function getCaptureFilter(hostname, type, size) {
     return aria2Store['capture_exclude'].find(host => hostname.endsWith(host)) ? false :
         aria2Store['capture_reject'].includes(type) ? false :
         aria2Store['capture_mode'] === '2' ? true :
