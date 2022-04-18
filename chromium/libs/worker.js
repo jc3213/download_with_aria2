@@ -68,42 +68,46 @@ function initManager(jsonrpc, secret) {
         stopped = await aria2.message('aria2.tellStopped', [0, numStopped | 0]);
         status = 'OK';
         core.postMessage({text: active.length, color: '#3cc'});
-        socket = new WebSocket(jsonrpc.replace('http', 'ws'));
-        socket.onmessage = async event => {
-            var {method, params: [{gid}]} = JSON.parse(event.data);
-            if (method !== 'aria2.onBtDownloadComplete') {
-                var result = await aria2.message('aria2.tellStatus', [gid]);
-                var ai = active.findIndex(result => result.gid === gid);
-                if (method === 'aria2.onDownloadStart') {
-                    if (ai === -1) {
-                        var wi = waiting.findIndex(result => result.gid === gid);
-                        if (wi !== -1) {
-                            management('active', result, 'waiting', wi);
-                        }
-                        else {
-                            var si = stopped.findIndex(result => result.gid === gid);
-                            if (si !== -1) {
-                                management('active', result, 'stopped', si);
-                            }
-                            else {
-                                management('active', result);
-                            }
-                        }
-                    }
-                }
-                else {
-                    if (method === 'aria2.onDownloadPause') {
-                        management('waiting', result, 'active', ai);
-                    }
-                    else {
-                        management('stopped', result, 'active', ai);
-                    }
-                }
-                core.postMessage({text: active.length, color: '#3cc'});
-            }
-        };
+        initSocket(jsonrpc.replace('http', 'ws'));
     }).catch(error => {
         core.postMessage({text: 'E', color: '#c33'});
         status = error;
     });
+}
+
+function initSocket(server) {
+    socket = new WebSocket(server);
+    socket.onmessage = async event => {
+        var {method, params: [{gid}]} = JSON.parse(event.data);
+        if (method !== 'aria2.onBtDownloadComplete') {
+            var result = await aria2.message('aria2.tellStatus', [gid]);
+            var ai = active.findIndex(result => result.gid === gid);
+            if (method === 'aria2.onDownloadStart') {
+                if (ai === -1) {
+                    var wi = waiting.findIndex(result => result.gid === gid);
+                    if (wi !== -1) {
+                        management('active', result, 'waiting', wi);
+                    }
+                    else {
+                        var si = stopped.findIndex(result => result.gid === gid);
+                        if (si !== -1) {
+                            management('active', result, 'stopped', si);
+                        }
+                        else {
+                            management('active', result);
+                        }
+                    }
+                }
+            }
+            else {
+                if (method === 'aria2.onDownloadPause') {
+                    management('waiting', result, 'active', ai);
+                }
+                else {
+                    management('stopped', result, 'active', ai);
+                }
+            }
+            core.postMessage({text: active.length, color: '#3cc'});
+        }
+    };
 }
