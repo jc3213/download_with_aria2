@@ -113,9 +113,7 @@ bt.addEventListener('click', async event => {
 });
 
 function aria2RPCClient() {
-    aria2Worker = startWorker('manager');
-    aria2Worker.onmessage = event => {
-        var {status, active, waiting, stopped, add, result, remove} = event.data;
+    aria2Worker = startWorker('manager', ({status, active, waiting, stopped, add, result, remove}) => {
         if (status === 'OK') {
             updateManager();
             waiting.forEach(result => printSession(result, waitingQueue));
@@ -137,7 +135,7 @@ function aria2RPCClient() {
         if (remove) {
             self[remove + 'Stat'].innerText --;
         }
-    };
+    });
 }
 
 async function updateManager() {

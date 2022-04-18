@@ -1,5 +1,6 @@
-function startWorker(origin) {
+function startWorker(origin, onmessage) {
     var worker = new SharedWorker('/libs/worker.js');
+    worker.port.onmessage = event => onmessage(event.data);
     worker.port.start();
     worker.port.postMessage({origin});
     return worker.port;

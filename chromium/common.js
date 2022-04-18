@@ -1,11 +1,9 @@
 function aria2StartUp() {
-    aria2Worker = startWorker('background');
-    aria2Worker.onmessage = event => {
-        var {text, color} = event.data;
+    aria2Worker = startWorker('background', ({text, color}) => {
         text = text === 0 ? '' : text + '';
         chrome.browserAction.setBadgeText({text});
         chrome.browserAction.setBadgeBackgroundColor({color});
-    };
+    });
     aria2Update();
     aria2Capture();
 }
