@@ -32,11 +32,8 @@ function initPopup(port) {
     popup = port;
     popup.postMessage({status, active, waiting, stopped});
     popup.onmessage = event => {
-        var {storage, manager, remove, gid} = event.data;
-        if (storage) {
-            initManager(...storage);
-        }
-        if (manager === 'purge') {
+        var {purge, remove, gid} = event.data;
+        if (purge) {
             stopped = [];
         }
         if (remove) {

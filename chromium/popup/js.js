@@ -26,7 +26,7 @@ document.querySelector('#task_btn').addEventListener('click', async event => {
 
 document.querySelector('#purdge_btn').addEventListener('click', async event => {
     await aria2RPC.message('aria2.purgeDownloadResult');
-    aria2Worker.postMessage({manager: 'purge'});
+    aria2Worker.postMessage({purge: true});
     stoppedQueue.innerHTML = '';
     stoppedStat.innerText = '0';
 });
