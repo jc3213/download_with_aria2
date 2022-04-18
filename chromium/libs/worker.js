@@ -24,7 +24,8 @@ addEventListener('connect', event => {
 function initCore(port) {
     core = port;
     core.onmessage = event => {
-        initManager(...event.data.storage);
+        var {jsonrpc, secret} = event.data;
+        initManager(jsonrpc, secret);
     };
 }
 

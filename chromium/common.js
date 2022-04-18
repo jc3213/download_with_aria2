@@ -10,7 +10,7 @@ function aria2StartUp() {
 
 function aria2Update() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2Worker.postMessage({storage: [aria2Store['jsonrpc_uri'], aria2Store['secret_token']]});
+    aria2Worker.postMessage({jsonrpc: aria2Store['jsonrpc_uri'], secret: aria2Store['secret_token']});
 }
 
 function getHostname(url) {
