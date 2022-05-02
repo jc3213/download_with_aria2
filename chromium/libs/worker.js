@@ -53,9 +53,6 @@ async function download(method, params) {
 }
 
 function initManager(jsonrpc, secret) {
-    if (self.socket && socket.readyState === 1) {
-        socket.close();
-    }
     aria2 = new Aria2(jsonrpc, secret);
     aria2.message('aria2.getGlobalOption').then(async options => {
         active = await aria2.message('aria2.tellActive');
@@ -72,6 +69,9 @@ function initManager(jsonrpc, secret) {
 }
 
 function initSocket(server) {
+    if (self.socket && socket.readyState === 1) {
+        socket.close();
+    }
     socket = new WebSocket(server);
     socket.onmessage = async event => {
         var {method, params: [{gid}]} = JSON.parse(event.data);
