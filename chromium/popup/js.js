@@ -49,7 +49,7 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
     entries && entries.forEach(url => {
-        aria2Worker.postMessage({downloadUrl: [[url], options]});
+        aria2Worker.postMessage({url, options});
         showNotification(url);
     });
     document.querySelector('#entries').value = '';
