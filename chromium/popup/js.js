@@ -48,8 +48,8 @@ document.querySelector('#proxy_new').addEventListener('click', event => {
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    entries && entries.forEach(async url => {
-        await aria2RPC.message('aria2.addUri', [[url], options]);
+    entries && entries.forEach(url => {
+        aria2Worker.postMessage({downloadUrl: [[url], options]});
         showNotification(url);
     });
     document.querySelector('#entries').value = '';
@@ -60,9 +60,13 @@ document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none'
 document.querySelector('#upload_btn').addEventListener('change', event => {
     var options = createOptions();
     [...event.target.files].forEach(async file => {
-        var {method, params = []} = file.name.endsWith('torrent') ? {method: 'aria2.addTorrent'} : {method: 'aria2.addMetalink', params: [options]};
-        var data = await promiseFileReader(file, 'readAsDataURL');
-        await aria2RPC.message(method, [data.slice(data.indexOf(',') + 1), ...params]);
+        var data = await promiseFileReader(file, 'readAsDataURL').then(result => result.slice(result.indexOf(',') + 1));
+        if (file.name.endsWith('torrent')) {
+            aria2Worker.postMessage({torrent: data});
+        }
+        else {
+            aria2Worker.postMessage({metalink: data, options});
+        }
         showNotification(file.name);
     });
     event.target.value = '';
@@ -155,7 +159,7 @@ async function updateManager() {
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}, queue) {
     var task = document.querySelector('[data-gid="' + gid + '"]') ?? parseSession(gid, bittorrent, queue);
     task.setAttribute('status', status);
-    task.querySelector('#name').innerText = bittorrent ? bittorrent.info ? bittorrent.info.name : files[0].path : files[0].path ? files[0].path.slice(files[0].path.lastIndexOf('/') + 1) : files[0].uris[0].uri;
+    task.querySelector('#name').innerText = getDownloadName(bittorrent, files);
     task.querySelector('#local').innerText = getFileSize(completedLength);
     task.querySelector('#remote').innerText = getFileSize(totalLength);
     task.querySelector('#infinite').style.display = totalLength === completedLength || downloadSpeed === '0' ? 'inline-block' : printEstimatedTime(task, (totalLength - completedLength) / downloadSpeed) ?? 'none';
@@ -199,10 +203,10 @@ function parseSession(gid, bittorrent, queue) {
         document.querySelector('#manager #remote').innerText = task.querySelector('#remote').innerText;
     });
     task.querySelector('#retry_btn').addEventListener('click', async event => {
-        var {files: [{path, uris}]} = await aria2RPC.message('aria2.tellStatus', [gid]);
+        var [{path, uris}] = await aria2RPC.message('aria2.getFiles', [gid]);
         var options = await aria2RPC.message('aria2.getOption', [gid]);
         options['out'] = path ? path.slice(path.lastIndexOf('/') + 1) : '';
-        await aria2RPC.message('aria2.addUri', [uris.map(({uri}) => uri), options]);
+        aria2Worker.postMessage({url: uris.map(({uri}) => uri), options});
         await aria2RPC.message('aria2.removeDownloadResult', [gid]);
         aria2Worker.postMessage({remove: 'stopped', gid});
         task.remove();

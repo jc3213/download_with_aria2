@@ -1,15 +1,21 @@
 function aria2StartUp() {
-    aria2Worker = startWorker('background', ({text, color}) => {
-        text = text === 0 ? '' : text + '';
-        chrome.browserAction.setBadgeText({text});
-        chrome.browserAction.setBadgeBackgroundColor({color});
+    aria2Worker = startWorker('background', ({text, color, notification}) => {
+        if (text) {
+            text = text === 0 ? '' : text + '';
+            chrome.browserAction.setBadgeText({text});
+            chrome.browserAction.setBadgeBackgroundColor({color});
+        }
+        if (notification) {
+            var {bittorrent, files} = notification;
+            var filename = getDownloadName(bittorrent, files);
+            showNotification(filename);
+        }
     });
     aria2Update();
     aria2Capture();
 }
 
 function aria2Update() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     aria2Worker.postMessage({jsonrpc: aria2Store['jsonrpc_uri'], secret: aria2Store['secret_token']});
 }
 

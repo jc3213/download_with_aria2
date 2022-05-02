@@ -14,3 +14,7 @@ function showNotification(message = '') {
         message
     });
 }
+
+function getDownloadName(bittorrent, [{path, uris}]) {
+    return bittorrent && bittorrent.info ? bittorrent.info.name : path ? path.slice(path.lastIndexOf('/') + 1) : uris[0].uri;
+}

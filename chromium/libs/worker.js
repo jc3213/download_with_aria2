@@ -1,39 +1,19 @@
 importScripts('/libs/aria2.js');
 
-var aria2;
-var core;
-var popup;
-var socket;
-var active;
-var waiting;
-var stopped;
-var status;
-
 addEventListener('connect', event => {
     var port = event.ports[0];
     port.onmessage = event => {
-        if (event.data.origin === 'background') {
-            initCore(port);
+        var {origin, jsonrpc, secret, purge, remove, gid, url, torrent, metalink, options} = event.data;
+        if (origin === 'background') {
+            core = port;
         }
-        else {
-            initPopup(port);
+        if (origin === 'manager') {
+            popup = port;
+            popup.postMessage({status, active, waiting, stopped});
         }
-    }
-});
-
-function initCore(port) {
-    core = port;
-    core.onmessage = event => {
-        var {jsonrpc, secret} = event.data;
-        initManager(jsonrpc, secret);
-    };
-}
-
-function initPopup(port) {
-    popup = port;
-    popup.postMessage({status, active, waiting, stopped});
-    popup.onmessage = event => {
-        var {purge, remove, gid} = event.data;
+        if (jsonrpc) {
+            initManager(jsonrpc, secret);
+        }
         if (purge) {
             stopped = [];
         }
@@ -42,8 +22,17 @@ function initPopup(port) {
             self[remove].splice(ri, 1);
             popup.postMessage({remove});
         }
+        if (url) {
+            download('aria2.addUri', [Array.isArray(url) ? url : [url], options]);
+        }
+        if (torrent) {
+            download('aria2.addTorrent', [torrent]);
+        }
+        if (metalink) {
+            download('aria2.addMetalink', [metalink, options]);
+        }
     };
-}
+});
 
 function management(add, result, remove, pos) {
     self[add].push(result);
@@ -55,15 +44,24 @@ function management(add, result, remove, pos) {
     }
 }
 
+async function download(method, params) {
+    var gid = await aria2.message(method, params);
+    if (active.length === maximum) {
+        var result = await aria2.message('aria2.tellStatus', [gid]);
+        waiting.push(result);
+    }
+}
+
 function initManager(jsonrpc, secret) {
-    if (socket && socket.readyState === 1) {
+    if (self.socket && socket.readyState === 1) {
         socket.close();
     }
     aria2 = new Aria2(jsonrpc, secret);
-    aria2.message('aria2.getGlobalStat').then(async ({numWaiting, numStopped}) => {
+    aria2.message('aria2.getGlobalOption').then(async options => {
         active = await aria2.message('aria2.tellActive');
-        waiting = await aria2.message('aria2.tellWaiting', [0, numWaiting | 0]);
-        stopped = await aria2.message('aria2.tellStopped', [0, numStopped | 0]);
+        waiting = await aria2.message('aria2.tellWaiting', [0, 999]);
+        stopped = await aria2.message('aria2.tellStopped', [0, 999]);
+        maximum = options['max-concurrent-downloads'] | 0;
         status = 'OK';
         core.postMessage({text: active.length, color: '#3cc'});
         initSocket(jsonrpc.replace('http', 'ws'));

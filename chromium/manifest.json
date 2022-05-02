@@ -15,7 +15,6 @@
     "default_locale" : "en",
     "background": {
         "scripts": [
-            "libs/aria2.js",
             "libs/tools.js",
             "common.js",
             "background.js"
