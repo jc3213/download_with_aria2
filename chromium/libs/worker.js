@@ -48,7 +48,7 @@ async function download(method, params) {
     var gid = await aria2.message(method, params);
     if (active.length === maximum) {
         var result = await aria2.message('aria2.tellStatus', [gid]);
-        waiting.push(result);
+        management('waiting', result);
     }
 }
 

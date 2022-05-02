@@ -177,12 +177,8 @@ function parseSession(gid, bittorrent, queue) {
         var status = task.getAttribute('status');
         var method = ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
         aria2RPC.message(method, [gid]);
-        if (['complete', 'removed', 'error'].includes(status)) {
-            aria2Worker.postMessage({remove: 'stopped', gid});
-            task.remove();
-        }
-        if (status === 'paused') {
-            aria2Worker.postMessage({remove: 'waiting', gid});
+        if (status !== 'active') {
+            aria2Worker.postMessage({remove: ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped', gid});
             task.remove();
         }
     });
