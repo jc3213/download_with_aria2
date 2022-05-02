@@ -61,12 +61,7 @@ document.querySelector('#upload_btn').addEventListener('change', event => {
     var options = createOptions();
     [...event.target.files].forEach(async file => {
         var data = await promiseFileReader(file, 'readAsDataURL').then(result => result.slice(result.indexOf(',') + 1));
-        if (file.name.endsWith('torrent')) {
-            aria2Worker.postMessage({torrent: data});
-        }
-        else {
-            aria2Worker.postMessage({metalink: data, options});
-        }
+        aria2Worker.postMessage(file.name.endsWith('torrent') ? {torrent: data} : {metalink: data, options});
         showNotification(file.name);
     });
     event.target.value = '';
