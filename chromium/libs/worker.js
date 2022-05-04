@@ -85,13 +85,7 @@ function initSocket(server) {
                         management('active', result, 'waiting', wi);
                     }
                     else {
-                        var si = stopped.findIndex(result => result.gid === gid);
-                        if (si !== -1) {
-                            management('active', result, 'stopped', si);
-                        }
-                        else {
-                            management('active', result);
-                        }
+                        management('active', result);
                     }
                 }
             }
