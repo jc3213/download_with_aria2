@@ -39,7 +39,7 @@ function management(add, result, remove, pos) {
     if (remove) {
         self[remove].splice(pos, 1);
     }
-    if (popup) {
+    if (self.popup) {
         popup.postMessage({add, result, remove});
     }
 }
