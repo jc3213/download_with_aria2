@@ -36,10 +36,7 @@ async function __add__({url, torrent, metalink, options}) {
     if (metalink) {
         gid = await aria2.message('aria2.addMetalink', [metalink, options]);
     }
-    if (active.length === maximum) {
-        var result = await aria2.message('aria2.tellStatus', [gid]);
-        __manage__('waiting', result);
-    }
+    __manage__('active', gid);
 }
 
 async function __remove__(remove, gid) {
@@ -56,10 +53,17 @@ async function __remove__(remove, gid) {
     }
 }
 
-function __manage__(add, result, remove, pos) {
+async function __manage__(add, gid, remove, pos) {
+    var result = await aria2.message('aria2.tellStatus', [gid]);
+    if (add === 'active' && active.length === maximum) {
+        add = 'waiting';
+    }
     self[add].push(result);
     if (remove) {
         self[remove].splice(pos, 1);
+    }
+    if (add === 'active' || remove === 'active') {
+        core.postMessage({text: active.length, color: '#3cc'});
     }
     if (self.popup) {
         popup.postMessage({add, result, remove});
@@ -90,28 +94,23 @@ function __socket__(server) {
     socket.onmessage = async event => {
         var {method, params: [{gid}]} = JSON.parse(event.data);
         if (method !== 'aria2.onBtDownloadComplete') {
-            var result = await aria2.message('aria2.tellStatus', [gid]);
             var ai = active.findIndex(result => result.gid === gid);
             if (method === 'aria2.onDownloadStart') {
                 if (ai === -1) {
                     var wi = waiting.findIndex(result => result.gid === gid);
                     if (wi !== -1) {
-                        __manage__('active', result, 'waiting', wi);
-                    }
-                    else {
-                        __manage__('active', result);
+                        await __manage__('active', gid, 'waiting', wi);
                     }
                 }
             }
             else {
                 if (method === 'aria2.onDownloadPause') {
-                    __manage__('waiting', result, 'active', ai);
+                    await __manage__('waiting', gid, 'active', ai);
                 }
                 else {
-                    __manage__('stopped', result, 'active', ai);
+                    await __manage__('stopped', gid, 'active', ai);
                 }
             }
-            core.postMessage({text: active.length, color: '#3cc'});
         }
     };
 }
