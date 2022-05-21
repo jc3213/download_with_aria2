@@ -178,7 +178,7 @@ function parseSession(gid, bittorrent, queue) {
         var status = task.getAttribute('status');
         var remove = ['active', 'waiting', 'paused'].includes(status) ? 'active' :
             ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
-        aria2Worker.postMessage({remove: ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped', gid});
+        aria2Worker.postMessage({remove, gid});
         task.remove();
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
