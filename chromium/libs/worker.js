@@ -99,16 +99,16 @@ function __socket__(server) {
                 if (ai === -1) {
                     var wi = waiting.findIndex(result => result.gid === gid);
                     if (wi !== -1) {
-                        await __manage__('active', gid, 'waiting', wi);
+                        __manage__('active', gid, 'waiting', wi);
                     }
                 }
             }
             else {
                 if (method === 'aria2.onDownloadPause') {
-                    await __manage__('waiting', gid, 'active', ai);
+                    __manage__('waiting', gid, 'active', ai);
                 }
                 else {
-                    await __manage__('stopped', gid, 'active', ai);
+                    __manage__('stopped', gid, 'active', ai);
                 }
             }
         }
