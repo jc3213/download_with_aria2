@@ -48,9 +48,11 @@ document.querySelector('#proxy_new').addEventListener('click', event => {
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    entries && entries.forEach(url => {
-        aria2Worker.postMessage({add: {url, options}});
-        showNotification(url);
+    entries && entries.forEach((url, index) => {
+        setTimeout(() => {
+            aria2Worker.postMessage({add: {url, options}});
+            showNotification(url);
+        }, index * 10);
     });
     document.querySelector('#entries').value = '';
     document.body.setAttribute('data-popup', 'main');
