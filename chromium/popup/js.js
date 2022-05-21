@@ -176,7 +176,7 @@ function parseSession(gid, bittorrent, queue) {
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', event => {
         var status = task.getAttribute('status');
-        var remove = ['active', 'waiting', 'paused'].includes(status) ? 'active' :
+        var remove = status === 'active' ? 'active' :
             ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
         aria2Worker.postMessage({remove, gid});
         status !== 'active' && task.remove();
