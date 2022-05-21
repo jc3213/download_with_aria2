@@ -27,8 +27,8 @@ addEventListener('connect', event => {
             if (remove !== 'active') {
                 var ri = self[remove].findIndex(result => result.gid === gid);
                 self[remove].splice(ri, 1);
+                popup.postMessage({remove});
             }
-            popup.postMessage({remove});
         }
         if (add) {
             var {url, torrent, metalink, options} = add;
