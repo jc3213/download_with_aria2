@@ -36,7 +36,9 @@ async function __add__({url, torrent, metalink, options}) {
     if (metalink) {
         gid = await aria2.message('aria2.addMetalink', [metalink, options]);
     }
-    __manage__('active', gid);
+    if (active.length === maximum) {
+        management('waiting', gid);
+    }
 }
 
 async function __remove__(remove, gid) {
@@ -55,9 +57,6 @@ async function __remove__(remove, gid) {
 
 async function __manage__(add, gid, remove, pos) {
     var result = await aria2.message('aria2.tellStatus', [gid]);
-    if (add === 'active' && active.length === maximum) {
-        add = 'waiting';
-    }
     self[add].push(result);
     if (remove) {
         self[remove].splice(pos, 1);
@@ -100,6 +99,9 @@ function __socket__(server) {
                     var wi = waiting.findIndex(result => result.gid === gid);
                     if (wi !== -1) {
                         __manage__('active', gid, 'waiting', wi);
+                    }
+                    else {
+                        __manage__('active', gid);
                     }
                 }
             }
