@@ -3,7 +3,7 @@ importScripts('/libs/aria2.js');
 addEventListener('connect', event => {
     var port = event.ports[0];
     port.onmessage = event => {
-        var {origin, jsonrpc, secret, purge, remove, gid, add} = event.data;
+        var {origin, jsonrpc, secret, purge, add, remove, gid} = event.data;
         if (origin === 'background') {
             core = port;
         }
