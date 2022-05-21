@@ -179,7 +179,7 @@ function parseSession(gid, bittorrent, queue) {
         var remove = ['active', 'waiting', 'paused'].includes(status) ? 'active' :
             ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
         aria2Worker.postMessage({remove, gid});
-        task.remove();
+        status !== 'active' && task.remove();
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
         activeId = gid;
@@ -197,7 +197,7 @@ function parseSession(gid, bittorrent, queue) {
         var options = await aria2RPC.message('aria2.getOption', [gid]);
         var li = path.lastIndexOf('/');
         options = path ? {...options, out: path.slice(li + 1), dir: path.slice(0, li)} : options;
-        aria2Worker.postMessage({add: {url: uris[0], options}, remove: 'stopped', gid});
+        aria2Worker.postMessage({add: {url: uris[0].uri, options}, remove: 'stopped', gid});
         task.remove();
     });
     task.querySelector('#meter').addEventListener('click', event => {
