@@ -30,7 +30,7 @@ async function startDownload(url, hostname, storeId, options) {
     options['user-agent'] = aria2Store['user_agent'];
     options['all-proxy'] = aria2Store['proxy_include'].find(host => hostname.endsWith(host)) ? aria2Store['proxy_server'] : '';
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
-    aria2Worker.postMessage({url, options});
+    aria2Worker.postMessage({add: {url, options}});
     showNotification(url);
 }
 
