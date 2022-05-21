@@ -37,7 +37,7 @@ async function __add__({url, torrent, metalink, options}) {
         gid = await aria2.message('aria2.addMetalink', [metalink, options]);
     }
     if (active.length === maximum) {
-        management('waiting', gid);
+        __manage__('waiting', gid);
     }
 }
 
