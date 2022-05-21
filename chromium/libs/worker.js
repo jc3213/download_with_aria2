@@ -18,7 +18,7 @@ addEventListener('connect', event => {
             stopped = [];
         }
         if (remove) {
-            __remove__(remove, gid, port);
+            __remove__(remove, gid);
         }
         if (add) {
             __add__(add);
@@ -42,7 +42,7 @@ async function __add__({url, torrent, metalink, options}) {
     }
 }
 
-async function __remove__(remove, gid, port) {
+async function __remove__(remove, gid) {
     if (remove !== 'stopped') {
         await aria2.message('aria2.forceRemove', [gid]);
     }
@@ -52,7 +52,7 @@ async function __remove__(remove, gid, port) {
     if (remove !== 'active') {
         var ri = self[remove].findIndex(result => result.gid === gid);
         self[remove].splice(ri, 1);
-        port.postMessage({remove});
+        popup.postMessage({remove});
     }
 }
 
