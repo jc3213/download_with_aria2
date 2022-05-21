@@ -28,13 +28,13 @@ addEventListener('connect', event => {
 
 async function __add__({url, torrent, metalink, options}) {
     if (url) {
-        await aria2.message('aria2.addUri', [[url], options]);
+        var gid = await aria2.message('aria2.addUri', [[url], options]);
     }
     if (torrent) {
-        await aria2.message('aria2.addTorrent', [torrent]);
+        gid = await aria2.message('aria2.addTorrent', [torrent]);
     }
     if (metalink) {
-        await aria2.message('aria2.addMetalink', [metalink, options]);
+        gid = await aria2.message('aria2.addMetalink', [metalink, options]);
     }
     if (active.length === maximum) {
         var result = await aria2.message('aria2.tellStatus', [gid]);
