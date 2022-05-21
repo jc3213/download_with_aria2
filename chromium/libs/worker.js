@@ -2,8 +2,8 @@ importScripts('/libs/aria2.js');
 
 addEventListener('connect', event => {
     var port = event.ports[0];
-    port.onmessage = event => {
-        var {origin, jsonrpc, secret, purge, remove, gid, url, torrent, metalink, options} = event.data;
+    port.onmessage = async event => {
+        var {origin, jsonrpc, secret, purge, remove, gid, add} = event.data;
         if (origin === 'background') {
             core = port;
         }
@@ -18,18 +18,29 @@ addEventListener('connect', event => {
             stopped = [];
         }
         if (remove) {
-            var ri = self[remove].findIndex(result => result.gid === gid);
-            self[remove].splice(ri, 1);
+            if (remove !== 'stopped') {
+                await aria2.message('aria2.forceRemove', [gid]);
+            }
+            else {
+                await aria2.message('aria2.removeDownloadResult', [gid]);
+            }
+            if (remove !== 'active') {
+                var ri = self[remove].findIndex(result => result.gid === gid);
+                self[remove].splice(ri, 1);
+            }
             popup.postMessage({remove});
         }
-        if (url) {
-            download('aria2.addUri', [Array.isArray(url) ? url : [url], options]);
-        }
-        if (torrent) {
-            download('aria2.addTorrent', [torrent]);
-        }
-        if (metalink) {
-            download('aria2.addMetalink', [metalink, options]);
+        if (add) {
+            var {url, torrent, metalink, options} = add;
+            if (url) {
+                download('aria2.addUri', [[url], options]);
+            }
+            if (torrent) {
+                download('aria2.addTorrent', [torrent]);
+            }
+            if (metalink) {
+                download('aria2.addMetalink', [metalink, options]);
+            }
         }
     };
 });

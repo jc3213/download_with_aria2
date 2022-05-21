@@ -49,7 +49,7 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
     entries && entries.forEach(url => {
-        aria2Worker.postMessage({url, options});
+        aria2Worker.postMessage({add: {url, options}});
         showNotification(url);
     });
     document.querySelector('#entries').value = '';
@@ -61,7 +61,8 @@ document.querySelector('#upload_btn').addEventListener('change', event => {
     var options = createOptions();
     [...event.target.files].forEach(async file => {
         var data = await promiseFileReader(file, 'readAsDataURL').then(result => result.slice(result.indexOf(',') + 1));
-        aria2Worker.postMessage(file.name.endsWith('torrent') ? {torrent: data} : {metalink: data, options});
+        var add = file.name.endsWith('torrent') ? {torrent: data} : {metalink: data, options};
+        aria2Worker.postMessage({add});
         showNotification(file.name);
     });
     event.target.value = '';
@@ -175,12 +176,10 @@ function parseSession(gid, bittorrent, queue) {
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', event => {
         var status = task.getAttribute('status');
-        var method = ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
-        aria2RPC.message(method, [gid]);
-        if (status !== 'active') {
-            aria2Worker.postMessage({remove: ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped', gid});
-            task.remove();
-        }
+        var remove = ['active', 'waiting', 'paused'].includes(status) ? 'active' :
+            ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
+        aria2Worker.postMessage({remove: ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped', gid});
+        task.remove();
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
         activeId = gid;
@@ -196,10 +195,9 @@ function parseSession(gid, bittorrent, queue) {
     task.querySelector('#retry_btn').addEventListener('click', async event => {
         var [{path, uris}] = await aria2RPC.message('aria2.getFiles', [gid]);
         var options = await aria2RPC.message('aria2.getOption', [gid]);
-        options['out'] = path ? path.slice(path.lastIndexOf('/') + 1) : '';
-        aria2Worker.postMessage({url: uris.map(({uri}) => uri), options});
-        await aria2RPC.message('aria2.removeDownloadResult', [gid]);
-        aria2Worker.postMessage({remove: 'stopped', gid});
+        var li = path.lastIndexOf('/');
+        options = path ? {...options, out: path.slice(li + 1), dir: path.slice(0, li)} : options;
+        aria2Worker.postMessage({add: {url: uris[0], options}, remove: 'stopped', gid});
         task.remove();
     });
     task.querySelector('#meter').addEventListener('click', event => {
