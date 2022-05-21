@@ -2,7 +2,7 @@ importScripts('/libs/aria2.js');
 
 addEventListener('connect', event => {
     var port = event.ports[0];
-    port.onmessage = async event => {
+    port.onmessage = event => {
         var {origin, jsonrpc, secret, purge, remove, gid, add} = event.data;
         if (origin === 'background') {
             core = port;
@@ -12,40 +12,51 @@ addEventListener('connect', event => {
             popup.postMessage({status, active, waiting, stopped});
         }
         if (jsonrpc) {
-            initManager(jsonrpc, secret);
+            __initiate__(jsonrpc, secret);
         }
         if (purge) {
             stopped = [];
         }
         if (remove) {
-            if (remove !== 'stopped') {
-                await aria2.message('aria2.forceRemove', [gid]);
-            }
-            else {
-                await aria2.message('aria2.removeDownloadResult', [gid]);
-            }
-            if (remove !== 'active') {
-                var ri = self[remove].findIndex(result => result.gid === gid);
-                self[remove].splice(ri, 1);
-                popup.postMessage({remove});
-            }
+            __remove__(remove, gid, port);
         }
         if (add) {
-            var {url, torrent, metalink, options} = add;
-            if (url) {
-                download('aria2.addUri', [[url], options]);
-            }
-            if (torrent) {
-                download('aria2.addTorrent', [torrent]);
-            }
-            if (metalink) {
-                download('aria2.addMetalink', [metalink, options]);
-            }
+            __add__(add);
         }
     };
 });
 
-function management(add, result, remove, pos) {
+async function __add__({url, torrent, metalink, options}) {
+    if (url) {
+        await aria2.message('aria2.addUri', [[url], options]);
+    }
+    if (torrent) {
+        await aria2.message('aria2.addTorrent', [torrent]);
+    }
+    if (metalink) {
+        await aria2.message('aria2.addMetalink', [metalink, options]);
+    }
+    if (active.length === maximum) {
+        var result = await aria2.message('aria2.tellStatus', [gid]);
+        __manage__('waiting', result);
+    }
+}
+
+async function __remove__(remove, gid, port) {
+    if (remove !== 'stopped') {
+        await aria2.message('aria2.forceRemove', [gid]);
+    }
+    else {
+        await aria2.message('aria2.removeDownloadResult', [gid]);
+    }
+    if (remove !== 'active') {
+        var ri = self[remove].findIndex(result => result.gid === gid);
+        self[remove].splice(ri, 1);
+        port.postMessage({remove});
+    }
+}
+
+function __manage__(add, result, remove, pos) {
     self[add].push(result);
     if (remove) {
         self[remove].splice(pos, 1);
@@ -55,15 +66,7 @@ function management(add, result, remove, pos) {
     }
 }
 
-async function download(method, params) {
-    var gid = await aria2.message(method, params);
-    if (active.length === maximum) {
-        var result = await aria2.message('aria2.tellStatus', [gid]);
-        management('waiting', result);
-    }
-}
-
-function initManager(jsonrpc, secret) {
+function __initiate__(jsonrpc, secret) {
     aria2 = new Aria2(jsonrpc, secret);
     aria2.message('aria2.getGlobalOption').then(async options => {
         active = await aria2.message('aria2.tellActive');
@@ -72,14 +75,14 @@ function initManager(jsonrpc, secret) {
         maximum = options['max-concurrent-downloads'] | 0;
         status = 'OK';
         core.postMessage({text: active.length, color: '#3cc'});
-        initSocket(jsonrpc.replace('http', 'ws'));
+        __socket__(jsonrpc.replace('http', 'ws'));
     }).catch(error => {
         core.postMessage({text: 'E', color: '#c33'});
         status = error;
     });
 }
 
-function initSocket(server) {
+function __socket__(server) {
     if (self.socket && socket.readyState === 1) {
         socket.close();
     }
@@ -93,19 +96,19 @@ function initSocket(server) {
                 if (ai === -1) {
                     var wi = waiting.findIndex(result => result.gid === gid);
                     if (wi !== -1) {
-                        management('active', result, 'waiting', wi);
+                        __manage__('active', result, 'waiting', wi);
                     }
                     else {
-                        management('active', result);
+                        __manage__('active', result);
                     }
                 }
             }
             else {
                 if (method === 'aria2.onDownloadPause') {
-                    management('waiting', result, 'active', ai);
+                    __manage__('waiting', result, 'active', ai);
                 }
                 else {
-                    management('stopped', result, 'active', ai);
+                    __manage__('stopped', result, 'active', ai);
                 }
             }
             core.postMessage({text: active.length, color: '#3cc'});
