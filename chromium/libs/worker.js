@@ -36,9 +36,11 @@ async function __add__({url, torrent, metalink, options}) {
     if (metalink) {
         gid = await aria2.message('aria2.addMetalink', [metalink, options]);
     }
-    if (active.length === maximum) {
-        __manage__('waiting', gid);
-    }
+    setTimeout(() => {
+        if (active.length === maximum) {
+            __manage__('waiting', gid);
+        }
+    }, 100);
 }
 
 async function __remove__(remove, gid) {
@@ -61,9 +63,7 @@ async function __manage__(add, gid, remove, pos) {
     if (remove) {
         self[remove].splice(pos, 1);
     }
-    if (add === 'active' || remove === 'active') {
-        core.postMessage({text: active.length, color: '#3cc'});
-    }
+    core.postMessage({text: active.length, color: '#3cc'});
     if (self.popup) {
         popup.postMessage({add, result, remove});
     }
