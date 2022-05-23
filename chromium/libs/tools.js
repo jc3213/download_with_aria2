@@ -1,5 +1,5 @@
 function startWorker(origin, onmessage) {
-    var worker = new SharedWorker('/libs/worker.js');
+    var worker = new SharedWorker('/libs/worker.js', 'download-with-aria2_v' + chrome.runtime.getManifest().version);
     worker.port.onmessage = event => onmessage(event.data);
     worker.port.start();
     worker.port.postMessage({origin});
@@ -16,5 +16,6 @@ function showNotification(message = '') {
 }
 
 function getDownloadName(bittorrent, [{path, uris}]) {
-    return bittorrent && bittorrent.info ? bittorrent.info.name : path ? path.slice(path.lastIndexOf('/') + 1) : uris[0].uri;
+    return bittorrent && bittorrent.info ? bittorrent.info.name :
+        path ? path.slice(path.lastIndexOf('/') + 1) : uris[0].uri;
 }
