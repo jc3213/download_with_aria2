@@ -36,10 +36,7 @@ async function __add__({url, torrent, metalink, options}) {
     if (metalink) {
         gid = await aria2.message('aria2.addMetalink', [metalink, options]);
     }
-    if (active.length !== maximum) {
-        __manage__('active', gid);
-    }
-    else {
+    if (active.length === maximum) {
         __manage__('waiting', gid);
     }
 }
@@ -100,6 +97,9 @@ function __socket__(server) {
                     var wi = waiting.findIndex(result => result.gid === gid);
                     if (wi !== -1) {
                         __manage__('active', gid, 'waiting', wi);
+                    }
+                    else {
+                        __manage__('active', gid);
                     }
                 }
             }
