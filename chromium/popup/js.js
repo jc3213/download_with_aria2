@@ -48,12 +48,7 @@ document.querySelector('#proxy_new').addEventListener('click', event => {
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    entries && entries.forEach((url, index) => {
-        setTimeout(() => {
-            aria2Worker.postMessage({add: {url, options}});
-            showNotification(url);
-        }, index * 10);
-    });
+    entries && entries.forEach((url, index) => delayedBatchDownload({add: {url, options}}, url, index * 50));
     document.querySelector('#entries').value = '';
     document.body.setAttribute('data-popup', 'main');
 });
@@ -61,15 +56,21 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
 document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none' : 'inline-block';
 document.querySelector('#upload_btn').addEventListener('change', event => {
     var options = createOptions();
-    [...event.target.files].forEach(async file => {
+    [...event.target.files].forEach(async (file, index) => {
         var data = await promiseFileReader(file, 'readAsDataURL').then(result => result.slice(result.indexOf(',') + 1));
         var add = file.name.endsWith('torrent') ? {torrent: data} : {metalink: data, options};
-        aria2Worker.postMessage({add});
-        showNotification(file.name);
+        delayedBatchDownload({add}, file.name, index * 50);
     });
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
+
+function delayedBatchDownload(message, notify, timeout) {
+    setTimeout(() => {
+        aria2Worker.postMessage(message);
+        showNotification(notify);
+    }, timeout);
+}
 
 document.querySelector('#name_btn').addEventListener('click', event => {
     activeId = http.innerHTML = bt.innerHTML = '';
