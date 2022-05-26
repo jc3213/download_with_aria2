@@ -48,7 +48,7 @@ document.querySelector('#proxy_new').addEventListener('click', event => {
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    entries && entries.forEach((url, index) => delayedBatchDownload({add: {url, options}}, url, index * 50));
+    entries && entries.forEach((url, index) => delayedBatchDownload({add: {url, options}}, url, index * 100));
     document.querySelector('#entries').value = '';
     document.body.setAttribute('data-popup', 'main');
 });
@@ -59,7 +59,7 @@ document.querySelector('#upload_btn').addEventListener('change', event => {
     [...event.target.files].forEach(async (file, index) => {
         var data = await promiseFileReader(file, 'readAsDataURL').then(result => result.slice(result.indexOf(',') + 1));
         var add = file.name.endsWith('torrent') ? {torrent: data} : {metalink: data, options};
-        delayedBatchDownload({add}, file.name, index * 50);
+        delayedBatchDownload({add}, file.name, index * 100);
     });
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
