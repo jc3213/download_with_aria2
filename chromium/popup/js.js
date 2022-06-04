@@ -137,9 +137,7 @@ function initManager({status, active, waiting, stopped}) {
         stoppedStat.innerText = stopped.length;
     }
     if (status === 'update') {
-        active.forEach(result => printSession(result, activeQueue));
         waiting.forEach(result => printSession(result, waitingQueue));
-        activeStat.innerText = active.length;
         waitingStat.innerText = waiting.length;
     }
     if (status === 'error') {

@@ -36,12 +36,19 @@ addEventListener('connect', event => {
 
 async function __add__({url, batch, torrent, metalink, options}) {
     if (batch) {
-        batch.forEach(url => aria2.message('aria2.addUri', [[url], options]));
-        setTimeout(__batch__, batch.length * 20);
+        batch.forEach(async url => {
+            var gid = await aria2.message('aria2.addUri', [[url], options]);
+            var result = await aria2.message('aria2.tellStatus', [gid]);
+            if (result.status !== 'active') {
+                __manage__('waiting', result);
+            }
+        });
     }
     else if (metalink) {
         await aria2.message('aria2.addMetalink', [metalink, options]);
-        __batch__();
+        waiting = await aria2.message('aria2.tellWaiting', [0, 999]);
+        core.postMessage({text: active.length, color: '#3cc'});
+        popup.postMessage({manage: {status: 'update', waiting}});
     }
     else {
         if (url) {
@@ -54,13 +61,6 @@ async function __add__({url, batch, torrent, metalink, options}) {
             __manage__('waiting', gid);
         }
     }
-}
-
-async function __batch__() {
-    active = await aria2.message('aria2.tellActive');
-    waiting = await aria2.message('aria2.tellWaiting', [0, 999]);
-    core.postMessage({text: active.length, color: '#3cc'});
-    popup.postMessage({manage: {status: 'update', active, waiting}});
 }
 
 async function __remove__(remove, gid) {
@@ -77,8 +77,7 @@ async function __remove__(remove, gid) {
     }
 }
 
-async function __manage__(add, gid, remove, pos) {
-    var result = await aria2.message('aria2.tellStatus', [gid]);
+async function __manage__(add, result, remove, pos) {
     self[add].push(result);
     if (remove) {
         self[remove].splice(pos, 1);
@@ -113,24 +112,25 @@ function __socket__(server) {
     socket.onmessage = async event => {
         var {method, params: [{gid}]} = JSON.parse(event.data);
         if (method !== 'aria2.onBtDownloadComplete') {
+            var result = await aria2.message('aria2.tellStatus', [gid]);
             var ai = active.findIndex(result => result.gid === gid);
             if (method === 'aria2.onDownloadStart') {
                 if (ai === -1) {
                     var wi = waiting.findIndex(result => result.gid === gid);
                     if (wi !== -1) {
-                        __manage__('active', gid, 'waiting', wi);
+                        __manage__('active', result, 'waiting', wi);
                     }
                     else {
-                        __manage__('active', gid);
+                        __manage__('active', result);
                     }
                 }
             }
             else {
                 if (method === 'aria2.onDownloadPause') {
-                    __manage__('waiting', gid, 'active', ai);
+                    __manage__('waiting', result, 'active', ai);
                 }
                 else {
-                    __manage__('stopped', gid, 'active', ai);
+                    __manage__('stopped', result, 'active', ai);
                 }
             }
         }
