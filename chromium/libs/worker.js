@@ -9,7 +9,7 @@ addEventListener('connect', event => {
         }
         if (origin === 'manager') {
             popup = port;
-            popup.postMessage({status, active, waiting, stopped});
+            popup.postMessage({manage: {status, active, waiting, stopped}});
         }
         if (jsonrpc) {
             __initiate__(jsonrpc, secret);
@@ -26,19 +26,32 @@ addEventListener('connect', event => {
     };
 });
 
-async function __add__({url, torrent, metalink, options}) {
-    if (url) {
-        var gid = await aria2.message('aria2.addUri', [[url], options]);
+async function __add__({url, batch, torrent, metalink, options}) {
+    if (batch) {
+        batch.forEach(async url => await aria2.message('aria2.addUri', [[url], options]));
+        setTimeout(__batch__, 300);
     }
-    if (torrent) {
-        gid = await aria2.message('aria2.addTorrent', [torrent]);
+    else if (metalink) {
+        await aria2.message('aria2.addMetalink', [metalink, options]);
+        __batch__();
     }
-    if (metalink) {
-        gid = await aria2.message('aria2.addMetalink', [metalink, options]);
+    else {
+        if (url) {
+            var gid = await aria2.message('aria2.addUri', [[url], options]);
+        }
+        if (torrent) {
+            gid = await aria2.message('aria2.addTorrent', [torrent]);
+        }
+        if (active.length === maximum) {
+            __manage__('waiting', gid);
+        }
     }
-    if (active.length === maximum) {
-        __manage__('waiting', gid);
-    }
+}
+
+async function __batch__() {
+    active = await aria2.message('aria2.tellActive');
+    waiting = await aria2.message('aria2.tellWaiting', [0, 999]);
+    popup.postMessage({manage: {status: 'update', active, waiting}});
 }
 
 async function __remove__(remove, gid) {
@@ -74,12 +87,12 @@ function __initiate__(jsonrpc, secret) {
         waiting = await aria2.message('aria2.tellWaiting', [0, 999]);
         stopped = await aria2.message('aria2.tellStopped', [0, 999]);
         maximum = options['max-concurrent-downloads'] | 0;
-        status = 'OK';
+        status = 'ok';
         core.postMessage({text: active.length, color: '#3cc'});
         __socket__(jsonrpc.replace('http', 'ws'));
     }).catch(error => {
         core.postMessage({text: 'E', color: '#c33'});
-        status = error;
+        status = 'error';
     });
 }
 

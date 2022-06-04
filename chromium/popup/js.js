@@ -47,30 +47,26 @@ document.querySelector('#proxy_new').addEventListener('click', event => {
 
 document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
-    var entries = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    entries && entries.forEach((url, index) => delayedBatchDownload({add: {url, options}}, url, index * 100));
+    var batch = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
+    if (batch) {
+        aria2Worker.postMessage({add: {batch, options}});
+        showNotification(batch.join('\n'));
+    }
     document.querySelector('#entries').value = '';
     document.body.setAttribute('data-popup', 'main');
 });
 
 document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none' : 'inline-block';
-document.querySelector('#upload_btn').addEventListener('change', event => {
+document.querySelector('#upload_btn').addEventListener('change', async event => {
+    var file = event.target.files[0];
     var options = createOptions();
-    [...event.target.files].forEach(async (file, index) => {
-        var data = await promiseFileReader(file, 'readAsDataURL').then(result => result.slice(result.indexOf(',') + 1));
-        var add = file.name.endsWith('torrent') ? {torrent: data} : {metalink: data, options};
-        delayedBatchDownload({add}, file.name, index * 100);
-    });
+    var data = await promiseFileReader(file, 'readAsDataURL').then(result => result.slice(result.indexOf(',') + 1));
+    var add = file.name.endsWith('torrent') ? {torrent: data} : {metalink: data, options};
+    aria2Worker.postMessage({add});
+    showNotification(file.name);
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
-
-function delayedBatchDownload(message, notify, timeout) {
-    setTimeout(() => {
-        aria2Worker.postMessage(message);
-        showNotification(notify);
-    }, timeout);
-}
 
 document.querySelector('#name_btn').addEventListener('click', event => {
     activeId = http.innerHTML = bt.innerHTML = '';
@@ -116,19 +112,9 @@ bt.addEventListener('click', async event => {
 });
 
 function aria2RPCClient() {
-    aria2Worker = startWorker('manager', ({status, active, waiting, stopped, add, result, remove}) => {
-        if (status === 'OK') {
-            updateManager();
-            waiting.forEach(result => printSession(result, waitingQueue));
-            stopped.forEach(result => printSession(result, stoppedQueue));
-            activeStat.innerText = active.length;
-            waitingStat.innerText = waiting.length;
-            stoppedStat.innerText = stopped.length;
-        }
-        if (typeof status === 'object') {
-            activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = '0';
-            downloadStat.innerText = uploadStat.innerText = '0 B/s';
-            activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
+    aria2Worker = startWorker('manager', ({manage, add, result, remove}) => {
+        if (manage) {
+            initManager(manage);
         }
         if (add) {
             var task = printSession(result);
@@ -139,6 +125,28 @@ function aria2RPCClient() {
             self[remove + 'Stat'].innerText --;
         }
     });
+}
+
+function initManager({status, active, waiting, stopped}) {
+    if (status === 'ok') {
+        updateManager();
+        waiting.forEach(result => printSession(result, waitingQueue));
+        stopped.forEach(result => printSession(result, stoppedQueue));
+        activeStat.innerText = active.length;
+        waitingStat.innerText = waiting.length;
+        stoppedStat.innerText = stopped.length;
+    }
+    if (status === 'update') {
+        active.forEach(result => printSession(result, activeQueue));
+        waiting.forEach(result => printSession(result, waitingQueue));
+        activeStat.innerText = active.length;
+        waitingStat.innerText = waiting.length;
+    }
+    if (status === 'error') {
+        activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = '0';
+        downloadStat.innerText = uploadStat.innerText = '0 B/s';
+        activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
+    }
 }
 
 async function updateManager() {
