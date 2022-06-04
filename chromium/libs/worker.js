@@ -1,5 +1,13 @@
 importScripts('/libs/aria2.js');
 
+var core;
+var popup;
+var status;
+var active;
+var waiting;
+var stopped;
+var socket;
+
 addEventListener('connect', event => {
     var port = event.ports[0];
     port.onmessage = event => {
@@ -28,8 +36,8 @@ addEventListener('connect', event => {
 
 async function __add__({url, batch, torrent, metalink, options}) {
     if (batch) {
-        batch.forEach(async url => await aria2.message('aria2.addUri', [[url], options]));
-        setTimeout(__batch__, 300);
+        batch.forEach(url => aria2.message('aria2.addUri', [[url], options]));
+        setTimeout(__batch__, batch.length * 20);
     }
     else if (metalink) {
         await aria2.message('aria2.addMetalink', [metalink, options]);
@@ -51,6 +59,7 @@ async function __add__({url, batch, torrent, metalink, options}) {
 async function __batch__() {
     active = await aria2.message('aria2.tellActive');
     waiting = await aria2.message('aria2.tellWaiting', [0, 999]);
+    core.postMessage({text: active.length, color: '#3cc'});
     popup.postMessage({manage: {status: 'update', active, waiting}});
 }
 
@@ -75,7 +84,7 @@ async function __manage__(add, gid, remove, pos) {
         self[remove].splice(pos, 1);
     }
     core.postMessage({text: active.length, color: '#3cc'});
-    if (self.popup) {
+    if (popup) {
         popup.postMessage({add, result, remove});
     }
 }
@@ -97,7 +106,7 @@ function __initiate__(jsonrpc, secret) {
 }
 
 function __socket__(server) {
-    if (self.socket && socket.readyState === 1) {
+    if (socket && socket.readyState === 1) {
         socket.close();
     }
     socket = new WebSocket(server);
