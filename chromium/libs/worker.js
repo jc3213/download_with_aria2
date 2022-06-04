@@ -39,7 +39,7 @@ async function __add__({url, batch, torrent, metalink, options}) {
         batch.forEach(async url => {
             var gid = await aria2.message('aria2.addUri', [[url], options]);
             var result = await aria2.message('aria2.tellStatus', [gid]);
-            if (result.status !== 'active') {
+            if (result.status === 'waiting') {
                 __manage__('waiting', result);
             }
         });
