@@ -47,7 +47,6 @@ async function __add__({url, batch, torrent, metalink, options}) {
     else if (metalink) {
         await aria2.message('aria2.addMetalink', [metalink, options]);
         waiting = await aria2.message('aria2.tellWaiting', [0, 999]);
-        core.postMessage({text: active.length, color: '#3cc'});
         popup.postMessage({manage: {status: 'update', waiting}});
     }
     else {
