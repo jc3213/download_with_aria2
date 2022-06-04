@@ -58,7 +58,8 @@ async function __add__({url, batch, torrent, metalink, options}) {
             gid = await aria2.message('aria2.addTorrent', [torrent]);
         }
         if (active.length === maximum) {
-            __manage__('waiting', gid);
+            var result = await aria2.message('aria2.tellStatus', [gid]);
+            __manage__('waiting', result);
         }
     }
 }
