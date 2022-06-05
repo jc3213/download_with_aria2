@@ -34,17 +34,8 @@ addEventListener('connect', event => {
     };
 });
 
-async function __add__({url, batch, torrent, metalink, options}) {
-    if (batch) {
-        batch.forEach(async url => {
-            var gid = await aria2.message('aria2.addUri', [[url], options]);
-            var result = await aria2.message('aria2.tellStatus', [gid]);
-            if (result.status === 'waiting') {
-                __manage__('waiting', result);
-            }
-        });
-    }
-    else if (metalink) {
+async function __add__({url, torrent, metalink, options}) {
+    if (metalink) {
         await aria2.message('aria2.addMetalink', [metalink, options]);
         waiting = await aria2.message('aria2.tellWaiting', [0, 999]);
         popup.postMessage({manage: {status: 'update', waiting}});
@@ -56,8 +47,8 @@ async function __add__({url, batch, torrent, metalink, options}) {
         if (torrent) {
             gid = await aria2.message('aria2.addTorrent', [torrent]);
         }
-        if (active.length === maximum) {
-            var result = await aria2.message('aria2.tellStatus', [gid]);
+        var result = await aria2.message('aria2.tellStatus', [gid]);
+        if (result.status === 'waiting') {
             __manage__('waiting', result);
         }
     }
