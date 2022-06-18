@@ -41,7 +41,7 @@ document.querySelector('#monitor_btn').addEventListener('click', event => {
     }
     else {
         aria2Store['capture_include'].splice(tabInclude, 1);
-        tabInclude = -1;
+        tabInclude = aria2Store['capture_include'].findIndex(host => tabDomain.endsWith(host));
         event.target.innerText = event.target.innerText.slice(1);
     }
     chrome.storage.local.set(aria2Store);
@@ -149,7 +149,7 @@ function aria2RPCClient() {
             var checked = tabInclude !== -1 ? '✅' : '';
             document.querySelector('#monitor_btn').innerText = checked + document.querySelector('#monitor_btn').innerText;
         }
-        else if (aria2Store['capture_mode'] === '2') {
+        else {
             document.querySelector('#monitor_btn').disabled = true;
         }
     });
