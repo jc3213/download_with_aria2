@@ -141,7 +141,7 @@
         "message": "已停止"
     },
     "popup_create": {
-        "message": "新下载"
+        "message": "新建"
     },
     "popup_purge": {
         "message": "清理"

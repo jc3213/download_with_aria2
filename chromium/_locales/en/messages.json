@@ -141,7 +141,7 @@
         "message": "Stopped"
     },
     "popup_create": {
-        "message": "New Task"
+        "message": "New"
     },
     "popup_purge": {
         "message": "Purge"
