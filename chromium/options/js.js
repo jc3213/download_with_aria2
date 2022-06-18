@@ -59,7 +59,7 @@ function aria2RPCClient() {
         var multi = field.getAttribute('data-multi');
         field.value = array ? value.join(' ') : multi ? value / multi : value;
         field.addEventListener('change', event => {
-            aria2Store[field.name] = array ? field.value.split(/[\s\n,]+/) : multi ? field.value * multi : field.value;
+            aria2Store[field.name] = array ? field.value.split(/[\s\n,]+/).filter(v => !!v) : multi ? field.value * multi : field.value;
             chrome.storage.local.set(aria2Store);
         });
     });
