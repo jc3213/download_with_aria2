@@ -1,3 +1,5 @@
+var tabDomain;
+var tabInclude;
 var activeId;
 var activeStat = document.querySelector('#active.stats');
 var waitingStat = document.querySelector('#waiting.stats');
@@ -29,6 +31,20 @@ document.querySelector('#purdge_btn').addEventListener('click', async event => {
     aria2Worker.postMessage({purge: true});
     stoppedQueue.innerHTML = '';
     stoppedStat.innerText = '0';
+});
+
+document.querySelector('#monitor_btn').addEventListener('click', event => {
+    if (tabInclude === -1) {
+        tabInclude = aria2Store['capture_include'].length;
+        aria2Store['capture_include'].push(tabDomain);
+        event.target.innerText = '✅' + event.target.innerText;
+    }
+    else {
+        aria2Store['capture_include'].splice(tabInclude, 1);
+        tabInclude = -1;
+        event.target.innerText = event.target.innerText.slice(1);
+    }
+    chrome.storage.local.set(aria2Store);
 });
 
 document.querySelector('#options_btn').addEventListener('click', event => {
@@ -112,17 +128,30 @@ bt.addEventListener('click', async event => {
 });
 
 function aria2RPCClient() {
-    aria2Worker = startWorker('manager', ({manage, add, result, remove}) => {
+    aria2Worker = startWorker('manager', ({manage, add, remove}) => {
         if (manage) {
             initManager(manage);
         }
         if (add) {
+            var {queue, result} = add;
             var task = printSession(result);
-            self[add + 'Queue'].append(task);
-            self[add + 'Stat'].innerText ++;
+            self[queue + 'Queue'].append(task);
+            self[queue + 'Stat'].innerText ++;
         }
         if (remove) {
             self[remove + 'Stat'].innerText --;
+        }
+    });
+    chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
+        if (aria2Store['capture_mode'] === '1') {
+            var hostname = getHostname(tab.url);
+            tabDomain = hostname.indexOf('.') === hostname.lastIndexOf('.') ? hostname : hostname.slice(hostname.indexOf('.') + 1);
+            tabInclude = aria2Store['capture_include'].findIndex(host => tabDomain.endsWith(host));
+            var checked = tabInclude !== -1 ? '✅' : '';
+            document.querySelector('#monitor_btn').innerText = checked + document.querySelector('#monitor_btn').innerText;
+        }
+        else if (aria2Store['capture_mode'] === '2') {
+            document.querySelector('#monitor_btn').disabled = true;
         }
     });
 }
@@ -185,9 +214,9 @@ function parseSession(gid, bittorrent, queue) {
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', event => {
         var status = task.getAttribute('status');
-        var remove = status === 'active' ? 'active' :
+        var queue = status === 'active' ? 'active' :
             ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
-        aria2Worker.postMessage({remove, gid});
+        aria2Worker.postMessage({remove: {queue, gid}});
         status !== 'active' && task.remove();
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
@@ -206,7 +235,7 @@ function parseSession(gid, bittorrent, queue) {
         var options = await aria2RPC.message('aria2.getOption', [gid]);
         var li = path.lastIndexOf('/');
         options = path ? {...options, out: path.slice(li + 1), dir: path.slice(0, li)} : options;
-        aria2Worker.postMessage({add: {url: uris[0].uri, options}, remove: 'stopped', gid});
+        aria2Worker.postMessage({add: {url: uris[0].uri, options}, remove: {queue: 'stopped', gid}});
         task.remove();
     });
     task.querySelector('#meter').addEventListener('click', event => {
