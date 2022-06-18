@@ -12,15 +12,6 @@ function aria2Update() {
     aria2Worker.postMessage({jsonrpc: aria2Store['jsonrpc_uri'], secret: aria2Store['secret_token']});
 }
 
-function getHostname(url) {
-    try {
-        return new URL(url).hostname;
-    }
-    catch {
-        return 'about:blank';
-    }
-}
-
 function getFileExtension(filename) {
     return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
 }
