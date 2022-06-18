@@ -128,15 +128,14 @@ bt.addEventListener('click', async event => {
 });
 
 function aria2RPCClient() {
-    aria2Worker = startWorker('manager', ({manage, add, remove}) => {
+    aria2Worker = startWorker('manager', ({manage, add, result, remove}) => {
         if (manage) {
             initManager(manage);
         }
         if (add) {
-            var {queue, result} = add;
             var task = printSession(result);
-            self[queue + 'Queue'].append(task);
-            self[queue + 'Stat'].innerText ++;
+            self[add + 'Queue'].append(task);
+            self[add + 'Stat'].innerText ++;
         }
         if (remove) {
             self[remove + 'Stat'].innerText --;
@@ -214,9 +213,9 @@ function parseSession(gid, bittorrent, queue) {
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', event => {
         var status = task.getAttribute('status');
-        var queue = status === 'active' ? 'active' :
+        var remove = status === 'active' ? 'active' :
             ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
-        aria2Worker.postMessage({remove: {queue, gid}});
+        aria2Worker.postMessage({remove, gid});
         status !== 'active' && task.remove();
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
@@ -235,7 +234,7 @@ function parseSession(gid, bittorrent, queue) {
         var options = await aria2RPC.message('aria2.getOption', [gid]);
         var li = path.lastIndexOf('/');
         options = path ? {...options, out: path.slice(li + 1), dir: path.slice(0, li)} : options;
-        aria2Worker.postMessage({add: {url: uris[0].uri, options}, remove: {queue: 'stopped', gid}});
+        aria2Worker.postMessage({add: {url: uris[0].uri, options}, remove: 'stopped', gid});
         task.remove();
     });
     task.querySelector('#meter').addEventListener('click', event => {
