@@ -1,8 +1,6 @@
 var tabDomain;
 var tabInclude;
 var monitor = document.querySelector('#monitor_btn');
-var always = chrome.i18n.getMessage('options_always');
-var disabled = chrome.i18n.getMessage('options_disabled');
 var activeId;
 var activeStat = document.querySelector('#active.stats');
 var waitingStat = document.querySelector('#waiting.stats');
@@ -154,7 +152,7 @@ function aria2RPCClient() {
         }
         else {
             monitor.disabled = true;
-            monitor.innerText = aria2Store['capture_mode'] === '0' ? disabled : always;
+            monitor.innerText = chrome.i18n.getMessage(aria2Store['capture_mode'] === '0' ? 'option_disabled' : 'option_always');
         }
     });
 }
