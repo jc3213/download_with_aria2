@@ -1,5 +1,8 @@
 var tabDomain;
 var tabInclude;
+var monitor = document.querySelector('#monitor_btn');
+var always = chrome.i18n.getMessage('options_always');
+var disabled = chrome.i18n.getMessage('options_disabled');
 var activeId;
 var activeStat = document.querySelector('#active.stats');
 var waitingStat = document.querySelector('#waiting.stats');
@@ -33,16 +36,16 @@ document.querySelector('#purdge_btn').addEventListener('click', async event => {
     stoppedStat.innerText = '0';
 });
 
-document.querySelector('#monitor_btn').addEventListener('click', event => {
+monitor.addEventListener('click', event => {
     if (tabInclude === -1) {
         tabInclude = aria2Store['capture_include'].length;
         aria2Store['capture_include'].push(tabDomain);
-        event.target.innerText = '✅' + event.target.innerText;
+        monitor.innerText = tabDomain;
     }
     else {
         aria2Store['capture_include'].splice(tabInclude, 1);
         tabInclude = aria2Store['capture_include'].findIndex(host => tabDomain.endsWith(host));
-        event.target.innerText = event.target.innerText.slice(1);
+        monitor.innerText = tabInclude === -1 ? 'None' : aria2Store['capture_include'][tabInclude];
     }
     chrome.storage.local.set(aria2Store);
 });
@@ -147,10 +150,11 @@ function aria2RPCClient() {
             tabDomain = hostname.indexOf('.') === hostname.lastIndexOf('.') ? hostname : hostname.slice(hostname.indexOf('.') + 1);
             tabInclude = aria2Store['capture_include'].findIndex(host => tabDomain.endsWith(host));
             var checked = tabInclude !== -1 ? '✅' : '';
-            document.querySelector('#monitor_btn').innerText = checked + document.querySelector('#monitor_btn').innerText;
+            monitor.innerText = tabInclude === -1 ? 'None' : aria2Store['capture_include'][tabInclude];
         }
         else {
-            document.querySelector('#monitor_btn').disabled = true;
+            monitor.disabled = true;
+            monitor.innerText = aria2Store['capture_mode'] === '0' ? disabled : always;
         }
     });
 }
