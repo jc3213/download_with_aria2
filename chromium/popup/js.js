@@ -149,9 +149,11 @@ function aria2RPCClient() {
             tabInclude = aria2Store['capture_include'].findIndex(host => tabDomain.endsWith(host));
             var checked = tabInclude !== -1 ? '✅' : '';
             monitor.innerText = tabInclude === -1 ? 'None' : aria2Store['capture_include'][tabInclude];
+            monitor.setAttribute('data-mon', 'include');
         }
         else {
             monitor.disabled = true;
+            monitor.setAttribute('data-mon', aria2Store['capture_mode'] === '0' ? 'disabled' : 'awalys');
             monitor.innerText = chrome.i18n.getMessage(aria2Store['capture_mode'] === '0' ? 'option_disabled' : 'option_always');
         }
     });

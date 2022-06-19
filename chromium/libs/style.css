@@ -53,7 +53,7 @@ option:checked {
 
 button {
     padding: 5px;
-    border-width: 1px;
+    border: 1px outset #000;
 }
 
 button input[type="file"] {
@@ -62,6 +62,18 @@ button input[type="file"] {
 
 button:not(:disabled):hover {
     filter: opacity(75%);
+    border-style: solid;
+}
+
+button:not(:disabled):active {
+    filter: opacity(50%);
+    border-style: inset;
+}
+
+input + button {
+    position: absolute;
+    right: 0px;
+    padding: 2.5px;
 }
 
 button:disabled {
