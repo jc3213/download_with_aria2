@@ -19,7 +19,8 @@ document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) =
 });
 
 document.querySelector('#task_btn').addEventListener('click', async event => {
-    printOptions(document.querySelectorAll('#create input[name]'), aria2Global);
+    var options = await aria2RPC.message('aria2.getGlobalOption');
+    printOptions(document.querySelectorAll('#create input[name]'), options);
     document.body.setAttribute('data-popup', 'task');
 });
 
@@ -119,11 +120,10 @@ function aria2RPCClient() {
     activeTask = [];
     waitingTask = [];
     stoppedTask = [];
-    aria2RPC.message('aria2.getGlobalOption').then(options => {
-        aria2RPC.message('aria2.tellActive').then(active => active.forEach(printSession));
+    aria2RPC.message('aria2.tellActive').then(active => {
+        active.forEach(printSession);
         aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
         aria2RPC.message('aria2.tellStopped', [0, 999]).then(stopped => stopped.forEach(printSession));
-        aria2Global = options;
         aria2Alive = setInterval(updateSession, aria2Store['refresh_interval']);
         aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
         aria2Socket.onmessage = async event => {
@@ -236,7 +236,7 @@ function parseSession(gid, status, bittorrent) {
         }
         else if (status === 'paused') {
             aria2RPC.message('aria2.unpause', [gid]);
-            aria2Global['max-concurrent-downloads'] === activeStat.innerText && task.setAttribute('status', 'waiting');
+            task.setAttribute('status', 'waiting');
         }
     });
     return task;
