@@ -235,9 +235,8 @@ function parseSession(gid, status, bittorrent) {
             task.setAttribute('status', 'paused');
         }
         else if (status === 'paused') {
-            var max = aria2Global['max-concurrent-downloads'] === activeStat.innerText;
             aria2RPC.message('aria2.unpause', [gid]);
-            max && task.setAttribute('status', 'waiting');
+            aria2Global['max-concurrent-downloads'] === activeStat.innerText && task.setAttribute('status', 'waiting');
         }
     });
     return task;
