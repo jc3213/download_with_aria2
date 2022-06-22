@@ -60,8 +60,15 @@ document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none'
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var file = event.target.files[0];
     var data = await promiseFileReader(file, 'readAsDataURL').then(result => result.slice(result.indexOf(',') + 1));
-    var message = file.name.endsWith('torrent') ? ['aria2.addTorrent', [data]] : ['aria2.addMetalink', [data, createOptions()]];
-    aria2RPC.message(...message).then(result => showNotification(file.name));
+    if (file.name.endsWith('torrent')){
+        var gid = await aria2RPC.message('aria2.addTorrent', [data]);
+        addSession(gid);
+    }
+    else {
+        await aria2RPC.message('aria2.addMetalink', [data, createOptions()]);
+        aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(result => printSession(result, waitingQueue)));
+    }
+    showNotification(file.name);
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
@@ -113,25 +120,21 @@ function aria2RPCClient() {
     activeTask = [];
     waitingTask = [];
     stoppedTask = [];
-    aria2RPC.message('aria2.getGlobalStat').then(({numActive, numWaiting, numStopped}) => {
-        aria2RPC.message('aria2.tellActive').then(active => active.forEach(result => printSession(result, activeQueue, activeTask)));
-        aria2RPC.message('aria2.tellWaiting', [0, numWaiting | 0]).then(waiting => waiting.forEach(result => printSession(result, waitingQueue, waitingTask)));
-        aria2RPC.message('aria2.tellStopped', [0, numStopped | 0]).then(stopped => stopped.forEach(result => printSession(result, stoppedQueue, stoppedTask)));        
-        activeStat.innerText = numActive;
-        waitingStat.innerText = numWaiting;
-        stoppedStat.innerText = numStopped;
+    aria2RPC.message('aria2.tellActive').then(active => {
+        active.forEach(result => printSession(result, activeQueue));
+        aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(result => printSession(result, waitingQueue)));
+        aria2RPC.message('aria2.tellStopped', [0, 999]).then(stopped => stopped.forEach(result => printSession(result, stoppedQueue)));        
         aria2Alive = setInterval(updateSession, aria2Store['refresh_interval']);
         aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
         aria2Socket.onmessage = async event => {
             var {method, params: [{gid}]} = JSON.parse(event.data);
             if (method !== 'aria2.onBtDownloadComplete') {
+                addSession(gid);
                 if (method === 'aria2.onDownloadStart') {
-                    addSession(gid);
                     waitingTask.includes(gid) && removeSession('waiting', gid);
                 }
                 else {
-                    removeSession('active', gid);
-                    addSession(gid);
+                    activeTask.includes(gid) && removeSession('active', gid);
                 }
             }
         };
@@ -159,9 +162,8 @@ async function addSession(gid) {
     var result = await aria2RPC.message('aria2.tellStatus', [gid]);
     var {status} = result;
     var task = printSession(result);
-    var type = status === 'active' && activeTask.indexOf(gid) === -1 ? 'active' :
-    ['waiting', 'paused'].includes(status) ? 'waiting' : status !== 'active' ? 'stopped' : null;
-    if (type) {
+    var type = status === 'active' ? 'active' : ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
+    if (self[type + 'Task'].indexOf(gid) === -1) {
         self[type + 'Stat'].innerText ++;
         self[type + 'Task'].push(gid);
         self[type + 'Queue'].append(task);
@@ -193,7 +195,12 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
 
 function parseSession(gid, bittorrent, queue) {
     var task = document.querySelector('[data-gid="template"]').cloneNode(true);
-    queue && queue.append(task);
+    if (queue) {
+        var id = queue.id;
+        queue.append(task);
+        self[id + 'Task'].push(gid);
+        self[id + 'Stat'].innerText ++;
+    }
     task.setAttribute('data-gid', gid);;
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
