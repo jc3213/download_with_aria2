@@ -1,6 +1,3 @@
-var tabDomain;
-var tabInclude;
-var monitor = document.querySelector('#monitor_btn');
 var activeId;
 var activeStat = document.querySelector('#active.stats');
 var waitingStat = document.querySelector('#waiting.stats');
@@ -32,20 +29,6 @@ document.querySelector('#purdge_btn').addEventListener('click', async event => {
     aria2Worker.postMessage({purge: true});
     stoppedQueue.innerHTML = '';
     stoppedStat.innerText = '0';
-});
-
-monitor.addEventListener('click', event => {
-    if (tabInclude === -1) {
-        tabInclude = aria2Store['capture_include'].length;
-        aria2Store['capture_include'].push(tabDomain);
-        monitor.innerText = tabDomain;
-    }
-    else {
-        aria2Store['capture_include'].splice(tabInclude, 1);
-        tabInclude = aria2Store['capture_include'].findIndex(host => tabDomain.endsWith(host));
-        monitor.innerText = tabInclude === -1 ? 'None' : aria2Store['capture_include'][tabInclude];
-    }
-    chrome.storage.local.set(aria2Store);
 });
 
 document.querySelector('#options_btn').addEventListener('click', event => {
