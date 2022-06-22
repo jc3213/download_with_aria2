@@ -11,6 +11,7 @@ browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId})
 browser.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
     aria2StartUp();
+    aria2Capture();
     !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
 });
 
