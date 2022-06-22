@@ -1,3 +1,6 @@
+var tabDomain;
+var tabInclude;
+var monitor = document.querySelector('#monitor_btn');
 var activeId;
 var activeStat = document.querySelector('#active.stats');
 var waitingStat = document.querySelector('#waiting.stats');
@@ -29,6 +32,20 @@ document.querySelector('#purdge_btn').addEventListener('click', async event => {
     aria2Worker.postMessage({purge: true});
     stoppedQueue.innerHTML = '';
     stoppedStat.innerText = '0';
+});
+
+monitor.addEventListener('click', event => {
+    if (tabInclude === -1) {
+        tabInclude = aria2Store['capture_include'].length;
+        aria2Store['capture_include'].push(tabDomain);
+        monitor.innerText = tabDomain;
+    }
+    else {
+        aria2Store['capture_include'].splice(tabInclude, 1);
+        tabInclude = aria2Store['capture_include'].findIndex(host => tabDomain.endsWith(host));
+        monitor.innerText = tabInclude === -1 ? 'None' : aria2Store['capture_include'][tabInclude];
+    }
+    chrome.storage.local.set(aria2Store);
 });
 
 document.querySelector('#options_btn').addEventListener('click', event => {
@@ -112,42 +129,41 @@ bt.addEventListener('click', async event => {
 });
 
 function aria2RPCClient() {
-    aria2Worker = startWorker('manager', ({manage, add, result, remove}) => {
-        if (manage) {
-            initManager(manage);
-        }
-        if (add) {
-            var task = printSession(result);
-            self[add + 'Queue'].append(task);
-            self[add + 'Stat'].innerText ++;
-        }
-        if (remove) {
-            self[remove + 'Stat'].innerText --;
-        }
-    });
-}
-
-function initManager({status, active, waiting, stopped}) {
-    if (status === 'ok') {
-        updateManager();
-        waiting.forEach(result => printSession(result, waitingQueue));
-        stopped.forEach(result => printSession(result, stoppedQueue));
-        activeStat.innerText = active.length;
-        waitingStat.innerText = waiting.length;
-        stoppedStat.innerText = stopped.length;
-    }
-    if (status === 'update') {
-        waiting.forEach(result => printSession(result, waitingQueue));
-        waitingStat.innerText = waiting.length;
-    }
-    if (status === 'error') {
+    activeTask = [];
+    waitingTask = [];
+    stoppedTask = [];
+    aria2RPC.message('aria2.getGlobalStat').then(async ({numActive, numWaiting, numStopped}) => {
+        updateSession();
+        aria2RPC.message('aria2.tellWaiting', [0, numWaiting | 0]).then(waiting => waiting.forEach(result => printSession(result, waitingQueue, waitingTask)));
+        aria2RPC.message('aria2.tellStopped', [0, numStopped | 0]).then(stopped => stopped.forEach(result => printSession(result, stoppedQueue, stoppedTask)));        
+        activeStat.innerText = numActive;
+        waitingStat.innerText = numWaiting;
+        stoppedStat.innerText = numStopped;
+        aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
+        aria2Socket.onmessage = async event => {
+            var {method, params: [{gid}]} = JSON.parse(event.data);
+            if (method !== 'aria2.onBtDownloadComplete') {
+                if (method === 'aria2.onDownloadStart') {
+                    if (activeTask.indexOf(gid) === -1) {
+                        addSession('active', gid);
+                        waitingTask.includes(gid) ? removeSession('waiting', gid) :
+                        stoppedTask.includes(gid) ? removeSession('stopped', gid) : null;
+                    }
+                }
+                else {
+                    removeSession('active', gid);
+                    method === 'aria2.onDownloadPause' ? addSession('waiting', gid) : addSession('stopped', gid);
+                }
+            }
+        };
+    }).catch(error => {
         activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = '0';
         downloadStat.innerText = uploadStat.innerText = '0 B/s';
         activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
-    }
+    });
 }
 
-async function updateManager() {
+async function updateSession() {
     var download = 0;
     var upload = 0;
     var active = await aria2RPC.message('aria2.tellActive');
@@ -158,7 +174,21 @@ async function updateManager() {
     });
     downloadStat.innerText = getFileSize(download) + '/s';
     uploadStat.innerText = getFileSize(upload) + '/s';
-    aria2Alive = setTimeout(updateManager, aria2Store['refresh_interval']);
+    aria2Alive = setTimeout(updateSession, aria2Store['refresh_interval']);
+}
+
+async function addSession(type, gid) {
+    var result = await aria2RPC.message('aria2.tellStatus', [gid]);
+    var task = printSession(result);
+    self[type + 'Stat'].innerText ++;
+    self[type + 'Task'].push(gid);
+    self[type + 'Queue'].append(task);
+}
+
+function removeSession(type, gid, task) {
+    self[type + 'Stat'].innerText --;
+    self[type + 'Task'].splice(self[type + 'Task'].indexOf(gid), 1);
+    task && task.remove();
 }
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}, queue) {
@@ -183,11 +213,11 @@ function parseSession(gid, bittorrent, queue) {
     queue && queue.append(task);
     task.setAttribute('data-gid', gid);;
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
-    task.querySelector('#remove_btn').addEventListener('click', event => {
+    task.querySelector('#remove_btn').addEventListener('click', async event => {
         var status = task.getAttribute('status');
-        var remove = status === 'active' ? 'active' :
-            ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
-        aria2Worker.postMessage({remove, gid});
+        var method = ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
+        await aria2RPC.message(method, [gid]);
+        ['complete', 'error', 'removed'].includes(status) ? removeSession('stopped', gid, task) :
         status !== 'active' && task.remove();
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
@@ -206,8 +236,9 @@ function parseSession(gid, bittorrent, queue) {
         var options = await aria2RPC.message('aria2.getOption', [gid]);
         var li = path.lastIndexOf('/');
         options = path ? {...options, out: path.slice(li + 1), dir: path.slice(0, li)} : options;
-        aria2Worker.postMessage({add: {url: uris[0].uri, options}, remove: 'stopped', gid});
-        task.remove();
+        await aria2RPC.message('aria2.addUri', [uris.map(({uri}) => uri), options]);
+        await aria2RPC.message('aria2.removeDownloadResult', [gid]);
+        removeSession('stopped', gid, task);
     });
     task.querySelector('#meter').addEventListener('click', event => {
         var status = task.getAttribute('status');

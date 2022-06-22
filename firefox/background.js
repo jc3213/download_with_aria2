@@ -5,7 +5,7 @@ browser.contextMenus.create({
 });
 
 browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId}) => {
-    startDownload(linkUrl, getHostname(pageUrl), cookieStoreId, {referer: pageUrl});
+    aria2Download(linkUrl, getHostname(pageUrl), cookieStoreId, {referer: pageUrl});
 });
 
 browser.storage.local.get(null, async json => {
@@ -24,14 +24,30 @@ browser.storage.onChanged.addListener(changes => {
     }
 });
 
-async function startDownload(url, hostname, storeId, options) {
+async function aria2Download(url, hostname, storeId, options) {
     var cookies = await browser.cookies.getAll({url, storeId});
     options['header'] = ['Cookie:'];
     options['user-agent'] = aria2Store['user_agent'];
     options['all-proxy'] = aria2Store['proxy_include'].find(host => hostname.endsWith(host)) ? aria2Store['proxy_server'] : '';
     cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
-    aria2Worker.postMessage({add: {url, options}});
-    showNotification(url);
+    aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url));
+}
+
+function aria2Capture() {
+    if (aria2Store['capture_mode'] !== '0') {
+        if (aria2Store['capture_api'] === '0') {
+            browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
+            browser.downloads.onCreated.addListener(downloadCapture);
+        }
+        else {
+            browser.downloads.onCreated.removeListener(downloadCapture);
+            browser.webRequest.onHeadersReceived.addListener(webRequestCapture, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
+        }
+    }
+    else {
+        browser.downloads.onCreated.removeListener(downloadCapture);
+        browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
+    }
 }
 
 async function downloadCapture({id, url, referrer, filename}) {
@@ -44,7 +60,7 @@ async function downloadCapture({id, url, referrer, filename}) {
     getCaptureFilter(hostname, getFileExtension(filename)) && browser.downloads.cancel(id).then(async () => {
         await browser.downloads.erase({id});
         var options = await getFirefoxExclusive(filename);
-        startDownload(url, hostname, cookieStoreId, {referer, ...options});
+        aria2Download(url, hostname, cookieStoreId, {referer, ...options});
     }).catch(error => showNotification('Download is already complete'));
 }
 
@@ -65,26 +81,9 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
         var hostname = getHostname(originUrl);
         if (getCaptureFilter(hostname, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            startDownload(url, hostname, cookieStoreId, {referer: originUrl, out});
+            aria2Download(url, hostname, cookieStoreId, {referer: originUrl, out});
             return {cancel: true};
         }
-    }
-}
-
-function aria2Capture() {
-    if (aria2Store['capture_mode'] !== '0') {
-        if (aria2Store['capture_api'] === '0') {
-            browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
-            browser.downloads.onCreated.addListener(downloadCapture);
-        }
-        else {
-            browser.downloads.onCreated.removeListener(downloadCapture);
-            browser.webRequest.onHeadersReceived.addListener(webRequestCapture, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
-        }
-    }
-    else {
-        browser.downloads.onCreated.removeListener(downloadCapture);
-        browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
     }
 }
 
