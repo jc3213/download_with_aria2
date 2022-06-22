@@ -125,8 +125,7 @@ function aria2RPCClient() {
                 if (method === 'aria2.onDownloadStart') {
                     if (activeTask.indexOf(gid) === -1) {
                         addSession('active', gid);
-                        waitingTask.includes(gid) ? removeSession('waiting', gid) :
-                        stoppedTask.includes(gid) ? removeSession('stopped', gid) : null;
+                        waitingTask.includes(gid) && removeSession('waiting', gid);
                     }
                 }
                 else {
@@ -196,8 +195,8 @@ function parseSession(gid, bittorrent, queue) {
         var status = task.getAttribute('status');
         var method = ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
         await aria2RPC.message(method, [gid]);
-        ['complete', 'error', 'removed'].includes(status) ? removeSession('stopped', gid, task) :
-        status !== 'active' && task.remove();
+        ['waiting', 'paused'].includes(status) ? removeSession('waiting', gid, task) :
+        status !== 'active' && removeSession('stopped', gid, task);
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
         activeId = gid;
