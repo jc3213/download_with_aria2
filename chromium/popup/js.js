@@ -232,7 +232,6 @@ function parseSession(gid, status, bittorrent) {
         var status = task.getAttribute('status');
         if (['active', 'waiting'].includes(status)) {
             aria2RPC.message('aria2.forcePause', [gid]);
-            task.setAttribute('status', 'paused');
         }
         else if (status === 'paused') {
             var max = aria2Global['max-concurrent-downloads'] === activeStat.innerText;
