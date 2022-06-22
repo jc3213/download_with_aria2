@@ -12,14 +12,6 @@ function getDownloadName(bittorrent, [{path, uris}]) {
         path ? path.slice(path.lastIndexOf('/') + 1) : uris[0].uri;
 }
 
-function startWorker(origin, onmessage) {
-    var worker = new SharedWorker('/libs/worker.js', 'download-with-aria2_v' + chrome.runtime.getManifest().version);
-    worker.port.onmessage = event => onmessage(event.data);
-    worker.port.start();
-    worker.port.postMessage({origin});
-    return worker.port;
-}
-
 function showNotification(message = '') {
     chrome.notifications.create({
         type: 'basic',
