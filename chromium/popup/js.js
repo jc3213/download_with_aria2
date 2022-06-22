@@ -26,7 +26,6 @@ document.querySelector('#task_btn').addEventListener('click', async event => {
 
 document.querySelector('#purdge_btn').addEventListener('click', async event => {
     await aria2RPC.message('aria2.purgeDownloadResult');
-    aria2Worker.postMessage({purge: true});
     stoppedQueue.innerHTML = '';
     stoppedStat.innerText = '0';
 });
@@ -49,8 +48,7 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
     var options = createOptions();
     var batch = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
     batch && batch.forEach(url => {
-        aria2Worker.postMessage({add: {url, options}});
-        showNotification(url);
+        aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url));
     });
     document.querySelector('#entries').value = '';
     document.body.setAttribute('data-popup', 'main');
@@ -59,11 +57,9 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
 document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none' : 'inline-block';
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var file = event.target.files[0];
-    var options = createOptions();
     var data = await promiseFileReader(file, 'readAsDataURL').then(result => result.slice(result.indexOf(',') + 1));
-    var add = file.name.endsWith('torrent') ? {torrent: data} : {metalink: data, options};
-    aria2Worker.postMessage({add});
-    showNotification(file.name);
+    var message = file.name.endsWith('torrent') ? ['aria2.addTorrent', [data]] : ['aria2.addMetalink', [data, createOptions()]];
+    aria2RPC.message(...message).then(result => showNotification(file.name));
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
