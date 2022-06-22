@@ -66,7 +66,7 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
     }
     else {
         await aria2RPC.message('aria2.addMetalink', [data, createOptions()]);
-        aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(result => printSession(result, waitingQueue)));
+        aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
     }
     showNotification(file.name);
     event.target.value = '';
@@ -121,9 +121,9 @@ function aria2RPCClient() {
     waitingTask = [];
     stoppedTask = [];
     aria2RPC.message('aria2.tellActive').then(active => {
-        active.forEach(result => printSession(result, activeQueue));
-        aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(result => printSession(result, waitingQueue)));
-        aria2RPC.message('aria2.tellStopped', [0, 999]).then(stopped => stopped.forEach(result => printSession(result, stoppedQueue)));        
+        active.forEach(printSession);
+        aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
+        aria2RPC.message('aria2.tellStopped', [0, 999]).then(stopped => stopped.forEach(printSession));        
         aria2Alive = setInterval(updateSession, aria2Store['refresh_interval']);
         aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
         aria2Socket.onmessage = async event => {
@@ -150,7 +150,7 @@ async function updateSession() {
     var upload = 0;
     var active = await aria2RPC.message('aria2.tellActive');
     active.forEach(result => {
-        printSession(result, activeQueue);
+        printSession(result);
         download += result.downloadSpeed | 0;
         upload += result.uploadSpeed | 0;
     });
@@ -176,8 +176,8 @@ function removeSession(type, gid, task) {
     task && task.remove();
 }
 
-function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}, queue) {
-    var task = document.querySelector('[data-gid="' + gid + '"]') ?? parseSession(gid, bittorrent, queue);
+function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
+    var task = document.querySelector('[data-gid="' + gid + '"]') ?? parseSession(gid, status, bittorrent);
     task.setAttribute('status', status);
     task.querySelector('#name').innerText = getDownloadName(bittorrent, files);
     task.querySelector('#local').innerText = getFileSize(completedLength);
@@ -193,15 +193,13 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     return task;
 }
 
-function parseSession(gid, bittorrent, queue) {
+function parseSession(gid, status, bittorrent) {
     var task = document.querySelector('[data-gid="template"]').cloneNode(true);
-    if (queue) {
-        var id = queue.id;
-        queue.append(task);
-        self[id + 'Task'].push(gid);
-        self[id + 'Stat'].innerText ++;
-    }
-    task.setAttribute('data-gid', gid);;
+    var type = status === 'active' ? 'active' : ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
+    self[type + 'Queue'].append(task);
+    self[type + 'Task'].push(gid);
+    self[type + 'Stat'].innerText ++;
+    task.setAttribute('data-gid', gid);
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
         var status = task.getAttribute('status');
