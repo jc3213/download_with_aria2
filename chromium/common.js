@@ -7,17 +7,15 @@ function aria2StartUp() {
         aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
         aria2Socket.onmessage = event => {
             var {method, params: [{gid}]} = JSON.parse(event.data);
-            if (method !== 'aria2.onBtDownloadComplete') {
-                if (method === 'aria2.onDownloadStart') {
-                    if (active.indexOf(gid) === -1) {
-                        active.push(gid);
-                    }
+            if (method === 'aria2.onDownloadStart') {
+                if (active.indexOf(gid) === -1) {
+                    active.push(gid);
                 }
-                else {
-                    active.splice(active.indexOf(gid), 1);
-                }
-                chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
             }
+            else if (method !== 'aria2.onBtDownloadComplete') {
+                active.splice(active.indexOf(gid), 1);
+            }
+            chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
         };
     }).catch(error => {
         chrome.browserAction.setBadgeText({text: 'E'});
