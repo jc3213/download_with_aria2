@@ -95,8 +95,8 @@
     "option_capture_mode": {
         "message": "Capturing"
     },
-    "option_capture_mode_filters": {
-        "message": "Built-in Filters"
+    "option_filters": {
+        "message": "Filters"
     },
     "option_capture_mode_desc": {
         "message": "Capture browser downloads based on filters below"

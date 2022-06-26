@@ -95,7 +95,7 @@
     "option_capture_mode": {
         "message": "抓取"
     },
-    "option_capture_mode_filters": {
+    "option_filters": {
         "message": "基于条件"
     },
     "option_capture_mode_desc": {
