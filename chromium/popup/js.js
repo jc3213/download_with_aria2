@@ -166,8 +166,8 @@ async function addSession(gid) {
     if (self[type + 'Task'].indexOf(gid) === -1) {
         self[type + 'Stat'].innerText ++;
         self[type + 'Task'].push(gid);
-        self[type + 'Queue'].appendChild(task);
     }
+    self[type + 'Queue'].appendChild(task);
 }
 
 function removeSession(type, gid, task) {
