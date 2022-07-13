@@ -166,7 +166,7 @@ async function addSession(gid) {
     if (self[type + 'Task'].indexOf(gid) === -1) {
         self[type + 'Stat'].innerText ++;
         self[type + 'Task'].push(gid);
-        self[type + 'Queue'].append(task);
+        self[type + 'Queue'].appendChild(task);
     }
 }
 
@@ -196,7 +196,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
 function parseSession(gid, status, bittorrent) {
     var task = document.querySelector('[data-gid="template"]').cloneNode(true);
     var type = status === 'active' ? 'active' : ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
-    self[type + 'Queue'].append(task);
+    self[type + 'Queue'].appendChild(task);
     self[type + 'Task'].push(gid);
     self[type + 'Stat'].innerText ++;
     task.setAttribute('data-gid', gid);
@@ -280,7 +280,7 @@ function printTableCell(table, type, resolve) {
     var cell = document.querySelector('[data-' + type + '="template"]').cloneNode(true);
     cell.removeAttribute('data-' + type);
     typeof resolve === 'function' && resolve(cell);
-    table.append(cell);
+    table.appendChild(cell);
     return cell;
 }
 
