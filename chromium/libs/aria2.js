@@ -55,5 +55,4 @@ class Aria2 {
     get notifications () {
         return ['aria2.onDownloadStart', 'aria2.onDownloadPause', 'aria2.onDownloadStop', 'aria2.onDownloadComplete', 'aria2.onDownloadError', 'aria2.onBtDownloadComplete'];
     }
-
 }
