@@ -196,9 +196,9 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
 function parseSession(gid, status, bittorrent) {
     var task = document.querySelector('[data-gid="template"]').cloneNode(true);
     var type = status === 'active' ? 'active' : ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
-    self[type + 'Queue'].appendChild(task);
-    self[type + 'Task'].push(gid);
     self[type + 'Stat'].innerText ++;
+    self[type + 'Task'].push(gid);
+    self[type + 'Queue'].appendChild(task);
     task.setAttribute('data-gid', gid);
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
