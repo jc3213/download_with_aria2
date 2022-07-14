@@ -24,7 +24,9 @@ function aria2StartUp() {
 }
 
 function aria2Update() {
-    self.aria2Socket && aria2Socket.readyState === 1 && aria2Socket.close();
+    if (self.aria2Socket && aria2Socket.readyState === 1) {
+        aria2Socket.close();
+    }
     aria2StartUp();
 }
 
