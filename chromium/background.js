@@ -12,7 +12,9 @@ chrome.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
     aria2StartUp();
     aria2Capture();
-    !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
+    if (json['jsonrpc_uri']) {
+        chrome.storage.local.set(aria2Store);
+    }
 });
 
 chrome.storage.onChanged.addListener(changes => {
@@ -42,9 +44,10 @@ function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
     chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
         var referer = referrer && referrer !== 'about:blank' ? referrer : tab.url;
         var hostname = getHostname(referer);
-        getCaptureFilter(hostname, getFileExtension(filename), fileSize) && chrome.downloads.erase({id}, () => {
+        if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
+            chrome.downloads.erase({id});
             aria2Download(finalUrl, hostname, {referer, out: filename});
-        });
+        }
     });
 }
 
