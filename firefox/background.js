@@ -12,7 +12,9 @@ browser.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
     aria2StartUp();
     aria2Capture();
-    !json['jsonrpc_uri'] && chrome.storage.local.set(aria2Store);
+    if (json['jsonrpc_uri']) {
+        chrome.storage.local.set(aria2Store);
+    }
 });
 
 browser.storage.onChanged.addListener(changes => {
@@ -58,11 +60,13 @@ async function downloadCapture({id, url, referrer, filename}) {
     var {tabUrl, cookieStoreId} = await browser.tabs.query({active: true, currentWindow: true}).then(([{url, cookieStoreId}]) => ({tabUrl: url, cookieStoreId}));
     var referer = referrer && referrer !== 'about:blank' ? referrer : tabUrl;
     var hostname = getHostname(referer);
-    getCaptureFilter(hostname, getFileExtension(filename)) && browser.downloads.cancel(id).then(async () => {
-        await browser.downloads.erase({id});
-        var options = await getFirefoxExclusive(filename);
-        aria2Download(url, hostname, cookieStoreId, {referer, ...options});
-    }).catch(error => showNotification('Download is already complete'));
+    if (getCaptureFilter(hostname, getFileExtension(filename))) {
+        browser.downloads.cancel(id).then(async () => {
+            browser.downloads.erase({id});
+            var options = await getFirefoxExclusive(filename);
+            aria2Download(url, hostname, cookieStoreId, {referer, ...options});
+        }).catch(error => showNotification('Download is already complete'));
+    }
 }
 
 async function webRequestCapture({statusCode, tabId, url, originUrl, responseHeaders}) {
