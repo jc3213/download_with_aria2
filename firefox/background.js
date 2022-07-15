@@ -12,8 +12,8 @@ browser.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
     aria2StartUp();
     aria2Capture();
-    if (json['jsonrpc_uri']) {
-        chrome.storage.local.set(aria2Store);
+    if (!json['jsonrpc_uri']) {
+        browser.storage.local.set(aria2Store);
     }
 });
 
