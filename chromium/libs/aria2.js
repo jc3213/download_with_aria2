@@ -37,17 +37,16 @@ class Aria2 {
                 });
             };
         }
-        var json = {id: '', jsonrpc: '2.0', params: []};
-        if (secret) {
-            json.params.push('token:' + secret);
-        }
-        this.message = function (method, params) {
-            var request = {...json, method};
-            if (params) {
-                request.params = [...request.params, ...params];
+        this.message = function (method, options) {
+            var params = [];
+            if (secret) {
+                params.push('token:' + secret);
             }
-            return sender(JSON.stringify(request));
-        }
+            if (options) {
+                params.push(...options);
+            }
+            return sender(JSON.stringify({id: '', jsonrpc: '2.0', method, params}));
+        };
     }
     get methods () {
         return ['aria2.addUri', 'aria2.addTorrent', 'aria2.addMetalink', 'aria2.remove', 'aria2.forceRemove', 'aria2.pause', 'aria2.pauseAll', 'aria2.forcePause', 'aria2.forcePauseAll', 'aria2.unpause', 'aria2.unpauseAll', 'aria2.tellStatus', 'aria2.getUris', 'aria2.getFiles', 'aria2.getPeers', 'aria2.getServers', 'aria2.tellActive', 'aria2.tellWaiting', 'aria2.tellStopped', 'aria2.changePosition', 'aria2.changeUri', 'aria2.getOption', 'aria2.changeOption', 'aria2.getGlobalOption', 'aria2.changeGlobalOption', 'aria2.getGlobalStat', 'aria2.purgeDownloadResult', 'aria2.removeDownloadResult', 'aria2.getVersion', 'aria2.getSessionInfo', 'aria2.shutdown', 'aria2.forceShutdown', 'aria2.saveSession', 'system.multicall', 'system.listMethods', 'system.listNotifications'];
