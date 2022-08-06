@@ -87,7 +87,7 @@ button:disabled {
 }
 
 .submenu > *:not(:last-child) {
-    margin-bottom: 15px;
+    margin-bottom: 25px;
 }
 
 .sidemenu {
