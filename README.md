@@ -21,7 +21,8 @@
         - `downloads API` [**Default**]
         - `webRequest API`
     - Capture filter based on file size
-    - Capture filter based on file extension [**Firefox only capture MIME type application via webRequest API**]
+    - Capture filter based on file extension 
+        - **Firefox only capture MIME type `application/*` via webRequest API**
     - Capture filter based on domain names of referer
         - site `www.google.com`, filter `com`, `google.com`, `www.google.com`
         - site `www.university.org.eu`, filter `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
@@ -37,7 +38,7 @@
 - Extract source code
 
 #### Windows
-- Download 7-zip standalone console `v21.07` [Windows](https://www.7-zip.org/a/7z2107-extra.7z)
+- Download 7-zip standalone console `v22.01` [Windows](https://www.7-zip.org/a/7z2201-extra.7z)
 - Put `7za.exe` and `7za.dll` into the same folder with `win_build.cmd`
 - Run `win_build.cmd` and follow the instructions
 
