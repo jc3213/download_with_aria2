@@ -1,4 +1,7 @@
 var activeId;
+var sessionLET = document.querySelector('[data-gid="template"]');
+var uriLET = document.querySelector('[data-uri="template"]')
+var fileLET = document.querySelector('[data-file="template"]')
 var activeStat = document.querySelector('#active.stats');
 var waitingStat = document.querySelector('#waiting.stats');
 var stoppedStat = document.querySelector('#stopped.stats');
@@ -194,7 +197,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
 }
 
 function parseSession(gid, status, bittorrent) {
-    var task = document.querySelector('[data-gid="template"]').cloneNode(true);
+    var task = sessionLET.cloneNode(true);
     var type = status === 'active' ? 'active' : ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
     self[type + 'Stat'].innerText ++;
     self[type + 'Task'].push(gid);
@@ -277,7 +280,7 @@ function updateTaskDetail(task, status, bittorrent, files) {
 }
 
 function printTableCell(table, type, resolve) {
-    var cell = document.querySelector('[data-' + type + '="template"]').cloneNode(true);
+    var cell = self[type + 'LET'].cloneNode(true);
     cell.removeAttribute('data-' + type);
     typeof resolve === 'function' && resolve(cell);
     table.appendChild(cell);
