@@ -10,5 +10,9 @@
     "capture_resolve": [],
     "capture_include": [],
     "capture_reject": [],
-    "capture_exclude": []
+    "capture_exclude": [],
+    "show_notification": "1",
+    "capture_api": "0",
+    "folder_mode": "0",
+    "folder_path": ""
 }

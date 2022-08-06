@@ -62,6 +62,12 @@
     "option_refresh_interval_desc": {
         "message": "设置任务管理器刷新间隔"
     },
+    "option_show_notification": {
+        "message": "通知"
+    },
+    "option_show_notification_desc": {
+        "message": "新建下载时弹出通知"
+    },
     "option_manager": {
         "message": "管理设置"
     },
