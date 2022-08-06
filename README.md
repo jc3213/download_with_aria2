@@ -38,7 +38,7 @@
 - Extract source code
 
 #### Windows
-- Download 7-zip standalone console `v22.01` [Windows](https://www.7-zip.org/a/7z2201-extra.7z)
+- Download [7-zip standalone console v22.01](https://www.7-zip.org/a/7z2201-extra.7z)
 - Put `7za.exe` and `7za.dll` into the same folder with `win_build.cmd`
 - Run `win_build.cmd` and follow the instructions
 
