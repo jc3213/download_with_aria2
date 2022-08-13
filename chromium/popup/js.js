@@ -206,10 +206,16 @@ function parseSession(gid, status, bittorrent) {
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
         var status = task.getAttribute('status');
-        var method = ['active', 'waiting', 'paused'].includes(status) ? 'aria2.forceRemove' : 'aria2.removeDownloadResult';
-        await aria2RPC.message(method, [gid]);
-        ['waiting', 'paused'].includes(status) ? removeSession('waiting', gid, task) :
-        status !== 'active' ? removeSession('stopped', gid, task) : null;
+        if (['active', 'waiting', 'paused'].includes(status)) {
+            await aria2RPC.message('aria2.forceRemove', [gid]);
+            if (status !== 'active') {
+                removeSession('waiting', gid, task);
+            }
+        }
+        else {
+            await aria2RPC.message('aria2.removeDownloadResult', [gid]);
+            removeSession('stopped', gid, task);
+        }
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
         activeId = gid;
@@ -224,12 +230,16 @@ function parseSession(gid, status, bittorrent) {
     });
     task.querySelector('#retry_btn').addEventListener('click', async event => {
         var [{path, uris}] = await aria2RPC.message('aria2.getFiles', [gid]);
+        uris = [...new Set(uris)].map(({uri}) => uri);
         var options = await aria2RPC.message('aria2.getOption', [gid]);
-        var li = path.lastIndexOf('/');
-        options = path ? {...options, out: path.slice(li + 1), dir: path.slice(0, li)} : options;
-        await aria2RPC.message('aria2.addUri', [uris.map(({uri}) => uri), options]);
+        if (path) {
+            var li = path.lastIndexOf('/');
+            options['dir'] = path.slice(0, li);
+            options['out'] = path.slice(li + 1);
+        }
         await aria2RPC.message('aria2.removeDownloadResult', [gid]);
         removeSession('stopped', gid, task);
+        await aria2RPC.message('aria2.addUri', [uris, options]);
     });
     task.querySelector('#meter').addEventListener('click', event => {
         var status = task.getAttribute('status');
