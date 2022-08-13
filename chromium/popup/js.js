@@ -62,7 +62,7 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
 document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none' : 'inline-block';
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var file = event.target.files[0];
-    var data = await promiseFileReader(file, 'readAsDataURL').then(result => result.slice(result.indexOf(',') + 1));
+    var data = await promiseFileReader(file, 'base64');
     if (file.name.endsWith('torrent')){
         var gid = await aria2RPC.message('aria2.addTorrent', [data]);
         addSession(gid);
