@@ -239,7 +239,8 @@ function parseSession(gid, status, bittorrent) {
         }
         await aria2RPC.message('aria2.removeDownloadResult', [gid]);
         removeSession('stopped', gid, task);
-        await aria2RPC.message('aria2.addUri', [uris, options]);
+        var newId = await aria2RPC.message('aria2.addUri', [uris, options]);
+        addSession(newId);
     });
     task.querySelector('#meter').addEventListener('click', event => {
         var status = task.getAttribute('status');
