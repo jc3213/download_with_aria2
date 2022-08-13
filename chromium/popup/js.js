@@ -47,15 +47,16 @@ document.querySelector('#proxy_new').addEventListener('click', event => {
     event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
 });
 
-document.querySelector('#submit_btn').addEventListener('click', event => {
-    var options = createOptions();
-    var batch = document.querySelector('#entries').value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
+document.querySelector('#submit_btn').addEventListener('click', async event => {
+    var entries = document.querySelector('#entries');
+    var options = downloadOptions();
+    var batch = entries.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
     batch && batch.forEach(async url => {
         var gid = await aria2RPC.message('aria2.addUri', [[url], options]);
         addSession(gid);
         showNotification(url);
     });
-    document.querySelector('#entries').value = '';
+    entries.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
 
@@ -63,7 +64,10 @@ document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none'
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var file = event.target.files[0];
     var data = await promiseFileReader(file, 'base64');
+    var options = downloadOptions();
     if (file.name.endsWith('torrent')){
+        delete options['split'];
+        delete options['min-split-size'];
         var gid = await aria2RPC.message('aria2.addTorrent', [data]);
         addSession(gid);
     }
@@ -75,6 +79,12 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
+
+function downloadOptions() {
+    var options = {'referer': document.querySelector('#referer').value, 'user-agent': aria2Store['user_agent']};
+    document.querySelectorAll('#create input[name]').forEach(field => options[field.name] = field.value);
+    return options;
+}
 
 document.querySelector('#name_btn').addEventListener('click', event => {
     activeId = http.innerHTML = bt.innerHTML = '';
@@ -133,11 +143,11 @@ function aria2RPCClient() {
             var {method, params: [{gid}]} = JSON.parse(event.data);
             if (method !== 'aria2.onBtDownloadComplete') {
                 addSession(gid);
-                if (method === 'aria2.onDownloadStart') {
-                    waitingTask.includes(gid) && removeSession('waiting', gid);
+                if (method === 'aria2.onDownloadStart' && waitingTask.includes(gid)) {
+                    removeSession('waiting', gid);
                 }
-                else {
-                    activeTask.includes(gid) && removeSession('active', gid);
+                else if (method !== 'aria2.onDownloadStart' && activeTask.includes(gid)) {
+                    removeSession('active', gid);
                 }
             }
         };
@@ -268,12 +278,6 @@ function printEstimatedTime(task, number) {
     task.querySelector('#minute').innerText = minutes;
     task.querySelector('#minute').parentNode.style.display = minutes > 0 ? 'inline-block' : 'none';
     task.querySelector('#second').innerText = seconds;
-}
-
-function createOptions() {
-    var options = {'referer': document.querySelector('#referer').value, 'user-agent': aria2Store['user_agent']};
-    document.querySelectorAll('#create input[name]').forEach(field => options[field.name] = field.value);
-    return options;
 }
 
 function updateTaskDetail(task, status, bittorrent, files) {
