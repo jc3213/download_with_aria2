@@ -29,10 +29,26 @@ function printOptions(entries, options) {
     });
 }
 
-function promiseFileReader(file, method = 'readAsText') {
-    return new Promise(resolve => {
+function promiseFileReader(file, method) {
+    return new Promise((resolve, reject) => {
         var reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader[method](file);
+        if (method === 'json') {
+            reader.onload = () => {
+                var json = JSON.parse(reader.result);
+                resolve(json);
+            };
+            reader.readAsText(file);
+        }
+        else if (method === 'base64') {
+            reader.onload = () => {
+                var base64 = reader.result.slice(reader.result.indexOf(',') + 1);
+                resolve(base64);
+            };
+            reader.readAsDataURL(file);
+        }
+        else {
+            var error = new Error('parameter 2 "method" is not defined');
+            reject(error);
+        }
     });
 }

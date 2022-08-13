@@ -30,8 +30,8 @@ document.querySelector('#export_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#import_btn').addEventListener('change', async event => {
-    var text = await promiseFileReader(event.target.files[0]);
-    chrome.storage.local.set(JSON.parse(text));
+    var json = await promiseFileReader(event.target.files[0], 'json');
+    chrome.storage.local.set(json);
     setTimeout(() => location.reload(), 500);
 });
 
