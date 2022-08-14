@@ -54,7 +54,7 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
     batch && batch.forEach(async url => {
         var gid = await aria2RPC.message('aria2.addUri', [[url], options]);
         addSession(gid);
-        showNotification(url);
+        showNotification(url, 'start');
     });
     entries.value = '';
     document.body.setAttribute('data-popup', 'main');
@@ -75,7 +75,7 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
         await aria2RPC.message('aria2.addMetalink', [data, createOptions()]);
         aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
     }
-    showNotification(file.name);
+    showNotification(file.name, 'start');
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
 });

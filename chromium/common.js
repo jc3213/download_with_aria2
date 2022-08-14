@@ -5,15 +5,22 @@ function aria2StartUp() {
         chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
         aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
-        aria2Socket.onmessage = event => {
+        aria2Socket.onmessage = async event => {
             var {method, params: [{gid}]} = JSON.parse(event.data);
-            if (method === 'aria2.onDownloadStart') {
-                if (active.indexOf(gid) === -1) {
-                    active.push(gid);
+            if (method !== 'aria2.onBtDownloadComplete') {
+                if (method === 'aria2.onDownloadStart') {
+                    if (active.indexOf(gid) === -1) {
+                        active.push(gid);
+                    }
                 }
-            }
-            else if (method !== 'aria2.onBtDownloadComplete') {
-                active.splice(active.indexOf(gid), 1);
+                else {
+                    active.splice(active.indexOf(gid), 1);
+                    if (method === 'aria2.onDownloadComplete') {
+                        var {bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
+                        var name = getDownloadName(bittorrent, files);
+                        showNotification(name, 'complete');
+                    }
+                }
             }
             chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
         };

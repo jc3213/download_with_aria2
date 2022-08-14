@@ -20,6 +20,15 @@
     "time_millisecond": {
         "message": "ms"
     },
+    "download_start": {
+        "message": "When Start"
+    },
+    "download_complete": {
+        "message": "When Complete"
+    },
+    "complete_title": {
+        "message": "Download has complete!!"
+    },
     "option_back": {
         "message": "Back"
     },

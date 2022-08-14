@@ -20,6 +20,15 @@
     "time_millisecond": {
         "message": "毫秒"
     },
+    "download_start": {
+        "message": "开始时"
+    },
+    "download_complete": {
+        "message": "完成时"
+    },
+    "complete_title": {
+        "message": "已完成下载！"
+    },
     "option_back": {
         "message": "返回"
     },
