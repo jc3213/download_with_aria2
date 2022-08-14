@@ -34,7 +34,12 @@
                 </div>
             </div>
             <div title="task_batch_desc" i18n_title>
-                <div class="title" i18n>task_batch</div>
+                <span class="title" i18n>task_batch</span>
+                <select id="batch">
+                    <option value="0">URI</option>
+                    <option value="1">JSON</option>
+                    <option value="2">Metalink</option>
+                </select>
                 <div>
                     <textarea id="entries" rows="10"></textarea>
                 </div>
@@ -93,7 +98,7 @@
             <button id="submit_btn" i18n>task_submit</button>
             <button id="upload_btn"><label>
                 <span i18n>task_metaurl</span>
-                <input type="file" accept=".metalink,.torrent,.meta4">
+                <input type="file" accept=".torrent,.json,.metalink,.meta4">
             </label></button>
         </div>
         <div id="manager" data-aria2 class="submenu" style="height: calc(100% - 61px);">

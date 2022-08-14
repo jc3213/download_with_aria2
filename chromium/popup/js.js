@@ -47,15 +47,25 @@ document.querySelector('#proxy_new').addEventListener('click', event => {
     event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
 });
 
-document.querySelector('#submit_btn').addEventListener('click', async event => {
+document.querySelector('#submit_btn').addEventListener('click', event => {
+    var batch = document.querySelector('#batch');
     var entries = document.querySelector('#entries');
     var options = downloadOptions();
-    var batch = entries.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    batch && batch.forEach(async url => {
-        var gid = await aria2RPC.message('aria2.addUri', [[url], options]);
-        addSession(gid);
-        showNotification(url, 'start');
-    });
+    if (batch.value === '0') {
+        var urls = entries.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
+        if (urls) {
+            urls.forEach(url => downloadUrl(url, options));
+        }
+    }
+    else if (batch.value === '1') {
+        var json = new Blob([entries.value], {type: 'application/json;charset=utf-8'});
+        downloadJSON(json, options);
+    }
+    else if (batch.value === '2') {
+        var metalink = new Blob([entries.value], {type: 'application/metalink;charset=utf-8'});
+        downloadMetalink(metalink, options);
+    }
+    batch.value = '0';
     entries.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
@@ -63,17 +73,17 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
 document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none' : 'inline-block';
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var file = event.target.files[0];
-    var data = await promiseFileReader(file, 'base64');
     var options = downloadOptions();
     if (file.name.endsWith('torrent')){
         delete options['split'];
         delete options['min-split-size'];
-        var gid = await aria2RPC.message('aria2.addTorrent', [data]);
-        addSession(gid);
+        await downloadTorrent(file, options);
+    }
+    else if (file.name.endsWith('json')) {
+        await downloadJSON(file, options);
     }
     else {
-        await aria2RPC.message('aria2.addMetalink', [data, createOptions()]);
-        aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
+        await downloadMetalink(file, options);
     }
     showNotification(file.name, 'start');
     event.target.value = '';
@@ -84,6 +94,48 @@ function downloadOptions() {
     var options = {'referer': document.querySelector('#referer').value, 'user-agent': aria2Store['user_agent']};
     document.querySelectorAll('#create input[name]').forEach(field => options[field.name] = field.value);
     return options;
+}
+
+async function downloadUrl(url, options) {
+    var gid = await aria2RPC.message('aria2.addUri', [[url], options]);
+    addSession(gid);
+    showNotification(url, 'start');
+}
+
+async function downloadJSON(file, options) {
+    var json = await promiseFileReader(file, 'json');
+    if (Array.isArray(json)) {
+        json.forEach(jn => parseJSON(jn, options));
+    }
+    else {
+        parseJSON(json, options);
+    }
+}
+
+function parseJSON(json, options) {
+    var {url, referer, filename, proxy} = json;
+    if (referer) {
+        options['referer'] = referer;
+    }
+    if (filename) {
+        options['out'] = filename;
+    }
+    if (proxy) {
+        options['all-proxy'] = proxy;
+    }
+    downloadUrl(url, options);
+}
+
+async function downloadTorrent(file, options) {
+    var torrent = await promiseFileReader(file, 'base64');
+    var gid = await aria2RPC.message('aria2.addTorrent', [torrent]);
+    addSession(gid);
+}
+
+async function downloadMetalink(file, options) {
+    var metalink = await promiseFileReader(file, 'base64');
+    await aria2RPC.message('aria2.addMetalink', [metalink, options]);
+    aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
 }
 
 document.querySelector('#name_btn').addEventListener('click', event => {
