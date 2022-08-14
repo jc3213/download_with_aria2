@@ -112,7 +112,7 @@ async function downloadJSON(file, options) {
     }
 }
 
-function parseJSON(json, options) {
+async function parseJSON(json, options) {
     var {url, referer, filename, proxy} = json;
     if (referer) {
         options['referer'] = referer;
@@ -123,7 +123,7 @@ function parseJSON(json, options) {
     if (proxy) {
         options['all-proxy'] = proxy;
     }
-    downloadUrl(url, options);
+    await downloadUrl(url, options);
 }
 
 async function downloadTorrent(file, options) {
