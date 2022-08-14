@@ -42,10 +42,15 @@ function getFileExtension(filename) {
 }
 
 function getCaptureFilter(hostname, type, size) {
-    return aria2Store['capture_exclude'].find(host => hostname.endsWith(host)) ? false :
-        aria2Store['capture_reject'].includes(type) ? false :
-        aria2Store['capture_mode'] === '2' ? true :
-        aria2Store['capture_include'].find(host => hostname.endsWith(host)) ? true :
-        aria2Store['capture_resolve'].includes(type) ? true :
-        aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size'] ? true : false;
+    if (aria2Store['capture_exclude'].find(host => hostname.endsWith(host)) ||
+        aria2Store['capture_reject'].includes(type)) {
+        return false;
+    }
+    else if (aria2Store['capture_mode'] === '2' ||
+        aria2Store['capture_include'].find(host => hostname.endsWith(host)) ||
+        aria2Store['capture_resolve'].includes(type) ||
+        aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size']) {
+        return true;
+    }
+    return false;
 }
