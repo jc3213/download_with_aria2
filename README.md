@@ -7,6 +7,23 @@
     - Idle: `Empty`
     - Active: Light Blue `Number`
     - Error: Red `E`
+- Support notifications
+    - Disabled: No notifications
+    - When Start: Show notification when download start [**This extension only**]
+    - When Complete: Show notification when download complete
+    - Always: Show notification when download start, and complete
+- Capture browser downloads
+    - Switchable APIs  [**Firefox Only**]
+        - `downloads API` [**Default**]
+        - `webRequest API`
+    - Capture filter based on file size
+    - Capture filter based on file extension 
+        - **Firefox only capture MIME type `application/*` via webRequest API**
+    - Capture filter based on domain names of referer
+        - site `www.google.com`: filter `com`, `google.com`, `www.google.com`
+        - site `www.university.org.eu`: filter `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
+- Support proxy setting and provide auto matching rule
+    - Support Protocol: `http` or `https`
 - Built-in `Aria2 Web Manager`
     - Filtering tasks with queues `Active`, `Stopped`, and `Removed`
     - `New Task` page with extra options
@@ -18,17 +35,6 @@
         - Add or remove download uris for http/ftp downloads
     - `Options` page for the extension
     - `Global Options` page for aria2 jsonrpc
-- Capture browser downloads
-    - Switchable APIs  [**Firefox Only**]
-        - `downloads API` [**Default**]
-        - `webRequest API`
-    - Capture filter based on file size
-    - Capture filter based on file extension 
-        - **Firefox only capture MIME type `application/*` via webRequest API**
-    - Capture filter based on domain names of referer
-        - site `www.google.com`, filter `com`, `google.com`, `www.google.com`
-        - site `www.university.org.eu`, filter `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
-- Support proxy setting and provide auto matching rule
 
 # Feedback
 
@@ -50,8 +56,7 @@
 - If the browser parameter `firefox` or `chromium` is specified, the extension can be compiled without interaction.
 - When the browser parameter is specified, and then specify the `-i` parameter, the browser can directly install the compiled extension in an interactive manner.(Due to Chrome's security policy, this function is currently only implemented in Firefox, and only supports Firefox Browser Developer Edition)
 - The extension will be generated in the `build` folder under the working directory of the compiled script.
-- Examples:
-    - `./linux_build.sh firefox -i`
+- Examples: `./linux_build.sh firefox -i`
 - After preliminary modification and testing, it is basically usable, but further testing is still required.
 
 # Others
