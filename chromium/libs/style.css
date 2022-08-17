@@ -61,14 +61,12 @@ button input[type="file"] {
 }
 
 button:not(:disabled):hover {
-    background-color: #ccc;
-    color: #fff;
+    filter: contrast(80%);
     border-style: solid;
 }
 
 button:not(:disabled):active {
-    background-color: #aaa;
-    color: #fff;
+    filter: contrast(50%);
     border-style: inset;
 }
 
@@ -102,7 +100,7 @@ button:disabled {
 [data-option="1"] > .submenu:not(:nth-child(1)), [data-option="2"] > .submenu:not(:nth-child(2)), [data-option="3"] > .submenu:not(:nth-child(3)),
 [data-global="1"] > .submenu:not(:nth-child(1)), [data-global="2"] > .submenu:not(:nth-child(2)), [data-global="3"] > .submenu:not(:nth-child(3)),
 [data-popup="main"] > *:not([data-main]), [data-popup="task"] > *:not([data-task]), [data-popup="aria2"] > *:not([data-aria2]),
-[data-main="1"] > section:not(:nth-child(1)), [data-main="2"] > section:not(:nth-child(2)), [data-main="3"] > section:not(:nth-child(3)),
+[data-main="1"] > [data-queue]:not(:nth-child(1)), [data-main="2"] > [data-queue]:not(:nth-child(2)), [data-main="3"] > [data-queue]:not(:nth-child(3)),
 [data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http],
 [data-gid="template"], [data-uri="template"], [data-file="template"] {
     display: none;
@@ -111,7 +109,7 @@ button:disabled {
 [data-prefs="option"] [data-option], [data-prefs="global"] [data-global],
 [data-option="1"] > .submenu:nth-child(1), [data-option="2"] > .submenu:nth-child(2), [data-option="3"] > .submenu:nth-child(3),
 [data-global="1"] > .submenu:nth-child(1), [data-global="2"] > .submenu:nth-child(2), [data-global="3"] > .submenu:nth-child(3),
-[data-main="1"] > section:nth-child(1), [data-main="2"] > section:nth-child(2), [data-main="3"] > section:nth-child(3),
+[data-main="1"] > [data-queue]:nth-child(1), [data-main="2"] > [data-queue]:nth-child(2), [data-main="3"] > [data-queue]:nth-child(3),
 [data-popup="main"] [data-main], [data-popup="task"] [data-task], [data-popup="aria2"] [data-aria2] {
     display: block;
 }
