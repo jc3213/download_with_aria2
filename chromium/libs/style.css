@@ -61,12 +61,14 @@ button input[type="file"] {
 }
 
 button:not(:disabled):hover {
-    filter: opacity(75%);
+    background-color: #ccc;
+    color: #fff;
     border-style: solid;
 }
 
 button:not(:disabled):active {
-    filter: opacity(50%);
+    background-color: #aaa;
+    color: #fff;
     border-style: inset;
 }
 
