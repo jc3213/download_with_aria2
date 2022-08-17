@@ -1,15 +1,21 @@
 var activeId;
 var sessionLET = document.querySelector('[data-gid="template"]');
-var uriLET = document.querySelector('[data-uri="template"]')
-var fileLET = document.querySelector('[data-file="template"]')
+var uriLET = document.querySelector('[data-uri="template"]');
+var fileLET = document.querySelector('[data-file="template"]');
 var activeStat = document.querySelector('#active.stats');
 var waitingStat = document.querySelector('#waiting.stats');
 var stoppedStat = document.querySelector('#stopped.stats');
 var downloadStat = document.querySelector('#download.stats');
 var uploadStat = document.querySelector('#upload.stats');
-var activeQueue = document.querySelector('section#active');
-var waitingQueue = document.querySelector('section#waiting');
-var stoppedQueue = document.querySelector('section#stopped');
+var activeQueue = document.querySelector('[data-queue="active"]');
+var waitingQueue = document.querySelector('[data-queue="waiting]');
+var stoppedQueue = document.querySelector('[data-queue="stopped]');
+var activeGroup = activeQueue;
+var waitingGroup = document.querySelector('[data-group="waiting"]');
+var pausedGroup = document.querySelector('[data-group="paused"]');
+var completeGroup = document.querySelector('[data-group="complete"]');
+var removedGroup = document.querySelector('[data-group="removed"]');
+var errorGroup = document.querySelector('[data-group="error"]');
 var http = document.querySelector('section#http');
 var bt = document.querySelector('section#bt');
 
@@ -23,13 +29,13 @@ document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) =
 
 document.querySelector('#task_btn').addEventListener('click', async event => {
     var options = await aria2RPC.message('aria2.getGlobalOption');
-    printOptions(document.querySelectorAll('#create input[name]'), options);
+    printOptions(document.querySelectorAll('#download input[name]'), options);
     document.body.setAttribute('data-popup', 'task');
 });
 
 document.querySelector('#purdge_btn').addEventListener('click', async event => {
     await aria2RPC.message('aria2.purgeDownloadResult');
-    stoppedQueue.innerHTML = '';
+    completeGroup.innerHTML = removedGroup.innerHTML = errorGroup.innerHTML = '';
     stoppedStat.innerText = '0';
 });
 
@@ -92,7 +98,7 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
 
 function downloadOptions() {
     var options = {'referer': document.querySelector('#referer').value, 'user-agent': aria2Store['user_agent']};
-    document.querySelectorAll('#create input[name]').forEach(field => options[field.name] = field.value);
+    document.querySelectorAll('#download input[name]').forEach(field => options[field.name] = field.value);
     return options;
 }
 
@@ -206,7 +212,7 @@ function aria2RPCClient() {
     }).catch(error => {
         activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = '0';
         downloadStat.innerText = uploadStat.innerText = '0 B/s';
-        activeQueue.innerHTML = waitingQueue.innerHTML = stoppedQueue.innerHTML = '';
+        activeGroup.innerHTML = waitingGroup.innerHTML = pausedGroup.innerHTML = completeGroup.innerHTML = removedGroup.innerHTML = errorGroup.innerHTML = '';
     });
 }
 
@@ -232,7 +238,7 @@ async function addSession(gid) {
         self[type + 'Stat'].innerText ++;
         self[type + 'Task'].push(gid);
     }
-    self[type + 'Queue'].appendChild(task);
+    self[status + 'Group'].appendChild(task);
 }
 
 function removeSession(type, gid, task) {
@@ -263,7 +269,7 @@ function parseSession(gid, status, bittorrent) {
     var type = status === 'active' ? 'active' : ['waiting', 'paused'].includes(status) ? 'waiting' : 'stopped';
     self[type + 'Stat'].innerText ++;
     self[type + 'Task'].push(gid);
-    self[type + 'Queue'].appendChild(task);
+    self[status + 'Group'].appendChild(task);
     task.setAttribute('data-gid', gid);
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {

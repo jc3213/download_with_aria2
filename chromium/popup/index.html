@@ -21,11 +21,18 @@
         <button id="name_btn" data-aria2></button>
         <hr data-main>
         <div id="session" data-main="0" style="height: calc(100% - 92px);">
-            <section id="active"></section>
-            <section id="waiting"></section>
-            <section id="stopped"></section>
+            <div data-queue="active"></div>
+            <div data-queue="waiting">
+                <div data-group="waiting"></div>
+                <div data-group="paused"></div>
+            </div>
+            <div data-queue="stopped">
+                <div data-group="complete"></div>
+                <div data-group="removed"></div>
+                <div data-group="error"></div>
+            </div>
         </div>
-        <div id="create" data-task class="submenu">
+        <div id="download" data-task class="submenu">
             <div title="task_referer_desc" i18n_title>
                 <div class="title" i18n>task_referer</div>
                 <div>
