@@ -1,4 +1,5 @@
 var mapping = ['proxy_include', 'capture_resolve', 'capture_reject', 'capture_include', 'capture_exclude'];
+var offset = {'capture_size': 1048576};
 location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#popup_btn').style.display = 'none';
 
 document.querySelectorAll('[data-option] > button, [data-global] > button').forEach((tab, index) => {
@@ -58,7 +59,7 @@ function aria2RPCClient() {
         var name = field.name;
         var value = aria2Store[name];
         var array = mapping.includes(name);
-        var multi = field.getAttribute('data-multi');
+        var multi = offset[name];
         field.value = array ? value.join(' ') : multi ? value / multi : value;
         field.addEventListener('change', event => {
             aria2Store[name] = array ? field.value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? field.value * multi : field.value;
