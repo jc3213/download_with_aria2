@@ -1,3 +1,4 @@
+var mapping = ['proxy_include', 'capture_resolve', 'capture_reject', 'capture_include', 'capture_exclude'];
 location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#popup_btn').style.display = 'none';
 
 document.querySelectorAll('[data-option] > button, [data-global] > button').forEach((tab, index) => {
@@ -54,12 +55,13 @@ chrome.storage.onChanged.addListener(changes => {
 
 function aria2RPCClient() {
     document.querySelectorAll('#option [name]').forEach(field => {
-        var value = aria2Store[field.name];
-        var array = Array.isArray(value);
+        var name = field.name;
+        var value = aria2Store[name];
+        var array = mapping.includes(name);
         var multi = field.getAttribute('data-multi');
         field.value = array ? value.join(' ') : multi ? value / multi : value;
         field.addEventListener('change', event => {
-            aria2Store[field.name] = array ? field.value.split(/[\s\n,]+/).filter(v => !!v) : multi ? field.value * multi : field.value;
+            aria2Store[name] = array ? field.value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? field.value * multi : field.value;
             chrome.storage.local.set(aria2Store);
         });
     });
