@@ -27,7 +27,7 @@
         </div>
         <hr>
         <div id="option" data-option>
-            <h2 i18n>option_basic</h2>
+            <h1 i18n>option_basic</h1>
             <div title="option_jsonrpc_uri_desc">
                 <div class="title" i18n>option_jsonrpc_uri</div>
                 <div>
@@ -58,7 +58,7 @@
                     <option value="3" i18n>option_always</option>
                 </select>
             </div>
-            <h2 i18n>option_advanced</h2>
+            <h1 i18n>option_advanced</h1>
             <div title="option_useragent_desc">
                 <div class="title" i18n>option_useragent</div>
                 <div>
@@ -78,7 +78,7 @@
                     <textarea name="proxy_include" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                 </div>
             </div>
-            <h2 i18n>option_download</h2>
+            <h1 i18n>option_download</h1>
             <div title="option_capture_mode_desc">
                 <span class="title" i18n>option_capture_mode</span>
                 <select name="capture_mode">
@@ -87,45 +87,41 @@
                     <option value="2" i18n>option_always</option>
                 </select>
             </div>
-            <div data-rule="capture_mode,1" class="submenu">
-                <div title="option_capture_size_desc">
-                    <div class="title" i18n>option_capture_size</div>
-                    <div>
-                        <input name="capture_size" type="number" min="0">
-                        <data>MB</data>
-                    </div>
-                    <span i18n>option_disabled</span>: <u><i>0</i></u>
+            <div title="option_capture_size_desc" data-rule="capture_mode,1">
+                <div class="title" i18n>option_capture_size</div>
+                <div>
+                    <input name="capture_size" type="number" min="0">
+                    <data>MB</data>
                 </div>
-                <div title="option_capture_resolve_desc">
-                    <div class="title" i18n>option_capture_resolve</div>
-                    <div>
-                        <textarea name="capture_resolve" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
-                    </div>
-                </div>
-                <div title="option_capture_include_desc">
-                    <div class="title" i18n>option_capture_include</div>
-                    <div>
-                        <textarea name="capture_include" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
-                    </div>
+                <span i18n>option_disabled</span>: <u><i>0</i></u>
+            </div>
+            <div title="option_capture_resolve_desc" data-rule="capture_mode,1">
+                <div class="title" i18n>option_capture_resolve</div>
+                <div>
+                    <textarea name="capture_resolve" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
                 </div>
             </div>
-            <div data-rule="capture_mode,1,2" class="submenu">
-                <div title="option_capture_reject_desc">
-                    <div class="title" i18n>option_capture_reject</div>
-                    <div>
-                        <textarea name="capture_reject" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
-                    </div>
+            <div title="option_capture_include_desc" data-rule="capture_mode,1">
+                <div class="title" i18n>option_capture_include</div>
+                <div>
+                    <textarea name="capture_include" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                 </div>
-                <div title="option_capture_exclude_desc">
-                    <div class="title" i18n>option_capture_exclude</div>
-                    <div>
-                        <textarea name="capture_exclude" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
-                    </div>
+            </div>
+            <div title="option_capture_reject_desc" data-rule="capture_mode,1,2">
+                <div class="title" i18n>option_capture_reject</div>
+                <div>
+                    <textarea name="capture_reject" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
+                </div>
+            </div>
+            <div title="option_capture_exclude_desc" data-rule="capture_mode,1,2">
+                <div class="title" i18n>option_capture_exclude</div>
+                <div>
+                    <textarea name="capture_exclude" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                 </div>
             </div>
         </div>
         <div id="global" data-global>
-            <h2>HTTP/FTP</h2>
+            <h1>HTTP/FTP</h1>
             <div title="aria2_http_retry_desc">
                 <div class="title" i18n>aria2_http_retry</div>
                 <div>
@@ -155,7 +151,7 @@
                 </div>
                 <span i18n>option_default</span>: <u><i>20M</i></u>
             </div>
-            <h2>BitTorrent</h2>
+            <h1>BitTorrent</h1>
             <div title="aria2_bt_port_desc">
                 <div class="title" i18n>aria2_bt_port</div>
                 <div>
@@ -194,7 +190,7 @@
                 </div>
                 <span i18n>option_default</span>: <u><i>30</i></u>
             </div>
-            <h2 i18n>option_advanced</h2>
+            <h1 i18n>option_advanced</h1>
             <div title="aria2_adv_dir_desc">
                 <div class="title" i18n>aria2_adv_dir</div>
                 <div>
