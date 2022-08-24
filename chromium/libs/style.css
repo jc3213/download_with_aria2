@@ -80,6 +80,11 @@ button:disabled {
     border: none;
 }
 
+h1 {
+    margin-top: 0px;
+    margin-bottom: 35px;
+}
+
 [title]:not(:last-child) {
     margin-bottom: 25px;
 }
