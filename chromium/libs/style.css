@@ -104,12 +104,6 @@ button:disabled {
     display: none;
 }
 
-[data-prefs="option"] [data-option], [data-prefs="global"] [data-global],
-[data-main="1"] > [data-queue]:nth-child(1), [data-main="2"] > [data-queue]:nth-child(2), [data-main="3"] > [data-queue]:nth-child(3),
-[data-popup="main"] [data-main], [data-popup="task"] [data-task], [data-popup="aria2"] [data-aria2] {
-    display: block;
-}
-
 [data-main="1"] > button:nth-child(1), [data-main="2"] > button:nth-child(3), [data-main="3"] > button:nth-child(5) {
     border: 1px #ccc inset;
 }
