@@ -33,8 +33,8 @@ function getFileSize(bytes) {
     }
 }
 
-function printOptions(entries, options) {
-    entries.forEach(entry => {
+function printGlobalOptions(options, entries) {
+    document.querySelectorAll(entries).forEach(entry => {
         entry.value = options[entry.name] ?? '';
         if (entry.hasAttribute('data-size')) {
             var size = getFileSize(entry.value);

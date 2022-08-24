@@ -29,7 +29,7 @@ document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) =
 
 document.querySelector('#task_btn').addEventListener('click', async event => {
     var options = await aria2RPC.message('aria2.getGlobalOption');
-    printOptions(document.querySelectorAll('#download input[name]'), options);
+    printGlobalOptions(options, '#download input[name]');
     document.body.setAttribute('data-popup', 'task');
 });
 
@@ -290,7 +290,7 @@ function parseSession(gid, status, bittorrent) {
         fileManager = [];
         var {status, bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
         var options = await aria2RPC.message('aria2.getOption', [gid]);
-        printOptions(document.querySelectorAll('#manager [name]'), options);
+        printGlobalOptions(options, '#manager [name]');
         updateTaskDetail(task, status, bittorrent, files);
         document.body.setAttribute('data-popup', 'aria2');
         document.querySelector('#manager').setAttribute('data-aria2', bittorrent ? 'bt' : 'http');

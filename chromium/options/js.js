@@ -10,18 +10,18 @@ document.querySelector('#normal_btn').addEventListener('click', event => {
     document.body.setAttribute('data-prefs', 'option');
 });
 
+document.querySelector('#aria2_btn').addEventListener('click', event => {
+    aria2RPC.message('aria2.getGlobalOption').then(options => {
+        aria2Global = options;
+        printGlobalOptions(options, '#global [name]');
+        document.body.setAttribute('data-prefs', 'global');
+    });
+});
+
 savebtn.addEventListener('click', event => {
     applyChanges(changes, aria2Store);
     savebtn.style.display = 'none';
     chrome.storage.local.set(aria2Store);
-});
-
-document.querySelector('#aria2_btn').addEventListener('click', event => {
-    aria2RPC.message('aria2.getGlobalOption').then(options => {
-        aria2Global = options;
-        printOptions(document.querySelectorAll('#global [name]'), options);
-        document.body.setAttribute('data-prefs', 'global');
-    });
 });
 
 glosave.addEventListener('click', event => {
@@ -49,22 +49,27 @@ document.querySelector('#export_btn').addEventListener('click', event => {
 
 document.querySelector('#import_btn').addEventListener('change', async event => {
     var json = await promiseFileReader(event.target.files[0], 'json');
-    document.querySelectorAll('#option [name]').forEach(field => {
-        var name = field.name;
-        var value = json[name];
-        var array = mapping.includes(name);
-        var multi = offset[name];
-        field.value = array ? value.join(' ') : multi ? value / multi : value;
-    });
+    printOptions(json);
     chrome.storage.local.set(json);
     aria2Store = json;
+});
+
+document.querySelector('#option').addEventListener('change', event => {
+    var name = event.target.name;
+    var value = event.target.value;
+    var array = mapping.includes(name);
+    var multi = offset[name];
+    var old_value = aria2Store[name];
+    var new_value = array ? value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? value * multi : value;
+    printChanges(name, old_value, new_value, changes);
+    savebtn.style.display = 'inline-block';
 });
 
 document.querySelector('#global').addEventListener('change', event => {
     var name = event.target.name;
     var old_value = aria2Global[name];
     var new_value = event.target.value;
-    addToChanges(name, old_value, new_value, glochanges);
+    printChanges(name, old_value, new_value, glochanges);
     glosave.style.display = 'inline-block';
 });
 
@@ -75,19 +80,7 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 function aria2RPCClient() {
-    document.querySelectorAll('#option [name]').forEach(field => {
-        var name = field.name;
-        var value = aria2Store[name];
-        var array = mapping.includes(name);
-        var multi = offset[name];
-        field.value = array ? value.join(' ') : multi ? value / multi : value;
-        field.addEventListener('change', event => {
-            var old_value = aria2Store[name];
-            var new_value = array ? field.value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? field.value * multi : field.value;
-            addToChanges(name, old_value, new_value, changes);
-            savebtn.style.display = 'inline-block';
-        });
-    });
+    printOptions(aria2Store);
     document.querySelectorAll('[data-rule]').forEach(menu => {
         var rule = menu.getAttribute('data-rule').match(/[^,]+/g);
         var name = rule.shift();
@@ -98,7 +91,7 @@ function aria2RPCClient() {
     });
 }
 
-function addToChanges(name, old_value, new_value, changes) {
+function printChanges(name, old_value, new_value, changes) {
     var change = changes.find(change => change.name === name);
     if (change) {
         change['new_value'] = new_value;
@@ -114,4 +107,14 @@ function applyChanges(changes, options) {
         options[name] = new_value;
         applyChanges(changes, options);
     }
+}
+
+function printOptions(options) {
+    document.querySelectorAll('#option [name]').forEach(field => {
+        var name = field.name;
+        var array = mapping.includes(name);
+        var multi = offset[name];
+        var value = options[name];
+        field.value = array ? value.join(' ') : multi ? value / multi : value;
+    });
 }
