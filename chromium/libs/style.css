@@ -96,7 +96,7 @@ button:disabled {
     right: 0px;
 }
 
-[data-prefs="option"] [data-global], [data-prefs="global"] [data-option], #save_btn, #glsav_btn, #back_btn,
+[data-prefs="option"] [data-global], [data-prefs="global"] [data-option], #save_btn, #glosav_btn, #back_btn,
 [data-popup="main"] > *:not([data-main]), [data-popup="task"] > *:not([data-task]), [data-popup="aria2"] > *:not([data-aria2]),
 [data-main="1"] > [data-queue]:not(:nth-child(1)), [data-main="2"] > [data-queue]:not(:nth-child(2)), [data-main="3"] > [data-queue]:not(:nth-child(3)),
 [data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http],
