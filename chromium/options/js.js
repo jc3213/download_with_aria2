@@ -2,7 +2,7 @@ var mapping = ['proxy_include', 'capture_resolve', 'capture_reject', 'capture_in
 var offset = {'capture_size': 1048576};
 var savebtn = document.querySelector('#save_btn');
 var changes = [];
-var glosave = document.querySelector('#glsav_btn');
+var glosave = document.querySelector('#glosav_btn');
 var glochanges = [];
 location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#popup_btn').style.display = 'none';
 
@@ -22,13 +22,20 @@ savebtn.addEventListener('click', event => {
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
     aria2RPC.message('aria2.getGlobalOption').then(options => {
+        aria2Global = options;
         printOptions(document.querySelectorAll('#global [name]'), options);
         document.body.setAttribute('data-prefs', 'global');
     });
 });
 
-document.querySelector('#glsav_btn').addEventListener('click', event => {
-    
+glosave.addEventListener('click', event => {
+    glochanges.forEach(change => {
+        var {name, new_value} = change;
+        aria2Global[name] = new_value;
+    });
+    glosave.style.display = 'none';
+    glochanges = [];
+    aria2RPC.message('aria2.changeGlobalOption', [aria2Global]);
 });
 
 document.querySelector('#popup_btn').addEventListener('click', event => {
@@ -36,7 +43,8 @@ document.querySelector('#popup_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#show_btn').addEventListener('click', event => {
-    event.target.parentNode.querySelector('input').type = event.target.parentNode.querySelector('input').type === 'password' ? 'text' : 'password';
+    var input = event.target.parentNode.querySelector('input');
+    input.type = input.type === 'password' ? 'text' : 'password';
 });
 
 document.querySelector('#export_btn').addEventListener('click', event => {
@@ -49,12 +57,23 @@ document.querySelector('#export_btn').addEventListener('click', event => {
 
 document.querySelector('#import_btn').addEventListener('change', async event => {
     var json = await promiseFileReader(event.target.files[0], 'json');
+    document.querySelectorAll('#option [name]').forEach(field => {
+        var name = field.name;
+        var value = json[name];
+        var array = mapping.includes(name);
+        var multi = offset[name];
+        field.value = array ? value.join(' ') : multi ? value / multi : value;
+    });
     chrome.storage.local.set(json);
-    setTimeout(() => location.reload(), 500);
+    aria2Store = json;
 });
 
 document.querySelector('#global').addEventListener('change', event => {
-    aria2RPC.message('aria2.changeGlobalOption', [{[event.target.name]: event.target.value}]);
+    var name = event.target.name;
+    var old_value = aria2Global[name];
+    var new_value = event.target.value;
+    addToChanges(name, old_value, new_value, glochanges);
+    glosave.style.display = 'inline-block';
 });
 
 chrome.storage.onChanged.addListener(changes => {
