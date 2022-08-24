@@ -1,18 +1,34 @@
 var mapping = ['proxy_include', 'capture_resolve', 'capture_reject', 'capture_include', 'capture_exclude'];
 var offset = {'capture_size': 1048576};
+var savebtn = document.querySelector('#save_btn');
+var changes = [];
+var glosave = document.querySelector('#glsav_btn');
+var glochanges = [];
 location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#popup_btn').style.display = 'none';
 
-document.querySelectorAll('[data-option] > button, [data-global] > button').forEach((tab, index) => {
-    var type = index < 3 ? 'option' : 'global';
-    var value = index < 3 ? index + 1 : index - 2;
-    tab.addEventListener('click', event => {
-        tab.parentNode.setAttribute('data-' + type, value);
-        document.querySelector('#' + type).setAttribute('data-' + type, value);
+document.querySelector('#normal_btn').addEventListener('click', event => {
+    document.body.setAttribute('data-prefs', 'option');
+});
+
+savebtn.addEventListener('click', event => {
+    changes.forEach(change => {
+        var {name, new_value} = change;
+        aria2Store[name] = new_value;
+    });
+    savebtn.style.display = 'none';
+    changes = [];
+    chrome.storage.local.set(aria2Store);
+});
+
+document.querySelector('#aria2_btn').addEventListener('click', event => {
+    aria2RPC.message('aria2.getGlobalOption').then(options => {
+        printOptions(document.querySelectorAll('#global [name]'), options);
+        document.body.setAttribute('data-prefs', 'global');
     });
 });
 
-document.querySelector('#back_btn').addEventListener('click', event => {
-    document.body.setAttribute('data-prefs', 'option');
+document.querySelector('#glsav_btn').addEventListener('click', event => {
+    
 });
 
 document.querySelector('#popup_btn').addEventListener('click', event => {
@@ -37,13 +53,6 @@ document.querySelector('#import_btn').addEventListener('change', async event => 
     setTimeout(() => location.reload(), 500);
 });
 
-document.querySelector('#aria2_btn').addEventListener('click', event => {
-    aria2RPC.message('aria2.getGlobalOption').then(options => {
-        printOptions(document.querySelectorAll('#global [name]'), options);
-        document.body.setAttribute('data-prefs', 'global');
-    });
-});
-
 document.querySelector('#global').addEventListener('change', event => {
     aria2RPC.message('aria2.changeGlobalOption', [{[event.target.name]: event.target.value}]);
 });
@@ -62,8 +71,11 @@ function aria2RPCClient() {
         var multi = offset[name];
         field.value = array ? value.join(' ') : multi ? value / multi : value;
         field.addEventListener('change', event => {
-            aria2Store[name] = array ? field.value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? field.value * multi : field.value;
-            chrome.storage.local.set(aria2Store);
+            var old_value = aria2Store[name];
+            var new_value = array ? field.value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? field.value * multi : field.value;
+            addToChanges(name, old_value, new_value, changes);
+            savebtn.style.display = 'inline-block';
+            console.log(changes);
         });
     });
     document.querySelectorAll('[data-rule]').forEach(menu => {
@@ -74,4 +86,14 @@ function aria2RPCClient() {
             menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });
+}
+
+function addToChanges(name, old_value, new_value, changes) {
+    var pos = changes.findIndex(change => change.name === name);
+    if (pos === -1) {
+        changes.push({name, old_value, new_value});
+    }
+    else {
+        changes[pos]['new_value'] = new_value;
+    }
 }

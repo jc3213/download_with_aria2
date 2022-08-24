@@ -29,8 +29,14 @@
     "complete_title": {
         "message": "已完成下载！"
     },
-    "option_back": {
-        "message": "返回"
+    "option_global": {
+        "message": "全局设置"
+    },
+    "option_normal": {
+        "message": "扩展设置"
+    },
+    "option_save": {
+        "message": "保存"
     },
     "option_close": {
         "message": "关闭"
@@ -217,12 +223,6 @@
     },
     "task_files_desc": {
         "message": "管理本次下载任务所下载的文件"
-    },
-    "aria2_http": {
-        "message": "HTTP/FTP"
-    },
-    "aria2_bittorrent": {
-        "message": "BitTorrent"
     },
     "aria2_http_retry": {
         "message": "重试次数"

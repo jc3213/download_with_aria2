@@ -29,8 +29,14 @@
     "complete_title": {
         "message": "Download has complete!!"
     },
-    "option_back": {
-        "message": "Back"
+    "option_global": {
+        "message": "Global Options"
+    },
+    "option_normal": {
+        "message": "Extension Options"
+    },
+    "option_save": {
+        "message": "Save"
     },
     "option_close": {
         "message": "Close"
@@ -217,12 +223,6 @@
     },
     "task_files_desc": {
         "message": "Manage all files of current download"
-    },
-    "aria2_http": {
-        "message": "HTTP/FTP"
-    },
-    "aria2_bittorrent": {
-        "message": "BitTorrent"
     },
     "aria2_http_retry": {
         "message": "Max Retries"
