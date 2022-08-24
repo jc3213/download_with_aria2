@@ -75,7 +75,6 @@ function aria2RPCClient() {
             var new_value = array ? field.value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? field.value * multi : field.value;
             addToChanges(name, old_value, new_value, changes);
             savebtn.style.display = 'inline-block';
-            console.log(changes);
         });
     });
     document.querySelectorAll('[data-rule]').forEach(menu => {

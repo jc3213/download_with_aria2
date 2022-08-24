@@ -13,10 +13,24 @@ chrome.storage.local.get(null, json => {
 });
 
 function getFileSize(bytes) {
-    return isNaN(bytes) ? '??' : bytes < 1024 ? bytes + ' B' :
-        bytes < 1048576 ? (bytes / 10.24 | 0) / 100 + ' KB' :
-        bytes < 1073741824 ? (bytes / 10485.76 | 0) / 100 + ' MB' :
-        bytes < 1099511627776 ? (bytes / 10737418.24 | 0) / 100 + ' GB' : (bytes / 10995116277.76 | 0) / 100 + ' TB';
+    if (isNaN(bytes)) {
+        return '??';
+    }
+    else if (bytes < 1024) {
+        return bytes + ' B';
+    }
+    else if (bytes < 1048576) {
+        return (bytes / 10.24 | 0) / 100 + ' KB';
+    }
+    else if (bytes < 1073741824) {
+        return (bytes / 10485.76 | 0) / 100 + ' MB';
+    }
+    else if (bytes < 1099511627776) {
+        return (bytes / 10737418.24 | 0) / 100 + ' GB';
+    }
+    else {
+        return (bytes / 10995116277.76 | 0) / 100 + ' TB';
+    }
 }
 
 function printOptions(entries, options) {

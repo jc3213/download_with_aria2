@@ -1,32 +1,3 @@
-async function downloadUrl(url, options) {
-    var gid = await aria2RPC.message('aria2.addUri', [[url], options]);
-    addSession(gid);
-    showNotification(url, 'start');
-}
-
-async function downloadTorrent(file, options) {
-    var torrent = await promiseFileReader(file, 'base64');
-    var gid = await aria2RPC.message('aria2.addTorrent', [torrent]);
-    addSession(gid);
-}
-
-async function downloadMetalink(file, options) {
-    var metalink = await promiseFileReader(file, 'base64');
-    await aria2RPC.message('aria2.addMetalink', [metalink, options]);
-    aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
-}
-
-function downloadJSON(json, options) {
-    var {url, filename, referer} = json;
-    if (filename) {
-        options['out'] = filename;
-    }
-    if (referer) {
-        options['referer'] = referer;
-    }
-    downloadUrl(url, options);
-}
-
 function getHostname(url) {
     try {
         return new URL(url).hostname;
