@@ -29,11 +29,8 @@
     "complete_title": {
         "message": "Download has complete!!"
     },
-    "option_global": {
-        "message": "Global Options"
-    },
-    "option_normal": {
-        "message": "Extension Options"
+    "option_back": {
+        "message": "Back"
     },
     "option_save": {
         "message": "Save"

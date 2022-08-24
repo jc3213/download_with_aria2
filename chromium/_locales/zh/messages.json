@@ -29,11 +29,8 @@
     "complete_title": {
         "message": "已完成下载！"
     },
-    "option_global": {
-        "message": "全局设置"
-    },
-    "option_normal": {
-        "message": "扩展设置"
+    "option_back": {
+        "message": "返回"
     },
     "option_save": {
         "message": "保存"

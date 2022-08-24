@@ -6,7 +6,7 @@ var glosave = document.querySelector('#glosav_btn');
 var glochanges = [];
 location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#popup_btn').style.display = 'none';
 
-document.querySelector('#normal_btn').addEventListener('click', event => {
+document.querySelector('#back_btn').addEventListener('click', event => {
     document.body.setAttribute('data-prefs', 'option');
 });
 
