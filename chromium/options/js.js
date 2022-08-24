@@ -11,12 +11,8 @@ document.querySelector('#normal_btn').addEventListener('click', event => {
 });
 
 savebtn.addEventListener('click', event => {
-    changes.forEach(change => {
-        var {name, new_value} = change;
-        aria2Store[name] = new_value;
-    });
+    applyChanges(changes, aria2Store);
     savebtn.style.display = 'none';
-    changes = [];
     chrome.storage.local.set(aria2Store);
 });
 
@@ -29,12 +25,8 @@ document.querySelector('#aria2_btn').addEventListener('click', event => {
 });
 
 glosave.addEventListener('click', event => {
-    glochanges.forEach(change => {
-        var {name, new_value} = change;
-        aria2Global[name] = new_value;
-    });
+    applyChanges(glochanges, aria2Global);
     glosave.style.display = 'none';
-    glochanges = [];
     aria2RPC.message('aria2.changeGlobalOption', [aria2Global]);
 });
 
@@ -107,11 +99,19 @@ function aria2RPCClient() {
 }
 
 function addToChanges(name, old_value, new_value, changes) {
-    var pos = changes.findIndex(change => change.name === name);
-    if (pos === -1) {
-        changes.push({name, old_value, new_value});
+    var change = changes.find(change => change.name === name);
+    if (change) {
+        change['new_value'] = new_value;
     }
     else {
-        changes[pos]['new_value'] = new_value;
+        changes.push({name, old_value, new_value});
+    }
+}
+
+function applyChanges(changes, options) {
+    if (changes.length !== 0) {
+        var {name, new_value} = changes.pop();
+        options[name] = new_value;
+        applyChanges(changes, options);
     }
 }
