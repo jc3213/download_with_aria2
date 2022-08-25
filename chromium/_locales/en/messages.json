@@ -96,7 +96,7 @@
         "message": "Proxy Server"
     },
     "option_proxy_uri_desc": {
-        "message": "Set a proxy server for downloads"
+        "message": "Prefered proxy server for downloads"
     },
     "option_protocol": {
         "message": "Protocol"
@@ -105,7 +105,7 @@
         "message": "Proxy Domain Rules"
     },
     "option_proxy_include_desc": {
-        "message": "Automatically all proxy server from these domains"
+        "message": "Set proxy server for downloads from these domains"
     },
     "option_capture_mode": {
         "message": "Capturing"
@@ -174,19 +174,19 @@
         "message": "Referer"
     },
     "task_referer_desc": {
-        "message": "Add \"Referer\" request headers to this download"
+        "message": "Use \"Referer\" header for this download"
     },
     "task_batch": {
         "message": "Download Urls"
     },
     "task_batch_desc": {
-        "message": "The urls to be downloaded, one entry per line"
+        "message": "Either \"URL\", or \"JSON\", or \"Metalink\" are supported"
     },
     "task_proxy": {
         "message": "Proxy Server"
     },
     "task_proxy_desc": {
-        "message": "Add \"all-proxy\" option to this download, only \"http\" or \"https\" protocol"
+        "message": "Use a proxy server for this download"
     },
     "task_submit": {
         "message": "Submit"
@@ -198,25 +198,25 @@
         "message": "Download Speed"
     },
     "task_download_desc": {
-        "message": "Limit maximum download speed via \"max-download-limit\" option"
+        "message": "Limit maximum download speed for this download"
     },
     "task_upload": {
         "message": "Upload Speed"
     },
     "task_upload_desc": {
-        "message": "Limit maximum upload speed via \"max-upload-limit\" option"
+        "message": "Limit maximum upload speed for this download"
     },
     "task_urls": {
         "message": "Task URLs"
     },
     "task_urls_desc": {
-        "message": "Manage urls used for current download"
+        "message": "Manage urls used for this download"
     },
     "task_files": {
         "message": "Task Files"
     },
     "task_files_desc": {
-        "message": "Manage all files of current download"
+        "message": "Manage files selected for this download"
     },
     "aria2_http_retry": {
         "message": "Max Retries"

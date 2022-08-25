@@ -96,7 +96,7 @@
         "message": "代理服务器"
     },
     "option_proxy_uri_desc": {
-        "message": "设置下载时所使用的代理服务器"
+        "message": "优先使用的代理服务器"
     },
     "option_protocol": {
         "message": "协议"
@@ -180,13 +180,13 @@
         "message": "下载链接"
     },
     "task_batch_desc": {
-        "message": "需要下载的文件链接，每行一条"
+        "message": "支持下载 \"URL\", or \"JSON\", or \"Metalink\""
     },
     "task_proxy": {
         "message": "代理服务器"
     },
     "task_proxy_desc": {
-        "message": "为本次下载任务添加\"all-proxy\"选项, 仅限\"http\"或\"https\"协议"
+        "message": "本次下载使用的代理服务器"
     },
     "task_submit": {
         "message": "确认"
@@ -198,13 +198,13 @@
         "message": "下载速度"
     },
     "task_download_desc": {
-        "message": "通过\"max-download-limit\"选项限制最大下载速度"
+        "message": "限制本次下载的最大下载速度"
     },
     "task_upload": {
         "message": "上传速度"
     },
     "task_upload_desc": {
-        "message": "通过\"max-upload-limit\"选项限制最大上传速度"
+        "message": "限制本次下载的最大上传速度"
     },
     "task_urls": {
         "message": "任务链接"
