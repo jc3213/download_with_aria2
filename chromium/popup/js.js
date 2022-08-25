@@ -81,8 +81,6 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
     var file = event.target.files[0];
     var options = downloadOptions();
     if (file.name.endsWith('torrent')){
-        delete options['split'];
-        delete options['min-split-size'];
         await downloadTorrent(file, options);
     }
     else if (file.name.endsWith('json')) {
