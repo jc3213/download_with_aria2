@@ -28,6 +28,21 @@ document.querySelector('iframe').addEventListener('load', async event => {
     var iframe = event.target.contentDocument;
 
     var capture = iframe.querySelector('select[name="capture_mode"]');
+    capture.addEventListener('change', event => {
+        if (['1', '2'].includes(capture.value)) {
+            if (danger) {
+                api.style.display = folder.style.display = custom.style.display = 'block';
+                safe.style.display = 'none';
+            }
+            else {
+                safe.style.display = 'inline-block';
+                api.style.display = folder.style.display = custom.style.display = 'none';
+            }
+        }
+        else {
+            safe.style.display = api.style.display = folder.style.display = custom.style.display = 'none';
+        }
+    });
 
     var safe = document.createElement('button');
     safe.innerText = i18n['safe'];
@@ -64,22 +79,7 @@ document.querySelector('iframe').addEventListener('load', async event => {
     custom.innerHTML = '<input name="folder_path" placeholder="' + (os === 'win' ? 'C:\\Downloads\\' : '/home/downloads/') + '">';
     folder.append(custom);
 
-    capture.addEventListener('change', event => {
-        if (['1', '2'].includes(capture.value)) {
-            if (danger) {
-                api.style.display = folder.style.display = custom.style.display = 'block';
-                safe.style.display = 'none';
-            }
-            else {
-                safe.style.display = 'inline-block';
-                api.style.display = folder.style.display = custom.style.display = 'none';
-            }
-        }
-        else {
-            safe.style.display = api.style.display = folder.style.display = custom.style.display = 'none';
-        }
-    });    
-
+    iframe.querySelector('#manager').style.right = '30px';
     iframe.querySelector('#option > div:nth-child(11)').append(safe);
     iframe.querySelector('#option > div:nth-child(12)').before(api, folder);
     
