@@ -29,11 +29,17 @@
     "complete_title": {
         "message": "Download has complete!!"
     },
-    "option_back": {
-        "message": "Back"
-    },
     "option_save": {
         "message": "Save"
+    },
+    "option_export": {
+        "message": "Export"
+    },
+    "option_import": {
+        "message": "Import"
+    },
+    "option_back": {
+        "message": "Back"
     },
     "option_close": {
         "message": "Close"
@@ -80,26 +86,17 @@
     "option_show_notification_desc": {
         "message": "Popup notification when adding new download"
     },
-    "option_manager": {
-        "message": "Manage Options"
-    },
-    "option_export": {
-        "message": "Export"
-    },
-    "option_import": {
-        "message": "Import"
-    },
     "option_useragent": {
         "message": "User Agent"
     },
     "option_useragent_desc": {
-        "message": "Customizable user agent for downloads"
+        "message": "Set user agent for downloads"
     },
     "option_proxy_uri": {
         "message": "Proxy Server"
     },
     "option_proxy_uri_desc": {
-        "message": "Setting server for \"all-proxy\" option"
+        "message": "Set a proxy server for downloads"
     },
     "option_protocol": {
         "message": "Protocol"
@@ -108,7 +105,7 @@
         "message": "Proxy Domain Rules"
     },
     "option_proxy_include_desc": {
-        "message": "Automatically add \"all-proxy\" option for these domains"
+        "message": "Automatically all proxy server from these domains"
     },
     "option_capture_mode": {
         "message": "Capturing"
@@ -288,13 +285,13 @@
         "message": "Set disk cache to reduce disk I/O"
     },
     "aria2_max_concurrent": {
-        "message": "Max Concurrent Tasks"
+        "message": "Max Concurrent Downloads"
     },
     "aria2_max_concurrent_desc": {
         "message": "Set the maximum number of parallel downloads for every queue item"
     },
     "aria2_max_connection": {
-        "message": "Max Connection per Server"
+        "message": "Max Connections per Server"
     },
     "aria2_max_connection_desc": {
         "message": "Set the maximum number of connections to one server for each download."

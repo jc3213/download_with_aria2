@@ -29,11 +29,17 @@
     "complete_title": {
         "message": "已完成下载！"
     },
-    "option_back": {
-        "message": "返回"
-    },
     "option_save": {
         "message": "保存"
+    },
+    "option_export": {
+        "message": "导出"
+    },
+    "option_import": {
+        "message": "导入"
+    },
+    "option_back": {
+        "message": "返回"
     },
     "option_close": {
         "message": "关闭"
@@ -60,7 +66,7 @@
         "message": "JSON-RPC 链接"
     },
     "option_jsonrpc_uri_desc": {
-        "message": "设置 JSON-RPC 界面的链接"
+        "message": "设置 JSON-RPC 的网络链接"
     },
     "option_secret_token": {
         "message": "密钥"
@@ -80,26 +86,17 @@
     "option_show_notification_desc": {
         "message": "新建下载时弹出通知"
     },
-    "option_manager": {
-        "message": "管理设置"
-    },
-    "option_export": {
-        "message": "导出"
-    },
-    "option_import": {
-        "message": "导入"
-    },
     "option_useragent": {
         "message": "用户代理"
     },
     "option_useragent_desc": {
-        "message": "自定义用户代理以回避一些网站的下载限制"
+        "message": "设置下载时所使用的用户代理"
     },
     "option_proxy_uri": {
         "message": "代理服务器"
     },
     "option_proxy_uri_desc": {
-        "message": "设置 \"all-proxy\" 选项的服务器"
+        "message": "设置下载时所使用的代理服务器"
     },
     "option_protocol": {
         "message": "协议"
@@ -108,7 +105,7 @@
         "message": "代理域名规则"
     },
     "option_proxy_include_desc": {
-        "message": "为来自所设置域名的下载添加 \"all-proxy\" 选项"
+        "message": "为来自所设置域名的下载添加代理服务器"
     },
     "option_capture_mode": {
         "message": "抓取"
