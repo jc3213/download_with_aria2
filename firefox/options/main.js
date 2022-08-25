@@ -79,7 +79,7 @@ document.querySelector('iframe').addEventListener('load', async event => {
     custom.innerHTML = '<input name="folder_path" placeholder="' + (os === 'win' ? 'C:\\Downloads\\' : '/home/downloads/') + '">';
     folder.append(custom);
 
-    iframe.querySelector('#manager').style.right = '30px';
+    iframe.querySelector('.float').style.right = '37px';
     iframe.querySelector('#option > div:nth-child(11)').append(safe);
     iframe.querySelector('#option > div:nth-child(12)').before(api, folder);
     
