@@ -3,7 +3,13 @@ var offset = {'capture_size': 1048576};
 var savebtn = document.querySelector('#save_btn');
 var changes = [];
 var glochanges = [];
-location.search === '?popup' ? document.querySelector('#manager').style.display =  'none' : document.querySelector('#popup_btn').style.display = 'none';
+
+if (location.search === '?popup') {
+    document.querySelector('#manager').style.display = 'none'
+}
+else {
+    document.querySelector('#popup_btn').style.display = 'none';
+}
 
 document.querySelector('#back_btn').addEventListener('click', event => {
     printOptions(aria2Store);
