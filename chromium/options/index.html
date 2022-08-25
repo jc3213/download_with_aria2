@@ -52,7 +52,7 @@
             </div>
             <h1 i18n>option_advanced</h1>
             <div title="option_useragent_desc">
-                <div class="title" i18n>option_useragent</div>
+                <span class="title" i18n>option_useragent</span>
                 <div>
                     <textarea name="user_agent" rows="3"></textarea>
                 </div>
@@ -198,12 +198,19 @@
                 </div>
                 <span i18n>option_default</span>: <u><i>16M</i></u>
             </div>
-            <div title="aria2_max_task_desc">
-                <div class="title" i18n>aria2_max_task</div>
+            <div title="aria2_max_concurrent_desc">
+                <div class="title" i18n>aria2_max_concurrent</div>
                 <div>
                     <input name="max-concurrent-downloads" type="number">
                 </div>
                 <span i18n>option_default</span>: <u><i>5</i></u>
+            </div>
+            <div title="aria2_max_connection_desc">
+                <div class="title" i18n>aria2_max_connection</div>
+                <div>
+                    <input name="max-connection-per-server" type="number">
+                </div>
+                <span i18n>option_default</span>: <u><i>1</i></u>
             </div>
             <div title="aria2_max_download_desc">
                 <div class="title" i18n>aria2_max_download</div>

@@ -94,6 +94,7 @@ h1 {
     top: 8px;
     right: 26px;
     z-index: 9;
+    text-align: right;
     background-color: #fff;
 }
 

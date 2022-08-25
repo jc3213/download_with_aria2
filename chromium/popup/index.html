@@ -81,14 +81,21 @@
                     </div>
                     <span i18n>option_default</span>: <u><i>20M</i></u>
                 </div>
-            </div>
-            <div title="task_download_desc">
-                <div class="title" i18n>task_download</div>
-                <div>
-                    <input name="max-download-limit" data-size type="text">
-                    <data>B/s</data>
+                <div title="aria2_max_connection_desc">
+                    <div class="title" i18n>aria2_max_connection</div>
+                    <div>
+                        <input name="max-connection-per-server" type="number">
+                    </div>
+                    <span i18n>option_default</span>: <u><i>1</i></u>
                 </div>
-                <span i18n>option_disabled</span>: <u><i>0</i></u>
+                <div title="task_download_desc">
+                    <div class="title" i18n>task_download</div>
+                    <div>
+                        <input name="max-download-limit" data-size type="text">
+                        <data>B/s</data>
+                    </div>
+                    <span i18n>option_disabled</span>: <u><i>0</i></u>
+                </div>
             </div>
         </div>
         <hr data-main data-task>

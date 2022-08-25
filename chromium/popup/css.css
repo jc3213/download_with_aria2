@@ -30,6 +30,7 @@
 .detail {
     grid-template-columns: 33% 33% 33%;
     grid-column-gap: 0.5%;
+    margin-bottom: 25px;
 }
 
 .detail > * > span {

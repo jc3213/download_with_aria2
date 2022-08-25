@@ -285,13 +285,19 @@
         "message": "磁盘缓存"
     },
     "aria2_adv_cache_desc": {
-        "message": "设置缓存以减少对磁盘的读写"
+        "message": "设置磁盘缓存以减少对磁盘的读写"
     },
-    "aria2_max_task": {
-        "message": "最大任务数"
+    "aria2_max_concurrent": {
+        "message": "最大并行任务数"
     },
-    "aria2_max_task_desc": {
-        "message": "设置可同时进行的最大任务数"
+    "aria2_max_concurrent_desc": {
+        "message": "设置可同时进行下载的最大任务数"
+    },
+    "aria2_max_connection": {
+        "message": "每服务器最大连接数"
+    },
+    "aria2_max_connection_desc": {
+        "message": "设置每个服务器允许的最大连接数"
     },
     "aria2_max_download": {
         "message": "全局下载速度"

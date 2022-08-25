@@ -279,19 +279,25 @@
         "message": "Download Directory"
     },
     "aria2_adv_dir_desc": {
-        "message": "Set the directory where the files are saved"
+        "message": "Set the directory to store the downloaded file"
     },
     "aria2_adv_cache": {
         "message": "Disk Cache"
     },
     "aria2_adv_cache_desc": {
-        "message": "Set memory cache to reduce disk I/O"
+        "message": "Set disk cache to reduce disk I/O"
     },
-    "aria2_max_task": {
+    "aria2_max_concurrent": {
         "message": "Max Concurrent Tasks"
     },
-    "aria2_max_task_desc": {
-        "message": "Set the maximum number of concurrent tasks"
+    "aria2_max_concurrent_desc": {
+        "message": "Set the maximum number of parallel downloads for every queue item"
+    },
+    "aria2_max_connection": {
+        "message": "Max Connection per Server"
+    },
+    "aria2_max_connection_desc": {
+        "message": "Set the maximum number of connections to one server for each download."
     },
     "aria2_max_download": {
         "message": "Global Download Speed"
