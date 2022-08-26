@@ -91,13 +91,11 @@ chrome.storage.onChanged.addListener(changes => {
 function aria2RPCClient() {
     printOptions(aria2Store);
     document.querySelectorAll('[data-mode]').forEach(menu => {
-        var mode = menu.getAttribute('data-mode');
-        var pos = mode.indexOf(',');
-        var name = mode.slice(0, pos);
-        var rule = mode.slice(pos + 1);
+        var rule = menu.getAttribute('data-mode').match(/[^,]+/g);
+        var name = rule.shift();
         menu.style.display = rule.includes(aria2Store[name]) ? 'block' : 'none';
         document.querySelector('#option [name="' + name + '"]').addEventListener('change', event => {
-            menu.style.display = rule === event.target.value ? 'block' : 'none';
+            menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });
 }
