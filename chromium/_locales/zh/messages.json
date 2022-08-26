@@ -108,7 +108,7 @@
         "message": "为来自所设置域名的下载添加代理服务器"
     },
     "option_capture_mode": {
-        "message": "抓取"
+        "message": "抓取浏览器下载"
     },
     "option_filters": {
         "message": "基于条件"

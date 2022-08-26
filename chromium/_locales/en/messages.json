@@ -108,10 +108,10 @@
         "message": "Set proxy server for downloads from these domains"
     },
     "option_capture_mode": {
-        "message": "Capturing"
+        "message": "Capture Browser Downloads"
     },
     "option_filters": {
-        "message": "Filters"
+        "message": "Use Filters"
     },
     "option_capture_mode_desc": {
         "message": "Capture browser downloads based on filters below"
