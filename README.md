@@ -22,9 +22,9 @@
     - `File Size` [**MB**]
     - `File Extensions`
         - **Firefox** only capture MIME type `application/*` via webRequest API
-    - `Domain names`
-        - site `www.google.com`: filter `com`, `google.com`, `www.google.com`
-        - site `www.university.org.eu`: filter `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
+    - `Domain names` 
+        - **Referer**: `www.university.org.eu`
+        - **Filter**: `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
 - Built-in `Aria2 Web Manager`
     - Filtering tasks with queues `Active`, `Stopped`, and `Removed`
     - `New Task` page with extra options
