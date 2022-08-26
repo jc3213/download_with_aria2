@@ -89,6 +89,11 @@ h1 {
     margin-bottom: 25px;
 }
 
+[data-mode] {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 .float {
     position: fixed;
     top: 8px;
