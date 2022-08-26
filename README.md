@@ -12,18 +12,19 @@
     - `When Start`: Show notification when download start [**This extension only**]
     - `When Complete`: Show notification when download complete
     - `Always`: Show notification when download start, and complete
+- Support proxy server
+    - Protocol: `http` or `https`
+    - `Proxy Server` must be used together with `Proxy Domain Rules`
 - Capture browser downloads
     - Switchable APIs  [**Firefox Only**]
         - `downloads API` [**Default**]
         - `webRequest API`
-    - Capture filter based on file size
-    - Capture filter based on file extension 
-        - **Firefox only capture MIME type `application/*` via webRequest API**
-    - Capture filter based on domain names of referer
+    - `File Size` [**MB**]
+    - `File Extensions`
+        - **Firefox** only capture MIME type `application/*` via webRequest API
+    - `Domain names`
         - site `www.google.com`: filter `com`, `google.com`, `www.google.com`
         - site `www.university.org.eu`: filter `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
-- Support proxy setting and provide auto matching rule
-    - Support Protocol: `http` or `https`
 - Built-in `Aria2 Web Manager`
     - Filtering tasks with queues `Active`, `Stopped`, and `Removed`
     - `New Task` page with extra options
