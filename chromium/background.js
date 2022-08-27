@@ -29,7 +29,7 @@ chrome.storage.onChanged.addListener(changes => {
 
 function chromeDownload(url, referer, options) {
     chrome.cookies.getAll({url}, cookies => {
-        aria2Download(url, hostname, options, cookies);
+        aria2Download(url, referer, options, cookies);
     });
 }
 

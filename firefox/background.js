@@ -27,9 +27,9 @@ browser.storage.onChanged.addListener(changes => {
     }
 });
 
-async function firefoxDownload(url, hostname, storeId, options) {
+async function firefoxDownload(url, referer, storeId, options) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
-    aria2Download(url, hostname, options, cookies);
+    aria2Download(url, referer, options, cookies);
 }
 
 function aria2Capture() {
