@@ -47,52 +47,64 @@
     "option_disabled": {
         "message": "Disabled"
     },
+    "option_nothing": {
+        "message": "Do Nothing"
+    },
+    "option_notify": {
+        "message": "Notify Me"
+    },
+    "option_never": {
+        "message": "Never"
+    },
+    "option_filters": {
+        "message": "Use Filters"
+    },
     "option_always": {
         "message": "Always"
     },
     "option_jsonrpc_uri": {
         "message": "JSON-RPC URI"
     },
-    "option_jsonrpc_uri_desc": {
+    "option_jsonrpc_uri_title": {
         "message": "Set URI of JSON-RPC interface"
     },
     "option_secret_token": {
         "message": "Secret Token"
     },
-    "option_secret_token_desc": {
+    "option_secret_token_title": {
         "message": "Set secret authorization \"token\""
     },
     "option_refresh_interval": {
         "message": "Refresh Interval"
     },
-    "option_refresh_interval_desc": {
+    "option_refresh_interval_title": {
         "message": "Set task manager refresh interval"
     },
-    "option_show_notification": {
-        "message": "Show Notification"
+    "option_notify_start": {
+        "message": "When Downloads Start"
     },
-    "option_show_notification_desc": {
-        "message": "Popup notification based on user settings"
+    "option_notify_start_title": {
+        "message": "Set what to do then downloads start"
     },
-    "option_down_start": {
-        "message": "Download Start"
+    "option_notify_complete": {
+        "message": "When Downloads Complete"
     },
-    "option_down_complete": {
-        "message": "Download Complete"
+    "option_notify_complete_title": {
+        "message": "Set what to do when downloads complete"
     },
     "download_complete": {
-        "message": "Download has been completed!"
+        "message": "Download has completed!"
     },
     "option_useragent": {
         "message": "User Agent"
     },
-    "option_useragent_desc": {
+    "option_useragent_title": {
         "message": "Set user agent for downloads"
     },
     "option_proxy_uri": {
         "message": "Proxy Server"
     },
-    "option_proxy_uri_desc": {
+    "option_proxy_uri_title": {
         "message": "Prefered proxy server for downloads"
     },
     "option_protocol": {
@@ -101,46 +113,43 @@
     "option_proxy_include": {
         "message": "Proxy Domain Rules"
     },
-    "option_proxy_include_desc": {
+    "option_proxy_include_title": {
         "message": "Set proxy server for downloads from these domains"
     },
     "option_capture_mode": {
         "message": "Capture Browser Downloads"
     },
-    "option_filters": {
-        "message": "Use Filters"
-    },
-    "option_capture_mode_desc": {
+    "option_capture_mode_title": {
         "message": "Capture browser downloads based on user settings"
     },
     "option_capture_size": {
         "message": "File Size"
     },
-    "option_capture_size_desc": {
+    "option_capture_size_title": {
         "message": "Capture download larger than your setting"
     },
     "option_capture_include": {
         "message": "Include Domains"
     },
-    "option_capture_include_desc": {
+    "option_capture_include_title": {
         "message": "Capture download from these domains"
     },
     "option_capture_exclude": {
         "message": "Exclude Domains"
     },
-    "option_capture_exclude_desc": {
+    "option_capture_exclude_title": {
         "message": "Ignore download from these domains"
     },
     "option_capture_resolve": {
         "message": "Includes File Extensions"
     },
-    "option_capture_resolve_desc": {
+    "option_capture_resolve_title": {
         "message": "Capture download with these extensions"
     },
     "option_capture_reject": {
         "message": "Exclude File Extensions"
     },
-    "option_capture_reject_desc": {
+    "option_capture_reject_title": {
         "message": "Ignore download with these extensions"
     },
     "popup_active": {
@@ -170,19 +179,19 @@
     "task_referer": {
         "message": "Referer"
     },
-    "task_referer_desc": {
+    "task_referer_title": {
         "message": "Use \"Referer\" header for this download"
     },
     "task_batch": {
         "message": "Download Urls"
     },
-    "task_batch_desc": {
+    "task_batch_title": {
         "message": "Either \"URL\", or \"JSON\", or \"Metalink\" are supported"
     },
     "task_proxy": {
         "message": "Proxy Server"
     },
-    "task_proxy_desc": {
+    "task_proxy_title": {
         "message": "Use a proxy server for this download"
     },
     "task_submit": {
@@ -194,115 +203,115 @@
     "task_download": {
         "message": "Download Speed"
     },
-    "task_download_desc": {
+    "task_download_title": {
         "message": "Limit maximum download speed for this download"
     },
     "task_upload": {
         "message": "Upload Speed"
     },
-    "task_upload_desc": {
+    "task_upload_title": {
         "message": "Limit maximum upload speed for this download"
     },
     "task_urls": {
         "message": "Task URLs"
     },
-    "task_urls_desc": {
+    "task_urls_title": {
         "message": "Manage urls used for this download"
     },
     "task_files": {
         "message": "Task Files"
     },
-    "task_files_desc": {
+    "task_files_title": {
         "message": "Manage files selected for this download"
     },
     "aria2_http_retry": {
         "message": "Max Retries"
     },
-    "aria2_http_retry_desc": {
+    "aria2_http_retry_title": {
         "message": "Set maximum number of retries"
     },
     "aria2_http_wait": {
         "message": "Retry Interval"
     },
-    "aria2_http_wait_desc": {
+    "aria2_http_wait_title": {
         "message": "Set the interval time between retries (SEC)"
     },
     "aria2_http_split": {
         "message": "Download Sections"
     },
-    "aria2_http_split_desc": {
+    "aria2_http_split_title": {
         "message": "Set the maximum download sections of each download"
     },
     "aria2_http_size": {
         "message": "Section Size"
     },
-    "aria2_http_size_desc": {
+    "aria2_http_size_title": {
         "message": "Set the minimum size of each download section"
     },
     "aria2_bt_port": {
         "message": "Listening Port"
     },
-    "aria2_bt_port_desc": {
+    "aria2_bt_port_title": {
         "message": "Set the listening port for DHT and UDP tracker"
     },
     "aria2_bt_peers": {
         "message": "Max Peers"
     },
-    "aria2_bt_peers_desc": {
+    "aria2_bt_peers_title": {
         "message": "Set the maximum peers of each torrent"
     },
     "aria2_bt_remove": {
         "message": "Remove Unselected Files"
     },
-    "aria2_bt_remove_desc": {
+    "aria2_bt_remove_title": {
         "message": "Remove the unselected files when bittorrent is completed"
     },
     "aria2_bt_ratio": {
         "message": "Seeding Ratio"
     },
-    "aria2_bt_ratio_desc": {
+    "aria2_bt_ratio_title": {
         "message": "Set the share ratio of each torrent"
     },
     "aria2_bt_seed": {
         "message": "Seeding Time"
     },
-    "aria2_bt_seed_desc": {
+    "aria2_bt_seed_title": {
         "message": "Set the share time of each torrent (MIN)"
     },
     "aria2_adv_dir": {
         "message": "Download Directory"
     },
-    "aria2_adv_dir_desc": {
+    "aria2_adv_dir_title": {
         "message": "Set the directory to store the downloaded file"
     },
     "aria2_adv_cache": {
         "message": "Disk Cache"
     },
-    "aria2_adv_cache_desc": {
+    "aria2_adv_cache_title": {
         "message": "Set disk cache to reduce disk I/O"
     },
     "aria2_max_concurrent": {
         "message": "Max Concurrent Downloads"
     },
-    "aria2_max_concurrent_desc": {
+    "aria2_max_concurrent_title": {
         "message": "Set the maximum number of parallel downloads for every queue item"
     },
     "aria2_max_connection": {
         "message": "Max Connections per Server"
     },
-    "aria2_max_connection_desc": {
+    "aria2_max_connection_title": {
         "message": "Set the maximum number of connections to one server for each download."
     },
     "aria2_max_download": {
         "message": "Global Download Speed"
     },
-    "aria2_max_download_desc": {
+    "aria2_max_download_title": {
         "message": "Set the maximum download speed for all concurrent tasks"
     },
     "aria2_max_upload": {
         "message": "Global Upload Speed"
     },
-    "aria2_max_upload_desc": {
+    "aria2_max_upload_title": {
         "message": "Set the maximum upload speed for all concurrent tasks"
     }
 }
