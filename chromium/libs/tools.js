@@ -20,10 +20,10 @@ function getDownloadName(bittorrent, [{path, uris}]) {
 }
 
 function showNotification(message, when) {
-    if (when === 'start' && ['1', '3'].includes(aria2Store['show_notification'])) {
+    if (when === 'start' && aria2Store['notify_start'] === '1') {
         var title = aria2Store['jsonrpc_uri'];
     }
-    else if (when === 'complete' && ['2', '3'].includes(aria2Store['show_notification'])) {
+    else if (when === 'complete' && aria2Store['notify_complete'] === '1') {
         title = chrome.i18n.getMessage('download_complete');
     }
     else {
