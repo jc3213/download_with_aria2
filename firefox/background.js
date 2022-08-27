@@ -29,10 +29,7 @@ browser.storage.onChanged.addListener(changes => {
 
 async function firefoxDownload(url, hostname, storeId, options) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
-    var header = 'Cookie:';
-    cookies.forEach(({name, value}) => header += ' ' + name + '=' + value + ';');
-    options['header'] = [header];
-    aria2Download(url, hostname, options);
+    aria2Download(url, hostname, options, cookies);
 }
 
 function aria2Capture() {

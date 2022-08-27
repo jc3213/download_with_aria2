@@ -5,7 +5,7 @@ chrome.contextMenus.create({
 });
 
 chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
-    aria2Download(linkUrl, getHostname(pageUrl), {referer: pageUrl});
+    chromeDownload(linkUrl, getHostname(pageUrl), {referer: pageUrl});
 });
 
 chrome.storage.local.get(null, async json => {
@@ -27,6 +27,12 @@ chrome.storage.onChanged.addListener(changes => {
     }
 });
 
+function chromeDownload(url, referer, options) {
+    chrome.cookies.getAll({url}, cookies => {
+        aria2Download(url, hostname, options, cookies);
+    });
+}
+
 function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
     if (finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
@@ -36,7 +42,7 @@ function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
         var hostname = getHostname(referer);
         if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
             chrome.downloads.erase({id});
-            aria2Download(finalUrl, hostname, {referer, out: filename});
+            chromeDownload(finalUrl, hostname, {referer, out: filename});
         }
     });
 }
