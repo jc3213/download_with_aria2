@@ -5,7 +5,7 @@ browser.contextMenus.create({
 });
 
 browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId}) => {
-    aria2Download(linkUrl, getHostname(pageUrl), cookieStoreId, {referer: pageUrl});
+    firefoxDownload(linkUrl, getHostname(pageUrl), cookieStoreId, {referer: pageUrl});
 });
 
 browser.storage.local.get(null, async json => {
@@ -27,13 +27,12 @@ browser.storage.onChanged.addListener(changes => {
     }
 });
 
-async function aria2Download(url, hostname, storeId, options) {
+async function firefoxDownload(url, hostname, storeId, options) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
-    options['header'] = ['Cookie:'];
-    options['user-agent'] = aria2Store['user_agent'];
-    options['all-proxy'] = aria2Store['proxy_include'].find(host => hostname.endsWith(host)) ? aria2Store['proxy_server'] : '';
-    cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
-    aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url, 'start'));
+    var header = 'Cookie:';
+    cookies.forEach(({name, value}) => header += ' ' + name + '=' + value + ';');
+    options['header'] = [header];
+    aria2Download(url, hostname, options);
 }
 
 function aria2Capture() {
@@ -63,8 +62,8 @@ async function downloadCapture({id, url, referrer, filename}) {
     if (getCaptureFilter(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
-            var options = await getFirefoxExclusive(filename);
-            aria2Download(url, hostname, cookieStoreId, {referer, ...options});
+            var options = await firefoxExclusive(filename);
+            firefoxDownload(url, hostname, cookieStoreId, {referer, ...options});
         }).catch(error => showNotification(url, 'complete'));
     }
 }
@@ -86,13 +85,13 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
         var hostname = getHostname(originUrl);
         if (getCaptureFilter(hostname, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            aria2Download(url, hostname, cookieStoreId, {referer: originUrl, out});
+            firefoxDownload(url, hostname, cookieStoreId, {referer: originUrl, out});
             return {cancel: true};
         }
     }
 }
 
-async function getFirefoxExclusive(uri) {
+async function firefoxExclusive(uri) {
     var {os} = await browser.runtime.getPlatformInfo();
     var index = os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
     var out = uri.slice(index + 1);
