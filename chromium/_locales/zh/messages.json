@@ -111,7 +111,7 @@
         "message": "协议"
     },
     "option_proxy_include": {
-        "message": "代理域名规则"
+        "message": "需要代理服务器的域名"
     },
     "option_proxy_include_title": {
         "message": "为来自所设置域名的下载添加代理服务器"
@@ -138,7 +138,7 @@
         "message": "忽略域名"
     },
     "option_capture_exclude_title": {
-        "message": "无视来自所设置域名的下载"
+        "message": "忽略来自所设置域名的下载"
     },
     "option_capture_resolve": {
         "message": "监视文件后缀"

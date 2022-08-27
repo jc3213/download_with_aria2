@@ -111,7 +111,7 @@
         "message": "Protocol"
     },
     "option_proxy_include": {
-        "message": "Proxy Domain Rules"
+        "message": "Use Proxy for Domains"
     },
     "option_proxy_include_title": {
         "message": "Set proxy server for downloads from these domains"
@@ -126,31 +126,31 @@
         "message": "File Size"
     },
     "option_capture_size_title": {
-        "message": "Capture download larger than your setting"
+        "message": "Capture downloads those are larger than user setting"
     },
     "option_capture_include": {
         "message": "Include Domains"
     },
     "option_capture_include_title": {
-        "message": "Capture download from these domains"
+        "message": "Capture downloads from these domains"
     },
     "option_capture_exclude": {
         "message": "Exclude Domains"
     },
     "option_capture_exclude_title": {
-        "message": "Ignore download from these domains"
+        "message": "Ignore downloads from these domains"
     },
     "option_capture_resolve": {
         "message": "Includes File Extensions"
     },
     "option_capture_resolve_title": {
-        "message": "Capture download with these extensions"
+        "message": "Capture downloads with these extensions"
     },
     "option_capture_reject": {
         "message": "Exclude File Extensions"
     },
     "option_capture_reject_title": {
-        "message": "Ignore download with these extensions"
+        "message": "Ignore downloads with these extensions"
     },
     "popup_active": {
         "message": "Active"

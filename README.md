@@ -13,7 +13,7 @@
     - `Notify Me`: Show notifications
 - Support proxy server
     - Protocol: `http` or `https`
-    - `Proxy Server` must be used together with `Proxy Domain Rules` [**Match pattern**]
+    - `Proxy Server` must be used together with `Use Proxy for Domains` [**Match pattern**]
 - Capture browser downloads
     - Switchable APIs  [**Firefox Only**]
         - `downloads API` [**Default**]
