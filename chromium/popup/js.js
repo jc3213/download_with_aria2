@@ -89,7 +89,7 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
     else {
         await downloadMetalink(file, options);
     }
-    getNotification(file.name, 'start');
+    showNotification(file.name, 'start');
     event.target.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
@@ -103,7 +103,7 @@ function downloadOptions() {
 async function downloadUrl(url, options) {
     var gid = await aria2RPC.message('aria2.addUri', [[url], options]);
     addSession(gid);
-    getNotification(url, 'start');
+    showNotification(url, 'start');
 }
 
 async function downloadJSON(file, options) {
