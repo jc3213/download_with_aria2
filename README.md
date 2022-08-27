@@ -14,7 +14,7 @@
     - `Always`: Show notification when download start, and complete
 - Support proxy server
     - Protocol: `http` or `https`
-    - `Proxy Server` must be used together with `Proxy Domain Rules`
+    - `Proxy Server` must be used together with `Proxy Domain Rules` [**Match pattern**]
 - Capture browser downloads
     - Switchable APIs  [**Firefox Only**]
         - `downloads API` [**Default**]
@@ -22,9 +22,11 @@
     - `File Size` [**MB**]
     - `File Extensions`
         - **Firefox** only capture MIME type `application/*` via webRequest API
-    - `Domain names` 
-        - **Referer**: `www.university.org.eu`
-        - **Filter**: `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
+    - `Domain names` [**Match pattern**]
+- Match pattern
+    - **Referer**: `www.university.org.eu`
+    - **Filter**: `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
+    - `**Space is recommendded** to split rules
 - Built-in `Aria2 Web Manager`
     - Filtering tasks with queues `Active`, `Stopped`, and `Removed`
     - `New Task` page with extra options
