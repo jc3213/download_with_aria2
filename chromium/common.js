@@ -18,7 +18,7 @@ function aria2StartUp() {
                     if (method === 'aria2.onDownloadComplete') {
                         var {bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
                         var name = getDownloadName(bittorrent, files);
-                        showNotification(name, 'complete');
+                        getNotification(name, 'complete');
                     }
                 }
             }
@@ -59,6 +59,16 @@ function aria2Update() {
         aria2Socket.close();
     }
     aria2StartUp();
+}
+
+function aria2Download(url, hostname, options) {
+    chrome.cookies.getAll({url}, cookies => {
+        options['header'] = ['Cookie:'];
+        options['user-agent'] = aria2Store['user_agent'];
+        options['all-proxy'] = aria2Store['proxy_include'].find(host => hostname.endsWith(host)) ? aria2Store['proxy_server'] : '';
+        cookies.forEach(({name, value}) => options['header'][0] += ' ' + name + '=' + value + ';');
+        aria2RPC.message('aria2.addUri', [[url], options]).then(result => getNotification(url, 'start'));
+    });
 }
 
 function getFileExtension(filename) {

@@ -19,7 +19,7 @@ function getDownloadName(bittorrent, [{path, uris}]) {
     }
 }
 
-function showNotification(message, when) {
+function getNotification(message, when) {
     if (when === 'start' && aria2Store['notify_start'] === '1') {
         var title = aria2Store['jsonrpc_uri'];
     }
