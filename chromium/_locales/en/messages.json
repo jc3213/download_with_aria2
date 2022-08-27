@@ -20,15 +20,6 @@
     "time_millisecond": {
         "message": "ms"
     },
-    "download_start": {
-        "message": "When Start"
-    },
-    "download_complete": {
-        "message": "When Complete"
-    },
-    "complete_title": {
-        "message": "Download has complete!!"
-    },
     "option_save": {
         "message": "Save"
     },
@@ -81,7 +72,16 @@
         "message": "Show Notification"
     },
     "option_show_notification_desc": {
-        "message": "Popup notification when adding new download"
+        "message": "Popup notification based on user settings"
+    },
+    "option_down_start": {
+        "message": "Download Start"
+    },
+    "option_down_complete": {
+        "message": "Download Complete"
+    },
+    "download_complete": {
+        "message": "Download has been completed!"
     },
     "option_useragent": {
         "message": "User Agent"
@@ -111,7 +111,7 @@
         "message": "Use Filters"
     },
     "option_capture_mode_desc": {
-        "message": "Capture browser downloads based on filters below"
+        "message": "Capture browser downloads based on user settings"
     },
     "option_capture_size": {
         "message": "File Size"

@@ -24,7 +24,7 @@ function showNotification(message, when) {
         var title = aria2Store['jsonrpc_uri'];
     }
     else if (when === 'complete' && ['2', '3'].includes(aria2Store['show_notification'])) {
-        title = chrome.i18n.getMessage('complete_title');
+        title = chrome.i18n.getMessage('download_complete');
     }
     else {
         return;

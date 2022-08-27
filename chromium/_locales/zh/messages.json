@@ -20,15 +20,6 @@
     "time_millisecond": {
         "message": "毫秒"
     },
-    "download_start": {
-        "message": "开始时"
-    },
-    "download_complete": {
-        "message": "完成时"
-    },
-    "complete_title": {
-        "message": "已完成下载！"
-    },
     "option_save": {
         "message": "保存"
     },
@@ -78,10 +69,19 @@
         "message": "设置任务管理器刷新间隔"
     },
     "option_show_notification": {
-        "message": "通知"
+        "message": "发送通知"
     },
     "option_show_notification_desc": {
-        "message": "新建下载时弹出通知"
+        "message": "根据用户设置发送通知"
+    },
+    "option_down_start": {
+        "message": "开始下载"
+    },
+    "option_down_complete": {
+        "message": "完成下载"
+    },
+    "download_complete": {
+        "message": "下载已完成！"
     },
     "option_useragent": {
         "message": "用户代理"
@@ -111,7 +111,7 @@
         "message": "基于条件"
     },
     "option_capture_mode_desc": {
-        "message": "根据用户设置抓取浏览器的下载请求"
+        "message": "根据用户设置抓取来自浏览器的下载"
     },
     "option_capture_size": {
         "message": "文件大小"
