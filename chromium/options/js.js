@@ -64,8 +64,7 @@ document.querySelector('#import_btn').addEventListener('change', async event => 
 });
 
 document.querySelector('#option').addEventListener('change', event => {
-    var name = event.target.name;
-    var value = event.target.value;
+    var {name, value} = event.target;
     var array = mapping.includes(name);
     var multi = offset[name];
     var old_value = aria2Store[name];
@@ -75,10 +74,9 @@ document.querySelector('#option').addEventListener('change', event => {
 });
 
 document.querySelector('#global').addEventListener('change', event => {
-    var name = event.target.name;
+    var {name, value} = event.target;
     var old_value = aria2Global[name];
-    var new_value = event.target.value;
-    printChanges(name, old_value, new_value, glochanges);
+    printChanges(name, old_value, value, glochanges);
     savebtn.style.display = 'inline-block';
 });
 
