@@ -149,7 +149,8 @@ document.querySelector('#name_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#manager').addEventListener('change', event => {
-    event.target.name && aria2RPC.message('aria2.changeOption', [activeId, {[event.target.name]: event.target.value}]);
+    var {name, value} = event.target;
+    aria2RPC.message('aria2.changeOption', [activeId, {[name]: value}]);
 });
 
 document.querySelectorAll('#manager .block').forEach(block => {
