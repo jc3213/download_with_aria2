@@ -24,8 +24,8 @@
     - `Domain names` [**Match pattern**]
 - Match pattern
     - **Referer**: `www.university.org.eu`
-    - **Filter**: `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
-    - [**Space**] is recommendded to split rules
+    - **Pattern**: `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
+    - [**Space**] is recommendded to split match patterns
 - Built-in `Aria2 Web Manager`
     - Filtering tasks with queues `Active`, `Stopped`, and `Removed`
     - `New Task` page with extra options
