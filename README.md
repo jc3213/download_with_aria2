@@ -8,10 +8,9 @@
     - Active: Light Blue `Number`
     - Error: Red `E`
 - Support notifications
-    - `Disabled`: No notifications
-    - `When Start`: Show notification when download start [**This extension only**]
-    - `When Complete`: Show notification when download complete
-    - `Always`: Show notification when download start, and complete
+    - `When Downloads Start`, `When Downlods Complete`
+    - `Do Nothing`: Don't show notifications
+    - `Notify Me`: Show notifications
 - Support proxy server
     - Protocol: `http` or `https`
     - `Proxy Server` must be used together with `Proxy Domain Rules` [**Match pattern**]
