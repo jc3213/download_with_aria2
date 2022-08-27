@@ -28,6 +28,30 @@ function aria2StartUp() {
         chrome.browserAction.setBadgeText({text: 'E'});
         chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
     });
+    if (aria2Store['show_notification'] === '0') {
+        aria2Store['notify_start'] = '0';
+        aria2Store['notify_complete'] = '0';
+        delete aria2Store['show_notification'];
+        chrome.storage.local.set(aria2Store);
+    }
+    else if (aria2Store['show_notification'] === '1') {
+        aria2Store['notify_start'] = '1';
+        aria2Store['notify_complete'] = '0';
+        delete aria2Store['show_notification'];
+        chrome.storage.local.set(aria2Store);
+    }
+    else if (aria2Store['show_notification'] === '2') {
+        aria2Store['notify_start'] = '0';
+        aria2Store['notify_complete'] = '1';
+        delete aria2Store['show_notification'];
+        chrome.storage.local.set(aria2Store);
+    }
+    else if (aria2Store['show_notification'] === '3') {
+        aria2Store['notify_start'] = '1';
+        aria2Store['notify_complete'] = '1';
+        delete aria2Store['show_notification'];
+        chrome.storage.local.set(aria2Store);
+    }
 }
 
 function aria2Update() {
