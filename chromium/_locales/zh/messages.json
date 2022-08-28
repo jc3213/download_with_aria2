@@ -56,11 +56,11 @@
     "option_never": {
         "message": "永不"
     },
-    "option_filters": {
-        "message": "基于条件"
-    },
     "option_always": {
         "message": "总是"
+    },
+    "option_switch": {
+        "message": "条件"
     },
     "option_jsonrpc_uri": {
         "message": "JSON-RPC 链接"
@@ -99,22 +99,22 @@
         "message": "用户代理"
     },
     "option_useragent_title": {
-        "message": "设置下载时所使用的用户代理"
+        "message": "设置新建下载时的用户代理"
     },
-    "option_proxy_uri": {
+    "option_proxy_server": {
         "message": "代理服务器"
     },
-    "option_proxy_uri_title": {
-        "message": "优先使用的代理服务器"
+    "option_proxy_server_title": {
+        "message": "设置首选的代理服务器"
     },
     "option_protocol": {
         "message": "协议"
     },
-    "option_proxy_include": {
-        "message": "需要代理服务器的域名"
+    "option_proxy_mode": {
+        "message": "使用代理"
     },
-    "option_proxy_include_title": {
-        "message": "为来自所设置域名的下载添加代理服务器"
+    "option_proxy_mode_title": {
+        "message": "设置新建下载时的代理服务器"
     },
     "option_capture_mode": {
         "message": "抓取浏览器下载"

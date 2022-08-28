@@ -56,11 +56,11 @@
     "option_never": {
         "message": "Never"
     },
-    "option_filters": {
-        "message": "Use Filters"
-    },
     "option_always": {
         "message": "Always"
+    },
+    "option_switch": {
+        "message": "Switch"
     },
     "option_jsonrpc_uri": {
         "message": "JSON-RPC URI"
@@ -99,22 +99,22 @@
         "message": "User Agent"
     },
     "option_useragent_title": {
-        "message": "Set user agent for downloads"
+        "message": "Set user agent for new downloads"
     },
-    "option_proxy_uri": {
+    "option_proxy_mode": {
+        "message": "Use Proxy"
+    },
+    "option_proxy_mode_title": {
+        "message": "Set proxy server for new downloads"
+    },
+    "option_proxy_server": {
         "message": "Proxy Server"
     },
-    "option_proxy_uri_title": {
-        "message": "Prefered proxy server for downloads"
+    "option_proxy_server_title": {
+        "message": "Set your preferred proxy server"
     },
     "option_protocol": {
         "message": "Protocol"
-    },
-    "option_proxy_include": {
-        "message": "Use Proxy for Domains"
-    },
-    "option_proxy_include_title": {
-        "message": "Set proxy server for downloads from these domains"
     },
     "option_capture_mode": {
         "message": "Capture Browser Downloads"

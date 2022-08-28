@@ -62,16 +62,21 @@
                 </div>
             </div>
             <h1 i18n>option_advanced</h1>
-            <div title="option_proxy_uri_title">
-                <div class="title" i18n>option_proxy_uri</div>
+            <div title="option_proxy_server_title">
+                <div class="title" i18n>option_proxy_server</div>
                 <div>
                     <input name="proxy_server" type="url" placeholder="http://127.0.0.1:1180/">
                 </div>
                 <span i18n>option_protocol</span>: <u><i>http</i></u> / <u><i>https</i></u>
             </div>
-            <div title="option_proxy_include_title">
-                <div class="title" i18n>option_proxy_include</div>
-                <div>
+            <div title="option_proxy_mode_title">
+                <span class="title" i18n>option_proxy_mode</span>
+                <select name="proxy_mode">
+                    <option value="0" i18n>option_never</option>
+                    <option value="1" i18n>option_switch</option>
+                    <option value="2" i18n>option_always</option>
+                </select>
+                <div data-mode="proxy_mode,1">
                     <textarea name="proxy_include" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                 </div>
             </div>
@@ -79,7 +84,7 @@
                 <span class="title" i18n>option_capture_mode</span>
                 <select name="capture_mode">
                     <option value="0" i18n>option_never</option>
-                    <option value="1" i18n>option_filters</option>
+                    <option value="1" i18n>option_switch</option>
                     <option value="2" i18n>option_always</option>
                 </select>
             </div>

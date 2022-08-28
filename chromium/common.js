@@ -88,3 +88,27 @@ function getCaptureFilter(hostname, type, size) {
         return false;
     }
 }
+
+function getProxyServer(hostname) {
+    if (aria2Store['proxy_mode'] === '0') {
+        return '';
+    }
+    else if (aria2Store['proxy_mode'] === '1' && aria2Store['proxy_include'].find(host => hostname.endsWith(host))) {
+        return aria2Store['proxy_server'];
+    }
+    else if (aria2Store['proxy_mode'] === '2') {
+        return aria2Store['proxy_server'];
+    }
+    else {
+        return '';
+    }
+}
+
+function getRequestheaders(cookies) {
+    var result = 'Cookie:';
+    cookies.forEach(cookie => {
+        var {name, value} = cookie;
+        result += ' ' + name + '=' + value + ';';
+    });
+    return [result];
+}
