@@ -13,14 +13,14 @@ else {
 
 document.querySelector('#back_btn').addEventListener('click', event => {
     printOptions(aria2Store);
-    savebtn.style.display = 'none';
+    savebtn.disabled = true;
     document.body.setAttribute('data-prefs', 'option');
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
     aria2RPC.message('aria2.getGlobalOption').then(options => {
         aria2Global = options;
-        savebtn.style.display = 'none';
+        savebtn.disabled = true;
         printGlobalOptions(options, '#global [name]');
         document.body.setAttribute('data-prefs', 'global');
     });
@@ -36,7 +36,7 @@ savebtn.addEventListener('click', event => {
         applyChanges(glochanges, aria2Global);
         aria2RPC.message('aria2.changeGlobalOption', [aria2Global]);
     }
-    savebtn.style.display = 'none';
+    savebtn.disabled = true;
 });
 
 document.querySelector('#popup_btn').addEventListener('click', event => {
@@ -61,6 +61,7 @@ document.querySelector('#import_btn').addEventListener('change', async event => 
     printOptions(json);
     chrome.storage.local.set(json);
     aria2Store = json;
+    event.target.value = '';
 });
 
 document.querySelector('#option').addEventListener('change', event => {
@@ -70,14 +71,14 @@ document.querySelector('#option').addEventListener('change', event => {
     var old_value = aria2Store[name];
     var new_value = array ? value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? value * multi : value;
     printChanges(name, old_value, new_value, changes);
-    savebtn.style.display = 'inline-block';
+    savebtn.disabled = false;
 });
 
 document.querySelector('#global').addEventListener('change', event => {
     var {name, value} = event.target;
     var old_value = aria2Global[name];
     printChanges(name, old_value, value, glochanges);
-    savebtn.style.display = 'inline-block';
+    savebtn.disabled = false;
 });
 
 chrome.storage.onChanged.addListener(changes => {
