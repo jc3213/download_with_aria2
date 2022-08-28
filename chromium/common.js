@@ -28,29 +28,24 @@ function aria2StartUp() {
         chrome.browserAction.setBadgeText({text: 'E'});
         chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
     });
-    if (aria2Store['show_notification'] === '0') {
-        aria2Store['notify_start'] = '0';
-        aria2Store['notify_complete'] = '0';
+    // Hotfix
+    function hotfixNotify(start, complete) {
+        aria2Store['notify_start'] = start;
+        aria2Store['notify_complete'] = complete;
         delete aria2Store['show_notification'];
         chrome.storage.local.set(aria2Store);
+    }
+    if (aria2Store['show_notification'] === '0') {
+        hotfixNotify('0', '0');
     }
     else if (aria2Store['show_notification'] === '1') {
-        aria2Store['notify_start'] = '1';
-        aria2Store['notify_complete'] = '0';
-        delete aria2Store['show_notification'];
-        chrome.storage.local.set(aria2Store);
+        hotfixNotify('1', '0');
     }
     else if (aria2Store['show_notification'] === '2') {
-        aria2Store['notify_start'] = '0';
-        aria2Store['notify_complete'] = '1';
-        delete aria2Store['show_notification'];
-        chrome.storage.local.set(aria2Store);
+        hotfixNotify('0', '1');
     }
     else if (aria2Store['show_notification'] === '3') {
-        aria2Store['notify_start'] = '1';
-        aria2Store['notify_complete'] = '1';
-        delete aria2Store['show_notification'];
-        chrome.storage.local.set(aria2Store);
+        hotfixNotify('1', '1');
     }
 }
 
