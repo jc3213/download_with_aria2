@@ -143,10 +143,6 @@
     right: 0px;
 }
 
-#bt [title] {
-    margin-bottom: 0px;
-}
-
 .uri {
     overflow-y: hidden;
     margin-top: 5px;
@@ -158,15 +154,16 @@
     grid-template-columns: 40px auto 80px 60px;
 }
 
-.file > *:not(#index) {
+.file > * {
     border: 1px ridge #ccc;
+    overflow-y: auto;
 }
 
-.file > *:not(#name, #index) {
+.file > #index {
+    height: 48px;
+}
+
+.file > *:not(#index, #name) {
     line-height: 46px;
     text-align: center;
-}
-
-.file > #name {
-    overflow-y: auto;
 }

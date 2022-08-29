@@ -18,6 +18,10 @@ div {
     position: relative;
 }
 
+div[title]:not(:last-child) {
+    margin-bottom: 25px;
+}
+
 input, textarea, select, option {
     padding: 3px;
 }
@@ -83,10 +87,6 @@ button:disabled {
 h1 {
     margin-top: 0px;
     margin-bottom: 35px;
-}
-
-[title]:not(:last-child) {
-    margin-bottom: 25px;
 }
 
 .float {

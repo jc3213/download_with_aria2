@@ -213,13 +213,13 @@
         "message": "Limit maximum upload speed for this download"
     },
     "task_urls": {
-        "message": "Task URLs"
+        "message": "Used URLs"
     },
     "task_urls_title": {
         "message": "Manage urls used for this download"
     },
     "task_files": {
-        "message": "Task Files"
+        "message": "BitTorrent Files"
     },
     "task_files_title": {
         "message": "Manage files selected for this download"
