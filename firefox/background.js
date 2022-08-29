@@ -30,7 +30,7 @@ browser.storage.onChanged.addListener(changes => {
 async function aria2Download(url, hostname, storeId, options) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
     options['user-agent'] = aria2Store['user_agent'];
-    options['header'] = getRequestheaders(cookies);
+    options['header'] = getRequestHeaders(cookies);
     options['all-proxy'] = getProxyServer(hostname);
     aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url, 'start'));
 }

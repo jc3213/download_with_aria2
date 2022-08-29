@@ -99,7 +99,7 @@ function getProxyServer(hostname) {
     }
 }
 
-function getRequestheaders(cookies) {
+function getRequestHeaders(cookies) {
     var result = 'Cookie:';
     cookies.forEach(cookie => {
         var {name, value} = cookie;

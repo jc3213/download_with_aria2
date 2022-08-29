@@ -30,7 +30,7 @@ chrome.storage.onChanged.addListener(changes => {
 function aria2Download(url, hostname, options) {
     chrome.cookies.getAll({url}, cookies => {
         options['user-agent'] = aria2Store['user_agent'];
-        options['header'] = getRequestheaders(cookies);
+        options['header'] = getRequestHeaders(cookies);
         options['all-proxy'] = getProxyServer(hostname);
         aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url, 'start'));
     });
