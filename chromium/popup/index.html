@@ -8,11 +8,11 @@
     <body data-popup="main">
         <div data-main="0">
             <button class="active" i18n>popup_active</button>
-            <span id="active" class="stats">0</span>
+            <span data-stat="active">0</span>
             <button class="waiting" i18n>popup_waiting</button>
-            <span id="waiting" class="stats">0</span>
+            <span data-stat="waiting">0</span>
             <button class="removed" i18n>popup_stopped</button>
-            <span id="stopped" class="stats">0</span>
+            <span data-stat="stopped">0</span>
             <div class="sidemenu">
                 <button id="task_btn" i18n>popup_create</button>
                 <button id="purdge_btn" i18n>popup_purge</button>
@@ -100,9 +100,9 @@
         <hr data-main data-task>
         <div data-main>
             <button class="active" disabled i18n>popup_download</button>
-            <span id="download" class="stats">0 B/s</span>
+            <span data-stat="download">0 B/s</span>
             <button class="complete" disabled i18n>popup_upload</button>
-            <span id="upload" class="stats">0 B/s</span>
+            <span data-stat="upload">0 B/s</span>
             <div class="sidemenu">
                 <button id="options_btn" i18n>popup_options</button>
             </div>
