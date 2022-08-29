@@ -18,6 +18,7 @@ var removedGroup = document.querySelector('[data-group="removed"]');
 var errorGroup = document.querySelector('[data-group="error"]');
 var http = document.querySelector('#http');
 var bt = document.querySelector('#bt');
+var savebtn = document.querySelector('#save_btn');
 
 document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) => {
     tab.addEventListener('click', event => {
@@ -169,17 +170,20 @@ document.querySelector('#proxy_mgr').addEventListener('click', async event => {
 });
 
 document.querySelector('#append button').addEventListener('click', async event => {
-    await aria2RPC.message('aria2.changeUri', [activeId, 1, [], [document.querySelector('#append input').value]]);
-    document.querySelector('#append input').value = '';
+    var uri = document.querySelector('#append input');
+    await aria2RPC.message('aria2.changeUri', [activeId, 1, [], [uri.value]]);
+    uri.value = '';
 });
 
-bt.addEventListener('click', async event => {
-    if (event.target.id === 'index') {
-        var index = fileManager.indexOf(event.target.innerText);
-        var files = index !== -1 ? [...fileManager.slice(0, index), ...fileManager.slice(index + 1)] : [...fileManager, event.target.innerText];
-        await aria2RPC.message('aria2.changeOption', [activeId, {'select-file': files.join()}]);
-        fileManager = files;
-    }
+savebtn.addEventListener('click', async event => {
+    var files = [];
+    bt.querySelectorAll('#index').forEach(index => {
+        if (index.className === 'active') {
+            files.push(index.innerText);
+        }
+    });
+    await aria2RPC.message('aria2.changeOption', [activeId, {'select-file': files.join()}]);
+    savebtn.style.display = 'none';
 });
 
 function aria2RPCClient() {
@@ -371,27 +375,36 @@ function applyUriChange(cell) {
 
 function printTaskUris(table, uris) {
     var cells = table.childNodes;
+    var total = uris.length;
     uris.forEach(({uri, status}, index) => {
         var cell = cells[index] ?? printTableCell(table, 'uri', applyUriChange);
         cell.innerText = uri;
         cell.className = status === 'used' ? 'active' : 'waiting';
     });
-    cells.forEach((cell, index) => index > uris.length && cell.remove());
+    cells.forEach((cell, index) => {
+        if (total < index) {
+            cell.remove()
+        }
+    });
 }
 
 function applyFileSelect(cell, index, path, length, selected) {
-    cell.querySelector('#index').innerText = index;
+    var tile = cell.querySelector('#index');
+    tile.innerText = index;
+    tile.className = selected === 'true' ? 'active' : 'error';
     cell.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
     cell.querySelector('#name').title = path;
     cell.querySelector('#size').innerText = getFileSize(length);
-    selected === 'true' && fileManager.push(index);
+    tile.addEventListener('click', event => {
+        tile.className = tile.className === 'active' ? 'error' : 'active';
+        savebtn.style.display = 'inline-block';
+    });
 }
 
 function printTaskFiles(table, files) {
     var cells = table.childNodes;
-    files.forEach(({index, selected, path, length, completedLength}, at) => {
-        var cell = cells[at] ?? printTableCell(table, 'file', cell => applyFileSelect(cell, index, path, length, selected));
-        cell.querySelector('#index').className = selected === 'true' ? 'active' : 'error';
+    files.forEach(({index, selected, path, length, completedLength}, pos) => {
+        var cell = cells[pos] ?? printTableCell(table, 'file', cell => applyFileSelect(cell, index, path, length, selected));
         cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
     });
 }
