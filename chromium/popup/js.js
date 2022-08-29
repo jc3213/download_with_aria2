@@ -145,7 +145,6 @@ async function downloadMetalink(file, options) {
 
 document.querySelector('#name_btn').addEventListener('click', event => {
     activeId = http.innerHTML = bt.innerHTML = '';
-    fileManager = [];
     document.body.setAttribute('data-popup', 'main');
 });
 
@@ -288,7 +287,6 @@ function parseSession(gid, status, bittorrent) {
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
         activeId = gid;
-        fileManager = [];
         var {status, bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
         var options = await aria2RPC.message('aria2.getOption', [gid]);
         printGlobalOptions(options, '#manager [name]');
