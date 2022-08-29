@@ -382,7 +382,7 @@ function printTaskUris(table, uris) {
         cell.className = status === 'used' ? 'active' : 'waiting';
     });
     cells.forEach((cell, index) => {
-        if (total < index) {
+        if (index > total) {
             cell.remove()
         }
     });
