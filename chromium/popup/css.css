@@ -143,6 +143,10 @@
     line-height: 27px;
 }
 
+#bt [title] {
+    margin-bottom: 0px;
+}
+
 .file {
     display: grid;
     grid-template-columns: 40px auto 80px 60px;

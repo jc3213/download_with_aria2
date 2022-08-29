@@ -16,8 +16,8 @@ var pausedGroup = document.querySelector('[data-group="paused"]');
 var completeGroup = document.querySelector('[data-group="complete"]');
 var removedGroup = document.querySelector('[data-group="removed"]');
 var errorGroup = document.querySelector('[data-group="error"]');
-var http = document.querySelector('section#http');
-var bt = document.querySelector('section#bt');
+var http = document.querySelector('#http');
+var bt = document.querySelector('#bt');
 
 document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) => {
     tab.addEventListener('click', event => {
@@ -173,10 +173,6 @@ document.querySelector('#append button').addEventListener('click', async event =
     document.querySelector('#append input').value = '';
 });
 
-http.addEventListener('click', event => {
-    event.ctrlKey ? aria2RPC.message('aria2.changeUri', [activeId, 1, [event.target.innerText], []]) : navigator.clipboard.writeText(event.target.innerText);
-});
-
 bt.addEventListener('click', async event => {
     if (event.target.id === 'index') {
         var index = fileManager.indexOf(event.target.innerText);
@@ -259,7 +255,9 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     task.querySelector('#ratio').innerText = task.querySelector('#ratio').style.width = ((completedLength / totalLength * 10000 | 0) / 100) + '%';
     task.querySelector('#ratio').className = status;
     task.querySelector('#retry_btn').style.display = !bittorrent && ['error', 'removed'].includes(status) ? 'inline-block' : 'none';
-    activeId === gid && updateTaskDetail(task, status, bittorrent, files);
+    if (activeId === gid) {
+        updateTaskDetail(task, status, bittorrent, files);
+    }
     return task;
 }
 
@@ -351,34 +349,48 @@ function updateTaskDetail(task, status, bittorrent, files) {
     bittorrent ? printTaskFiles(bt, files) : printTaskUris(http, files[0].uris);
 }
 
-function printTableCell(table, type, resolve) {
+function printTableCell(table, type, runOnce) {
     var cell = self[type + 'LET'].cloneNode(true);
     cell.removeAttribute('data-' + type);
-    typeof resolve === 'function' && resolve(cell);
+    runOnce(cell);
     table.appendChild(cell);
     return cell;
 }
 
+function applyUriChange(cell) {
+    cell.addEventListener('click', event => {
+        var uri = event.target.innerText;
+        if (event.ctrlKey) {
+            aria2RPC.message('aria2.changeUri', [activeId, 1, [uri], []]);
+        }
+        else {
+           navigator.clipboard.writeText(uri);
+        }
+    });
+}
+
 function printTaskUris(table, uris) {
-    var cells = table.querySelectorAll('button');
+    var cells = table.childNodes;
     uris.forEach(({uri, status}, index) => {
-        var cell = cells[index] ?? printTableCell(table, 'uri');
+        var cell = cells[index] ?? printTableCell(table, 'uri', applyUriChange);
         cell.innerText = uri;
         cell.className = status === 'used' ? 'active' : 'waiting';
     });
     cells.forEach((cell, index) => index > uris.length && cell.remove());
 }
 
+function applyFileSelect(cell, index, path, length, selected) {
+    cell.querySelector('#index').innerText = index;
+    cell.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
+    cell.querySelector('#name').title = path;
+    cell.querySelector('#size').innerText = getFileSize(length);
+    selected === 'true' && fileManager.push(index);
+}
+
 function printTaskFiles(table, files) {
-    var cells = table.querySelectorAll('.file');
+    var cells = table.childNodes;
     files.forEach(({index, selected, path, length, completedLength}, at) => {
-        var cell = cells[at] ?? printTableCell(table, 'file', cell => {
-            cell.querySelector('#index').innerText = index;
-            cell.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
-            cell.querySelector('#name').title = path;
-            cell.querySelector('#size').innerText = getFileSize(length);
-            selected === 'true' && fileManager.push(index);
-        });
+        var cell = cells[at] ?? printTableCell(table, 'file', cell => applyFileSelect(cell, index, path, length, selected));
         cell.querySelector('#index').className = selected === 'true' ? 'active' : 'error';
         cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
     });
