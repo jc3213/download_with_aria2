@@ -62,6 +62,9 @@
     "option_switch": {
         "message": "条件"
     },
+    "option_custom": {
+        "message": "自定义"
+    },
     "option_jsonrpc_uri": {
         "message": "JSON-RPC 链接"
     },
