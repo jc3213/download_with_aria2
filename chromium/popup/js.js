@@ -117,13 +117,15 @@ async function downloadJSON(file, options) {
     }
 }
 
-async function parseJSON(json, options) {
-    var {url, referer, filename, proxy} = json;
+async function parseJSON({url, referer, filename, useragent, proxy}, options) {
     if (referer) {
         options['referer'] = referer;
     }
     if (filename) {
         options['out'] = filename;
+    }
+    if (useragent) {
+        options['user-agent'] = useragent;
     }
     if (proxy) {
         options['all-proxy'] = proxy;
