@@ -2,17 +2,16 @@ class Aria2 {
     constructor (jsonrpc, secret) {
         if (jsonrpc.startsWith('http')) {
             var sender = function (body) {
-                return new Promise(function (resolve, reject) {
-                    fetch(jsonrpc, {method: 'POST', body}).then(function (response) {
-                        return response.json();
-                    }).then(function ({result, error}) {
-                        if (result) {
-                            resolve(result);
-                        }
-                        else {
-                            reject(error);
-                        }
-                    }).catch(reject);
+                return fetch(jsonrpc, {method: 'POST', body}).then(function (response) {
+                    return response.json();
+                }).then(function (json) {
+                    var {result, error} = json;
+                    if (result) {
+                        return result;
+                    }
+                    else {
+                        throw error;
+                    }
                 });
             };
         }
