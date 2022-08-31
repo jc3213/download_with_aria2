@@ -85,10 +85,7 @@ function getCaptureFilter(hostname, type, size) {
 }
 
 function getProxyServer(hostname) {
-    if (aria2Store['proxy_mode'] === '0') {
-        return '';
-    }
-    else if (aria2Store['proxy_mode'] === '1' && aria2Store['proxy_include'].find(host => hostname.endsWith(host))) {
+    if (aria2Store['proxy_mode'] === '1' && aria2Store['proxy_include'].find(host => hostname.endsWith(host))) {
         return aria2Store['proxy_server'];
     }
     else if (aria2Store['proxy_mode'] === '2') {
@@ -109,13 +106,10 @@ function getRequestHeaders(cookies) {
 }
 
 function getDownloadFolder() {
-    if (aria2Store['folder_mode'] === '0') {
-        return undefined;
-    }
-    else if (aria2Store['folder_mode'] === '1' && aria2Store['folder_path']) {
+    if (aria2Store['folder_mode'] === '1' && aria2Store['folder_path']) {
         return aria2Store['folder_path'];
     }
     else {
-        return undefined;
+        return null;
     }
 }
