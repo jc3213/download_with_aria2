@@ -117,7 +117,7 @@ async function downloadJSON(file, options) {
     }
 }
 
-async function parseJSON({url, referer, filename, useragent, proxy}, options) {
+async function parseJSON({url, referer, filename, useragent, header, proxy}, options) {
     if (referer) {
         options['referer'] = referer;
     }
@@ -126,6 +126,9 @@ async function parseJSON({url, referer, filename, useragent, proxy}, options) {
     }
     if (useragent) {
         options['user-agent'] = useragent;
+    }
+    if (header) {
+        options['header'] = header;
     }
     if (proxy) {
         options['all-proxy'] = proxy;
