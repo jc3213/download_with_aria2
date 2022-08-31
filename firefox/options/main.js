@@ -35,14 +35,26 @@ document.querySelector('iframe').addEventListener('load', async event => {
     api.title = '';
     api.style.display = 'none';
     api.innerHTML = '<span class="title">' + i18n['api'] + '</span><select name="capture_api"><option value="0">downloads API</option><option value="1">webRequest API</option></select>';
+    api.addEventListener('change', event => {
+        if (event.target.value === '1') {
+            if (folder.value === '2') {
+                folder.value = '0';
+            }
+            sub.style.display = 'none';
+        }
+        else {
+            sub.style.display = 'block';
+        }
+    });
 
     var sub = document.createElement('option');
     sub.value = '2';
+    sub.style.display = store['capture_api'] === '0' ? 'block' : 'none';
     sub.innerText = i18n['browser'];
 
-    var capture = iframe.querySelector('#option > div:nth-child(11)');
+    var capture = iframe.querySelector('#option > div:nth-child(12)');
     capture.addEventListener('change', event => {
-        if ('1,2'.includes(capture.value)) {
+        if ('1,2'.includes(event.target.value)) {
             if (danger) {
                 api.style.display = 'block';
                 safe.style.display = 'none';
@@ -59,7 +71,7 @@ document.querySelector('iframe').addEventListener('load', async event => {
     
     var folder = iframe.querySelector('#option > div:nth-child(5) > select');
     folder.append(sub);
-    folder.value = store['folder_path'];
+    folder.value = store['folder_mode'];
 
     capture.append(safe);
     capture.after(api);
