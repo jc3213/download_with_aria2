@@ -92,7 +92,7 @@ function getProxyServer(hostname) {
         return aria2Store['proxy_server'];
     }
     else {
-        return '';
+        return null;
     }
 }
 
