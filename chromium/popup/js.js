@@ -1,7 +1,7 @@
 var activeId;
-var sessionLET = document.querySelector('[data-gid="template"]');
-var uriLET = document.querySelector('[data-uri="template"]');
-var fileLET = document.querySelector('[data-file="template"]');
+var taskPlate = document.querySelector('[data-gid="template"]');
+var uriPlate = document.querySelector('[template="uri"]');
+var filePlate = document.querySelector('[template="file"]');
 var activeStat = document.querySelector('[data-stat="active"]');
 var waitingStat = document.querySelector('[data-stat="waiting"]');
 var stoppedStat = document.querySelector('[data-stat="stopped"]');
@@ -271,7 +271,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
 }
 
 function parseSession(gid, status, bittorrent) {
-    var task = sessionLET.cloneNode(true);
+    var task = taskPlate.cloneNode(true);
     var type = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
     self[type + 'Stat'].innerText ++;
     self[type + 'Task'].push(gid);
@@ -357,9 +357,9 @@ function updateTaskDetail(task, status, bittorrent, files) {
     printTaskFiles(files);
 }
 
-function printTableCell(table, type, runOnce) {
-    var cell = self[type + 'LET'].cloneNode(true);
-    cell.removeAttribute('data-' + type);
+function printTableCell(table, template, runOnce) {
+    var cell = template.cloneNode(true);
+    cell.removeAttribute('template');
     runOnce(cell);
     table.appendChild(cell);
     return cell;
@@ -368,7 +368,7 @@ function printTableCell(table, type, runOnce) {
 function printTaskFiles(files) {
     var cells = filesList.childNodes;
     files.forEach((file, index) => {
-        var cell = cells[index] ?? printTableCell(filesList, 'file', cell => applyFileSelect(cell, file));
+        var cell = cells[index] ?? printTableCell(filesList, filePlate, cell => applyFileSelect(cell, file));
         var {uris, length, completedLength} = file;
         cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
     });
@@ -396,7 +396,7 @@ function printTaskUris(uris) {
     var cells = urisList.childNodes;
     var length = uris.length;
     uris.forEach(({uri, status}, index) => {
-        var cell = cells[index] ?? printTableCell(urisList, 'uri', applyUriChange);
+        var cell = cells[index] ?? printTableCell(urisList, uriPlate, applyUriChange);
         cell.innerText = uri;
         cell.className = status === 'used' ? 'active' : 'waiting';
     });
