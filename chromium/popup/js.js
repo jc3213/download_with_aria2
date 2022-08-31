@@ -1,7 +1,7 @@
 var activeId;
-var taskPlate = document.querySelector('[data-gid="template"]');
-var uriPlate = document.querySelector('[template="uri"]');
-var filePlate = document.querySelector('[template="file"]');
+var sessionLET = document.querySelector('[data-gid="template"]');
+var uriLET = document.querySelector('[template="uri"]');
+var fileLET = document.querySelector('[template="file"]');
 var activeStat = document.querySelector('[data-stat="active"]');
 var waitingStat = document.querySelector('[data-stat="waiting"]');
 var stoppedStat = document.querySelector('[data-stat="stopped"]');
@@ -271,7 +271,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
 }
 
 function parseSession(gid, status, bittorrent) {
-    var task = taskPlate.cloneNode(true);
+    var task = sessionLET.cloneNode(true);
     var type = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
     self[type + 'Stat'].innerText ++;
     self[type + 'Task'].push(gid);
@@ -368,7 +368,7 @@ function printTableCell(table, template, runOnce) {
 function printTaskFiles(files) {
     var cells = filesList.childNodes;
     files.forEach((file, index) => {
-        var cell = cells[index] ?? printTableCell(filesList, filePlate, cell => applyFileSelect(cell, file));
+        var cell = cells[index] ?? printTableCell(filesList, fileLET, cell => applyFileSelect(cell, file));
         var {uris, length, completedLength} = file;
         cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
     });
@@ -396,7 +396,7 @@ function printTaskUris(uris) {
     var cells = urisList.childNodes;
     var length = uris.length;
     uris.forEach(({uri, status}, index) => {
-        var cell = cells[index] ?? printTableCell(urisList, uriPlate, applyUriChange);
+        var cell = cells[index] ?? printTableCell(urisList, uriLET, applyUriChange);
         cell.innerText = uri;
         cell.className = status === 'used' ? 'active' : 'waiting';
     });
