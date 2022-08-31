@@ -1,5 +1,5 @@
 document.querySelector('iframe').addEventListener('load', async event => {
-    store = await browser.storage.local.get(null);
+    var store = await browser.storage.local.get(null);
     var {os} = await browser.runtime.getPlatformInfo();
     var iframe = event.target.contentDocument;
     var changes = iframe.defaultView.changes;
