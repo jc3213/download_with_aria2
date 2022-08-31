@@ -183,7 +183,7 @@
         "message": "Referer"
     },
     "task_referer_title": {
-        "message": "Use \"Referer\" header for this download"
+        "message": "Set \"Referer\" header for this download"
     },
     "task_batch": {
         "message": "Download Urls"
@@ -195,7 +195,7 @@
         "message": "Proxy Server"
     },
     "task_proxy_title": {
-        "message": "Use a proxy server for this download"
+        "message": "Use preferred proxy server for this download"
     },
     "task_submit": {
         "message": "Submit"
@@ -216,13 +216,13 @@
         "message": "Limit maximum upload speed for this download"
     },
     "task_urls": {
-        "message": "Used URLs"
+        "message": "Download URLs"
     },
     "task_urls_title": {
         "message": "Manage urls used for this download"
     },
     "task_files": {
-        "message": "BitTorrent Files"
+        "message": "Download Files"
     },
     "task_files_title": {
         "message": "Manage files selected for this download"

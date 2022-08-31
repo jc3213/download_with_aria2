@@ -107,3 +107,15 @@ function getRequestHeaders(cookies) {
     });
     return [result];
 }
+
+function getDownloadFolder() {
+    if (aria2Store['folder_mode'] === '0') {
+        return undefined;
+    }
+    else if (aria2Store['folder_mode'] === '1' && aria2Store['folder_path']) {
+        return aria2Store['folder_path'];
+    }
+    else {
+        return undefined;
+    }
+}

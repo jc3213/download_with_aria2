@@ -189,20 +189,20 @@
                 </div>
                 <span i18n>option_default</span>: <u><i>False</i></u>
             </div>
+            <div title="task_files_title">
+                <div class="title" i18n>task_files</div>
+                <div id="files"></div>
+                <div class="float">
+                    <button id="save_btn" style="display: none;" i18n>option_save</button>
+                </div>
+            </div>
             <div data-http title="task_urls_title">
                 <div class="title" i18n>task_urls</div>
                 <div id="append">
                     <input type="url">
                     <button>➕</button>
                 </div>
-                <div id="http" class="uri"></div>
-            </div>
-            <div data-bt title="task_files_title">
-                <div class="title" i18n>task_files</div>
-                <div id="bt"></div>
-                <div class="float">
-                    <button id="save_btn" style="display: none;" i18n>option_save</button>
-                </div>
+                <div id="uris" class="uri"></div>
             </div>
         </div>
         <div data-gid="template" class="session">
@@ -234,7 +234,7 @@
                 <div id="ratio"></div>
             </div>
         </div>
-        <button data-uri="template" class="uri"></button>
+        <button data-uri="template"></button>
         <div data-file="template" class="file">
             <button id="index"></button>
             <span id="name"></span>

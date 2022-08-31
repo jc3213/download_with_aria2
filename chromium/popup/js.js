@@ -16,8 +16,8 @@ var pausedGroup = document.querySelector('[data-group="paused"]');
 var completeGroup = document.querySelector('[data-group="complete"]');
 var removedGroup = document.querySelector('[data-group="removed"]');
 var errorGroup = document.querySelector('[data-group="error"]');
-var http = document.querySelector('#http');
-var bt = document.querySelector('#bt');
+var urisList = document.querySelector('#uris');
+var filesList = document.querySelector('#files');
 var savebtn = document.querySelector('#save_btn');
 
 document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) => {
@@ -146,7 +146,8 @@ async function downloadMetalink(file, options) {
 }
 
 document.querySelector('#name_btn').addEventListener('click', event => {
-    activeId = http.innerHTML = bt.innerHTML = '';
+    activeId = urisList.innerHTML = filesList.innerHTML = '';
+    savebtn.style.display = 'none';
     document.body.setAttribute('data-popup', 'main');
 });
 
@@ -178,7 +179,7 @@ document.querySelector('#append button').addEventListener('click', async event =
 
 savebtn.addEventListener('click', async event => {
     var files = [];
-    bt.querySelectorAll('#index').forEach(index => {
+    filesList.querySelectorAll('#index').forEach(index => {
         if (index.className === 'active') {
             files.push(index.innerText);
         }
@@ -350,7 +351,7 @@ function updateTaskDetail(task, status, bittorrent, files) {
     document.querySelector('#manager [name="max-download-limit"]').disabled = disabled;
     document.querySelector('#manager [name="max-upload-limit"]').disabled = disabled || !bittorrent;
     document.querySelector('#manager [name="all-proxy"]').disabled = disabled;
-    bittorrent ? printTaskFiles(bt, files) : printTaskUris(http, files[0].uris);
+    printTaskFiles(files);
 }
 
 function printTableCell(table, type, runOnce) {
@@ -359,6 +360,48 @@ function printTableCell(table, type, runOnce) {
     runOnce(cell);
     table.appendChild(cell);
     return cell;
+}
+
+function printTaskFiles(files) {
+    var cells = filesList.childNodes;
+    files.forEach((file, index) => {
+        var cell = cells[index] ?? printTableCell(filesList, 'file', cell => applyFileSelect(cell, file));
+        var {uris, length, completedLength} = file;
+        cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
+    });
+}
+
+function applyFileSelect(cell,{index, path, length, selected, uris}) {
+    var tile = cell.querySelector('#index');
+    tile.innerText = index;
+    tile.className = selected === 'true' ? 'active' : 'error';
+    cell.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
+    cell.querySelector('#name').title = path;
+    cell.querySelector('#size').innerText = getFileSize(length);
+    if (uris.length === 0) {
+        tile.addEventListener('click', event => {
+            tile.className = tile.className === 'active' ? 'error' : 'active';
+            savebtn.style.display = 'inline-block';
+        });
+    }
+    else {
+        printTaskUris(uris);
+    }
+}
+
+function printTaskUris(uris) {
+    var cells = urisList.childNodes;
+    var length = uris.length;
+    uris.forEach(({uri, status}, index) => {
+        var cell = cells[index] ?? printTableCell(urisList, 'uri', applyUriChange);
+        cell.innerText = uri;
+        cell.className = status === 'used' ? 'active' : 'waiting';
+    });
+    cells.forEach((cell, index) => {
+        if (index > length) {
+            cell.remove()
+        }
+    });
 }
 
 function applyUriChange(cell) {
@@ -370,41 +413,5 @@ function applyUriChange(cell) {
         else {
            navigator.clipboard.writeText(uri);
         }
-    });
-}
-
-function printTaskUris(table, uris) {
-    var cells = table.childNodes;
-    var total = uris.length;
-    uris.forEach(({uri, status}, index) => {
-        var cell = cells[index] ?? printTableCell(table, 'uri', applyUriChange);
-        cell.innerText = uri;
-        cell.className = status === 'used' ? 'active' : 'waiting';
-    });
-    cells.forEach((cell, index) => {
-        if (index > total) {
-            cell.remove()
-        }
-    });
-}
-
-function applyFileSelect(cell, index, path, length, selected) {
-    var tile = cell.querySelector('#index');
-    tile.innerText = index;
-    tile.className = selected === 'true' ? 'active' : 'error';
-    cell.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
-    cell.querySelector('#name').title = path;
-    cell.querySelector('#size').innerText = getFileSize(length);
-    tile.addEventListener('click', event => {
-        tile.className = tile.className === 'active' ? 'error' : 'active';
-        savebtn.style.display = 'inline-block';
-    });
-}
-
-function printTaskFiles(table, files) {
-    var cells = table.childNodes;
-    files.forEach(({index, selected, path, length, completedLength}, pos) => {
-        var cell = cells[pos] ?? printTableCell(table, 'file', cell => applyFileSelect(cell, index, path, length, selected));
-        cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
     });
 }

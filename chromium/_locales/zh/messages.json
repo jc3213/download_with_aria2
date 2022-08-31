@@ -183,7 +183,7 @@
         "message": "引用页"
     },
     "task_referer_title": {
-        "message": "为本次下载任务添加\"Referer\"请求头"
+        "message": "为本次下载添加\"Referer\"请求头"
     },
     "task_batch": {
         "message": "下载链接"
@@ -195,7 +195,7 @@
         "message": "代理服务器"
     },
     "task_proxy_title": {
-        "message": "本次下载使用的代理服务器"
+        "message": "为本次下载使用首选的代理服务器"
     },
     "task_submit": {
         "message": "确认"
