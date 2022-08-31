@@ -30,9 +30,9 @@
 - Built-in `Aria2 Web Manager`
     - Filtering tasks with queues `Active`, `Stopped`, and `Removed`
     - `New Task` page with extra options
-        - Support upload `.torrent`, `.json`, `.metalink`, and `.meta4` files [**Chromium Only**]
-        - Support parsing download from `.json`, `.metalink`, `.meta4` file content
-        - JSON syntax `url`, `referer`, `filename`, `proxy`
+        - Upload `.torrent`, `.json`, `.metalink`, and `.meta4` files [**Chromium Only**]
+        - Parse downloads from `.json`, `.metalink`, `.meta4` file content
+        - JSON syntax `url`, `filename`, `referer`, `useragent`, `header`, `proxy`
     - `Task Manager` that can change options for downloads
         - Change selected files for bittorrent downloads
         - Add or remove download uris for http/ftp downloads
