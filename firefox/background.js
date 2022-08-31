@@ -62,8 +62,8 @@ async function downloadCapture({id, url, referrer, filename}) {
     if (getCaptureFilter(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
-            var options = await getFirefoxExclusive(filename);
-            aria2Download(url, hostname, cookieStoreId, {referer, ...options});
+            var options = await getFirefoxOptions(referer, filename);
+            aria2Download(url, hostname, cookieStoreId, options);
         }).catch(error => showNotification(url, 'complete'));
     }
 }
@@ -85,18 +85,25 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
         var hostname = getHostname(originUrl);
         if (getCaptureFilter(hostname, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            aria2Download(url, hostname, cookieStoreId, {referer: originUrl, out});
+            aria2Download(url, hostname, cookieStoreId, {referer: originUrl, out, dir: getDownloadFolder()});
             return {cancel: true};
         }
     }
 }
 
-async function getFirefoxExclusive(uri) {
+async function getFirefoxOptions(referer, filename) {
     var {os} = await browser.runtime.getPlatformInfo();
-    var index = os === 'win' ? uri.lastIndexOf('\\') : uri.lastIndexOf('/');
-    var out = uri.slice(index + 1);
-    var dir = aria2Store['folder_mode'] === '1' ? uri.slice(0, index + 1) : aria2Store['folder_mode'] === '2' ? aria2Store['folder_path'] : null;
-    return dir ? {dir, out} : {out};
+    var index = os === 'win' ? filename.lastIndexOf('\\') : filename.lastIndexOf('/');
+    var out = filename.slice(index + 1);
+    if (aria2Store['folder_mode'] === '2') {
+        return {referer, out, dir: filename.slice(0, index + 1)};
+    }
+    else if (aria2Store['folder_mode'] === '1' && aria2Store['folder_path']) {
+        return {referer, out, dir: aria2Store['folder_path']};
+    }
+    else {
+        return {referer, out};
+    }
 }
 
 function getFileName(disposition) {
