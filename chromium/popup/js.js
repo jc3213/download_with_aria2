@@ -1,7 +1,3 @@
-var activeId;
-var sessionLET = document.querySelector('[data-gid="template"]');
-var uriLET = document.querySelector('[template="uri"]');
-var fileLET = document.querySelector('[template="file"]');
 var activeStat = document.querySelector('[data-stat="active"]');
 var waitingStat = document.querySelector('[data-stat="waiting"]');
 var stoppedStat = document.querySelector('[data-stat="stopped"]');
@@ -16,8 +12,12 @@ var pausedGroup = document.querySelector('[data-group="paused"]');
 var completeGroup = document.querySelector('[data-group="complete"]');
 var removedGroup = document.querySelector('[data-group="removed"]');
 var errorGroup = document.querySelector('[data-group="error"]');
-var urisList = document.querySelector('#uris');
-var filesList = document.querySelector('#files');
+var activeId;
+var sessionLET = document.querySelector('[data-gid="template"]');
+var fileList = document.querySelector('#files');
+var fileLET = document.querySelector('[template="file"]');
+var uriList = document.querySelector('#uris');
+var uriLET = document.querySelector('[template="uri"]');
 var savebtn = document.querySelector('#save_btn');
 
 document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) => {
@@ -149,7 +149,7 @@ async function downloadMetalink(file, options) {
 }
 
 document.querySelector('#name_btn').addEventListener('click', event => {
-    activeId = filesList.innerHTML = urisList.innerHTML = '';
+    activeId = fileList.innerHTML = uriList.innerHTML = '';
     savebtn.style.display = 'none';
     document.body.setAttribute('data-popup', 'main');
 });
@@ -182,7 +182,7 @@ document.querySelector('#append button').addEventListener('click', async event =
 
 savebtn.addEventListener('click', async event => {
     var files = [];
-    filesList.querySelectorAll('#index').forEach(index => {
+    fileList.querySelectorAll('#index').forEach(index => {
         if (index.className === 'active') {
             files.push(index.innerText);
         }
@@ -366,9 +366,9 @@ function printTableCell(table, template, runOnce) {
 }
 
 function printTaskFiles(files) {
-    var cells = filesList.childNodes;
+    var cells = fileList.childNodes;
     files.forEach((file, index) => {
-        var cell = cells[index] ?? printTableCell(filesList, fileLET, cell => applyFileSelect(cell, file));
+        var cell = cells[index] ?? printTableCell(fileList, fileLET, cell => applyFileSelect(cell, file));
         var {uris, length, completedLength} = file;
         cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
     });
@@ -393,10 +393,10 @@ function applyFileSelect(cell,{index, path, length, selected, uris}) {
 }
 
 function printTaskUris(uris) {
-    var cells = urisList.childNodes;
+    var cells = uriList.childNodes;
     var length = uris.length;
     uris.forEach(({uri, status}, index) => {
-        var cell = cells[index] ?? printTableCell(urisList, uriLET, applyUriChange);
+        var cell = cells[index] ?? printTableCell(uriList, uriLET, applyUriChange);
         cell.innerText = uri;
         cell.className = status === 'used' ? 'active' : 'waiting';
     });
