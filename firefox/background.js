@@ -75,7 +75,7 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
     var result = {};
     responseHeaders.forEach(({name, value}) => {
         name = name.toLowerCase();
-        if (['content-disposition', 'content-type', 'content-length'].includes(name)) {
+        if ('content-disposition,content-type,content-length'.includes(name)) {
             result[name.slice(name.indexOf('-') + 1)] = value;
         }
     });
@@ -134,7 +134,7 @@ function decodeISO8859(text) {
 function decodeRFC5987(text) {
     var head = text.slice(0, text.indexOf('\''));
     var body = text.slice(text.lastIndexOf('\'') + 1);
-    if (['utf-8', 'utf8'].includes(head.toLowerCase())) {
+    if ('utf-8,utf8'.includes(head.toLowerCase())) {
         return decodeFileName(body);
     }
     var decode = [];
