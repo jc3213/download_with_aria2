@@ -32,7 +32,7 @@ async function aria2Download(url, hostname, storeId, options) {
     options['user-agent'] = aria2Store['user_agent'];
     options['header'] = getRequestHeaders(cookies);
     options['all-proxy'] = getProxyServer(hostname);
-    aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url, 'start'));
+    aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
 }
 
 function aria2Capture() {
@@ -64,7 +64,7 @@ async function downloadCapture({id, url, referrer, filename}) {
             browser.downloads.erase({id});
             var options = await getFirefoxOptions(referer, filename);
             aria2Download(url, hostname, cookieStoreId, options);
-        }).catch(error => showNotification(url, 'complete'));
+        }).catch(error => aria2WhenComplete(url));
     }
 }
 
