@@ -33,7 +33,7 @@ function aria2Download(url, hostname, options) {
         options['header'] = getRequestHeaders(cookies);
         options['all-proxy'] = getProxyServer(hostname);
         options['dir'] = getDownloadFolder();
-        aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url, 'start'));
+        aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
     });
 }
 

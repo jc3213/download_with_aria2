@@ -19,20 +19,14 @@ function getDownloadName(bittorrent, [{path, uris}]) {
     }
 }
 
-function showNotification(message, when) {
-    if (when === 'start' && aria2Store['notify_start'] === '1') {
-        var title = aria2Store['jsonrpc_uri'];
+function aria2WhenStart(message) {
+    if (aria2Store['notify_start'] === '1') {
+        chrome.notifications.create({type: 'basic', iconUrl: '/icons/icon48.png', message, title: aria2Store['jsonrpc_uri']});
     }
-    else if (when === 'complete' && aria2Store['notify_complete'] === '1') {
-        title = chrome.i18n.getMessage('download_complete');
+}
+
+function aria2WhenComplete(message) {
+    if (aria2Store['notify_complete'] === '1') {
+        chrome.notifications.create({type: 'basic', iconUrl: '/icons/icon48.png', message, title: chrome.i18n.getMessage('download_complete')});
     }
-    else {
-        return;
-    }
-    chrome.notifications.create({
-        type: 'basic',
-        title,
-        iconUrl: '/icons/icon48.png',
-        message
-    });
 }

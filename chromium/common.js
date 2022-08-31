@@ -18,7 +18,7 @@ function aria2StartUp() {
                     if (method === 'aria2.onDownloadComplete') {
                         var {bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
                         var name = getDownloadName(bittorrent, files);
-                        showNotification(name, 'complete');
+                        aria2WhenComplete(name);
                     }
                 }
             }
