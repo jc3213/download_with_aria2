@@ -9,12 +9,14 @@ document.querySelector('iframe').addEventListener('load', async event => {
             safe: 'Safe Mode',
             danger: 'Dangerous!',
             api: 'Capture API',
+            api_title: 'Set API used for capture browser downloads',
             browser: 'Browser'
         },
         'zh': {
             safe: '安全模式',
             danger: '危险！',
             api: '选择API',
+            api_title: '设置用于抓取浏览器下载的API',
             browser: '浏览器'
         }
     };
@@ -33,7 +35,7 @@ document.querySelector('iframe').addEventListener('load', async event => {
     });
 
     var api = document.createElement('div');
-    api.title = '';
+    api.title = i18n['api_title'];
     api.style.display = 'none';
     api.innerHTML = '<span class="title">' + i18n['api'] + '</span><select name="capture_api"><option value="0">downloads API</option><option value="1">webRequest API</option></select>';
     api.addEventListener('change', event => {
