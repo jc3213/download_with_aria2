@@ -146,7 +146,7 @@ async function downloadMetalink(file, options) {
 }
 
 document.querySelector('#name_btn').addEventListener('click', event => {
-    activeId = urisList.innerHTML = filesList.innerHTML = '';
+    activeId = filesList.innerHTML = urisList.innerHTML = '';
     savebtn.style.display = 'none';
     document.body.setAttribute('data-popup', 'main');
 });
