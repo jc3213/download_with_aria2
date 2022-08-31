@@ -1,4 +1,4 @@
-var mapping = ['proxy_include', 'capture_resolve', 'capture_reject', 'capture_include', 'capture_exclude'];
+var mapping = 'proxy_include,capture_resolve,capture_reject,capture_include,capture_exclude';
 var offset = {'capture_size': 1048576};
 var savebtn = document.querySelector('#save_btn');
 var changes = [];
