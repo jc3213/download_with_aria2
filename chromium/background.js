@@ -32,6 +32,7 @@ function aria2Download(url, hostname, options) {
         options['user-agent'] = aria2Store['user_agent'];
         options['header'] = getRequestHeaders(cookies);
         options['all-proxy'] = getProxyServer(hostname);
+        options['dir'] = getDownloadFolder();
         aria2RPC.message('aria2.addUri', [[url], options]).then(result => showNotification(url, 'start'));
     });
 }
