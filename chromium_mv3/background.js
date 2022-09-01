@@ -56,15 +56,3 @@ async function aria2Download(url, hostname, options) {
     options['dir'] = getDownloadFolder();
     aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
 }
-
-async function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
-    if (finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
-        return;
-    }
-    var referer = referrer && referrer !== 'about:blank' ? referrer : await chrome.tabs.query({active: true, currentWindow: true}).then(([{url}]) => url);
-    var hostname = getHostname(referer);
-    if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
-        chrome.downloads.erase({id});
-        aria2Download(finalUrl, hostname, {referer, out: filename});
-    }
-}
