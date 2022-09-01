@@ -123,7 +123,7 @@ async function downloadJSON(file, options) {
 async function parseJSON(json, _options_) {
     var {url, options} = json;
     if (options) {
-        options = {...options, ..._options_};
+        options = {..._options_, ...options};
     }
     else {
         options = _options_;
