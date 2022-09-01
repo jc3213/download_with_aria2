@@ -26,17 +26,19 @@ var savebtn = document.querySelector('#save_btn');
 
 document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) => {
     tab.addEventListener('click', event => {
-        var value = (tab.parentNode.getAttribute('data-main') | 0) === index + 1 ? 0 : index + 1;
+        var value = tab.parentNode.getAttribute('data-main') == index ? 3 : index;
         tab.parentNode.setAttribute('data-main', value);
         document.querySelector('#session').setAttribute('data-main', value);
     });
 });
 
-document.querySelector('#task_btn').addEventListener('click', async event => {
+document.querySelector('#download_btn').addEventListener('click', async event => {
     var options = await aria2RPC.message('aria2.getGlobalOption');
     printGlobalOptions(options, '#download input[name]');
-    useragent.value = aria2Store['user_agent'];
     document.body.setAttribute('data-popup', 'task');
+    useragent.value = aria2Store['user_agent'];
+    batch.value = '0';
+    referer.value = entries.value = '';
 });
 
 document.querySelector('#purdge_btn').addEventListener('click', async event => {
@@ -75,8 +77,6 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
         var metalink = new Blob([entries.value], {type: 'application/metalink;charset=utf-8'});
         downloadMetalink(metalink, options);
     }
-    batch.value = '0';
-    referer.value = entries.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
 
