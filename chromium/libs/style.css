@@ -90,10 +90,10 @@ h1 {
 }
 
 .float {
-    position: fixed;
-    top: 8px;
-    right: 26px;
-    z-index: 9;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    z-index: 999;
     text-align: right;
     background-color: #fff;
 }

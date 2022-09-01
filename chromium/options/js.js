@@ -3,13 +3,33 @@ var offset = {'capture_size': 1048576};
 var savebtn = document.querySelector('#save_btn');
 var changes = [];
 var glochanges = [];
+var importbtn = document.querySelector('#import_btn');
+var exportbtn = document.querySelector('#export_btn');
+var popupbtn = document.querySelector('#popup_btn');
 
 if (location.search === '?popup') {
-    document.querySelector('#manager').style.display = 'none'
+    importbtn.style.display = exportbtn.style.display = 'none'
 }
 else {
-    document.querySelector('#popup_btn').style.display = 'none';
+    popupbtn.style.display = 'none';
 }
+
+savebtn.addEventListener('click', event => {
+    var prefs = document.body.getAttribute('data-prefs');
+    if (prefs === 'option') {
+        applyChanges(changes, aria2Store);
+        chrome.storage.local.set(aria2Store);
+    }
+    else if (prefs === 'global') {
+        applyChanges(glochanges, aria2Global);
+        aria2RPC.message('aria2.changeGlobalOption', [aria2Global]);
+    }
+    savebtn.disabled = true;
+});
+
+popupbtn.addEventListener('click', event => {
+    open('/popup/index.html', '_self');
+});
 
 document.querySelector('#back_btn').addEventListener('click', event => {
     printOptions(aria2Store);
@@ -28,29 +48,7 @@ document.querySelector('#aria2_btn').addEventListener('click', event => {
     });
 });
 
-savebtn.addEventListener('click', event => {
-    var prefs = document.body.getAttribute('data-prefs');
-    if (prefs === 'option') {
-        applyChanges(changes, aria2Store);
-        chrome.storage.local.set(aria2Store);
-    }
-    else if (prefs === 'global') {
-        applyChanges(glochanges, aria2Global);
-        aria2RPC.message('aria2.changeGlobalOption', [aria2Global]);
-    }
-    savebtn.disabled = true;
-});
-
-document.querySelector('#popup_btn').addEventListener('click', event => {
-    open('/popup/index.html', '_self');
-});
-
-document.querySelector('#show_btn').addEventListener('click', event => {
-    var input = event.target.parentNode.querySelector('input');
-    input.type = input.type === 'password' ? 'text' : 'password';
-});
-
-document.querySelector('#export_btn').addEventListener('click', event => {
+exportbtn.addEventListener('click', event => {
     var blob = new Blob([JSON.stringify(aria2Store)], {type: 'application/json; charset=utf-8'});
     var saver = document.createElement('a');
     saver.href = URL.createObjectURL(blob);
@@ -58,12 +56,17 @@ document.querySelector('#export_btn').addEventListener('click', event => {
     saver.click();
 });
 
-document.querySelector('#import_btn').addEventListener('change', async event => {
+importbtn.addEventListener('change', async event => {
     var json = await promiseFileReader(event.target.files[0], 'json');
     printOptions(json);
     chrome.storage.local.set(json);
     aria2Store = json;
     event.target.value = '';
+});
+
+document.querySelector('#show_btn').addEventListener('click', event => {
+    var input = event.target.parentNode.querySelector('input');
+    input.type = input.type === 'password' ? 'text' : 'password';
 });
 
 document.querySelector('#option').addEventListener('change', event => {
