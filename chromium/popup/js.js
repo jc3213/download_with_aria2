@@ -12,6 +12,10 @@ var pausedGroup = document.querySelector('[data-group="paused"]');
 var completeGroup = document.querySelector('[data-group="complete"]');
 var removedGroup = document.querySelector('[data-group="removed"]');
 var errorGroup = document.querySelector('[data-group="error"]');
+var referer = document.querySelector('#referer');
+var useragent = document.querySelector('#useragent');
+var batch = document.querySelector('#batch');
+var entries = document.querySelector('#entries');
 var activeId;
 var sessionLET = document.querySelector('[data-gid="template"]');
 var fileList = document.querySelector('#files');
@@ -31,6 +35,7 @@ document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) =
 document.querySelector('#task_btn').addEventListener('click', async event => {
     var options = await aria2RPC.message('aria2.getGlobalOption');
     printGlobalOptions(options, '#download input[name]');
+    useragent.value = aria2Store['user_agent'];
     document.body.setAttribute('data-popup', 'task');
 });
 
@@ -55,8 +60,6 @@ document.querySelector('#proxy_new').addEventListener('click', event => {
 });
 
 document.querySelector('#submit_btn').addEventListener('click', event => {
-    var batch = document.querySelector('#batch');
-    var entries = document.querySelector('#entries');
     var options = downloadOptions();
     if (batch.value === '0') {
         var urls = entries.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
@@ -73,7 +76,7 @@ document.querySelector('#submit_btn').addEventListener('click', event => {
         downloadMetalink(metalink, options);
     }
     batch.value = '0';
-    entries.value = '';
+    referer.value = entries.value = '';
     document.body.setAttribute('data-popup', 'main');
 });
 
@@ -117,21 +120,13 @@ async function downloadJSON(file, options) {
     }
 }
 
-async function parseJSON({url, filename, referer, useragent, header, proxy}, options) {
-    if (filename) {
-        options['out'] = filename;
+async function parseJSON(json, _options_) {
+    var {url, options} = json;
+    if (options) {
+        options = {...options, ..._options_};
     }
-    if (referer) {
-        options['referer'] = referer;
-    }
-    if (useragent) {
-        options['user-agent'] = useragent;
-    }
-    if (header) {
-        options['header'] = header;
-    }
-    if (proxy) {
-        options['all-proxy'] = proxy;
+    else {
+        options = _options_;
     }
     await downloadUrl(url, options);
 }
