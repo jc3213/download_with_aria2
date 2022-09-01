@@ -14,14 +14,16 @@ else {
 document.querySelector('#back_btn').addEventListener('click', event => {
     printOptions(aria2Store);
     savebtn.disabled = true;
+    changes = [];
     document.body.setAttribute('data-prefs', 'option');
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
     aria2RPC.message('aria2.getGlobalOption').then(options => {
+        printGlobalOptions(options, '#global [name]');
         aria2Global = options;
         savebtn.disabled = true;
-        printGlobalOptions(options, '#global [name]');
+        glochanges = [];
         document.body.setAttribute('data-prefs', 'global');
     });
 });
