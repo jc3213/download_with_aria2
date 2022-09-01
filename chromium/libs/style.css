@@ -93,20 +93,11 @@ h1 {
     position: absolute;
     top: 0px;
     right: 0px;
-    z-index: 999;
-    text-align: right;
-    background-color: #fff;
 }
 
 .title {
     font-weight: bold;
     word-break: break-word;
-}
-
-.sidemenu {
-    position: absolute;
-    top: 0px;
-    right: 0px;
 }
 
 [data-prefs="option"] [data-global], [data-prefs="global"] [data-option],
