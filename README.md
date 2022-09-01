@@ -8,7 +8,8 @@
     - Active: Light Blue `Number`
     - Error: Red `E`
 - Support notifications
-    - `When Downloads Start`, `When Downlods Complete`
+    - Event `When Downloads Start`
+    - Event `When Downlods Complete` [**Not supported in Manifest V3**]
     - `Do Nothing`: Don't show notifications
     - `Notify Me`: Show notifications
 - Support proxy server
