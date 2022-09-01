@@ -1,9 +1,8 @@
-chrome.runtime.onInstalled.addListener(async ({reason}) => {
-    if (reason === 'install') {
-        var text = await fetch('/options.json');
-        var json = await text.json();
-        chrome.storage.local.set(json);
-    }
+async function getDefaultOptions() {
+    var text = await fetch('/options.json');
+    var json = await text.json();
+    chrome.storage.local.set(json);
+    return json;
 });
 
 function aria2StartUp() {
