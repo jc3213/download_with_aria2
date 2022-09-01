@@ -1,8 +1,8 @@
 var mapping = 'proxy_include,capture_resolve,capture_reject,capture_include,capture_exclude';
 var offset = {'capture_size': 1048576};
-var savebtn = document.querySelector('#save_btn');
 var changes = [];
-var glochanges = [];
+var global = true;
+var savebtn = document.querySelector('#save_btn');
 var importbtn = document.querySelector('#import_btn');
 var exportbtn = document.querySelector('#export_btn');
 var popupbtn = document.querySelector('#popup_btn');
@@ -15,16 +15,14 @@ else {
 }
 
 savebtn.addEventListener('click', event => {
-    var prefs = document.body.getAttribute('data-prefs');
-    if (prefs === 'option') {
-        applyChanges(changes, aria2Store);
+    if (global) {
+        applyChanges(aria2Store);
         chrome.storage.local.set(aria2Store);
     }
-    else if (prefs === 'global') {
-        applyChanges(glochanges, aria2Global);
+    else {
+        applyChanges(aria2Global);
         aria2RPC.message('aria2.changeGlobalOption', [aria2Global]);
     }
-    savebtn.disabled = true;
 });
 
 popupbtn.addEventListener('click', event => {
@@ -33,8 +31,8 @@ popupbtn.addEventListener('click', event => {
 
 document.querySelector('#back_btn').addEventListener('click', event => {
     printOptions(aria2Store);
-    savebtn.disabled = true;
-    changes = [];
+    clearChanges();
+    global = true;
     document.body.setAttribute('data-prefs', 'option');
 });
 
@@ -42,8 +40,8 @@ document.querySelector('#aria2_btn').addEventListener('click', event => {
     aria2RPC.message('aria2.getGlobalOption').then(options => {
         printGlobalOptions(options, '#global [name]');
         aria2Global = options;
-        savebtn.disabled = true;
-        glochanges = [];
+        clearChanges();
+        global = false;
         document.body.setAttribute('data-prefs', 'global');
     });
 });
@@ -75,14 +73,14 @@ document.querySelector('#option').addEventListener('change', event => {
     var multi = offset[name];
     var old_value = aria2Store[name];
     var new_value = array ? value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? value * multi : value;
-    printChanges(name, old_value, new_value, changes);
+    printChanges(name, old_value, new_value);
     savebtn.disabled = false;
 });
 
 document.querySelector('#global').addEventListener('change', event => {
     var {name, value} = event.target;
     var old_value = aria2Global[name];
-    printChanges(name, old_value, value, glochanges);
+    printChanges(name, old_value, value);
     savebtn.disabled = false;
 });
 
@@ -104,7 +102,12 @@ function aria2RPCClient() {
     });
 }
 
-function printChanges(name, old_value, new_value, changes) {
+function clearChanges() {
+    changes = [];
+    savebtn.disabled = true;
+}
+
+function printChanges(name, old_value, new_value) {
     var change = changes.find(change => change.name === name);
     if (change) {
         change['new_value'] = new_value;
@@ -114,12 +117,12 @@ function printChanges(name, old_value, new_value, changes) {
     }
 }
 
-function applyChanges(changes, options) {
-    if (changes.length !== 0) {
-        var {name, new_value} = changes.pop();
+function applyChanges(options) {
+    changes.forEach(change => {
+        var {name, new_value} = change;
         options[name] = new_value;
-        applyChanges(changes, options);
-    }
+    });
+    clearChanges();
 }
 
 function printOptions(options) {
