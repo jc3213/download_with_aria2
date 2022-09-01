@@ -3,7 +3,7 @@ async function getDefaultOptions() {
     var json = await text.json();
     chrome.storage.local.set(json);
     return json;
-});
+}
 
 function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
