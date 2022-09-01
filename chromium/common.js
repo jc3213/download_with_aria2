@@ -1,3 +1,11 @@
+chrome.runtime.onInstalled.addListener(async ({reason}) => {
+    if (reason === 'install') {
+        var text = await fetch('/options.json');
+        var json = await text.json();
+        chrome.storage.local.set(json);
+    }
+});
+
 function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     aria2RPC.message('aria2.tellActive').then(result => {
@@ -28,25 +36,6 @@ function aria2StartUp() {
         chrome.browserAction.setBadgeText({text: 'E'});
         chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
     });
-    // Hotfix
-    function hotfixNotify(start, complete) {
-        aria2Store['notify_start'] = start;
-        aria2Store['notify_complete'] = complete;
-        delete aria2Store['show_notification'];
-        chrome.storage.local.set(aria2Store);
-    }
-    if (aria2Store['show_notification'] === '0') {
-        hotfixNotify('0', '0');
-    }
-    else if (aria2Store['show_notification'] === '1') {
-        hotfixNotify('1', '0');
-    }
-    else if (aria2Store['show_notification'] === '2') {
-        hotfixNotify('0', '1');
-    }
-    else if (aria2Store['show_notification'] === '3') {
-        hotfixNotify('1', '1');
-    }
 }
 
 function aria2Update() {

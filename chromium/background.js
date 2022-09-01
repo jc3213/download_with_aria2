@@ -9,12 +9,9 @@ chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
 });
 
 chrome.storage.local.get(null, async json => {
-    aria2Store = json['jsonrpc_uri'] ? json : await fetch('/options.json').then(response => response.json());
+    aria2Store = json;
     aria2StartUp();
     aria2Capture();
-    if (!json['jsonrpc_uri']) {
-        chrome.storage.local.set(aria2Store);
-    }
 });
 
 chrome.storage.onChanged.addListener(changes => {
