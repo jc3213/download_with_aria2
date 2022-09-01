@@ -33,7 +33,7 @@
     - `New Task` page with extra options
         - Upload `.torrent`, `.json`, `.metalink`, and `.meta4` files [**Chromium Only**]
         - Parse downloads from `.json`, `.metalink`, `.meta4` file content
-        - JSON syntax `{url, options}` [**[about options](https://aria2.github.io/manual/en/html/aria2c.html#options)**]
+        - JSON syntax {`url`: **string**, `options`: **object**} [**[about options](https://aria2.github.io/manual/en/html/aria2c.html#options)**]
     - `Task Manager` that can change options for downloads
         - Change selected files for bittorrent downloads
         - Add or remove download uris for http/ftp downloads
