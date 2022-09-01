@@ -1,0 +1,19 @@
+{
+    "jsonrpc_uri": "http://localhost:6800/jsonrpc",
+    "secret_token": "",
+    "refresh_interval": 5000,
+    "folder_mode": "0",
+    "folder_path": "",
+    "notify_start": "1",
+    "notify_complete": "0",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.105 Safari/537.36",
+    "proxy_server": "",
+    "proxy_mode": "0",
+    "proxy_include": [],
+    "capture_mode": "0",
+    "capture_size": 0,
+    "capture_resolve": [],
+    "capture_include": [],
+    "capture_reject": [],
+    "capture_exclude": []
+}

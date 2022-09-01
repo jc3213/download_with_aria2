@@ -5,13 +5,16 @@ IF NOT EXIST "%~DP07za.dll" GOTO :Exit
 ECHO Auto build script for extension ^<Download with Aria2^>
 ECHO 1. Chromium
 ECHO 2. Firefox
+ECHO 3. Chromium Manifest V3
 SET /P Option=Build for: 
 IF %Option% EQU 1 SET Code=Chromium
 IF %Option% EQU 2 SET Code=Firefox
+IF %Option% EQU 3 SET Code=Chromium_MV3
 IF NOT DEFINED Code CLS && GOTO :Code
 FOR /F "USEBACKQ SKIP=3 TOKENS=1,2 DELIMS=,: " %%I IN ("%~DP0%Code%\manifest.json") DO (IF %%~I EQU version SET Version=%%~J)
 "%~DP07za.exe" a "%~DP0%Code%-%Version%.zip" "%~DP0chromium\*"
 IF %Option% EQU 2 "%~DP07za.exe" u "%~DP0%Code%-%Version%.zip" "%~DP0firefox\*"
+IF %Option% EQU 3 "%~DP07za.exe" u "%~DP0%Code%-%Version%.zip" "%~DP0chromium_mv3\*"
 ECHO.
 ECHO.
 ECHO %Code% %Version% build completed, script will be terminated in 5 seconds...
