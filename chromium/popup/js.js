@@ -51,7 +51,7 @@ document.querySelector('#options_btn').addEventListener('click', event => {
 
 document.querySelector('#referer_btn').addEventListener('click', event => {
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-        document.querySelector('#referer').value = tabs[0].url;
+        referer.value = tabs[0].url;
     });
 });
 
@@ -99,7 +99,7 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
 });
 
 function downloadOptions() {
-    var options = {'referer': document.querySelector('#referer').value, 'user-agent': aria2Store['user_agent']};
+    var options = {'referer': referer.value, 'user-agent': useragent.value};
     document.querySelectorAll('#download input[name]').forEach(field => options[field.name] = field.value);
     return options;
 }
