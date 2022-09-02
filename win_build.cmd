@@ -34,6 +34,6 @@ EXIT /B
 :Exit
 ECHO.
 ECHO.
-ECHO %Code% %Version% build completed, script will be terminated in 5 seconds...
+ECHO %Zip% build completed, script will be terminated in 5 seconds...
 TIMEOUT /T 5
 EXIT
