@@ -1,7 +1,7 @@
 @ECHO OFF
 PUSHD %~DP0
-IF NOT EXIST "%~DP07za.exe" GOTO :Exit
-IF NOT EXIST "%~DP07za.dll" GOTO :Exit
+IF NOT EXIST 7za.exe GOTO :Exit
+IF NOT EXIST 7za.dll GOTO :Exit
 :Code
 ECHO Auto build script for extension ^<Download with Aria2^>
 ECHO 1. Chromium
@@ -34,6 +34,6 @@ EXIT /B
 :Exit
 ECHO.
 ECHO.
-ECHO %Zip% build completed, script will be terminated in 5 seconds...
+ECHO ^<%Zip%^> build completed, script will be terminated in 5 seconds...
 TIMEOUT /T 5
 EXIT
