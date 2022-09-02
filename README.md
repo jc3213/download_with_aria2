@@ -22,7 +22,7 @@
         - `webRequest API`
     - `File Size` [**MB**]
     - `File Extensions`
-        - **Firefox** only capture MIME type `application/*` via webRequest API
+        - **Firefox** only capture MIME type `application/*` via `webRequest API`
     - `Domain names` [**Match pattern**]
 - Match pattern
     - **Referer**: `www.university.org.eu`
