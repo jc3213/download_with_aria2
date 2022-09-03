@@ -20,6 +20,15 @@
     "time_millisecond": {
         "message": "ms"
     },
+    "time_minute_full": {
+        "message": "Minute(s)"
+    },
+    "time_second_full": {
+        "message": "Second(s)"
+    },
+    "time_millisecond_full": {
+        "message": "Millisecond(s)"
+    },
     "option_save": {
         "message": "Save"
     },

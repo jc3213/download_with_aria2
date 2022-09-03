@@ -20,6 +20,15 @@
     "time_millisecond": {
         "message": "毫秒"
     },
+    "time_minute_full": {
+        "message": "分"
+    },
+    "time_second_full": {
+        "message": "秒"
+    },
+    "time_millisecond_full": {
+        "message": "毫秒"
+    },
     "option_save": {
         "message": "保存"
     },

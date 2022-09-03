@@ -31,13 +31,12 @@ input, textarea {
     resize: none;
 }
 
-input + data {
-    position: absolute;
+span.float {
     top: 3px;
     right: 8px;
 }
 
-input[type="number"] + data {
+input[type="number"] + span.float {
     right: 24px;
 }
 
@@ -73,8 +72,7 @@ button:not(:disabled):active {
     border-style: inset;
 }
 
-input + button {
-    position: absolute;
+button.float {
     right: 0px;
     padding: 2.5px;
 }

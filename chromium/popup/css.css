@@ -139,7 +139,7 @@
     width: calc(100% - 5px);
 }
 
-#manager .float {
+#manager div.float {
     top: -10px;
 }
 
