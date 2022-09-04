@@ -1,3 +1,5 @@
+var filesize = 'min-split-size,disk-cache,max-download-limit,max-overall-download-limit,max-upload-limit,max-overall-upload-limit';
+
 document.querySelectorAll('[i18n]').forEach(item => {
     item.innerText = chrome.i18n.getMessage(item.innerText);
 });
@@ -14,32 +16,35 @@ chrome.storage.local.get(null, json => {
 
 function getFileSize(bytes) {
     if (isNaN(bytes)) {
-        return '??';
+        return '?? ';
     }
     else if (bytes < 1024) {
-        return bytes + ' B';
+        return bytes + ' ';
     }
     else if (bytes < 1048576) {
-        return (bytes / 10.24 | 0) / 100 + ' KB';
+        return (bytes / 10.24 | 0) / 100 + ' K';
     }
     else if (bytes < 1073741824) {
-        return (bytes / 10485.76 | 0) / 100 + ' MB';
+        return (bytes / 10485.76 | 0) / 100 + ' M';
     }
     else if (bytes < 1099511627776) {
-        return (bytes / 10737418.24 | 0) / 100 + ' GB';
+        return (bytes / 10737418.24 | 0) / 100 + ' G';
     }
     else {
-        return (bytes / 10995116277.76 | 0) / 100 + ' TB';
+        return (bytes / 10995116277.76 | 0) / 100 + ' T';
     }
 }
 
 function printGlobalOptions(options, entries) {
     document.querySelectorAll(entries).forEach(entry => {
-        entry.value = options[entry.name] ?? '';
-        if (entry.hasAttribute('data-size')) {
-            var size = getFileSize(entry.value);
-            entry.value = size.slice(0, size.indexOf(' ')) + size.slice(size.indexOf(' ') + 1, -1);
+        var {name} = entry;
+        var value = options[name] ?? '';
+        if (filesize.includes(name)) {
+            var size = getFileSize(value);
+            var index = size.indexOf(' ');
+            value = size.slice(0, index) + size.slice(index + 1);
         }
+        entry.value = value;
     });
 }
 
