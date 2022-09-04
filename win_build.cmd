@@ -25,7 +25,6 @@ GOTO :Exit
 SET Code=chromium_mv3
 CALL :Process
 7za.exe u %Zip% "%CD%\chromium_mv3\*"
-7za.exe d %Zip% indicator.js
 GOTO :Exit
 :Process
 FOR /F "USEBACKQ SKIP=3 TOKENS=1,2 DELIMS=,: " %%I IN (%Code%\manifest.json) DO (IF %%~I EQU version SET Zip=%Code%-%%~J.zip)
