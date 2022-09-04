@@ -24,8 +24,7 @@ chrome.storage.onChanged.addListener(changes => {
         aria2Store[key] = newValue;
     });
     if (changes['jsonrpc_uri'] || changes['secret_token']) {
-        aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-        aria2Status();
+        aria2Update();
     }
 });
 
@@ -44,6 +43,10 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
 async function aria2StartUp() {
     var json = await chrome.storage.local.get(null);
     aria2Store = json['jsonrpc_uri'] ? json : await getDefaultOptions();
+    aria2Update();
+}
+
+function aria2Update() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     aria2Status();
 }
