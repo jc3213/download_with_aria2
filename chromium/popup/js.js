@@ -210,7 +210,7 @@ function aria2RPCClient() {
         };
     }).catch(error => {
         activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = '0';
-        downloadStat.innerText = uploadStat.innerText = '0 B/s';
+        downloadStat.innerText = uploadStat.innerText = '0 ';
         activeGroup.innerHTML = waitingGroup.innerHTML = pausedGroup.innerHTML = completeGroup.innerHTML = removedGroup.innerHTML = errorGroup.innerHTML = '';
     });
 }
@@ -224,8 +224,8 @@ async function updateSession() {
         download += result.downloadSpeed | 0;
         upload += result.uploadSpeed | 0;
     });
-    downloadStat.innerText = getFileSize(download) + 'B/s';
-    uploadStat.innerText = getFileSize(upload) + 'B/s';
+    downloadStat.innerText = getFileSize(download);
+    uploadStat.innerText = getFileSize(upload);
 }
 
 async function addSession(gid) {
@@ -254,8 +254,8 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     task.querySelector('#remote').innerText = getFileSize(totalLength);
     task.querySelector('#infinite').style.display = totalLength === completedLength || downloadSpeed === '0' ? 'inline-block' : printEstimatedTime(task, (totalLength - completedLength) / downloadSpeed) ?? 'none';
     task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
-    task.querySelector('#download').innerText = getFileSize(downloadSpeed) + 'B/s';
-    task.querySelector('#upload').innerText = getFileSize(uploadSpeed) + 'B/s';
+    task.querySelector('#download').innerText = getFileSize(downloadSpeed);
+    task.querySelector('#upload').innerText = getFileSize(uploadSpeed);
     task.querySelector('#ratio').innerText = task.querySelector('#ratio').style.width = ((completedLength / totalLength * 10000 | 0) / 100) + '%';
     task.querySelector('#ratio').className = status;
     task.querySelector('#retry_btn').style.display = !bittorrent && 'error,removed'.includes(status) ? 'inline-block' : 'none';
