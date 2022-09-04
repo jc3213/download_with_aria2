@@ -3,10 +3,14 @@
 - This extension is completely rewritten from [chrome-aria2-integration](https://github.com/robbielj/chrome-aria2-integration)
 
 # Usage
-- Indicate running status over toolbar icon [**Not supported in Manifest V3**]
-    - Idle: `Empty`
-    - Active: Light Blue `Number`
-    - Error: Red `E`
+- Indicate running status over toolbar icon
+    - **Manifest V2**
+        - Idle: **Empty**
+        - Active: Light Blue **Number**
+        - Error: Red `E`
+    - **Manifest V3**
+        - Active: Blue `A`
+        - Error: Red `E`
 - Support notifications
     - Event `When Downloads Start`
     - Event `When Downlods Complete` [**Not supported in Manifest V3**]
