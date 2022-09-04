@@ -26,7 +26,6 @@ i18n = i18n[lang] ?? i18n[lang.slice(0, lang.indexOf('-'))] ?? i18n['en'];
 
 var safe = document.createElement('button');
 safe.innerText = i18n['safe'];
-safe.style.display = '1,2'.includes(aria2Store['capture_mode']) ? 'inline-block' : 'none';
 safe.addEventListener('click', event =>  {
     if (confirm(i18n['danger'])) {
         danger = true;
@@ -50,7 +49,6 @@ api.addEventListener('change', event => {
 
 var sub = document.createElement('option');
 sub.value = '2';
-sub.style.display = '1,2'.includes(aria2Store['capture_mode']) && aria2Store['capture_api'] === '0' ? 'block' : 'none';
 sub.innerText = i18n['browser'];
 
 var capture = document.querySelector('#option > div:nth-child(12)');
@@ -74,12 +72,9 @@ capture.addEventListener('change', event => {
     
 var folder = document.querySelector('#option > div:nth-child(5) > select');
 folder.append(sub);
-folder.value = aria2Store['folder_mode'];
 
 capture.append(safe);
 capture.after(api);
-
-api.querySelector('select').value = aria2Store['capture_api'];
     
 function setDefaultFolder() {
     if (folder.value === '2') {
@@ -88,3 +83,13 @@ function setDefaultFolder() {
     }
     sub.style.display = 'none';
 }
+
+var observer = setInterval(() => {
+    if (aria2Store) {
+        clearInterval(observer);
+        safe.style.display = '1,2'.includes(aria2Store['capture_mode']) ? 'inline-block' : 'none';
+        sub.style.display = '1,2'.includes(aria2Store['capture_mode']) && aria2Store['capture_api'] === '0' ? 'block' : 'none';
+        folder.value = aria2Store['folder_mode'];
+        api.querySelector('select').value = aria2Store['capture_api'];
+    }
+}, 50);
