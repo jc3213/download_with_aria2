@@ -100,11 +100,6 @@ function aria2RPCClient() {
             menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });
-    fetch('hotfix.js', {method: 'HEAD'}).then(response => {
-        var hotfix = document.createElement('script');
-        hotfix.src = 'hotfix.js';
-        document.body.append(hotfix);
-    });
 }
 
 function clearChanges() {
