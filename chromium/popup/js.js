@@ -169,8 +169,8 @@ document.querySelector('#proxy_mgr').addEventListener('click', async event => {
     event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
 });
 
-document.querySelector('#append button').addEventListener('click', async event => {
-    var uri = document.querySelector('#append input');
+document.querySelector('#append_btn').addEventListener('click', async event => {
+    var uri = event.target.parentNode.querySelector('input');
     await aria2RPC.message('aria2.changeUri', [activeId, 1, [], [uri.value]]);
     uri.value = '';
 });
