@@ -28,7 +28,7 @@
     - `File Extensions`
         - **Firefox** only capture MIME type `application/*` via `webRequest API`
     - `Domain names` [**Match pattern**]
-- Match pattern
+- **Match pattern**
     - **Referer**: `www.university.org.eu`
     - **Pattern**: `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
     - [**Space**] is recommendded to split match patterns
