@@ -1,6 +1,6 @@
 if (location.search === '') {
     var css = document.createElement('style');
-    css.innerText = 'input {width: 100%;}';
+    css.innerText = 'input, textarea {width: 100%;}';
     document.head.append(css);
 }
 
