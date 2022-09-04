@@ -1,6 +1,4 @@
-importScripts('/libs/aria2.js');
-importScripts('/libs/tools.js');
-importScripts('/common.js');
+importScripts('/libs/aria2.js', '/libs/tools.js', '/common.js');
 
 aria2StartUp();
 
