@@ -56,9 +56,9 @@ exportbtn.addEventListener('click', event => {
 
 importbtn.addEventListener('change', async event => {
     var json = await promiseFileReader(event.target.files[0], 'json');
-    printOptions(json);
     chrome.storage.local.set(json);
     aria2Store = json;
+    printOptions(json);
     event.target.value = '';
 });
 
@@ -100,6 +100,11 @@ function aria2RPCClient() {
             menu.style.display = rule.includes(event.target.value) ? 'block' : 'none';
         });
     });
+    fetch('hotfix.js', {method: 'HEAD'}).then(response => {
+        var hotfix = document.createElement('script');
+        hotfix.src = 'hotfix.js';
+        document.body.append(hotfix);
+    });
 }
 
 function clearChanges() {
@@ -127,7 +132,7 @@ function applyChanges(options) {
 
 function printOptions(options) {
     document.querySelectorAll('#option [name]').forEach(field => {
-        var name = field.name;
+        var {name} = field;
         var array = mapping.includes(name);
         var multi = offset[name];
         var value = options[name];
