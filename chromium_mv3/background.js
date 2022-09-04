@@ -1,4 +1,4 @@
-importScripts('/libs/aria2.js', '/libs/tools.js', '/common.js');
+importScripts('/libs/aria2.js', '/libs/tools.js', '/common.js', '/indicator.js');
 
 aria2StartUp();
 
@@ -25,6 +25,7 @@ chrome.storage.onChanged.addListener(changes => {
     });
     if (changes['jsonrpc_uri'] || changes['secret_token']) {
         aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+        aria2Status();
     }
 });
 
@@ -44,6 +45,7 @@ async function aria2StartUp() {
     var json = await chrome.storage.local.get(null);
     aria2Store = json['jsonrpc_uri'] ? json : await getDefaultOptions();
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    aria2Status();
 }
 
 async function aria2Download(url, hostname, options) {
