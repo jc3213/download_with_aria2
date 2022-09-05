@@ -36,12 +36,17 @@ input, textarea {
 }
 
 span.float {
+    display: none;
     top: 3px;
     right: 8px;
 }
 
 input[type="number"] + span.float {
     right: 24px;
+}
+
+input:focus + span.float {
+    display: block;
 }
 
 textarea {
