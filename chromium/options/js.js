@@ -1,5 +1,5 @@
 var mapping = 'proxy_include,capture_resolve,capture_reject,capture_include,capture_exclude';
-var offset = {'capture_size': 1048576};
+var offset = {'refresh_interval': 1000, 'capture_size': 1048576};
 var changes = [];
 var global = true;
 var savebtn = document.querySelector('#save_btn');
