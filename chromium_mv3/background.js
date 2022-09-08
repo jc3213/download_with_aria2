@@ -1,18 +1,22 @@
-chrome.contextMenus.create({
-    title: chrome.runtime.getManifest().name,
-    id: 'downwitharia2',
-    contexts: ['link']
+importScripts('/libs/aria2.js', '/libs/tools.js', '/common.js', '/indicator.js');
+
+aria2StartUp();
+
+chrome.runtime.onStartup.addListener(() => {
+    aria2StartUp();
+});
+
+chrome.runtime.onInstalled.addListener(details => {
+    chrome.contextMenus.create({
+        title: chrome.runtime.getManifest().name,
+        id: 'downwitharia2',
+        contexts: ['link']
+    });
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     var {linkUrl, pageUrl} = info;
     aria2Download(linkUrl, getHostname(pageUrl), {referer: pageUrl});
-});
-
-chrome.storage.local.get(null, async json => {
-    aria2Store = json['jsonrpc_uri'] ? json : await getDefaultOptions();
-    aria2StartUp();
-    aria2Capture();
 });
 
 chrome.storage.onChanged.addListener(changes => {
@@ -23,23 +27,10 @@ chrome.storage.onChanged.addListener(changes => {
     if (changes['jsonrpc_uri'] || changes['secret_token']) {
         aria2Update();
     }
-    if (changes['capture_mode']) {
-        aria2Capture();
-    }
 });
 
-function aria2Download(url, hostname, options) {
-    chrome.cookies.getAll({url}, cookies => {
-        options['user-agent'] = aria2Store['user_agent'];
-        options['header'] = getRequestHeaders(cookies);
-        options['all-proxy'] = getProxyServer(hostname);
-        options['dir'] = getDownloadFolder();
-        aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
-    });
-}
-
-async function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
-    if (finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
+chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
+    if (aria2Store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
     var referer = 'about:blank'.includes(referrer) ? await getCurrentTabUrl() : referrer;
@@ -48,13 +39,24 @@ async function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
         chrome.downloads.erase({id});
         aria2Download(finalUrl, hostname, {referer, out: filename});
     }
+});
+
+async function aria2StartUp() {
+    var json = await chrome.storage.local.get(null);
+    aria2Store = json['jsonrpc_uri'] ? json : await getDefaultOptions();
+    aria2Update();
 }
 
-function aria2Capture() {
-    if (aria2Store['capture_mode'] !== '0') {
-        chrome.downloads.onDeterminingFilename.addListener(downloadCapture);
-    }
-    else {
-        chrome.downloads.onDeterminingFilename.removeListener(downloadCapture);
-    }
+function aria2Update() {
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    aria2Status();
+}
+
+async function aria2Download(url, hostname, options) {
+    var cookies = await chrome.cookies.getAll({url})
+    options['user-agent'] = aria2Store['user_agent'];
+    options['header'] = getRequestHeaders(cookies);
+    options['all-proxy'] = getProxyServer(hostname);
+    options['dir'] = getDownloadFolder();
+    aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
 }
