@@ -7,14 +7,16 @@ async function getDefaultOptions() {
 
 function getCurrentTabUrl() {
     return new Promise(resolve => {
-        chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
-            resolve(tab.url);
+        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+            var {url} = tabs[0];
+            resolve(url);
         });
     });
 }
 
 function getFileExtension(filename) {
-    return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
+    var fileext = filename.slice(filename.lastIndexOf('.') + 1);
+    return fileext.toLowerCase();
 }
 
 function getCaptureFilter(hostname, type, size) {
