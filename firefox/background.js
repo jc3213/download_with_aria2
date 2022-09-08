@@ -4,7 +4,9 @@ browser.contextMenus.create({
     contexts: ['link']
 });
 
-browser.contextMenus.onClicked.addListener(({linkUrl, pageUrl}, {cookieStoreId}) => {
+browser.contextMenus.onClicked.addListener((info, tab) => {
+    var {linkUrl, pageUrl} = info;
+    var {cookieStoreId} = tab;
     aria2Download(linkUrl, getHostname(pageUrl), cookieStoreId, {referer: pageUrl});
 });
 
