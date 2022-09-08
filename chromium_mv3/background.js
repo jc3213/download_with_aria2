@@ -33,7 +33,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     if (aria2Store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
-    var referer = 'about:blank'.includes(referrer) ? await chrome.tabs.query({active: true, currentWindow: true}).then(([{url}]) => url) : referrer;
+    var referer = 'about:blank'.includes(referrer) ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
     if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
         chrome.downloads.erase({id});
@@ -59,4 +59,9 @@ async function aria2Download(url, hostname, options) {
     options['all-proxy'] = getProxyServer(hostname);
     options['dir'] = getDownloadFolder();
     aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
+}
+
+async function getCurrentTabUrl() {
+    var [tab] = await chrome.tabs.query({active: true, currentWindow: true});
+    return tab.url;
 }
