@@ -33,7 +33,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     if (aria2Store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
-    var referer = referrer && referrer !== 'about:blank' ? referrer : await chrome.tabs.query({active: true, currentWindow: true}).then(([{url}]) => url);
+    var referer = 'about:blank'.includes(referrer) ? await chrome.tabs.query({active: true, currentWindow: true}).then(([{url}]) => url) : referrer;
     var hostname = getHostname(referer);
     if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
         chrome.downloads.erase({id});
