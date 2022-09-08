@@ -59,7 +59,7 @@ async function downloadCapture({id, url, referrer, filename}) {
         return;
     }
     var [tab] = await browser.tabs.query({active: true, currentWindow: true});
-    var referer = referrer && referrer !== 'about:blank' ? referrer : tab.url;
+    var referer = 'about:blank'.includes(referrer) ? tab.url : referrer;
     var hostname = getHostname(referer);
     if (getCaptureFilter(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
