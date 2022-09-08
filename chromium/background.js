@@ -58,11 +58,3 @@ function aria2Capture() {
         chrome.downloads.onDeterminingFilename.removeListener(downloadCapture);
     }
 }
-
-function getCurrentTabUrl() {
-    return new Promise(resolve => {
-        chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
-            resolve(tab.url);
-        });
-    });
-}

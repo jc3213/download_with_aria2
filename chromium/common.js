@@ -5,6 +5,14 @@ async function getDefaultOptions() {
     return json;
 }
 
+function getCurrentTabUrl() {
+    return new Promise(resolve => {
+        chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
+            resolve(tab.url);
+        });
+    });
+}
+
 function getFileExtension(filename) {
     return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
 }
