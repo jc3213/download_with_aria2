@@ -4,7 +4,8 @@ chrome.contextMenus.create({
     contexts: ['link']
 });
 
-chrome.contextMenus.onClicked.addListener(({linkUrl, pageUrl}) => {
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+    var {linkUrl, pageUrl} = info;
     aria2Download(linkUrl, getHostname(pageUrl), {referer: pageUrl});
 });
 
