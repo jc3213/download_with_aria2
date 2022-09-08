@@ -1,51 +1,48 @@
 {
-    "name": "__MSG_extension_name__",
-    "description": "__MSG_extension_description__",
-    "version": "3.19.7",
-    "manifest_version": 2,
-    "permissions": [
-        "contextMenus",
-        "downloads",
-        "webRequest",
-        "webRequestBlocking",
-        "tabs",
-        "cookies",
-        "notifications",
-        "storage",
-        "<all_urls>"
-    ],
-    "default_locale" : "en",
-    "background": {
-        "scripts": [
-            "libs/aria2.js",
-            "libs/tools.js",
-            "common.js",
-            "indicator.js",
-            "background.js"
-        ]
+  "name": "__MSG_extension_name__",
+  "description": "__MSG_extension_description__",
+  "version": "3.19.7",
+  "manifest_version": 2,
+  "permissions": [
+    "contextMenus",
+    "downloads",
+    "webRequest",
+    "webRequestBlocking",
+    "tabs",
+    "cookies",
+    "notifications",
+    "storage",
+    "<all_urls>"
+  ],
+  "default_locale": "en",
+  "background": {
+    "scripts": ["libs/aria2.js", "libs/tools.js", "common.js", "indicator.js", "background.js"]
+  },
+  "browser_action": {
+    "default_icon": {
+      "24": "icons/icon24.png"
     },
-    "browser_action": {
-        "default_icon": {
-            "24": "icons/icon24.png"
-        },
-        "default_popup": "popup/index.html"
-    },
-    "icons": {
-        "128": "icons/icon128.png",
-        "16": "icons/icon16.png",
-        "48": "icons/icon48.png"
-    },
-    "options_ui": {
-        "page": "options/index.html",
-        "open_in_tab": false
-    },
-    "applications": {
-        "gecko": {
-            "id": "firefox@downloadWithAria2"
-        }
-    },
-    "developer": {
-       "name": "jc3213",
-       "url": "https://github.com/jc3213/download_with_aria2"
+    "default_popup": "popup/index.html"
+  },
+  "icons": {
+    "128": "icons/icon128.png",
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png"
+  },
+  "options_ui": {
+    "page": "options/index.html",
+    "open_in_tab": false
+  },
+  "applications": {
+    "gecko": {
+      "id": "firefox@downloadWithAria2"
     }
+  },
+  "developer": {
+    "name": "jc3213",
+    "url": "https://github.com/jc3213/download_with_aria2"
+  },
+  "commands": {
+    "_execute_browser_action": {}
+  }
 }
