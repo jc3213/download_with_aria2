@@ -7,6 +7,15 @@ function getHostname(url) {
     }
 }
 
+function getCurrentTabUrl() {
+    return new Promise(resolve => {
+        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+            var {url} = tabs[0];
+            resolve(url);
+        });
+    });
+}
+
 function getDownloadName(bittorrent, [{path, uris}]) {
     if (bittorrent && bittorrent.info) {
         return bittorrent.info.name;
