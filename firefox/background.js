@@ -56,14 +56,14 @@ async function downloadCapture({id, url, referrer, filename}) {
     if (url.startsWith('blob') || url.startsWith('data')) {
         return;
     }
-    var {tabUrl, cookieStoreId} = await browser.tabs.query({active: true, currentWindow: true}).then(([{url, cookieStoreId}]) => ({tabUrl: url, cookieStoreId}));
-    var referer = referrer && referrer !== 'about:blank' ? referrer : tabUrl;
+    var [tab] = await browser.tabs.query({active: true, currentWindow: true});
+    var referer = referrer && referrer !== 'about:blank' ? referrer : tab.url;
     var hostname = getHostname(referer);
     if (getCaptureFilter(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
             var options = await getFirefoxOptions(referer, filename);
-            aria2Download(url, hostname, cookieStoreId, options);
+            aria2Download(url, hostname, tab.cookieStoreId, options);
         }).catch(error => aria2WhenComplete(url));
     }
 }
