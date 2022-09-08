@@ -38,18 +38,16 @@ function aria2Download(url, hostname, options) {
     });
 }
 
-function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
+async function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
     if (finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         return;
     }
-    chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
-        var referer = 'about:blank'.includes(referrer) ? tab.url : referrer;
-        var hostname = getHostname(referer);
-        if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
-            chrome.downloads.erase({id});
-            aria2Download(finalUrl, hostname, {referer, out: filename});
-        }
-    });
+    var referer = 'about:blank'.includes(referrer) ? await getCurrentTabUrl() : referrer;
+    var hostname = getHostname(referer);
+    if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
+        chrome.downloads.erase({id});
+        aria2Download(finalUrl, hostname, {referer, out: filename});
+    }
 }
 
 function aria2Capture() {
@@ -59,4 +57,12 @@ function aria2Capture() {
     else {
         chrome.downloads.onDeterminingFilename.removeListener(downloadCapture);
     }
+}
+
+function getCurrentTabUrl() {
+    return new Promise(resolve => {
+        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+            resolve(tabs[0].url);
+        });
+    });
 }
