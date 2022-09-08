@@ -43,7 +43,7 @@ function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
         return;
     }
     chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
-        var referer = referrer && referrer !== 'about:blank' ? referrer : tab.url;
+        var referer = 'about:blank'.includes(referrer) ? tab.url : referrer;
         var hostname = getHostname(referer);
         if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
             chrome.downloads.erase({id});
