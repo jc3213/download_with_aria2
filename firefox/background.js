@@ -54,18 +54,17 @@ function aria2Capture() {
     }
 }
 
-async function downloadCapture({id, url, referrer, filename}) {
+async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
     if (url.startsWith('blob') || url.startsWith('data')) {
         return;
     }
-    var [tab] = await browser.tabs.query({active: true, currentWindow: true});
-    var referer = 'about:blank'.includes(referrer) ? tab.url : referrer;
+    var referer = 'about:blank'.includes(referrer) ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
     if (getCaptureFilter(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
             var options = await getFirefoxOptions(referer, filename);
-            aria2Download(url, hostname, tab.cookieStoreId, options);
+            aria2Download(url, hostname, cookieStoreId, options);
         }).catch(error => aria2WhenComplete(url));
     }
 }
