@@ -39,6 +39,13 @@
         "page": "options/index.html",
         "open_in_tab": false
     },
+    "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+A"
+            }
+        }
+    },
     "applications": {
         "gecko": {
             "id": "firefox@downloadWithAria2"
@@ -47,8 +54,5 @@
     "developer": {
         "name": "jc3213",
         "url": "https://github.com/jc3213/download_with_aria2"
-    },
-    "commands": {
-        "_execute_browser_action": {}
     }
 }

@@ -36,5 +36,12 @@
     "options_ui": {
         "page": "options/index.html",
         "open_in_tab": false
+    },
+    "commands": {
+        "_execute_action": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+A"
+            }
+        }
     }
 }
