@@ -3,7 +3,7 @@
 - This extension is completely rewritten from [chrome-aria2-integration](https://github.com/robbielj/chrome-aria2-integration)
 
 # Usage
-- Indicate running status over toolbar icon
+- Running status indicator
     - **Manifest V2**
         - Idle: **Empty**
         - Active: Light Blue **Number**
@@ -34,7 +34,7 @@
     - [**Space**] is recommendded to split match patterns
 - Built-in `Aria2 Web Manager`
     - Active with keyboard shortcut `Ctrl`+`Shift`+`A`
-    - Filtering tasks with queues `Active`, `Stopped`, and `Removed`
+    - Filter task queues `Active`, `Stopped`, and `Removed`
     - `New Task` page with extra options
         - Upload `.torrent`, `.json`, `.metalink`, and `.meta4` files [**Chromium Only**]
         - Parse downloads from `.json`, `.metalink`, `.meta4` file content
