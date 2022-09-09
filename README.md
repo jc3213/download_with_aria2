@@ -23,10 +23,9 @@
 - Capture browser downloads
     - Switchable APIs  [**Firefox Only**]
         - `downloads API` [**Default**]
-        - `webRequest API`
+        - `webRequest API` [**MIME type "application/\*" only**]
     - `File Size` [**MB**]
     - `File Extensions`
-        - **Firefox** only capture MIME type `application/*` via `webRequest API`
     - `Domain names` [**Match pattern**]
 - **Match pattern**
     - **Referer**: `www.university.org.eu`
