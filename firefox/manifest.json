@@ -14,7 +14,7 @@
         "storage",
         "<all_urls>"
     ],
-    "default_locale" : "en",
+    "default_locale": "en",
     "background": {
         "scripts": [
             "libs/aria2.js",
@@ -45,7 +45,10 @@
         }
     },
     "developer": {
-       "name": "jc3213",
-       "url": "https://github.com/jc3213/download_with_aria2"
+        "name": "jc3213",
+        "url": "https://github.com/jc3213/download_with_aria2"
+    },
+    "commands": {
+        "_execute_browser_action": {}
     }
 }

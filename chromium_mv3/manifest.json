@@ -14,7 +14,7 @@
     "host_permissions": [
         "<all_urls>"
     ],
-    "default_locale" : "en",
+    "default_locale": "en",
     "background": {
         "service_worker": "background.js"
     },
