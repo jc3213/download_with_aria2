@@ -13,10 +13,13 @@ if [ "$1" == "chromium" ]; then
     num="1"
 elif [ "$1" == "firefox" ]; then
     num="2"
+elif [ "$1" == "chromium_mv3" ]; then
+    num="3"
 elif [ "$1" == "" ]; then
     echo "Auto build script for extension <Download with Aria2>"
     echo 1. Chromium
     echo 2. Firefox
+    echo 3. Chromium Manifest V3
     echo -n "Build for "
     read -r num
 else
@@ -28,6 +31,8 @@ if [ "$num" == "1" ]; then
     code="chromium"
 elif [ "$num" == "2" ]; then
     code="firefox"
+elif [ "$num" == "2" ]; then
+    code="chromium_mv3"
 else
     echo "input error,end execution"
     exit
@@ -48,6 +53,8 @@ if [ "$num" == "1" ]; then
     suffix="crx"
 elif [ "$num" == "2" ]; then
     suffix="xpi"
+elif [ "$num" == "3" ]; then
+    suffix="crx"
 fi
 version="$(get_json_value "$manifestPath" version text)"
 addFileName="$version.$suffix"
