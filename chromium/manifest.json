@@ -12,7 +12,7 @@
         "storage",
         "<all_urls>"
     ],
-    "default_locale" : "en",
+    "default_locale": "en",
     "background": {
         "scripts": [
             "libs/aria2.js",
