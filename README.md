@@ -18,7 +18,7 @@
     - `Notify Me`: Show notifications
 - Support proxy server
     - Protocol: `http` or `https`
-    - `Proxy Server` will be added into `TaskMgr` or `New` window if you press the `🔖` button
+    - `Proxy Server` will be load if you press the `🔖` button
     - `Use Proxy` → `Switch` uses [**Match pattern**] for domain names
 - Capture browser downloads
     - Switchable APIs  [**Firefox Only**]
