@@ -273,10 +273,10 @@
         "message": "Set the maximum peers of each torrent"
     },
     "aria2_bt_follow": {
-        "message": "Follow Torrent"
+        "message": "Auto Parse Torrent"
     },
     "aria2_bt_follow_title": {
-        "message": "Set when .torrent file is downloaded, whether to start the bittorrent download"
+        "message": "When complete download a .torrent file, auto start bittorrent download"
     },
     "aria2_bt_remove": {
         "message": "Remove Unselected Files"

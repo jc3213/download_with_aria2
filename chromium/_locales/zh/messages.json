@@ -276,7 +276,7 @@
         "message": "自动解析种子"
     },
     "aria2_bt_follow_title": {
-        "message": "设置当完成 .torrent 文件下载后，是否自动开始 BT 下载"
+        "message": "当完成 .torrent 文件下载后，自动开始 BT 下载"
     },
     "aria2_bt_remove": {
         "message": "删除未选定文件"
