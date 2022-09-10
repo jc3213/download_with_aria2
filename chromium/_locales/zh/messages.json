@@ -230,6 +230,12 @@
     "task_files_title": {
         "message": "管理本次下载正在下载的文件"
     },
+    "aria2_true": {
+        "message": "是"
+    },
+    "aria2_false": {
+        "message": "否"
+    },
     "aria2_http_retry": {
         "message": "重试次数"
     },
@@ -265,6 +271,12 @@
     },
     "aria2_bt_peers_title": {
         "message": "设置每个 BT 任务的最大连接数"
+    },
+    "aria2_bt_follow": {
+        "message": "自动解析种子"
+    },
+    "aria2_bt_follow_title": {
+        "message": "设置当完成 .torrent 文件下载后，是否自动开始 BT 下载"
     },
     "aria2_bt_remove": {
         "message": "删除未选定文件"

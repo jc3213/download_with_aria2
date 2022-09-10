@@ -230,6 +230,12 @@
     "task_files_title": {
         "message": "Manage files selected for this download"
     },
+    "aria2_true": {
+        "message": "True"
+    },
+    "aria2_false": {
+        "message": "False"
+    },
     "aria2_http_retry": {
         "message": "Max Retries"
     },
@@ -249,7 +255,7 @@
         "message": "Set the maximum download sections of each download"
     },
     "aria2_http_size": {
-        "message": "Section Size"
+        "message": "Download Section Size"
     },
     "aria2_http_size_title": {
         "message": "Set the minimum size of each download section"
@@ -265,6 +271,12 @@
     },
     "aria2_bt_peers_title": {
         "message": "Set the maximum peers of each torrent"
+    },
+    "aria2_bt_follow": {
+        "message": "Follow Torrent"
+    },
+    "aria2_bt_follow_title": {
+        "message": "Set when .torrent file is downloaded, whether to start the bittorrent download"
     },
     "aria2_bt_remove": {
         "message": "Remove Unselected Files"
