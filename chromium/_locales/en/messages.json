@@ -255,7 +255,7 @@
         "message": "Set the maximum download sections of each download"
     },
     "aria2_http_size": {
-        "message": "Download Section Size"
+        "message": "Section Size"
     },
     "aria2_http_size_title": {
         "message": "Set the minimum size of each download section"

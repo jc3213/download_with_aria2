@@ -249,10 +249,10 @@
         "message": "设置两次重试之间的间隔 (秒)"
     },
     "aria2_http_split": {
-        "message": "线程数"
+        "message": "多线程"
     },
     "aria2_http_split_title": {
-        "message": "设置每个任务的最大线程数量"
+        "message": "设置每个任务的最大线程数"
     },
     "aria2_http_size": {
         "message": "线程容量"
