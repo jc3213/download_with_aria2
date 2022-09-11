@@ -188,10 +188,10 @@ function aria2RPCClient() {
     activeTask = [];
     waitingTask = [];
     stoppedTask = [];
-    aria2RPC.message('aria2.tellActive').then(active => {
+    aria2RPC.message('aria2.tellActive').then(async active => {
         active.forEach(printSession);
-        aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
-        aria2RPC.message('aria2.tellStopped', [0, 999]).then(stopped => stopped.forEach(printSession));
+        await aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
+        await aria2RPC.message('aria2.tellStopped', [0, 999]).then(stopped => stopped.forEach(printSession));
         aria2Alive = setInterval(updateSession, aria2Store['refresh_interval']);
         aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
         aria2Socket.onmessage = async event => {
@@ -296,7 +296,7 @@ function parseSession(gid, status, bittorrent) {
     });
     task.querySelector('#retry_btn').addEventListener('click', async event => {
         var [{path, uris}] = await aria2RPC.message('aria2.getFiles', [gid]);
-        uris = [...new Set(uris)].map(({uri}) => uri);
+        var url = [...new Set(uris.map(({uri}) => uri))];
         var options = await aria2RPC.message('aria2.getOption', [gid]);
         if (path) {
             var li = path.lastIndexOf('/');
@@ -304,18 +304,18 @@ function parseSession(gid, status, bittorrent) {
             options['out'] = path.slice(li + 1);
         }
         await aria2RPC.message('aria2.removeDownloadResult', [gid]);
+        var id = await aria2RPC.message('aria2.addUri', [url, options]);
+        addSession(id);
         removeSession('stopped', gid, task);
-        var newId = await aria2RPC.message('aria2.addUri', [uris, options]);
-        addSession(newId);
     });
-    task.querySelector('#meter').addEventListener('click', event => {
+    task.querySelector('#meter').addEventListener('click', async event => {
         var status = task.getAttribute('status');
         if ('active,waiting'.includes(status)) {
-            aria2RPC.message('aria2.forcePause', [gid]);
+            await aria2RPC.message('aria2.forcePause', [gid]);
             task.setAttribute('status', 'paused');
         }
         else if (status === 'paused') {
-            aria2RPC.message('aria2.unpause', [gid]);
+            await aria2RPC.message('aria2.unpause', [gid]);
             task.setAttribute('status', 'waiting');
         }
     });
