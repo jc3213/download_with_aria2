@@ -126,7 +126,8 @@ function aria2StartUp() {
 }
 
 function clearChanges() {
-    changes = undone = [];
+    changes = [];
+    undone = [];
     savebtn.disabled = undobtn.disabled = redobtn.disabled = true;
 }
 
