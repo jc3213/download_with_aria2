@@ -22,11 +22,11 @@ div[title]:not(:last-child) {
     margin-bottom: 25px;
 }
 
-input, textarea {
+input {
     padding: 3px;
 }
 
-select, option {
+textarea, select, option {
     padding: 4px;
 }
 

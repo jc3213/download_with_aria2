@@ -184,33 +184,37 @@ savebtn.addEventListener('click', async event => {
     savebtn.style.display = 'none';
 });
 
-function aria2RPCClient() {
+function aria2StartUp() {
     activeTask = [];
     waitingTask = [];
     stoppedTask = [];
     aria2RPC.message('aria2.tellActive').then(async active => {
-        active.forEach(printSession);
-        await aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
-        await aria2RPC.message('aria2.tellStopped', [0, 999]).then(stopped => stopped.forEach(printSession));
-        aria2Alive = setInterval(updateSession, aria2Store['refresh_interval']);
-        aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
-        aria2Socket.onmessage = async event => {
-            var {method, params: [{gid}]} = JSON.parse(event.data);
-            if (method !== 'aria2.onBtDownloadComplete') {
-                addSession(gid);
-                if (method === 'aria2.onDownloadStart' && waitingTask.includes(gid)) {
-                    removeSession('waiting', gid);
-                }
-                else if (method !== 'aria2.onDownloadStart' && activeTask.includes(gid)) {
-                    removeSession('active', gid);
-                }
-            }
-        };
+        var waiting = await aria2RPC.message('aria2.tellWaiting', [0, 999]);
+        var stopped = await aria2RPC.message('aria2.tellStopped', [0, 999]);
+        [...active, ...waiting, ...stopped].forEach(printSession);
+        aria2Client();
     }).catch(error => {
         activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = '0';
         downloadStat.innerText = uploadStat.innerText = '0 ';
         activeGroup.innerHTML = waitingGroup.innerHTML = pausedGroup.innerHTML = completeGroup.innerHTML = removedGroup.innerHTML = errorGroup.innerHTML = '';
     });
+}
+
+function aria2Client() {
+    aria2Alive = setInterval(updateSession, aria2Store['refresh_interval']);
+    aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
+    aria2Socket.onmessage = async event => {
+        var {method, params: [{gid}]} = JSON.parse(event.data);
+        if (method !== 'aria2.onBtDownloadComplete') {
+            addSession(gid);
+            if (method === 'aria2.onDownloadStart' && waitingTask.includes(gid)) {
+                removeSession('waiting', gid);
+            }
+            else if (method !== 'aria2.onDownloadStart' && activeTask.includes(gid)) {
+                removeSession('active', gid);
+            }
+        }
+    };
 }
 
 async function updateSession() {

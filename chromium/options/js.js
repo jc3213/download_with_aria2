@@ -90,7 +90,7 @@ chrome.storage.onChanged.addListener(changes => {
     }
 });
 
-function aria2RPCClient() {
+function aria2StartUp() {
     printOptions(aria2Store);
     document.querySelectorAll('[data-mode]').forEach(menu => {
         var rule = menu.getAttribute('data-mode').match(/[^,]+/g);

@@ -11,7 +11,7 @@ document.querySelectorAll('[title]').forEach(item => {
 chrome.storage.local.get(null, json => {
     aria2Store = json;
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2RPCClient();
+    aria2StartUp();
 });
 
 function getFileSize(bytes) {
