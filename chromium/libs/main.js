@@ -48,26 +48,24 @@ function printGlobalOptions(options, entries) {
     });
 }
 
-function promiseFileReader(file, method) {
-    return new Promise((resolve, reject) => {
+function readFileTypeJSON(file) {
+    return new Promise(resolve => {
         var reader = new FileReader();
-        if (method === 'json') {
-            reader.onload = () => {
-                var json = JSON.parse(reader.result);
-                resolve(json);
-            };
-            reader.readAsText(file);
-        }
-        else if (method === 'base64') {
-            reader.onload = () => {
-                var base64 = reader.result.slice(reader.result.indexOf(',') + 1);
-                resolve(base64);
-            };
-            reader.readAsDataURL(file);
-        }
-        else {
-            var error = new Error('parameter 2 "method" is not defined');
-            reject(error);
-        }
+        reader.onload = () => {
+            var json = JSON.parse(reader.result);
+            resolve(json);
+        };
+        reader.readAsText(file);
+    });
+}
+
+function readFileForAria2(file) {
+    return new Promise(resolve => {
+        var reader = new FileReader();
+        reader.onload = () => {
+            var base64 = reader.result.slice(reader.result.indexOf(',') + 1);
+            resolve(base64);
+        };
+        reader.readAsDataURL(file);
     });
 }

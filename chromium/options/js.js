@@ -55,7 +55,7 @@ exportbtn.addEventListener('click', event => {
 });
 
 importbtn.addEventListener('change', async event => {
-    var json = await promiseFileReader(event.target.files[0], 'json');
+    var json = await readFileTypeJSON(event.target.files[0]);
     chrome.storage.local.set(json);
     aria2Store = json;
     printOptions(json);

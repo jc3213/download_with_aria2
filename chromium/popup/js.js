@@ -109,7 +109,7 @@ async function downloadUrl(url, options) {
 }
 
 async function downloadJSON(file, options) {
-    var json = await promiseFileReader(file, 'json');
+    var json = await readFileTypeJSON(file);
     if (Array.isArray(json)) {
         json.forEach(jn => parseJSON(jn, options));
     }
@@ -118,25 +118,25 @@ async function downloadJSON(file, options) {
     }
 }
 
-async function parseJSON(json, _options_) {
+async function parseJSON(json, extras) {
     var {url, options} = json;
     if (options) {
-        options = {..._options_, ...options};
+        options = {...extras, ...options};
     }
     else {
-        options = _options_;
+        options = extras;
     }
     await downloadUrl(url, options);
 }
 
 async function downloadTorrent(file, options) {
-    var torrent = await promiseFileReader(file, 'base64');
+    var torrent = await readFileForAria2(file);
     var gid = await aria2RPC.message('aria2.addTorrent', [torrent]);
     addSession(gid);
 }
 
 async function downloadMetalink(file, options) {
-    var metalink = await promiseFileReader(file, 'base64');
+    var metalink = await readFileForAria2(file);
     await aria2RPC.message('aria2.addMetalink', [metalink, options]);
     aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
 }
