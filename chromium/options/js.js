@@ -1,11 +1,8 @@
 var mapping = 'proxy_include,capture_resolve,capture_reject,capture_include,capture_exclude';
 var offset = {'refresh_interval': 1000, 'capture_size': 1048576};
 var changes = [];
-var undone = [];
 var global = true;
 var savebtn = document.querySelector('#save_btn');
-var undobtn = document.querySelector('#undo_btn');
-var redobtn = document.querySelector('#redo_btn');
 var importbtn = document.querySelector('#import_btn');
 var exportbtn = document.querySelector('#export_btn');
 var popupbtn = document.querySelector('#popup_btn');
@@ -25,28 +22,6 @@ savebtn.addEventListener('click', event => {
     else {
         applyChanges(aria2Global);
         aria2RPC.message('aria2.changeGlobalOption', [aria2Global]);
-    }
-});
-
-undobtn.addEventListener('click', event => {
-    var undo = changes.pop();
-    var {name, old_value} = undo;
-    document.querySelector('[name="' + name + '"]').value = old_value;
-    undone.push(undo);
-    redobtn.disabled = false;
-    if (changes.length === 0) {
-        undobtn.disabled = true;
-    }
-});
-
-redobtn.addEventListener('click', event => {
-    var redo = undone.pop();
-    var {name, new_value} = redo;
-    document.querySelector('[name="' + name + '"]').value = new_value;
-    changes.push(redo);
-    undobtn.disabled = false;
-    if (undone.length === 0) {
-        redobtn.disabled = true;
     }
 });
 
@@ -127,14 +102,18 @@ function aria2StartUp() {
 
 function clearChanges() {
     changes = [];
-    undone = [];
-    savebtn.disabled = undobtn.disabled = redobtn.disabled = true;
+    savebtn.disabled = true;
 }
 
 function printChanges(name, old_value, new_value) {
     var change = changes.find(change => change.name === name);
-    changes.push({name, old_value, new_value});
-    savebtn.disabled = undobtn.disabled = false;
+    if (change) {
+        change['new_value'] = new_value;
+    }
+    else {
+        changes.push({name, old_value, new_value});
+    }
+    savebtn.disabled = false;
 }
 
 function applyChanges(options) {

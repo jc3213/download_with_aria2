@@ -26,12 +26,6 @@
     "option_save": {
         "message": "保存"
     },
-    "option_undo": {
-        "message": "撤销"
-    },
-    "option_redo": {
-        "message": "恢复"
-    },
     "option_export": {
         "message": "导出"
     },
