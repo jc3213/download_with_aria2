@@ -74,14 +74,12 @@ document.querySelector('#option').addEventListener('change', event => {
     var old_value = aria2Store[name];
     var new_value = array ? value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? value * multi : value;
     printChanges(name, old_value, new_value);
-    savebtn.disabled = false;
 });
 
 document.querySelector('#global').addEventListener('change', event => {
     var {name, value} = event.target;
     var old_value = aria2Global[name];
     printChanges(name, old_value, value);
-    savebtn.disabled = false;
 });
 
 chrome.storage.onChanged.addListener(changes => {
@@ -115,6 +113,7 @@ function printChanges(name, old_value, new_value) {
     else {
         changes.push({name, old_value, new_value});
     }
+    savebtn.disabled = false;
 }
 
 function applyChanges(options) {
