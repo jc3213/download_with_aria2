@@ -7,6 +7,8 @@
     <body data-prefs="option">
         <div>
             <button id="save_btn" disabled i18n>option_save</button>
+            <button id="undo_btn" disabled i18n>option_undo</button>
+            <button id="redo_btn" disabled i18n>option_redo</button>
             <div class="float">
                 <button id="export_btn" data-option i18n>option_export</button>
                 <button id="import_btn" data-option><label>
@@ -48,10 +50,10 @@
                     <option value="0" i18n>option_default</option>
                     <option value="1" i18n>option_custom</option>
                 </select>
-                <div data-mode="folder_mode,1">
+                <div>
                     <input name="folder_path" type="text">
-                    Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;Linux: <u><i>home/aria2/download</i></u>
                 </div>
+                Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;Linux: <u><i>home/aria2/download</i></u>
             </div>
             <div title="option_notify_start_title">
                 <span class="title" i18n>option_notify_start</span>
@@ -88,7 +90,7 @@
                     <option value="1" i18n>option_switch</option>
                     <option value="2" i18n>option_always</option>
                 </select>
-                <div data-mode="proxy_mode,1">
+                <div>
                     <textarea name="proxy_include" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                 </div>
             </div>
@@ -100,7 +102,7 @@
                     <option value="2" i18n>option_always</option>
                 </select>
             </div>
-            <div title="option_capture_size_title" data-mode="capture_mode,1">
+            <div title="option_capture_size_title">
                 <div class="title" i18n>option_capture_size</div>
                 <div>
                     <input name="capture_size" type="number" min="0">
@@ -108,25 +110,25 @@
                 </div>
                 <span i18n>option_disabled</span>: <u><i>0</i></u>
             </div>
-            <div title="option_capture_resolve_title" data-mode="capture_mode,1">
+            <div title="option_capture_resolve_title">
                 <div class="title" i18n>option_capture_resolve</div>
                 <div>
                     <textarea name="capture_resolve" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
                 </div>
             </div>
-            <div title="option_capture_include_title" data-mode="capture_mode,1">
+            <div title="option_capture_include_title">
                 <div class="title" i18n>option_capture_include</div>
                 <div>
                     <textarea name="capture_include" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>
                 </div>
             </div>
-            <div title="option_capture_reject_title" data-mode="capture_mode,1,2">
+            <div title="option_capture_reject_title">
                 <div class="title" i18n>option_capture_reject</div>
                 <div>
                     <textarea name="capture_reject" rows="3" placeholder="zip&ensp;exe&ensp;jpg"></textarea>
                 </div>
             </div>
-            <div title="option_capture_exclude_title" data-mode="capture_mode,1,2">
+            <div title="option_capture_exclude_title">
                 <div class="title" i18n>option_capture_exclude</div>
                 <div>
                     <textarea name="capture_exclude" rows="10" placeholder="example.com domain.net this.co.ar"></textarea>

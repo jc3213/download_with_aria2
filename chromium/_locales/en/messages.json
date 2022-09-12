@@ -26,6 +26,12 @@
     "option_save": {
         "message": "Save"
     },
+    "option_undo": {
+        "message": "Undo"
+    },
+    "option_redo": {
+        "message": "Redo"
+    },
     "option_export": {
         "message": "Export"
     },
