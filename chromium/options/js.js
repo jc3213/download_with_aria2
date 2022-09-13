@@ -1,7 +1,8 @@
 var mapping = 'proxy_include,capture_resolve,capture_reject,capture_include,capture_exclude';
 var offset = {'refresh_interval': 1000, 'capture_size': 1048576};
+var linkage = {'folder_mode': [], 'proxy_mode': [], 'capture_mode': []};
 var changes = [];
-var undone = [];
+var undones = [];
 var global = true;
 var savebtn = document.querySelector('#save_btn');
 var undobtn = document.querySelector('#undo_btn');
@@ -32,20 +33,22 @@ undobtn.addEventListener('click', event => {
     var undo = changes.pop();
     var {name, old_value} = undo;
     document.querySelector('[name="' + name + '"]').value = old_value;
-    undone.push(undo);
+    undones.push(undo);
     redobtn.disabled = false;
+    printLinkage(name, old_value);
     if (changes.length === 0) {
         undobtn.disabled = true;
     }
 });
 
 redobtn.addEventListener('click', event => {
-    var redo = undone.pop();
+    var redo = undones.pop();
     var {name, new_value} = redo;
     document.querySelector('[name="' + name + '"]').value = new_value;
     changes.push(redo);
     undobtn.disabled = false;
-    if (undone.length === 0) {
+    printLinkage(name, new_value);
+    if (undones.length === 0) {
         redobtn.disabled = true;
     }
 });
@@ -115,26 +118,15 @@ chrome.storage.onChanged.addListener(changes => {
 
 function aria2StartUp() {
     printOptions(aria2Store);
-}
-
-function clearChanges() {
-    changes = [];
-    undone = [];
-    savebtn.disabled = undobtn.disabled = redobtn.disabled = true;
-}
-
-function printChanges(name, old_value, new_value) {
-    var change = changes.find(change => change.name === name);
-    changes.push({name, old_value, new_value});
-    savebtn.disabled = undobtn.disabled = false;
-}
-
-function applyChanges(options) {
-    changes.forEach(change => {
-        var {name, new_value} = change;
-        options[name] = new_value;
+    document.querySelectorAll('[data-link]').forEach(menu => {
+        var link = menu.getAttribute('data-link');
+        var split = link.indexOf(',');
+        var name = link.slice(0, split);
+        var rule = link.slice(split + 1);
+        var value = aria2Store[name];
+        linkage[name].push({menu, rule});
+        menu.style.display = rule.includes(value) ? 'block' : 'none';
     });
-    clearChanges();
 }
 
 function printOptions(options) {
@@ -145,4 +137,34 @@ function printOptions(options) {
         var value = options[name];
         field.value = array ? value.join(' ') : multi ? value / multi : value;
     });
+}
+
+function printLinkage(name, value) {
+    if (name in linkage) {
+        linkage[name].forEach(chain => {
+            var {menu, rule} = chain;
+            menu.style.display = rule.includes(value) ? 'block' : 'none';
+        });
+    }
+}
+
+function clearChanges() {
+    changes = [];
+    undones = [];
+    savebtn.disabled = undobtn.disabled = redobtn.disabled = true;
+}
+
+function printChanges(name, old_value, new_value) {
+    var change = changes.find(change => change.name === name);
+    changes.push({name, old_value, new_value});
+    savebtn.disabled = undobtn.disabled = false;
+    printLinkage(name, new_value);
+}
+
+function applyChanges(options) {
+    changes.forEach(change => {
+        var {name, new_value} = change;
+        options[name] = new_value;
+    });
+    clearChanges();
 }
