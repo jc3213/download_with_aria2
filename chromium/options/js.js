@@ -109,6 +109,14 @@ document.querySelector('#global').addEventListener('change', event => {
     printChanges(name, old_value, value);
 });
 
+document.querySelectorAll('[data-link]').forEach(menu => {
+    var link = menu.getAttribute('data-link');
+    var split = link.indexOf(',');
+    var name = link.slice(0, split);
+    var rule = link.slice(split + 1);
+    linkage[name].push({menu, rule});
+});
+
 chrome.storage.onChanged.addListener(changes => {
     if (changes['jsonrpc_uri'] || changes['secret_token']) {
         aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
@@ -117,15 +125,7 @@ chrome.storage.onChanged.addListener(changes => {
 
 function aria2StartUp() {
     printOptions(aria2Store);
-    document.querySelectorAll('[data-link]').forEach(menu => {
-        var link = menu.getAttribute('data-link');
-        var split = link.indexOf(',');
-        var name = link.slice(0, split);
-        var rule = link.slice(split + 1);
-        var value = aria2Store[name];
-        linkage[name].push({menu, rule});
-        menu.style.display = rule.includes(value) ? 'block' : 'none';
-    });
+
 }
 
 function printOptions(options) {
@@ -136,9 +136,14 @@ function printOptions(options) {
         var value = options[name];
         field.value = array ? value.join(' ') : multi ? value / multi : value;
     });
+    Object.keys(linkage).forEach(name => {
+        var value = options[name];
+        printLinkage(name, value);
+    });
 }
 
 function printLinkage(name, value) {
+    backage[name] = value;
     if (name in linkage) {
         linkage[name].forEach(chain => {
             var {menu, rule} = chain;
@@ -159,13 +164,11 @@ function printChanges(name, old_value, new_value) {
     savebtn.disabled = undobtn.disabled = false;
     redobtn.disabled = true;
     undones = [];
-    backage[name] = new_value;
     printLinkage(name, new_value);
 }
 
 function printUndoRedo(name, value) {
     document.querySelector('[name="' + name + '"]').value = value;
-    backage[name] = value;
     printLinkage(name, value);
 }
 
