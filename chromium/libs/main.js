@@ -1,4 +1,11 @@
-var filesize = 'min-split-size,disk-cache,max-download-limit,max-overall-download-limit,max-upload-limit,max-overall-upload-limit';
+var filesize = [
+    'min-split-size',
+    'disk-cache',
+    'max-download-limit',
+    'max-overall-download-limit',
+    'max-upload-limit',
+    'max-overall-upload-limit'
+];
 
 document.querySelectorAll('[i18n]').forEach(item => {
     item.innerText = chrome.i18n.getMessage(item.innerText);
