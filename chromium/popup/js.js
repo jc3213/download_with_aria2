@@ -245,7 +245,9 @@ async function addSession(gid) {
 function removeSession(type, gid, task) {
     self[type + 'Stat'].innerText --;
     self[type + 'Task'].splice(self[type + 'Task'].indexOf(gid), 1);
-    task && task.remove();
+    if (task) {
+        task.remove();
+    }
 }
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
