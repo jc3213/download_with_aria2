@@ -16,7 +16,7 @@ var i18n = {
         browser: '浏览器'
     }
 };
-var lang = chrome.i18n.getUILanguage();
+var lang = browser.i18n.getUILanguage();
 i18n = i18n[lang] ?? i18n[lang.slice(0, lang.indexOf('-'))] ?? i18n['en'];
 
 var sub = document.createElement('option');
