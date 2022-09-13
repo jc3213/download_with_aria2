@@ -4,56 +4,64 @@ if (location.search === '') {
     document.head.append(css);
 }
 
-var danger = false;
 var i18n = {
     'en': {
-        safe: 'Safe Mode',
-        danger: 'Dangerous!',
         api: 'Capture API',
         api_title: 'Set API used for capture browser downloads',
         browser: 'Browser'
     },
     'zh': {
-        safe: '安全模式',
-        danger: '危险！',
         api: '选择API',
         api_title: '设置用于抓取浏览器下载的API',
         browser: '浏览器'
     }
 };
-var lang = browser.i18n.getUILanguage();
+var lang = chrome.i18n.getUILanguage();
 i18n = i18n[lang] ?? i18n[lang.slice(0, lang.indexOf('-'))] ?? i18n['en'];
-
-var safe = document.createElement('button');
-safe.innerText = i18n['safe'];
-safe.addEventListener('click', event =>  {
-    if (confirm(i18n['danger'])) {
-        danger = true;
-        safe.style.display = 'none';
-        api.style.display = 'block';
-    }
-});
-
-var api = document.createElement('div');
-api.title = i18n['api_title'];
-api.style.display = 'none';
-api.innerHTML = '<span class="title">' + i18n['api'] + '</span><select name="capture_api"><option value="0">downloads API</option><option value="1">webRequest API</option></select>';
 
 var sub = document.createElement('option');
 sub.value = '2';
 sub.innerText = i18n['browser'];
 
-var capture = document.querySelector('#option [name="capture_mode"]').parentNode;
 var folder = document.querySelector('#option [name="folder_mode"]');
-
 folder.append(sub);
-capture.append(safe);
-capture.after(api);
+
+var api = document.createElement('div');
+api.title = i18n['api_title'];
+api.innerHTML = '<span class="title">' + i18n['api'] + '</span><select name="capture_api"><option value="0">downloads API</option><option value="1">webRequest API</option></select>';
+api.addEventListener('change', event => {
+    if (event.target.value === '1') {
+        setDefaultFolder();
+    }
+    else {
+        sub.style.display = 'block';
+    }
+});
+
+var capture = document.querySelector('#option [name="capture_mode"]');
+capture.parentNode.after(api);
+capture.addEventListener('change', event => {
+    if ('1,2'.includes(capture.value)) {
+        sub.style.display = 'block';
+    }
+    else {
+        setDefaultFolder();
+    }
+});
+
+linkage['capture_mode'].push({menu: api, rule: '1,2'}, {menu: sub, rule: '1,2'});
+linkage['capture_api'] = [{menu: sub, rule: '0'}];
+
+function setDefaultFolder() {
+    if (folder.value === '2') {
+        folder.value = '0';
+    }
+    sub.style.display = 'none';
+}
 
 var observer = setInterval(() => {
     if (aria2Store) {
         clearInterval(observer);
-        folder.value = aria2Store['folder_mode'];
         api.querySelector('select').value = aria2Store['capture_api'];
     }
 }, 50);
