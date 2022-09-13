@@ -43,8 +43,8 @@ var sub = document.createElement('option');
 sub.value = '2';
 sub.innerText = i18n['browser'];
 
-var capture = document.querySelector('#option > div:nth-child(12)');
-var folder = document.querySelector('#option > div:nth-child(5) > select');
+var capture = document.querySelector('#option [name="capture_mode"]').parentNode;
+var folder = document.querySelector('#option [name="folder_mode"]');
 
 folder.append(sub);
 capture.append(safe);
