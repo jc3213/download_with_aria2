@@ -1,6 +1,7 @@
 var mapping = 'proxy_include,capture_resolve,capture_reject,capture_include,capture_exclude';
 var offset = {'refresh_interval': 1000, 'capture_size': 1048576};
 var linkage = {'folder_mode': [], 'proxy_mode': [], 'capture_mode': []};
+var backage = {};
 var changes = [];
 var undones = [];
 var global = true;
@@ -32,10 +33,9 @@ savebtn.addEventListener('click', event => {
 undobtn.addEventListener('click', event => {
     var undo = changes.pop();
     var {name, old_value} = undo;
-    document.querySelector('[name="' + name + '"]').value = old_value;
     undones.push(undo);
     redobtn.disabled = false;
-    printLinkage(name, old_value);
+    printUndoRedo(name, old_value);
     if (changes.length === 0) {
         undobtn.disabled = true;
     }
@@ -44,10 +44,9 @@ undobtn.addEventListener('click', event => {
 redobtn.addEventListener('click', event => {
     var redo = undones.pop();
     var {name, new_value} = redo;
-    document.querySelector('[name="' + name + '"]').value = new_value;
     changes.push(redo);
     undobtn.disabled = false;
-    printLinkage(name, new_value);
+    printUndoRedo(name, new_value);
     if (undones.length === 0) {
         redobtn.disabled = true;
     }
@@ -99,14 +98,14 @@ document.querySelector('#option').addEventListener('change', event => {
     var {name, value} = event.target;
     var array = mapping.includes(name);
     var multi = offset[name];
-    var old_value = aria2Store[name];
+    var old_value = name in backage ? backage[name] : aria2Store[name];
     var new_value = array ? value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? value * multi : value;
     printChanges(name, old_value, new_value);
 });
 
 document.querySelector('#global').addEventListener('change', event => {
     var {name, value} = event.target;
-    var old_value = aria2Global[name];
+    var old_value = name in backage ? backage[name] : aria2Global[name];
     printChanges(name, old_value, value);
 });
 
@@ -151,14 +150,23 @@ function printLinkage(name, value) {
 function clearChanges() {
     changes = [];
     undones = [];
+    backage = {};
     savebtn.disabled = undobtn.disabled = redobtn.disabled = true;
 }
 
 function printChanges(name, old_value, new_value) {
-    var change = changes.find(change => change.name === name);
     changes.push({name, old_value, new_value});
     savebtn.disabled = undobtn.disabled = false;
+    redobtn.disabled = true;
+    undones = [];
+    backage[name] = new_value;
     printLinkage(name, new_value);
+}
+
+function printUndoRedo(name, value) {
+    document.querySelector('[name="' + name + '"]').value = value;
+    backage[name] = value;
+    printLinkage(name, value);
 }
 
 function applyChanges(options) {
