@@ -52,7 +52,7 @@ undobtn.addEventListener('click', event => {
     document.querySelector('[name="' + name + '"]').value = old_value;
     printLinkage(name, old_value);
     if (changes.length === 0) {
-        undobtn.disabled = true;
+        savebtn.disabled = undobtn.disabled = true;
     }
 });
 
