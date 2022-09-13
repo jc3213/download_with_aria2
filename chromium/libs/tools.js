@@ -48,7 +48,7 @@ function aria2WhenComplete(message) {
         chrome.notifications.create({
             ...notification,
             message,
-            title: chrome.i18n.getMessage('download_complete')
+            title: aria2Complete
         });
     }
 }
