@@ -60,7 +60,7 @@ popupbtn.addEventListener('click', event => {
 });
 
 document.querySelector('#back_btn').addEventListener('click', event => {
-    printOptions(aria2Store);
+    aria2StartUp();
     clearChanges();
     global = true;
     document.body.setAttribute('data-prefs', 'option');
@@ -88,7 +88,7 @@ importbtn.addEventListener('change', async event => {
     var json = await readFileTypeJSON(event.target.files[0]);
     chrome.storage.local.set(json);
     aria2Store = json;
-    printOptions(json);
+    aria2StartUp();
     event.target.value = '';
 });
 
@@ -130,19 +130,15 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 function aria2StartUp() {
-    printOptions(aria2Store);
-}
-
-function printOptions(options) {
     document.querySelectorAll('#option [name]').forEach(field => {
         var {name} = field;
         var array = mapping.includes(name);
         var multi = offset[name];
-        var value = options[name];
+        var value = aria2Store[name];
         field.value = array ? value.join(' ') : multi ? value / multi : value;
     });
     Object.keys(linkage).forEach(name => {
-        var value = options[name];
+        var value = aria2Store[name];
         printLinkage(name, value);
     });
 }
