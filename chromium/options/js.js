@@ -11,6 +11,7 @@ var redobtn = document.querySelector('#redo_btn');
 var importbtn = document.querySelector('#import_btn');
 var exportbtn = document.querySelector('#export_btn');
 var popupbtn = document.querySelector('#popup_btn');
+var secret = document.querySelector('[name="secret_token"]');
 
 if (location.search === '?popup') {
     importbtn.style.display = exportbtn.style.display = 'none'
@@ -35,7 +36,8 @@ undobtn.addEventListener('click', event => {
     var {name, old_value} = undo;
     undones.push(undo);
     redobtn.disabled = false;
-    printUndoRedo(name, old_value);
+    document.querySelector('[name="' + name + '"]').value = old_value;
+    printLinkage(name, old_value);
     if (changes.length === 0) {
         undobtn.disabled = true;
     }
@@ -46,7 +48,8 @@ redobtn.addEventListener('click', event => {
     var {name, new_value} = redo;
     changes.push(redo);
     undobtn.disabled = false;
-    printUndoRedo(name, new_value);
+    document.querySelector('[name="' + name + '"]').value = new_value;
+    printLinkage(name, new_value);
     if (undones.length === 0) {
         redobtn.disabled = true;
     }
@@ -89,9 +92,12 @@ importbtn.addEventListener('change', async event => {
     event.target.value = '';
 });
 
-document.querySelector('#show_btn').addEventListener('click', event => {
-    var input = event.target.parentNode.querySelector('input');
-    input.type = input.type === 'password' ? 'text' : 'password';
+document.querySelector('#show_btn').addEventListener('mousedown', event => {
+    secret.type = 'text';
+});
+
+document.addEventListener('mouseup', event => {
+    secret.type = 'password';
 });
 
 document.querySelector('#option').addEventListener('change', event => {
@@ -125,7 +131,6 @@ chrome.storage.onChanged.addListener(changes => {
 
 function aria2StartUp() {
     printOptions(aria2Store);
-
 }
 
 function printOptions(options) {
@@ -165,11 +170,6 @@ function printChanges(name, old_value, new_value) {
     redobtn.disabled = true;
     undones = [];
     printLinkage(name, new_value);
-}
-
-function printUndoRedo(name, value) {
-    document.querySelector('[name="' + name + '"]').value = value;
-    printLinkage(name, value);
 }
 
 function applyChanges(options) {
