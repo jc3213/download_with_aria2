@@ -1,3 +1,8 @@
+var notification = {
+    type: 'basic',
+    iconUrl: '/icons/icon48.png'
+};
+
 function getHostname(url) {
     try {
         return new URL(url).hostname;
@@ -30,12 +35,20 @@ function getDownloadName(bittorrent, [{path, uris}]) {
 
 function aria2WhenStart(message) {
     if (aria2Store['notify_start'] === '1') {
-        chrome.notifications.create({type: 'basic', iconUrl: '/icons/icon48.png', message, title: aria2Store['jsonrpc_uri']});
+        chrome.notifications.create({
+            ...notification,
+            message,
+            title: aria2Store['jsonrpc_uri']
+        });
     }
 }
 
 function aria2WhenComplete(message) {
     if (aria2Store['notify_complete'] === '1') {
-        chrome.notifications.create({type: 'basic', iconUrl: '/icons/icon48.png', message, title: chrome.i18n.getMessage('download_complete')});
+        chrome.notifications.create({
+            ...notification,
+            message,
+            title: chrome.i18n.getMessage('download_complete')
+        });
     }
 }
