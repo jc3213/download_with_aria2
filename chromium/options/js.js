@@ -1,6 +1,19 @@
-var mapping = 'proxy_include,capture_resolve,capture_reject,capture_include,capture_exclude';
-var offset = {'refresh_interval': 1000, 'capture_size': 1048576};
-var linkage = {'folder_mode': [], 'proxy_mode': [], 'capture_mode': []};
+var mapping = {
+    'proxy_include': 1,
+    'capture_resolve': 1,
+    'capture_reject': 1,
+    'capture_include': 1,
+    'capture_exclude': 1
+};
+var offset = {
+    'refresh_interval': 1000,
+    'capture_size': 1048576
+};
+var linkage = {
+    'folder_mode': [],
+    'proxy_mode': [],
+    'capture_mode': []
+};
 var backage = {};
 var changes = [];
 var undones = [];
@@ -102,7 +115,7 @@ document.addEventListener('mouseup', event => {
 
 document.querySelector('#option').addEventListener('change', event => {
     var {name, value} = event.target;
-    var array = mapping.includes(name);
+    var array = mapping[name];
     var multi = offset[name];
     var old_value = name in backage ? backage[name] : aria2Store[name];
     var new_value = array ? value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? value * multi : value;
@@ -132,7 +145,7 @@ chrome.storage.onChanged.addListener(changes => {
 function aria2StartUp() {
     document.querySelectorAll('#option [name]').forEach(field => {
         var {name} = field;
-        var array = mapping.includes(name);
+        var array = mapping[name];
         var multi = offset[name];
         var value = aria2Store[name];
         field.value = array ? value.join(' ') : multi ? value / multi : value;
