@@ -54,6 +54,7 @@ linkage['capture_api'] = [{menu: sub, rule: '0'}];
 
 function setDefaultFolder() {
     if (folder.value === '2') {
+        changes.push({name: 'folder_mode', old_value: '2', new_value: '0'});
         folder.value = '0';
     }
     sub.style.display = 'none';
@@ -63,5 +64,6 @@ var observer = setInterval(() => {
     if (aria2Store) {
         clearInterval(observer);
         api.querySelector('select').value = aria2Store['capture_api'];
+        sub.style.display = aria2Store['capture_api'] === '0' && '1,2'.includes(aria2Store['capture_mode']) ? 'block' : 'none';
     }
 }, 50);
