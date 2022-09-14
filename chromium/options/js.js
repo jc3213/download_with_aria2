@@ -60,7 +60,7 @@ redobtn.addEventListener('click', event => {
     var redo = undones.pop();
     var {name, new_value} = redo;
     changes.push(redo);
-    undobtn.disabled = false;
+    savebtn.disabled = undobtn.disabled = false;
     document.querySelector('[name="' + name + '"]').value = new_value;
     printLinkage(name, new_value);
     if (undones.length === 0) {
