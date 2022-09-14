@@ -49,6 +49,8 @@ capture.addEventListener('change', event => {
     }
 });
 
+document.querySelector('#back_btn').addEventListener('click', firefoxExclusive);
+
 linkage['capture_mode'].push({menu: api, rule: '1,2'}, {menu: sub, rule: '1,2'});
 linkage['capture_api'] = [{menu: sub, rule: '0'}];
 
@@ -60,10 +62,14 @@ function setDefaultFolder() {
     sub.style.display = 'none';
 }
 
+function firefoxExclusive() {
+    api.querySelector('select').value = aria2Store['capture_api'];
+    sub.style.display = aria2Store['capture_api'] === '0' && '1,2'.includes(aria2Store['capture_mode']) ? 'block' : 'none';
+}
+
 var observer = setInterval(() => {
     if (aria2Store) {
         clearInterval(observer);
-        api.querySelector('select').value = aria2Store['capture_api'];
-        sub.style.display = aria2Store['capture_api'] === '0' && '1,2'.includes(aria2Store['capture_mode']) ? 'block' : 'none';
+        firefoxExclusive();
     }
 }, 50);
