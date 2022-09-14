@@ -32,7 +32,9 @@
     - **Pattern**: `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
     - [**Space**] is recommendded to split match patterns
 - Built-in `Aria2 Web Manager`
-    - Default keyboard shortcut `Ctrl`+`Shift`+`2`
+    - Support keyboard shortcut
+        - `Ctrl` + `Shift` + `A` [**Chromium**]
+        - `Alt` + `A` [**Firefox**]
     - Filter task queues `Active`, `Stopped`, and `Removed`
     - `New Task` page with extra options
         - Upload `.torrent`, `.json`, `.metalink`, and `.meta4` files [**Chromium Only**]
