@@ -1,14 +1,14 @@
-var downloadStat = document.querySelector('[data-stat="download"]');
-var uploadStat = document.querySelector('[data-stat="upload"]');
 var activeStat = document.querySelector('[data-stat="active"]');
 var waitingStat = document.querySelector('[data-stat="waiting"]');
 var stoppedStat = document.querySelector('[data-stat="stopped"]');
-var activeGroup = document.querySelector('[data-group="active"]');
-var waitingGroup = document.querySelector('[data-group="waiting"]');
-var pausedGroup = document.querySelector('[data-group="paused"]');
-var completeGroup = document.querySelector('[data-group="complete"]');
-var removedGroup = document.querySelector('[data-group="removed"]');
-var errorGroup = document.querySelector('[data-group="error"]');
+var downloadStat = document.querySelector('[data-stat="download"]');
+var uploadStat = document.querySelector('[data-stat="upload"]');
+var activeQueue = document.querySelector('[data-queue="active"]');
+var waitingQueue = document.querySelector('[data-queue="waiting"]');
+var pausedQueue = document.querySelector('[data-queue="paused"]');
+var completeQueue = document.querySelector('[data-queue="complete"]');
+var removedQueue = document.querySelector('[data-queue="removed"]');
+var errorQueue = document.querySelector('[data-queue="error"]');
 var referer = document.querySelector('#referer');
 var useragent = document.querySelector('#useragent');
 var batch = document.querySelector('#batch');
@@ -40,7 +40,7 @@ document.querySelector('#download_btn').addEventListener('click', async event =>
 
 document.querySelector('#purdge_btn').addEventListener('click', async event => {
     await aria2RPC.message('aria2.purgeDownloadResult');
-    completeGroup.innerHTML = removedGroup.innerHTML = errorGroup.innerHTML = '';
+    completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     stoppedStat.innerText = '0';
 });
 
@@ -193,7 +193,7 @@ function aria2StartUp() {
     }).catch(error => {
         activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = '0';
         downloadStat.innerText = uploadStat.innerText = '0 ';
-        activeGroup.innerHTML = waitingGroup.innerHTML = pausedGroup.innerHTML = completeGroup.innerHTML = removedGroup.innerHTML = errorGroup.innerHTML = '';
+        activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     });
 }
 
@@ -236,7 +236,7 @@ async function addSession(gid) {
         self[type + 'Stat'].innerText ++;
         self[type + 'Task'].push(gid);
     }
-    self[status + 'Group'].appendChild(task);
+    self[status + 'Queue'].appendChild(task);
 }
 
 function removeSession(type, gid, task) {
@@ -271,7 +271,7 @@ function parseSession(gid, status, bittorrent) {
     var type = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
     self[type + 'Stat'].innerText ++;
     self[type + 'Task'].push(gid);
-    self[status + 'Group'].appendChild(task);
+    self[status + 'Queue'].appendChild(task);
     task.setAttribute('data-gid', gid);
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
