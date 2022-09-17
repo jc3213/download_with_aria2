@@ -66,7 +66,7 @@
                 </div>
                 Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;Linux: <u><i>home/aria2/download</i></u>
             </div>
-            <div class="module">
+            <div class="flex">
                 <div title="aria2_http_split_title">
                     <div class="title" i18n>aria2_http_split</div>
                     <div>
@@ -82,6 +82,8 @@
                     </div>
                     <span i18n>option_default</span>: <u><i>20M</i></u>
                 </div>
+            </div>
+            <div class="flex">
                 <div title="aria2_max_connection_title">
                     <div class="title" i18n>aria2_max_connection</div>
                     <div>
@@ -118,12 +120,12 @@
         </div>
         <button id="name_btn" data-aria2></button>
         <div id="manager" data-aria2 style="height: calc(100% - 61px);">
-            <div class="detail">
+            <div class="flex">
                 <div>🖥️<span id="local"></span>B</div>
                 <div>🛰️<span id="ratio"></span></div>
                 <div>📦<span id="remote"></span>B</div>
             </div>
-            <div class="module">
+            <div class="flex">
                 <div title="task_download_title">
                     <div class="title" i18n>task_download</div>
                     <div>
@@ -148,7 +150,7 @@
                     <button id="proxy_mgr" class="float">🔖</button>
                 </div>
             </div>
-            <div data-http class="module">
+            <div data-http class="flex">
                 <div title="aria2_http_split_title">
                     <div class="title" i18n>aria2_http_split</div>
                     <div>
@@ -165,7 +167,7 @@
                     <span i18n>option_default</span>: <u><i>20M</i></u>
                 </div>
             </div>
-            <div data-bt class="module">
+            <div data-bt class="flex">
                 <div title="aria2_bt_ratio_title">
                     <div class="title" i18n>aria2_bt_ratio</div>
                     <div>
@@ -213,7 +215,7 @@
                 <span id="name" class="title"></span>
                 <span id="error"></span>
             </div>
-            <div class="detail">
+            <div class="flex">
                 <div>🖥️<span id="local"></span>B</div>
                 <div>⏲️<span id="infinite" class="block">∞</span>
                     <span id="estimate">
@@ -224,6 +226,8 @@
                     </span>
                 </div>
                 <div>📦<span id="remote"></span>B</div>
+            </div>
+            <div class="flex">
                 <div>📶️<span id="connect"></span></div>
                 <div>⏬<span id="download"></span>B/s</div>
                 <div>⏫<span id="upload"></span>B/s</div>
