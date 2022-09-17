@@ -48,7 +48,7 @@ body > [data-main] > button:not(:first-child) {
     grid-area: menu;
 }
 
-.menu button {
+.menu > * {
     font-size: 12px;
     padding: 1px;
 }
@@ -143,7 +143,7 @@ body > [data-main] > button:not(:first-child) {
     height: 48px;
 }
 
-.file :not(#index, #name) {
+.file > *:not(#index, #name) {
     line-height: 46px;
     text-align: center;
 }
