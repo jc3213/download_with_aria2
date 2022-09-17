@@ -134,17 +134,14 @@ body > [data-main] > button:not(:first-child) {
     grid-template-columns: 40px auto 80px 60px;
 }
 
-.file > * {
+.file > *:nth-child(n+2) {
     border: 1px ridge #ccc;
     overflow-y: auto;
+    height: 44px;
 }
 
-.file > #index {
-    height: 48px;
-}
-
-.file > *:not(#index, #name) {
-    line-height: 46px;
+.file > *:nth-child(n+3) {
+    line-height: 44px;
     text-align: center;
 }
 
