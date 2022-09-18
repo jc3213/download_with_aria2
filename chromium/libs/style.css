@@ -35,7 +35,7 @@ input, textarea {
     resize: none;
 }
 
-span.float {
+input + span.float {
     display: none;
     top: 3px;
     right: 8px;

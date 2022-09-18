@@ -149,7 +149,7 @@ document.querySelector('#manager').addEventListener('change', event => {
     aria2RPC.message('aria2.changeOption', [activeId, {[name]: value}]);
 });
 
-document.querySelectorAll('#download.float, #upload.float').forEach(block => {
+document.querySelectorAll('.active.float, .complete.float').forEach(block => {
     var field = block.parentNode.querySelector('input');
     block.addEventListener('click', event => {
         if (field.disabled) {

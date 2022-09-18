@@ -122,7 +122,7 @@ body > [data-main] > button:not(:first-child) {
     height: 46px;
 }
 
-#download.float, #upload.float {
+.active.float, .complete.float {
     line-height: 27px;
     padding-left: 5px;
     width: calc(100% - 5px);
