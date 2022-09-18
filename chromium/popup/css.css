@@ -70,7 +70,7 @@ body > [data-main] > button:not(:first-child) {
     font-size: 11px;
 }
 
-#estimate > span {
+#estimate > * {
     margin-left: -4px;
 }
 
@@ -134,7 +134,7 @@ body > [data-main] > button:not(:first-child) {
 
 .file {
     display: grid;
-    grid-template-columns: 30px auto 80px 60px;
+    grid-template-columns: 40px auto 80px 60px;
 }
 
 .file > * {
