@@ -210,42 +210,40 @@
                 <div id="uris"></div>
             </div>
         </div>
-        <div class="template">
-            <div class="session">
-                <div id="name" class="title"></div>
-                <div>🖥️<span id="local"></span>B</div>
-                <div>⏲️<span id="infinite" class="float">∞</span>
-                    <span id="estimate">
-                        <span><span id="day"></span><sub i18n>time_day</sub></span>
-                        <span><span id="hour"></span><sub i18n>time_hour</sub></span>
-                        <span><span id="minute"></span><sub i18n>time_minute</sub></span>
-                        <span><span id="second"></span><sub i18n>time_second</sub></span>
-                    </span>
-                </div>
-                <div>📦<span id="remote"></span>B</div>
-                <div>📶️<span id="connect"></span></div>
-                <div>⏬<span id="download"></span>B/s</div>
-                <div>⏫<span id="upload"></span>B/s</div>
-                <div>
-                    <button id="remove_btn">❌</button>
-                    <button id="invest_btn">🔍</button>
-                    <button id="retry_btn">🌌</button>
-                </div>
-                <div id="meter">
-                    <div id="ratio"></div>
-                </div>
+        <div class="session">
+            <div id="name" class="title"></div>
+            <div>🖥️<span id="local"></span>B</div>
+            <div>⏲️<span id="infinite" class="float">∞</span>
+                <span id="estimate">
+                    <span><span id="day"></span><sub i18n>time_day</sub></span>
+                    <span><span id="hour"></span><sub i18n>time_hour</sub></span>
+                    <span><span id="minute"></span><sub i18n>time_minute</sub></span>
+                    <span><span id="second"></span><sub i18n>time_second</sub></span>
+                </span>
             </div>
-            <div class="uri">
-                <div id="uri"></div>
-                <div id="used" class="active">0</div>
-                <div id="wait" class="waiting">0</div>
+            <div>📦<span id="remote"></span>B</div>
+            <div>📶️<span id="connect"></span></div>
+            <div>⏬<span id="download"></span>B/s</div>
+            <div>⏫<span id="upload"></span>B/s</div>
+            <div>
+                <button id="remove_btn">❌</button>
+                <button id="invest_btn">🔍</button>
+                <button id="retry_btn">🌌</button>
             </div>
-            <div class="file">
-                <div id="index"></div>
-                <div><span id="name"></span></div>
-                <div><span id="size"></span>B</div>
+            <div id="meter">
                 <div id="ratio"></div>
             </div>
+        </div>
+        <div class="uri">
+            <div id="uri"></div>
+            <div id="used" class="active">0</div>
+            <div id="wait" class="waiting">0</div>
+        </div>
+        <div class="file">
+            <div id="index"></div>
+            <div><span id="name"></span></div>
+            <div><span id="size"></span>B</div>
+            <div id="ratio"></div>
         </div>
         <script src="/libs/aria2.js"></script>
         <script src="/libs/main.js"></script>

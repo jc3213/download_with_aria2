@@ -14,9 +14,9 @@ var useragent = document.querySelector('#useragent');
 var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
 var activeId;
-var fileLET = document.querySelector('.template > .file');
-var sessionLET = document.querySelector('.template > .session');
-var uriLET = document.querySelector('.template > .uri');
+var fileLET = document.querySelector('div.file');
+var sessionLET = document.querySelector('div.session');
+var uriLET = document.querySelector('div.uri');
 var fileList = document.querySelector('#files');
 var uriList = document.querySelector('#uris');
 
