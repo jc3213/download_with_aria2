@@ -32,22 +32,21 @@ body > [data-main] > button:not(:first-child) {
     grid-template-areas: 'name name name menu' 'detail detail detail menu' 'detail detail detail menu' 'meter meter meter meter';
 }
 
-.session .float {
-    background-color: #fff;
-    top: 0px;
-    left: 20px;
-}
-
 .session > div:first-child {
     grid-area: name;
 }
 
-.session > div:nth-child(n+2):nth-last-child(n+3) > span {
-    margin-left: 5px;
-}
-
 .session > div:nth-last-child(2) {
     grid-area: menu;
+}
+
+.session > div:last-child {
+    grid-area: meter;
+    text-align: center;
+}
+
+.session > div > span {
+    margin-left: 5px;
 }
 
 .session button {
@@ -55,9 +54,10 @@ body > [data-main] > button:not(:first-child) {
     padding: 1px;
 }
 
-.session > div:last-child {
-    grid-area: meter;
-    text-align: center;
+#infinite {
+    background-color: #fff;
+    top: 0px;
+    left: 20px;
 }
 
 #meter:active {
@@ -73,23 +73,27 @@ body > [data-main] > button:not(:first-child) {
     margin-left: -4px;
 }
 
-[status="active"] > div:last-child {
+[status="active"] #infinite {
+    display: none;
+}
+
+[status="active"] > #meter {
     background-color: #4cc;
 }
 
-[status="waiting"] > div:last-child {
+[status="waiting"] > #meter {
     background-color: #488;
 }
 
-[status="paused"] > div:last-child {
+[status="paused"] > #meter {
     background-color: #888;
 }
 
-[status="removed"] > div:last-child {
+[status="removed"] > #meter {
     background-color: #c84;
 }
 
-[status="error"] > div:last-child {
+[status="error"] > #meter {
     background-color: #c44;
 }
 
@@ -133,16 +137,15 @@ body > [data-main] > button:not(:first-child) {
 
 .file {
     display: grid;
-    grid-template-columns: 40px auto 80px 60px;
+    grid-template-columns: 30px auto 80px 60px;
 }
 
-.file > *:nth-child(n+2) {
+.file > * {
     border: 1px ridge #ccc;
     overflow-y: auto;
-    height: 44px;
 }
 
-.file > *:nth-child(n+3) {
+.file > *:not(:nth-child(2)) {
     line-height: 44px;
     text-align: center;
 }

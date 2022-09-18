@@ -211,10 +211,7 @@
             </div>
         </div>
         <div data-gid="template" class="session">
-            <div>
-                <span id="name" class="title"></span>
-                <span id="error"></span>
-            </div>
+            <div id="name" class="title"></div>
             <div>🖥️<span id="local"></span>B</div>
             <div>⏲️<span id="infinite" class="float">∞</span>
                 <span id="estimate">
@@ -239,10 +236,10 @@
         </div>
         <button template="uri"></button>
         <div template="file" class="file">
-            <button id="index"></button>
-            <span id="name"></span>
-            <span id="size"></span>
-            <span id="ratio"></span>
+            <div id="index"></div>
+            <div><span id="name"></span></div>
+            <div><span id="size"></span>B</div>
+            <div id="ratio"></div>
         </div>
         <script src="/libs/aria2.js"></script>
         <script src="/libs/main.js"></script>

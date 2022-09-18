@@ -253,15 +253,33 @@ function removeSession(type, gid, task) {
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
     var task = document.querySelector('[data-gid="' + gid + '"]') ?? parseSession(gid, status, bittorrent);
+    var ratio = (completedLength / totalLength * 10000 | 0) / 100;
+    var time = (totalLength - completedLength) / downloadSpeed;
     task.setAttribute('status', status);
     task.querySelector('#name').innerText = getDownloadName(bittorrent, files);
     task.querySelector('#local').innerText = getFileSize(completedLength);
     task.querySelector('#remote').innerText = getFileSize(totalLength);
-    task.querySelector('#infinite').style.display = totalLength === completedLength || downloadSpeed === '0' ? 'inline-block' : printEstimatedTime(task, (totalLength - completedLength) / downloadSpeed) ?? 'none';
+    if (isNaN(time)) {
+        task.querySelector('#infinite').style.display = 'block';
+    }
+    else {
+        var days = time / 86400 | 0;
+        var hours = time / 3600 - days * 24 | 0;
+        var minutes = time / 60 - days * 1440 - hours * 60 | 0;
+        var seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
+        task.querySelector('#day').innerText = days;
+        task.querySelector('#day').parentNode.style.display = days > 0 ? 'inline-block' : 'none';
+        task.querySelector('#hour').innerText = hours;
+        task.querySelector('#hour').parentNode.style.display = hours > 0 ? 'inline-block' : 'none';
+        task.querySelector('#minute').innerText = minutes;
+        task.querySelector('#minute').parentNode.style.display = minutes > 0 ? 'inline-block' : 'none';
+        task.querySelector('#second').innerText = seconds;
+    }
     task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
     task.querySelector('#download').innerText = getFileSize(downloadSpeed);
     task.querySelector('#upload').innerText = getFileSize(uploadSpeed);
-    task.querySelector('#ratio').innerText = task.querySelector('#ratio').style.width = ((completedLength / totalLength * 10000 | 0) / 100) + '%';
+    task.querySelector('#ratio').innerText = ratio + ' %';
+    task.querySelector('#ratio').style.width = ratio + '%';
     task.querySelector('#ratio').className = status;
     task.querySelector('#retry_btn').style.display = !bittorrent && 'error,removed'.includes(status) ? 'inline-block' : 'none';
     if (activeId === gid) {
@@ -329,20 +347,6 @@ function parseSession(gid, status, bittorrent) {
     return task;
 }
 
-function printEstimatedTime(task, number) {
-    var days = number / 86400 | 0;
-    var hours = number / 3600 - days * 24 | 0;
-    var minutes = number / 60 - days * 1440 - hours * 60 | 0;
-    var seconds = number - days * 86400 - hours * 3600 - minutes * 60 | 0;
-    task.querySelector('#day').innerText = days;
-    task.querySelector('#day').parentNode.style.display = days > 0 ? 'inline-block' : 'none';
-    task.querySelector('#hour').innerText = hours;
-    task.querySelector('#hour').parentNode.style.display = hours > 0 ? 'inline-block' : 'none';
-    task.querySelector('#minute').innerText = minutes;
-    task.querySelector('#minute').parentNode.style.display = minutes > 0 ? 'inline-block' : 'none';
-    task.querySelector('#second').innerText = seconds;
-}
-
 function updateTaskDetail(task, status, bittorrent, files) {
     var disabled = 'complete,error,removed'.includes(status);
     document.querySelector('#name_btn').innerText = task.querySelector('#name').innerText;
@@ -370,7 +374,7 @@ function printTaskFiles(files) {
     files.forEach((file, index) => {
         var cell = cells[index] ?? printTableCell(fileList, fileLET, cell => applyFileSelect(cell, file));
         var {uris, length, completedLength} = file;
-        cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
+        cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + ' %';
     });
 }
 
