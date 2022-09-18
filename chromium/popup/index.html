@@ -131,7 +131,7 @@
                     <div>
                         <input name="max-download-limit" type="text">
                         <span class="float">B/s</span>
-                        <div id="download" class="block active"></div>
+                        <div id="download" class="float active"></div>
                     </div>
                 </div>
                 <div title="task_upload_title">
@@ -139,7 +139,7 @@
                     <div>
                         <input name="max-upload-limit" type="text">
                         <span class="float">B/s</span>
-                        <div id="upload" class="block complete"></div>
+                        <div id="upload" class="float complete"></div>
                     </div>
                 </div>
             </div>
@@ -215,23 +215,19 @@
                 <span id="name" class="title"></span>
                 <span id="error"></span>
             </div>
-            <div class="flex">
-                <div>🖥️<span id="local"></span>B</div>
-                <div>⏲️<span id="infinite" class="block">∞</span>
-                    <span id="estimate">
-                        <span><span id="day"></span><sub i18n>time_day</sub></span>
-                        <span><span id="hour"></span><sub i18n>time_hour</sub></span>
-                        <span><span id="minute"></span><sub i18n>time_minute</sub></span>
-                        <span><span id="second"></span><sub i18n>time_second</sub></span>
-                    </span>
-                </div>
-                <div>📦<span id="remote"></span>B</div>
+            <div>🖥️<span id="local"></span>B</div>
+            <div>⏲️<span id="infinite" class="float">∞</span>
+                <span id="estimate">
+                    <span><span id="day"></span><sub i18n>time_day</sub></span>
+                    <span><span id="hour"></span><sub i18n>time_hour</sub></span>
+                    <span><span id="minute"></span><sub i18n>time_minute</sub></span>
+                    <span><span id="second"></span><sub i18n>time_second</sub></span>
+                </span>
             </div>
-            <div class="flex">
-                <div>📶️<span id="connect"></span></div>
-                <div>⏬<span id="download"></span>B/s</div>
-                <div>⏫<span id="upload"></span>B/s</div>
-            </div>
+            <div>📦<span id="remote"></span>B</div>
+            <div>📶️<span id="connect"></span></div>
+            <div>⏬<span id="download"></span>B/s</div>
+            <div>⏫<span id="upload"></span>B/s</div>
             <div class="menu">
                 <button id="remove_btn">❌</button>
                 <button id="invest_btn">🔍</button>

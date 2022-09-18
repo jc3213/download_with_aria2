@@ -28,20 +28,22 @@ body > [data-main] > button:not(:first-child) {
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
-    grid-template-columns: auto 20px;
-    grid-template-areas: 'name menu' 'detail menu' 'detail menu' 'meter meter';
+    grid-template-columns: auto auto auto 20px;
+    grid-template-areas: 'name name name menu' 'detail detail detail menu' 'detail detail detail menu' 'meter meter meter meter';
 }
 
-.block {
-    position: absolute;
-    top: 0px;
-    width: 100%;
-    height: 100%;
-}
-
-.session .flex span {
-    margin-left: 5px;
+.session .float {
     background-color: #fff;
+    top: 0px;
+    left: 20px;
+}
+
+.session > div:first-child {
+    grid-area: name;
+}
+
+.session > div:nth-child(n+2):nth-last-child(n+2) > span {
+    margin-left: 5px;
 }
 
 .menu {
@@ -53,7 +55,7 @@ body > [data-main] > button:not(:first-child) {
     padding: 1px;
 }
 
-#meter {
+.session > div:last-child {
     grid-area: meter;
     text-align: center;
 }
@@ -71,23 +73,23 @@ body > [data-main] > button:not(:first-child) {
     margin-left: -4px;
 }
 
-[status="active"] #meter {
+[status="active"] > div:last-child {
     background-color: #4cc;
 }
 
-[status="waiting"] #meter {
+[status="waiting"] > div:last-child {
     background-color: #488;
 }
 
-[status="paused"] #meter {
+[status="paused"] > div:last-child {
     background-color: #888;
 }
 
-[status="removed"] #meter {
+[status="removed"] > div:last-child {
     background-color: #c84;
 }
 
-[status="error"] #meter {
+[status="error"] > div:last-child {
     background-color: #c44;
 }
 
@@ -97,6 +99,11 @@ body > [data-main] > button:not(:first-child) {
 
 #manager > div:first-child {
     margin-bottom: 15px;
+}
+
+#manager > div:first-child > * {
+    border: 1px ridge #ccc;
+    padding: 5px;
 }
 
 #name_btn {
@@ -114,18 +121,13 @@ body > [data-main] > button:not(:first-child) {
     height: 46px;
 }
 
-#manager .flex:first-child > * {
-    border: 1px ridge #ccc;
-    padding: 5px;
-}
-
-#manager .block {
+#download.float, #upload.float {
     line-height: 27px;
     padding-left: 5px;
     width: calc(100% - 5px);
 }
 
-#manager div.float {
+#manager > div:nth-last-child(2) .float {
     top: -10px;
 }
 

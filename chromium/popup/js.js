@@ -149,10 +149,14 @@ document.querySelector('#manager').addEventListener('change', event => {
     aria2RPC.message('aria2.changeOption', [activeId, {[name]: value}]);
 });
 
-document.querySelectorAll('#manager .block').forEach(block => {
+document.querySelectorAll('#download.float, #upload.float').forEach(block => {
     var field = block.parentNode.querySelector('input');
     block.addEventListener('click', event => {
-        block.style.display = field.disabled ? 'block' : field.focus() ?? 'none';
+        if (field.disabled) {
+            return;
+        }
+        block.style.display = 'none';
+        field.focus();
     });
     field.addEventListener('blur', event => {
         block.style.display = 'block';
