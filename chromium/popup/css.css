@@ -45,7 +45,7 @@ body > [data-main] > button:not(:first-child) {
     text-align: center;
 }
 
-.session > div > span {
+.session > div > span, .flex > div > span {
     margin-left: 5px;
 }
 
