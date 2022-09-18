@@ -370,7 +370,7 @@ function printTableCell(table, template, runOnce) {
 }
 
 function printTaskFiles(files) {
-    var cells = [...fileList.childNodes];
+    var cells = fileList.childNodes;
     files.forEach((file, index) => {
         var cell = cells[index] ?? printTableCell(fileList, fileLET, cell => applyFileSelect(cell, file));
         var {length, completedLength} = file;
@@ -397,7 +397,7 @@ function applyFileSelect(cell, {index, path, length, selected, uris}) {
 }
 
 function printTaskUris(uris) {
-    var cells = [...uriList.childNodes];
+    var cells = uriList.childNodes;
     var index = -1;
     var used;
     var wait;
