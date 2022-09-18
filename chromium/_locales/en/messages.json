@@ -216,25 +216,25 @@
         "message": "Download Speed"
     },
     "task_download_title": {
-        "message": "Limit maximum download speed for this download"
+        "message": "Set maximum download speed for this download"
     },
     "task_upload": {
         "message": "Upload Speed"
     },
     "task_upload_title": {
-        "message": "Limit maximum upload speed for this download"
+        "message": "Set maximum upload speed for this download"
     },
     "task_urls": {
         "message": "Download URLs"
     },
     "task_urls_title": {
-        "message": "Manage urls used for this download"
+        "message": "Urls that are used for this download"
     },
     "task_files": {
         "message": "Download Files"
     },
     "task_files_title": {
-        "message": "Manage files selected for this download"
+        "message": "Files that are selected for this download"
     },
     "aria2_true": {
         "message": "True"

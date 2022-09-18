@@ -216,25 +216,25 @@
         "message": "下载速度"
     },
     "task_download_title": {
-        "message": "限制本次下载的最大下载速度"
+        "message": "设置本次下载的最大下载速度"
     },
     "task_upload": {
         "message": "上传速度"
     },
     "task_upload_title": {
-        "message": "限制本次下载的最大上传速度"
+        "message": "设置本次下载的最大上传速度"
     },
     "task_urls": {
         "message": "下载中的链接"
     },
     "task_urls_title": {
-        "message": "管理本次下载正在使用的链接"
+        "message": "本次下载中正在使用的链接"
     },
     "task_files": {
         "message": "下载中的文件"
     },
     "task_files_title": {
-        "message": "管理本次下载正在下载的文件"
+        "message": "本次下载中正在下载的文件"
     },
     "aria2_true": {
         "message": "是"
