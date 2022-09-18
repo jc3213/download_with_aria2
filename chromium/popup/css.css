@@ -42,15 +42,15 @@ body > [data-main] > button:not(:first-child) {
     grid-area: name;
 }
 
-.session > div:nth-child(n+2):nth-last-child(n+2) > span {
+.session > div:nth-child(n+2):nth-last-child(n+3) > span {
     margin-left: 5px;
 }
 
-.menu {
+.session > div:nth-last-child(2) {
     grid-area: menu;
 }
 
-.menu > * {
+.session button {
     font-size: 12px;
     padding: 1px;
 }
