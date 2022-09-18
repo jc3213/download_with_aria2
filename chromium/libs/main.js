@@ -47,7 +47,7 @@ function printGlobalOptions(options, entries) {
         var {name} = entry;
         var value = options[name] ?? '';
         if (filesize.includes(name)) {
-            var size = getFileSize(value);
+            value = getFileSize(value);
         }
         entry.value = value;
     });
