@@ -56,6 +56,7 @@ body > [data-main] > button:not(:first-child) {
 
 #infinite {
     background-color: #fff;
+    display: none;
     top: 0px;
     left: 20px;
 }
@@ -71,10 +72,6 @@ body > [data-main] > button:not(:first-child) {
 
 #estimate > span {
     margin-left: -4px;
-}
-
-[status="active"] #infinite {
-    display: none;
 }
 
 [status="active"] > #meter {
