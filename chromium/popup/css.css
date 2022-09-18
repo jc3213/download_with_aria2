@@ -28,7 +28,7 @@ body > [data-main] > button:not(:first-child) {
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
-    grid-template-columns: auto auto auto 20px;
+    grid-template-columns: calc(33.333% - 6.828px) calc(33.333% - 6.828px) calc(33.333% - 6.828px) 20.484px;
     grid-template-areas: 'name name name menu' 'detail detail detail menu' 'detail detail detail menu' 'meter meter meter meter';
 }
 
@@ -130,7 +130,7 @@ body > [data-main] > button:not(:first-child) {
 }
 
 #uris {
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 .file {
