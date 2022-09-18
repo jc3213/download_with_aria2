@@ -253,8 +253,8 @@ function removeSession(type, gid, task) {
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
     var task = document.querySelector('[data-gid="' + gid + '"]') ?? parseSession(gid, status, bittorrent);
-    var ratio = (completedLength / totalLength * 10000 | 0) / 100;
     var time = (totalLength - completedLength) / downloadSpeed;
+    var ratio = (completedLength / totalLength * 10000 | 0) / 100;
     task.setAttribute('status', status);
     task.querySelector('#name').innerText = getDownloadName(bittorrent, files);
     task.querySelector('#local').innerText = getFileSize(completedLength);
@@ -278,7 +278,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
     task.querySelector('#download').innerText = getFileSize(downloadSpeed);
     task.querySelector('#upload').innerText = getFileSize(uploadSpeed);
-    task.querySelector('#ratio').innerText = ratio + ' %';
+    task.querySelector('#ratio').innerText = 
     task.querySelector('#ratio').style.width = ratio + '%';
     task.querySelector('#ratio').className = status;
     task.querySelector('#retry_btn').style.display = !bittorrent && 'error,removed'.includes(status) ? 'inline-block' : 'none';
@@ -374,7 +374,7 @@ function printTaskFiles(files) {
     files.forEach((file, index) => {
         var cell = cells[index] ?? printTableCell(fileList, fileLET, cell => applyFileSelect(cell, file));
         var {uris, length, completedLength} = file;
-        cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + ' %';
+        cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
     });
 }
 
