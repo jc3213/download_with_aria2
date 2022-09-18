@@ -26,19 +26,19 @@ function getFileSize(bytes) {
         return '?? ';
     }
     else if (bytes < 1024) {
-        return bytes + ' ';
+        return bytes;
     }
     else if (bytes < 1048576) {
-        return (bytes / 10.24 | 0) / 100 + ' K';
+        return (bytes / 10.24 | 0) / 100 + 'K';
     }
     else if (bytes < 1073741824) {
-        return (bytes / 10485.76 | 0) / 100 + ' M';
+        return (bytes / 10485.76 | 0) / 100 + 'M';
     }
     else if (bytes < 1099511627776) {
-        return (bytes / 10737418.24 | 0) / 100 + ' G';
+        return (bytes / 10737418.24 | 0) / 100 + 'G';
     }
     else {
-        return (bytes / 10995116277.76 | 0) / 100 + ' T';
+        return (bytes / 10995116277.76 | 0) / 100 + 'T';
     }
 }
 
@@ -48,8 +48,6 @@ function printGlobalOptions(options, entries) {
         var value = options[name] ?? '';
         if (filesize.includes(name)) {
             var size = getFileSize(value);
-            var index = size.indexOf(' ');
-            value = size.slice(0, index) + size.slice(index + 1);
         }
         entry.value = value;
     });
