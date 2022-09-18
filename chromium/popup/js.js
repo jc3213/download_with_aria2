@@ -423,7 +423,7 @@ function printTaskUris(uris) {
 
 function applyUriChange(cell) {
     cell.addEventListener('click', event => {
-        var uri = event.target.innerText;
+        var uri = cell.querySelector('#uri').innerText;
         if (event.ctrlKey) {
             aria2RPC.message('aria2.changeUri', [activeId, 1, [uri], []]);
         }
