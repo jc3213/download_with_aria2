@@ -14,11 +14,12 @@ var useragent = document.querySelector('#useragent');
 var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
 var activeId;
-var sessionLET = document.querySelector('[data-gid="template"]');
+var fileLET = document.querySelector('.template > .file');
+var sessionLET = document.querySelector('.template > .session');
+var uriLET = document.querySelector('.template > .uri');
 var fileList = document.querySelector('#files');
-var fileLET = document.querySelector('[template="file"]');
 var uriList = document.querySelector('#uris');
-var uriLET = document.querySelector('[template="uri"]');
+
 var savebtn = document.querySelector('#save_btn');
 
 document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) => {
@@ -363,7 +364,6 @@ function updateTaskDetail(task, status, bittorrent, files) {
 
 function printTableCell(table, template, runOnce) {
     var cell = template.cloneNode(true);
-    cell.removeAttribute('template');
     runOnce(cell);
     table.appendChild(cell);
     return cell;
@@ -399,10 +399,20 @@ function applyFileSelect(cell, {index, path, length, selected, uris}) {
 function printTaskUris(uris) {
     var cells = uriList.childNodes;
     var length = uris.length;
-    uris.forEach(({uri, status}, index) => {
+    var index = -1;
+    uris.forEach(({uri, status}) => {
         var cell = cells[index] ?? printTableCell(uriList, uriLET, applyUriChange);
-        cell.innerText = uri;
-        cell.className = status === 'used' ? 'active' : 'waiting';
+        var link = cell.querySelector('#uri');
+        if (link.innerText !== uri) {
+            link.innerText = uri;
+            index ++;
+        }
+        if (status === 'used') {
+            cell.querySelector('#used').innerText ++;
+        }
+        else {
+            cell.querySelector('#wait').innerText ++;
+        }
     });
     cells.forEach((cell, index) => {
         if (index > length) {

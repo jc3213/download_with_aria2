@@ -18,6 +18,10 @@
     color: #fff;
 }
 
+.template {
+    display: none;
+}
+
 body > [data-main] > button:not(:first-child) {
     margin-left: 10px;
 }
@@ -111,9 +115,6 @@ body > [data-main] > button:not(:first-child) {
     overflow-y: auto;
     padding: 0px;
     margin-bottom: 15px;
-}
-
-#name_btn, .uri > * {
     width: 100%;
     word-break: break-word;
 }
@@ -132,23 +133,27 @@ body > [data-main] > button:not(:first-child) {
     top: -10px;
 }
 
+#uris {
+    margin-top: 5px;
+}
+
 .file {
     display: grid;
     grid-template-columns: 40px auto 80px 60px;
 }
 
-.file > * {
+.uri {
+    display: grid;
+    grid-template-columns: auto 40px 40px;
+}
+
+.file > *, .uri > * {
     border: 1px ridge #ccc;
+    word-break: break-word;
     overflow-y: auto;
 }
 
-.file > *:not(:nth-child(2)) {
-    line-height: 44px;
+.file > *:not(:nth-child(2)), .uri > *:not(:first-child) {
+    line-height: 46px;
     text-align: center;
-}
-
-.uri > * {
-    overflow-y: hidden;
-    margin-top: 5px;
-    text-align: left;
 }
