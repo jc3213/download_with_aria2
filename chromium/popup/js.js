@@ -407,7 +407,7 @@ function printTaskUris(uris) {
         if (link.innerText !== uri) {
             link.innerText = uri;
             used = cell.querySelector('#used');
-            wait = cell.querySelector('#wait')
+            wait = cell.querySelector('#wait');
             index ++;
         }
         if (status === 'used') {
@@ -419,7 +419,7 @@ function printTaskUris(uris) {
     });
     cells.forEach((cell, cur) => {
         if (cur > index) {
-            cell.remove()
+            cell.remove();
         }
     });
 }
