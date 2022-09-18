@@ -378,7 +378,7 @@ function printTaskFiles(files) {
     });
 }
 
-function applyFileSelect(cell,{index, path, length, selected, uris}) {
+function applyFileSelect(cell, {index, path, length, selected, uris}) {
     var tile = cell.querySelector('#index');
     tile.innerText = index;
     tile.className = selected === 'true' ? 'active' : 'error';
