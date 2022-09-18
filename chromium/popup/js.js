@@ -370,10 +370,10 @@ function printTableCell(table, template, runOnce) {
 }
 
 function printTaskFiles(files) {
-    var cells = fileList.childNodes;
+    var cells = [...fileList.childNodes];
     files.forEach((file, index) => {
         var cell = cells[index] ?? printTableCell(fileList, fileLET, cell => applyFileSelect(cell, file));
-        var {uris, length, completedLength} = file;
+        var {length, completedLength} = file;
         cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
     });
 }
@@ -397,25 +397,28 @@ function applyFileSelect(cell, {index, path, length, selected, uris}) {
 }
 
 function printTaskUris(uris) {
-    var cells = uriList.childNodes;
-    var length = uris.length;
+    var cells = [...uriList.childNodes];
     var index = -1;
+    var used;
+    var wait;
     uris.forEach(({uri, status}) => {
         var cell = cells[index] ?? printTableCell(uriList, uriLET, applyUriChange);
         var link = cell.querySelector('#uri');
         if (link.innerText !== uri) {
             link.innerText = uri;
+            used = cell.querySelector('#used');
+            wait = cell.querySelector('#wait')
             index ++;
         }
         if (status === 'used') {
-            cell.querySelector('#used').innerText ++;
+            used.innerText ++;
         }
         else {
-            cell.querySelector('#wait').innerText ++;
+            wait.innerText ++;
         }
     });
-    cells.forEach((cell, index) => {
-        if (index > length) {
+    cells.forEach((cell, cur) => {
+        if (cur > index) {
             cell.remove()
         }
     });
