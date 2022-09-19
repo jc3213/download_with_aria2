@@ -48,7 +48,7 @@ async function aria2StartUp() {
 }
 
 function aria2Update() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    aria2RPC = new JSLib_Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     aria2Status();
 }
 

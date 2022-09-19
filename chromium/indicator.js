@@ -1,5 +1,5 @@
 function aria2StartUp() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    aria2RPC = new JSLib_Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     aria2RPC.message('aria2.tellActive').then(result => {
         var active = result.map(({gid}) => gid);
         chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
