@@ -9,13 +9,13 @@ var pausedQueue = document.querySelector('[data-queue="paused"]');
 var completeQueue = document.querySelector('[data-queue="complete"]');
 var removedQueue = document.querySelector('[data-queue="removed"]');
 var errorQueue = document.querySelector('[data-queue="error"]');
+var sessionLET = document.querySelector('div.session');
 var referer = document.querySelector('#referer');
 var useragent = document.querySelector('#useragent');
 var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
 var activeId;
 var fileLET = document.querySelector('div.file');
-var sessionLET = document.querySelector('div.session');
 var uriLET = document.querySelector('div.uri');
 var fileList = document.querySelector('#files');
 var uriList = document.querySelector('#uris');
@@ -253,7 +253,7 @@ function removeSession(type, gid, task) {
 }
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    var task = document.querySelector('[data-gid="' + gid + '"]') ?? parseSession(gid, status, bittorrent);
+    var task = document.getElementById(gid) ?? parseSession(gid, status, bittorrent);
     var time = (totalLength - completedLength) / downloadSpeed;
     var ratio = (completedLength / totalLength * 10000 | 0) / 100;
     task.setAttribute('status', status);
@@ -295,7 +295,7 @@ function parseSession(gid, status, bittorrent) {
     self[type + 'Stat'].innerText ++;
     self[type + 'Task'].push(gid);
     self[status + 'Queue'].appendChild(task);
-    task.setAttribute('data-gid', gid);
+    task.id = gid;
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
         var status = task.getAttribute('status');
