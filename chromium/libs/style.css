@@ -3,7 +3,8 @@ body {
     user-select: none;
     width: 600px;
     height: 500px;
-    margin: 8px;
+    margin: auto;
+    padding: 8px;
 }
 
 body, input, textarea, select, option, button {
