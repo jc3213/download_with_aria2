@@ -98,10 +98,6 @@ body > [data-main] > button:not(:first-child) {
     text-align: center;
 }
 
-#manager > div:first-child {
-    margin-bottom: 15px;
-}
-
 #manager > div:first-child > * {
     border: 1px ridge #ccc;
     padding: 5px;
