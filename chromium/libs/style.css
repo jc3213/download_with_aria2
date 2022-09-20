@@ -23,7 +23,7 @@ h1:first-child {
     margin-top: 0px;
 }
 
-body > div > [title]:not(:first-child), .flex > [title] {
+[title]:not(:first-child), .flex > [title] {
     margin-top: 25px;
 }
 
