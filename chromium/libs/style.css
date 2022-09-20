@@ -19,7 +19,11 @@ div {
     position: relative;
 }
 
-div[title] {
+h1:first-child {
+    margin-top: 0px;
+}
+
+body > div > [title]:not(:first-child), .flex > [title] {
     margin-top: 25px;
 }
 
@@ -90,11 +94,6 @@ button.float {
 button:disabled {
     padding: 6px;
     border: none;
-}
-
-h1 {
-    margin-top: 0px;
-    margin-bottom: 35px;
 }
 
 .flex {
