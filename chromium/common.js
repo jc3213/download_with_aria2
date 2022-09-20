@@ -1,8 +1,8 @@
 var aria2Complete = chrome.i18n.getMessage('download_complete');
 
 async function getDefaultOptions() {
-    var text = await fetch('/options.json');
-    var json = await text.json();
+    var response = await fetch('/options.json');
+    var json = await response.json();
     chrome.storage.local.set(json);
     return json;
 }
