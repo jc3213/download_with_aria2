@@ -1,29 +1,38 @@
 class Aria2 {
-    constructor (jsonrpc, secret) {
-        if (jsonrpc.startsWith('http')) {
-            var sender = this.fetch;
+    constructor (url, token) {
+        if (url.startsWith('http')) {
+            this.call = this.fetch;
         }
-        else if (jsonrpc.starsWith('ws')) {
-            sender = this.websocket;
+        else if (url.startsWith('ws')) {
+            this.call = this.websocket;
         }
         else {
-            throw new Error('Invalid JSON RPC URI: Protocal not supported!');
+            return new Error('Invalid JSON RPC URI: protocal not supported!');
+        }
+        this.jsonrpc = url;
+        if (token) {
+            this.params = ['token:' + token];
+        }
+        else {
+            this.params = [];
         }
         this.message = function (method, options) {
-            var params = [];
-            if (secret) {
-                params.push('token:' + secret);
-            }
-            if (options) {
-                params.push(...options);
-            }
-            var message = JSON.stringify({id: '', jsonrpc: '2.0', method, params});
-            return sender(jsonrpc, message);
+            var message = this.json(method, options);
+            return this.call(message);
         };
     }
-    fetch (jsonrpc, body) {
-        return fetch(jsonrpc, {method: 'POST', body}).then(function (response) {
-            return response.json();
+    json (method, options) {
+        var params = [...this.params];
+        if (options) {
+            params.push(...options);
+        }
+        var json = {id: '', jsonrpc: '2.0', method, params};
+        return JSON.stringify(json);
+    }
+    fetch (body) {
+        return fetch(this.jsonrpc, {method: 'POST', body})
+          .then(function (response) {
+            return response.json()
         }).then(function (json) {
             var {result, error} = json;
             if (result) {
@@ -34,9 +43,9 @@ class Aria2 {
             }
         });
     }
-    websocket (jsonrpc, message) {
+    websocket (message) {
         return new Promise(function (resolve, reject) {
-            var socket = new WebSocket(jsonrpc);
+            var socket = new WebSocket(this.jsonrpc);
             socket.onopen = function (event) {
                 socket.send(message);
             };
