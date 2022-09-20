@@ -7,7 +7,7 @@ class Aria2 {
             this.call = this.websocket;
         }
         else {
-            return new Error('Invalid JSON RPC URI: protocal not supported!');
+            console.error('Invalid JSON RPC URI: protocal not supported!');
         }
         this.jsonrpc = url;
         if (token) {
@@ -16,18 +16,15 @@ class Aria2 {
         else {
             this.params = [];
         }
-        this.message = function (method, options) {
-            var message = this.json(method, options);
-            return this.call(message);
-        };
     }
-    json (method, options) {
+    message (method, options) {
         var params = [...this.params];
         if (options) {
             params.push(...options);
         }
         var json = {id: '', jsonrpc: '2.0', method, params};
-        return JSON.stringify(json);
+        var message = JSON.stringify(json);
+        return this.call(message);
     }
     fetch (body) {
         return fetch(this.jsonrpc, {method: 'POST', body})
