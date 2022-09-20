@@ -7,7 +7,7 @@ class Aria2 {
             this.call = this.websocket;
         }
         else {
-            console.error('Invalid JSON RPC URI: protocal not supported!');
+            throw new Error('Invalid JSON RPC URI: protocal not supported!');
         }
         this.jsonrpc = url;
         if (token) {
