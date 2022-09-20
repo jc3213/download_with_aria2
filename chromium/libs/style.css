@@ -19,8 +19,8 @@ div {
     position: relative;
 }
 
-div[title]:not(:last-child) {
-    margin-bottom: 25px;
+div[title] {
+    margin-top: 25px;
 }
 
 input, textarea {
