@@ -154,6 +154,7 @@ function aria2StartUp() {
         var value = aria2Store[name];
         printLinkage(name, value);
     });
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
 }
 
 function printLinkage(name, value) {

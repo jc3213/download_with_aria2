@@ -190,6 +190,7 @@ function aria2StartUp() {
     activeTask = [];
     waitingTask = [];
     stoppedTask = [];
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     aria2RPC.message('aria2.tellActive').then(async active => {
         var waiting = await aria2RPC.message('aria2.tellWaiting', [0, 999]);
         var stopped = await aria2RPC.message('aria2.tellStopped', [0, 999]);
