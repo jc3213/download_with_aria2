@@ -1,5 +1,3 @@
-var aria2Complete = chrome.i18n.getMessage('download_complete');
-
 async function getDefaultOptions() {
     var response = await fetch('/options.json');
     var json = await response.json();

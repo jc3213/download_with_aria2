@@ -4,13 +4,6 @@ var aria2Notify = {
 };
 var aria2Complete = chrome.i18n.getMessage('download_complete');
 
-async function getDefaultOptions() {
-    var response = await fetch('/options.json');
-    var json = await response.json();
-    chrome.storage.local.set(json);
-    return json;
-}
-
 function getHostname(url) {
     try {
         return new URL(url).hostname;
