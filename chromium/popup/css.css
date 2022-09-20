@@ -78,20 +78,16 @@ body > [data-main] > button:not(:first-child) {
     background-color: #4cc;
 }
 
-[status="waiting"] > #meter {
+[status="waiting"] > #meter, [status="paused"] > #meter {
     background-color: #488;
 }
 
-[status="paused"] > #meter {
-    background-color: #888;
+[status="complete"] > #meter {
+    background-color: #4c4;
 }
 
-[status="removed"] > #meter {
-    background-color: #c84;
-}
-
-[status="error"] > #meter {
-    background-color: #c44;
+[status="removed"] > #meter, [status="error"] > #meter {
+    background-color: #844;
 }
 
 .footmenu {
