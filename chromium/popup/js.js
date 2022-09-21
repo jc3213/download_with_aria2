@@ -191,14 +191,14 @@ function aria2StartUp() {
     waitingTask = [];
     stoppedTask = [];
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2RPC.message('aria2.tellActive').then(async active => {
-        var waiting = await aria2RPC.message('aria2.tellWaiting', [0, 999]);
+    aria2RPC.message('aria2.tellWaiting', [0, 999]).then(async waiting => {
+        updateSession();
         var stopped = await aria2RPC.message('aria2.tellStopped', [0, 999]);
-        [...active, ...waiting, ...stopped].forEach(printSession);
+        [...waiting, ...stopped].forEach(printSession);
         aria2Client();
     }).catch(error => {
         activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = '0';
-        downloadStat.innerText = uploadStat.innerText = '0 ';
+        downloadStat.innerText = uploadStat.innerText = '0';
         activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     });
 }
