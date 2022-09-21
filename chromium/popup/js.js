@@ -197,8 +197,7 @@ function aria2StartUp() {
         [...waiting, ...stopped].forEach(printSession);
         aria2Client();
     }).catch(error => {
-        activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = '0';
-        downloadStat.innerText = uploadStat.innerText = '0';
+        activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = downloadStat.innerText = uploadStat.innerText = '0';
         activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     });
 }
