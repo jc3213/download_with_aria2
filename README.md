@@ -74,7 +74,7 @@
 # Others
 
 - The extension is not published on `Google Web Store`, or `Microsoft Store`.
-    - `Firefox Add-on` by [@ivysrono](https://addons.mozilla.org/firefox/addon/download-with-aria2/)
+    - [Firefox Add-on](https://addons.mozilla.org/firefox/addon/download-with-aria2/) by @ivysrono
 - Alternative of built-in `Aria2 Web Manager`
-    - [`Aria2 WebUI`](https://ziahamza.github.io/webui-aria2/)
-    - [`Yet Another Aria2 Web Frontend`](http://binux.github.io/yaaw/demo/)
+    - [Aria2 WebUI](https://ziahamza.github.io/webui-aria2/)
+    - [Yet Another Aria2 Web Frontend](http://binux.github.io/yaaw/demo/)
