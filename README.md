@@ -9,7 +9,7 @@
         - Active: Light Blue **Number**
         - Error: Red `E`
     - **Manifest V3**
-        - Active: Blue `A`
+        - Active: Blue `R`
         - Error: Red `E`
 - Support notifications
     - Event `When Downloads Start`
