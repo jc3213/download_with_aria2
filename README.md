@@ -34,7 +34,7 @@
 - Built-in `Aria2 Web Manager`
     - Support keyboard shortcut
         - Default: `Alt` + `2`
-        - Chromium: `chrome://extensions/shortcuts`
+        - Chromium: `chrome://extensions/shortcuts/`
         - Firefox: `about:addons` → `⚙` → `Manage Extension Shortcuts`
     - Filter task queues `Active`, `Stopped`, and `Removed`
     - `New Task` page with extra options
@@ -74,8 +74,14 @@
 
 # Others
 
-- The extension is not published on `Google Web Store`, or `Microsoft Store`.
-    - [Firefox Add-on](https://addons.mozilla.org/firefox/addon/download-with-aria2/) by @ivysrono
-- Alternative of built-in `Aria2 Web Manager`
-    - [Aria2 WebUI](https://ziahamza.github.io/webui-aria2/)
-    - [Yet Another Aria2 Web Frontend](http://binux.github.io/yaaw/demo/)
+- **Google Web Store**
+    - None
+- **Microsoft Store**
+    - None
+- **Firefox Add-on**
+    - Link: https://addons.mozilla.org/firefox/addon/download-with-aria2/
+    - Provider: [@ivysrono](https://github.com/ivysrono)
+- **Aria2 WebUI**
+    - Link: https://ziahamza.github.io/webui-aria2/
+- **Yet Another Aria2 Web Frontend**
+    - Link: http://binux.github.io/yaaw/demo/
