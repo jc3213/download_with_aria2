@@ -33,8 +33,9 @@
     - [**Space**] is recommendded to split match patterns
 - Built-in `Aria2 Web Manager`
     - Support keyboard shortcut
-        - `Ctrl` + `Shift` + `A` [**Chromium**]
-        - `Alt` + `A` [**Firefox**]
+        - Default: `Alt` + `2`
+        - Chromium: `chrome://extensions/shortcuts`
+        - Firefox: `about:addons` → `⚙` → `Manage Extension Shortcuts`
     - Filter task queues `Active`, `Stopped`, and `Removed`
     - `New Task` page with extra options
         - Upload `.torrent`, `.json`, `.metalink`, and `.meta4` files [**Chromium Only**]
