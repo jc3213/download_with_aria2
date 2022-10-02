@@ -102,6 +102,7 @@ importbtn.addEventListener('change', async event => {
     chrome.storage.local.set(json);
     aria2Store = json;
     aria2StartUp();
+    clearChanges();
     event.target.value = '';
 });
 
