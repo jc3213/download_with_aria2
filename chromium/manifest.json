@@ -38,7 +38,7 @@
         "open_in_tab": false
     },
     "commands": {
-        "_execute_action": {
+        "_execute_browser_action": {
             "suggested_key": {
                 "default": "Alt+2"
             }
