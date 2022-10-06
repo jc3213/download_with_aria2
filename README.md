@@ -77,7 +77,7 @@
 - **Google Web Store**
     - None
 - **Microsoft Store**
-    - None
+    - Link: https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec [**Reviewing**]
 - **Firefox Add-on**
     - Link: https://addons.mozilla.org/firefox/addon/download-with-aria2/
     - Provider: [@ivysrono](https://github.com/ivysrono)
