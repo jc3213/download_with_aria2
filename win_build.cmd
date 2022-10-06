@@ -14,20 +14,23 @@ IF %Option% EQU 3 GOTO :Chromium_MV3
 CLS && GOTO :Code
 :Chromium
 SET Code=chromium
-CALL :Process
+SET Pack=crx
+CALL :Package
 GOTO :Exit
 :Firefox
 SET Code=firefox
-CALL :Process
+SET Pack=xpi
+CALL :Package
 7za.exe u %Zip% "%CD%\firefox\*"
 GOTO :Exit
 :Chromium_MV3
 SET Code=chromium_mv3
-CALL :Process
+SET Pack=crx
+CALL :Package
 7za.exe u %Zip% "%CD%\chromium_mv3\*"
 GOTO :Exit
-:Process
-FOR /F "USEBACKQ SKIP=3 TOKENS=1,2 DELIMS=,: " %%I IN (%Code%\manifest.json) DO (IF %%~I EQU version SET Zip=%Code%-%%~J.zip)
+:Package
+FOR /F "USEBACKQ SKIP=3 TOKENS=1,2 DELIMS=,: " %%I IN (%Code%\manifest.json) DO (IF %%~I EQU version SET Zip=%Code%-%%~J.%Pack%)
 7za.exe a %Zip% "%CD%\chromium\*"
 EXIT /B
 :Exit
