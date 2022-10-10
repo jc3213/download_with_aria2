@@ -4,11 +4,11 @@
 
 # How to Use
 
-- [Wiki](wiki)
+- [Wiki](//github.com/jc3213/download_with_aria2/wiki)
 
 # Feedback
 
-- [File an issue](issues/new/)
+- [File an issue](//github.com/jc3213/download_with_aria2/issues/new/)
 
 # Build
 
