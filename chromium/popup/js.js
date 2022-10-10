@@ -286,13 +286,13 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     return task;
 }
 
-function printEstimateTime(beacon, number) {
+function printEstimateTime(time, number) {
     if (number > 0) {
-        beacon.innerText = number;
-        beacon.style.display = beacon.nextElementSibling.style.display = 'inline-block';
+        time.innerText = number;
+        time.style.display = time.nextElementSibling.style.display = 'inline-block';
     }
     else {
-        beacon.style.display = beacon.nextElementSibling.style.display = 'none';
+        time.style.display = time.nextElementSibling.style.display = 'none';
     }
 }
 
