@@ -51,7 +51,7 @@ body > [data-main] > button:not(:first-child) {
 }
 
 .session sub {
-    margin-right: -3px;
+    margin-right: -4px;
 }
 
 #infinite {
