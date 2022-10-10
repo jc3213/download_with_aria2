@@ -2,54 +2,13 @@
 
 - This extension is completely rewritten from [chrome-aria2-integration](https://github.com/robbielj/chrome-aria2-integration)
 
-# Usage
-- Running status indicator
-    - **Manifest V2**
-        - Idle: **Empty**
-        - Active: Light Blue **Number**
-        - Error: Red `E`
-    - **Manifest V3**
-        - Active: Blue `R`
-        - Error: Red `E`
-- Support notifications
-    - Event `When Downloads Start`
-    - Event `When Downlods Complete` [**Not supported in Manifest V3**]
-    - `Do Nothing`: Don't show notifications
-    - `Notify Me`: Show notifications
-- Support proxy server
-    - Protocol: `http` or `https`
-    - `Proxy Server` will be load if you press the `🔖` button
-    - `Use Proxy` → `Switch` uses [**Match pattern**]
-- Capture browser downloads
-    - Switchable APIs  [**Firefox Only**]
-        - `downloads API` [**Default**]
-        - `webRequest API` [**MIME type "application/\*" only**]
-    - `File Size` [**MB**]
-    - `File Extensions`
-    - `Domain names` [**Match pattern**]
-- **Match pattern**
-    - **Referer**: `www.university.org.eu`
-    - **Pattern**: `eu`, `org.eu`, `university.org.eu`, `www.university.org.eu`
-    - [**Space**] is recommendded to split match patterns
-- Built-in `Aria2 Web Manager`
-    - Support keyboard shortcut
-        - Default: `Alt` + `2`
-        - Chromium: `chrome://extensions/shortcuts/`
-        - Firefox: `about:addons` → `⚙` → `Manage Extension Shortcuts`
-    - Filter task queues `Active`, `Stopped`, and `Removed`
-    - `New Task` page with extra options
-        - Upload `.torrent`, `.json`, `.metalink`, and `.meta4` files [**Chromium Only**]
-        - Parse downloads from `.json`, `.metalink`, `.meta4` file content
-        - JSON syntax {`url`: **string**, `options`: **object**} [**[about options](https://aria2.github.io/manual/en/html/aria2c.html#options)**]
-    - `Task Manager` that can change options for downloads
-        - Change selected files for bittorrent downloads
-        - Add or remove download uris for http/ftp downloads
-    - `Options` page for the extension
-    - `Global Options` page for aria2 jsonrpc
+# How to Use
+
+- [Wiki](wiki)
 
 # Feedback
 
-- [File an issue](https://github.com/jc3213/download_with_aria2/issues/new/)
+- [File an issue](issues/new/)
 
 # Build
 
