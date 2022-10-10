@@ -58,7 +58,8 @@ body > [data-main] > button:not(:first-child) {
     background-color: #fff;
     display: none;
     top: 0px;
-    left: 20px;
+    left: 19px;
+    padding-bottom: 1px;
 }
 
 #meter:active {
