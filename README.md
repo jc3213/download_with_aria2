@@ -1,21 +1,16 @@
-# About
-
+## About
 - This extension is completely rewritten from [chrome-aria2-integration](https://github.com/robbielj/chrome-aria2-integration)
 
-# How to Use
-
+## How to Use
 - [Wiki](//github.com/jc3213/download_with_aria2/wiki)
 
-# Feedback
-
+## Feedback
 - [File an issue](//github.com/jc3213/download_with_aria2/issues/new/)
 
-# How to Build
-
+## How to Build
 - [Manual](//github.com/jc3213/download_with_aria2/wiki/Building)
 
-# Others
-
+## Others
 - **Google Web Store**
     - None
 - **Microsoft Store**
