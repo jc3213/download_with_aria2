@@ -10,7 +10,7 @@
 ## How to Build
 - [Manual](//github.com/jc3213/download_with_aria2/wiki/Building)
 
-## Others
+## Publishing
 - **Google Web Store**
     - None
 - **Microsoft Store**
