@@ -45,20 +45,20 @@ body > [data-main] > button:not(:first-child) {
     text-align: center;
 }
 
-.session > div > span, .flex > div > span {
-    margin-left: 5px;
-}
-
 .session button {
     font-size: 12px;
     padding: 1px;
+}
+
+.session sub {
+    margin-right: -3px;
 }
 
 #infinite {
     background-color: #fff;
     display: none;
     top: 0px;
-    left: 19px;
+    left: 24px;
     padding-bottom: 1px;
 }
 
@@ -69,10 +69,6 @@ body > [data-main] > button:not(:first-child) {
 #error {
     color: #f00;
     font-size: 11px;
-}
-
-#estimate > * {
-    margin-left: -4px;
 }
 
 [status="active"] > #meter {

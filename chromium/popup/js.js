@@ -268,12 +268,9 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
         var hours = time / 3600 - days * 24 | 0;
         var minutes = time / 60 - days * 1440 - hours * 60 | 0;
         var seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
-        task.querySelector('#day').innerText = days;
-        task.querySelector('#day').parentNode.style.display = days > 0 ? 'inline-block' : 'none';
-        task.querySelector('#hour').innerText = hours;
-        task.querySelector('#hour').parentNode.style.display = hours > 0 ? 'inline-block' : 'none';
-        task.querySelector('#minute').innerText = minutes;
-        task.querySelector('#minute').parentNode.style.display = minutes > 0 ? 'inline-block' : 'none';
+        printEstimateTime(task.querySelector('#day'), days);
+        printEstimateTime(task.querySelector('#hour'), hours);
+        printEstimateTime(task.querySelector('#minute'), minutes);
         task.querySelector('#second').innerText = seconds;
     }
     task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
@@ -287,6 +284,16 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
         updateTaskDetail(task, status, bittorrent, files);
     }
     return task;
+}
+
+function printEstimateTime(beacon, number) {
+    if (number > 0) {
+        beacon.innerText = number;
+        beacon.style.display = beacon.nextElementSibling.style.display = 'inline-block';
+    }
+    else {
+        beacon.style.display = beacon.nextElementSibling.style.display = 'none';
+    }
 }
 
 function parseSession(gid, status, bittorrent) {
