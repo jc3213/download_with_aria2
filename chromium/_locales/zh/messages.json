@@ -183,10 +183,10 @@
         "message": "选项"
     },
     "popup_download": {
-        "message": "下载"
+        "message": "下载速度"
     },
     "popup_upload": {
-        "message": "上传"
+        "message": "上传速度"
     },
     "task_referer": {
         "message": "引用页"
