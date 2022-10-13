@@ -14,8 +14,7 @@
 - **Google Web Store**
     - None
 - **Microsoft Store**
-    - Link: https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec
+    - Recommended: https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec
 - **Firefox Add-on**
     - Obseleted: https://addons.mozilla.org/zh-CN/firefox/addon/downwitharia2/
-    - Recommended: https://addons.mozilla.org/firefox/addon/download-with-aria2/
-    - Provider: [@ivysrono](https://github.com/ivysrono)
+    - Recommended: https://addons.mozilla.org/firefox/addon/download-with-aria2/ Provider: [@ivysrono](https://github.com/ivysrono)
