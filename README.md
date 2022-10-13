@@ -18,7 +18,3 @@
 - **Firefox Add-on**
     - Link: https://addons.mozilla.org/firefox/addon/download-with-aria2/
     - Provider: [@ivysrono](https://github.com/ivysrono)
-- **Aria2 WebUI**
-    - Link: https://ziahamza.github.io/webui-aria2/
-- **Yet Another Aria2 Web Frontend**
-    - Link: http://binux.github.io/yaaw/demo/
