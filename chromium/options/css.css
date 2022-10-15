@@ -2,11 +2,7 @@ body {
     margin: auto;
 }
 
-body > div:nth-child(n+2) {
-    margin-top: 60px;
-}
-
-.menu {
+#menu {
     background-color: #fff;
     display: flex;
     position: fixed;
@@ -17,12 +13,16 @@ body > div:nth-child(n+2) {
     border: 1px groove #fff;
 }
 
-.menu > div {
+#menu > div {
     flex: 1;
 }
 
-.menu > div:last-child {
+#menu > div:last-child {
     text-align: right;
+}
+
+#option, #global {
+    margin-top: 60px;
 }
 
 [data-prefs="option"] [data-global], [data-prefs="global"] [data-option] {
