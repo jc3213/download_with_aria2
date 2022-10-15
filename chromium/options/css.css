@@ -1,0 +1,30 @@
+body {
+    margin: auto;
+}
+
+body > div:nth-child(n+2) {
+    margin-top: 60px;
+}
+
+.menu {
+    background-color: #fff;
+    display: flex;
+    position: fixed;
+    top: 5px;
+    width: 588px;
+    padding: 5px;
+    z-index: 999;
+    border: 1px groove #fff;
+}
+
+.menu > div {
+    flex: 1;
+}
+
+.menu > div:last-child {
+    text-align: right;
+}
+
+[data-prefs="option"] [data-global], [data-prefs="global"] [data-option] {
+    display: none;
+}

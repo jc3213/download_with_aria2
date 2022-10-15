@@ -4,13 +4,16 @@
         <meta charset="utf-8">
         <title i18n>extension_name</title>
         <link rel="stylesheet" href="/libs/style.css">
+        <link rel="stylesheet" href="css.css">
     </head>
     <body data-prefs="option">
-        <div>
-            <button id="save_btn" disabled i18n>option_save</button>
-            <button id="undo_btn" disabled i18n>option_undo</button>
-            <button id="redo_btn" disabled i18n>option_redo</button>
-            <div class="float">
+        <div class="menu">
+            <div>
+                <button id="save_btn" disabled i18n>option_save</button>
+                <button id="undo_btn" disabled i18n>option_undo</button>
+                <button id="redo_btn" disabled i18n>option_redo</button>
+            </div>
+            <div>
                 <button id="export_btn" data-option i18n>option_export</button>
                 <button id="import_btn" data-option><label>
                     <span i18n>option_import</span>
@@ -19,8 +22,7 @@
                 <button id="back_btn" data-global i18n>option_back</button>
             </div>
         </div>
-        <hr>
-        <div id="option" data-option style="height: calc(100% - 44px);">
+        <div id="option" data-option>
             <h1 i18n>option_basic</h1>
             <div title="option_jsonrpc_uri_title">
                 <div class="title" i18n>option_jsonrpc_uri</div>
@@ -135,7 +137,7 @@
                 </div>
             </div>
         </div>
-        <div id="global" data-global style="height: calc(100% - 44px);">
+        <div id="global" data-global>
             <h1>HTTP/FTP</h1>
             <div title="aria2_http_retry_title">
                 <div class="title" i18n>aria2_http_retry</div>

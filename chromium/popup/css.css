@@ -2,6 +2,26 @@ body {
     height: 500px;
 }
 
+body > div {
+    overflow-y: auto;
+}
+
+[data-popup="main"] > *:not([data-main]),
+[data-popup="task"] > *:not([data-task]),
+[data-popup="aria2"] > *:not([data-aria2]),
+[data-main="0"] > [data-queue]:nth-child(n+2),
+[data-main="1"] > [data-queue]:not(:nth-child(n+2):nth-child(-n+3)),
+[data-main="2"] > [data-queue]:nth-child(-n+3),
+[data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http] {
+    display: none;
+}
+
+[data-main="0"] > button.active,
+[data-main="1"] > button.waiting,
+[data-main="2"] > button.stopped {
+    border: 1px #ccc inset;
+}
+
 .active {
     background-color: #44c;
 }
