@@ -1,9 +1,3 @@
-if (location.search === '') {
-    var css = document.createElement('style');
-    css.innerText = 'input, textarea {width: 100%;} hr {margin: 10px 0px;}';
-    document.head.append(css);
-}
-
 var i18n = {
     'en': {
         api: 'Capture API',
