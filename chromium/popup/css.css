@@ -1,3 +1,7 @@
+body {
+    height: 500px;
+}
+
 .active {
     background-color: #44c;
 }

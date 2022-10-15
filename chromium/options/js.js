@@ -26,13 +26,6 @@ var exportbtn = document.querySelector('#export_btn');
 var popupbtn = document.querySelector('#popup_btn');
 var secret = document.querySelector('[name="secret_token"]');
 
-if (location.search === '?popup') {
-    importbtn.style.display = exportbtn.style.display = 'none'
-}
-else {
-    popupbtn.style.display = 'none';
-}
-
 savebtn.addEventListener('click', event => {
     if (global) {
         applyChanges(aria2Store);
