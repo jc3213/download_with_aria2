@@ -23,7 +23,6 @@ var undobtn = document.querySelector('#undo_btn');
 var redobtn = document.querySelector('#redo_btn');
 var importbtn = document.querySelector('#import_btn');
 var exportbtn = document.querySelector('#export_btn');
-var popupbtn = document.querySelector('#popup_btn');
 var secret = document.querySelector('[name="secret_token"]');
 
 savebtn.addEventListener('click', event => {
@@ -59,10 +58,6 @@ redobtn.addEventListener('click', event => {
     if (undones.length === 0) {
         redobtn.disabled = true;
     }
-});
-
-popupbtn.addEventListener('click', event => {
-    open('/popup/index.html', '_self');
 });
 
 document.querySelector('#back_btn').addEventListener('click', event => {
