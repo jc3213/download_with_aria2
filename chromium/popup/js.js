@@ -46,7 +46,7 @@ document.querySelector('#purdge_btn').addEventListener('click', async event => {
 });
 
 document.querySelector('#options_btn').addEventListener('click', event => {
-    open('/options/index.html', '_blank');
+    chrome.runtime.openOptionsPage();
 });
 
 document.querySelector('#referer_btn').addEventListener('click', async event => {
