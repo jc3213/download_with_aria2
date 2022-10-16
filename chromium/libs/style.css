@@ -91,12 +91,7 @@ button:disabled {
 
 .flex {
     display: flex;
-    gap: 10px;
-}
-
-.flex > * {
-    flex: 1;
-    display: block;
+    gap: 3px;
 }
 
 .float {

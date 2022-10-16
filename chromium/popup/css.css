@@ -42,6 +42,11 @@ body > div {
     color: #fff;
 }
 
+.flex > * {
+    flex: 1;
+    display: block;
+}
+
 body > [data-main] > button:not(:first-child) {
     margin-left: 10px;
 }
