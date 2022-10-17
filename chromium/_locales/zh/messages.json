@@ -3,7 +3,7 @@
         "message": "通过 Aria2 下载"
     },
     "extension_description": {
-        "message": "基于 Chromium / Firefox 浏览器的 Aria2 下载管理器"
+        "message": "通过 json-rpc 支持，实现通过 aria2c 下载指定链接，抓取浏览器下载，管理下载任务等"
     },
     "time_day": {
         "message": "天"
