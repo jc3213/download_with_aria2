@@ -17,7 +17,7 @@ body {
 }
 
 #option, #global {
-    margin-top: 60px;
+    margin-top: 70px;
 }
 
 [data-prefs="option"] [data-global], [data-prefs="global"] [data-option] {

@@ -12,11 +12,7 @@ div {
     position: relative;
 }
 
-h1:first-child {
-    margin-top: 0px;
-}
-
-[title]:not(:first-child), .flex > [title] {
+div > [title]:nth-child(n+2), .flex > [title] {
     margin-top: 25px;
 }
 
