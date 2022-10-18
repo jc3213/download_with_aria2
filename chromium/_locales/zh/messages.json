@@ -5,6 +5,12 @@
     "extension_description": {
         "message": "基于 json-rpc 协议，实现通过 aria2c 下载指定链接，抓取浏览器下载，管理下载任务等"
     },
+    "extension_options": {
+        "message": "选项 - 通过 Aria2 下载"
+    },
+    "extension_manager": {
+        "message": "管理器 - 通过 Aria2 下载"
+    },
     "time_day": {
         "message": "天"
     },

@@ -5,6 +5,12 @@
     "extension_description": {
         "message": "Use aria2c to download selected links, capture browser downloads, and manage downloads via json-rpc protocol"
     },
+    "extension_options": {
+        "message": "Options - Download with Aria2"
+    },
+    "extension_manager": {
+        "message": "Manager - Download with Aria2"
+    },
     "time_day": {
         "message": "d"
     },
