@@ -47,7 +47,7 @@ body > div {
 }
 
 [data-stat] {
-    padding: 5px 3px;
+    padding: 5px 15px 5px 0px;
 }
 
 #download_btn, #options_btn {
