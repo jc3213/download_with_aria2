@@ -3,7 +3,7 @@
         "message": "通过 Aria2 下载"
     },
     "extension_description": {
-        "message": "通过 json-rpc 支持，实现通过 aria2c 下载指定链接，抓取浏览器下载，管理下载任务等"
+        "message": "基于 json-rpc 协议，实现通过 aria2c 下载指定链接，抓取浏览器下载，管理下载任务等"
     },
     "time_day": {
         "message": "天"
