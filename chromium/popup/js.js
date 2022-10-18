@@ -1,8 +1,8 @@
 var activeStat = document.querySelector('[data-stat="active"]');
 var waitingStat = document.querySelector('[data-stat="waiting"]');
 var stoppedStat = document.querySelector('[data-stat="stopped"]');
-var downloadStat = document.querySelector('[data-stat="download"]');
-var uploadStat = document.querySelector('[data-stat="upload"]');
+var downloadStat = document.querySelector('[data-stat="download"] > span');
+var uploadStat = document.querySelector('[data-stat="upload"] > span');
 var activeQueue = document.querySelector('[data-queue="active"]');
 var waitingQueue = document.querySelector('[data-queue="waiting"]');
 var pausedQueue = document.querySelector('[data-queue="paused"]');

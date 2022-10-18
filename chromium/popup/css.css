@@ -42,13 +42,16 @@ body > div {
     color: #fff;
 }
 
-.flex > * {
+#download .flex > *, #manager .flex > * {
     flex: 1;
-    display: block;
 }
 
-body > [data-main] > button:not(:first-child) {
-    margin-left: 10px;
+[data-stat] {
+    padding: 5px 3px;
+}
+
+#download_btn, #options_btn {
+    margin-left: auto;
 }
 
 .session {
@@ -167,7 +170,7 @@ body > [data-main] > button:not(:first-child) {
     overflow-y: auto;
 }
 
-.file > *:not(:nth-child(2)), .uri > *:not(:first-child) {
+.file > *:not(:nth-child(2)), .uri > *:nth-child(n+2) {
     line-height: 46px;
     text-align: center;
 }
