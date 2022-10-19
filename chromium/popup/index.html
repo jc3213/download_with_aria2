@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="css.css">
     </head>
     <body data-popup="main">
-        <div data-main="3" class="flex">
+        <div data-main="3" class="mainmenu">
             <button class="active" i18n>popup_active</button>
             <div data-stat="active">0</div>
             <button class="waiting" i18n>popup_waiting</button>
@@ -15,7 +15,7 @@
             <button class="removed" i18n>popup_stopped</button>
             <div data-stat="stopped">0</div>
             <button id="download_btn" i18n>popup_create</button>
-            <button id="purdge_btn" i18n>popup_purge</button>
+            <button id="purge_btn" i18n>popup_purge</button>
         </div>
         <hr data-main>
         <div id="session" data-main="3" style="height: calc(100% - 92px);">
@@ -101,14 +101,14 @@
             </div>
         </div>
         <hr data-main data-task>
-        <div data-main class="flex">
+        <div data-main class="mainmenu">
             <button class="active" disabled i18n>popup_download</button>
             <div data-stat="download"><span>0</span>B/s</div>
             <button class="complete" disabled i18n>popup_upload</button>
             <div data-stat="upload"><span>0</span>B/s</div>
             <button id="options_btn" i18n>popup_options</button>
         </div>
-        <div data-task class="footmenu">
+        <div data-task class="taskmenu">
             <button id="submit_btn" i18n>task_submit</button>
             <button id="upload_btn"><label>
                 <span i18n>task_metaurl</span>

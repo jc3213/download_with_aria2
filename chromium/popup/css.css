@@ -42,12 +42,21 @@ body > div {
     color: #fff;
 }
 
-#download .flex > *, #manager .flex > * {
+.flex > * {
     flex: 1;
 }
 
-[data-stat] {
+.mainmenu {
+    display: flex;
+    gap: 3px;
+}
+
+.mainmenu [data-stat] {
     padding: 5px 15px 5px 0px;
+}
+
+.taskmenu {
+    text-align: center;
 }
 
 #download_btn, #options_btn {
@@ -117,10 +126,6 @@ body > div {
 
 [status="removed"] > #meter, [status="error"] > #meter {
     background-color: #844;
-}
-
-.footmenu {
-    text-align: center;
 }
 
 #manager > div:first-child > * {

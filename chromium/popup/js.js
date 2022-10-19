@@ -39,7 +39,7 @@ document.querySelector('#download_btn').addEventListener('click', async event =>
     referer.value = entries.value = '';
 });
 
-document.querySelector('#purdge_btn').addEventListener('click', async event => {
+document.querySelector('#purge_btn').addEventListener('click', async event => {
     await aria2RPC.message('aria2.purgeDownloadResult');
     completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     stoppedStat.innerText = '0';
