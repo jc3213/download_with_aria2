@@ -14,5 +14,5 @@
 - [https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec](https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec)
 
 ## Firefox Browser Add-ons
-- [https://addons.mozilla.org/zh-CN/firefox/addon/downwitharia2/](https://addons.mozilla.org/zh-CN/firefox/addon/downwitharia2/) **Obseleted**
+- [https://addons.mozilla.org/firefox/addon/downwitharia2/](https://addons.mozilla.org/firefox/addon/downwitharia2/) **Obseleted**
 - [https://addons.mozilla.org/firefox/addon/download-with-aria2/](https://addons.mozilla.org/firefox/addon/download-with-aria2/) Provider: [@ivysrono](https://github.com/ivysrono)
