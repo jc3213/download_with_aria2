@@ -113,10 +113,10 @@
     "download_complete": {
         "message": "Download has completed!"
     },
-    "option_useragent": {
+    "option_user_agent": {
         "message": "User Agent"
     },
-    "option_useragent_title": {
+    "option_user_agent_title": {
         "message": "Set user agent for new downloads"
     },
     "option_proxy_mode": {

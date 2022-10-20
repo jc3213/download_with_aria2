@@ -113,10 +113,10 @@
     "download_complete": {
         "message": "下载已完成！"
     },
-    "option_useragent": {
+    "option_user_agent": {
         "message": "用户代理"
     },
-    "option_useragent_title": {
+    "option_user_agent_title": {
         "message": "设置新建下载时的用户代理"
     },
     "option_proxy_server": {
