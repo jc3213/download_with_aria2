@@ -2,8 +2,8 @@ function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     aria2RPC.message('aria2.tellActive').then(result => {
         var active = result.map(({gid}) => gid);
-        chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
+        aria2Badge(active.length);
         aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
         aria2Socket.onmessage = async event => {
             var {method, params: [{gid}]} = JSON.parse(event.data);
@@ -22,12 +22,24 @@ function aria2StartUp() {
                     }
                 }
             }
-            chrome.browserAction.setBadgeText({text: active.length === 0 ? '' : active.length + ''});
+            aria2Badge(active.length);
         };
     }).catch(error => {
-        chrome.browserAction.setBadgeText({text: 'E'});
         chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
+        aria2Badge('E');
     });
+}
+
+function aria2Badge(text, color) {
+    if (!isNaN(text)) {
+        if (text === 0) {
+            text = '';
+        }
+        else {
+            text += '';
+        }
+    }
+    chrome.browserAction.setBadgeText({text});
 }
 
 function aria2Update() {
