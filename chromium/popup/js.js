@@ -19,7 +19,6 @@ var fileLET = document.querySelector('div.file');
 var uriLET = document.querySelector('div.uri');
 var fileList = document.querySelector('#files');
 var uriList = document.querySelector('#uris');
-
 var savebtn = document.querySelector('#save_btn');
 
 document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) => {
