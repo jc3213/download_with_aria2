@@ -69,7 +69,7 @@ document.querySelector('#back_btn').addEventListener('click', event => {
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
     aria2RPC.message('aria2.getGlobalOption').then(options => {
-        printGlobalOptions(options, '#global [name]');
+        printGlobalOptions(options);
         aria2Global = options;
         clearChanges();
         global = false;

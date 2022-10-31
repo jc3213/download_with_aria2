@@ -10,10 +10,6 @@ var completeQueue = document.querySelector('[data-queue="complete"]');
 var removedQueue = document.querySelector('[data-queue="removed"]');
 var errorQueue = document.querySelector('[data-queue="error"]');
 var sessionLET = document.querySelector('div.session');
-var referer = document.querySelector('#referer');
-var useragent = document.querySelector('#useragent');
-var batch = document.querySelector('#batch');
-var entries = document.querySelector('#entries');
 var activeId;
 var fileLET = document.querySelector('div.file');
 var uriLET = document.querySelector('div.uri');
@@ -21,7 +17,7 @@ var fileList = document.querySelector('#files');
 var uriList = document.querySelector('#uris');
 var savebtn = document.querySelector('#save_btn');
 
-document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) => {
+document.querySelectorAll('body > div:first-child > button').forEach((tab, index) => {
     tab.addEventListener('click', event => {
         var value = tab.parentNode.getAttribute('data-main') == index ? 3 : index;
         tab.parentNode.setAttribute('data-main', value);
@@ -29,13 +25,9 @@ document.querySelectorAll('button[class]:not(:disabled)').forEach((tab, index) =
     });
 });
 
-document.querySelector('#download_btn').addEventListener('click', async event => {
-    var options = await aria2RPC.message('aria2.getGlobalOption');
-    printGlobalOptions(options, '#download input[name]');
-    document.body.setAttribute('data-popup', 'task');
-    useragent.value = aria2Store['user_agent'];
-    batch.value = '0';
-    referer.value = entries.value = '';
+document.querySelector('#download_btn').addEventListener('click', event => {
+    aria2NewSession();
+    window.close();
 });
 
 document.querySelector('#purge_btn').addEventListener('click', async event => {
@@ -46,97 +38,8 @@ document.querySelector('#purge_btn').addEventListener('click', async event => {
 
 document.querySelector('#options_btn').addEventListener('click', event => {
     chrome.runtime.openOptionsPage();
+    window.close();
 });
-
-document.querySelector('#referer_btn').addEventListener('click', async event => {
-    referer.value = await getCurrentTabUrl();
-});
-
-document.querySelector('#proxy_new').addEventListener('click', event => {
-    event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
-});
-
-document.querySelector('#submit_btn').addEventListener('click', event => {
-    var options = downloadOptions();
-    if (batch.value === '0') {
-        var urls = entries.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-        if (urls) {
-            urls.forEach(url => downloadUrl(url, options));
-        }
-    }
-    else if (batch.value === '1') {
-        var json = new Blob([entries.value], {type: 'application/json;charset=utf-8'});
-        downloadJSON(json, options);
-    }
-    else if (batch.value === '2') {
-        var metalink = new Blob([entries.value], {type: 'application/metalink;charset=utf-8'});
-        downloadMetalink(metalink, options);
-    }
-    document.body.setAttribute('data-popup', 'main');
-});
-
-document.querySelector('#upload_btn').style.display = 'browser' in this ? 'none' : 'inline-block';
-document.querySelector('#upload_btn').addEventListener('change', async event => {
-    var file = event.target.files[0];
-    var options = downloadOptions();
-    if (file.name.endsWith('torrent')){
-        await downloadTorrent(file, options);
-    }
-    else if (file.name.endsWith('json')) {
-        await downloadJSON(file, options);
-    }
-    else {
-        await downloadMetalink(file, options);
-    }
-    aria2WhenStart(file.name);
-    event.target.value = '';
-    document.body.setAttribute('data-popup', 'main');
-});
-
-function downloadOptions() {
-    var options = {'referer': referer.value, 'user-agent': useragent.value};
-    document.querySelectorAll('#download input[name]').forEach(field => options[field.name] = field.value);
-    return options;
-}
-
-async function downloadUrl(url, options) {
-    var gid = await aria2RPC.message('aria2.addUri', [[url], options]);
-    addSession(gid);
-    aria2WhenStart(url);
-}
-
-async function downloadJSON(file, options) {
-    var json = await readFileTypeJSON(file);
-    if (Array.isArray(json)) {
-        json.forEach(jn => parseJSON(jn, options));
-    }
-    else {
-        parseJSON(json, options);
-    }
-}
-
-async function parseJSON(json, extras) {
-    var {url, options} = json;
-    if (options) {
-        options = {...extras, ...options};
-    }
-    else {
-        options = extras;
-    }
-    await downloadUrl(url, options);
-}
-
-async function downloadTorrent(file, options) {
-    var torrent = await readFileForAria2(file);
-    var gid = await aria2RPC.message('aria2.addTorrent', [torrent]);
-    addSession(gid);
-}
-
-async function downloadMetalink(file, options) {
-    var metalink = await readFileForAria2(file);
-    await aria2RPC.message('aria2.addMetalink', [metalink, options]);
-    aria2RPC.message('aria2.tellWaiting', [0, 999]).then(waiting => waiting.forEach(printSession));
-}
 
 document.querySelector('#name_btn').addEventListener('click', event => {
     activeId = fileList.innerHTML = uriList.innerHTML = '';
@@ -320,7 +223,7 @@ function parseSession(gid, status, bittorrent) {
         activeId = gid;
         var {status, bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
         var options = await aria2RPC.message('aria2.getOption', [gid]);
-        printGlobalOptions(options, '#manager [name]');
+        printGlobalOptions(options);
         updateTaskDetail(task, status, bittorrent, files);
         document.body.setAttribute('data-popup', 'aria2');
         document.querySelector('#manager').setAttribute('data-aria2', bittorrent ? 'bt' : 'http');

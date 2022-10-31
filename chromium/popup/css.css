@@ -1,5 +1,6 @@
 body {
-    height: 500px;
+    height: 580px;
+    width: 580px;
 }
 
 body > div {
@@ -7,7 +8,6 @@ body > div {
 }
 
 [data-popup="main"] > *:not([data-main]),
-[data-popup="task"] > *:not([data-task]),
 [data-popup="aria2"] > *:not([data-aria2]),
 [data-main="0"] > [data-queue]:nth-child(n+2),
 [data-main="1"] > [data-queue]:not(:nth-child(n+2):nth-child(-n+3)),
@@ -42,7 +42,7 @@ body > div {
     color: #fff;
 }
 
-#download .flex > *, #manager .flex > * {
+#manager .flex > * {
     flex: 1;
 }
 

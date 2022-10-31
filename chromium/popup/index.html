@@ -26,94 +26,13 @@
             <div data-queue="removed"></div>
             <div data-queue="error"></div>
         </div>
-        <div id="download" data-task style="height: calc(100% - 44px);">
-            <div title="task_referer_title">
-                <div class="title" i18n>task_referer</div>
-                <div>
-                    <input id="referer" type="text">
-                    <button id="referer_btn" class="float">🔖</button>
-                </div>
-            </div>
-            <div title="task_batch_title">
-                <span class="title" i18n>task_batch</span>
-                <select id="batch">
-                    <option value="0">URI</option>
-                    <option value="1">JSON</option>
-                    <option value="2">Metalink</option>
-                </select>
-                <div>
-                    <textarea id="entries" rows="10"></textarea>
-                </div>
-            </div>
-            <div title="option_user_agent_title">
-                <div class="title" i18n>option_user_agent</div>
-                <div>
-                    <textarea id="useragent" rows="3"></textarea>
-                </div>
-            </div>
-            <div title="task_proxy_title">
-                <div class="title" i18n>task_proxy</div>
-                <div>
-                    <input name="all-proxy" type="url">
-                    <button id="proxy_new" class="float">🔖</button>
-                </div>
-            </div>
-            <div title="aria2_adv_dir_title">
-                <div class="title" i18n>aria2_adv_dir</div>
-                <div>
-                    <input name="dir" type="text">
-                </div>
-                Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;Linux: <u><i>home/aria2/download</i></u>
-            </div>
-            <div class="flex">
-                <div title="aria2_http_split_title">
-                    <div class="title" i18n>aria2_http_split</div>
-                    <div>
-                        <input name="split" type="number">
-                    </div>
-                    <span i18n>option_default</span>: <u><i>5</i></u>
-                </div>
-                <div title="aria2_http_size_title">
-                    <div class="title" i18n>aria2_http_size</div>
-                    <div>
-                        <input name="min-split-size" type="text">
-                        <span class="float">B</span>
-                    </div>
-                    <span i18n>option_default</span>: <u><i>20M</i></u>
-                </div>
-            </div>
-            <div class="flex">
-                <div title="aria2_max_connection_title">
-                    <div class="title" i18n>aria2_max_connection</div>
-                    <div>
-                        <input name="max-connection-per-server" type="number">
-                    </div>
-                    <span i18n>option_default</span>: <u><i>1</i></u>
-                </div>
-                <div title="task_download_title">
-                    <div class="title" i18n>task_download</div>
-                    <div>
-                        <input name="max-download-limit" type="text">
-                        <span class="float">B/s</span>
-                    </div>
-                    <span i18n>option_disabled</span>: <u><i>0</i></u>
-                </div>
-            </div>
-        </div>
-        <hr data-main data-task>
+        <hr data-main>
         <div data-main class="flex">
             <button class="active" disabled i18n>popup_download</button>
             <div data-stat="download"><span>0</span>B/s</div>
             <button class="complete" disabled i18n>popup_upload</button>
             <div data-stat="upload"><span>0</span>B/s</div>
             <button id="options_btn" i18n>popup_options</button>
-        </div>
-        <div data-task class="footmenu">
-            <button id="submit_btn" i18n>task_submit</button>
-            <button id="upload_btn"><label>
-                <span i18n>task_metaurl</span>
-                <input type="file" accept=".torrent,.json,.metalink,.meta4">
-            </label></button>
         </div>
         <button id="name_btn" data-aria2></button>
         <div id="manager" data-aria2 style="height: calc(100% - 61px);">

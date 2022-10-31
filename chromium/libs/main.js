@@ -42,7 +42,7 @@ function getFileSize(bytes) {
 }
 
 function printGlobalOptions(options, entries) {
-    document.querySelectorAll(entries).forEach(entry => {
+    document.querySelectorAll('[name]').forEach(entry => {
         var {name} = entry;
         var value = options[name] ?? '';
         if (filesize.includes(name)) {

@@ -9,7 +9,10 @@
         "message": "Options - Download with Aria2"
     },
     "extension_manager": {
-        "message": "Manager - Download with Aria2"
+        "message": "Task Manager - Download with Aria2"
+    },
+    "extension_session": {
+        "message": "New Download - Download with Aria2"
     },
     "time_day": {
         "message": "d"

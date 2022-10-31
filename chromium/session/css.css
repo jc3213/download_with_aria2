@@ -1,0 +1,12 @@
+.session {
+    height: 500px;
+    overflow-y: auto;
+}
+
+.menu {
+    text-align: center;
+}
+
+.flex > * {
+    flex: 1;
+}
