@@ -27,10 +27,10 @@ function aria2NewSession() {
         chrome.windows.create({
             url: '/session/index.html',
             type: 'popup',
-            width: 660,
-            height: 660,
-            top: height / 2 - 330,
-            left: width / 2 - 330
+            width: 720,
+            height: 720,
+            top: height / 2 - 360,
+            left: width / 2 - 360
         }, resolve);
     });
 }

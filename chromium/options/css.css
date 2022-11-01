@@ -1,13 +1,13 @@
 body {
     margin: auto;
-    width: 600px;
+    width: 660px;
 }
 
 #menu {
     background-color: #fff;
     position: fixed;
     top: 5px;
-    width: 588px;
+    width: 648px;
     padding: 5px;
     z-index: 999;
     border: 1px groove #fff;
