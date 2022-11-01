@@ -7,7 +7,7 @@ class Aria2 {
             this.call = this.websocket;
         }
         else {
-            throw new Error('Invalid JSON RPC URI: protocal not supported!');
+            throw new Error('Invalid JSON-RPC URL, protocal not supported!');
         }
         this.jsonrpc = url;
         if (token) {
@@ -28,7 +28,7 @@ class Aria2 {
     }
     fetch (body) {
         return fetch(this.jsonrpc, {method: 'POST', body})
-          .then(function (response) {
+        .then(function (response) {
             return response.json()
         }).then(function (json) {
             var {result, error} = json;
