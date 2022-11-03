@@ -71,8 +71,9 @@ function slimDownload(json) {
     options = json.options;
     Object.keys(options).forEach(key => {
         var field = document.querySelector('[name="' + key + '"]');
-        if (field) {
-            field.value = options[key];
+        var value = options[key];
+        if (field && value) {
+            field.value = value;
         }
     });
     setInterval(() => {
