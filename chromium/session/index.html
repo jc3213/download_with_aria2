@@ -11,7 +11,7 @@
             <div title="task_referer_title">
                 <div class="title" i18n>task_referer</div>
                 <div>
-                    <input id="referer" type="text">
+                    <input id="referer" name="referer" type="text">
                     <button id="referer_btn" class="float">🔖</button>
                 </div>
             </div>
@@ -23,30 +23,36 @@
                     <option value="2">Metalink</option>
                 </select>
                 <div>
-                    <textarea id="entries" rows="6"></textarea>
+                    <textarea id="entries" rows="2"></textarea>
                 </div>
             </div>
-            <div title="option_user_agent_title">
+            <div title="task_name_title">
+                <div class="title" i18n>task_name</div>
+                <div>
+                    <input name="out"></textarea>
+                </div>
+            </div>
+            <div data-extra title="option_user_agent_title">
                 <div class="title" i18n>option_user_agent</div>
                 <div>
-                    <textarea id="useragent" rows="2"></textarea>
+                    <textarea id="useragent" name="user-agent" rows="2"></textarea>
                 </div>
             </div>
-            <div title="task_proxy_title">
+            <div data-extra title="task_proxy_title">
                 <div class="title" i18n>task_proxy</div>
                 <div>
                     <input name="all-proxy" type="url">
                     <button id="proxy_new" class="float">🔖</button>
                 </div>
             </div>
-            <div title="aria2_adv_dir_title">
+            <div data-extra title="aria2_adv_dir_title">
                 <div class="title" i18n>aria2_adv_dir</div>
                 <div>
                     <input name="dir" type="text">
                 </div>
                 Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;Linux: <u><i>home/aria2/download</i></u>
             </div>
-            <div class="flex">
+            <div data-extra class="flex">
                 <div title="aria2_http_split_title">
                     <div class="title" i18n>aria2_http_split</div>
                     <div>
@@ -63,7 +69,7 @@
                     <span i18n>option_default</span>: <u><i>20M</i></u>
                 </div>
             </div>
-            <div class="flex">
+            <div data-extra class="flex">
                 <div title="aria2_max_connection_title">
                     <div class="title" i18n>aria2_max_connection</div>
                     <div>
@@ -88,6 +94,7 @@
                 <span i18n>task_metaurl</span>
                 <input type="file" accept=".torrent,.json,.metalink,.meta4">
             </label></button>
+            <button id="extra_btn">⚙️</button>
         </div>
         <script src="/libs/aria2.js"></script>
         <script src="/libs/main.js"></script>

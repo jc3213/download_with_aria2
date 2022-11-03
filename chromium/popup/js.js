@@ -26,7 +26,7 @@ document.querySelectorAll('body > div:first-child > button').forEach((tab, index
 });
 
 document.querySelector('#download_btn').addEventListener('click', event => {
-    aria2NewSession();
+    aria2NewSession('popup', 720);
     window.close();
 });
 

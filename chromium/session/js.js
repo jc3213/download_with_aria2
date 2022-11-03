@@ -4,6 +4,14 @@ var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
 var savebtn = document.querySelector('#save_btn');
 
+if (location.search === '?popup') {
+    document.body.className = 'full';
+    document.querySelector('input[name="out"]').disabled = true;
+}
+else {
+    document.body.className = 'slim';
+}
+
 document.querySelector('#referer_btn').addEventListener('click', async event => {
     chrome.tabs.query({active: true, currentWindow: false}, tabs => {
         var {url} = tabs[0];
@@ -16,7 +24,7 @@ document.querySelector('#proxy_new').addEventListener('click', event => {
 });
 
 document.querySelector('#submit_btn').addEventListener('click', async event => {
-    var options = downloadOptions();
+    var options = getOptions();
     if (batch.value === '0') {
         var urls = entries.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
         if (urls) {
@@ -37,7 +45,7 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
 
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var file = event.target.files[0];
-    var options = downloadOptions();
+    var options = getOptions();
     if (file.name.endsWith('torrent')){
         await downloadTorrent(file, options);
     }
@@ -50,9 +58,13 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
     window.close();
 });
 
-function downloadOptions() {
+document.querySelector('#extra_btn').addEventListener('click', event => {
+    document.body.classList.toggle('complex');
+});
+
+function getOptions() {
     var options = {'referer': referer.value, 'user-agent': useragent.value};
-    document.querySelectorAll('#download input[name]').forEach(field => options[field.name] = field.value);
+    document.querySelectorAll('[name]:not(:disabled)').forEach(field => options[field.name] = field.value);
     return options;
 }
 
@@ -86,13 +98,13 @@ async function downloadUrl(url, options) {
 async function downloadTorrent(file, options) {
     var torrent = await readFileForAria2(file);
     aria2WhenStart(file.name);
-    await aria2RPC.message('aria2.addTorrent', [torrent]);
+    return await aria2RPC.message('aria2.addTorrent', [torrent]);
 }
 
 async function downloadMetalink(file, options) {
     var metalink = await readFileForAria2(file);
     aria2WhenStart(file.name);
-    await aria2RPC.message('aria2.addMetalink', [metalink, options]);
+    return await aria2RPC.message('aria2.addMetalink', [metalink, options]);
 }
 
 async function aria2StartUp() {

@@ -3,10 +3,30 @@
     overflow-y: auto;
 }
 
+.slim .session {
+    height: 250px;
+}
+
+.slim [data-extra]:not(.complex [data-extra]) {
+    display: none;
+}
+
+.full .session > :nth-child(3), .full #extra_btn, .slim #upload_btn {
+    display: none;
+}
+
 .menu {
     text-align: center;
 }
 
 .flex > * {
     flex: 1;
+}
+
+#extra_btn {
+    padding: 3px 10px 4px;
+}
+
+.complex #extra_btn {
+    border: 1px #ccc inset;
 }

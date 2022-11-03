@@ -21,17 +21,20 @@ function getDownloadName(bittorrent, [{path, uris}]) {
     }
 }
 
-function aria2NewSession() {
+function aria2NewSession(param, offset) {
     return new Promise(resolve => {
         var {height, width} = screen;
         chrome.windows.create({
-            url: '/session/index.html',
+            url: '/session/index.html?' + param,
             type: 'popup',
+            height: offset,
             width: 720,
-            height: 720,
-            top: height / 2 - 360,
+            top: (height - offset) / 2,
             left: width / 2 - 360
-        }, resolve);
+        }, window => {
+            var tab = window.tabs[0];
+            resolve(tab.id);
+        });
     });
 }
 

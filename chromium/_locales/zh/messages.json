@@ -209,6 +209,12 @@
     "task_batch_title": {
         "message": "支持下载 \"URL\", or \"JSON\", or \"Metalink\""
     },
+    "task_name": {
+        "message": "文件名"
+    },
+    "task_name_title": {
+        "message": "设置本次下载的文件名"
+    },
     "task_proxy": {
         "message": "代理服务器"
     },

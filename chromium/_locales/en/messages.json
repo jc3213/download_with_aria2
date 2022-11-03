@@ -209,6 +209,12 @@
     "task_batch_title": {
         "message": "Either \"URL\", or \"JSON\", or \"Metalink\" are supported"
     },
+    "task_name": {
+        "message": "File Name"
+    },
+    "task_name_title": {
+        "message": "Set the file name of this download"
+    },
     "task_proxy": {
         "message": "Proxy Server"
     },
