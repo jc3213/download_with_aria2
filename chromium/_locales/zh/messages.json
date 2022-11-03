@@ -101,6 +101,18 @@
     "option_refresh_interval_title": {
         "message": "设置任务管理器刷新间隔"
     },
+    "option_download_prompt": {
+        "message": "确认下载信息"
+    },
+    "option_download_prompt_title": {
+        "message": "开始下载前再次确认下载信息"
+    },
+    "option_download_headers": {
+        "message": "转发请求头"
+    },
+    "option_download_headers_title": {
+        "message": "设置开始下载时是否转发请求头"
+    },
     "option_notify_start": {
         "message": "下载开始时"
     },

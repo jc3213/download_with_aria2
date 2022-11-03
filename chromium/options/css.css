@@ -21,6 +21,25 @@ body {
     margin-top: 70px;
 }
 
+.download {
+    margin-top: 25px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-areas: 'folder folder' 'prompt headers' 'start complete'
+}
+
+.download > :nth-child(1) {
+    grid-area: folder;
+}
+
+.download > :nth-child(4) {
+    grid-area: start;
+}
+
+.download > :nth-child(5) {
+    grid-area: complete;
+}
+
 [data-prefs="option"] [data-global], [data-prefs="global"] [data-option] {
     display: none;
 }

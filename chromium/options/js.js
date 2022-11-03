@@ -12,7 +12,8 @@ var offset = {
 var linkage = {
     'folder_mode': [],
     'proxy_mode': [],
-    'capture_mode': []
+    'capture_mode': [],
+    'download_prompt': []
 };
 var backage = {};
 var changes = [];

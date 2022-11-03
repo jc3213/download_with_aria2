@@ -28,14 +28,20 @@ chrome.storage.onChanged.addListener(changes => {
     }
 });
 
-function aria2Download(url, hostname, options) {
-    chrome.cookies.getAll({url}, cookies => {
-        options['user-agent'] = aria2Store['user_agent'];
-        options['header'] = getRequestHeaders(cookies);
-        options['all-proxy'] = getProxyServer(hostname);
-        options['dir'] = getDownloadFolder();
+async function aria2Download(url, hostname, options) {
+    options['user-agent'] = aria2Store['user_agent'];
+    options['header'] = [await getCookies(url)];
+    options['all-proxy'] = getProxyServer(hostname);
+    options['dir'] = getDownloadFolder();
+    if (aria2Store['download_prompt'] === '1') {
+        getDownloadPrompt(url, options);
+    }
+    else if (aria2Store['download_headers'] === '1') {
         aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
-    });
+    }
+    else {
+        aria2RPC.message('aria2.addUri', [[url]]).then(result => aria2WhenStart(url));
+    }
 }
 
 async function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {

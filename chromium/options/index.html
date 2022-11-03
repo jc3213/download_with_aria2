@@ -42,38 +42,54 @@
                     <span class="float" i18n>time_second_full</span>
                 </div>
             </div>
-            <div title="aria2_adv_dir_title">
-                <span class="title" i18n>aria2_adv_dir</span>
-                <select name="folder_mode">
-                    <option value="0" i18n>option_default</option>
-                    <option value="1" i18n>option_custom</option>
-                </select>
-                <div data-link="folder_mode,1">
-                    <input name="folder_path" type="text">
-                    Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;Linux: <u><i>home/aria2/download</i></u>
+            <div class="download">
+                <div title="aria2_adv_dir_title">
+                    <span class="title" i18n>aria2_adv_dir</span>
+                    <select name="folder_mode">
+                        <option value="0" i18n>option_default</option>
+                        <option value="1" i18n>option_custom</option>
+                    </select>
+                    <div data-link="folder_mode,1">
+                        <input name="folder_path" type="text">
+                        Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;Linux: <u><i>home/aria2/download</i></u>
+                    </div>
+                </div>
+                <div title="option_download_prompt_title">
+                    <span class="title" i18n>option_download_prompt</span>
+                    <select name="download_prompt">
+                        <option value="0" i18n>option_never</option>
+                        <option value="1" i18n>option_always</option>
+                    </select>
+                </div>
+                <div title="option_download_headers_title" data-link="download_prompt,0">
+                    <span class="title" i18n>option_download_headers</span>
+                    <select name="download_headers">
+                        <option value="0" i18n>option_never</option>
+                        <option value="1" i18n>option_always</option>
+                    </select>
+                </div>
+                <div title="option_notify_start_title">
+                    <span class="title" i18n>option_notify_start</span>
+                    <select name="notify_start">
+                        <option value="0" i18n>option_nothing</option>
+                        <option value="1" i18n>option_notify</option>
+                    </select>
+                </div>
+                <div title="option_notify_complete_title">
+                    <span class="title" i18n>option_notify_complete</span>
+                    <select name="notify_complete">
+                        <option value="0" i18n>option_nothing</option>
+                        <option value="1" i18n>option_notify</option>
+                    </select>
                 </div>
             </div>
-            <div title="option_notify_start_title">
-                <span class="title" i18n>option_notify_start</span>
-                <select name="notify_start">
-                    <option value="0" i18n>option_nothing</option>
-                    <option value="1" i18n>option_notify</option>
-                </select>
-            </div>
-            <div title="option_notify_complete_title">
-                <span class="title" i18n>option_notify_complete</span>
-                <select name="notify_complete">
-                    <option value="0" i18n>option_nothing</option>
-                    <option value="1" i18n>option_notify</option>
-                </select>
-            </div>
+            <h1 i18n>option_advanced</h1>
             <div title="option_user_agent_title">
                 <div class="title" i18n>option_user_agent</div>
                 <div>
                     <textarea name="user_agent" rows="2"></textarea>
                 </div>
             </div>
-            <h1 i18n>option_advanced</h1>
             <div title="option_proxy_server_title">
                 <div class="title" i18n>option_proxy_server</div>
                 <div>
@@ -89,7 +105,7 @@
                     <option value="2" i18n>option_always</option>
                 </select>
                 <div data-link="proxy_mode,1">
-                    <textarea name="proxy_include" rows="6" placeholder="example.com domain.net this.co.ar"></textarea>
+                    <textarea name="proxy_include" rows="3" placeholder="example.com domain.net this.co.ar"></textarea>
                 </div>
             </div>
             <div title="option_capture_mode_title">
@@ -117,7 +133,7 @@
             <div title="option_capture_include_title" data-link="capture_mode,1">
                 <div class="title" i18n>option_capture_include</div>
                 <div>
-                    <textarea name="capture_include" rows="6" placeholder="example.com domain.net this.co.ar"></textarea>
+                    <textarea name="capture_include" rows="3" placeholder="example.com domain.net this.co.ar"></textarea>
                 </div>
             </div>
             <div title="option_capture_reject_title" data-link="capture_mode,1,2">
@@ -129,7 +145,7 @@
             <div title="option_capture_exclude_title" data-link="capture_mode,1,2">
                 <div class="title" i18n>option_capture_exclude</div>
                 <div>
-                    <textarea name="capture_exclude" rows="6" placeholder="example.com domain.net this.co.ar"></textarea>
+                    <textarea name="capture_exclude" rows="3" placeholder="example.com domain.net this.co.ar"></textarea>
                 </div>
             </div>
         </div>

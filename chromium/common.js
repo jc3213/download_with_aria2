@@ -1,5 +1,15 @@
 var aria2Panel = {};
 
+chrome.runtime.onMessage.addListener((message, sender, response) => {
+    var {id} = sender.tab;
+    response(aria2Panel[id]);
+});
+
+async function getDownloadPrompt(url, options) {
+    var {id} = await aria2NewSession('background', 380);
+    aria2Panel[id] = {url, options};
+}
+
 async function getDefaultOptions() {
     var response = await fetch('/options.json');
     var json = await response.json();
@@ -57,13 +67,17 @@ function getProxyServer(hostname) {
     }
 }
 
-function getRequestHeaders(cookies) {
-    var result = 'Cookie:';
-    cookies.forEach(cookie => {
-        var {name, value} = cookie;
-        result += ' ' + name + '=' + value + ';';
+function getCookies(url) {
+    return new Promise(resolve => {
+        var result = 'Cookie:';
+        chrome.cookies.getAll({url}, cookies => {
+            cookies.forEach(cookie => {
+                var {name, value} = cookie;
+                result += ' ' + name + '=' + value + ';';
+            });
+            resolve(result);
+        });
     });
-    return [result];
 }
 
 function getDownloadFolder() {
@@ -74,13 +88,3 @@ function getDownloadFolder() {
         return null;
     }
 }
-
-async function getDownloadPanel(url, options) {
-    var {id} = await aria2NewSession('background', 380);
-    aria2Panel[id] = {url, options};
-}
-
-chrome.runtime.onMessage.addListener((message, sender, response) => {
-    var {id} = sender.tab;
-    response(aria2Panel[id]);
-});

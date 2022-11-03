@@ -4,6 +4,16 @@ var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
 var options = {};
 
+if (location.search === '?popup') {
+    document.body.className = 'full';
+    document.querySelector('input[name="out"]').disabled = true;
+    runAfter = () => useragent.value = aria2Store['user_agent'];
+}
+else {
+    document.body.className = 'slim';
+    runAfter = () => chrome.runtime.sendMessage('panel', slimDownload);
+}
+
 document.querySelector('#referer_btn').addEventListener('click', async event => {
     chrome.tabs.query({active: true, currentWindow: false}, tabs => {
         var {url} = tabs[0];
@@ -54,6 +64,17 @@ document.querySelector('#extra_btn').addEventListener('click', event => {
     document.body.classList.toggle('complex');
 });
 
+function slimDownload(json) {
+    entries.value = json.url;
+    options = json.options;
+    Object.keys(options).forEach(key => {
+        var field = document.querySelector('[name="' + key + '"]');
+        if (field) {
+            field.value = options[key];
+        }
+    });
+}
+
 function getOptions() {
     document.querySelectorAll('[name]:not(:disabled)').forEach(field => options[field.name] = field.value);
 }
@@ -101,24 +122,5 @@ async function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     var options = await aria2RPC.message('aria2.getGlobalOption');
     printGlobalOptions(options);
-    if (location.search === '?popup') {
-        document.body.className = 'full';
-        document.querySelector('input[name="out"]').disabled = true;
-        useragent.value = aria2Store['user_agent'];
-    }
-    else {
-        document.body.className = 'slim';
-        chrome.runtime.sendMessage('panel', slimDownload);
-    }
-}
-
-function slimDownload(json) {
-    entries.value = json.url;
-    options = json.options;
-    Object.keys(options).forEach(key => {
-        var field = document.querySelector('[name="' + key + '"]');
-        if (field) {
-            field.value = options[key];
-        }
-    });
+    runAfter();
 }
