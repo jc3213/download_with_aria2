@@ -1,13 +1,13 @@
-var aria2Panel = {};
+var aria2Prompt = {};
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
     var {id} = sender.tab;
-    response(aria2Panel[id]);
+    response(aria2Prompt[id]);
 });
 
 async function getDownloadPrompt(url, options) {
     var {id} = await aria2NewSession('background', 380);
-    aria2Panel[id] = {url, options};
+    aria2Prompt[id] = {url, options};
 }
 
 async function getDefaultOptions() {
