@@ -18,7 +18,7 @@ body > div {
 
 [data-main="0"] > button.active,
 [data-main="1"] > button.waiting,
-[data-main="2"] > button.stopped {
+[data-main="2"] > button.removed {
     border: 2px inset #ccc;
 }
 
