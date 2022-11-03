@@ -19,7 +19,7 @@ body > div {
 [data-main="0"] > button.active,
 [data-main="1"] > button.waiting,
 [data-main="2"] > button.stopped {
-    border: 1px inset #ccc;
+    border: 2px inset #ccc;
 }
 
 [data-stat="download"]::after, [data-stat="upload"]::after,
