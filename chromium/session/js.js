@@ -2,7 +2,6 @@ var referer = document.querySelector('[name="referer"]');
 var useragent = document.querySelector('[name="user-agent"]');
 var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
-var savebtn = document.querySelector('#save_btn');
 var options = {};
 
 document.querySelector('#referer_btn').addEventListener('click', async event => {
