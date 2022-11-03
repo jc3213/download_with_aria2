@@ -7,14 +7,6 @@
     height: 250px;
 }
 
-.slim [data-extra]:not(.complex [data-extra]) {
-    display: none;
-}
-
-.full .session > :nth-child(3), .full #extra_btn, .slim #upload_btn {
-    display: none;
-}
-
 .menu {
     text-align: center;
 }
@@ -29,4 +21,9 @@
 
 .complex #extra_btn {
     border: 1px #ccc inset;
+}
+
+.full .session > :nth-child(3), .full #extra_btn,
+.slim #upload_btn, .slim [data-extra]:not(.complex [data-extra]) {
+    display: none;
 }
