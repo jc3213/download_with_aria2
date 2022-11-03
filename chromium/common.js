@@ -1,3 +1,5 @@
+var aria2Panel = {};
+
 async function getDefaultOptions() {
     var response = await fetch('/options.json');
     var json = await response.json();
@@ -74,10 +76,11 @@ function getDownloadFolder() {
 }
 
 async function getDownloadPanel(url, options) {
-    var tabId = await aria2NewSession('background', 380);
-    aria2Message = {url, options};
+    var {id} = await aria2NewSession('background', 380);
+    aria2Panel[id] = {url, options};
 }
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
-    response(aria2Message);
+    var {id} = sender.tab;
+    response(aria2Panel[id]);
 });

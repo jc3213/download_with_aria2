@@ -32,9 +32,8 @@ function aria2NewSession(param, offset) {
             width: 680,
             top: (height - offset) / 2,
             left: width / 2 - 360
-        }, window => {
-            var tab = window.tabs[0];
-            resolve(tab.id);
+        }, details => {
+            resolve(details.tabs[0]);
         });
     });
 }
