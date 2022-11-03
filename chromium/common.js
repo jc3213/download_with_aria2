@@ -67,17 +67,13 @@ function getProxyServer(hostname) {
     }
 }
 
-function getCookies(url) {
-    return new Promise(resolve => {
-        var result = 'Cookie:';
-        chrome.cookies.getAll({url}, cookies => {
-            cookies.forEach(cookie => {
-                var {name, value} = cookie;
-                result += ' ' + name + '=' + value + ';';
-            });
-            resolve(result);
-        });
+function getRequestHeaders(cookies) {
+    var result = 'Cookie:';
+    cookies.forEach(cookie => {
+        var {name, value} = cookie;
+        result += ' ' + name + '=' + value + ';';
     });
+    return [result];
 }
 
 function getDownloadFolder() {

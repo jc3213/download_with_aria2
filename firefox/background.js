@@ -34,7 +34,15 @@ async function aria2Download(url, hostname, storeId, options) {
     options['user-agent'] = aria2Store['user_agent'];
     options['header'] = getRequestHeaders(cookies);
     options['all-proxy'] = getProxyServer(hostname);
-    aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
+    if (aria2Store['download_prompt'] === '1') {
+        getDownloadPrompt(url, options);
+    }
+    else if (aria2Store['download_headers'] === '1') {
+        aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
+    }
+    else {
+        aria2RPC.message('aria2.addUri', [[url]]).then(result => aria2WhenStart(url));
+    }
 }
 
 function aria2Capture() {
