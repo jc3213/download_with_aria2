@@ -2,6 +2,8 @@ var referer = document.querySelector('[name="referer"]');
 var useragent = document.querySelector('[name="user-agent"]');
 var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
+var fullbtn = document.querySelector('#submit_btn');
+var countdown = document.querySelector('#countdown');
 var options = {};
 
 if (location.search === '?popup') {
@@ -73,6 +75,12 @@ function slimDownload(json) {
             field.value = options[key];
         }
     });
+    setInterval(() => {
+        countdown.innerText --;
+        if (countdown.innerText === '0') {
+            fullbtn.click();
+        }
+    }, 1000);
 }
 
 function getOptions() {
