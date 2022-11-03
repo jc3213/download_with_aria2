@@ -3,14 +3,7 @@ var useragent = document.querySelector('#useragent');
 var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
 var savebtn = document.querySelector('#save_btn');
-
-if (location.search === '?popup') {
-    document.body.className = 'full';
-    document.querySelector('input[name="out"]').disabled = true;
-}
-else {
-    document.body.className = 'slim';
-}
+var options = {};
 
 document.querySelector('#referer_btn').addEventListener('click', async event => {
     chrome.tabs.query({active: true, currentWindow: false}, tabs => {
@@ -24,7 +17,7 @@ document.querySelector('#proxy_new').addEventListener('click', event => {
 });
 
 document.querySelector('#submit_btn').addEventListener('click', async event => {
-    var options = getOptions();
+    getOptions();
     if (batch.value === '0') {
         var urls = entries.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
         if (urls) {
@@ -34,7 +27,7 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
     }
     else if (batch.value === '1') {
         var json = JSON.parse(entries.value);
-        await processJSON(json, options);
+        await parseJSON(json, options);
     }
     else if (batch.value === '2') {
         var metalink = new Blob([entries.value], {type: 'application/metalink;charset=utf-8'});
@@ -44,8 +37,8 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
 });
 
 document.querySelector('#upload_btn').addEventListener('change', async event => {
+    getOptions();
     var file = event.target.files[0];
-    var options = getOptions();
     if (file.name.endsWith('torrent')){
         await downloadTorrent(file, options);
     }
@@ -63,17 +56,15 @@ document.querySelector('#extra_btn').addEventListener('click', event => {
 });
 
 function getOptions() {
-    var options = {'referer': referer.value, 'user-agent': useragent.value};
     document.querySelectorAll('[name]:not(:disabled)').forEach(field => options[field.name] = field.value);
-    return options;
 }
 
 async function downloadJSON(file, options) {
     var json = await readFileTypeJSON(file);
-    await processJSON(json, options);
+    await parseJSON(json, options);
 }
 
-async function processJSON(json, extras) {
+async function parseJSON(json, extras) {
     if (!Array.isArray(json)) {
         json = [json];
     }
@@ -111,5 +102,24 @@ async function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     var options = await aria2RPC.message('aria2.getGlobalOption');
     printGlobalOptions(options);
-    useragent.value = aria2Store['user_agent'];
+    if (location.search === '?popup') {
+        document.body.className = 'full';
+        document.querySelector('input[name="out"]').disabled = true;
+        useragent.value = aria2Store['user_agent'];
+    }
+    else {
+        document.body.className = 'slim';
+        chrome.runtime.sendMessage('panel', slimDownload);
+    }
+}
+
+function slimDownload(json) {
+    entries.value = json.url;
+    options = json.options;
+    Object.keys(options).forEach(key => {
+        var field = document.querySelector('[name="' + key + '"]');
+        if (field) {
+            field.value = options[key];
+        }
+    });
 }

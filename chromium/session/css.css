@@ -4,7 +4,7 @@
 }
 
 .slim .session {
-    height: 250px;
+    height: 230px;
 }
 
 .menu {
@@ -24,6 +24,6 @@
 }
 
 .full .session > :nth-child(3), .full #extra_btn,
-.slim #upload_btn, .slim [data-extra]:not(.complex [data-extra]) {
+.slim #upload_btn, .slim #batch, .slim [data-extra]:not(.complex [data-extra]) {
     display: none;
 }

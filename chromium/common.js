@@ -72,3 +72,12 @@ function getDownloadFolder() {
         return null;
     }
 }
+
+async function getDownloadPanel(url, options) {
+    var tabId = await aria2NewSession('background', 380);
+    aria2Message = {url, options};
+}
+
+chrome.runtime.onMessage.addListener((message, sender, response) => {
+    response(aria2Message);
+});
