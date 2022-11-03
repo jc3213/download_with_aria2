@@ -1,5 +1,5 @@
-var referer = document.querySelector('#referer');
-var useragent = document.querySelector('#useragent');
+var referer = document.querySelector('[name="referer"]');
+var useragent = document.querySelector('[name="user-agent"]');
 var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
 var savebtn = document.querySelector('#save_btn');
@@ -12,7 +12,7 @@ document.querySelector('#referer_btn').addEventListener('click', async event => 
     });
 });
 
-document.querySelector('#proxy_new').addEventListener('click', event => {
+document.querySelector('#proxy_btn').addEventListener('click', event => {
     event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
 });
 

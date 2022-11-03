@@ -29,7 +29,7 @@ function aria2NewSession(param, offset) {
             url: '/session/index.html?' + param,
             type: 'popup',
             height: offset,
-            width: 720,
+            width: 680,
             top: (height - offset) / 2,
             left: width / 2 - 360
         }, window => {
