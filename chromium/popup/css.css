@@ -19,7 +19,7 @@ body > div {
 [data-main="0"] > button.active,
 [data-main="1"] > button.waiting,
 [data-main="2"] > button.stopped {
-    border: 1px #ccc inset;
+    border: 1px inset #ccc;
 }
 
 [data-stat="download"]::after, [data-stat="upload"]::after,
@@ -68,7 +68,7 @@ body > div {
 
 .session {
     position: relative;
-    border: 1px outset #CCC;
+    border: 1px ridge #CCC;
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
@@ -91,7 +91,7 @@ body > div {
 
 .session button {
     font-size: 12px;
-    padding: 1px;
+    padding: 0px;
 }
 
 .session sub {

@@ -56,8 +56,8 @@ option:checked {
 }
 
 button {
-    padding: 5px;
-    border: 1px outset #000;
+    padding: 4px;
+    border: 2px outset #ccc;
 }
 
 button input[type="file"] {
@@ -76,7 +76,7 @@ button:not(:disabled):active {
 
 button.float {
     right: 0px;
-    padding: 2.5px;
+    padding: 1.5px;
 }
 
 button:disabled {
