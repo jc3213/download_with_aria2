@@ -22,6 +22,18 @@ body > div {
     border: 1px #ccc inset;
 }
 
+[data-stat="download"]::after, [data-stat="upload"]::after,
+.session #download::after, .session #upload::after,
+#manager #download::after, #manager #upload::after {
+    content: 'B/s';
+}
+
+.session #remote::after, .session #local::after,
+#manager #remote::after, #manager #local::after,
+.file #size::after {
+    content: 'B';
+}
+
 .active {
     background-color: #44c;
 }

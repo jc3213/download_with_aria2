@@ -7,12 +7,12 @@ body, input, textarea, select, option, button {
     font-size: 15px;
 }
 
-div {
-    position: relative;
+body > div > div:not(:first-child) {
+    margin-top: 25px;
 }
 
-div > [title]:nth-child(n+2), .flex > [title] {
-    margin-top: 25px;
+div {
+    position: relative;
 }
 
 input, textarea {

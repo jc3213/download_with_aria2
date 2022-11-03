@@ -1,8 +1,8 @@
 var activeStat = document.querySelector('[data-stat="active"]');
 var waitingStat = document.querySelector('[data-stat="waiting"]');
 var stoppedStat = document.querySelector('[data-stat="stopped"]');
-var downloadStat = document.querySelector('[data-stat="download"] > span');
-var uploadStat = document.querySelector('[data-stat="upload"] > span');
+var downloadStat = document.querySelector('[data-stat="download"]');
+var uploadStat = document.querySelector('[data-stat="upload"]');
 var activeQueue = document.querySelector('[data-queue="active"]');
 var waitingQueue = document.querySelector('[data-queue="waiting"]');
 var pausedQueue = document.querySelector('[data-queue="paused"]');
@@ -52,7 +52,7 @@ document.querySelector('#manager').addEventListener('change', event => {
     aria2RPC.message('aria2.changeOption', [activeId, {[name]: value}]);
 });
 
-document.querySelectorAll('.active.float, .complete.float').forEach(block => {
+document.querySelectorAll('#download.float, #upload.float').forEach(block => {
     var field = block.parentNode.querySelector('input');
     block.addEventListener('click', event => {
         if (field.disabled) {

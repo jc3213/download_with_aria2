@@ -9,37 +9,37 @@
     <body data-popup="main">
         <div data-main="3" class="flex">
             <button class="active" i18n>popup_active</button>
-            <div data-stat="active">0</div>
+            <span data-stat="active">0</span>
             <button class="waiting" i18n>popup_waiting</button>
-            <div data-stat="waiting">0</div>
+            <span data-stat="waiting">0</span>
             <button class="removed" i18n>popup_stopped</button>
-            <div data-stat="stopped">0</div>
+            <span data-stat="stopped">0</span>
             <button id="download_btn" i18n>popup_create</button>
             <button id="purge_btn" i18n>popup_purge</button>
         </div>
         <hr data-main>
-        <div id="session" data-main="3" style="height: calc(100% - 92px);">
+        <section id="session" data-main="3" style="height: calc(100% - 92px);">
             <div data-queue="active"></div>
             <div data-queue="waiting"></div>
             <div data-queue="paused"></div>
             <div data-queue="complete"></div>
             <div data-queue="removed"></div>
             <div data-queue="error"></div>
-        </div>
+        </section>
         <hr data-main>
         <div data-main class="flex">
             <button class="active" disabled i18n>popup_download</button>
-            <div data-stat="download"><span>0</span>B/s</div>
+            <span data-stat="download">0</span>
             <button class="complete" disabled i18n>popup_upload</button>
-            <div data-stat="upload"><span>0</span>B/s</div>
+            <span data-stat="upload">0</span>
             <button id="options_btn" i18n>popup_options</button>
         </div>
         <button id="name_btn" data-aria2></button>
         <div id="manager" data-aria2 style="height: calc(100% - 61px);">
             <div class="flex">
-                <div>🖥️ <span id="local"></span>B</div>
+                <div>🖥️ <span id="local"></span></div>
                 <div>🛰️ <span id="ratio"></span></div>
-                <div>📦 <span id="remote"></span>B</div>
+                <div>📦 <span id="remote"></span></div>
             </div>
             <div class="flex">
                 <div title="task_download_title">
@@ -47,7 +47,7 @@
                     <div>
                         <input name="max-download-limit" type="text">
                         <span class="float">B/s</span>
-                        <div class="active float"><span id="download"></span>B/s</div>
+                        <div id="download" class="active float"></div>
                     </div>
                 </div>
                 <div title="task_upload_title">
@@ -55,7 +55,7 @@
                     <div>
                         <input name="max-upload-limit" type="text">
                         <span class="float">B/s</span>
-                        <div class="complete float"><span id="upload"></span>B/s</div>
+                        <div id="upload" class="complete float"></div>
                     </div>
                 </div>
             </div>
@@ -128,7 +128,7 @@
         </div>
         <div class="session">
             <div id="name" class="title"></div>
-            <div>🖥️ <span id="local"></span>B</div>
+            <div>🖥️ <span id="local"></span></div>
             <div>⏲️ <span id="infinite" class="float">∞</span>
                 <span id="estimate">
                     <span id="day"></span><sub i18n>time_day</sub>
@@ -137,10 +137,10 @@
                     <span id="second"></span><sub i18n>time_second</sub>
                 </span>
             </div>
-            <div>📦 <span id="remote"></span>B</div>
+            <div>📦 <span id="remote"></span></div>
             <div>📶️ <span id="connect"></span></div>
-            <div>⏬ <span id="download"></span>B/s</div>
-            <div>⏫ <span id="upload"></span>B/s</div>
+            <div>⏬ <span id="download"></span></div>
+            <div>⏫ <span id="upload"></span></div>
             <div>
                 <button id="remove_btn">❌</button>
                 <button id="invest_btn">🔍</button>
@@ -157,8 +157,8 @@
         </div>
         <div class="file">
             <div id="index"></div>
-            <div><span id="name"></span></div>
-            <div><span id="size"></span>B</div>
+            <div id="name"></div>
+            <div id="size"></div>
             <div id="ratio"></div>
         </div>
         <script src="/libs/aria2.js"></script>
