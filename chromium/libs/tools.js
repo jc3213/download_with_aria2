@@ -16,9 +16,10 @@ function getDownloadName(bittorrent, [{path, uris}]) {
     else if (path) {
         return path.slice(path.lastIndexOf('/') + 1);
     }
-    else {
+    else if (uris[0]) {
         return uris[0].uri;
     }
+    return '???';
 }
 
 function aria2NewSession(param, offset) {
