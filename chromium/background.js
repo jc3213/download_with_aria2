@@ -28,7 +28,6 @@ chrome.storage.onChanged.addListener(changes => {
     }
 });
 
-
 function aria2Download(url, hostname, options) {
     chrome.cookies.getAll({url}, cookies => {
         options['user-agent'] = aria2Store['user_agent'];
