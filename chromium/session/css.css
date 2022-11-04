@@ -1,18 +1,14 @@
-.slim .session {
-    height: 240px;
-    overflow-y: auto;
+.flex > * {
+    flex: 1;
 }
 
 .menu {
     text-align: center;
 }
 
-.flex > * {
-    flex: 1;
-}
-
-#extra_btn {
-    padding: 2px 10px 4px;
+.slim .session {
+    height: 240px;
+    overflow-y: auto;
 }
 
 .complex #extra_btn {
