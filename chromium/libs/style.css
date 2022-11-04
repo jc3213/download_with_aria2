@@ -1,12 +1,14 @@
 @media (prefers-color-scheme: dark) { 
-    body, div {
+    body, div, option {
         background-color: #121212;
-        color: #ffffff;
     }
     
-    input, textarea, select, option, button {
+    input, textarea, select, button {
         background-color: #3b3b3b;
-        color: #ffffff;
+    }
+    
+    body, div, option, input, textarea, select, button {
+        color: #cccccc;
     }
 }
 
