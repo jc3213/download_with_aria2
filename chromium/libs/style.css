@@ -45,18 +45,19 @@ select, option {
 }
 
 input, textarea {
-    width: calc(100% - 10px);
+    width: calc(100% - 8px);
     resize: none;
+    border: 1px inset #ccc;
 }
 
 input + span.float {
     display: none;
-    top: 3px;
-    right: 8px;
+    top: 2px;
+    right: 6px;
 }
 
 input[type="number"] + span.float {
-    right: 24px;
+    right: 22px;
 }
 
 input:focus + span.float {
@@ -95,7 +96,7 @@ button:not(:disabled):active {
 
 button.float {
     right: 0px;
-    padding: 3px;
+    padding: 2px 2px 1px;
 }
 
 button:disabled {
