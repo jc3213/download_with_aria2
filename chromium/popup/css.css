@@ -7,8 +7,8 @@ body > div {
     overflow-y: auto;
 }
 
-[data-popup="main"] > *:not([data-main]),
-[data-popup="aria2"] > *:not([data-aria2]),
+[data-popup="main"] > :not([data-main]),
+[data-popup="aria2"] > :not([data-aria2]),
 [data-main="0"] > [data-queue]:nth-child(n+2),
 [data-main="1"] > [data-queue]:not(:nth-child(n+2):nth-child(-n+3)),
 [data-main="2"] > [data-queue]:nth-child(-n+3),
@@ -22,15 +22,15 @@ body > div {
     border: 2px inset #ccc;
 }
 
-[data-stat="download"]::after, [data-stat="upload"]::after,
-.session #download::after, .session #upload::after,
-#manager #download::after, #manager #upload::after {
+[data-stat] {
+    padding: 5px 15px 5px 0px;
+}
+
+#download::after, #upload::after {
     content: 'B/s';
 }
 
-.session #remote::after, .session #local::after,
-#manager #remote::after, #manager #local::after,
-.file #size::after {
+#remote::after, #local::after, #size::after {
     content: 'B';
 }
 
@@ -54,23 +54,18 @@ body > div {
     color: #fff;
 }
 
-#manager .flex > * {
-    flex: 1;
-}
-
-[data-stat] {
-    padding: 5px 15px 5px 0px;
-}
-
 #download_btn, #options_btn {
     margin-left: auto;
+}
+
+#session > :nth-child(n+2), .session:nth-child(n+2) {
+    margin-top: 5px;
 }
 
 .session {
     position: relative;
     border: 1px ridge #CCC;
     padding: 3px;
-    margin-bottom: 5px;
     display: grid;
     grid-template-columns: calc(33.333% - 6.828px) calc(33.333% - 6.828px) calc(33.333% - 6.828px) 20.484px;
     grid-template-areas: 'name name name menu' 'detail detail detail menu' 'detail detail detail menu' 'meter meter meter meter';
@@ -131,8 +126,8 @@ body > div {
     background-color: #844;
 }
 
-.footmenu {
-    text-align: center;
+#manager .flex > * {
+    flex: 1;
 }
 
 #manager > div:first-child > * {

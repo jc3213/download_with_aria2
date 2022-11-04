@@ -9,29 +9,29 @@
     <body data-popup="main">
         <div data-main="3" class="flex">
             <button class="active" i18n>popup_active</button>
-            <span data-stat="active">0</span>
+            <span id="active" data-stat>0</span>
             <button class="waiting" i18n>popup_waiting</button>
-            <span data-stat="waiting">0</span>
+            <span id="waiting" data-stat>0</span>
             <button class="removed" i18n>popup_stopped</button>
-            <span data-stat="stopped">0</span>
+            <span id="stopped" data-stat>0</span>
             <button id="download_btn" i18n>popup_create</button>
             <button id="purge_btn" i18n>popup_purge</button>
         </div>
         <hr data-main>
-        <section id="session" data-main="3" style="height: calc(100% - 92px);">
+        <div id="session" data-main="3" style="height: calc(100% - 92px);">
             <div data-queue="active"></div>
             <div data-queue="waiting"></div>
             <div data-queue="paused"></div>
             <div data-queue="complete"></div>
             <div data-queue="removed"></div>
             <div data-queue="error"></div>
-        </section>
+        </div>
         <hr data-main>
         <div data-main class="flex">
             <button class="active" disabled i18n>popup_download</button>
-            <span data-stat="download">0</span>
+            <span id="download" data-stat>0</span>
             <button class="complete" disabled i18n>popup_upload</button>
-            <span data-stat="upload">0</span>
+            <span id="upload" data-stat>0</span>
             <button id="options_btn" i18n>popup_options</button>
         </div>
         <button id="name_btn" data-aria2></button>
@@ -63,7 +63,7 @@
                 <div class="title" i18n>task_proxy</div>
                 <div>
                     <input name="all-proxy" type="url">
-                    <button id="proxy_mgr" class="float">🔖</button>
+                    <button id="proxy_btn" class="float">🔖</button>
                 </div>
             </div>
             <div data-http class="flex">

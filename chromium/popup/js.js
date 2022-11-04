@@ -1,8 +1,8 @@
-var activeStat = document.querySelector('[data-stat="active"]');
-var waitingStat = document.querySelector('[data-stat="waiting"]');
-var stoppedStat = document.querySelector('[data-stat="stopped"]');
-var downloadStat = document.querySelector('[data-stat="download"]');
-var uploadStat = document.querySelector('[data-stat="upload"]');
+var activeStat = document.querySelector('#active[data-stat]');
+var waitingStat = document.querySelector('#waiting[data-stat]');
+var stoppedStat = document.querySelector('#stopped[data-stat]');
+var downloadStat = document.querySelector('#download[data-stat]');
+var uploadStat = document.querySelector('#upload[data-stat]');
 var activeQueue = document.querySelector('[data-queue="active"]');
 var waitingQueue = document.querySelector('[data-queue="waiting"]');
 var pausedQueue = document.querySelector('[data-queue="paused"]');
@@ -17,7 +17,7 @@ var fileList = document.querySelector('#files');
 var uriList = document.querySelector('#uris');
 var savebtn = document.querySelector('#save_btn');
 
-document.querySelectorAll('body > div:first-child > button').forEach((tab, index) => {
+document.querySelectorAll('button.active, button.waiting, button.removed').forEach((tab, index) => {
     tab.addEventListener('click', event => {
         var value = tab.parentNode.getAttribute('data-main') == index ? 3 : index;
         tab.parentNode.setAttribute('data-main', value);
@@ -66,7 +66,7 @@ document.querySelectorAll('#download.float, #upload.float').forEach(block => {
     });
 });
 
-document.querySelector('#proxy_mgr').addEventListener('click', async event => {
+document.querySelector('#proxy_btn').addEventListener('click', async event => {
     await aria2RPC.message('aria2.changeOption', [activeId, {'all-proxy': aria2Store['proxy_server']}]);
     event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
 });
