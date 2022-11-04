@@ -4,7 +4,7 @@
         color: #ffffff;
     }
     
-    input, textarea, button {
+    input, textarea, select, option, button {
         background-color: #3b3b3b;
         color: #ffffff;
     }
