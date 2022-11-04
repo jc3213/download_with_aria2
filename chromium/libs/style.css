@@ -7,7 +7,7 @@ body, input, textarea, select, option, button {
     font-size: 15px;
 }
 
-body > div > div:not(:first-child) {
+body > div > div:nth-child(n+2) {
     margin-top: 25px;
 }
 
