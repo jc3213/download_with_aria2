@@ -1,12 +1,17 @@
 @media (prefers-color-scheme: dark) { 
-    body, div, input, textarea, select, option, button {
+    body, div {
         background-color: #121212;
+        color: #ffffff;
+    }
+    
+    input, textarea, button {
+        background-color: #3b3b3b;
         color: #ffffff;
     }
 }
 
 @media (prefers-color-scheme: light) { 
-    body, div, input, textarea, select, option, button {
+    body, div {
         background-color: #ffffff;
         color: #000000;
     }
@@ -66,7 +71,6 @@ select:only-child {
 
 option:checked {
     font-weight: bold;
-    color: #F00;
 }
 
 button {
