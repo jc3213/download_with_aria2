@@ -13,8 +13,9 @@
 }
 
 @media (prefers-color-scheme: light) { 
-    body, div {
+    body, div, input, textarea, select, option, button {
         background-color: #ffffff;
+        color: #000000;
     }
 }
 
