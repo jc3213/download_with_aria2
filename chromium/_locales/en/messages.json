@@ -102,16 +102,16 @@
         "message": "Set task manager refresh interval"
     },
     "option_download_prompt": {
-        "message": "Show Download Prompt"
+        "message": "Display Download Prompt"
     },
     "option_download_prompt_title": {
         "message": "Confirm once again before the download starts"
     },
     "option_download_headers": {
-        "message": "Forward Download Headers"
+        "message": "Forward Request Headers"
     },
     "option_download_headers_title": {
-        "message": "Set whether forward the download request headers"
+        "message": "Set whether to forward the download request headers"
     },
     "option_notify_start": {
         "message": "When Downloads Start"
@@ -135,7 +135,7 @@
         "message": "Set user agent for new downloads"
     },
     "option_proxy_mode": {
-        "message": "Use Proxy"
+        "message": "Use Proxy Server"
     },
     "option_proxy_mode_title": {
         "message": "Set proxy server for new downloads"
