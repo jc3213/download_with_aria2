@@ -12,6 +12,12 @@
     }
 }
 
+@media (prefers-color-scheme: dark) { 
+    body, div {
+        background-color: #ffffff;
+    }
+}
+
 body {
     font-family: "Segoe UI", Tahoma, sans-serif;
     user-select: none;
