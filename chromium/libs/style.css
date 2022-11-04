@@ -78,12 +78,11 @@ button input[type="file"] {
 }
 
 button:not(:disabled):hover {
-    filter: contrast(80%);
-    border-style: solid;
+    filter: invert(15%);
 }
 
 button:not(:disabled):active {
-    filter: contrast(40%);
+    filter: invert(30%);
     border-style: inset;
 }
 
