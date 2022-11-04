@@ -51,7 +51,7 @@ body > div {
 }
 
 .active, .waiting, .paused, .error, .complete, .removed {
-    color: #fff;
+    color: #ccc;
 }
 
 #download_btn, #options_btn {
@@ -104,7 +104,7 @@ body > div {
 }
 
 #error {
-    color: #f00;
+    color: #c00;
     font-size: 11px;
 }
 
