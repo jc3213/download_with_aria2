@@ -93,8 +93,19 @@ body > div {
     margin-right: -4px;
 }
 
+@media (prefers-color-scheme: dark) { 
+    #infinite {
+        background-color: #121212;
+    }
+}
+
+@media (prefers-color-scheme: light) { 
+    #infinite {
+        background-color: #ffffff;
+    }
+}
+
 #infinite {
-    background-color: #fff;
     display: none;
     top: 0px;
     left: 24px;
