@@ -6,9 +6,9 @@
     input, textarea, select, button {
         background-color: #3b3b3b;
     }
-    
+
     body, div, option, input, textarea, select, button {
-        color: #e4e4e4;
+        color: #ffffff;
     }
 }
 
@@ -76,8 +76,8 @@ option:checked {
 }
 
 button {
-    padding: 4px;
-    border: 2px outset #ccc;
+    padding: 5px;
+    border: 1px outset #ccc;
 }
 
 button input[type="file"] {
@@ -85,22 +85,27 @@ button input[type="file"] {
 }
 
 button:not(:disabled):hover {
-    filter: invert(15%);
+    filter: contrast(65%);
 }
 
 button:not(:disabled):active {
-    filter: invert(30%);
+    filter: contrast(45%);
     border-style: inset;
 }
 
 button.float {
     right: 0px;
-    padding: 1.5px;
+    padding: 3px;
 }
 
 button:disabled {
+    filter: contrast(45%);
     padding: 6px;
     border: none;
+}
+
+button:disabled[class] {
+    filter: none;
 }
 
 .flex {
