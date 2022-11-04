@@ -65,7 +65,7 @@ document.querySelector('#back_btn').addEventListener('click', event => {
     aria2StartUp();
     clearChanges();
     global = true;
-    document.body.setAttribute('data-prefs', 'option');
+    document.body.setAttribute('data-main', 'local');
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
@@ -74,7 +74,7 @@ document.querySelector('#aria2_btn').addEventListener('click', event => {
         aria2Global = options;
         clearChanges();
         global = false;
-        document.body.setAttribute('data-prefs', 'global');
+        document.body.setAttribute('data-main', 'aria2');
     });
 });
 
@@ -103,7 +103,7 @@ document.addEventListener('mouseup', event => {
     secret.type = 'password';
 });
 
-document.querySelector('#option').addEventListener('change', event => {
+document.querySelector('#local').addEventListener('change', event => {
     var {name, value} = event.target;
     var array = mapping.includes(name);
     var multi = offset[name];
@@ -112,7 +112,7 @@ document.querySelector('#option').addEventListener('change', event => {
     printChanges(name, old_value, new_value);
 });
 
-document.querySelector('#global').addEventListener('change', event => {
+document.querySelector('#aria2').addEventListener('change', event => {
     var {name, value} = event.target;
     var old_value = name in backage ? backage[name] : aria2Global[name];
     printChanges(name, old_value, value);
@@ -133,7 +133,7 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 function aria2StartUp() {
-    document.querySelectorAll('#option [name]').forEach(field => {
+    document.querySelectorAll('#local [name]').forEach(field => {
         var {name} = field;
         var array = mapping.includes(name);
         var multi = offset[name];

@@ -17,14 +17,14 @@ body {
     margin-left: auto;
 }
 
-#option, #global {
+#local, #aria2 {
     margin-top: 70px;
 }
 
-#option .flex > * {
+#local .flex > * {
     flex: 1;
 }
 
-[data-prefs="option"] [data-global], [data-prefs="global"] [data-option] {
+[data-main="local"] [data-aria2], [data-main="aria2"] [data-local] {
     display: none;
 }
