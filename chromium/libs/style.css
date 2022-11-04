@@ -8,14 +8,7 @@
     }
     
     body, div, option, input, textarea, select, button {
-        color: #cccccc;
-    }
-}
-
-@media (prefers-color-scheme: light) { 
-    body, div {
-        background-color: #ffffff;
-        color: #000000;
+        color: #e4e4e4;
     }
 }
 
