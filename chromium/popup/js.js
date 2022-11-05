@@ -26,7 +26,7 @@ document.querySelectorAll('button.active, button.waiting, button.removed').forEa
 });
 
 document.querySelector('#download_btn').addEventListener('click', event => {
-    aria2NewSession('popup', 760);
+    aria2NewSession('popup', 780);
     window.close();
 });
 

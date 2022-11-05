@@ -28,12 +28,12 @@ body, input, textarea, select, option, button {
     font-size: 16px;
 }
 
-body > div > div:nth-child(n+2) {
-    margin-top: 25px;
-}
-
 div {
     position: relative;
+}
+
+div[title]:has(.title) {
+    margin-top: 25px;
 }
 
 input, textarea, select, option {
