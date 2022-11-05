@@ -59,17 +59,19 @@ body > div {
 }
 
 #session {
-    height: calc(100% - 98px);
+    height: calc(100% - 94px);
+    margin-top: -5px;
 }
 
-#session > :nth-child(n+2), .session:nth-child(n+2) {
-    margin-top: 5px;
+#session > * {
+    margin-top: 0px;
 }
 
 .session {
     position: relative;
     border: 1px ridge #CCC;
     padding: 3px;
+    margin-top: 5px;
     display: grid;
     grid-template-columns: calc(33.333% - 7.5px) calc(33.333% - 7.5px) calc(33.333% - 7.5px) 22.5px;
     grid-template-areas: 'name name name menu' 'detail detail detail menu' 'detail detail detail menu' 'meter meter meter meter';
@@ -129,7 +131,7 @@ body > div {
 }
 
 #manager {
-    height: calc(100% - 68px);
+    height: calc(100% - 66px);
 }
 
 #manager .flex > * {
