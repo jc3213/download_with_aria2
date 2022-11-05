@@ -48,7 +48,8 @@
     },
     "applications": {
         "gecko": {
-            "id": "firefox@downloadWithAria2"
+            "id": "firefox@downloadWithAria2",
+            "strict_min_version": "103.0"
         }
     },
     "developer": {
