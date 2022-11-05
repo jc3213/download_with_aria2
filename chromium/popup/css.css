@@ -64,7 +64,7 @@ body > div {
 
 .session {
     position: relative;
-    border: 1px ridge #CCC;
+    border: 1px outset #CCC;
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
@@ -101,7 +101,7 @@ body > div {
 }
 
 #meter:active {
-    filter: contrast(40%);
+    filter: contrast(45%);
 }
 
 #error {
