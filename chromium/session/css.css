@@ -6,24 +6,25 @@
     text-align: center;
 }
 
-.slim .session {
-    height: 262px;
-    overflow-y: auto;
+#countdown::before {
+    content: '(';
+}
+
+#countdown::after {
+    content: ')';
 }
 
 .complex #extra_btn {
     border-style: inset;
 }
 
-.slim #countdown::before {
-    content: '(';
+[data-main="slim"] #download {
+    height: 262px;
+    overflow-y: auto;
 }
 
-.slim #countdown::after {
-    content: ')';
-}
-
-.full .session > :nth-child(3), .full #extra_btn, .full #countdown,
-.slim #upload_btn, .slim #batch, .slim [data-extra]:not(.complex [data-extra]) {
+[data-main="full"] [data-slim],
+[data-main="slim"]:not(.complex) [data-full],
+.complex select[data-full], .complex button[data-full] {
     display: none;
 }

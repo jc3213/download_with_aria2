@@ -3,8 +3,8 @@ body {
     width: 680px;
 }
 
-[data-popup="main"] > :not([data-main]),
-[data-popup="aria2"] > :not([data-aria2]),
+[data-page="main"] > :not([data-main]),
+[data-page="aria2"] > :not([data-aria2]),
 [data-main="0"] > [data-queue]:nth-child(n+2),
 [data-main="1"] > [data-queue]:not(:nth-child(n+2):nth-child(-n+3)),
 [data-main="2"] > [data-queue]:nth-child(-n+3),

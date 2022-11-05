@@ -29,7 +29,7 @@ body, div {
     position: relative;
 }
 
-div[title]:has(.title) {
+body > [id] > [title]:nth-child(n+2), .flex > [title] {
     margin-top: 25px;
 }
 

@@ -7,12 +7,12 @@ var countdown = document.querySelector('#countdown');
 var options = {};
 
 if (location.search === '?popup') {
-    document.body.className = 'full';
+    document.body.setAttribute('data-main', 'full');
     document.querySelector('input[name="out"]').disabled = true;
     runAfter = () => useragent.value = aria2Store['user_agent'];
 }
 else {
-    document.body.className = 'slim';
+    document.body.setAttribute('data-main', 'slim');
     runAfter = () => chrome.runtime.sendMessage('panel', slimDownload);
 }
 

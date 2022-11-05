@@ -44,7 +44,7 @@ document.querySelector('#options_btn').addEventListener('click', event => {
 document.querySelector('#name_btn').addEventListener('click', event => {
     activeId = fileList.innerHTML = uriList.innerHTML = '';
     savebtn.style.display = 'none';
-    document.body.setAttribute('data-popup', 'main');
+    document.body.setAttribute('data-page', 'main');
 });
 
 document.querySelector('#manager').addEventListener('change', event => {
@@ -225,7 +225,7 @@ function parseSession(gid, status, bittorrent) {
         var options = await aria2RPC.message('aria2.getOption', [gid]);
         printGlobalOptions(options);
         updateTaskDetail(task, status, bittorrent, files);
-        document.body.setAttribute('data-popup', 'aria2');
+        document.body.setAttribute('data-page', 'aria2');
         document.querySelector('#manager').setAttribute('data-aria2', bittorrent ? 'bt' : 'http');
         document.querySelector('#manager #remote').innerText = task.querySelector('#remote').innerText;
     });

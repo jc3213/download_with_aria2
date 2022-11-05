@@ -6,8 +6,8 @@
         <link rel="stylesheet" href="/libs/style.css">
         <link rel="stylesheet" href="css.css">
     </head>
-    <body data-popup="main">
-        <div data-main="3" class="flex">
+    <body data-page="main">
+        <div class="flex" data-main="3">
             <button class="active" i18n>popup_active</button>
             <span id="active" data-stat>0</span>
             <button class="waiting" i18n>popup_waiting</button>
@@ -27,7 +27,7 @@
             <div data-queue="error"></div>
         </div>
         <hr data-main>
-        <div data-main class="flex">
+        <div class="flex" data-main>
             <button class="active" disabled i18n>popup_download</button>
             <span id="download" data-stat>0</span>
             <button class="complete" disabled i18n>popup_upload</button>
@@ -66,7 +66,7 @@
                     <button id="proxy_btn" class="float">🔖</button>
                 </div>
             </div>
-            <div data-http class="flex">
+            <div class="flex" data-http>
                 <div title="aria2_http_split_title">
                     <div class="title" i18n>aria2_http_split</div>
                     <div>
@@ -83,7 +83,7 @@
                     <span i18n>option_default</span>: <u><i>20M</i></u>
                 </div>
             </div>
-            <div data-bt class="flex">
+            <div class="flex" data-bt>
                 <div title="aria2_bt_ratio_title">
                     <div class="title" i18n>aria2_bt_ratio</div>
                     <div>
@@ -100,7 +100,7 @@
                     <span i18n>option_default</span>: <u><i>30</i></u>
                 </div>
             </div>
-            <div data-bt title="aria2_bt_remove_title">
+            <div title="aria2_bt_remove_title" data-bt>
                 <div class="title" i18n>aria2_bt_remove</div>
                 <div>
                     <select name="bt-remove-unselected-file">
@@ -117,7 +117,7 @@
                     <button id="save_btn" style="display: none;" i18n>option_save</button>
                 </div>
             </div>
-            <div data-http title="task_urls_title">
+            <div title="task_urls_title" data-http>
                 <div class="title" i18n>task_urls</div>
                 <div>
                     <input type="url">
