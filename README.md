@@ -2,6 +2,7 @@
 - [How to use](//github.com/jc3213/download_with_aria2/wiki)
 - [How to build](//github.com/jc3213/download_with_aria2/wiki/Building)
 - [Feed back](//github.com/jc3213/download_with_aria2/issues/new/)
+- [Firefox](https://developer.mozilla.org/en-US/docs/Web/CSS/:has#browser_compatibility) must enter `about:config`, and enable `layout.css.has-selector.enabled`
 
 ## Alternative Manager
 - [Aria2 WebUI](https://ziahamza.github.io/webui-aria2/)
