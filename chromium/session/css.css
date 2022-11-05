@@ -7,7 +7,7 @@
 }
 
 .slim .session {
-    height: fit-content;
+    height: 262px;
     overflow-y: auto;
 }
 
