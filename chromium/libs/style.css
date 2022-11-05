@@ -82,6 +82,7 @@ button input[type="file"] {
 }
 
 button:not(:disabled):hover {
+    cursor: pointer;
     filter: contrast(65%);
 }
 
