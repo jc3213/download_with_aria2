@@ -17,7 +17,7 @@ var sub = document.createElement('option');
 sub.value = '2';
 sub.innerText = i18n['browser'];
 
-var folder = document.querySelector('#option [name="folder_mode"]');
+var folder = document.querySelector('[name="folder_mode"]');
 folder.append(sub);
 
 var api = document.createElement('div');
@@ -32,7 +32,7 @@ api.addEventListener('change', event => {
     }
 });
 
-var capture = document.querySelector('#option [name="capture_mode"]');
+var capture = document.querySelector('[name="capture_mode"]');
 capture.parentNode.after(api);
 capture.addEventListener('change', event => {
     if ('1,2'.includes(capture.value)) {
