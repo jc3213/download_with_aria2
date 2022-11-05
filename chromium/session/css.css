@@ -12,7 +12,7 @@
 }
 
 .complex #extra_btn {
-    border: 2px inset #ccc;
+    border-style: inset;
 }
 
 .slim #countdown::before {
