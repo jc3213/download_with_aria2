@@ -1,12 +1,12 @@
 body {
     margin: auto;
-    width: 660px;
+    width: 680px;
 }
 
 #menu {
     position: fixed;
     top: 5px;
-    width: 648px;
+    width: 668px;
     padding: 5px;
     z-index: 999;
     border: 1px ridge #ccc;
