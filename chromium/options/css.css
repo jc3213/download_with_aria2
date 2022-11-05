@@ -9,7 +9,7 @@ body {
     width: 668px;
     padding: 5px;
     z-index: 999;
-    border: 1px ridge #ccc;
+    border: 1px outset #ccc;
 }
 
 #export_btn, #back_btn {
