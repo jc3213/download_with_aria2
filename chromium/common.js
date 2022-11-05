@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 });
 
 async function getDownloadPrompt(url, options) {
-    var {id} = await aria2NewSession('background', 380);
+    var {id} = await aria2NewSession('background', 400);
     aria2Prompt[id] = {url, options};
 }
 
