@@ -19,16 +19,13 @@
     }
 }
 
-body {
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    user-select: none;
-}
-
 body, input, textarea, select, option, button {
+    font-family: "Segoe UI", Tahoma, sans-serif;
     font-size: 16px;
 }
 
-div {
+body, div {
+    user-select: none;
     position: relative;
 }
 
@@ -36,7 +33,7 @@ div[title]:has(.title) {
     margin-top: 25px;
 }
 
-input, textarea, select, option {
+input, textarea, select, option, button {
     padding: 5px;
 }
 
@@ -48,7 +45,7 @@ input, textarea {
 
 input + span.float {
     display: none;
-    top: 3px;
+    top: 5px;
     right: 8px;
 }
 
@@ -57,6 +54,7 @@ input[type="number"] + span.float {
 }
 
 input:focus + span.float {
+    font-size: 17px;
     display: block;
 }
 
@@ -73,7 +71,6 @@ option:checked {
 }
 
 button {
-    padding: 5px;
     border: 1px outset #ccc;
 }
 
@@ -93,7 +90,6 @@ button:not(:disabled):active {
 
 button.float {
     right: 0px;
-    padding: 4px 3px 3px;
 }
 
 button:disabled {

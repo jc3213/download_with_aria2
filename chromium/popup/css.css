@@ -59,7 +59,7 @@ body > div {
 }
 
 #session {
-    height: calc(100% - 98px);
+    height: calc(100% - 102px);
 }
 
 .session {
@@ -152,7 +152,7 @@ body > div {
 
 .active.float, .complete.float {
     line-height: 28px;
-    padding: 0px 0px 1px 5px;
+    padding: 2px 0px 2px 5px;
     width: calc(100% - 5px);
 }
 
