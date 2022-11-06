@@ -23,8 +23,7 @@
     overflow-y: auto;
 }
 
-[data-main="full"] [data-slim],
-[data-main="slim"]:not(.complex) [data-full],
-.complex select[data-full], .complex button[data-full] {
+[data-main="full"] [data-slim], [data-main="slim"] [data-full],
+[data-main="slim"]:not(.complex) [data-extra] {
     display: none;
 }
