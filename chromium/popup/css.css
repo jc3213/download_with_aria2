@@ -65,7 +65,7 @@ body {
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
-    grid-template-columns: calc(33.333% - 7.5px) calc(33.333% - 7.5px) calc(33.333% - 7.5px) 22.5px;
+    grid-template-columns: repeat(3, calc(33.333% - 7.5px)) 22.5px;
     grid-template-areas: 'name name name menu' 'detail detail detail menu' 'detail detail detail menu' 'meter meter meter meter';
 }
 
