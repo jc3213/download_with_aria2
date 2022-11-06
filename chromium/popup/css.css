@@ -61,7 +61,8 @@ body {
 
 .session {
     position: relative;
-    border: 1px outset #CCC;
+    border-width: 1px;
+    border-style: outset;
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
@@ -132,7 +133,8 @@ body {
 }
 
 #manager > div:first-child > * {
-    border: 1px ridge #ccc;
+    border-width: 1px;
+    border-style: ridge;
     padding: 5px;
 }
 
@@ -173,7 +175,8 @@ body {
 }
 
 .file > *, .uri > * {
-    border: 1px ridge #ccc;
+    border-width: 1px;
+    border-style: ridge;
     word-break: break-word;
     overflow-y: auto;
 }

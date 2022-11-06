@@ -4,12 +4,13 @@ body {
 }
 
 #menu {
+    border-width: 1px;
+    border-style: outset;
     position: fixed;
     top: 5px;
     width: 668px;
     padding: 5px;
-    z-index: 999;
-    border: 1px outset #ccc;
+    z-index: 999999;
 }
 
 #export_btn, #back_btn {
