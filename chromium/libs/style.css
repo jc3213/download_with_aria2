@@ -1,3 +1,21 @@
+@media (prefers-color-scheme: light) { 
+    body, div, option {
+        background-color: #ffffff;
+    }
+
+    input, textarea, select, button {
+        background-color: #f0f0f0;
+    }
+
+    body, div, option, input, textarea, select, button {
+        color: #000000;
+    }
+
+    * {
+        border-color: #000000;
+    }
+}
+
 @media (prefers-color-scheme: dark) { 
     body, div, option {
         background-color: #121212;
@@ -10,12 +28,9 @@
     body, div, option, input, textarea, select, button {
         color: #ffffff;
     }
-}
 
-@media (prefers-color-scheme: light) { 
-    body, div {
-        background-color: #ffffff;
-        color: #000000;
+    * {
+        border-color: #ffffff;
     }
 }
 
@@ -40,7 +55,8 @@ input, textarea, select, option, button {
 input, textarea {
     width: calc(100% - 12px);
     resize: none;
-    border: 1px inset #ccc;
+    border-width: 1px;
+    border-style: inset;
 }
 
 input + span.float {
@@ -71,7 +87,8 @@ option:checked {
 }
 
 button {
-    border: 1px outset #ccc;
+    border-width: 1px;
+    border-style: outset;
 }
 
 button input[type="file"] {
