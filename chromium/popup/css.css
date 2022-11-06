@@ -60,7 +60,6 @@ body {
 }
 
 .session {
-    position: relative;
     border-width: 1px;
     border-style: outset;
     padding: 3px;
