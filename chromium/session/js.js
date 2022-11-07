@@ -18,12 +18,12 @@ else {
 document.querySelector('#referer_btn').addEventListener('click', async event => {
     chrome.tabs.query({active: true, currentWindow: false}, tabs => {
         var {url} = tabs[0];
-        referer.value = url;
+        referer.value = options['referer'] = url;
     });
 });
 
 document.querySelector('#proxy_btn').addEventListener('click', event => {
-    event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
+    event.target.parentNode.querySelector('input').value = options['all-proxy'] = aria2Store['proxy_server'];
 });
 
 document.querySelector('#submit_btn').addEventListener('click', async event => {
