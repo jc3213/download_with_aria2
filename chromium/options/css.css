@@ -3,6 +3,14 @@ body {
     width: 680px;
 }
 
+#local, #aria2 {
+    margin-top: 80px;
+}
+
+#local .flex > * {
+    flex: 1;
+}
+
 #menu {
     border-width: 1px;
     border-style: outset;
@@ -15,14 +23,6 @@ body {
 
 #export_btn, #back_btn {
     margin-left: auto;
-}
-
-#local, #aria2 {
-    margin-top: 70px;
-}
-
-#local .flex > * {
-    flex: 1;
 }
 
 [data-main="local"] [data-aria2], [data-main="aria2"] [data-local] {
