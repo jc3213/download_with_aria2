@@ -97,10 +97,6 @@ button:not(:disabled):active {
     border-style: inset;
 }
 
-button.float {
-    right: 0px;
-}
-
 button:disabled {
     filter: contrast(45%);
     padding: 6px;
@@ -109,6 +105,10 @@ button:disabled {
 
 button:disabled[class] {
     filter: none;
+}
+
+button.float {
+    right: 0px;
 }
 
 .flex {

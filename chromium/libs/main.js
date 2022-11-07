@@ -41,15 +41,20 @@ function getFileSize(bytes) {
     }
 }
 
-function printGlobalOptions(options) {
+function printGlobalOptions(json) {
+    var options = {};
     document.querySelectorAll('[name]').forEach(entry => {
         var {name} = entry;
-        var value = options[name] ?? '';
+        var value = json[name] ?? '';
         if (filesize.includes(name)) {
             value = getFileSize(value);
         }
+        if (value) {
+            options[name] = value;
+        }
         entry.value = value;
     });
+    return options;
 }
 
 function readFileTypeJSON(file) {

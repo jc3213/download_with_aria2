@@ -7,11 +7,11 @@
 }
 
 #countdown::before {
-    content: '(';
+    content: "(";
 }
 
 #countdown::after {
-    content: ')';
+    content: ")";
 }
 
 .complex #extra_btn {

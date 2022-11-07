@@ -4,12 +4,11 @@ var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
 var fullbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
-var options = {};
 
 if (location.search === '?popup') {
     document.body.setAttribute('data-main', 'full');
     document.querySelector('input[name="out"]').disabled = true;
-    runAfter = () => useragent.value = aria2Store['user_agent'];
+    runAfter = () => useragent.value = options['user-agent'] = aria2Store['user_agent'];
 }
 else {
     document.body.setAttribute('data-main', 'slim');
@@ -28,7 +27,6 @@ document.querySelector('#proxy_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#submit_btn').addEventListener('click', async event => {
-    getOptions();
     if (batch.value === '0') {
         var urls = entries.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
         if (urls) {
@@ -48,7 +46,6 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
 });
 
 document.querySelector('#upload_btn').addEventListener('change', async event => {
-    getOptions();
     var file = event.target.files[0];
     if (file.name.endsWith('torrent')){
         await downloadTorrent(file, options);
@@ -66,14 +63,22 @@ document.querySelector('#extra_btn').addEventListener('click', event => {
     document.body.classList.toggle('complex');
 });
 
+document.addEventListener('change', event => {
+    var {name, value} = event.target;
+    if (name) {
+        options[name] = value;
+    }
+});
+
 function slimDownload(json) {
     entries.value = json.url;
-    options = json.options;
-    Object.keys(options).forEach(key => {
-        var field = document.querySelector('[name="' + key + '"]');
-        var value = options[key];
-        if (field && value) {
-            field.value = value;
+    options = {...options, ...extras};
+    var extras = json.options;
+    Object.keys(extras).forEach(key => {
+        var entry = document.querySelector('[name="' + key + '"]');
+        var value = extras[key];
+        if (entry && value) {
+            entry.value = value;
         }
     });
     setInterval(() => {
@@ -82,10 +87,6 @@ function slimDownload(json) {
             fullbtn.click();
         }
     }, 1000);
-}
-
-function getOptions() {
-    document.querySelectorAll('[name]:not(:disabled)').forEach(field => options[field.name] = field.value);
 }
 
 async function downloadJSON(file, options) {
@@ -129,7 +130,7 @@ async function downloadMetalink(file, options) {
 
 async function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    var options = await aria2RPC.message('aria2.getGlobalOption');
-    printGlobalOptions(options);
+    global = await aria2RPC.message('aria2.getGlobalOption');
+    options = printGlobalOptions(global);
     runAfter();
 }
