@@ -53,15 +53,15 @@ document.querySelector('#manager').addEventListener('change', event => {
 });
 
 document.querySelectorAll('#download.float, #upload.float').forEach(block => {
-    var field = block.parentNode.querySelector('input');
+    var entry = block.parentNode.querySelector('input');
     block.addEventListener('click', event => {
-        if (field.disabled) {
+        if (entry.disabled) {
             return;
         }
         block.style.display = 'none';
-        field.focus();
+        entry.focus();
     });
-    field.addEventListener('blur', event => {
+    entry.addEventListener('blur', event => {
         block.style.display = 'block';
     });
 });

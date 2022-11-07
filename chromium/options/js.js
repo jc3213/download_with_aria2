@@ -133,12 +133,12 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 function aria2StartUp() {
-    document.querySelectorAll('#local [name]').forEach(field => {
-        var {name} = field;
+    document.querySelectorAll('#local [name]').forEach(entry => {
+        var {name} = entry;
         var array = mapping.includes(name);
         var multi = offset[name];
         var value = aria2Store[name];
-        field.value = array ? value.join(' ') : multi ? value / multi : value;
+        entry.value = array ? value.join(' ') : multi ? value / multi : value;
     });
     Object.keys(linkage).forEach(name => {
         var value = aria2Store[name];

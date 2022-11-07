@@ -23,11 +23,11 @@ body {
 }
 
 #download::after, #upload::after {
-    content: 'B/s';
+    content: "B/s";
 }
 
 #remote::after, #local::after, #size::after {
-    content: 'B';
+    content: "B";
 }
 
 .active {
@@ -66,7 +66,7 @@ body {
     margin-bottom: 5px;
     display: grid;
     grid-template-columns: repeat(3, calc(33.333% - 7.5px)) 22.5px;
-    grid-template-areas: 'name name name menu' 'detail detail detail menu' 'detail detail detail menu' 'meter meter meter meter';
+    grid-template-areas: "name name name menu" "detail detail detail menu" "detail detail detail menu" "meter meter meter meter";
 }
 
 .session > div:first-child {
