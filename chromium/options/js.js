@@ -26,6 +26,22 @@ var importbtn = document.querySelector('#import_btn');
 var exportbtn = document.querySelector('#export_btn');
 var secret = document.querySelector('[name="secret_token"]');
 
+document.addEventListener('keydown', event => {
+    var {ctrlKey, keyCode} = event;
+    if (ctrlKey) {
+        event.preventDefault();
+        if (keyCode === 83) {
+            savebtn.click();
+        }
+        else if (keyCode === 89) {
+            undobtn.click()
+        }
+        else if (keyCode === 90) {
+            redobtn.click();
+        }
+    }
+});
+
 savebtn.addEventListener('click', event => {
     if (global) {
         applyChanges(aria2Store);

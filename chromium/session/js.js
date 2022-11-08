@@ -3,6 +3,7 @@ var useragent = document.querySelector('[name="user-agent"]');
 var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
 var fullbtn = document.querySelector('#submit_btn');
+var submitbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
 
 if (location.search === '?full') {
@@ -14,6 +15,16 @@ else {
     document.body.setAttribute('data-main', 'slim');
     runAfter = () => chrome.runtime.sendMessage('panel', slimDownload);
 }
+
+document.addEventListener('keydown', event => {
+    var {ctrlKey, keyCode} = event;
+    if (ctrlKey) {
+        event.preventDefault();
+        if (keyCode === 83) {
+            submitbtn.click();
+        }
+    }
+});
 
 document.querySelector('#referer_btn').addEventListener('click', async event => {
     chrome.tabs.query({active: true, currentWindow: false}, tabs => {
