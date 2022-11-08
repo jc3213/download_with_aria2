@@ -45,6 +45,7 @@ async function aria2StartUp() {
     var json = await chrome.storage.local.get(null);
     aria2Store = json['jsonrpc_uri'] ? json : await getDefaultOptions();
     aria2Update();
+    self.screen = await chrome.windows.getCurrent();
 }
 
 function aria2Update() {
