@@ -5,6 +5,12 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     response(aria2Prompt[id]);
 });
 
+chrome.commands.onCommand.addListener(command => {
+    if (command === 'open_new_download') {
+        aria2NewSession('full', 800);
+    }
+});
+
 async function getDownloadPrompt(url, options) {
     var {id} = await aria2NewSession('slim', 400);
     aria2Prompt[id] = {url, options};

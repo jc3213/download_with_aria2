@@ -38,6 +38,13 @@
             "suggested_key": {
                 "default": "Alt+2"
             }
+        },
+        "open_new_download": {
+            "suggested_key": {
+                "default": "Alt+Shift+2"
+            },
+            "description": "Open New Download",
+            "global": true
         }
     }
 }
