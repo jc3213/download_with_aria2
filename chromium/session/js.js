@@ -5,7 +5,7 @@ var entries = document.querySelector('#entries');
 var fullbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
 
-if (location.search === '?popup') {
+if (location.search === '?full') {
     document.body.setAttribute('data-main', 'full');
     document.querySelector('input[name="out"]').disabled = true;
     runAfter = () => useragent.value = options['user-agent'] = aria2Store['user_agent'];
