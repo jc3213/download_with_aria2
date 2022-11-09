@@ -29,14 +29,16 @@ var secret = document.querySelector('[name="secret_token"]');
 document.addEventListener('keydown', event => {
     var {ctrlKey, keyCode} = event;
     if (ctrlKey) {
-        event.preventDefault();
         if (keyCode === 83) {
+            event.preventDefault();
             savebtn.click();
         }
         else if (keyCode === 89) {
+            event.preventDefault();
             undobtn.click()
         }
         else if (keyCode === 90) {
+            event.preventDefault();
             redobtn.click();
         }
     }
