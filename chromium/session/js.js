@@ -17,10 +17,16 @@ else {
 }
 
 document.addEventListener('keydown', event => {
-    var {ctrlKey, keyCode} = event;
-    if (ctrlKey) {
-        event.preventDefault();
+    var {ctrlKey, altKey, keyCode} = event;
+    if (altKey) {
         if (keyCode === 83) {
+            event.preventDefault();
+            submitbtn.click();
+        }
+    }
+    else if (ctrlKey) {
+        if (keyCode === 13) {
+            event.preventDefault();
             submitbtn.click();
         }
     }
