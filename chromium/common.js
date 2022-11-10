@@ -9,6 +9,9 @@ chrome.commands.onCommand.addListener(command => {
     if (command === 'open_new_download') {
         aria2NewSession('full', 800);
     }
+    else if (command === 'open_options') {
+        chrome.runtime.openOptionsPage();
+    }
 });
 
 async function getDownloadPrompt(url, options) {

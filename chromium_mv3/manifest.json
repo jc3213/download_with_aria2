@@ -45,6 +45,13 @@
             },
             "description": "Open new download window",
             "global": true
+        },
+        "open_options": {
+            "suggested_key": {
+                "default": "Alt+Shift+A"
+            },
+            "description": "Open options window",
+            "global": true
         }
     }
 }
