@@ -12,7 +12,8 @@ chrome.commands.onCommand.addListener(command => {
 });
 
 async function getDownloadPrompt(url, options) {
-    var {id} = await aria2NewSession('slim', 400);
+    var {tabs} = await aria2NewSession('slim', 400);
+    var {id} = tabs[0];
     aria2Prompt[id] = {url, options};
 }
 

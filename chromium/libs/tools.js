@@ -24,16 +24,16 @@ function getDownloadName(bittorrent, [{path, uris}]) {
 
 function aria2NewSession(param, offset) {
     return new Promise(resolve => {
-        var {height, width} = screen;
-        chrome.windows.create({
-            url: '/session/index.html?' + param,
-            type: 'popup',
-            height: offset,
-            width: 680,
-            top: (height - offset) / 2,
-            left: width / 2 - 360
-        }, details => {
-            resolve(details.tabs[0]);
+        chrome.windows.getCurrent(window => {
+            var {height, width} = window;
+            chrome.windows.create({
+                url: '/session/index.html?' + param,
+                type: 'popup',
+                height: offset,
+                width: 680,
+                top: Math.max(0, (height - offset) / 2),
+                left: width / 2 - 360
+            }, resolve);
         });
     });
 }
