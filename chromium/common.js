@@ -6,11 +6,11 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 });
 
 chrome.commands.onCommand.addListener(command => {
-    if (command === 'open_new_download') {
-        aria2NewSession('full', 800);
-    }
-    else if (command === 'open_options') {
+    if (command === 'change_options') {
         chrome.runtime.openOptionsPage();
+    }
+    else if (command === 'open_new_download') {
+        aria2NewSession('full', 800);
     }
 });
 

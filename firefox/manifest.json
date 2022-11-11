@@ -45,17 +45,17 @@
                 "default": "Alt+2"
             }
         },
+        "change_options": {
+            "suggested_key": {
+                "default": "Alt+Shift+A"
+            },
+            "description": "__MSG_shortcut_options__"
+        },
         "open_new_download": {
             "suggested_key": {
                 "default": "Alt+Shift+2"
             },
-            "description": "Open new download window"
-        },
-        "open_options": {
-            "suggested_key": {
-                "default": "Alt+Shift+A"
-            },
-            "description": "Open options window"
+            "description": "__MSG_shortcut_session__"
         }
     },
     "applications": {
