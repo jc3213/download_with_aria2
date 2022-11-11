@@ -8,7 +8,7 @@
     "download_headers": "1",
     "notify_start": "0",
     "notify_complete": "1",
-    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.105 Safari/537.36",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
     "proxy_server": "",
     "proxy_mode": "0",
     "proxy_include": [],
