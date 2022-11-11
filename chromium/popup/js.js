@@ -27,7 +27,7 @@ document.querySelectorAll('button.active, button.waiting, button.removed').forEa
 
 document.querySelector('#download_btn').addEventListener('click', async event => {
     await aria2NewSession('full', 800);
-    window.close();
+    close();
 });
 
 document.querySelector('#purge_btn').addEventListener('click', async event => {
@@ -38,7 +38,7 @@ document.querySelector('#purge_btn').addEventListener('click', async event => {
 
 document.querySelector('#options_btn').addEventListener('click', event => {
     chrome.runtime.openOptionsPage();
-    window.close();
+    close();
 });
 
 document.querySelector('#name_btn').addEventListener('click', event => {
