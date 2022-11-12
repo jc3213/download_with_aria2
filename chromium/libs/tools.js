@@ -22,21 +22,25 @@ function getDownloadName(bittorrent, [{path, uris}]) {
     return '???';
 }
 
-function aria2NewSession(param, offset) {
+function getCurrentWindow() {
     return new Promise(resolve => {
-        chrome.windows.getCurrent(window => {
-            var {top, left, height, width} = window;
-            top += (height - offset) / 2;
-            left += width / 2 - 360;
-            chrome.windows.create({
-                url: '/session/index.html?' + param,
-                type: 'popup',
-                height: offset,
-                width: 680,
-                top,
-                left
-            }, resolve);
-        });
+        chrome.windows.getCurrent(resolve);
+    });
+}
+
+function aria2NewSession(param, offset) {
+    return new Promise(async resolve => {
+        var {top, left, height, width} = await getCurrentWindow();
+        top += (height - offset) / 2;
+        left += width / 2 - 360;
+        chrome.windows.create({
+            url: '/session/index.html?' + param,
+            type: 'popup',
+            height: offset,
+            width: 680,
+            top,
+            left
+        }, resolve);
     });
 }
 

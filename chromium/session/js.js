@@ -5,6 +5,7 @@ var entries = document.querySelector('#entries');
 var fullbtn = document.querySelector('#submit_btn');
 var submitbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
+var autosubmit;
 
 if (location.search === '?full') {
     document.body.setAttribute('data-main', 'full');
@@ -59,7 +60,7 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
         var metalink = new Blob([entries.value], {type: 'application/metalink;charset=utf-8'});
         await downloadMetalink(metalink, options);
     }
-    window.close();
+    close();
 });
 
 document.querySelector('#upload_btn').addEventListener('change', async event => {
@@ -73,11 +74,16 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
     else {
         await downloadMetalink(file, options);
     }
-    window.close();
+    close();
 });
 
-document.querySelector('#extra_btn').addEventListener('click', event => {
-    document.body.classList.toggle('complex');
+document.querySelector('#extra_btn').addEventListener('click', async event => {
+    var {id, top, height} = await getCurrentWindow()
+    height += 360;
+    top -= 180;
+    chrome.windows.update(id, {top, height});
+    clearInterval(autosubmit);
+    document.body.setAttribute('data-main', 'compact');
 });
 
 document.addEventListener('change', event => {
@@ -98,7 +104,7 @@ function slimDownload(json) {
             entry.value = value;
         }
     });
-    setInterval(() => {
+    autosubmit = setInterval(() => {
         countdown.innerText --;
         if (countdown.innerText === '0') {
             fullbtn.click();

@@ -14,16 +14,12 @@
     content: ")";
 }
 
-.complex #extra_btn {
-    border-style: inset;
-}
-
 [data-main="slim"] #download {
     height: 262px;
     overflow-y: auto;
 }
 
-[data-main="full"] [data-slim], [data-main="slim"] [data-full],
-[data-main="slim"]:not(.complex) [data-extra] {
+[data-main="full"] [data-slim], [data-main="slim"] [data-full], [data-main="slim"] [data-extra],
+[data-main="compact"] [data-full], [data-main="compact"] #countdown, [data-main="compact"] #extra_btn {
     display: none;
 }

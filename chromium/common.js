@@ -10,7 +10,7 @@ chrome.commands.onCommand.addListener(command => {
         chrome.runtime.openOptionsPage();
     }
     else if (command === 'open_new_download') {
-        aria2NewSession('full', 800);
+        aria2NewSession('full', 760);
     }
 });
 

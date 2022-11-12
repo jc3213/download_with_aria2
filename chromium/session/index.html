@@ -10,9 +10,9 @@
         <div id="download">
             <div title="task_referer_title">
                 <div class="title" i18n>task_referer</div>
-                <div>
+                <div class="fixed">
                     <input name="referer" type="text">
-                    <button id="referer_btn" class="float">🔖</button>
+                    <button id="referer_btn">🔖</button>
                 </div>
             </div>
             <div title="task_batch_title">
@@ -26,18 +26,19 @@
                     <textarea id="entries" rows="2"></textarea>
                 </div>
             </div>
-            <div title="task_name_title" data-slim>
-                <div class="title" i18n>task_name</div>
-                <div>
-                    <input name="out"></textarea>
+            <div class="flex">
+                <div title="task_name_title" data-slim>
+                    <div class="title" i18n>task_name</div>
+                    <div>
+                        <input name="out"></textarea>
+                    </div>
                 </div>
-            </div>
-            <div title="aria2_adv_dir_title" data-extra>
-                <div class="title" i18n>aria2_adv_dir</div>
-                <div>
-                    <input name="dir" type="text">
+                <div title="aria2_adv_dir_title">
+                    <div class="title" i18n>aria2_adv_dir</div>
+                    <div>
+                        <input name="dir" type="text">
+                    </div>
                 </div>
-                Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;Linux: <u><i>home/aria2/download</i></u>
             </div>
             <div title="option_user_agent_title" data-extra>
                 <div class="title" i18n>option_user_agent</div>
@@ -47,9 +48,9 @@
             </div>
             <div title="task_proxy_title" data-extra>
                 <div class="title" i18n>task_proxy</div>
-                <div>
+                <div class="fixed">
                     <input name="all-proxy" type="url">
-                    <button id="proxy_btn" class="float">🔖</button>
+                    <button id="proxy_btn">🔖</button>
                 </div>
             </div>
             <div class="flex" data-extra>
