@@ -10,12 +10,12 @@ chrome.commands.onCommand.addListener(command => {
         chrome.runtime.openOptionsPage();
     }
     else if (command === 'open_new_download') {
-        aria2NewSession('full', 760);
+        aria2NewSession('full');
     }
 });
 
 async function getDownloadPrompt(url, options) {
-    var {tabs} = await aria2NewSession('slim', 400);
+    var {tabs} = await aria2NewSession('slim');
     var {id} = tabs[0];
     aria2Prompt[id] = {url, options};
 }

@@ -28,13 +28,14 @@ function getCurrentWindow() {
     });
 }
 
-function aria2NewSession(param, offset) {
+function aria2NewSession(size) {
     return new Promise(async resolve => {
         var {top, left, height, width} = await getCurrentWindow();
+        var offset = size === 'full' ? 760 : 400;
         top += (height - offset) / 2;
         left += width / 2 - 360;
         chrome.windows.create({
-            url: '/session/index.html?' + param,
+            url: '/session/index.html?' + size,
             type: 'popup',
             height: offset,
             width: 680,

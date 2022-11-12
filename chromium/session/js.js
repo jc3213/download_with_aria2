@@ -14,7 +14,7 @@ if (location.search === '?full') {
 }
 else {
     document.body.setAttribute('data-main', 'slim');
-    runAfter = () => chrome.runtime.sendMessage('panel', slimDownload);
+    runAfter = () => chrome.runtime.sendMessage('prompt', slimDownload);
 }
 
 document.addEventListener('keydown', event => {
