@@ -87,12 +87,12 @@ button input[type="file"] {
     display: none;
 }
 
-button:not(:disabled):hover {
+button:enabled:hover {
     cursor: pointer;
     filter: contrast(65%);
 }
 
-button:not(:disabled):active {
+button:enabled:active {
     filter: contrast(45%);
     border-style: inset;
 }
