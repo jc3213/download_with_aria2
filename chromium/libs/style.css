@@ -119,12 +119,16 @@ button.float {
     display: flex;
 }
 
+.fixed > button {
+    width: fit-content;
+}
+
 .flex {
     gap: 3px;
 }
 
-.fixed > button {
-    width: fit-content;
+.flex > *:not(button, span) {
+    flex: 1;
 }
 
 .float {

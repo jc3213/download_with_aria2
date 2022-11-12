@@ -7,14 +7,14 @@ var submitbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
 var autosubmit;
 
-if (location.search === '?full') {
+if (location.search === '?slim') {
+    document.body.setAttribute('data-main', 'slim');
+    runAfter = () => chrome.runtime.sendMessage('prompt', slimDownload);
+}
+else {
     document.body.setAttribute('data-main', 'full');
     document.querySelector('input[name="out"]').disabled = true;
     runAfter = () => useragent.value = options['user-agent'] = aria2Store['user_agent'];
-}
-else {
-    document.body.setAttribute('data-main', 'slim');
-    runAfter = () => chrome.runtime.sendMessage('prompt', slimDownload);
 }
 
 document.addEventListener('keydown', event => {

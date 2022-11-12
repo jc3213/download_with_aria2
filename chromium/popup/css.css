@@ -127,10 +127,6 @@ body {
     overflow-y: auto;
 }
 
-#manager .flex > * {
-    flex: 1;
-}
-
 #manager > div:first-child > * {
     border-width: 1px;
     border-style: ridge;
