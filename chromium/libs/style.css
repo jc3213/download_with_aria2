@@ -115,10 +115,6 @@ button.float {
     margin-top: 25px;
 }
 
-.hybrid {
-    display:
-}
-
 .flex, .fixed {
     display: flex;
 }
