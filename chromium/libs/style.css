@@ -127,7 +127,7 @@ button.float {
     gap: 3px;
 }
 
-.flex > *:not(button, span) {
+.flex > :not(button, span) {
     flex: 1;
 }
 
