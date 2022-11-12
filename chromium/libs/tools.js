@@ -25,9 +25,9 @@ function getDownloadName(bittorrent, [{path, uris}]) {
 function aria2NewSession(param, offset) {
     return new Promise(resolve => {
         chrome.windows.getCurrent(window => {
-            var {left, top, height, width} = window;
-            left += width / 2 - 360;
+            var {top, left, height, width} = window;
             top += (height - offset) / 2;
+            left += width / 2 - 360;
             chrome.windows.create({
                 url: '/session/index.html?' + param,
                 type: 'popup',
