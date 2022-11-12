@@ -5,7 +5,6 @@ var entries = document.querySelector('#entries');
 var fullbtn = document.querySelector('#submit_btn');
 var submitbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
-var autosubmit;
 
 if (location.search === '?slim') {
     document.body.setAttribute('data-main', 'slim');
@@ -79,11 +78,9 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
 
 document.querySelector('#extra_btn').addEventListener('click', async event => {
     var {id, top, height} = await getCurrentWindow()
-    height += 360;
-    top -= 180;
-    chrome.windows.update(id, {top, height});
-    clearInterval(autosubmit);
+    chrome.windows.update(id, {top: top - 180, height: height + 360});
     document.body.setAttribute('data-main', 'compact');
+    countdown.innerText = countdown.innerText * 1 + 90;
 });
 
 document.addEventListener('change', event => {
@@ -104,7 +101,7 @@ function slimDownload(json) {
             entry.value = value;
         }
     });
-    autosubmit = setInterval(() => {
+    setInterval(() => {
         countdown.innerText --;
         if (countdown.innerText === '0') {
             fullbtn.click();
