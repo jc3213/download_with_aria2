@@ -99,12 +99,12 @@ function getProxyServer(hostname) {
 function getRequestHeaders(url) {
     return new Promise(resolve => {
         chrome.cookies.getAll({url}, cookies => {
-            var result = 'Cookie:';
+            var header = 'Cookie:';
             cookies.forEach(cookie => {
                 var {name, value} = cookie;
-                result += ' ' + name + '=' + value + ';';
+                header += ' ' + name + '=' + value + ';';
             });
-            resolve([result]);
+            resolve([header]);
         });
     });
 }
