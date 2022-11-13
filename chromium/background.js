@@ -6,7 +6,7 @@ chrome.contextMenus.create({
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     var {linkUrl, pageUrl} = info;
-    aria2Download(linkUrl, getHostname(pageUrl), {referer: pageUrl});
+    aria2Download(linkUrl, pageUrl, getHostname(pageUrl));
 });
 
 chrome.storage.local.get(null, async json => {
@@ -28,22 +28,23 @@ chrome.storage.onChanged.addListener(changes => {
     }
 });
 
-function aria2Download(url, hostname, options) {
-    chrome.cookies.getAll({url}, cookies => {
-        options['user-agent'] = aria2Store['user_agent'];
-        options['header'] = getRequestHeaders(cookies);
-        options['all-proxy'] = getProxyServer(hostname);
-        options['dir'] = getDownloadFolder();
-        if (aria2Store['download_prompt'] === '1') {
-            getDownloadPrompt(url, options);
-        }
-        else if (aria2Store['download_headers'] === '1') {
-            aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
-        }
-        else {
-            aria2RPC.message('aria2.addUri', [[url]]).then(result => aria2WhenStart(url));
-        }
-    });
+async function aria2Download(url, referer, hostname, options = {}) {
+    options['user-agent'] = aria2Store['user_agent'];
+    options['all-proxy'] = getProxyServer(hostname);
+    options['dir'] = getDownloadFolder();
+    if (aria2Store['download_headers'] === '1') {
+        options['referer'] = referer;
+        options['header'] = await getRequestHeaders(url);
+    }
+    if (aria2Store['download_prompt'] === '1') {
+        getDownloadPrompt(url, options);
+    }
+    else if (aria2Store['download_headers'] === '1') {
+        aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
+    }
+    else {
+        aria2RPC.message('aria2.addUri', [[url]]).then(result => aria2WhenStart(url));
+    }
 }
 
 async function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
@@ -54,7 +55,7 @@ async function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
     var hostname = getHostname(referer);
     if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
         chrome.downloads.erase({id});
-        aria2Download(finalUrl, hostname, {referer, out: filename});
+        aria2Download(finalUrl, referer, hostname, {out: filename});
     }
 }
 

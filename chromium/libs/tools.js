@@ -1,11 +1,25 @@
 var aria2Complete = chrome.i18n.getMessage('download_complete');
 
 function getHostname(url) {
-    try {
-        return new URL(url).hostname;
-    }
-    catch {
+    var si = url.indexOf('//');
+    if (si === -1) {
         return 'about:blank';
+    }
+    var hostname = url.slice(si + 2);
+    var ei = hostname.indexOf('/');
+    hostname = hostname.slice(0, ei);
+    var pi = hostname.lastIndexOf(':');
+    if (hostname.indexOf(':') === pi) {
+        if (pi !== -1) {
+            return hostname.slice(0, pi);
+        }
+        return hostname;
+    }
+    else {
+        if (hostname[pi - 1] === ']') {
+            return hostname.slice(0, pi);
+        }
+        return hostname;
     }
 }
 
