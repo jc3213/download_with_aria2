@@ -7,7 +7,7 @@ browser.contextMenus.create({
 browser.contextMenus.onClicked.addListener((info, tab) => {
     var {linkUrl, pageUrl} = info;
     var {cookieStoreId} = tab;
-    aria2Download(linkUrl, getHostname(pageUrl), cookieStoreId, {referer: pageUrl});
+    aria2Download(linkUrl, referer, getHostname(pageUrl), cookieStoreId);
 });
 
 browser.storage.local.get(null, async json => {
@@ -29,7 +29,7 @@ browser.storage.onChanged.addListener(changes => {
     }
 });
 
-async function aria2Download(url, hostname, storeId, options) {
+async function aria2Download(url, referer, hostname, storeId, options = {}) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
     options['user-agent'] = aria2Store['user_agent'];
     options['header'] = getRequestHeaders(cookies);
@@ -72,7 +72,7 @@ async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
             var options = await getFirefoxOptions(referer, filename);
-            aria2Download(url, hostname, cookieStoreId, options);
+            aria2Download(url, referer, hostname, cookieStoreId, options);
         }).catch(error => aria2WhenComplete(url));
     }
 }
@@ -94,25 +94,23 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
         var hostname = getHostname(originUrl);
         if (getCaptureFilter(hostname, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            aria2Download(url, hostname, cookieStoreId, {referer: originUrl, out, dir: getDownloadFolder()});
+            aria2Download(url, originUrl, hostname, cookieStoreId, {out, dir: getDownloadFolder()});
             return {cancel: true};
         }
     }
 }
 
-async function getFirefoxOptions(referer, filename) {
+async function getFirefoxOptions(filename) {
     var {os} = await browser.runtime.getPlatformInfo();
     var index = os === 'win' ? filename.lastIndexOf('\\') : filename.lastIndexOf('/');
     var out = filename.slice(index + 1);
     if (aria2Store['folder_mode'] === '2') {
-        return {referer, out, dir: filename.slice(0, index + 1)};
+        return {out, dir: filename.slice(0, index + 1)};
     }
     else if (aria2Store['folder_mode'] === '1' && aria2Store['folder_path']) {
-        return {referer, out, dir: aria2Store['folder_path']};
+        return {out, dir: aria2Store['folder_path']};
     }
-    else {
-        return {referer, out};
-    }
+    return {out};
 }
 
 function getFileName(disposition) {

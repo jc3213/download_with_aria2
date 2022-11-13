@@ -16,7 +16,7 @@ chrome.runtime.onInstalled.addListener(details => {
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     var {linkUrl, pageUrl} = info;
-    aria2Download(linkUrl, getHostname(pageUrl), {referer: pageUrl});
+    aria2Download(linkUrl, referer, getHostname(pageUrl));
 });
 
 chrome.storage.onChanged.addListener(changes => {
@@ -37,7 +37,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     var hostname = getHostname(referer);
     if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
         chrome.downloads.erase({id});
-        aria2Download(finalUrl, hostname, {referer, out: filename});
+        aria2Download(finalUrl, referer, hostname, {out: filename});
     }
 });
 
@@ -53,12 +53,14 @@ function aria2Update() {
     aria2Status();
 }
 
-async function aria2Download(url, hostname, options) {
-    var cookies = await chrome.cookies.getAll({url})
+async function aria2Download(url, referer, hostname, options) {
     options['user-agent'] = aria2Store['user_agent'];
-    options['header'] = getRequestHeaders(cookies);
     options['all-proxy'] = getProxyServer(hostname);
     options['dir'] = getDownloadFolder();
+    if (aria2Store['download_headers'] === '1') {
+        options['referer'] = referer;
+        options['header'] = await getRequestHeaders(url);
+    }
     if (aria2Store['download_prompt'] === '1') {
         getDownloadPrompt(url, options);
     }
