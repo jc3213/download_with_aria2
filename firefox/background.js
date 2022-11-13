@@ -7,7 +7,7 @@ browser.contextMenus.create({
 browser.contextMenus.onClicked.addListener((info, tab) => {
     var {linkUrl, pageUrl} = info;
     var {cookieStoreId} = tab;
-    aria2DownloadFirefox(linkUrl, referer, getHostname(pageUrl), cookieStoreId);
+    aria2DownloadFirefox(linkUrl, pageUrl, getHostname(pageUrl), cookieStoreId);
 });
 
 browser.storage.local.get(null, async json => {
@@ -33,6 +33,7 @@ async function getRequestHeadersFirefox(url, storeId) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
     var header = 'Cookie:';
     cookies.forEach(cookie => {
+        var {name, value} = cookie;
         header += ' ' + name + '=' + value + ';';
     });
     return [header];
