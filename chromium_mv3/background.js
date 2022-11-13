@@ -16,7 +16,7 @@ chrome.runtime.onInstalled.addListener(details => {
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     var {linkUrl, pageUrl} = info;
-    aria2Download(linkUrl, referer, getHostname(pageUrl));
+    aria2Download(linkUrl, pageUrl, getHostname(pageUrl));
 });
 
 chrome.storage.onChanged.addListener(changes => {
