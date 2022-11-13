@@ -7,7 +7,7 @@ browser.contextMenus.create({
 browser.contextMenus.onClicked.addListener((info, tab) => {
     var {linkUrl, pageUrl} = info;
     var {cookieStoreId} = tab;
-    aria2Download(linkUrl, referer, getHostname(pageUrl), cookieStoreId);
+    aria2DownloadFirefox(linkUrl, referer, getHostname(pageUrl), cookieStoreId);
 });
 
 browser.storage.local.get(null, async json => {
@@ -29,11 +29,22 @@ browser.storage.onChanged.addListener(changes => {
     }
 });
 
-async function aria2Download(url, referer, hostname, storeId, options = {}) {
+async function getRequestHeadersFirefox(url, storeId) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
+    var header = 'Cookie:';
+    cookies.forEach(cookie => {
+        header += ' ' + name + '=' + value + ';';
+    });
+    return [header];
+}
+
+async function aria2DownloadFirefox(url, referer, hostname, storeId, options = {}) {
     options['user-agent'] = aria2Store['user_agent'];
-    options['header'] = getRequestHeaders(cookies);
     options['all-proxy'] = getProxyServer(hostname);
+    if (aria2Store['download_headers'] === '1') {
+        options['referer'] = referer;
+        options['header'] = await getRequestHeadersFirefox(url, storeId);
+    }
     if (aria2Store['download_prompt'] === '1') {
         getDownloadPrompt(url, options);
     }
@@ -72,7 +83,7 @@ async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
             var options = await getFirefoxOptions(referer, filename);
-            aria2Download(url, referer, hostname, cookieStoreId, options);
+            aria2DownloadFirefox(url, referer, hostname, cookieStoreId, options);
         }).catch(error => aria2WhenComplete(url));
     }
 }
@@ -94,7 +105,7 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
         var hostname = getHostname(originUrl);
         if (getCaptureFilter(hostname, getFileExtension(out), length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            aria2Download(url, originUrl, hostname, cookieStoreId, {out, dir: getDownloadFolder()});
+            aria2DownloadFirefox(url, originUrl, hostname, cookieStoreId, {out, dir: getDownloadFolder()});
             return {cancel: true};
         }
     }

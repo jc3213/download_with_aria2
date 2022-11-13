@@ -52,22 +52,3 @@ function aria2Update() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     aria2Status();
 }
-
-async function aria2Download(url, referer, hostname, options) {
-    options['user-agent'] = aria2Store['user_agent'];
-    options['all-proxy'] = getProxyServer(hostname);
-    options['dir'] = getDownloadFolder();
-    if (aria2Store['download_headers'] === '1') {
-        options['referer'] = referer;
-        options['header'] = await getRequestHeaders(url);
-    }
-    if (aria2Store['download_prompt'] === '1') {
-        getDownloadPrompt(url, options);
-    }
-    else if (aria2Store['download_headers'] === '1') {
-        aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
-    }
-    else {
-        aria2RPC.message('aria2.addUri', [[url]]).then(result => aria2WhenStart(url));
-    }
-}

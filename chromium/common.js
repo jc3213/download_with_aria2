@@ -14,6 +14,25 @@ chrome.commands.onCommand.addListener(command => {
     }
 });
 
+async function aria2Download(url, referer, hostname, options = {}) {
+    options['user-agent'] = aria2Store['user_agent'];
+    options['all-proxy'] = getProxyServer(hostname);
+    options['dir'] = getDownloadFolder();
+    if (aria2Store['download_headers'] === '1') {
+        options['referer'] = referer;
+        options['header'] = await getRequestHeaders(url);
+    }
+    if (aria2Store['download_prompt'] === '1') {
+        getDownloadPrompt(url, options);
+    }
+    else if (aria2Store['download_headers'] === '1') {
+        aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
+    }
+    else {
+        aria2RPC.message('aria2.addUri', [[url]]).then(result => aria2WhenStart(url));
+    }
+}
+
 async function getDownloadPrompt(url, options) {
     var {tabs} = await aria2NewSession('slim');
     var {id} = tabs[0];
