@@ -107,17 +107,17 @@
     "option_refresh_interval_title": {
         "message": "Set task manager refresh interval"
     },
-    "option_download_prompt": {
-        "message": "Display Download Prompt"
-    },
-    "option_download_prompt_title": {
-        "message": "Confirm once again before the download starts"
-    },
     "option_download_headers": {
         "message": "Forward Request Headers"
     },
     "option_download_headers_title": {
         "message": "Set whether to forward the download request headers"
+    },
+    "option_download_prompt": {
+        "message": "Display Download Prompt"
+    },
+    "option_download_prompt_title": {
+        "message": "Confirm once again before the download starts"
     },
     "option_notify_start": {
         "message": "When Downloads Start"
