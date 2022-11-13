@@ -33,11 +33,11 @@ document.addEventListener('keydown', event => {
             event.preventDefault();
             savebtn.click();
         }
-        else if (keyCode === 89) {
-            event.preventDefault();
-            undobtn.click()
-        }
         else if (keyCode === 90) {
+            event.preventDefault();
+            undobtn.click();
+        }
+        else if (keyCode === 89) {
             event.preventDefault();
             redobtn.click();
         }
@@ -59,11 +59,11 @@ undobtn.addEventListener('click', event => {
     var undo = changes.pop();
     var {name, old_value} = undo;
     undones.push(undo);
-    redobtn.disabled = false;
+    savebtn.disabled = redobtn.disabled = false;
     document.querySelector('[name="' + name + '"]').value = old_value;
     printLinkage(name, old_value);
     if (changes.length === 0) {
-        savebtn.disabled = undobtn.disabled = true;
+        undobtn.disabled = true;
     }
 });
 
@@ -194,5 +194,5 @@ function applyChanges(options) {
         var {name, new_value} = change;
         options[name] = new_value;
     });
-    clearChanges();
+    savebtn.disabled = true;
 }
