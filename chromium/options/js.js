@@ -14,9 +14,9 @@ var linkage = {
     'proxy_mode': [],
     'capture_mode': []
 };
-var backage = {};
 var changes = [];
 var undones = [];
+var backage = {};
 var global = true;
 var savebtn = document.querySelector('#save_btn');
 var undobtn = document.querySelector('#undo_btn');
@@ -45,11 +45,11 @@ document.addEventListener('keydown', event => {
 
 savebtn.addEventListener('click', event => {
     if (global) {
-        applyChanges(aria2Store);
+        aria2Store = applyChanges('#local');
         chrome.storage.local.set(aria2Store);
     }
     else {
-        applyChanges(aria2Global);
+        aria2Global = applyChanges('#aria2');
         aria2RPC.message('aria2.changeGlobalOption', [aria2Global]);
     }
 });
@@ -188,10 +188,14 @@ function printChanges(name, old_value, new_value) {
     printLinkage(name, new_value);
 }
 
-function applyChanges(options) {
-    changes.forEach(change => {
-        var {name, new_value} = change;
-        options[name] = new_value;
+function applyChanges(path) {
+    var options = {};
+    document.querySelectorAll(path + ' [name]').forEach(entry => {
+        var {name, value} = entry;
+        var array = mapping.includes(name);
+        var multi = offset[name];
+        options[name] = array ? value.split(/[;\s\r\n]+/).filter(v => !!v) : multi ? value * multi : value;
     });
     savebtn.disabled = true;
+    return options;
 }
