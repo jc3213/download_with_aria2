@@ -92,13 +92,12 @@ document.addEventListener('change', event => {
 
 function slimDownload(json) {
     entries.value = json.url;
-    options = {...options, ...extras};
     var extras = json.options;
     Object.keys(extras).forEach(key => {
         var entry = document.querySelector('[name="' + key + '"]');
         var value = extras[key];
         if (entry && value) {
-            entry.value = value;
+            entry.value = options[key] = value;
         }
     });
     setInterval(() => {
@@ -109,12 +108,7 @@ function slimDownload(json) {
     }, 1000);
 }
 
-async function downloadJSON(file, options) {
-    var json = await readFileTypeJSON(file);
-    await parseJSON(json, options);
-}
-
-async function parseJSON(json, extras) {
+function parseJSON(json, extras) {
     if (!Array.isArray(json)) {
         json = [json];
     }
@@ -128,24 +122,29 @@ async function parseJSON(json, extras) {
         }
         return downloadUrl(url, options);
     });
-    await Promise.all(session);
+    return Promise.all(session);
 }
 
-async function downloadUrl(url, options) {
+function downloadUrl(url, options) {
     aria2WhenStart(url);
-    return await aria2RPC.message('aria2.addUri', [[url], options]);
+    return aria2RPC.message('aria2.addUri', [[url], options]);
+}
+
+async function downloadJSON(file, options) {
+    var json = await readFileTypeJSON(file);
+    return parseJSON(json, options);
 }
 
 async function downloadTorrent(file, options) {
     var torrent = await readFileForAria2(file);
     aria2WhenStart(file.name);
-    return await aria2RPC.message('aria2.addTorrent', [torrent]);
+    return aria2RPC.message('aria2.addTorrent', [torrent]);
 }
 
 async function downloadMetalink(file, options) {
     var metalink = await readFileForAria2(file);
     aria2WhenStart(file.name);
-    return await aria2RPC.message('aria2.addMetalink', [metalink, options]);
+    return aria2RPC.message('aria2.addMetalink', [metalink, options]);
 }
 
 async function aria2StartUp() {
