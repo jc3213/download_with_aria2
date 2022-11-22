@@ -131,6 +131,9 @@
     "option_notify_complete_title": {
         "message": "Set what to do when downloads complete"
     },
+    "download_start": {
+        "message": "Download has started..."
+    },
     "download_complete": {
         "message": "Download has completed!"
     },

@@ -1,3 +1,4 @@
+var aria2Start = chrome.i18n.getMessage('download_start');
 var aria2Complete = chrome.i18n.getMessage('download_complete');
 
 function getHostname(url) {
@@ -46,8 +47,8 @@ function aria2NewSession(size) {
     return new Promise(async resolve => {
         var {top, left, height, width} = await getCurrentWindow();
         var offset = size === 'slim' ? 400 : 760;
-        top += (height - offset) / 2 | 0;
-        left += (width - 720) / 2 | 0;
+        top += (height - offset) / 2;
+        left += width / 2 - 360;
         chrome.windows.create({
             url: '/session/index.html?' + size,
             type: 'popup',

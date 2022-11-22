@@ -131,6 +131,9 @@
     "option_notify_complete_title": {
         "message": "设置下载完成时的动作"
     },
+    "download_start": {
+        "message": "下载开始..."
+    },
     "download_complete": {
         "message": "下载已完成！"
     },
