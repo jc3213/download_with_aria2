@@ -79,9 +79,7 @@ function getCaptureFilter(hostname, type, size) {
     else if (aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size']) {
         return true;
     }
-    else {
-        return false;
-    }
+    return false;
 }
 
 function getProxyServer(hostname) {
@@ -91,9 +89,7 @@ function getProxyServer(hostname) {
     else if (aria2Store['proxy_mode'] === '2') {
         return aria2Store['proxy_server'];
     }
-    else {
-        return null;
-    }
+    return null;
 }
 
 function getRequestHeaders(url) {
@@ -113,7 +109,5 @@ function getDownloadFolder() {
     if (aria2Store['folder_mode'] === '1' && aria2Store['folder_path']) {
         return aria2Store['folder_path'];
     }
-    else {
-        return null;
-    }
+    return null;
 }
