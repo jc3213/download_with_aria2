@@ -111,7 +111,7 @@ button.float {
     right: 0px;
 }
 
-[id] > [title]:nth-child(n+2), .flex > [title] {
+[title]:nth-child(n+2), .flex > [title] {
     margin-top: 25px;
 }
 

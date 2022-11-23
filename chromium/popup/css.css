@@ -180,3 +180,8 @@ body {
     line-height: 48px;
     text-align: center;
 }
+
+.file > [title] {
+    margin-top: 0px;
+    padding: 0px 5px;
+}
