@@ -138,7 +138,13 @@ async function addSession(gid) {
     var result = await aria2RPC.message('aria2.tellStatus', [gid]);
     var {status} = result;
     var task = printSession(result);
-    var type = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
+    if (status === 'active') {
+        var type = 'active';
+    }
+    else {
+        type === 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
+        task.querySelector('#infinite').style.display = 'block';
+    }
     if (self[type + 'Task'].indexOf(gid) === -1) {
         self[type + 'Stat'].innerText ++;
         self[type + 'Task'].push(gid);
@@ -162,19 +168,14 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     task.querySelector('#name').innerText = getDownloadName(bittorrent, files);
     task.querySelector('#local').innerText = getFileSize(completedLength);
     task.querySelector('#remote').innerText = getFileSize(totalLength);
-    if (isNaN(time)) {
-        task.querySelector('#infinite').style.display = 'block';
-    }
-    else {
-        var days = time / 86400 | 0;
-        var hours = time / 3600 - days * 24 | 0;
-        var minutes = time / 60 - days * 1440 - hours * 60 | 0;
-        var seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
-        printEstimateTime(task.querySelector('#day'), days);
-        printEstimateTime(task.querySelector('#hour'), hours);
-        printEstimateTime(task.querySelector('#minute'), minutes);
-        task.querySelector('#second').innerText = seconds;
-    }
+    var days = time / 86400 | 0;
+    var hours = time / 3600 - days * 24 | 0;
+    var minutes = time / 60 - days * 1440 - hours * 60 | 0;
+    var seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
+    printEstimateTime(task.querySelector('#day'), days);
+    printEstimateTime(task.querySelector('#hour'), hours);
+    printEstimateTime(task.querySelector('#minute'), minutes);
+    task.querySelector('#second').innerText = seconds;
     task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
     task.querySelector('#download').innerText = getFileSize(downloadSpeed);
     task.querySelector('#upload').innerText = getFileSize(uploadSpeed);
