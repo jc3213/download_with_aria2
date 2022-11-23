@@ -1,5 +1,5 @@
 ## Download the extension
-- Google Store
+- Google Web Store
     - None
 - Microsoft Edge Addons
     - [https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec](https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec)
