@@ -176,12 +176,12 @@ body {
     overflow-y: auto;
 }
 
-.file > *:not(:nth-child(2)), .uri > *:nth-child(n+2) {
+.file > :not(:nth-child(2)), .uri > :nth-child(n+2) {
     line-height: 48px;
     text-align: center;
 }
 
-.file > [title] {
+.file > :nth-child(2), .uri > :nth-child(1) {
     margin-top: 0px;
     padding: 0px 5px;
 }
