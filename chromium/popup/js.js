@@ -142,7 +142,7 @@ async function addSession(gid) {
         var type = 'active';
     }
     else {
-        type === 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
+        type = 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
         task.querySelector('#infinite').style.display = 'block';
     }
     if (self[type + 'Task'].indexOf(gid) === -1) {
