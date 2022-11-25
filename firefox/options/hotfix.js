@@ -46,7 +46,7 @@ capture.addEventListener('change', event => {
 document.querySelector('#back_btn').addEventListener('click', firefoxExclusive);
 
 linkage['capture_mode'].push({menu: api, rule: '1,2'}, {menu: sub, rule: '1,2'});
-linkage['capture_api'] = [{menu: sub, rule: '0'}, {menu: api.nextElementSibling, rule: '1'}];
+linkage['capture_api'] = [{menu: sub, rule: '0'}];
 
 function setDefaultFolder() {
     if (folder.value === '2') {
