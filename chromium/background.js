@@ -28,23 +28,40 @@ chrome.storage.onChanged.addListener(changes => {
     }
 });
 
-async function downloadCapture({id, finalUrl, referrer, filename, fileSize}) {
-    if (finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
-        return;
-    }
+async function captureOnCreated({id, finalUrl, referrer}) {
+    var url = finalUrl;
     var referer = 'about:blank'.includes(referrer) ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
-    if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
+    if (finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
+        var priority = 0;
+    }
+    else {
+        priority = getCaptureHostname(hostname);
+    }
+    aria2Monitor[id] = {url, referer, hostname, priority};
+}
+
+async function captureOnFilename({id, filename, fileSize}) {
+    var {url, referer, hostname, priority} = aria2Monitor[id];
+    if (priority < 3) {
+        return;
+    }
+    if (priority === 3) {
+        aria2Monitor[id].priority = priority = getCaptureFileData(fileSize, getFileExtension(filename));
+    }
+    if (priority > 3) {
         chrome.downloads.erase({id});
-        aria2Download(finalUrl, referer, hostname, {out: filename});
+        aria2Download(url, referer, hostname, {out: filename});
     }
 }
 
 function aria2Capture() {
     if (aria2Store['capture_mode'] !== '0') {
-        chrome.downloads.onDeterminingFilename.addListener(downloadCapture);
+        chrome.downloads.onCreated.addListener(captureOnCreated);
+        chrome.downloads.onDeterminingFilename.addListener(captureOnFilename);
     }
     else {
-        chrome.downloads.onDeterminingFilename.removeListener(downloadCapture);
+        chrome.downloads.onCreated.removeListener(captureOnCreated);
+        chrome.downloads.onDeterminingFilename.removeListener(captureOnFilename);
     }
 }

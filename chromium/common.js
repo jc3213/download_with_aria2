@@ -1,4 +1,5 @@
 var aria2Prompt = {};
+var aria2Monitor = {};
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
     var {id} = sender.tab;
@@ -60,26 +61,30 @@ function getFileExtension(filename) {
     return fileext.toLowerCase();
 }
 
-function getCaptureFilter(hostname, type, size) {
+function getCaptureHostname(hostname) {
     if (aria2Store['capture_exclude'].find(host => hostname.endsWith(host))) {
-        return false;
-    }
-    else if (aria2Store['capture_reject'].includes(type)) {
-        return false;
+        return 1;
     }
     else if (aria2Store['capture_mode'] === '2') {
-        return true;
+        return 4;
     }
     else if (aria2Store['capture_include'].find(host => hostname.endsWith(host))) {
-        return true;
+        return 5;
     }
-    else if (aria2Store['capture_resolve'].includes(type)) {
-        return true;
+    return 3;
+}
+
+function getCaptureFileData(size, ext) {
+    if (aria2Store['capture_reject'].includes(ext)) {
+        return 2;
+    }
+    else if (aria2Store['capture_resolve'].includes(ext)) {
+        return 6;
     }
     else if (aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size']) {
-        return true;
+        return 7;
     }
-    return false;
+    return 3;
 }
 
 function getProxyServer(hostname) {
