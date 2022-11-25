@@ -63,26 +63,26 @@ function getFileExtension(filename) {
 
 function getCaptureHostname(hostname) {
     if (aria2Store['capture_exclude'].find(host => hostname.endsWith(host))) {
-        return 1;
+        return 0;
     }
     else if (aria2Store['capture_mode'] === '2') {
-        return 3;
+        return 2;
     }
     else if (aria2Store['capture_include'].find(host => hostname.endsWith(host))) {
-        return 4;
+        return 2;
     }
-    return 2;
+    return 1;
 }
 
 function getCaptureFileData(size, ext) {
     if (aria2Store['capture_reject'].includes(ext)) {
-        return -9;
+        return -1;
     }
     else if (aria2Store['capture_resolve'].includes(ext)) {
-        return 5;
+        return 2;
     }
     else if (aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size']) {
-        return 6;
+        return 2;
     }
     return 0;
 }
