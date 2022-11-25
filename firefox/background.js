@@ -76,7 +76,7 @@ function aria2Capture() {
 
 function getCaptureFilter(hostname, fileExt, fileSize) {
     var priority = getCaptureHostname(hostname);
-    if (priority === 0) {
+    if (priority < 1) {
         return false;
     }
     priority += getCaptureFileData(fileSize, fileExt);
