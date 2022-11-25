@@ -74,13 +74,23 @@ function aria2Capture() {
     }
 }
 
-function getCaptureFilter(hostname, fileExt, fileSize) {
-    var priority = getCaptureHostname(hostname);
-    if (priority < 1) {
+function getCaptureFilter(hostname, ext, size) {
+    if (aria2Store['capture_exclude'].find(host => hostname.endsWith(host))) {
         return false;
     }
-    priority += getCaptureFileData(fileSize, fileExt);
-    if (priority > 1) {
+    else if (aria2Store['capture_reject'].includes(ext)) {
+        return false;
+    }
+    else if (aria2Store['capture_mode'] === '2') {
+        return true;
+    }
+    else if (aria2Store['capture_include'].find(host => hostname.endsWith(host))) {
+        return true;
+    }
+    else if (aria2Store['capture_resolve'].includes(ext)) {
+        return true;
+    }
+    else if (aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size']) {
         return true;
     }
     return false;
