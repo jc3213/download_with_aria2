@@ -58,6 +58,7 @@ function setDefaultFolder() {
 
 function firefoxExclusive() {
     api.querySelector('select').value = aria2Store['capture_api'];
+    sub.style.display = aria2Store['capture_api'] === '0' && '1,2'.includes(aria2Store['capture_mode']) ? 'block' : 'none';
 }
 
 var observer = setInterval(() => {
