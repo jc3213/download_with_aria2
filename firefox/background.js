@@ -74,6 +74,18 @@ function aria2Capture() {
     }
 }
 
+function getCaptureFilter(hostname, fileExt, fileSize) {
+    var priority = getCaptureHostname(hostname);
+    if (priority === 0) {
+        return false;
+    }
+    priority += getCaptureFileData(fileSize, fileExt);
+    if (priority > 2) {
+        return true;
+    }
+    return false;
+}
+
 async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
     if (url.startsWith('blob') || url.startsWith('data')) {
         return;
