@@ -46,9 +46,9 @@ function getCurrentWindow() {
 function aria2NewSession(size) {
     return new Promise(async resolve => {
         var {top, left, height, width} = await getCurrentWindow();
-        var offset = size === 'slim' ? 400 : 760;
-        top += (height - offset) / 2;
-        left += width / 2 - 360;
+        var offset = size === 'slim' ? 370 : 740;
+        top += (height - offset) / 2 | 0;
+        left += (width - 760) / 2 | 0;
         chrome.windows.create({
             url: '/session/index.html?' + size,
             type: 'popup',
