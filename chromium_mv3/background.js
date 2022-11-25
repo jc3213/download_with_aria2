@@ -29,15 +29,29 @@ chrome.storage.onChanged.addListener(changes => {
     }
 });
 
-chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
-    if (aria2Store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
-        return;
-    }
+chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
+    var url = finalUrl;
     var referer = 'about:blank'.includes(referrer) ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
-    if (getCaptureFilter(hostname, getFileExtension(filename), fileSize)) {
+    if (aria2Store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
+        var priority = 0;
+    }
+    else {
+        priority = getCaptureHostname(hostname);
+    }
+    aria2Monitor[id] = {url, referer, hostname, priority};
+});
+
+chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSize}) => {
+    var {url, referer, hostname, priority} = aria2Monitor[id];
+    if (priority < 1) {
+        return;
+    }
+    priority += getCaptureFileData(fileSize, getFileExtension(filename));
+    if (priority > 1) {
+        aria2Monitor[id].priority = priority;
         chrome.downloads.erase({id});
-        aria2Download(finalUrl, referer, hostname, {out: filename});
+        aria2Download(url, referer, hostname, {out: filename});
     }
 });
 
