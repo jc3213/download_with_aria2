@@ -43,13 +43,14 @@ async function captureOnCreated({id, finalUrl, referrer}) {
 
 async function captureOnFilename({id, filename, fileSize}) {
     var {url, referer, hostname, priority} = aria2Monitor[id];
-    if (priority < 3) {
+    console.log(priority);
+    if (priority < 2) {
         return;
     }
-    if (priority === 3) {
-        aria2Monitor[id].priority = priority = getCaptureFileData(fileSize, getFileExtension(filename));
-    }
-    if (priority > 3) {
+    priority += getCaptureFileData(fileSize, getFileExtension(filename));
+    console.log(priority);
+    if (priority > 2) {
+        aria2Monitor[id].priority = priority;
         chrome.downloads.erase({id});
         aria2Download(url, referer, hostname, {out: filename});
     }

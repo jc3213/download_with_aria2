@@ -66,25 +66,25 @@ function getCaptureHostname(hostname) {
         return 1;
     }
     else if (aria2Store['capture_mode'] === '2') {
-        return 4;
+        return 3;
     }
     else if (aria2Store['capture_include'].find(host => hostname.endsWith(host))) {
-        return 5;
+        return 4;
     }
-    return 3;
+    return 2;
 }
 
 function getCaptureFileData(size, ext) {
     if (aria2Store['capture_reject'].includes(ext)) {
-        return 2;
+        return -9;
     }
     else if (aria2Store['capture_resolve'].includes(ext)) {
-        return 6;
+        return 5;
     }
     else if (aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size']) {
-        return 7;
+        return 6;
     }
-    return 3;
+    return 0;
 }
 
 function getProxyServer(hostname) {
