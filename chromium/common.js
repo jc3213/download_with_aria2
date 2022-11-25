@@ -76,7 +76,7 @@ function getCaptureHostname(hostname) {
 
 function getCaptureFileData(size, ext) {
     if (aria2Store['capture_reject'].includes(ext)) {
-        return -1;
+        return -3;
     }
     else if (aria2Store['capture_resolve'].includes(ext)) {
         return 2;
