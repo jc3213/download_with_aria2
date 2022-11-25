@@ -80,7 +80,7 @@ function getCaptureFilter(hostname, fileExt, fileSize) {
         return false;
     }
     priority += getCaptureFileData(fileSize, fileExt);
-    if (priority > 2) {
+    if (priority > 1) {
         return true;
     }
     return false;
@@ -114,9 +114,16 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
     });
     var {disposition, type, length} = result;
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
-        var out = disposition ? getFileName(disposition) : '';
+        if (disposition) {
+            var out = getFileName(disposition);
+            console.log(disposition, out);
+            var ext = getFileExtension(out);
+        }
+        else {
+            out = ext = null;
+        }
         var hostname = getHostname(originUrl);
-        if (getCaptureFilter(hostname, getFileExtension(out), length)) {
+        if (getCaptureFilter(hostname, ext, length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
             aria2DownloadFirefox(url, originUrl, hostname, cookieStoreId, {out, dir: getDownloadFolder()});
             return {cancel: true};
