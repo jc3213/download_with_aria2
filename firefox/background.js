@@ -105,7 +105,7 @@ async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
     if (getCaptureFilter(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
-            var options = await getFirefoxOptions(referer, filename);
+            var options = await getFirefoxOptions(filename);
             aria2DownloadFirefox(url, referer, hostname, cookieStoreId, options);
         }).catch(error => aria2WhenComplete(url));
     }
