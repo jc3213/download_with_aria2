@@ -173,21 +173,21 @@ function getFileName(disposition) {
 
 function decodeISO8859(text) {
     var decode = [];
-    var codec = document.characterSet ?? 'UTF-8';
+    var code = document.characterSet ?? 'UTF-8';
     [...text].forEach(s => {
         var c = s.charCodeAt(0);
         if (c < 256) {
             decode.push(c);
         }
     });
-    return new TextDecoder(codec).decode(Uint8Array.from(decode));
+    return new TextDecoder(code).decode(Uint8Array.from(decode));
 }
 
 function decodeRFC5987(text) {
     var idx = text.indexOf('\'');
-    var codec = text.slice(0, idx).toLowerCase();
+    var code = text.slice(0, idx).toLowerCase();
     var data = text.slice(idx + 1);
-    if ('utf-8,utf8'.includes(codec)) {
+    if ('utf-8,utf8'.includes(code)) {
         return decodeFileName(data);
     }
     var decode = [];
@@ -198,7 +198,7 @@ function decodeRFC5987(text) {
             decode.push(c);
         }
     });
-    return new TextDecoder(codec).decode(Uint8Array.from(decode));
+    return new TextDecoder(code).decode(Uint8Array.from(decode));
 }
 
 function decodeRFC2047(text) {
