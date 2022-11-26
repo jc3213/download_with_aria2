@@ -48,8 +48,8 @@ async function captureOnFilename({id, filename, fileSize}) {
     }
     priority += getCaptureFileData(fileSize, getFileExtension(filename));
     if (priority > 1) {
-        aria2Monitor[id].priority = priority;
         chrome.downloads.erase({id});
+        aria2Monitor[id].priority = priority;
         aria2Download(url, referer, hostname, {out: filename});
     }
 }
