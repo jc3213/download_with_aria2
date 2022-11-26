@@ -46,6 +46,7 @@ async function aria2DownloadFirefox(url, referer, hostname, storeId, options = {
         options['referer'] = referer;
         options['header'] = await getRequestHeadersFirefox(url, storeId);
     }
+    console.log(options);
     if (aria2Store['download_prompt'] === '1') {
         getDownloadPrompt(url, options);
     }
