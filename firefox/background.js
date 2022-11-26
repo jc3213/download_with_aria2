@@ -205,10 +205,21 @@ function decodeRFC2047(text) {
                 var code = temp.slice(0, qs);
                 var type = temp.slice(qs + 1, qe).toLowerCase();
                 var data = temp.slice(qe + 1);
-                var decode = type === 'b' ? [...atob(data)].map(s => s.charCodeAt(0)) :
-                    type === 'q' ? (parts[2].match(/=[0-9a-fA-F]{2}|./g) || []).map(v => v.length === 3 ?
-                        parseInt(v.slice(1), 16) : v === '_' ? 0x20 : v.charCodeAt(0)) : null;
-                if (decode) {
+                if (type === 'b') {
+                    var decode = [...atob(data)].map(s => s.charCodeAt(0));
+                    result += new TextDecoder(code).decode(Uint8Array.from(decode));
+                }
+                else if (type === 'q') {
+                    var tmp = data.match(/=[0-9a-fA-F]{2}|./g) ?? [];
+                    var decode = tmp.map(v => {
+                        if (v === '_') {
+                            return 0x20;
+                        }
+                        else if (v.length === 3) {
+                            return parseInt(v.slice(1), 16)
+                        }
+                        return v.charCodeAt(0));
+                    });
                     result += new TextDecoder(code).decode(Uint8Array.from(decode));
                 }
             }
