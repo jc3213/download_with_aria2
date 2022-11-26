@@ -175,7 +175,9 @@ function decodeISO8859(text) {
     var decode = [];
     [...text].forEach(s => {
         var c = s.charCodeAt(0);
-        c < 256 && decode.push(c);
+        if (c < 256) {
+            decode.push(c);
+        }
     });
     return new TextDecoder(document.characterSet ?? 'UTF-8').decode(Uint8Array.from(decode));
 }
@@ -187,9 +189,12 @@ function decodeRFC5987(text) {
         return decodeFileName(body);
     }
     var decode = [];
-    (body.match(/%[0-9a-fA-F]{2}|./g) ?? []).forEach(s => {
+    var tmp = body.match(/%[0-9a-fA-F]{2}|./g) ?? [];
+    tmp.forEach(s => {
         var c = s.length === 3 ? parseInt(s.slice(1), 16) : s.charCodeAt(0);
-        c < 256 && decode.push(c);
+        if (c < 256) {
+            decode.push(c);
+        }
     });
     return new TextDecoder(head).decode(Uint8Array.from(decode));
 }
