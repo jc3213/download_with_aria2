@@ -173,43 +173,45 @@ function getFileName(disposition) {
 
 function decodeISO8859(text) {
     var decode = [];
+    var codec = document.characterSet ?? 'UTF-8';
     [...text].forEach(s => {
         var c = s.charCodeAt(0);
         if (c < 256) {
             decode.push(c);
         }
     });
-    return new TextDecoder(document.characterSet ?? 'UTF-8').decode(Uint8Array.from(decode));
+    return new TextDecoder(codec).decode(Uint8Array.from(decode));
 }
 
 function decodeRFC5987(text) {
-    var head = text.slice(0, text.indexOf('\''));
-    var body = text.slice(text.lastIndexOf('\'') + 1);
-    if ('utf-8,utf8'.includes(head.toLowerCase())) {
-        return decodeFileName(body);
+    var idx = text.indexOf('\'');
+    var codec = text.slice(0, idx).toLowerCase();
+    var data = text.slice(idx + 1);
+    if ('utf-8,utf8'.includes(codec)) {
+        return decodeFileName(data);
     }
     var decode = [];
-    var tmp = body.match(/%[0-9a-fA-F]{2}|./g) ?? [];
+    var tmp = data.match(/%[0-9a-fA-F]{2}|./g) ?? [];
     tmp.forEach(s => {
         var c = s.length === 3 ? parseInt(s.slice(1), 16) : s.charCodeAt(0);
         if (c < 256) {
             decode.push(c);
         }
     });
-    return new TextDecoder(head).decode(Uint8Array.from(decode));
+    return new TextDecoder(codec).decode(Uint8Array.from(decode));
 }
 
 function decodeRFC2047(text) {
     var result = '';
     text.split(/\s+/).forEach(s => {
         if (s.startsWith('=?') && s.endsWith('?=')) {
-            var temp = s.slice(2, -2);
-            var qs = temp.indexOf('?');
-            var qe = temp.lastIndexOf('?');
-            if (qe - qs === 2) {
-                var code = temp.slice(0, qs);
-                var type = temp.slice(qs + 1, qe).toLowerCase();
-                var data = temp.slice(qe + 1);
+            var raw = s.slice(2, -2);
+            var si = raw.indexOf('?');
+            var ei = raw.lastIndexOf('?');
+            if (ei - si === 2) {
+                var code = raw.slice(0, si);
+                var type = raw.slice(si + 1, ei).toLowerCase();
+                var data = raw.slice(ei + 1);
                 if (type === 'b') {
                     var decode = [...atob(data)].map(s => s.charCodeAt(0));
                     result += new TextDecoder(code).decode(Uint8Array.from(decode));
