@@ -38,8 +38,6 @@ body, div {
 
 :disabled {
     filter: contrast(45%);
-    padding: 6px;
-    border: none;
 }
 
 input, textarea, button {
