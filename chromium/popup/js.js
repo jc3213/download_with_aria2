@@ -31,17 +31,14 @@ document.querySelector('#purge_btn').addEventListener('click', async event => {
     await aria2RPC.message('aria2.purgeDownloadResult');
     completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     stoppedStat.innerText = '0';
+    if (activeId === gid) {
+        activeId = null;
+    }
 });
 
 document.querySelector('#options_btn').addEventListener('click', event => {
     chrome.runtime.openOptionsPage();
     close();
-});
-
-document.querySelector('#append_btn').addEventListener('click', async event => {
-    var uri = event.target.parentNode.querySelector('input');
-    await aria2RPC.message('aria2.changeUri', [activeId, 1, [], [uri.value]]);
-    uri.value = '';
 });
 
 function aria2StartUp() {
@@ -236,6 +233,11 @@ function parseSession(gid, status, bittorrent) {
         });
         await aria2RPC.message('aria2.changeOption', [gid, {'select-file': files.join()}]);
         event.target.style.display = 'none';
+    });
+    task.querySelector('#append_btn').addEventListener('click', async event => {
+        var uri = event.target.parentNode.querySelector('input');
+        await aria2RPC.message('aria2.changeUri', [gid, 1, [], [uri.value]]);
+        uri.value = '';
     });
     var type = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
     self[type + 'Stat'].innerText ++;
