@@ -3,7 +3,7 @@ body {
     width: 680px;
 }
 
-body > :not([data-main]),
+body > .session, body > .file, body > .uri,
 [data-main="0"] > [data-queue]:nth-child(n+2),
 [data-main="1"] > [data-queue]:not(:nth-child(n+2):nth-child(-n+3)),
 [data-main="2"] > [data-queue]:nth-child(-n+3),

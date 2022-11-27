@@ -249,13 +249,13 @@
         "message": "上传"
     },
     "task_download": {
-        "message": "下载速度"
+        "message": "最大下载速度"
     },
     "task_download_title": {
         "message": "设置本次下载的最大下载速度"
     },
     "task_upload": {
-        "message": "上传速度"
+        "message": "最大上传速度"
     },
     "task_upload_title": {
         "message": "设置本次下载的最大上传速度"

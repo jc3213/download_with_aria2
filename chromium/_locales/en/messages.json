@@ -249,13 +249,13 @@
         "message": "Upload"
     },
     "task_download": {
-        "message": "Download Speed"
+        "message": "Max Download Speed"
     },
     "task_download_title": {
         "message": "Set maximum download speed for this download"
     },
     "task_upload": {
-        "message": "Upload Speed"
+        "message": "Max Upload Speed"
     },
     "task_upload_title": {
         "message": "Set maximum upload speed for this download"
