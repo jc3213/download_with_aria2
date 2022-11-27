@@ -65,7 +65,7 @@ body > .session, body > .file, body > .uri,
     margin-bottom: 5px;
     display: grid;
     grid-template-columns: repeat(3, calc(33.333% - 7.5px)) 22.5px;
-    grid-template-areas: "name name name menu" "detail detail detail menu" "detail detail detail menu" "meter meter meter meter" "options options options options";
+    grid-template-areas: "name name name menu" "details details details menu" "details details details menu" "meter meter meter meter" "options options options options";
 }
 
 .session > #name {
