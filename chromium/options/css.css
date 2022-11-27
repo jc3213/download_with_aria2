@@ -21,10 +21,6 @@ body {
     z-index: 999999;
 }
 
-#export_btn, #back_btn {
-    margin-left: auto;
-}
-
 [data-main="local"] [data-aria2], [data-main="aria2"] [data-local] {
     display: none;
 }

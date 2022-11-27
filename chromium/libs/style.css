@@ -113,20 +113,24 @@ button.float {
     margin-top: 25px;
 }
 
-.flex, .fixed {
+.flex, .tools, .fixed {
     display: flex;
-}
-
-.fixed > button {
-    width: fit-content;
 }
 
 .flex {
     gap: 3px;
 }
 
-.flex > :not(button, span) {
+.flex > * {
     flex: 1;
+}
+
+.fixed > button {
+    width: fit-content;
+}
+
+.tools > :last-child {
+    margin-left: auto;
 }
 
 .float {

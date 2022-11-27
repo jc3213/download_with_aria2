@@ -49,8 +49,14 @@ body > .session, body > .file, body > .uri,
     color: #fff;
 }
 
-#download_btn, #options_btn {
-    margin-left: auto;
+.stats {
+    display: inline-block;
+    padding: 6px;
+}
+
+span.stats {
+    margin-right: 10px;
+    padding-left: 3px;
 }
 
 #session {

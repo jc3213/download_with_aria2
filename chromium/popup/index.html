@@ -7,15 +7,19 @@
         <link rel="stylesheet" href="css.css">
     </head>
     <body>
-        <div class="flex" data-main="3">
-            <button class="active" i18n>popup_active</button>
-            <span id="active" data-stat>0</span>
-            <button class="waiting" i18n>popup_waiting</button>
-            <span id="waiting" data-stat>0</span>
-            <button class="removed" i18n>popup_stopped</button>
-            <span id="stopped" data-stat>0</span>
-            <button id="download_btn" i18n>popup_create</button>
-            <button id="purge_btn" i18n>popup_purge</button>
+        <div class="tools" data-main="3">
+            <div>
+                <button class="active" i18n>popup_active</button>
+                <span id="active" class="stats">0</span>
+                <button class="waiting" i18n>popup_waiting</button>
+                <span id="waiting" class="stats">0</span>
+                <button class="removed" i18n>popup_stopped</button>
+                <span id="stopped" class="stats">0</span>
+            </div>
+            <div>
+                <button id="download_btn" i18n>popup_create</button>
+                <button id="purge_btn" i18n>popup_purge</button>
+            </div>
         </div>
         <hr>
         <div id="session" data-main="3">
@@ -27,12 +31,16 @@
             <div data-queue="error"></div>
         </div>
         <hr>
-        <div class="flex">
-            <button class="active" disabled i18n>popup_download</button>
-            <span id="download" data-stat>0</span>
-            <button class="complete" disabled i18n>popup_upload</button>
-            <span id="upload" data-stat>0</span>
-            <button id="options_btn" i18n>popup_options</button>
+        <div class="tools">
+            <div>
+                <div class="stats active" disabled i18n>popup_download</div>
+                <span id="download" class="stats">0</span>
+                <div class="stats complete" disabled i18n>popup_upload</div>
+                <span id="upload" class="stats">0</span>
+            </div>
+            <div>
+                <button id="options_btn" i18n>popup_options</button>
+            </div>
         </div>
         <div class="session">
             <div id="name" class="title"></div>
