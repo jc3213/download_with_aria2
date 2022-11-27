@@ -113,6 +113,10 @@ body > .session, body > .file, body > .uri,
     display: none;
 }
 
+input:disabled + button {
+    display: none;
+}
+
 [status="active"] > #meter {
     background-color: #4cc;
 }
