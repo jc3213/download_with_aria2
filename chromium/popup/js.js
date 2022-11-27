@@ -139,7 +139,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     task.querySelector('#ratio').style.width = ratio + '%';
     task.querySelector('#ratio').className = status;
     task.querySelector('#retry_btn').style.display = !bittorrent && 'error,removed'.includes(status) ? 'inline-block' : 'none';
-    if (activeId === gid) {
+    if (activeId === gid && status === 'active') {
         updateTaskDetail(task, status, bittorrent, files);
     }
     return task;
