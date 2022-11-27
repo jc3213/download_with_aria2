@@ -2,15 +2,15 @@
     text-align: center;
 }
 
+.slim [data-full], .slim [data-extra], .full [data-slim],
+.compact [data-full], .compact #extra_btn {
+    display: none;
+}
+
 #countdown::before {
     content: "(";
 }
 
 #countdown::after {
     content: ")";
-}
-
-[data-main="slim"] [data-full], [data-main="slim"] [data-extra], [data-main="full"] [data-slim],
-[data-main="compact"] [data-full], [data-main="compact"] #extra_btn {
-    display: none;
 }

@@ -7,11 +7,11 @@ var submitbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
 
 if (location.search === '?slim') {
-    document.body.setAttribute('data-main', 'slim');
+    document.body.className = 'slim';
     runAfter = () => chrome.runtime.sendMessage('prompt', slimDownload);
 }
 else {
-    document.body.setAttribute('data-main', 'full');
+    document.body.className = 'full';
     document.querySelector('input[name="out"]').disabled = true;
     runAfter = () => useragent.value = options['user-agent'] = aria2Store['user_agent'];
 }
@@ -79,7 +79,7 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
 document.querySelector('#extra_btn').addEventListener('click', async event => {
     var {id, top, height} = await getCurrentWindow()
     chrome.windows.update(id, {top: top - 192, height: height + 384});
-    document.body.setAttribute('data-main', 'compact');
+    document.body.className = 'compact';
     countdown.innerText = countdown.innerText * 1 + 90;
 });
 
