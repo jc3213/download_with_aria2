@@ -113,6 +113,10 @@ body > .session, body > .file, body > .uri,
     display: none;
 }
 
+.session :not(.file) > [title] {
+    margin-top: 5px;
+}
+
 input:disabled + button {
     display: none;
 }
