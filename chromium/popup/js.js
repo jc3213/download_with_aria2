@@ -114,6 +114,9 @@ function removeSession(type, gid, task) {
     if (task) {
         task.remove();
     }
+    if (activeId === gid) {
+        activeId = null;
+    }
 }
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
@@ -243,11 +246,10 @@ function parseSession(gid, status, bittorrent) {
 
 function updateTaskDetail(task, status, bittorrent, files) {
     var disabled = 'complete,error,removed'.includes(status);
-    var save = task.querySelector('#save_btn');
     task.querySelector('[name="max-download-limit"]').disabled = disabled;
     task.querySelector('[name="max-upload-limit"]').disabled = disabled || !bittorrent;
     task.querySelector('[name="all-proxy"]').disabled = disabled;
-    printTaskFiles(task, files, save);
+    printTaskFiles(task, files);
 }
 
 function printTableCell(table, template, runOnce) {
@@ -257,17 +259,17 @@ function printTableCell(table, template, runOnce) {
     return cell;
 }
 
-function printTaskFiles(task, files, save) {
+function printTaskFiles(task, files) {
     var fileList = task.querySelector('#files');
     var cells = fileList.childNodes;
     files.forEach((file, index) => {
-        var cell = cells[index] ?? printTableCell(fileList, fileLET, cell => applyFileSelect(task, cell, file, save));
+        var cell = cells[index] ?? printTableCell(fileList, fileLET, cell => applyFileSelect(task, cell, file));
         var {length, completedLength} = file;
         cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
     });
 }
 
-function applyFileSelect(task, cell, {index, path, length, selected, uris}, save) {
+function applyFileSelect(task, cell, {index, path, length, selected, uris}) {
     var tile = cell.querySelector('#index');
     tile.innerText = index;
     tile.className = selected === 'true' ? 'active' : 'error';
@@ -277,7 +279,7 @@ function applyFileSelect(task, cell, {index, path, length, selected, uris}, save
     if (uris.length === 0) {
         tile.addEventListener('click', event => {
             tile.className = tile.className === 'active' ? 'error' : 'active';
-            save.style.display = 'block';
+            task.querySelector('#save_btn').style.display = 'block';
         });
     }
     else {
