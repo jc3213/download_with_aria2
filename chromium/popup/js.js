@@ -31,7 +31,7 @@ document.querySelector('#purge_btn').addEventListener('click', async event => {
     await aria2RPC.message('aria2.purgeDownloadResult');
     completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     stoppedStat.innerText = '0';
-    if (activeId === gid) {
+    if (!activeTask.includes(activeId)) {
         activeId = null;
     }
 });
