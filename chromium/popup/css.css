@@ -3,12 +3,11 @@ body {
     width: 680px;
 }
 
-[data-page="main"] > :not([data-main]),
-[data-page="aria2"] > :not([data-aria2]),
+body > :not([data-main]),
 [data-main="0"] > [data-queue]:nth-child(n+2),
 [data-main="1"] > [data-queue]:not(:nth-child(n+2):nth-child(-n+3)),
 [data-main="2"] > [data-queue]:nth-child(-n+3),
-[data-aria2="http"] [data-bt], [data-aria2="bt"] [data-http] {
+[data-type="http"] [data-bt], [data-type="bt"] [data-http] {
     display: none;
 }
 
@@ -66,44 +65,52 @@ body {
     margin-bottom: 5px;
     display: grid;
     grid-template-columns: repeat(3, calc(33.333% - 7.5px)) 22.5px;
-    grid-template-areas: "name name name menu" "detail detail detail menu" "detail detail detail menu" "meter meter meter meter";
+    grid-template-areas: "name name name menu" "detail detail detail menu" "detail detail detail menu" "meter meter meter meter" "options options options options";
 }
 
-.session > div:first-child {
+.session > #name {
     grid-area: name;
 }
 
-.session > div:nth-last-child(2) {
+.session > #menus {
     grid-area: menu;
 }
 
-.session > div:last-child {
+.session > #menus > button {
+    font-size: 12px;
+    padding: 2px;
+}
+
+.session > #meter {
     grid-area: meter;
     text-align: center;
 }
 
-.session button {
-    font-size: 12px;
-    padding: 2px;
+.session > #meter:active {
+    filter: contrast(45%);
+}
+
+.session > #options {
+    grid-area: options;
+}
+
+.session:not(.extra) > #options {
+    display: none;
 }
 
 .session sub {
     margin-right: -4px;
 }
 
-#infinite {
+.session #infinite {
     display: none;
     left: 26px;
     padding-bottom: 1px;
 }
 
-#meter:active {
-    filter: contrast(45%);
-}
-
-#error {
-    color: #c00;
-    font-size: 11px;
+.session #save_btn {
+    top: -12px;
+    display: none;
 }
 
 [status="active"] > #meter {
@@ -120,43 +127,6 @@ body {
 
 [status="removed"] > #meter, [status="error"] > #meter {
     background-color: #844;
-}
-
-#manager {
-    height: calc(100% - 54px);
-    overflow-y: auto;
-}
-
-#manager > div:first-child > * {
-    border-width: 1px;
-    border-style: ridge;
-    padding: 5px;
-}
-
-#name_btn {
-    overflow-y: auto;
-    padding: 0px;
-    margin-bottom: 5px;
-    width: 100%;
-    word-break: break-word;
-}
-
-#name_btn, .uri > *, .file > * {
-    height: 48px;
-}
-
-.active.float, .complete.float {
-    line-height: 28px;
-    padding: 2px 0px 2px 5px;
-    width: calc(100% - 5px);
-}
-
-#manager > div:nth-last-child(2) .float {
-    top: -10px;
-}
-
-#uris {
-    margin-top: 10px;
 }
 
 .file {

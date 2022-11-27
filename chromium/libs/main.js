@@ -41,9 +41,9 @@ function getFileSize(bytes) {
     }
 }
 
-function printGlobalOptions(json) {
+function printGlobalOptions(entries, json) {
     var options = {};
-    document.querySelectorAll('[name]').forEach(entry => {
+    entries.forEach(entry => {
         var {name} = entry;
         var value = json[name] ?? '';
         if (filesize.includes(name)) {

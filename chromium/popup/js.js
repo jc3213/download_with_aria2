@@ -13,9 +13,6 @@ var sessionLET = document.querySelector('div.session');
 var activeId;
 var fileLET = document.querySelector('div.file');
 var uriLET = document.querySelector('div.uri');
-var fileList = document.querySelector('#files');
-var uriList = document.querySelector('#uris');
-var savebtn = document.querySelector('#save_btn');
 
 document.querySelectorAll('button.active, button.waiting, button.removed').forEach((tab, index) => {
     tab.addEventListener('click', event => {
@@ -41,51 +38,10 @@ document.querySelector('#options_btn').addEventListener('click', event => {
     close();
 });
 
-document.querySelector('#name_btn').addEventListener('click', event => {
-    activeId = fileList.innerHTML = uriList.innerHTML = '';
-    savebtn.style.display = 'none';
-    document.body.setAttribute('data-page', 'main');
-});
-
-document.querySelector('#manager').addEventListener('change', event => {
-    var {name, value} = event.target;
-    aria2RPC.message('aria2.changeOption', [activeId, {[name]: value}]);
-});
-
-document.querySelectorAll('#download.float, #upload.float').forEach(block => {
-    var entry = block.parentNode.querySelector('input');
-    block.addEventListener('click', event => {
-        if (entry.disabled) {
-            return;
-        }
-        block.style.display = 'none';
-        entry.focus();
-    });
-    entry.addEventListener('blur', event => {
-        block.style.display = 'block';
-    });
-});
-
-document.querySelector('#proxy_btn').addEventListener('click', async event => {
-    await aria2RPC.message('aria2.changeOption', [activeId, {'all-proxy': aria2Store['proxy_server']}]);
-    event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
-});
-
 document.querySelector('#append_btn').addEventListener('click', async event => {
     var uri = event.target.parentNode.querySelector('input');
     await aria2RPC.message('aria2.changeUri', [activeId, 1, [], [uri.value]]);
     uri.value = '';
-});
-
-savebtn.addEventListener('click', async event => {
-    var files = [];
-    fileList.querySelectorAll('#index').forEach(index => {
-        if (index.className === 'active') {
-            files.push(index.innerText);
-        }
-    });
-    await aria2RPC.message('aria2.changeOption', [activeId, {'select-file': files.join()}]);
-    savebtn.style.display = 'none';
 });
 
 function aria2StartUp() {
@@ -201,11 +157,8 @@ function printEstimateTime(time, number) {
 
 function parseSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
-    var type = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
-    self[type + 'Stat'].innerText ++;
-    self[type + 'Task'].push(gid);
-    self[status + 'Queue'].appendChild(task);
     task.id = gid;
+    task.setAttribute('data-type', bittorrent ? 'bt' : 'http');
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
         var status = task.getAttribute('status');
@@ -221,14 +174,22 @@ function parseSession(gid, status, bittorrent) {
         }
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
-        activeId = gid;
-        var {status, bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
-        var options = await aria2RPC.message('aria2.getOption', [gid]);
-        printGlobalOptions(options);
-        updateTaskDetail(task, status, bittorrent, files);
-        document.body.setAttribute('data-page', 'aria2');
-        document.querySelector('#manager').setAttribute('data-aria2', bittorrent ? 'bt' : 'http');
-        document.querySelector('#manager #remote').innerText = task.querySelector('#remote').innerText;
+        if (activeId === gid) {
+            activeId = null;
+            task.classList.remove('extra');
+        }
+        else {
+            if (activeId) {
+                document.getElementById(activeId).classList.remove('extra');
+            }
+            var options = await aria2RPC.message('aria2.getOption', [gid]);
+            var entries = task.querySelectorAll('[name]');
+            printGlobalOptions(entries, options);
+            var {status, bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
+            updateTaskDetail(task, status, bittorrent, files);
+            task.classList.add('extra');
+            activeId = gid;
+        }
     });
     task.querySelector('#retry_btn').addEventListener('click', async event => {
         var [{path, uris}] = await aria2RPC.message('aria2.getFiles', [gid]);
@@ -255,21 +216,38 @@ function parseSession(gid, status, bittorrent) {
             task.setAttribute('status', 'waiting');
         }
     });
+    task.querySelector('#options').addEventListener('change', event => {
+        var {name, value} = event.target;
+        aria2RPC.message('aria2.changeOption', [gid, {[name]: value}]);
+    });
+    task.querySelector('#proxy_btn').addEventListener('click', async event => {
+        await aria2RPC.message('aria2.changeOption', [gid, {'all-proxy': aria2Store['proxy_server']}]);
+        event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
+    });
+    task.querySelector('#save_btn').addEventListener('click', async event => {
+        var files = [];
+        task.querySelectorAll('#files #index').forEach(index => {
+            if (index.className === 'active') {
+                files.push(index.innerText);
+            }
+        });
+        await aria2RPC.message('aria2.changeOption', [gid, {'select-file': files.join()}]);
+        event.target.style.display = 'none';
+    });
+    var type = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
+    self[type + 'Stat'].innerText ++;
+    self[type + 'Task'].push(gid);
+    self[status + 'Queue'].appendChild(task);
     return task;
 }
 
 function updateTaskDetail(task, status, bittorrent, files) {
     var disabled = 'complete,error,removed'.includes(status);
-    document.querySelector('#name_btn').innerText = task.querySelector('#name').innerText;
-    document.querySelector('#name_btn').className = task.querySelector('#ratio').className;
-    document.querySelector('#manager #local').innerText = task.querySelector('#local').innerText;
-    document.querySelector('#manager #ratio').innerText = task.querySelector('#ratio').innerText;
-    document.querySelector('#manager #download').innerText = task.querySelector('#download').innerText;
-    document.querySelector('#manager #upload').innerText = task.querySelector('#upload').innerText;
-    document.querySelector('#manager [name="max-download-limit"]').disabled = disabled;
-    document.querySelector('#manager [name="max-upload-limit"]').disabled = disabled || !bittorrent;
-    document.querySelector('#manager [name="all-proxy"]').disabled = disabled;
-    printTaskFiles(files);
+    var save = task.querySelector('#save_btn');
+    task.querySelector('[name="max-download-limit"]').disabled = disabled;
+    task.querySelector('[name="max-upload-limit"]').disabled = disabled || !bittorrent;
+    task.querySelector('[name="all-proxy"]').disabled = disabled;
+    printTaskFiles(task, files, save);
 }
 
 function printTableCell(table, template, runOnce) {
@@ -279,16 +257,17 @@ function printTableCell(table, template, runOnce) {
     return cell;
 }
 
-function printTaskFiles(files) {
+function printTaskFiles(task, files, save) {
+    var fileList = task.querySelector('#files');
     var cells = fileList.childNodes;
     files.forEach((file, index) => {
-        var cell = cells[index] ?? printTableCell(fileList, fileLET, cell => applyFileSelect(cell, file));
+        var cell = cells[index] ?? printTableCell(fileList, fileLET, cell => applyFileSelect(task, cell, file, save));
         var {length, completedLength} = file;
         cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
     });
 }
 
-function applyFileSelect(cell, {index, path, length, selected, uris}) {
+function applyFileSelect(task, cell, {index, path, length, selected, uris}, save) {
     var tile = cell.querySelector('#index');
     tile.innerText = index;
     tile.className = selected === 'true' ? 'active' : 'error';
@@ -298,15 +277,16 @@ function applyFileSelect(cell, {index, path, length, selected, uris}) {
     if (uris.length === 0) {
         tile.addEventListener('click', event => {
             tile.className = tile.className === 'active' ? 'error' : 'active';
-            savebtn.style.display = 'inline-block';
+            save.style.display = 'block';
         });
     }
     else {
-        printTaskUris(uris);
+        printTaskUris(task, uris);
     }
 }
 
-function printTaskUris(uris) {
+function printTaskUris(task, uris) {
+    var uriList = task.querySelector('#uris');
     var cells = uriList.childNodes;
     var index = -1;
     var used;

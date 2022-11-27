@@ -87,7 +87,8 @@ document.querySelector('#back_btn').addEventListener('click', event => {
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
     aria2RPC.message('aria2.getGlobalOption').then(options => {
-        aria2Global = printGlobalOptions(options);
+        var entries = document.querySelectorAll('#aria2 [name]');
+        aria2Global = printGlobalOptions(entries, options);
         clearChanges();
         global = false;
         document.body.setAttribute('data-main', 'aria2');
