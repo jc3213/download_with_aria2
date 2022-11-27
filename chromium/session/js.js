@@ -2,18 +2,17 @@ var referer = document.querySelector('[name="referer"]');
 var useragent = document.querySelector('[name="user-agent"]');
 var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
-var fullbtn = document.querySelector('#submit_btn');
 var submitbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
 
 if (location.search === '?slim') {
     document.body.className = 'slim';
-    runAfter = () => chrome.runtime.sendMessage('prompt', slimDownload);
+    downloadInit = slimModeInit;
 }
 else {
     document.body.className = 'full';
     document.querySelector('input[name="out"]').disabled = true;
-    runAfter = () => useragent.value = options['user-agent'] = aria2Store['user_agent'];
+    downloadInit = fullModeInit;
 }
 
 document.addEventListener('keydown', event => {
@@ -90,22 +89,28 @@ document.addEventListener('change', event => {
     }
 });
 
-function slimDownload(json) {
-    entries.value = json.url;
-    var extras = json.options;
-    Object.keys(extras).forEach(key => {
-        var entry = document.querySelector('[name="' + key + '"]');
-        var value = extras[key];
-        if (entry && value) {
-            entry.value = options[key] = value;
-        }
+function fullModeInit() {
+    useragent.value = options['user-agent'] = aria2Store['user_agent'];
+}
+
+function slimModeInit() {
+    chrome.runtime.sendMessage('prompt', response => {
+        entries.value = response.url;
+        var extras = response.options;
+        Object.keys(extras).forEach(key => {
+            var entry = document.querySelector('[name="' + key + '"]');
+            var value = extras[key];
+            if (entry && value) {
+                entry.value = options[key] = value;
+            }
+        });
+        setInterval(() => {
+            countdown.innerText --;
+            if (countdown.innerText === '0') {
+                submitbtn.click();
+            }
+        }, 1000);
     });
-    setInterval(() => {
-        countdown.innerText --;
-        if (countdown.innerText === '0') {
-            fullbtn.click();
-        }
-    }, 1000);
 }
 
 function parseJSON(json, extras) {
@@ -151,5 +156,5 @@ async function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     var global = await aria2RPC.message('aria2.getGlobalOption');
     options = document.querySelectorAll('[name]').setOptions(global);
-    runAfter();
+    downloadInit();
 }
