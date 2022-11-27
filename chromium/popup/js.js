@@ -310,7 +310,7 @@ function printTaskUris(task, uris) {
         var link = cell.querySelector('#uri');
         var {innerText} = link;
         if (innerText !== uri) {
-            link.innerText = uri;
+            link.innerText = link.title = uri;
             used = cell.querySelector('#used');
             wait = cell.querySelector('#wait');
             index ++;

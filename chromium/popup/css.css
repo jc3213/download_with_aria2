@@ -17,10 +17,6 @@ body > .session, body > .file, body > .uri,
     border-style: inset;
 }
 
-[data-stat] {
-    padding: 5px 15px 5px 0px;
-}
-
 #download::after, #upload::after {
     content: "B/s";
 }
@@ -119,7 +115,7 @@ span.stats {
     display: none;
 }
 
-.session :not(.file) > [title] {
+.session :not(.file, .uri) > [title] {
     margin-top: 5px;
 }
 
@@ -156,15 +152,15 @@ input:disabled + button {
 .file > *, .uri > * {
     border-width: 1px;
     border-style: ridge;
-    word-break: break-word;
-    overflow-y: auto;
+    overflow: hidden;
+    height: 23px;
 }
 
 .file > :not(:nth-child(2)), .uri > :nth-child(n+2) {
-    line-height: 48px;
     text-align: center;
+    padding: 5px 0px;
 }
 
 .file > :nth-child(2), .uri > :nth-child(1) {
-    padding: 0px 5px;
+    padding: 5px;
 }
