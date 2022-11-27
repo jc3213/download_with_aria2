@@ -17,34 +17,6 @@ body > .session, body > .file, body > .uri,
     border-style: inset;
 }
 
-#download::after, #upload::after {
-    content: "B/s";
-}
-
-#remote::after, #local::after, #size::after {
-    content: "B";
-}
-
-.active {
-    background-color: #44c;
-}
-
-.waiting, .paused {
-    background-color: #cc4;
-}
-
-.complete {
-    background-color: #4c4;
-}
-
-.removed, .error {
-    background-color: #c48;
-}
-
-.active, .waiting, .paused, .error, .complete, .removed {
-    color: #fff;
-}
-
 .stats {
     display: inline-block;
     padding: 6px;
@@ -53,6 +25,14 @@ body > .session, body > .file, body > .uri,
 span.stats {
     margin-right: 10px;
     padding-left: 3px;
+}
+
+#download::after, #upload::after {
+    content: "B/s";
+}
+
+#remote::after, #local::after, #size::after {
+    content: "B";
 }
 
 #session {
@@ -88,10 +68,6 @@ span.stats {
     text-align: center;
 }
 
-.session > #meter:active {
-    filter: contrast(45%);
-}
-
 .session > #options {
     grid-area: options;
 }
@@ -123,22 +99,6 @@ input:disabled + button {
     display: none;
 }
 
-[status="active"] > #meter {
-    background-color: #4cc;
-}
-
-[status="waiting"] > #meter, [status="paused"] > #meter {
-    background-color: #488;
-}
-
-[status="complete"] > #meter {
-    background-color: #4c4;
-}
-
-[status="removed"] > #meter, [status="error"] > #meter {
-    background-color: #844;
-}
-
 .file {
     display: grid;
     grid-template-columns: 40px auto 80px 60px;
@@ -163,4 +123,46 @@ input:disabled + button {
 
 .file > :nth-child(2), .uri > :nth-child(1) {
     padding: 5px;
+}
+
+.session:not([status="complete"], [status="removed"], [status="error"]) > #meter:active,
+.session[data-type="bt"] .file > :nth-child(1):active,
+.session[data-type="http"] .uri > :nth-child(1):active {
+    filter: contrast(45%);
+}
+
+.active {
+    background-color: #44c;
+}
+
+.waiting, .paused {
+    background-color: #cc4;
+}
+
+.complete {
+    background-color: #4c4;
+}
+
+.removed, .error {
+    background-color: #c48;
+}
+
+.active, .waiting, .paused, .error, .complete, .removed {
+    color: #fff;
+}
+
+[status="active"] > #meter {
+    background-color: #4cc;
+}
+
+[status="waiting"] > #meter, [status="paused"] > #meter {
+    background-color: #488;
+}
+
+[status="complete"] > #meter {
+    background-color: #4c4;
+}
+
+[status="removed"] > #meter, [status="error"] > #meter {
+    background-color: #844;
 }
