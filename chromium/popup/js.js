@@ -183,8 +183,7 @@ function parseSession(gid, status, bittorrent) {
                 document.getElementById(activeId).classList.remove('extra');
             }
             var options = await aria2RPC.message('aria2.getOption', [gid]);
-            var entries = task.querySelectorAll('[name]');
-            printGlobalOptions(entries, options);
+            task.querySelectorAll('[name]').setOptions(options);
             var {status, bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
             updateTaskDetail(task, status, bittorrent, files);
             task.classList.add('extra');

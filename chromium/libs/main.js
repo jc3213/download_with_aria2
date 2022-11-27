@@ -7,6 +7,22 @@ var filesize = [
     'max-overall-upload-limit'
 ];
 
+NodeList.prototype.setOptions = function (json) {
+    var options = {};
+    this.forEach(node => {
+        var {name} = node;
+        var value = json[name] ?? '';
+        if (filesize.includes(name)) {
+            value = getFileSize(value);
+        }
+        if (value) {
+            options[name] = value;
+        }
+        node.value = value;
+    });
+    return options;
+}
+
 document.querySelectorAll('[i18n]').forEach(item => {
     item.innerText = chrome.i18n.getMessage(item.innerText);
 });
@@ -39,22 +55,6 @@ function getFileSize(bytes) {
     else {
         return (bytes / 10995116277.76 | 0) / 100 + 'T';
     }
-}
-
-function printGlobalOptions(entries, json) {
-    var options = {};
-    entries.forEach(entry => {
-        var {name} = entry;
-        var value = json[name] ?? '';
-        if (filesize.includes(name)) {
-            value = getFileSize(value);
-        }
-        if (value) {
-            options[name] = value;
-        }
-        entry.value = value;
-    });
-    return options;
 }
 
 function readFileTypeJSON(file) {
