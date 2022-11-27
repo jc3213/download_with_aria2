@@ -225,7 +225,7 @@ function decodeRFC2047(text) {
                         else if (v.length === 3) {
                             return parseInt(v.slice(1), 16)
                         }
-                        return v.charCodeAt(0));
+                        return v.charCodeAt(0);
                     });
                     result += new TextDecoder(code).decode(Uint8Array.from(decode));
                 }
