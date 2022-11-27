@@ -47,13 +47,14 @@ function aria2NewSession(size) {
     return new Promise(async resolve => {
         var {top, left, height, width} = await getCurrentWindow();
         if (navigator.userAgent.includes('Firefox')) {
-            var slim = 359;
-            var full = 769;
+            var slim = 360;
+            var full = 770;
         }
         else {
-            slim = 343;
-            full = 738;
+            slim = 345;
+            full = 740;
         }
+        console.log(slim);
         var offset = size === 'full' ? full : slim;
         top += (height - offset) / 2 | 0;
         left += (width - 760) / 2 | 0;

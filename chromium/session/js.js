@@ -77,8 +77,8 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
 });
 
 document.querySelector('#extra_btn').addEventListener('click', async event => {
-    var {id, top, height} = await getCurrentWindow()
-    chrome.windows.update(id, {top: top - 192, height: height + 384});
+    var {id, top, height} = await getCurrentWindow();
+    chrome.windows.update(id, {top: top - 200, height: height + 400});
     document.body.className = 'compact';
     countdown.innerText = countdown.innerText * 1 + 90;
 });
