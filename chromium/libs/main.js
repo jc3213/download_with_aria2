@@ -11,14 +11,11 @@ NodeList.prototype.setOptions = function (json) {
     var options = {};
     this.forEach(node => {
         var {name} = node;
-        var value = json[name] ?? '';
+        var value = json[name] ?? null;
         if (filesize.includes(name)) {
             value = getFileSize(value);
         }
-        if (value) {
-            options[name] = value;
-        }
-        node.value = value;
+        node.value = options[name] = value;
     });
     return options;
 }
