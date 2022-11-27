@@ -186,7 +186,7 @@ function decodeISO8859(text) {
 function decodeRFC5987(text) {
     var idx = text.indexOf('\'');
     var code = text.slice(0, idx).toLowerCase();
-    var data = text.slice(idx + 1);
+    var data = text.slice(idx + 2);
     if ('utf-8,utf8'.includes(code)) {
         return decodeFileName(data);
     }
