@@ -82,7 +82,7 @@ document.querySelector('#back_btn').addEventListener('click', event => {
     aria2StartUp();
     clearChanges();
     global = true;
-    document.body.setAttribute('data-main', 'local');
+    document.body.className = 'local';
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
@@ -90,7 +90,7 @@ document.querySelector('#aria2_btn').addEventListener('click', event => {
         aria2Global = document.querySelectorAll('#aria2 [name]').setOptions(options);
         clearChanges();
         global = false;
-        document.body.setAttribute('data-main', 'aria2');
+        document.body.className = 'aria2';
     });
 });
 
