@@ -45,7 +45,7 @@ input, textarea, button {
 }
 
 select, option {
-    padding: 5px;
+    padding: 4px 5px;
 }
 
 input, textarea {
@@ -91,7 +91,7 @@ button input[type="file"] {
     display: none;
 }
 
-button:enabled:hover {
+button:enabled:hover, button:enabled:hover > * {
     cursor: pointer;
     filter: contrast(65%);
 }
