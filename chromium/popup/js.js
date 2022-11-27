@@ -252,24 +252,8 @@ function updateTaskDetail(task, status, bittorrent, files) {
     printTaskFiles(task, files);
 }
 
-function printTableCell(table, template, runOnce) {
-    var cell = template.cloneNode(true);
-    runOnce(cell);
-    table.appendChild(cell);
-    return cell;
-}
-
-function printTaskFiles(task, files) {
-    var fileList = task.querySelector('#files');
-    var cells = fileList.childNodes;
-    files.forEach((file, index) => {
-        var cell = cells[index] ?? printTableCell(fileList, fileLET, cell => applyFileSelect(task, cell, file));
-        var {length, completedLength} = file;
-        cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
-    });
-}
-
-function applyFileSelect(task, cell, {index, path, length, selected, uris}) {
+function printFileCell(task, list, {index, path, length, selected, uris}) {
+    var cell = fileLET.cloneNode(true);
     var tile = cell.querySelector('#index');
     tile.innerText = index;
     tile.className = selected === 'true' ? 'active' : 'error';
@@ -285,6 +269,32 @@ function applyFileSelect(task, cell, {index, path, length, selected, uris}) {
     else {
         printTaskUris(task, uris);
     }
+    list.appendChild(cell);
+    return cell;
+}
+
+function printTaskFiles(task, files) {
+    var fileList = task.querySelector('#files');
+    var cells = fileList.childNodes;
+    files.forEach((file, index) => {
+        var cell = cells[index] ?? printFileCell(task, fileList, file);
+        var {length, completedLength} = file;
+        cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100) + '%';
+    });
+}
+
+function printUriCell(list, uri) {
+    var cell = uriLET.cloneNode(true);
+    cell.addEventListener('click', event => {
+        if (event.ctrlKey) {
+            aria2RPC.message('aria2.changeUri', [activeId, 1, [uri], []]);
+        }
+        else {
+           navigator.clipboard.writeText(uri);
+        }
+    });
+    list.appendChild(cell);
+    return cell;
 }
 
 function printTaskUris(task, uris) {
@@ -294,9 +304,10 @@ function printTaskUris(task, uris) {
     var used;
     var wait;
     uris.forEach(({uri, status}) => {
-        var cell = cells[index] ?? printTableCell(uriList, uriLET, applyUriChange);
+        var cell = cells[index] ?? printUriCell(uriList, uri);
         var link = cell.querySelector('#uri');
-        if (link.innerText !== uri) {
+        var {innerText} = link;
+        if (innerText !== uri) {
             link.innerText = uri;
             used = cell.querySelector('#used');
             wait = cell.querySelector('#wait');
@@ -312,18 +323,6 @@ function printTaskUris(task, uris) {
     cells.forEach((cell, cur) => {
         if (cur > index) {
             cell.remove();
-        }
-    });
-}
-
-function applyUriChange(cell) {
-    cell.addEventListener('click', event => {
-        var uri = cell.querySelector('#uri').innerText;
-        if (event.ctrlKey) {
-            aria2RPC.message('aria2.changeUri', [activeId, 1, [uri], []]);
-        }
-        else {
-           navigator.clipboard.writeText(uri);
         }
     });
 }
