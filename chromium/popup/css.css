@@ -7,7 +7,7 @@ body > .session, body > .file, body > .uri,
 [data-main="0"] > [data-queue]:nth-child(n+2),
 [data-main="1"] > [data-queue]:not(:nth-child(n+2):nth-child(-n+3)),
 [data-main="2"] > [data-queue]:nth-child(-n+3),
-[data-type="http"] [data-bt], [data-type="bt"] [data-http] {
+.http [data-p2p], .p2p [data-http] {
     display: none;
 }
 
@@ -126,8 +126,8 @@ input:disabled + button {
 }
 
 .session:not([status="complete"], [status="removed"], [status="error"]) > #meter:active,
-.session[data-type="bt"] .file > :nth-child(1):active,
-.session[data-type="http"] .uri > :nth-child(1):active {
+.session.p2p .file > :nth-child(1):active,
+.session.http .uri > :nth-child(1):active {
     filter: contrast(45%);
 }
 

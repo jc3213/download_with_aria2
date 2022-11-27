@@ -158,7 +158,7 @@ function printEstimateTime(time, number) {
 function parseSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
     task.id = gid;
-    task.setAttribute('data-type', bittorrent ? 'bt' : 'http');
+    task.classList.add(bittorrent ? 'p2p' : 'http');
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
         var status = task.getAttribute('status');
