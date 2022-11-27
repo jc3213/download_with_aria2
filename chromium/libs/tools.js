@@ -46,7 +46,15 @@ function getCurrentWindow() {
 function aria2NewSession(size) {
     return new Promise(async resolve => {
         var {top, left, height, width} = await getCurrentWindow();
-        var offset = size === 'slim' ? 343 : 740;
+        if (navigator.userAgent.includes('Firefox')) {
+            var slim = 359;
+            var full = 769;
+        }
+        else {
+            slim = 343;
+            full = 738;
+        }
+        var offset = size === 'full' ? full : slim;
         top += (height - offset) / 2 | 0;
         left += (width - 760) / 2 | 0;
         chrome.windows.create({
