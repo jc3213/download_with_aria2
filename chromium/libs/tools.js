@@ -4,7 +4,7 @@ var aria2Complete = chrome.i18n.getMessage('download_complete');
 function getHostname(url) {
     var si = url.indexOf('//');
     if (si === -1) {
-        return 'about:blank';
+        return '???';
     }
     var hostname = url.slice(si + 2);
     var ei = hostname.indexOf('/');
