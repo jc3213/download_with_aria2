@@ -36,12 +36,18 @@ body, div {
     position: relative;
 }
 
+:disabled {
+    filter: contrast(45%);
+    padding: 6px;
+    border: none;
+}
+
 input, textarea, button {
     padding: 5px;
 }
 
 select, option {
-    padding: 2px 3px 3px;
+    padding: 5px;
 }
 
 input, textarea {
@@ -95,12 +101,6 @@ button:enabled:hover {
 button:enabled:active {
     filter: contrast(45%);
     border-style: inset;
-}
-
-button:disabled {
-    filter: contrast(45%);
-    padding: 6px;
-    border: none;
 }
 
 button:disabled[class] {
