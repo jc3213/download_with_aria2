@@ -78,10 +78,6 @@ body > .session, body > .file, body > .uri,
     grid-template-columns: repeat(3, calc(33.33% - 8.5px)) 22.5px;
 }
 
-grid-area: "details" {
-    margin: 2px;
-}
-
 .session > #name {
     grid-area: 1 / 1 / 1 / 4;
 }
