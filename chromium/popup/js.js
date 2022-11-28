@@ -128,11 +128,10 @@ function removeSession(type, gid, task) {
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
     var task = document.getElementById(gid) ?? parseSession(gid, status, bittorrent);
-    var time = (totalLength - completedLength) / downloadSpeed;
-    var ratio = (completedLength / totalLength * 10000 | 0) / 100;
     task.querySelector('#name').innerText = getDownloadName(bittorrent, files);
     task.querySelector('#local').innerText = getFileSize(completedLength);
     task.querySelector('#remote').innerText = getFileSize(totalLength);
+    var time = (totalLength - completedLength) / downloadSpeed;
     var days = time / 86400 | 0;
     var hours = time / 3600 - days * 24 | 0;
     var minutes = time / 60 - days * 1440 - hours * 60 | 0;
@@ -144,6 +143,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
     task.querySelector('#download').innerText = getFileSize(downloadSpeed);
     task.querySelector('#upload').innerText = getFileSize(uploadSpeed);
+    var ratio = (completedLength / totalLength * 10000 | 0) / 100;
     task.querySelector('#ratio').innerText = 
     task.querySelector('#ratio').style.width = ratio + '%';
     task.querySelector('#retry_btn').style.display = !bittorrent && 'error,removed'.includes(status) ? 'inline-block' : 'none';
@@ -262,7 +262,7 @@ function printFileCell(task, list, {index, path, length, selected, uris}) {
     if (uris.length === 0) {
         tile.addEventListener('click', event => {
             tile.className = tile.className === 'checked' ? 'suspend' : 'checked';
-            task.querySelector('#save_btn').style.display = 'block';
+            task.querySelector('#save_btn').style.display = 'inline-block';
         });
     }
     else {
