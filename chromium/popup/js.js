@@ -47,7 +47,7 @@ function aria2StartUp() {
     stoppedTask = [];
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     aria2RPC.message('aria2.tellWaiting', [0, 999]).then(async waiting => {
-        updateSession();
+        updateManager();
         var stopped = await aria2RPC.message('aria2.tellStopped', [0, 999]);
         [...waiting, ...stopped].forEach(printSession);
         aria2Client();
@@ -58,7 +58,7 @@ function aria2StartUp() {
 }
 
 function aria2Client() {
-    aria2Alive = setInterval(updateSession, aria2Store['refresh_interval']);
+    aria2Alive = setInterval(updateManager, aria2Store['refresh_interval']);
     aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
     aria2Socket.onmessage = async event => {
         var {method, params: [{gid}]} = JSON.parse(event.data);
@@ -74,7 +74,7 @@ function aria2Client() {
     };
 }
 
-async function updateSession() {
+async function updateManager() {
     var download = 0;
     var upload = 0;
     var active = await aria2RPC.message('aria2.tellActive');
@@ -87,16 +87,32 @@ async function updateSession() {
     uploadStat.innerText = getFileSize(upload);
 }
 
+function updateSession(task, status) {
+    if (status === 'active') {
+        var type = 'active';
+    }
+    else if ('waiting,paused'.includes(status)) {
+        type = 'waiting';
+    }
+    else {
+        type = 'stopped';
+        task.querySelector('[name="max-download-limit"]').disabled =
+        task.querySelector('[name="max-upload-limit"]').disabled =
+        task.querySelector('[name="all-proxy"]').disabled = true;
+    }
+    self[status + 'Queue'].appendChild(task);
+    return type;
+}
+
 async function addSession(gid) {
     var result = await aria2RPC.message('aria2.tellStatus', [gid]);
     var {status} = result;
     var task = printSession(result);
-    var type = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
+    var type = updateSession(task, status);
     if (self[type + 'Task'].indexOf(gid) === -1) {
         self[type + 'Stat'].innerText ++;
         self[type + 'Task'].push(gid);
     }
-    self[status + 'Queue'].appendChild(task);
 }
 
 function removeSession(type, gid, task) {
@@ -133,7 +149,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     task.querySelector('#meter').className = status;
     task.querySelector('#retry_btn').style.display = !bittorrent && 'error,removed'.includes(status) ? 'inline-block' : 'none';
     if (activeId === gid && status === 'active') {
-        updateTaskDetail(task, status, bittorrent, files);
+        printTaskFiles(task, files);(task, status, bittorrent, files);
     }
     return task;
 }
@@ -141,8 +157,13 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
 function parseSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
     task.id = gid;
-    task.classList.add(bittorrent ? 'p2p' : 'http');
-    task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
+    if (bittorrent) {
+        task.classList.add('p2p');
+    }
+    else {
+        task.classList.add('http');
+        task.querySelector('[name="max-upload-limit"]').disabled = true;
+    }
     task.querySelector('#remove_btn').addEventListener('click', async event => {
         var status = task.querySelector('#meter').className;
         if ('active,waiting,paused'.includes(status)) {
@@ -167,7 +188,7 @@ function parseSession(gid, status, bittorrent) {
             var options = await aria2RPC.message('aria2.getOption', [gid]);
             task.querySelectorAll('[name]').setOptions(options);
             var {status, bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
-            updateTaskDetail(task, status, bittorrent, files);
+            printTaskFiles(task, files);
             task.classList.add('extra');
             activeId = gid;
         }
@@ -218,10 +239,9 @@ function parseSession(gid, status, bittorrent) {
         await aria2RPC.message('aria2.changeUri', [gid, 1, [], [uri.value]]);
         uri.value = '';
     });
-    var type = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
+    var type = updateSession(task, status);
     self[type + 'Stat'].innerText ++;
     self[type + 'Task'].push(gid);
-    self[status + 'Queue'].appendChild(task);
     return task;
 }
 
@@ -230,14 +250,6 @@ function clearTaskDetail() {
     task.classList.remove('extra');
     task.querySelector('#files').innerHTML = task.querySelector('#uris').innerHTML = '';
     task.querySelector('#save_btn').style.display = 'none';
-}
-
-function updateTaskDetail(task, status, bittorrent, files) {
-    var disabled = 'complete,error,removed'.includes(status);
-    task.querySelector('[name="max-download-limit"]').disabled = disabled;
-    task.querySelector('[name="max-upload-limit"]').disabled = disabled || !bittorrent;
-    task.querySelector('[name="all-proxy"]').disabled = disabled;
-    printTaskFiles(task, files);
 }
 
 function printFileCell(task, list, {index, path, length, selected, uris}) {
