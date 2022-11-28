@@ -4,27 +4,27 @@ body {
 }
 
 body > .session, body > .file, body > .uri,
-[data-main="0"] #queue > :nth-child(n+2),
-[data-main="1"] #queue > :not(:nth-child(n+2):nth-child(-n+3)),
-[data-main="2"] #queue > :nth-child(-n+3),
+.group0 #queue > :nth-child(n+2),
+.group1 #queue > :not(:nth-child(n+2):nth-child(-n+3)),
+.group2 #queue > :nth-child(-n+3),
 .http [data-p2p], .p2p [data-http] {
     display: none;
 }
 
-[data-main="0"] #active_btn,
-[data-main="1"] #waiting_btn,
-[data-main="2"] #stopped_btn {
+.group0 #active_btn,
+.group1 #waiting_btn,
+.group2 #stopped_btn {
     border-style: inset;
 }
 
-.stats {
+.download, .upload {
     display: inline-block;
     padding: 6px;
 }
 
-span.stats {
+.stats {
     margin-right: 10px;
-    padding-left: 3px;
+    padding: 6px 3px;
 }
 
 #download::after, #upload::after {
@@ -166,15 +166,15 @@ input:disabled + button {
     background-color: #844;
 }
 
-#active_btn, .stats.active, .active #meter #ratio {
+#active_btn, .active #meter #ratio, .download, .checked {
     background-color: #44c;
 }
 
-#waiting_btn, .waiting #meter #ratio, .paused #meter #ratio {
+#waiting_btn, .waiting #meter #ratio, .paused #meter #ratio, .suspend {
     background-color: #cc4;
 }
 
-.stats.complete, .complete #meter #ratio {
+.complete #meter #ratio, .upload {
     background-color: #4c4;
 }
 

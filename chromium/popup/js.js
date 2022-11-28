@@ -16,9 +16,9 @@ var uriLET = document.querySelector('div.uri');
 
 document.querySelectorAll('#active_btn, #waiting_btn, #stopped_btn').forEach((tab, index) => {
     var {body} = document;
+    var type = 'group' + index;
     tab.addEventListener('click', event => {
-        var value = body.getAttribute('data-main') == index ? 3 : index;
-        body.setAttribute('data-main', value);
+        body.className = body.className === type ? '' : type;
     });
 });
 
@@ -255,13 +255,13 @@ function printFileCell(task, list, {index, path, length, selected, uris}) {
     var cell = fileLET.cloneNode(true);
     var tile = cell.querySelector('#index');
     tile.innerText = index;
-    tile.className = selected === 'true' ? 'active' : 'error';
+    tile.className = selected === 'true' ? 'checked' : 'suspend';
     cell.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
     cell.querySelector('#name').title = path;
     cell.querySelector('#size').innerText = getFileSize(length);
     if (uris.length === 0) {
         tile.addEventListener('click', event => {
-            tile.className = tile.className === 'active' ? 'error' : 'active';
+            tile.className = tile.className === 'checked' ? 'suspend' : 'checked';
             task.querySelector('#save_btn').style.display = 'block';
         });
     }
