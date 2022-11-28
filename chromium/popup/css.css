@@ -82,8 +82,7 @@ body > .session, body > .file, body > .uri,
 }
 
 .session > :not([id]) {
-    height: 23px;
-    margin: 1px 0px;
+    margin: 2px 0px;
 }
 
 .session > #menus {
