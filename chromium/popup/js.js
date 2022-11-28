@@ -262,7 +262,7 @@ function printFileCell(task, list, {index, path, length, selected, uris}) {
     if (uris.length === 0) {
         tile.addEventListener('click', event => {
             tile.className = tile.className === 'checked' ? 'suspend' : 'checked';
-            task.querySelector('#save_btn').style.display = 'inline-block';
+            task.querySelector('#save_btn').style.display = 'block';
         });
     }
     else {
