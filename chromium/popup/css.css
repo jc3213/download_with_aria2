@@ -74,12 +74,16 @@ body > .session, body > .file, body > .uri,
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
-    grid-gap: 1px;
-    grid-template-columns: repeat(3, calc(33.33% - 8.5px)) 22.5px;
+    grid-template-columns: repeat(3, calc(33.33% - 7.5px)) 22.5px;
 }
 
 .session > #name {
     grid-area: 1 / 1 / 1 / 4;
+}
+
+.session > :not([id]) {
+    height: 23px;
+    margin: 1px 0px;
 }
 
 .session > #menus {
