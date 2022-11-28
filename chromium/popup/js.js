@@ -91,14 +91,7 @@ async function addSession(gid) {
     var result = await aria2RPC.message('aria2.tellStatus', [gid]);
     var {status} = result;
     var task = printSession(result);
-    task.setAttribute('status', status);
-    if (status === 'active') {
-        var type = 'active';
-    }
-    else {
-        type = 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
-        task.querySelector('#infinite').style.display = 'block';
-    }
+    var type = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
     if (self[type + 'Task'].indexOf(gid) === -1) {
         self[type + 'Stat'].innerText ++;
         self[type + 'Task'].push(gid);
@@ -128,16 +121,16 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     var hours = time / 3600 - days * 24 | 0;
     var minutes = time / 60 - days * 1440 - hours * 60 | 0;
     var seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
-    printEstimateTime(task.querySelector('#day'), days);
-    printEstimateTime(task.querySelector('#hour'), hours);
-    printEstimateTime(task.querySelector('#minute'), minutes);
-    task.querySelector('#second').innerText = seconds;
+    task.querySelector('#day').innerText = days > 0 ? days : '';
+    task.querySelector('#hour').innerText = hours > 0 ? hours : '';
+    task.querySelector('#minute').innerText = minutes > 0 ? minutes : '';
+    task.querySelector('#second').innerText = seconds > 0 ? seconds : '';
     task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
     task.querySelector('#download').innerText = getFileSize(downloadSpeed);
     task.querySelector('#upload').innerText = getFileSize(uploadSpeed);
     task.querySelector('#ratio').innerText = 
     task.querySelector('#ratio').style.width = ratio + '%';
-    task.querySelector('#ratio').className = status;
+    task.querySelector('#meter').className = status;
     task.querySelector('#retry_btn').style.display = !bittorrent && 'error,removed'.includes(status) ? 'inline-block' : 'none';
     if (activeId === gid && status === 'active') {
         updateTaskDetail(task, status, bittorrent, files);
@@ -145,24 +138,13 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     return task;
 }
 
-function printEstimateTime(time, number) {
-    if (number > 0) {
-        time.innerText = number;
-        time.style.display = 'inline-block';
-    }
-    else {
-        time.style.display = 'none';
-    }
-}
-
 function parseSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
-    task.setAttribute('status', status);
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
-        var status = task.getAttribute('status');
+        var status = task.querySelector('#meter').className;
         if ('active,waiting,paused'.includes(status)) {
             await aria2RPC.message('aria2.forceRemove', [gid]);
             if (status !== 'active') {
@@ -205,14 +187,12 @@ function parseSession(gid, status, bittorrent) {
         removeSession('stopped', gid, task);
     });
     task.querySelector('#meter').addEventListener('click', async event => {
-        var status = task.getAttribute('status');
+        var status = task.querySelector('#meter').className;
         if ('active,waiting'.includes(status)) {
             await aria2RPC.message('aria2.forcePause', [gid]);
-            task.setAttribute('status', 'paused');
         }
         else if (status === 'paused') {
             await aria2RPC.message('aria2.unpause', [gid]);
-            task.setAttribute('status', 'waiting');
         }
     });
     task.querySelector('#options').addEventListener('change', event => {

@@ -45,9 +45,7 @@
         <div class="session">
             <div id="name" class="title"></div>
             <div>🖥️ <span id="local"></span></div>
-            <div>⏲️ <div id="infinite" class="float">∞</div>
-                <span id="day"></span><span id="hour"></span><span id="minute"></span><span id="second"></span>
-            </div>
+            <div>⏲️ <span id="day"></span><span id="hour"></span><span id="minute"></span><span id="second"></span><span id="infinite">∞</span></div>
             <div>📦 <span id="remote"></span></div>
             <div>📶️ <span id="connect"></span></div>
             <div>⏬ <span id="download"></span></div>
@@ -90,7 +88,6 @@
                         <div>
                             <input name="split" type="number">
                         </div>
-                        <span i18n>option_default</span>: <u><i>5</i></u>
                     </div>
                     <div title="aria2_http_size_title">
                         <div class="title" i18n>aria2_http_size</div>
@@ -98,7 +95,6 @@
                             <input name="min-split-size" type="text">
                             <span class="float">B</span>
                         </div>
-                        <span i18n>option_default</span>: <u><i>20M</i></u>
                     </div>
                 </div>
                 <div class="flex" data-p2p>
@@ -107,7 +103,6 @@
                         <div>
                             <input name="seed-ratio" type="number" min="0" step="0.1">
                         </div>
-                        <span i18n>option_default</span>: <u><i>1.0</i></u>
                     </div>
                     <div title="aria2_bt_seed_title">
                         <div class="title" i18n>aria2_bt_seed</div>
@@ -115,7 +110,6 @@
                             <input name="seed-time" type="number">
                             <span class="float" i18n>time_minute_full</span>
                         </div>
-                        <span i18n>option_default</span>: <u><i>30</i></u>
                     </div>
                 </div>
                 <div title="aria2_bt_remove_title" data-p2p>
@@ -126,7 +120,6 @@
                             <option value="false" i18n>aria2_false</option>
                         </select>
                     </div>
-                    <span i18n>option_default</span>: <u><i i18n>aria2_false</i></u>
                 </div>
                 <div title="task_files_title">
                     <div class="title" i18n>task_files</div>
