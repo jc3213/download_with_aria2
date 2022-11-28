@@ -55,8 +55,12 @@ span.stats {
     vertical-align: sub;
 }
 
-#second:not(:empty) + #infinite {
+#infinite {
     display: none;
+}
+
+#day:empty + #hour:empty + #minute:empty + #second:empty + #infinite {
+    display: inline-block;
 }
 
 #session {
