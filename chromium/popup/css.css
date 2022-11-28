@@ -83,7 +83,7 @@ body > .session, body > .file, body > .uri,
 }
 
 .session > #menus {
-    grid-area: 1 / 4 / 3 / 5;
+    grid-area: 1 / 4 / 4 / 5;
 }
 
 .session > #menus > button {
