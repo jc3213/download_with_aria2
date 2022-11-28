@@ -4,16 +4,16 @@ body {
 }
 
 body > .session, body > .file, body > .uri,
-[data-main="0"] > [data-queue]:nth-child(n+2),
-[data-main="1"] > [data-queue]:not(:nth-child(n+2):nth-child(-n+3)),
-[data-main="2"] > [data-queue]:nth-child(-n+3),
+[data-main="0"] #queue > :nth-child(n+2),
+[data-main="1"] #queue > :not(:nth-child(n+2):nth-child(-n+3)),
+[data-main="2"] #queue > :nth-child(-n+3),
 .http [data-p2p], .p2p [data-http] {
     display: none;
 }
 
-[data-main="0"] > button.active,
-[data-main="1"] > button.waiting,
-[data-main="2"] > button.removed {
+[data-main="0"] #active_btn,
+[data-main="1"] #waiting_btn,
+[data-main="2"] #stopped_btn {
     border-style: inset;
 }
 
@@ -63,7 +63,7 @@ span.stats {
     display: inline-block;
 }
 
-#session {
+#queue {
     height: calc(100% - 102px);
     overflow-y: auto;
 }
@@ -143,42 +143,42 @@ input:disabled + button {
     padding: 5px;
 }
 
-#meter:not(.complete, .removed, .error):active,
-#meter:not(.complete, .removed, .error) > #ratio:active,
+#queue > :not(.complete, .removed, .error) #meter:active,
+#queue > :not(.complete, .removed, .error) #meter #ratio:active,
 .session.p2p .file > :nth-child(1):active,
 .session.http .uri > :nth-child(1):active {
     filter: contrast(45%);
 }
 
-#meter.active {
+.active #meter {
     background-color: #4cc;
 }
 
-#meter.waiting, #meter.paused {
+.waiting #meter, .paused #meter {
     background-color: #488;
 }
 
-#meter.complete {
+.complete #meter {
     background-color: #4c4;
 }
 
-#meter.removed, #meter.error {
+.removed #meter, .error #meter {
     background-color: #844;
 }
 
-button.active, .stats.active, .active #ratio {
+#active_btn, .stats.active, .active #meter #ratio {
     background-color: #44c;
 }
 
-button.waiting, .waiting #ratio, .paused #ratio {
+#waiting_btn, .waiting #meter #ratio, .paused #meter #ratio {
     background-color: #cc4;
 }
 
-.stats.complete, .complete #ratio {
+.stats.complete, .complete #meter #ratio {
     background-color: #4c4;
 }
 
-button.removed, .removed #ratio, .error #ratio {
+#stopped_btn, .removed #meter #ratio, .error #meter #ratio {
     background-color: #c48;
 }
 

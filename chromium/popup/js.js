@@ -3,22 +3,22 @@ var waitingStat = document.querySelector('#waiting.stats');
 var stoppedStat = document.querySelector('#stopped.stats');
 var downloadStat = document.querySelector('#download.stats');
 var uploadStat = document.querySelector('#upload.stats');
-var activeQueue = document.querySelector('[data-queue="active"]');
-var waitingQueue = document.querySelector('[data-queue="waiting"]');
-var pausedQueue = document.querySelector('[data-queue="paused"]');
-var completeQueue = document.querySelector('[data-queue="complete"]');
-var removedQueue = document.querySelector('[data-queue="removed"]');
-var errorQueue = document.querySelector('[data-queue="error"]');
+var activeQueue = document.querySelector('#queue > .active');
+var waitingQueue = document.querySelector('#queue > .waiting');
+var pausedQueue = document.querySelector('#queue > .paused');
+var completeQueue = document.querySelector('#queue > .complete');
+var removedQueue = document.querySelector('#queue > .removed');
+var errorQueue = document.querySelector('#queue > .error');
 var sessionLET = document.querySelector('div.session');
 var activeId;
 var fileLET = document.querySelector('div.file');
 var uriLET = document.querySelector('div.uri');
 
-document.querySelectorAll('button.active, button.waiting, button.removed').forEach((tab, index) => {
+document.querySelectorAll('#active_btn, #waiting_btn, #stopped_btn').forEach((tab, index) => {
+    var {body} = document;
     tab.addEventListener('click', event => {
-        var value = tab.parentNode.getAttribute('data-main') == index ? 3 : index;
-        tab.parentNode.setAttribute('data-main', value);
-        document.querySelector('#session').setAttribute('data-main', value);
+        var value = body.getAttribute('data-main') == index ? 3 : index;
+        body.setAttribute('data-main', value);
     });
 });
 
@@ -146,7 +146,6 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     task.querySelector('#upload').innerText = getFileSize(uploadSpeed);
     task.querySelector('#ratio').innerText = 
     task.querySelector('#ratio').style.width = ratio + '%';
-    task.querySelector('#meter').className = status;
     task.querySelector('#retry_btn').style.display = !bittorrent && 'error,removed'.includes(status) ? 'inline-block' : 'none';
     if (activeId === gid && status === 'active') {
         printTaskFiles(task, files);(task, status, bittorrent, files);
@@ -165,7 +164,7 @@ function parseSession(gid, status, bittorrent) {
         task.querySelector('[name="max-upload-limit"]').disabled = true;
     }
     task.querySelector('#remove_btn').addEventListener('click', async event => {
-        var status = task.querySelector('#meter').className;
+        var status = task.parentNode.className;
         if ('active,waiting,paused'.includes(status)) {
             await aria2RPC.message('aria2.forceRemove', [gid]);
             if (status !== 'active') {
@@ -208,7 +207,7 @@ function parseSession(gid, status, bittorrent) {
         removeSession('stopped', gid, task);
     });
     task.querySelector('#meter').addEventListener('click', async event => {
-        var status = task.querySelector('#meter').className;
+        var status = task.parentNode.className;
         if ('active,waiting'.includes(status)) {
             await aria2RPC.message('aria2.forcePause', [gid]);
         }

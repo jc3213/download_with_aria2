@@ -9,11 +9,11 @@
     <body>
         <div class="tools">
             <div>
-                <button class="active" i18n>popup_active</button>
+                <button id="active_btn" i18n>popup_active</button>
                 <span id="active" class="stats">0</span>
-                <button class="waiting" i18n>popup_waiting</button>
+                <button id="waiting_btn" i18n>popup_waiting</button>
                 <span id="waiting" class="stats">0</span>
-                <button class="removed" i18n>popup_stopped</button>
+                <button id="stopped_btn" i18n>popup_stopped</button>
                 <span id="stopped" class="stats">0</span>
             </div>
             <div>
@@ -22,13 +22,13 @@
             </div>
         </div>
         <hr>
-        <div id="session">
-            <div data-queue="active"></div>
-            <div data-queue="waiting"></div>
-            <div data-queue="paused"></div>
-            <div data-queue="complete"></div>
-            <div data-queue="removed"></div>
-            <div data-queue="error"></div>
+        <div id="queue">
+            <div class="active"></div>
+            <div class="waiting"></div>
+            <div class="paused"></div>
+            <div class="complete"></div>
+            <div class="removed"></div>
+            <div class="error"></div>
         </div>
         <hr>
         <div class="tools">
