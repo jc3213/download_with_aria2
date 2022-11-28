@@ -148,7 +148,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     task.querySelector('#ratio').style.width = ratio + '%';
     task.querySelector('#retry_btn').style.display = !bittorrent && 'error,removed'.includes(status) ? 'inline-block' : 'none';
     if (activeId === gid && status === 'active') {
-        printTaskFiles(task, files);(task, status, bittorrent, files);
+        printTaskFiles(task, files);
     }
     return task;
 }
@@ -185,7 +185,7 @@ function parseSession(gid, status, bittorrent) {
                 clearTaskDetail();
             }
             var options = await aria2RPC.message('aria2.getOption', [gid]);
-            task.querySelectorAll('[name]').setOptions(options);
+            task.querySelectorAll('[name]').printOptions(options);
             var {status, bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
             printTaskFiles(task, files);
             task.classList.add('extra');

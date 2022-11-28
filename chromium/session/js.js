@@ -155,6 +155,6 @@ async function downloadMetalink(file, options) {
 async function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     var global = await aria2RPC.message('aria2.getGlobalOption');
-    options = document.querySelectorAll('[name]').setOptions(global);
+    options = document.querySelectorAll('[name]').printOptions(global);
     downloadInit();
 }
