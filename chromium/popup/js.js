@@ -177,11 +177,12 @@ function parseSession(gid, status, bittorrent) {
     task.querySelector('#invest_btn').addEventListener('click', async event => {
         if (activeId === gid) {
             activeId = null;
-            task.classList.remove('extra');
+            clearTaskDetail(task);
         }
         else {
             if (activeId) {
-                document.getElementById(activeId).classList.remove('extra');
+                var last = document.getElementById(activeId);
+                clearTaskDetail(last);
             }
             var options = await aria2RPC.message('aria2.getOption', [gid]);
             task.querySelectorAll('[name]').setOptions(options);
@@ -244,6 +245,12 @@ function parseSession(gid, status, bittorrent) {
     self[type + 'Task'].push(gid);
     self[status + 'Queue'].appendChild(task);
     return task;
+}
+
+function clearTaskDetail(task) {
+    task.classList.remove('extra');
+    task.querySelector('#files').innerHTML = last.querySelector('#uris').innerHTML = '';
+    task.querySelector('#save_btn').style.display = 'none';
 }
 
 function updateTaskDetail(task, status, bittorrent, files) {
