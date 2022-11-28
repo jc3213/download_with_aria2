@@ -91,6 +91,7 @@ async function addSession(gid) {
     var result = await aria2RPC.message('aria2.tellStatus', [gid]);
     var {status} = result;
     var task = printSession(result);
+    task.setAttribute('status', status);
     if (status === 'active') {
         var type = 'active';
     }
@@ -120,7 +121,6 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     var task = document.getElementById(gid) ?? parseSession(gid, status, bittorrent);
     var time = (totalLength - completedLength) / downloadSpeed;
     var ratio = (completedLength / totalLength * 10000 | 0) / 100;
-    task.setAttribute('status', status);
     task.querySelector('#name').innerText = getDownloadName(bittorrent, files);
     task.querySelector('#local').innerText = getFileSize(completedLength);
     task.querySelector('#remote').innerText = getFileSize(totalLength);
@@ -159,6 +159,7 @@ function parseSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
+    task.setAttribute('status', status);
     task.querySelector('#upload').parentNode.style.display = bittorrent ? 'inline-block' : 'none';
     task.querySelector('#remove_btn').addEventListener('click', async event => {
         var status = task.getAttribute('status');
