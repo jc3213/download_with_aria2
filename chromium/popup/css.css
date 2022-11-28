@@ -104,13 +104,14 @@ body > .session, body > .file, body > .uri,
     display: none;
 }
 
-.session #save_btn {
-    top: -12px;
-    display: none;
+.session :not(.file, .uri) > [title] {
+    margin-top: 10px;
 }
 
-.session :not(.file, .uri) > [title] {
-    margin-top: 5px;
+#save_btn {
+    top: -10px;
+    padding: 4px;
+    display: none;
 }
 
 input:disabled + button {
