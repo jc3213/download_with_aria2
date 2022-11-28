@@ -35,6 +35,26 @@ span.stats {
     content: "B";
 }
 
+#day::after {
+    content: "__MSG_time_day__";
+    vertical-align: sub;
+}
+
+#hour::after {
+    content: "__MSG_time_hour__";
+    vertical-align: sub;
+}
+
+#minute::after {
+    content: "__MSG_time_minute__";
+    vertical-align: sub;
+}
+
+#second::after {
+    content: "__MSG_time_second__";
+    vertical-align: sub;
+}
+
 #session {
     height: calc(100% - 102px);
     overflow-y: auto;

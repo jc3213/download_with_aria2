@@ -148,10 +148,10 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
 function printEstimateTime(time, number) {
     if (number > 0) {
         time.innerText = number;
-        time.style.display = time.nextElementSibling.style.display = 'inline-block';
+        time.style.display = 'inline-block';
     }
     else {
-        time.style.display = time.nextElementSibling.style.display = 'none';
+        time.style.display = 'none';
     }
 }
 
