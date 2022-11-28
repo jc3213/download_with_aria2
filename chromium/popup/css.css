@@ -74,16 +74,20 @@ body > .session, body > .file, body > .uri,
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
-    grid-template-columns: repeat(3, calc(33.333% - 7.5px)) 22.5px;
-    grid-template-areas: "name name name menu" "details details details menu" "details details details menu" "meter meter meter meter" "options options options options";
+    grid-gap: 1px;
+    grid-template-columns: repeat(3, calc(33.33% - 8.5px)) 22.5px;
+}
+
+grid-area: "details" {
+    margin: 2px;
 }
 
 .session > #name {
-    grid-area: name;
+    grid-area: 1 / 1 / 1 / 4;
 }
 
 .session > #menus {
-    grid-area: menu;
+    grid-area: 1 / 4 / 3 / 5;
 }
 
 .session > #menus > button {
@@ -92,12 +96,12 @@ body > .session, body > .file, body > .uri,
 }
 
 .session > #meter {
-    grid-area: meter;
+    grid-area: 4 / 1 / 4 / 5;
     text-align: center;
 }
 
 .session > #options {
-    grid-area: options;
+    grid-area: 5 / 1 / 5 / 5;
 }
 
 .session:not(.extra) > #options {
