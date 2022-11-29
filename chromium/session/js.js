@@ -1,4 +1,3 @@
-var useragent = document.querySelector('[name="user-agent"]');
 var batch = document.querySelector('#batch');
 var entries = document.querySelector('#entries');
 var submitbtn = document.querySelector('#submit_btn');
@@ -89,7 +88,7 @@ document.addEventListener('change', event => {
 });
 
 function fullModeInit() {
-    useragent.value = options['user-agent'] = aria2Store['user_agent'];
+    document.querySelector('[name="user-agent"]').value = options['user-agent'] = aria2Store['user_agent'];
 }
 
 function slimModeInit() {
