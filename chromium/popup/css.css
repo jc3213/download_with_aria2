@@ -85,11 +85,11 @@ body > .session, body > .file, body > .uri,
     margin: 2px 0px;
 }
 
-.session > #menus {
+.session > #menu {
     grid-area: 1 / 4 / 4 / 5;
 }
 
-.session > #menus > button {
+.session > #menu > button {
     font-size: 12px;
     padding: 2px;
 }
