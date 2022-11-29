@@ -40,15 +40,12 @@ body, div {
     filter: contrast(45%);
 }
 
-input, textarea, button {
-    padding: 5px;
-}
-
 select, option {
     padding: 4px 5px;
 }
 
 input, textarea {
+    padding: 5px;
     width: calc(100% - 12px);
     resize: none;
     border-width: 1px;
@@ -84,6 +81,7 @@ option:checked {
 }
 
 button {
+    padding: 5px;
     border-width: 1px;
     border-style: outset;
 }
@@ -102,12 +100,8 @@ button:enabled:active {
     border-style: inset;
 }
 
-button:disabled[class] {
+button:disabled {
     filter: none;
-}
-
-button.float {
-    right: 0px;
 }
 
 [id] > [title]:nth-child(n+2), .flex > [title] {
