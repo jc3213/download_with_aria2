@@ -221,7 +221,7 @@ function parseSession(gid, status, bittorrent) {
     });
     task.querySelector('#proxy_btn').addEventListener('click', async event => {
         await aria2RPC.message('aria2.changeOption', [gid, {'all-proxy': aria2Store['proxy_server']}]);
-        event.target.parentNode.querySelector('input').value = aria2Store['proxy_server'];
+        event.target.previousElementSibling.value = aria2Store['proxy_server'];
     });
     task.querySelector('#save_btn').addEventListener('click', async event => {
         var files = [];
@@ -234,7 +234,7 @@ function parseSession(gid, status, bittorrent) {
         event.target.style.display = 'none';
     });
     task.querySelector('#append_btn').addEventListener('click', async event => {
-        var uri = event.target.parentNode.querySelector('input');
+        var uri = event.target.previousElementSibling;
         await aria2RPC.message('aria2.changeUri', [gid, 1, [], [uri.value]]);
         uri.value = '';
     });
