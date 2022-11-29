@@ -71,7 +71,8 @@ input:focus + span.float {
 }
 
 textarea {
-    word-break: break-word;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 select:only-child {
