@@ -94,14 +94,8 @@ function fullModeInit() {
 function slimModeInit() {
     chrome.runtime.sendMessage('prompt', response => {
         entries.value = response.url;
-        var extras = response.options;
-        Object.keys(extras).forEach(key => {
-            var entry = document.querySelector('[name="' + key + '"]');
-            var value = extras[key];
-            if (entry && value) {
-                entry.value = options[key] = value;
-            }
-        });
+        var extras = document.querySelectorAll('[name]').printOptions(response.options);
+        options = {...options, ...extras};
         setInterval(() => {
             countdown.innerText --;
             if (countdown.innerText === '0') {
@@ -111,17 +105,17 @@ function slimModeInit() {
     });
 }
 
-function parseJSON(json, extras) {
+function parseJSON(json, origin) {
     if (!Array.isArray(json)) {
         json = [json];
     }
     var session = json.map(entry => {
         var {url, options} = entry;
         if (options) {
-            options = {...extras, ...options};
+            options = {...origin, ...options};
         }
         else {
-            options = extras;
+            options = origin;
         }
         return downloadUrl(url, options);
     });

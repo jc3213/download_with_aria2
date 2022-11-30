@@ -11,7 +11,10 @@ NodeList.prototype.printOptions = function (json) {
     var options = {};
     this.forEach(node => {
         var {name} = node;
-        var value = json[name] ?? null;
+        var value = json[name];
+        if (!value) {
+            return;
+        }
         if (filesize.includes(name)) {
             value = getFileSize(value);
         }
