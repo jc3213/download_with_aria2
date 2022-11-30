@@ -1,18 +1,30 @@
-var mapping = [
-    'proxy_include',
-    'capture_resolve',
-    'capture_reject',
-    'capture_include',
-    'capture_exclude'
-];
+var mapping = {
+    'proxy_include': 1,
+    'capture_resolve': 1,
+    'capture_reject': 1,
+    'capture_include': 1,
+    'capture_exclude': 1
+};
+var checking = {
+    'download_headers': 1,
+    'download_prompt': 1,
+    'notify_start': 1,
+    'notify_complete': 1,
+    'proxy_enabled': 1,
+    'proxy_always': 1,
+    'capture_enabled': 1,
+    'capture_always':1
+};
 var offset = {
     'refresh_interval': 1000,
     'capture_size': 1048576
 };
 var linkage = {
     'folder_mode': [],
-    'proxy_mode': [],
-    'capture_mode': []
+    'proxy_enabled': [],
+    'proxy_always': [],
+    'capture_enabled': [],
+    'capture_always': []
 };
 var changes = [];
 var undones = [];
@@ -60,7 +72,7 @@ undobtn.addEventListener('click', event => {
     undones.push(undo);
     savebtn.disabled = redobtn.disabled = false;
     document.querySelector('[name="' + name + '"]').value = old_value;
-    printLinkage(name, old_value);
+    getLinkage(name, old_value);
     if (changes.length === 0) {
         undobtn.disabled = true;
     }
@@ -72,7 +84,7 @@ redobtn.addEventListener('click', event => {
     changes.push(redo);
     savebtn.disabled = undobtn.disabled = false;
     document.querySelector('[name="' + name + '"]').value = new_value;
-    printLinkage(name, new_value);
+    getLinkage(name, new_value);
     if (undones.length === 0) {
         redobtn.disabled = true;
     }
@@ -120,26 +132,26 @@ document.addEventListener('mouseup', event => {
 });
 
 document.querySelector('#local').addEventListener('change', event => {
-    var {name, value} = event.target;
-    var array = mapping.includes(name);
-    var multi = offset[name];
+    var {name, value, checked} = event.target;
+    var new_value = getValue(name, value, checked);
     var old_value = name in backage ? backage[name] : aria2Store[name];
-    var new_value = array ? value.split(/[\s\n,;]+/).filter(v => !!v) : multi ? value * multi : value;
-    printChanges(name, old_value, new_value);
+    getChanges(name, old_value, new_value);
 });
 
 document.querySelector('#aria2').addEventListener('change', event => {
     var {name, value} = event.target;
     var old_value = name in backage ? backage[name] : aria2Global[name];
-    printChanges(name, old_value, value);
+    getChanges(name, old_value, value);
 });
 
 document.querySelectorAll('[data-link]').forEach(menu => {
     var link = menu.getAttribute('data-link');
-    var split = link.indexOf(',');
-    var name = link.slice(0, split);
-    var rule = link.slice(split + 1);
-    linkage[name].push({menu, rule});
+    link.split(';').forEach(rule => {
+        var idx = rule.indexOf(',');
+        var name = rule.slice(0, idx);
+        var rule = rule.slice(idx + 1);
+        linkage[name].push({menu, rule});
+    });
 });
 
 chrome.storage.onChanged.addListener(changes => {
@@ -151,24 +163,41 @@ chrome.storage.onChanged.addListener(changes => {
 function aria2StartUp() {
     document.querySelectorAll('#local [name]').forEach(entry => {
         var {name} = entry;
-        var array = mapping.includes(name);
-        var multi = offset[name];
         var value = aria2Store[name];
-        entry.value = array ? value.join(' ') : multi ? value / multi : value;
+        if (checking[name]) {
+            entry.checked = value;
+        }
+        else {
+            if (mapping[name]) {
+                entry.value = value.join(' ');
+            }
+            var multi = offset[name];
+            if (multi) {
+                entry.value = value / multi;
+            }
+            else {
+                entry.value = value;
+            }
+        }
     });
     Object.keys(linkage).forEach(name => {
         var value = aria2Store[name];
-        printLinkage(name, value);
+        getLinkage(name, value);
     });
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
 }
 
-function printLinkage(name, value) {
+function getLinkage(name, value) {
     backage[name] = value;
     if (name in linkage) {
         linkage[name].forEach(chain => {
             var {menu, rule} = chain;
-            menu.style.display = rule.includes(value) ? 'block' : 'none';
+            if (checking[name]) {
+                menu.style.display = rule == value ? 'block' : 'none';
+            }
+            else {
+                menu.style.display = rule.includes(value) ? 'block' : 'none';
+            }
         });
     }
 }
@@ -180,21 +209,33 @@ function clearChanges() {
     savebtn.disabled = undobtn.disabled = redobtn.disabled = true;
 }
 
-function printChanges(name, old_value, new_value) {
+function getChanges(name, old_value, new_value) {
     changes.push({name, old_value, new_value});
     savebtn.disabled = undobtn.disabled = false;
     redobtn.disabled = true;
     undones = [];
-    printLinkage(name, new_value);
+    getLinkage(name, new_value);
+}
+
+function getValue(name, value, checked) {
+    if (checking[name]) {
+        return checked;
+    }
+    else if (mapping[name]) {
+        return value.split(/[\s\n,;]+/).filter(v => !!v);
+    }
+    var multi = offset[name];
+    if (multi) {
+        return value * multi;
+    }
+    return value;
 }
 
 function applyChanges(path) {
     var options = {};
     document.querySelectorAll(path + ' [name]').forEach(entry => {
-        var {name, value} = entry;
-        var array = mapping.includes(name);
-        var multi = offset[name];
-        options[name] = array ? value.split(/[;\s\r\n]+/).filter(v => !!v) : multi ? value * multi : value;
+        var {name, value, checked} = entry;
+        options[name] = getValue(name, value, checked);
     });
     savebtn.disabled = true;
     return options;

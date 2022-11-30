@@ -19,11 +19,11 @@ async function aria2Download(url, referer, hostname, options = {}) {
     options['user-agent'] = aria2Store['user_agent'];
     options['all-proxy'] = getProxyServer(hostname);
     options['dir'] = getDownloadFolder();
-    if (aria2Store['download_headers'] === '1') {
+    if (aria2Store['download_headers']) {
         options['referer'] = referer;
         options['header'] = await getRequestHeaders(url);
     }
-    if (aria2Store['download_prompt'] === '1') {
+    if (aria2Store['download_prompt']) {
         getDownloadPrompt(url, options);
     }
     else {
@@ -62,7 +62,7 @@ function getCaptureHostname(hostname) {
     if (aria2Store['capture_exclude'].find(host => hostname.endsWith(host))) {
         return 0;
     }
-    else if (aria2Store['capture_mode'] === '2') {
+    else if (aria2Store['capture_always']) {
         return 2;
     }
     else if (aria2Store['capture_include'].find(host => hostname.endsWith(host))) {
@@ -85,11 +85,13 @@ function getCaptureFileData(size, ext) {
 }
 
 function getProxyServer(hostname) {
-    if (aria2Store['proxy_mode'] === '1' && aria2Store['proxy_include'].find(host => hostname.endsWith(host))) {
-        return aria2Store['proxy_server'];
-    }
-    else if (aria2Store['proxy_mode'] === '2') {
-        return aria2Store['proxy_server'];
+    if (aria2Store['proxy_enabled']) {
+        if (aria2Store['proxy_always']) {
+            return aria2Store['proxy_server'];
+        }
+        else if (aria2Store['proxy_include'].find(host => hostname.endsWith(host))) {
+            return aria2Store['proxy_server'];
+        }
     }
     return null;
 }
@@ -112,4 +114,61 @@ function getDownloadFolder() {
         return aria2Store['folder_path'];
     }
     return null;
+}
+
+function hotfix() {
+    if (aria2Store['capture_mode'] === '0') {
+        aria2Store['capture_enabled'] = false;
+        delete aria2Store['capture_mode'];
+    }
+    else if (aria2Store['capture_mode'] === '1') {
+        aria2Store['capture_enabled'] = true;
+        delete aria2Store['capture_mode'];
+    }
+    else if (aria2Store['capture_mode'] === '2') {
+        aria2Store['capture_enabled'] = true;
+        aria2Store['capture_always'] = true;
+        delete aria2Store['capture_mode'];
+    }
+    if (aria2Store['download_headers'] === '1') {
+        aria2Store['download_headers'] = true;
+    }
+    else {
+        aria2Store['download_headers'] = false;
+    }
+    if (aria2Store['download_prompt'] === '1') {
+        aria2Store['download_prompt'] = true;
+    }
+    else {
+        aria2Store['download_prompt'] = false;
+    }
+    if (aria2Store['notify_start'] === '1') {
+        aria2Store['notify_start'] = true;
+    }
+    else {
+        aria2Store['notify_start'] = false;
+    }
+    if (aria2Store['notify_complete'] === '1') {
+        aria2Store['notify_complete'] = true;
+    }
+    else {
+        aria2Store['notify_complete'] = false;
+    }
+    if (aria2Store['proxy_mode'] === '1') {
+        aria2Store['proxy_enabled'] = false;
+        delete aria2Store['proxy_mode'];
+    }
+    else if (aria2Store['proxy_mode'] === '1') {
+        aria2Store['proxy_enabled'] = true;
+        delete aria2Store['proxy_mode'];
+    }
+    else if (aria2Store['proxy_mode'] === '2') {
+        aria2Store['proxy_enabled'] = true;
+        aria2Store['proxy_always'] = true;
+        delete aria2Store['proxy_mode'];
+    }
+    if (aria2Store['capture_size']) {
+        aria2Store['capture_filesize'] = aria2Store['capture_size'];
+        delete aria2Store['capture_size'];
+    }
 }

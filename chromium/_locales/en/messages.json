@@ -120,16 +120,16 @@
         "message": "Confirm once again before the download starts"
     },
     "option_notify_start": {
-        "message": "When Downloads Start"
+        "message": "Notify Downloads Start"
     },
     "option_notify_start_title": {
-        "message": "Set what to do then downloads start"
+        "message": "Notify me when starting new downloads"
     },
     "option_notify_complete": {
-        "message": "When Downloads Complete"
+        "message": "Notify Downloads Complete"
     },
     "option_notify_complete_title": {
-        "message": "Set what to do when downloads complete"
+        "message": "Notify me when downloada are completed"
     },
     "download_start": {
         "message": "Download has started..."
@@ -143,12 +143,6 @@
     "option_user_agent_title": {
         "message": "Set user agent for new downloads"
     },
-    "option_proxy_mode": {
-        "message": "Use Proxy Server"
-    },
-    "option_proxy_mode_title": {
-        "message": "Set proxy server for new downloads"
-    },
     "option_proxy_server": {
         "message": "Proxy Server"
     },
@@ -158,16 +152,34 @@
     "option_protocol": {
         "message": "Protocol"
     },
-    "option_capture_mode": {
+    "option_proxy_enabled": {
+        "message": "Use Proxy Server"
+    },
+    "option_proxy_enabled_title": {
+        "message": "Enable use proxy server for new downloads"
+    },
+    "option_proxy_always": {
+        "message": "Always Use Proxy"
+    },
+    "option_proxy_always_title": {
+        "message": "Always use proxy server for new downloads"
+    },
+    "option_capture_enabled": {
         "message": "Capture Browser Downloads"
     },
-    "option_capture_mode_title": {
-        "message": "Capture browser downloads based on user settings"
+    "option_capture_enabled_title": {
+        "message": "Enable capture downloads from browser"
     },
-    "option_capture_size": {
+    "option_capture_always": {
+        "message": "Always Capture Downloads"
+    },
+    "option_capture_always_title": {
+        "message": "Always capture downloads from browser except the exceptions"
+    },
+    "option_capture_filesize": {
         "message": "File Size"
     },
-    "option_capture_size_title": {
+    "option_capture_filesize_title": {
         "message": "Capture downloads those are larger than user setting"
     },
     "option_capture_include": {

@@ -61,7 +61,7 @@ function aria2NewSession(size) {
 }
 
 function aria2WhenStart(message) {
-    if (aria2Store['notify_start'] === '1') {
+    if (aria2Store['notify_start']) {
         chrome.notifications.create({
             type: 'basic',
             iconUrl: '/icons/icon48.png',
@@ -72,7 +72,7 @@ function aria2WhenStart(message) {
 }
 
 function aria2WhenComplete(message) {
-    if (aria2Store['notify_complete'] === '1') {
+    if (aria2Store['notify_complete']) {
         chrome.notifications.create({
             type: 'basic',
             iconUrl: '/icons/icon48.png',

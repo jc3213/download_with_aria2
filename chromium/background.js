@@ -11,6 +11,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
 chrome.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await getDefaultOptions();
+    hotfix();
     aria2StartUp();
     aria2Capture();
 });
@@ -18,12 +19,14 @@ chrome.storage.local.get(null, async json => {
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         var {newValue} = changes[key];
-        aria2Store[key] = newValue;
+        if (newValue) {
+            aria2Store[key] = newValue;
+        }
     });
-    if (changes['jsonrpc_uri'] || changes['secret_token']) {
+    if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
         aria2Update();
     }
-    if (changes['capture_mode']) {
+    if ('capture_enabled' in changes) {
         aria2Capture();
     }
 });
@@ -55,7 +58,7 @@ async function captureOnFilename({id, filename, fileSize}) {
 }
 
 function aria2Capture() {
-    if (aria2Store['capture_mode'] !== '0') {
+    if (aria2Store['capture_enabled']) {
         chrome.downloads.onCreated.addListener(captureOnCreated);
         chrome.downloads.onDeterminingFilename.addListener(captureOnFilename);
     }

@@ -60,33 +60,21 @@
             <div class="flex">
                 <div class="menu" title="option_download_headers_title">
                     <span class="title" i18n>option_download_headers</span>
-                    <select name="download_headers">
-                        <option value="0" i18n>option_never</option>
-                        <option value="1" i18n>option_always</option>
-                    </select>
+                    <input name="download_headers" type="checkbox">
                 </div>
                 <div class="menu" title="option_download_prompt_title">
                     <span class="title" i18n>option_download_prompt</span>
-                    <select name="download_prompt">
-                        <option value="0" i18n>option_never</option>
-                        <option value="1" i18n>option_always</option>
-                    </select>
+                    <input name="download_prompt" type="checkbox">
                 </div>
             </div>
             <div class="flex">
                 <div class="menu" title="option_notify_start_title">
                     <span class="title" i18n>option_notify_start</span>
-                    <select name="notify_start">
-                        <option value="0" i18n>option_nothing</option>
-                        <option value="1" i18n>option_notify</option>
-                    </select>
+                    <input name="notify_start" type="checkbox">
                 </div>
                 <div class="menu" title="option_notify_complete_title">
                     <span class="title" i18n>option_notify_complete</span>
-                    <select name="notify_complete">
-                        <option value="0" i18n>option_nothing</option>
-                        <option value="1" i18n>option_notify</option>
-                    </select>
+                    <input name="notify_complete" type="checkbox">
                 </div>
             </div>
             <h1 i18n>option_advanced</h1>
@@ -103,52 +91,56 @@
                 </div>
                 <span i18n>option_protocol</span>: <u><i>http</i></u> / <u><i>https</i></u>
             </div>
-            <div class="menu" title="option_proxy_mode_title">
-                <span class="title" i18n>option_proxy_mode</span>
-                <select name="proxy_mode">
-                    <option value="0" i18n>option_never</option>
-                    <option value="1" i18n>option_switch</option>
-                    <option value="2" i18n>option_always</option>
-                </select>
-                <div data-link="proxy_mode,1">
-                    <textarea name="proxy_include" rows="3" placeholder="example.com domain.net this.co.ar"></textarea>
+            <div class="flex">
+                <div class="menu" title="option_proxy_enabled_title">
+                    <span class="title" i18n>option_proxy_enabled</span>
+                    <input name="proxy_enabled" type="checkbox">
+                </div>
+                <div class="menu" title="option_proxy_always_title" data-link="proxy_enabled,1">
+                    <span class="title" i18n>option_proxy_always</span>
+                    <input name="proxy_always" type="checkbox">
                 </div>
             </div>
-            <div class="menu" title="option_capture_mode_title">
-                <span class="title" i18n>option_capture_mode</span>
-                <select name="capture_mode">
-                    <option value="0" i18n>option_never</option>
-                    <option value="1" i18n>option_switch</option>
-                    <option value="2" i18n>option_always</option>
-                </select>
+            <div data-link="proxy_enabled,1;proxy_always,0">
+                <textarea name="proxy_include" rows="3" placeholder="example.com domain.net this.co.ar"></textarea>
             </div>
-            <div class="menu" title="option_capture_size_title" data-link="capture_mode,1">
-                <div class="title" i18n>option_capture_size</div>
+            <div class="flex">
+                <div class="menu" title="option_capture_enabled_title">
+                    <span class="title" i18n>option_capture_enabled</span>
+                    <input name="capture_enabled" type="checkbox">
+                </div>
+                <div class="menu" title="option_capture_always_title" data-link="capture_enabled,1">
+                    <span class="title" i18n>option_capture_always</span>
+                    <input name="capture_always" type="checkbox">
+                </div>
+            </div>
+            <div class="menu" title="option_capture_filesize_title" data-link="capture_enabled,1;capture_always,0">
+                <div class="title" i18n>option_capture_filesize</div>
                 <div>
-                    <input name="capture_size" type="number" min="0">
+                    <input name="capture_filesize" type="number" min="0">
                     <span class="float">MB</span>
                 </div>
                 <span i18n>option_disabled</span>: <u><i>0</i></u>
             </div>
-            <div class="menu" title="option_capture_resolve_title" data-link="capture_mode,1">
+            <div class="menu" title="option_capture_resolve_title" data-link="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_resolve</div>
                 <div>
                     <textarea name="capture_resolve" rows="2" placeholder="zip exe jpg"></textarea>
                 </div>
             </div>
-            <div class="menu" title="option_capture_include_title" data-link="capture_mode,1">
+            <div class="menu" title="option_capture_include_title" data-link="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_include</div>
                 <div>
                     <textarea name="capture_include" rows="3" placeholder="example.com domain.net this.co.ar"></textarea>
                 </div>
             </div>
-            <div class="menu" title="option_capture_reject_title" data-link="capture_mode,1,2">
+            <div class="menu" title="option_capture_reject_title" data-link="capture_enabled,1">
                 <div class="title" i18n>option_capture_reject</div>
                 <div>
                     <textarea name="capture_reject" rows="2" placeholder="zip exe jpg"></textarea>
                 </div>
             </div>
-            <div class="menu" title="option_capture_exclude_title" data-link="capture_mode,1,2">
+            <div class="menu" title="option_capture_exclude_title" data-link="capture_enabled,1">
                 <div class="title" i18n>option_capture_exclude</div>
                 <div>
                     <textarea name="capture_exclude" rows="3" placeholder="example.com domain.net this.co.ar"></textarea>

@@ -56,9 +56,6 @@
     "option_back": {
         "message": "返回"
     },
-    "option_close": {
-        "message": "关闭"
-    },
     "option_basic": {
         "message": "基础"
     },
@@ -120,16 +117,16 @@
         "message": "开始下载前再次确认下载信息"
     },
     "option_notify_start": {
-        "message": "下载开始时"
+        "message": "通知下载开始"
     },
     "option_notify_start_title": {
-        "message": "设置下载开始时的动作"
+        "message": "当下载开始时通知我"
     },
     "option_notify_complete": {
-        "message": "下载完成时"
+        "message": "通知下载完成"
     },
     "option_notify_complete_title": {
-        "message": "设置下载完成时的动作"
+        "message": "当下载完成时通知我"
     },
     "download_start": {
         "message": "下载开始..."
@@ -152,22 +149,34 @@
     "option_protocol": {
         "message": "协议"
     },
-    "option_proxy_mode": {
+    "option_proxy_enabled": {
         "message": "使用代理"
     },
-    "option_proxy_mode_title": {
-        "message": "设置新建下载时的代理服务器"
+    "option_proxy_enabled_title": {
+        "message": "允许新建下载时的使用代理服务器"
     },
-    "option_capture_mode": {
+    "option_proxy_always": {
+        "message": "总是使用代理"
+    },
+    "option_proxy_enabled_title": {
+        "message": "总是在新建下载时的使用代理服务器"
+    },
+    "option_capture_enabled": {
         "message": "抓取浏览器下载"
     },
-    "option_capture_mode_title": {
-        "message": "根据用户设置抓取来自浏览器的下载"
+    "option_capture_enabled_title": {
+        "message": "允许抓取来自浏览器的下载"
     },
-    "option_capture_size": {
+    "option_capture_always": {
+        "message": "总是抓取下载"
+    },
+    "option_capture_always_title": {
+        "message": "总是抓取来自除了例外以外的浏览器的下载"
+    },
+    "option_capture_filesize": {
         "message": "文件大小"
     },
-    "option_capture_size_title": {
+    "option_capture_filesize_title": {
         "message": "抓取文件大小超过设置的下载"
     },
     "option_capture_include": {

@@ -7,6 +7,11 @@ body:not(.aria2) [data-aria2], body.aria2 [data-local] {
     display: none;
 }
 
+input[type="checkbox"] {
+    width: fit-content;
+    transform: scale(2);
+}
+
 #local, #aria2 {
     margin-top: 80px;
 }
