@@ -1,11 +1,11 @@
-var filesize = [
-    'min-split-size',
-    'disk-cache',
-    'max-download-limit',
-    'max-overall-download-limit',
-    'max-upload-limit',
-    'max-overall-upload-limit'
-];
+var filesize = {
+    'min-split-size': 1,
+    'disk-cache': 1,
+    'max-download-limit': 1,
+    'max-overall-download-limit': 1,
+    'max-upload-limit': 1,
+    'max-overall-upload-limit': 1
+};
 
 NodeList.prototype.printOptions = function (json) {
     var options = {};
@@ -15,7 +15,7 @@ NodeList.prototype.printOptions = function (json) {
         if (!value) {
             return;
         }
-        if (filesize.includes(name)) {
+        if (filesize[name]) {
             value = getFileSize(value);
         }
         node.value = options[name] = value;
