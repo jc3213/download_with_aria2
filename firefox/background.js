@@ -143,13 +143,13 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
 
 async function getFirefoxOptions(filename) {
     var {os} = await browser.runtime.getPlatformInfo();
-    var index = os === 'win' ? filename.lastIndexOf('\\') : filename.lastIndexOf('/');
-    var out = filename.slice(index + 1);
-    if (aria2Store['folder_mode'] === '2') {
-        return {out, dir: filename.slice(0, index + 1)};
+    var idx = os === 'win' ? filename.lastIndexOf('\\') : filename.lastIndexOf('/');
+    var out = filename.slice(idx + 1);
+    if (aria2Store['folder_firefox']) {
+        return {out, dir: filename.slice(0, idx + 1)};
     }
-    else if (aria2Store['folder_mode'] === '1' && aria2Store['folder_path']) {
-        return {out, dir: aria2Store['folder_path']};
+    else if (aria2Store['folder_enabled'] && aria2Store['folder_defined'] !== '') {
+        return {out, dir: aria2Store['folder_defined']};
     }
     return {out};
 }

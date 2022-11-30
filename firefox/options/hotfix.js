@@ -1,65 +1,95 @@
 var i18n = {
     'en': {
-        api: 'Capture API',
-        api_title: 'Set API used for capture browser downloads',
-        browser: 'Browser'
+        folderff: 'Follow Browser Behavior',
+        folderff_title: 'Save files into browser defined directory',
+        webrequest: 'Monitor Web Request',
+        webrequest_title: 'Monitor web requests instead of capture browser downloads'
     },
     'zh': {
-        api: '选择API',
-        api_title: '设置用于抓取浏览器下载的API',
-        browser: '浏览器'
+        folderff: '跟随浏览器',
+        folderff_title: '将文件保存至浏览器下载目录',
+        webrequest: '监听网络请求',
+        webrequest_title: '监听网络请求而非抓取浏览器下载'
     }
 };
 var lang = browser.i18n.getUILanguage();
 i18n = i18n[lang] ?? i18n[lang.slice(0, lang.indexOf('-'))] ?? i18n['en'];
 
-var sub = document.createElement('option');
-sub.value = '2';
-sub.innerText = i18n['browser'];
+var folderff = document.createElement('div');
+folderff.title = i18n.folderff_title;
+folderff.className = 'menu';
+folderff.innerHTML = `<span class="title">${i18n.folderff}</span><input name="folder_firefox" type="checkbox">`;
 
-var folder = document.querySelector('[name="folder_mode"]');
-folder.append(sub);
-
-var api = document.createElement('div');
-api.title = i18n['api_title'];
-api.innerHTML = '<span class="title">' + i18n['api'] + '</span><select name="capture_api"><option value="0">downloads API</option><option value="1">webRequest API</option></select>';
-api.addEventListener('change', event => {
-    if (event.target.value === '1') {
-        setDefaultFolder();
-    }
-    else {
-        sub.style.display = 'block';
-    }
-});
-
-var capture = document.querySelector('[name="capture_mode"]');
-capture.parentNode.after(api);
-capture.addEventListener('change', event => {
-    if ('1,2'.includes(capture.value)) {
-        sub.style.display = 'block';
-    }
-    else {
-        setDefaultFolder();
+var folderen = document.querySelector('[name="folder_enabled"]').parentNode;
+folderen.addEventListener('change', event => {
+    var {checked} = event.target;
+    if (checked) {
+        if (aria2Store['capture_webrequest']) {
+            folderff.style.display = 'none';
+        }
+        else {
+            folderff.style.display = 'block';
+        }
     }
 });
 
-document.querySelector('#back_btn').addEventListener('click', firefoxExclusive);
+var container = document.createElement('div');
+container.className = 'flex';
+folderen.replaceWith(container);
+container.append(folderen, folderff);
 
-linkage['capture_mode'].push({menu: api, rule: '1,2'}, {menu: sub, rule: '1,2'});
-linkage['capture_api'] = [{menu: sub, rule: '0'}];
+var webrequest = document.createElement('div');
+webrequest.title = i18n.webrequest_title;
+webrequest.className = 'menu';
+webrequest.innerHTML = `<span class="title">${i18n.webrequest}</span><input name="capture_webrequest" type="checkbox">`;
+webrequest.addEventListener('change', event => {
+    var {checked} = event.target;
+    if (checked) {
+        setDefaultFolder();
+    }
+});
+
+var captureen = document.querySelector('[name="capture_enabled"]').parentNode;
+captureen.addEventListener('change', event => {
+    var {checked} = event.target;
+    if (!checked) {
+        setDefaultFolder();
+    }
+});
+captureen.parentNode.after(webrequest);
+
+var checkfen = folderen.querySelector('input');
+var checkfff = folderff.querySelector('input');
+var checkcen = captureen.querySelector('input');
+var checkcwr = webrequest.querySelector('input');
+
+var folderde = document.querySelector('[name="folder_defined"]').parentNode;
+
+checking['folder_firefox'] = 1;
+checking['capture_webrequest'] = 1;
+linkage['folder_firefox'] = [{menu: folderde, rule: 0}];
+linkage['capture_enabled'].push({menu: webrequest, rule: 1}, {menu: folderff, rule: 1});
+linkage['capture_webrequest'] = [{menu: folderff, rule: 0}];
 
 function setDefaultFolder() {
-    if (folder.value === '2') {
-        changes.push({name: 'folder_mode', old_value: '2', new_value: '0'});
-        folder.value = '0';
+    if (checkfff.checked) {
+        changes.push({name: 'folder_firefox', old_value: true, new_value: false});
+        checkfff.checked = false;
+        if (checkfen.checked) {
+            folderde.style.display = 'block';
+        }
+        else {
+            folderde.style.display = 'none';
+        }
     }
-    sub.style.display = 'none';
 }
 
 function firefoxExclusive() {
-    api.querySelector('select').value = aria2Store['capture_api'];
-    sub.style.display = aria2Store['capture_api'] === '0' && '1,2'.includes(aria2Store['capture_mode']) ? 'block' : 'none';
+    checkfff.checked = aria2Store['folder_firefox'];
+    checkcwr.checked = aria2Store['capture_webrequest'];
 }
+
+document.querySelector('#back_btn').addEventListener('click', firefoxExclusive);
 
 var observer = setInterval(() => {
     if (aria2Store) {

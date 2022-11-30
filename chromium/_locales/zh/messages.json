@@ -90,7 +90,7 @@
         "message": "自选下载目录"
     },
     "option_folder_enabled_title": {
-        "message": "优先使用自选下载目录"
+        "message": "将文件保存至使用自选下载目录"
     },
     "option_download_headers": {
         "message": "转发请求头"

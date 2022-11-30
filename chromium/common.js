@@ -191,4 +191,10 @@ function hotfix() {
         aria2Store['folder_defined'] = aria2Store['folder_path'];
         delete aria2Store['folder_path'];
     }
+    if (aria2Store['capture_api'] === '1') {
+        aria2Store['capture_webrequest'] = true;
+    }
+    else {
+        aria2Store['capture_webrequest'] = false;
+    }
 }
