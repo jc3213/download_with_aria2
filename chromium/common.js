@@ -110,14 +110,14 @@ function getRequestHeaders(url) {
 }
 
 function getDownloadFolder() {
-    if (aria2Store['folder_mode'] === '1' && aria2Store['folder_path']) {
-        return aria2Store['folder_path'];
+    if (aria2Store['folder_enabled'] && aria2Store['folder_defined'] !== '') {
+        return aria2Store['folder_defined'];
     }
     return null;
 }
 
 chrome.runtime.onInstalled.addListener(({previousVersion, reason}) => {
-    if (reason === 'install' || previousVersion > '4.1.1.1600') {
+    if (reason === 'install' || previousVersion > '4.1.0.1576') {
         return;
     }
     if (aria2Store['capture_mode'] === '0') {
@@ -191,4 +191,5 @@ chrome.runtime.onInstalled.addListener(({previousVersion, reason}) => {
         aria2Store['folder_defined'] = aria2Store['folder_path'];
         delete aria2Store['folder_path'];
     }
+    chrome.storage.local.set(aria2Store);
 });

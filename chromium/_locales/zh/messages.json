@@ -68,24 +68,6 @@
     "option_disabled": {
         "message": "禁用"
     },
-    "option_nothing": {
-        "message": "什么都不做"
-    },
-    "option_notify": {
-        "message": "通知我"
-    },
-    "option_never": {
-        "message": "永不"
-    },
-    "option_always": {
-        "message": "总是"
-    },
-    "option_switch": {
-        "message": "条件"
-    },
-    "option_custom": {
-        "message": "自定义"
-    },
     "option_jsonrpc_uri": {
         "message": "JSON-RPC 链接"
     },
@@ -103,6 +85,12 @@
     },
     "option_refresh_interval_title": {
         "message": "设置任务管理器刷新间隔"
+    },
+    "option_folder_enabled": {
+        "message": "自选下载目录"
+    },
+    "option_folder_enabled_title": {
+        "message": "优先使用自选下载目录"
     },
     "option_download_headers": {
         "message": "转发请求头"
