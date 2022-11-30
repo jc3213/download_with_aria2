@@ -144,7 +144,7 @@
         "message": "Enable use proxy server for new downloads"
     },
     "option_proxy_always": {
-        "message": "Always Use Proxy"
+        "message": "Always Use Proxy Server"
     },
     "option_proxy_always_title": {
         "message": "Always use proxy server for new downloads"
