@@ -213,10 +213,10 @@
         "message": "Options"
     },
     "popup_download": {
-        "message": "Download"
+        "message": "Download Speed"
     },
     "popup_upload": {
-        "message": "Upload"
+        "message": "Upload Speed"
     },
     "task_referer": {
         "message": "Referer"
