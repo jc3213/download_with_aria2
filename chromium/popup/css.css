@@ -111,7 +111,7 @@ body > .session, body > .file, body > .uri,
     display: none;
 }
 
-.session :not(.file, .uri) > [title] {
+.session .menu {
     margin-top: 10px;
 }
 
