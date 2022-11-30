@@ -94,8 +94,8 @@ function fullModeInit() {
 function slimModeInit() {
     chrome.runtime.sendMessage('prompt', response => {
         entries.value = response.url;
-        var extras = document.querySelectorAll('[name]').printOptions(response.options);
-        options = {...options, ...extras};
+        var extra = document.querySelectorAll('[name]').printOptions(response.options);
+        options = {...options, ...extra};
         setInterval(() => {
             countdown.innerText --;
             if (countdown.innerText === '0') {
