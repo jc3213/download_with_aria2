@@ -1,140 +1,195 @@
-@media (prefers-color-scheme: light) { 
-    body, div {
-        background-color: #ffffff;
-    }
-
-    * {
-        border-color: #9a9a9a;
-    }
+body {
+    height: 580px;
+    width: 680px;
 }
 
-@media (prefers-color-scheme: dark) { 
-    body, div, option {
-        background-color: #121212;
-    }
-    
-    input, textarea, select, button {
-        background-color: #3b3b3b;
-    }
-
-    body, div, option, input, textarea, select, button {
-        color: #ffffff;
-    }
-
-    * {
-        border-color: #ffffff;
-    }
+body > .session, body > .file, body > .uri,
+.group0 #queue > :nth-child(n+2),
+.group1 #queue > :not(:nth-child(n+2):nth-child(-n+3)),
+.group2 #queue > :nth-child(-n+3),
+.http [data-p2p], .p2p [data-http], #retry_btn {
+    display: none;
 }
 
-body, input, textarea, select, option, button {
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 16px;
-}
-
-body, div {
-    user-select: none;
-    position: relative;
-}
-
-:disabled {
-    filter: contrast(45%);
-}
-
-select, option {
-    padding: 4px 5px;
-}
-
-input, textarea {
-    padding: 5px;
-    width: calc(100% - 12px);
-    resize: none;
-    border-width: 1px;
+.group0 #active_btn,
+.group1 #waiting_btn,
+.group2 #stopped_btn {
     border-style: inset;
 }
 
-input + span.float {
+.download, .upload {
+    display: inline-block;
+    padding: 6px;
+}
+
+.stats {
+    margin-right: 10px;
+    padding: 6px 3px;
+}
+
+#download::after, #upload::after {
+    content: "B/s";
+}
+
+#remote::after, #local::after, #size::after {
+    content: "B";
+}
+
+#ratio::after {
+    content: "%";
+}
+
+#day:not(:empty)::after {
+    content: "__MSG_time_day__";
+    vertical-align: sub;
+}
+
+#hour:not(:empty)::after {
+    content: "__MSG_time_hour__";
+    vertical-align: sub;
+}
+
+#minute:not(:empty)::after {
+    content: "__MSG_time_minute__";
+    vertical-align: sub;
+}
+
+#second:not(:empty)::after {
+    content: "__MSG_time_second__";
+    vertical-align: sub;
+}
+
+#infinite {
     display: none;
-    top: 5px;
-    right: 8px;
 }
 
-input[type="number"] + span.float {
-    right: 24px;
+#day:empty + #hour:empty + #minute:empty + #second:empty + #infinite {
+    display: inline-block;
 }
 
-input:focus + span.float {
-    font-size: 17px;
-    display: block;
-}
-
-textarea {
+#queue {
+    height: calc(100% - 102px);
     overflow-y: auto;
-    overflow-x: hidden;
 }
 
-select:only-child {
-    width: 100%;
-}
-
-option:checked {
-    font-weight: bold;
-}
-
-button {
-    padding: 5px;
+.session {
     border-width: 1px;
     border-style: outset;
+    padding: 3px;
+    margin-bottom: 5px;
+    display: grid;
+    grid-template-columns: repeat(3, calc(33.33% - 7.5px)) 22.5px;
 }
 
-button input[type="file"] {
+.session > #name {
+    grid-area: 1 / 1 / 1 / 4;
+}
+
+.session > :not([id]) {
+    margin: 2px 0px;
+}
+
+.session > #menu {
+    grid-area: 1 / 4 / 4 / 5;
+}
+
+.session > #menu > button {
+    font-size: 12px;
+    padding: 2px;
+}
+
+.session > #meter {
+    grid-area: 4 / 1 / 4 / 5;
+    text-align: center;
+}
+
+.session > #options {
+    grid-area: 5 / 1 / 5 / 5;
+}
+
+.session:not(.extra) > #options {
     display: none;
 }
 
-button:enabled:hover, button:enabled:hover > * {
-    cursor: pointer;
-    filter: contrast(65%);
+.session .menu {
+    margin-top: 10px;
 }
 
-button:enabled:active {
+#save_btn {
+    top: -10px;
+    padding: 4px;
+    display: none;
+}
+
+input:disabled + button {
+    display: none;
+}
+
+.file {
+    display: grid;
+    grid-template-columns: 40px auto 80px 60px;
+}
+
+.uri {
+    display: grid;
+    grid-template-columns: auto 40px 40px;
+}
+
+.file > *, .uri > * {
+    border-width: 1px;
+    border-style: ridge;
+    overflow: hidden;
+    height: 23px;
+}
+
+.file > :not(:nth-child(2)), .uri > :nth-child(n+2) {
+    text-align: center;
+    padding: 5px 0px;
+}
+
+.file > :nth-child(2), .uri > :nth-child(1) {
+    padding: 5px;
+}
+
+#queue > :not(.complete, .removed, .error) #meter:active,
+#queue > :not(.complete, .removed, .error) #meter #ratio:active,
+.session.p2p .file > :nth-child(1):active,
+.session.http .uri > :nth-child(1):active {
     filter: contrast(45%);
-    border-style: inset;
 }
 
-button:disabled {
-    filter: none;
+.active #meter {
+    background-color: #4cc;
 }
 
-[id] > [title]:nth-child(n+2), .flex > [title] {
-    margin-top: 25px;
+.waiting #meter, .paused #meter {
+    background-color: #488;
 }
 
-.flex, .tool, .fixed {
-    display: flex;
+.complete #meter {
+    background-color: #4c4;
 }
 
-.flex {
-    gap: 3px;
+.removed #meter, .error #meter {
+    background-color: #844;
 }
 
-.flex > * {
-    flex: 1;
+#active_btn, .active #meter #ratio, .download, .checked {
+    background-color: #44c;
 }
 
-.fixed > button {
-    width: fit-content;
+#waiting_btn, .waiting #meter #ratio, .paused #meter #ratio, .suspend {
+    background-color: #cc4;
 }
 
-.tool > :last-child {
-    margin-left: auto;
+.complete #meter #ratio, .upload {
+    background-color: #4c4;
 }
 
-.float {
-    position: absolute;
-    top: 0px;
-    right: 0px;
+#stopped_btn, .removed #meter #ratio, .error #meter #ratio {
+    background-color: #c48;
 }
 
-.title {
-    font-weight: bold;
-    word-break: break-word;
+.active, .waiting, .paused, .error, .complete, .removed {
+    color: #fff;
 }

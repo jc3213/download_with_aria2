@@ -8,14 +8,14 @@
     </head>
     <body>
         <div id="download">
-            <div title="task_referer_title">
+            <div class="menu" title="task_referer_title">
                 <div class="title" i18n>task_referer</div>
                 <div class="fixed">
                     <input name="referer" type="text">
                     <button id="referer_btn">🔖</button>
                 </div>
             </div>
-            <div title="task_batch_title">
+            <div class="menu" title="task_batch_title">
                 <span class="title" i18n>task_batch</span>
                 <select id="batch" data-full>
                     <option value="0">URI</option>
@@ -27,26 +27,26 @@
                 </div>
             </div>
             <div class="flex">
-                <div title="task_name_title" data-slim>
+                <div class="menu" title="task_name_title" data-slim>
                     <div class="title" i18n>task_name</div>
                     <div>
                         <input name="out"></textarea>
                     </div>
                 </div>
-                <div title="aria2_adv_dir_title">
+                <div class="menu" title="aria2_adv_dir_title">
                     <div class="title" i18n>aria2_adv_dir</div>
                     <div>
                         <input name="dir" type="text">
                     </div>
                 </div>
             </div>
-            <div title="option_user_agent_title" data-extra>
+            <div class="menu" title="option_user_agent_title" data-extra>
                 <div class="title" i18n>option_user_agent</div>
                 <div>
                     <textarea name="user-agent" rows="2"></textarea>
                 </div>
             </div>
-            <div title="task_proxy_title" data-extra>
+            <div class="menu" title="task_proxy_title" data-extra>
                 <div class="title" i18n>task_proxy</div>
                 <div class="fixed">
                     <input name="all-proxy" type="url">
@@ -54,14 +54,14 @@
                 </div>
             </div>
             <div class="flex" data-extra>
-                <div title="aria2_http_split_title">
+                <div class="menu" title="aria2_http_split_title">
                     <div class="title" i18n>aria2_http_split</div>
                     <div>
                         <input name="split" type="number">
                     </div>
                     <span i18n>option_default</span>: <u><i>5</i></u>
                 </div>
-                <div title="aria2_http_size_title">
+                <div class="menu" title="aria2_http_size_title">
                     <div class="title" i18n>aria2_http_size</div>
                     <div>
                         <input name="min-split-size" type="text">
@@ -71,14 +71,14 @@
                 </div>
             </div>
             <div class="flex" data-extra>
-                <div title="aria2_max_connection_title">
+                <div class="menu" title="aria2_max_connection_title">
                     <div class="title" i18n>aria2_max_connection</div>
                     <div>
                         <input name="max-connection-per-server" type="number">
                     </div>
                     <span i18n>option_default</span>: <u><i>1</i></u>
                 </div>
-                <div title="task_download_title">
+                <div class="menu" title="task_download_title">
                     <div class="title" i18n>task_download</div>
                     <div>
                         <input name="max-download-limit" type="text">
@@ -89,7 +89,7 @@
             </div>
         </div>
         <hr>
-        <div class="menu">
+        <div id="menu">
             <button id="submit_btn">
                 <span i18n>task_submit</span>
                 <span id="countdown" data-slim>30</span>

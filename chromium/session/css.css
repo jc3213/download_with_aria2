@@ -1,10 +1,10 @@
-.menu {
-    text-align: center;
-}
-
 .slim [data-full], .slim [data-extra], .full [data-slim],
 .compact [data-full], .compact #extra_btn {
     display: none;
+}
+
+#menu {
+    text-align: center;
 }
 
 #countdown::before {
