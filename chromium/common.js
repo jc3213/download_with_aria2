@@ -197,4 +197,5 @@ function hotfix() {
     else {
         aria2Store['capture_webrequest'] = false;
     }
+    chrome.storage.local.set(aria2Store);
 }
