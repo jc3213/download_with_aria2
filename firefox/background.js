@@ -145,11 +145,13 @@ async function getFirefoxOptions(filename) {
     var {os} = await browser.runtime.getPlatformInfo();
     var idx = os === 'win' ? filename.lastIndexOf('\\') : filename.lastIndexOf('/');
     var out = filename.slice(idx + 1);
-    if (aria2Store['folder_firefox']) {
-        return {out, dir: filename.slice(0, idx + 1)};
-    }
-    else if (aria2Store['folder_enabled'] && aria2Store['folder_defined'] !== '') {
-        return {out, dir: aria2Store['folder_defined']};
+    if (aria2Store['folder_enabled']) {
+        if (aria2Store['folder_firefox']) {
+            return {out, dir: filename.slice(0, idx + 1)};
+        }
+        else if (aria2Store['folder_defined'] !== '') {
+            return {out, dir: aria2Store['folder_defined']};
+        }
     }
     return {out};
 }
