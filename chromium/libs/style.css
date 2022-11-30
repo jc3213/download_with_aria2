@@ -100,10 +100,6 @@ button:enabled:active {
     border-style: inset;
 }
 
-button:disabled {
-    filter: none;
-}
-
 .menu:nth-child(n+2), .flex > .menu {
     margin-top: 25px;
 }
