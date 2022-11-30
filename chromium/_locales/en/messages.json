@@ -15,7 +15,7 @@
         "message": "New Download - Download with Aria2"
     },
     "shortcut_options": {
-        "message": "Change extension options"
+        "message": "Open extension options"
     },
     "shortcut_session": {
         "message": "Open new download window"

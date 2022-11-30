@@ -15,7 +15,7 @@
         "message": "新下载 - 通过 Aria2 下载"
     },
     "shortcut_options": {
-        "message": "修改扩展设置"
+        "message": "打开扩展设置"
     },
     "shortcut_session": {
         "message": "打开新下载窗口"
