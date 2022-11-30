@@ -9,7 +9,7 @@ body:not(.aria2) [data-aria2], body.aria2 [data-local] {
 
 input[type="checkbox"] {
     width: fit-content;
-    transform: scale(2);
+    transform: scale(1.5);
 }
 
 #local, #aria2 {

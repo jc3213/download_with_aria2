@@ -11,7 +11,6 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
 chrome.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await getDefaultOptions();
-    hotfix();
     aria2StartUp();
     aria2Capture();
 });
@@ -19,7 +18,7 @@ chrome.storage.local.get(null, async json => {
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         var {newValue} = changes[key];
-        if (newValue) {
+        if (newValue !== undefined) {
             aria2Store[key] = newValue;
         }
     });

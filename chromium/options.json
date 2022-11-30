@@ -2,8 +2,8 @@
     "jsonrpc_uri": "http://localhost:6800/jsonrpc",
     "secret_token": "",
     "refresh_interval": 5000,
-    "folder_mode": "0",
-    "folder_path": "",
+    "folder_enabled": false,
+    "folder_defined": "",
     "download_prompt": false,
     "download_headers": true,
     "notify_start": false,
@@ -19,6 +19,5 @@
     "capture_resolve": [],
     "capture_include": [],
     "capture_reject": [],
-    "capture_exclude": [],
-    "capture_api": "0"
+    "capture_exclude": []
 }

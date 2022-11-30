@@ -48,14 +48,11 @@
             </div>
             <div class="menu" title="aria2_adv_dir_title">
                 <span class="title" i18n>aria2_adv_dir</span>
-                <select name="folder_mode">
-                    <option value="0" i18n>option_default</option>
-                    <option value="1" i18n>option_custom</option>
-                </select>
-                <div data-link="folder_mode,1">
-                    <input name="folder_path" type="text">
-                    Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;Linux: <u><i>home/aria2/download</i></u>
-                </div>
+                <input name="folder_enabled" type="checkbox">
+            </div>
+            <div data-link="folder_enabled,1">
+                <input name="folder_defined" type="text">
+                Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;Linux: <u><i>home/aria2/download</i></u>
             </div>
             <div class="flex">
                 <div class="menu" title="option_download_headers_title">

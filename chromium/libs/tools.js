@@ -66,7 +66,7 @@ function aria2WhenStart(message) {
             type: 'basic',
             iconUrl: '/icons/icon48.png',
             message,
-            title: aria2Store['jsonrpc_uri']
+            title: aria2Start
         });
     }
 }

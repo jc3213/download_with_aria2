@@ -116,7 +116,10 @@ function getDownloadFolder() {
     return null;
 }
 
-function hotfix() {
+chrome.runtime.onInstalled.addListener(({previousVersion, reason}) => {
+    if (reason === 'install' || previousVersion > '4.1.1.1600') {
+        return;
+    }
     if (aria2Store['capture_mode'] === '0') {
         aria2Store['capture_enabled'] = false;
         delete aria2Store['capture_mode'];
@@ -167,8 +170,25 @@ function hotfix() {
         aria2Store['proxy_always'] = true;
         delete aria2Store['proxy_mode'];
     }
-    if (aria2Store['capture_size']) {
+    if (aria2Store['capture_size'] !== undefined) {
         aria2Store['capture_filesize'] = aria2Store['capture_size'];
         delete aria2Store['capture_size'];
     }
-}
+    if (aria2Store['folder_mode'] === '0') {
+        aria2Store['folder_enabled'] = false;
+        delete aria2Store['folder_mode'];
+    }
+    else if (aria2Store['folder_mode'] === '1') {
+        aria2Store['folder_enabled'] = true;
+        delete aria2Store['folder_mode'];
+    }
+    else if (aria2Store['folder_mode'] === '2') {
+        aria2Store['folder_enabled'] = true;
+        aria2Store['folder_firefox'] = true;
+        delete aria2Store['folder_mode'];
+    }
+    if (aria2Store['folder_path'] !== undefined) {
+        aria2Store['folder_defined'] = aria2Store['folder_path'];
+        delete aria2Store['folder_path'];
+    }
+});

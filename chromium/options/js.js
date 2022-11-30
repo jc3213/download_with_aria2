@@ -6,6 +6,7 @@ var mapping = {
     'capture_exclude': 1
 };
 var checking = {
+    'folder_enabled': 1,
     'download_headers': 1,
     'download_prompt': 1,
     'notify_start': 1,
@@ -20,7 +21,7 @@ var offset = {
     'capture_size': 1048576
 };
 var linkage = {
-    'folder_mode': [],
+    'folder_enabled': [],
     'proxy_enabled': [],
     'proxy_always': [],
     'capture_enabled': [],
@@ -133,7 +134,7 @@ document.addEventListener('mouseup', event => {
 
 document.querySelector('#local').addEventListener('change', event => {
     var {name, value, checked} = event.target;
-    var new_value = getValue(name, value, checked);
+    var new_value = applyValue(name, value, checked);
     var old_value = name in backage ? backage[name] : aria2Store[name];
     getChanges(name, old_value, new_value);
 });
@@ -168,16 +169,7 @@ function aria2StartUp() {
             entry.checked = value;
         }
         else {
-            if (mapping[name]) {
-                entry.value = value.join(' ');
-            }
-            var multi = offset[name];
-            if (multi) {
-                entry.value = value / multi;
-            }
-            else {
-                entry.value = value;
-            }
+            entry.value = getValue(name, value);
         }
     });
     Object.keys(linkage).forEach(name => {
@@ -217,7 +209,7 @@ function getChanges(name, old_value, new_value) {
     getLinkage(name, new_value);
 }
 
-function getValue(name, value, checked) {
+function applyValue(name, value, checked) {
     if (checking[name]) {
         return checked;
     }
@@ -231,11 +223,24 @@ function getValue(name, value, checked) {
     return value;
 }
 
+function getValue(name, value) {
+    if (mapping[name]) {
+        return value.join(' ');
+    }
+    var multi = offset[name];
+    if (multi) {
+        return value / multi;
+    }
+    else {
+        return value;
+    }
+}
+
 function applyChanges(path) {
     var options = {};
     document.querySelectorAll(path + ' [name]').forEach(entry => {
         var {name, value, checked} = entry;
-        options[name] = getValue(name, value, checked);
+        options[name] = applyValue(name, value, checked);
     });
     savebtn.disabled = true;
     return options;
