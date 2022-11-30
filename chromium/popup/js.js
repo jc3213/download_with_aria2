@@ -280,7 +280,7 @@ function printTaskFiles(task, files) {
     files.forEach((file, index) => {
         var cell = cells[index] ?? printFileCell(task, fileList, file);
         var {length, completedLength} = file;
-        cell.querySelector('#ratio').innerText = ((completedLength / length * 10000 | 0) / 100);
+        cell.querySelector('#ratio').innerText = (completedLength / length * 10000 | 0) / 100;
     });
 }
 
