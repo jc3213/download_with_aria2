@@ -1,1 +1,1 @@
-document.querySelector("#local > div:nth-child(8) > div:nth-child(1)").style.display = 'none';
+document.querySelector('[name="notify_start"]').parentNode.style.display = 'none';
