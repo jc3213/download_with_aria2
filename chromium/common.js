@@ -78,7 +78,7 @@ function getCaptureFileData(size, ext) {
     else if (aria2Store['capture_resolve'].includes(ext)) {
         return 2;
     }
-    else if (aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size']) {
+    else if (aria2Store['capture_filesize'] > 0 && size >= aria2Store['capture_filesize']) {
         return 2;
     }
     return 0;
@@ -116,8 +116,8 @@ function getDownloadFolder() {
     return null;
 }
 
-chrome.runtime.onInstalled.addListener(({previousVersion, reason}) => {
-    if (reason === 'install' || previousVersion > '4.1.0.1576') {
+function hotfix() {
+    if (aria2Store['capture_mode'] === undefined) {
         return;
     }
     if (aria2Store['capture_mode'] === '0') {
@@ -191,5 +191,4 @@ chrome.runtime.onInstalled.addListener(({previousVersion, reason}) => {
         aria2Store['folder_defined'] = aria2Store['folder_path'];
         delete aria2Store['folder_path'];
     }
-    chrome.storage.local.set(aria2Store);
-});
+}

@@ -10,7 +10,8 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 });
 
 chrome.storage.local.get(null, async json => {
-    aria2Store = json['jsonrpc_uri'] ? json : await getDefaultOptions();
+    aria2Store = 'jsonrpc_uri' in json ? json : await getDefaultOptions();
+    hotfix();
     aria2StartUp();
     aria2Capture();
 });

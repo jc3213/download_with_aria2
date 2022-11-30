@@ -12,6 +12,7 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 
 browser.storage.local.get(null, async json => {
     aria2Store = json['jsonrpc_uri'] ? json : await getDefaultOptions();
+    hotfix();
     aria2StartUp();
     aria2Capture();
 });
@@ -19,12 +20,14 @@ browser.storage.local.get(null, async json => {
 browser.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         var {newValue} = changes[key];
-        aria2Store[key] = newValue;
+        if (newValue !== undefined) {
+            aria2Store[key] = newValue;
+        }
     });
-    if (changes['jsonrpc_uri'] || changes['secret_token']) {
+    if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
         aria2Update();
     }
-    if (changes['capture_mode'] || changes['capture_api']) {
+    if ('capture_enabled' in changes || 'capture_webrequest' in changes) {
         aria2Capture();
     }
 });
@@ -42,16 +45,12 @@ async function getRequestHeadersFirefox(url, storeId) {
 async function aria2DownloadFirefox(url, referer, hostname, storeId, options = {}) {
     options['user-agent'] = aria2Store['user_agent'];
     options['all-proxy'] = getProxyServer(hostname);
-    if (aria2Store['download_headers'] === '1') {
+    if (aria2Store['download_headers']) {
         options['referer'] = referer;
         options['header'] = await getRequestHeadersFirefox(url, storeId);
     }
-    console.log(options);
-    if (aria2Store['download_prompt'] === '1') {
+    if (aria2Store['download_prompt']) {
         getDownloadPrompt(url, options);
-    }
-    else if (aria2Store['download_headers'] === '1') {
-        aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
     }
     else {
         aria2RPC.message('aria2.addUri', [[url]]).then(result => aria2WhenStart(url));
@@ -59,8 +58,8 @@ async function aria2DownloadFirefox(url, referer, hostname, storeId, options = {
 }
 
 function aria2Capture() {
-    if (aria2Store['capture_mode'] !== '0') {
-        if (aria2Store['capture_api'] === '0') {
+    if (aria2Store['capture_mode']) {
+        if (aria2Store['capture_webrequest']) {
             browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
             browser.downloads.onCreated.addListener(downloadCapture);
         }
@@ -82,7 +81,7 @@ function getCaptureFilter(hostname, ext, size) {
     else if (aria2Store['capture_reject'].includes(ext)) {
         return false;
     }
-    else if (aria2Store['capture_mode'] === '2') {
+    else if (aria2Store['capture_always']) {
         return true;
     }
     else if (aria2Store['capture_include'].find(host => hostname.endsWith(host))) {
@@ -91,7 +90,7 @@ function getCaptureFilter(hostname, ext, size) {
     else if (aria2Store['capture_resolve'].includes(ext)) {
         return true;
     }
-    else if (aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size']) {
+    else if (aria2Store['capture_filesize'] > 0 && size >= aria2Store['capture_filesize']) {
         return true;
     }
     return false;
