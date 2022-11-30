@@ -22,9 +22,11 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         var {newValue} = changes[key];
-        aria2Store[key] = newValue;
+        if (newValue !== undefined) {
+            aria2Store[key] = newValue;
+        }
     });
-    if (changes['jsonrpc_uri'] || changes['secret_token']) {
+    if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
         aria2Update();
     }
 });
@@ -33,7 +35,7 @@ chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
     var url = finalUrl;
     var referer = 'about:blank'.includes(referrer) ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
-    if (aria2Store['capture_mode'] === '0' || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
+    if (!aria2Store['capture_enabled'] || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         var priority = 0;
     }
     else {
