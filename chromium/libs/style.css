@@ -37,7 +37,7 @@ body, div {
 }
 
 :disabled {
-    filter: contrast(45%);
+    filter: contrast(25%);
 }
 
 select, option {
