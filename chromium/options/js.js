@@ -187,15 +187,15 @@ function printLinkage(menu) {
     var {major, minor} = menu.chain;
     var {name, rule} = major;
     var prime = rule === changes[name];
-    var second = [];
+    var second = 0;
     minor.forEach(({name, rule}) => {
         var value = changes[name];
         if (rule === value) {
-            second.push(name);
+            second ++;
         }
     });
     if (prime) {
-        menu.style.display = second.length === minor.length ? 'block' : 'none';
+        menu.style.display = second === minor.length ? 'block' : 'none';
     }
     else {
         menu.style.display = 'none';
