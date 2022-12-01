@@ -19,12 +19,20 @@ var folderff = document.createElement('div');
 folderff.title = i18n.folderff_title;
 folderff.className = 'menu';
 folderff.innerHTML = `<span class="title">${i18n.folderff}</span><input name="folder_firefox" type="checkbox">`;
+folderff.chain = {
+    major: {name: 'folder_enabled', rule: true},
+    minor: [
+        {name: 'capture_enabled', rule: true}, {name: 'capture_webrequest', rule: false},
+    ]
+};
+
+var folderde = document.querySelector('[name="folder_defined"]').parentNode;
+folderde.chain.minor.push({name: 'folder_firefox', rule: false});
 
 var folderen = document.querySelector('[name="folder_enabled"]').parentNode;
 folderen.addEventListener('change', event => {
-    var {checked} = event.target;
-    if (checked) {
-        if (aria2Store['capture_webrequest']) {
+    if (event.target.checked) {
+        if (changes['capture_webrequest']) {
             folderff.style.display = 'none';
         }
         else {
@@ -42,51 +50,44 @@ var webrequest = document.createElement('div');
 webrequest.title = i18n.webrequest_title;
 webrequest.className = 'menu';
 webrequest.innerHTML = `<span class="title">${i18n.webrequest}</span><input name="capture_webrequest" type="checkbox">`;
+webrequest.chain = {
+    major: {name: 'capture_enabled', rule: true},
+    minor: []
+};
 webrequest.addEventListener('change', event => {
-    var {checked} = event.target;
-    if (checked) {
+    if (event.target.checked) {
         setDefaultFolder();
     }
 });
 
 var captureen = document.querySelector('[name="capture_enabled"]').parentNode;
 captureen.addEventListener('change', event => {
-    var {checked} = event.target;
-    if (!checked) {
+    if (!event.target.checked) {
         setDefaultFolder();
     }
 });
 captureen.parentNode.after(webrequest);
 
-var checkfen = folderen.querySelector('input');
-var checkfff = folderff.querySelector('input');
-var checkcen = captureen.querySelector('input');
-var checkcwr = webrequest.querySelector('input');
-
-var folderde = document.querySelector('[name="folder_defined"]').parentNode;
 
 checking['folder_firefox'] = 1;
 checking['capture_webrequest'] = 1;
-linkage['folder_firefox'] = [{menu: folderde, rule: 0}];
-linkage['capture_enabled'].push({menu: webrequest, rule: 1}, {menu: folderff, rule: 1});
-linkage['capture_webrequest'] = [{menu: folderff, rule: 0}];
+linkage['folder_enabled'].push(folderff);
+linkage['folder_firefox'] = [folderde];
+linkage['capture_enabled'].push(folderff, webrequest);
+linkage['capture_webrequest'] = [folderff];
 
 function setDefaultFolder() {
-    if (checkfff.checked) {
-        changes.push({name: 'folder_firefox', old_value: true, new_value: false});
-        checkfff.checked = false;
-        if (checkfen.checked) {
-            folderde.style.display = 'block';
-        }
-        else {
-            folderde.style.display = 'none';
-        }
-    }
+    undones.push({name: 'folder_firefox', old_value: true, new_value: false});
+    folderff.querySelector('input').checked = changes['folder_firefox'] = false;
+    printLinkage(folderde);
 }
 
 function firefoxExclusive() {
-    checkfff.checked = aria2Store['folder_firefox'];
-    checkcwr.checked = aria2Store['capture_webrequest'];
+    folderff.querySelector('input').checked = changes['folder_firefox'];
+    webrequest.querySelector('input').checked = changes['capture_webrequest'];
+    printLinkage(webrequest);
+    printLinkage(folderff);
+    printLinkage(folderde);
 }
 
 document.querySelector('#back_btn').addEventListener('click', firefoxExclusive);
