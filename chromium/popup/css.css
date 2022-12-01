@@ -190,6 +190,6 @@ input:disabled + button {
     background-color: #c48;
 }
 
-.active, .waiting, .paused, .error, .complete, .removed {
+#active_btn, #waiting_btn, #stopped_btn, #meter, .download, .upload, .checked, .suspend {
     color: #fff;
 }
