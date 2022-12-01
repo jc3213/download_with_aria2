@@ -122,10 +122,12 @@ function hotfix() {
     }
     if (aria2Store['capture_mode'] === '0') {
         aria2Store['capture_enabled'] = false;
+        aria2Store['capture_always'] = false;
         delete aria2Store['capture_mode'];
     }
     else if (aria2Store['capture_mode'] === '1') {
         aria2Store['capture_enabled'] = true;
+        aria2Store['capture_always'] = false;
         delete aria2Store['capture_mode'];
     }
     else if (aria2Store['capture_mode'] === '2') {
@@ -157,12 +159,14 @@ function hotfix() {
     else {
         aria2Store['notify_complete'] = false;
     }
-    if (aria2Store['proxy_mode'] === '1') {
+    if (aria2Store['proxy_mode'] === '0') {
         aria2Store['proxy_enabled'] = false;
+        aria2Store['proxy_always'] = false;
         delete aria2Store['proxy_mode'];
     }
     else if (aria2Store['proxy_mode'] === '1') {
         aria2Store['proxy_enabled'] = true;
+        aria2Store['proxy_always'] = false;
         delete aria2Store['proxy_mode'];
     }
     else if (aria2Store['proxy_mode'] === '2') {
@@ -176,10 +180,12 @@ function hotfix() {
     }
     if (aria2Store['folder_mode'] === '0') {
         aria2Store['folder_enabled'] = false;
+        aria2Store['folder_firefox'] = false;
         delete aria2Store['folder_mode'];
     }
     else if (aria2Store['folder_mode'] === '1') {
         aria2Store['folder_enabled'] = true;
+        aria2Store['folder_firefox'] = false;
         delete aria2Store['folder_mode'];
     }
     else if (aria2Store['folder_mode'] === '2') {
