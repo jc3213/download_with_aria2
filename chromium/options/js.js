@@ -20,13 +20,13 @@ var offset = {
     'refresh_interval': 1000,
     'capture_size': 1048576
 };
-var linkage = [
-    'folder_enabled',
-    'proxy_enabled',
-    'proxy_always',
-    'capture_enabled',
-    'capture_always'
-];
+var linkage = {
+    'folder_enabled': [],
+    'proxy_enabled': [],
+    'proxy_always': [],
+    'capture_enabled': [],
+    'capture_always': []
+};
 var changes = {};
 var undones = [];
 var redones = [];
@@ -152,6 +152,7 @@ function aria2StartUp() {
     document.querySelectorAll('#local [name]').forEach(entry => {
         var {name} = entry;
         var value = aria2Store[name];
+        changes[name] = value;
         if (checking[name]) {
             entry.checked = value;
         }
@@ -159,27 +160,44 @@ function aria2StartUp() {
             entry.value = getValue(name, value);
         }
     });
-    linkage.forEach(name => {
-        var value = aria2Store[name];
-        getLinkage(name, value);
+    document.querySelectorAll('[data-link]').forEach(menu => {
+        var data = menu.getAttribute('data-link').match(/[^,;]+/g);
+        var [name, value] = data.splice(0, 2);
+        linkage[name].push(menu);
+        var minor = [];
+        var rule = value === '1' ? true : false;
+        var prime = rule === changes[name] ? true : false;
+        var second = true;
+        data.forEach((name, idx) => {
+            if (isNaN(name)) {
+                var value = data[idx + 1];
+                var rule = value === '1' ? true : false;
+                second = rule === changes[name] ? true : false;
+                linkage[name].push(menu);
+                minor.push({name, rule});
+            }
+        });
+        menu.chain = {major: {name, rule}, minor};
+        if (prime) {
+            menu.style.display = second ? 'block' : 'none';
+        }
+        else {
+            menu.style.display = 'none';
+        }
     });
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
 }
 
 function getLinkage(name, value) {
     changes[name] = value;
-    document.querySelectorAll('[data-link*="' + name + '"]').forEach(menu => {
-        var arr = menu.getAttribute('data-link').match(/[^,;]+/g);
-        var [name, rule] = arr.splice(0, 2);
-        var value = changes[name] ?? aria2Store[name];
-        var prime = rule == value;
+    linkage[name].forEach(menu => {
+        var {major, minor} = menu.chain;
+        var {name, rule} = major;
+        var prime = rule === changes[name];
         var second = true;
-        arr.forEach((el, idx) => {
-            if (idx % 2 === 1) {
-                var name = arr[idx - 1];
-                var value = changes[name] ?? aria2Store[name];
-                second = el == value;
-            }
+        minor.forEach(({name, rule}) => {
+            var value = changes[name];
+            second = rule === value;
         });
         if (prime) {
             menu.style.display = second ? 'block' : 'none';
