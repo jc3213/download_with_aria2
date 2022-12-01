@@ -14,7 +14,7 @@ var checking = {
     'proxy_enabled': 1,
     'proxy_always': 1,
     'capture_enabled': 1,
-    'capture_always':1
+    'capture_always': 1
 };
 var offset = {
     'refresh_interval': 1000,
