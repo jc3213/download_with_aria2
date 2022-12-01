@@ -199,9 +199,13 @@ function hotfix() {
     }
     if (aria2Store['capture_api'] === '1') {
         aria2Store['capture_webrequest'] = true;
+        delete aria2Store['capture_api'];
     }
     else {
         aria2Store['capture_webrequest'] = false;
+        delete aria2Store['capture_api'];
     }
-    chrome.storage.local.set(aria2Store);
+    var options = {...aria2Store};
+    chrome.storage.local.clear()
+    chrome.storage.local.set(options);
 }

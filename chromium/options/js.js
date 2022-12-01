@@ -212,7 +212,9 @@ function clearChanges() {
 function setChange(name, value) {
     changes[name] = value;
     savebtn.disabled = false;
-    linkage[name].forEach(printLinkage);
+    if (name in linkage) {
+        linkage[name].forEach(printLinkage);
+    }
     if (checking[name]) {
         document.querySelector('[name="' + name + '"]').checked = value;
     }
@@ -225,7 +227,9 @@ function getChange(name, old_value, new_value) {
     redones.push({name, old_value, new_value});
     savebtn.disabled = undobtn.disabled = false;
     changes[name] = new_value;
-    linkage[name].forEach(printLinkage);
+    if (name in linkage) {
+        linkage[name].forEach(printLinkage);
+    }
 }
 
 function setValue(name, value, checked) {
