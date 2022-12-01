@@ -142,6 +142,23 @@ document.querySelector('#aria2').addEventListener('change', event => {
     getChange(name, old_value, value);
 });
 
+document.querySelectorAll('[data-link]').forEach(menu => {
+    var data = menu.getAttribute('data-link').match(/[^,;]+/g);
+    var [name, value] = data.splice(0, 2);
+    linkage[name].push(menu);
+    var minor = [];
+    var rule = value === '1' ? true : false;
+    data.forEach((name, idx) => {
+       if (isNaN(name)) {
+             var value = data[idx + 1];
+            var rule = value === '1' ? true : false;
+            linkage[name].push(menu);
+            minor.push({name, rule});
+        }
+    });
+    menu.chain = {major: {name, rule}, minor};
+});
+
 chrome.storage.onChanged.addListener(changes => {
     if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
         aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
@@ -160,52 +177,29 @@ function aria2StartUp() {
             entry.value = getValue(name, value);
         }
     });
-    document.querySelectorAll('[data-link]').forEach(menu => {
-        var data = menu.getAttribute('data-link').match(/[^,;]+/g);
-        var [name, value] = data.splice(0, 2);
-        linkage[name].push(menu);
-        var minor = [];
-        var rule = value === '1' ? true : false;
-        var prime = rule === changes[name] ? true : false;
-        var second = true;
-        data.forEach((name, idx) => {
-            if (isNaN(name)) {
-                var value = data[idx + 1];
-                var rule = value === '1' ? true : false;
-                second = rule === changes[name] ? true : false;
-                linkage[name].push(menu);
-                minor.push({name, rule});
-            }
-        });
-        menu.chain = {major: {name, rule}, minor};
-        if (prime) {
-            menu.style.display = second ? 'block' : 'none';
-        }
-        else {
-            menu.style.display = 'none';
-        }
+    Object.keys(linkage).forEach(name => {
+        linkage[name].forEach(printLinkage);
     });
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
 }
 
-function getLinkage(name, value) {
-    changes[name] = value;
-    linkage[name].forEach(menu => {
-        var {major, minor} = menu.chain;
-        var {name, rule} = major;
-        var prime = rule === changes[name];
-        var second = true;
-        minor.forEach(({name, rule}) => {
-            var value = changes[name];
-            second = rule === value;
-        });
-        if (prime) {
-            menu.style.display = second ? 'block' : 'none';
-        }
-        else {
-            menu.style.display = 'none';
+function printLinkage(menu) {
+    var {major, minor} = menu.chain;
+    var {name, rule} = major;
+    var prime = rule === changes[name];
+    var second = [];
+    minor.forEach(({name, rule}) => {
+        var value = changes[name];
+        if (rule === value) {
+            second.push(name);
         }
     });
+    if (prime) {
+        menu.style.display = second.length === minor.length ? 'block' : 'none';
+    }
+    else {
+        menu.style.display = 'none';
+    }
 }
 
 function clearChanges() {
@@ -216,8 +210,9 @@ function clearChanges() {
 }
 
 function setChange(name, value) {
-    getLinkage(name, value);
+    changes[name] = value;
     savebtn.disabled = false;
+    linkage[name].forEach(printLinkage);
     if (checking[name]) {
         document.querySelector('[name="' + name + '"]').checked = value;
     }
@@ -229,7 +224,8 @@ function setChange(name, value) {
 function getChange(name, old_value, new_value) {
     redones.push({name, old_value, new_value});
     savebtn.disabled = undobtn.disabled = false;
-    getLinkage(name, new_value);
+    changes[name] = new_value;
+    linkage[name].forEach(printLinkage);
 }
 
 function setValue(name, value, checked) {
