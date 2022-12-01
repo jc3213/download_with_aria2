@@ -19,5 +19,7 @@
     "capture_resolve": [],
     "capture_include": [],
     "capture_reject": [],
-    "capture_exclude": []
+    "capture_exclude": [],
+    "folder_firefox": false,
+    "capture_webrequest": false
 }

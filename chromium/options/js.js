@@ -14,7 +14,7 @@ var checking = {
     'proxy_enabled': 1,
     'proxy_always': 1,
     'capture_enabled': 1,
-    'capture_always': 1
+    'capture_always':1
 };
 var offset = {
     'refresh_interval': 1000,
@@ -58,6 +58,7 @@ document.addEventListener('keydown', event => {
 
 savebtn.addEventListener('click', event => {
     if (global) {
+        aria2Store = {...changes};
         chrome.storage.local.set(changes);
     }
     else {
@@ -132,13 +133,13 @@ document.addEventListener('mouseup', event => {
 document.querySelector('#local').addEventListener('change', event => {
     var {name, value, checked} = event.target;
     var new_value = setValue(name, value, checked);
-    var old_value = name in changes ? changes[name] : aria2Store[name];
+    var old_value = changes[name];
     getChange(name, old_value, new_value);
 });
 
 document.querySelector('#aria2').addEventListener('change', event => {
     var {name, value} = event.target;
-    var old_value = name in changes ? changes[name] : aria2Global[name];
+    var old_value = changes[name];
     getChange(name, old_value, value);
 });
 
@@ -157,12 +158,6 @@ document.querySelectorAll('[data-link]').forEach(menu => {
         }
     });
     menu.chain = {major: {name, rule}, minor};
-});
-
-chrome.storage.onChanged.addListener(changes => {
-    if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
-        aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    }
 });
 
 function aria2StartUp() {
