@@ -68,7 +68,6 @@ captureen.addEventListener('change', event => {
 });
 captureen.parentNode.after(webrequest);
 
-
 checking['folder_firefox'] = 1;
 checking['capture_webrequest'] = 1;
 linkage['folder_enabled'].push(folderff);
