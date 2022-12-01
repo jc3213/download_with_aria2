@@ -20,16 +20,16 @@ var offset = {
     'refresh_interval': 1000,
     'capture_size': 1048576
 };
-var linkage = {
-    'folder_enabled': [],
-    'proxy_enabled': [],
-    'proxy_always': [],
-    'capture_enabled': [],
-    'capture_always': []
-};
-var changes = [];
+var linkage = [
+    'folder_enabled',
+    'proxy_enabled',
+    'proxy_always',
+    'capture_enabled',
+    'capture_always'
+];
+var changes = {};
 var undones = [];
-var backage = {};
+var redones = [];
 var global = true;
 var savebtn = document.querySelector('#save_btn');
 var undobtn = document.querySelector('#undo_btn');
@@ -58,23 +58,21 @@ document.addEventListener('keydown', event => {
 
 savebtn.addEventListener('click', event => {
     if (global) {
-        aria2Store = applyChanges('#local');
-        chrome.storage.local.set(aria2Store);
+        chrome.storage.local.set(changes);
     }
     else {
-        aria2Global = applyChanges('#aria2');
-        aria2RPC.message('aria2.changeGlobalOption', [aria2Global]);
+        aria2RPC.message('aria2.changeGlobalOption', [changes]);
     }
+    savebtn.disabled = true;
 });
 
 undobtn.addEventListener('click', event => {
-    var undo = changes.pop();
+    var undo = redones.pop();
     var {name, old_value} = undo;
     undones.push(undo);
-    savebtn.disabled = redobtn.disabled = false;
-    document.querySelector('[name="' + name + '"]').value = old_value;
-    getLinkage(name, old_value);
-    if (changes.length === 0) {
+    redobtn.disabled = false;
+    setChange(name, old_value);
+    if (redones.length === 0) {
         undobtn.disabled = true;
     }
 });
@@ -82,10 +80,9 @@ undobtn.addEventListener('click', event => {
 redobtn.addEventListener('click', event => {
     var redo = undones.pop();
     var {name, new_value} = redo;
-    changes.push(redo);
-    savebtn.disabled = undobtn.disabled = false;
-    document.querySelector('[name="' + name + '"]').value = new_value;
-    getLinkage(name, new_value);
+    redones.push(redo);
+    undobtn.disabled = false;
+    setChange(name, new_value);
     if (undones.length === 0) {
         redobtn.disabled = true;
     }
@@ -134,29 +131,19 @@ document.addEventListener('mouseup', event => {
 
 document.querySelector('#local').addEventListener('change', event => {
     var {name, value, checked} = event.target;
-    var new_value = applyValue(name, value, checked);
-    var old_value = name in backage ? backage[name] : aria2Store[name];
-    getChanges(name, old_value, new_value);
+    var new_value = setValue(name, value, checked);
+    var old_value = name in changes ? changes[name] : aria2Store[name];
+    getChange(name, old_value, new_value);
 });
 
 document.querySelector('#aria2').addEventListener('change', event => {
     var {name, value} = event.target;
-    var old_value = name in backage ? backage[name] : aria2Global[name];
-    getChanges(name, old_value, value);
-});
-
-document.querySelectorAll('[data-link]').forEach(menu => {
-    var link = menu.getAttribute('data-link');
-    link.split(';').forEach(rule => {
-        var idx = rule.indexOf(',');
-        var name = rule.slice(0, idx);
-        var rule = rule.slice(idx + 1);
-        linkage[name].push({menu, rule});
-    });
+    var old_value = name in changes ? changes[name] : aria2Global[name];
+    getChange(name, old_value, value);
 });
 
 chrome.storage.onChanged.addListener(changes => {
-    if (changes['jsonrpc_uri'] || changes['secret_token']) {
+    if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
         aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     }
 });
@@ -172,7 +159,7 @@ function aria2StartUp() {
             entry.value = getValue(name, value);
         }
     });
-    Object.keys(linkage).forEach(name => {
+    linkage.forEach(name => {
         var value = aria2Store[name];
         getLinkage(name, value);
     });
@@ -180,36 +167,54 @@ function aria2StartUp() {
 }
 
 function getLinkage(name, value) {
-    backage[name] = value;
-    if (name in linkage) {
-        linkage[name].forEach(chain => {
-            var {menu, rule} = chain;
-            if (checking[name]) {
-                menu.style.display = rule == value ? 'block' : 'none';
-            }
-            else {
-                menu.style.display = rule.includes(value) ? 'block' : 'none';
+    changes[name] = value;
+    document.querySelectorAll('[data-link*="' + name + '"]').forEach(menu => {
+        var arr = menu.getAttribute('data-link').match(/[^,;]+/g);
+        var [name, rule] = arr.splice(0, 2);
+        var value = changes[name] ?? aria2Store[name];
+        var prime = rule == value;
+        var second = true;
+        arr.forEach((el, idx) => {
+            if (idx % 2 === 1) {
+                var name = arr[idx - 1];
+                var value = changes[name] ?? aria2Store[name];
+                second = el == value;
             }
         });
-    }
+        if (prime) {
+            menu.style.display = second ? 'block' : 'none';
+        }
+        else {
+            menu.style.display = 'none';
+        }
+    });
 }
 
 function clearChanges() {
-    changes = [];
+    changes = {};
     undones = [];
-    backage = {};
+    redones = [];
     savebtn.disabled = undobtn.disabled = redobtn.disabled = true;
 }
 
-function getChanges(name, old_value, new_value) {
-    changes.push({name, old_value, new_value});
+function setChange(name, value) {
+    getLinkage(name, value);
+    savebtn.disabled = false;
+    if (checking[name]) {
+        document.querySelector('[name="' + name + '"]').checked = value;
+    }
+    else {
+        document.querySelector('[name="' + name + '"]').value = value;
+    }
+}
+
+function getChange(name, old_value, new_value) {
+    redones.push({name, old_value, new_value});
     savebtn.disabled = undobtn.disabled = false;
-    redobtn.disabled = true;
-    undones = [];
     getLinkage(name, new_value);
 }
 
-function applyValue(name, value, checked) {
+function setValue(name, value, checked) {
     if (checking[name]) {
         return checked;
     }
@@ -234,14 +239,4 @@ function getValue(name, value) {
     else {
         return value;
     }
-}
-
-function applyChanges(path) {
-    var options = {};
-    document.querySelectorAll(path + ' [name]').forEach(entry => {
-        var {name, value, checked} = entry;
-        options[name] = applyValue(name, value, checked);
-    });
-    savebtn.disabled = true;
-    return options;
 }
