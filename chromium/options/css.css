@@ -10,6 +10,7 @@ body:not(.aria2) [data-aria2], body.aria2 [data-local] {
 input[type="checkbox"] {
     width: fit-content;
     transform: scale(1.5);
+    accent-color: #006cbe;
 }
 
 #local, #aria2 {
