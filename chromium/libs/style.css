@@ -13,12 +13,8 @@
         background-color: #202124;
     }
     
-    input, textarea, select {
+    input, textarea, select, button {
         background-color: #4a4a4a;
-    }
-
-    button {
-        background-color: #006cbe;
     }
 
     body, div, option, input, textarea, select, button {
