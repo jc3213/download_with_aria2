@@ -206,6 +206,6 @@ function hotfix() {
         delete aria2Store['capture_api'];
     }
     var options = {...aria2Store};
-    chrome.storage.local.clear()
+    chrome.storage.local.clear();
     chrome.storage.local.set(options);
 }
