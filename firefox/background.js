@@ -58,14 +58,14 @@ async function aria2DownloadFirefox(url, referer, hostname, storeId, options = {
 }
 
 function aria2Capture() {
-    if (aria2Store['capture_mode']) {
+    if (aria2Store['capture_enabled']) {
         if (aria2Store['capture_webrequest']) {
-            browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
-            browser.downloads.onCreated.addListener(downloadCapture);
-        }
-        else {
             browser.downloads.onCreated.removeListener(downloadCapture);
             browser.webRequest.onHeadersReceived.addListener(webRequestCapture, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
+        }
+        else {
+            browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
+            browser.downloads.onCreated.addListener(downloadCapture);
         }
     }
     else {
@@ -126,7 +126,6 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
     if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
         if (disposition) {
             var out = getFileName(disposition);
-            console.log(disposition, out);
             var ext = getFileExtension(out);
         }
         else {
