@@ -170,7 +170,7 @@ function aria2StartUp() {
         var {name} = entry;
         var value = aria2Store[name];
         changes[name] = value;
-        if (checking[name]) {
+        if (name in checking) {
             entry.checked = value;
         }
         else {
@@ -215,7 +215,7 @@ function setChange(name, value) {
     if (name in linkage) {
         linkage[name].forEach(printLinkage);
     }
-    if (checking[name]) {
+    if (name in checking) {
         document.querySelector('[name="' + name + '"]').checked = value;
     }
     else {
@@ -233,26 +233,24 @@ function getChange(name, old_value, new_value) {
 }
 
 function setValue(name, value, checked) {
-    if (checking[name]) {
+    if (name in checking) {
         return checked;
     }
-    else if (mapping[name]) {
+    else if (name in mapping) {
         return value.split(/[\s\n,;]+/).filter(v => !!v);
     }
-    var multi = offset[name];
-    if (multi) {
-        return value * multi;
+    else if (name in offset) {
+        return value * offset[name];
     }
     return value;
 }
 
 function getValue(name, value) {
-    if (mapping[name]) {
+    if (name in mapping) {
         return value.join(' ');
     }
-    var multi = offset[name];
-    if (multi) {
-        return value / multi;
+    else if (name in offset) {
+        return value / offset[name];
     }
     else {
         return value;
