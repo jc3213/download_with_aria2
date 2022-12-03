@@ -96,9 +96,9 @@ function updateSession(task, status) {
     }
     else {
         type = 'stopped';
-        task.querySelector('[name="max-download-limit"]').disabled =
-        task.querySelector('[name="max-upload-limit"]').disabled =
-        task.querySelector('[name="all-proxy"]').disabled = true;
+        task.querySelectorAll('input, select').forEach(entry => {
+            entry.disabled = true
+        });
         if (task.classList.contains('http') && status !== 'complete') {
             task.querySelector('#retry_btn').style.display = 'inline-block';
         }
@@ -111,7 +111,7 @@ async function addSession(gid) {
     var result = await aria2RPC.message('aria2.tellStatus', [gid]);
     var task = printSession(result);
     var {status} = result;
-    var type = updateSession(task, status);
+    var type = task.type = updateSession(task, status);
     if (self[type + 'Task'].indexOf(gid) === -1) {
         self[type + 'Stat'].innerText ++;
         self[type + 'Task'].push(gid);
@@ -240,7 +240,7 @@ function parseSession(gid, status, bittorrent) {
         await aria2RPC.message('aria2.changeUri', [gid, 1, [], [uri.value]]);
         uri.value = '';
     });
-    var type = updateSession(task, status);
+    var type = task.type = updateSession(task, status);
     self[type + 'Stat'].innerText ++;
     self[type + 'Task'].push(gid);
     return task;
@@ -254,39 +254,41 @@ function clearTaskDetail() {
 }
 
 function printFileCell(task, list, {index, path, length, selected, uris}) {
-    var cell = fileLET.cloneNode(true);
-    var tile = cell.querySelector('#index');
+    var column = fileLET.cloneNode(true);
+    var tile = column.querySelector('#index');
     tile.innerText = index;
     tile.className = selected === 'true' ? 'checked' : 'suspend';
-    cell.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
-    cell.querySelector('#name').title = path;
-    cell.querySelector('#size').innerText = getFileSize(length);
+    column.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
+    column.querySelector('#name').title = path;
+    column.querySelector('#size').innerText = getFileSize(length);
     if (uris.length === 0) {
         tile.addEventListener('click', event => {
-            tile.className = tile.className === 'checked' ? 'suspend' : 'checked';
-            task.querySelector('#save_btn').style.display = 'block';
+            if (task.type !== 'stopped') {
+                tile.className = tile.className === 'checked' ? 'suspend' : 'checked';
+                task.querySelector('#save_btn').style.display = 'block';
+            }
         });
     }
     else {
         printTaskUris(task, uris);
     }
-    list.appendChild(cell);
-    return cell;
+    list.appendChild(column);
+    return column;
 }
 
 function printTaskFiles(task, files) {
     var fileList = task.querySelector('#files');
-    var cells = fileList.childNodes;
+    var columns = fileList.childNodes;
     files.forEach((file, index) => {
-        var cell = cells[index] ?? printFileCell(task, fileList, file);
+        var column = columns[index] ?? printFileCell(task, fileList, file);
         var {length, completedLength} = file;
-        cell.querySelector('#ratio').innerText = (completedLength / length * 10000 | 0) / 100;
+        column.querySelector('#ratio').innerText = (completedLength / length * 10000 | 0) / 100;
     });
 }
 
 function printUriCell(list, uri) {
-    var cell = uriLET.cloneNode(true);
-    cell.addEventListener('click', event => {
+    var column = uriLET.cloneNode(true);
+    column.addEventListener('click', event => {
         if (event.ctrlKey) {
             aria2RPC.message('aria2.changeUri', [activeId, 1, [uri], []]);
         }
@@ -294,25 +296,25 @@ function printUriCell(list, uri) {
            navigator.clipboard.writeText(uri);
         }
     });
-    list.appendChild(cell);
-    return cell;
+    list.appendChild(column);
+    return column;
 }
 
 function printTaskUris(task, uris) {
     var uriList = task.querySelector('#uris');
-    var cells = uriList.childNodes;
-    var index = -1;
+    var columns = uriList.childNodes;
     var used;
     var wait;
+    var idx = -1;
     uris.forEach(({uri, status}) => {
-        var cell = cells[index] ?? printUriCell(uriList, uri);
-        var link = cell.querySelector('#uri');
+        var column = columns[idx] ?? printUriCell(uriList, uri);
+        var link = column.querySelector('#uri');
         var {innerText} = link;
         if (innerText !== uri) {
             link.innerText = link.title = uri;
-            used = cell.querySelector('#used');
-            wait = cell.querySelector('#wait');
-            index ++;
+            used = column.querySelector('#used');
+            wait = column.querySelector('#wait');
+            idx ++;
         }
         if (status === 'used') {
             used.innerText ++;
@@ -321,9 +323,9 @@ function printTaskUris(task, uris) {
             wait.innerText ++;
         }
     });
-    cells.forEach((cell, cur) => {
-        if (cur > index) {
-            cell.remove();
+    columns.forEach((column, index) => {
+        if (index > idx) {
+            column.remove();
         }
     });
 }

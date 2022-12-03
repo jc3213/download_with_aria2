@@ -153,8 +153,8 @@ input:disabled + button {
 
 #queue > :not(.complete, .removed, .error) #meter:active,
 #queue > :not(.complete, .removed, .error) #meter #ratio:active,
-.session.p2p .file > :nth-child(1):active,
-.session.http .uri > :nth-child(1):active {
+#queue > :not(.complete, .removed, .error) .p2p .file > :nth-child(1):active,
+#queue .http .uri > :nth-child(1):active {
     filter: contrast(45%);
 }
 
