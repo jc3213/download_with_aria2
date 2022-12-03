@@ -146,7 +146,7 @@
     "option_proxy_always": {
         "message": "总是使用代理"
     },
-    "option_proxy_enabled_title": {
+    "option_proxy_always_title": {
         "message": "总是在新建下载时的使用代理服务器"
     },
     "option_capture_enabled": {
