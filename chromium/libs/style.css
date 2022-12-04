@@ -45,6 +45,7 @@ input, textarea {
     width: calc(100% - 12px);
     resize: none;
     border-width: 1px;
+    border-style: inset;
 }
 
 input + span.float {
@@ -65,7 +66,6 @@ input:focus + span.float {
 textarea {
     overflow-y: auto;
     overflow-x: hidden;
-    border-style: inset;
 }
 
 select:only-child {
