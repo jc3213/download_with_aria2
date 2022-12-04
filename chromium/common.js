@@ -2,8 +2,15 @@ var aria2Prompt = {};
 var aria2Monitor = {};
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
-    var {id} = sender.tab;
-    response(aria2Prompt[id]);
+    var {type, message} = message;
+    if (type === 'prompt') {
+        var {id} = sender.tab;
+        response(aria2Prompt[id]);
+    }
+    else if (type === 'download') {
+        var {url, options} = message;
+        aria2DownloadPrompt(url, options);
+    }
 });
 
 chrome.commands.onCommand.addListener(command => {
@@ -23,6 +30,10 @@ async function aria2Download(url, referer, hostname, options = {}) {
         options['referer'] = referer;
         options['header'] = await getRequestHeaders(url);
     }
+    aria2DownloadPrompt(url, options);
+}
+
+function aria2DownloadPrompt(url, options) {
     if (aria2Store['download_prompt']) {
         getDownloadPrompt(url, options);
     }
@@ -114,98 +125,4 @@ function getDownloadFolder() {
         return aria2Store['folder_defined'];
     }
     return null;
-}
-
-function hotfix() {
-    if (aria2Store['capture_mode'] === undefined) {
-        return;
-    }
-    if (aria2Store['capture_mode'] === '0') {
-        aria2Store['capture_enabled'] = false;
-        aria2Store['capture_always'] = false;
-        delete aria2Store['capture_mode'];
-    }
-    else if (aria2Store['capture_mode'] === '1') {
-        aria2Store['capture_enabled'] = true;
-        aria2Store['capture_always'] = false;
-        delete aria2Store['capture_mode'];
-    }
-    else if (aria2Store['capture_mode'] === '2') {
-        aria2Store['capture_enabled'] = true;
-        aria2Store['capture_always'] = true;
-        delete aria2Store['capture_mode'];
-    }
-    if (aria2Store['download_headers'] === '1') {
-        aria2Store['download_headers'] = true;
-    }
-    else {
-        aria2Store['download_headers'] = false;
-    }
-    if (aria2Store['download_prompt'] === '1') {
-        aria2Store['download_prompt'] = true;
-    }
-    else {
-        aria2Store['download_prompt'] = false;
-    }
-    if (aria2Store['notify_start'] === '1') {
-        aria2Store['notify_start'] = true;
-    }
-    else {
-        aria2Store['notify_start'] = false;
-    }
-    if (aria2Store['notify_complete'] === '1') {
-        aria2Store['notify_complete'] = true;
-    }
-    else {
-        aria2Store['notify_complete'] = false;
-    }
-    if (aria2Store['proxy_mode'] === '0') {
-        aria2Store['proxy_enabled'] = false;
-        aria2Store['proxy_always'] = false;
-        delete aria2Store['proxy_mode'];
-    }
-    else if (aria2Store['proxy_mode'] === '1') {
-        aria2Store['proxy_enabled'] = true;
-        aria2Store['proxy_always'] = false;
-        delete aria2Store['proxy_mode'];
-    }
-    else if (aria2Store['proxy_mode'] === '2') {
-        aria2Store['proxy_enabled'] = true;
-        aria2Store['proxy_always'] = true;
-        delete aria2Store['proxy_mode'];
-    }
-    if (aria2Store['capture_size'] !== undefined) {
-        aria2Store['capture_filesize'] = aria2Store['capture_size'];
-        delete aria2Store['capture_size'];
-    }
-    if (aria2Store['folder_mode'] === '0') {
-        aria2Store['folder_enabled'] = false;
-        aria2Store['folder_firefox'] = false;
-        delete aria2Store['folder_mode'];
-    }
-    else if (aria2Store['folder_mode'] === '1') {
-        aria2Store['folder_enabled'] = true;
-        aria2Store['folder_firefox'] = false;
-        delete aria2Store['folder_mode'];
-    }
-    else if (aria2Store['folder_mode'] === '2') {
-        aria2Store['folder_enabled'] = true;
-        aria2Store['folder_firefox'] = true;
-        delete aria2Store['folder_mode'];
-    }
-    if (aria2Store['folder_path'] !== undefined) {
-        aria2Store['folder_defined'] = aria2Store['folder_path'];
-        delete aria2Store['folder_path'];
-    }
-    if (aria2Store['capture_api'] === '1') {
-        aria2Store['capture_webrequest'] = true;
-        delete aria2Store['capture_api'];
-    }
-    else {
-        aria2Store['capture_webrequest'] = false;
-        delete aria2Store['capture_api'];
-    }
-    var options = {...aria2Store};
-    chrome.storage.local.clear();
-    chrome.storage.local.set(options);
 }

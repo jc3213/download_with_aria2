@@ -60,7 +60,6 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
 async function aria2StartUp() {
     var json = await chrome.storage.local.get(null);
     aria2Store = 'jsonrpc_uri' in json ? json : await getDefaultOptions();
-    hotfix();
     aria2Update();
 }
 

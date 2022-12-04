@@ -92,7 +92,7 @@ function fullModeInit() {
 }
 
 function slimModeInit() {
-    chrome.runtime.sendMessage('prompt', response => {
+    chrome.runtime.sendMessage({type: 'prompt'}, response => {
         entries.value = response.url;
         var extra = document.querySelectorAll('[name]').printOptions(response.options);
         options = {...options, ...extra};
