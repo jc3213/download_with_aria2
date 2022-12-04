@@ -116,9 +116,9 @@ exportbtn.addEventListener('click', event => {
 importbtn.addEventListener('change', async event => {
     var json = await readFileTypeJSON(event.target.files[0]);
     chrome.storage.local.set(json);
+    clearChanges();
     aria2Store = json;
     aria2StartUp();
-    clearChanges();
     event.target.value = '';
 });
 
@@ -151,7 +151,7 @@ document.querySelectorAll('[data-link]').forEach(menu => {
     var rule = value === '1' ? true : false;
     data.forEach((name, idx) => {
        if (isNaN(name)) {
-             var value = data[idx + 1];
+            var value = data[idx + 1];
             var rule = value === '1' ? true : false;
             linkage[name].push(menu);
             minor.push({name, rule});
@@ -161,21 +161,21 @@ document.querySelectorAll('[data-link]').forEach(menu => {
 });
 
 function aria2StartUp() {
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    changes = {...aria2Store};
     document.querySelectorAll('#local [name]').forEach(entry => {
         var {name} = entry;
         var value = aria2Store[name];
-        changes[name] = value;
         if (name in checking) {
             entry.checked = value;
         }
         else {
             entry.value = getValue(name, value);
         }
+        if (name in linkage) {
+            linkage[name].forEach(printLinkage);
+        }
     });
-    Object.keys(linkage).forEach(name => {
-        linkage[name].forEach(printLinkage);
-    });
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
 }
 
 function printLinkage(menu) {
