@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.1.0.1609",
+    "version": "4.1.0.1610",
     "manifest_version": 2,
     "permissions": [
         "contextMenus",
@@ -13,6 +13,13 @@
         "<all_urls>"
     ],
     "default_locale": "en",
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"],
+            "run-at": "document-idle"
+        }
+    ],
     "background": {
         "scripts": [
             "libs/aria2.js",

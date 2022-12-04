@@ -62,7 +62,6 @@ async function aria2StartUp() {
     aria2Store = 'jsonrpc_uri' in json ? json : await getDefaultOptions();
     hotfix();
     aria2Update();
-    self.screen = await chrome.windows.getCurrent();
 }
 
 function aria2Update() {
