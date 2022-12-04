@@ -1,23 +1,19 @@
 @media (prefers-color-scheme: light) { 
-    body, div {
-        background-color: #ffffff;
-    }
-
     * {
         border-color: #9a9a9a;
     }
 }
 
 @media (prefers-color-scheme: dark) { 
-    body, div, option {
+    body {
         background-color: #202124;
     }
     
-    input, textarea, select, button {
+    button, input, textarea, select {
         background-color: #4a4a4a;
     }
 
-    body, div, option, input, textarea, select, button {
+    body, button, input, textarea, select {
         color: #ffffff;
     }
 
@@ -26,7 +22,7 @@
     }
 }
 
-body, input, textarea, select, option, button {
+body, button, input, textarea, select {
     font-family: "Segoe UI", Tahoma, sans-serif;
     font-size: 16px;
 }
@@ -40,7 +36,7 @@ body, div {
     filter: contrast(25%);
 }
 
-select, option {
+select {
     padding: 4px 5px;
 }
 
@@ -49,7 +45,6 @@ input, textarea {
     width: calc(100% - 12px);
     resize: none;
     border-width: 1px;
-    border-style: inset;
 }
 
 input + span.float {
@@ -92,7 +87,7 @@ button input[type="file"] {
 
 button:enabled:hover, button:enabled:hover > * {
     cursor: pointer;
-    filter: contrast(65%);
+    filter: contrast(75%);
 }
 
 button:enabled:active {
