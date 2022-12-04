@@ -65,6 +65,7 @@ input:focus + span.float {
 textarea {
     overflow-y: auto;
     overflow-x: hidden;
+    border-style: inset;
 }
 
 select:only-child {
