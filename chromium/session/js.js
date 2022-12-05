@@ -52,7 +52,7 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
         var metalink = new Blob([entries.value], {type: 'application/metalink;charset=utf-8'});
         await downloadMetalink(metalink, aria2Global);
     }
-    //close();
+    close();
 });
 
 document.querySelector('#upload_btn').addEventListener('change', async event => {
