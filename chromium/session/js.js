@@ -5,12 +5,9 @@ var countdown = document.querySelector('#countdown');
 
 if (location.search === '?slim') {
     document.body.className = 'slim';
-    downloadInit = slimModeInit;
 }
 else {
     document.body.className = 'full';
-    document.querySelector('input[name="out"]').disabled = true;
-    downloadInit = fullModeInit;
 }
 
 document.addEventListener('keydown', event => {
@@ -55,7 +52,7 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
         var metalink = new Blob([entries.value], {type: 'application/metalink;charset=utf-8'});
         await downloadMetalink(metalink, aria2Global);
     }
-    close();
+    //close();
 });
 
 document.querySelector('#upload_btn').addEventListener('change', async event => {
@@ -86,10 +83,6 @@ document.addEventListener('change', event => {
     }
 });
 
-function fullModeInit() {
-    document.querySelector('[name="user-agent"]').value = aria2Global['user-agent'] = aria2Store['user_agent'];
-}
-
 function slimModeInit() {
     chrome.runtime.sendMessage({type: 'prompt'}, response => {
         var {url, options} = response;
@@ -99,8 +92,10 @@ function slimModeInit() {
         else {
             entries.value = url;
         }
-        var extra = document.querySelectorAll('[name]').printOptions(options);
-        aria2Global = {...aria2Global, ...extra};
+        if (options !== undefined) {
+            var extra = document.querySelectorAll('[name]').printOptions(options);
+            aria2Global = {...aria2Global, ...extra};
+        }
         setInterval(() => {
             countdown.innerText --;
             if (countdown.innerText === '0') {
@@ -159,6 +154,9 @@ async function downloadMetalink(file) {
 async function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
     var global = await aria2RPC.call('aria2.getGlobalOption');
+    global['user-agent'] = aria2Store['user_agent']
     aria2Global = document.querySelectorAll('[name]').printOptions(global);
-    downloadInit();
+    if (location.search === '?slim') {
+        slimModeInit();
+    }
 }

@@ -44,23 +44,16 @@ class Aria2 {
         });
         var string = JSON.stringify(json);
         return post(jsonrpc, string).then(function (array) {
-            var good = [];
-            var evil = [];
-            array.forEach(function (json) {
+            var result = array.map(function (json) {
                 var {result, error} = json;
                 if (result !== undefined) {
-                    good.push(result);
+                    return result;
                 }
                 else {
-                    evil.push(error);
+                    throw error;
                 }
             });
-            if (good.length !== 0) {
-                return good;
-            }
-            else {
-                throw evil;
-            }
+            return result;
         });
     }
     fetch (jsonrpc, body) {
