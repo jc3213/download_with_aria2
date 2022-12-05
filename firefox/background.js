@@ -52,7 +52,7 @@ async function aria2DownloadFirefox(url, referer, hostname, storeId, options = {
         getDownloadPrompt(url, options);
     }
     else {
-        aria2RPC.message('aria2.addUri', [[url]]).then(result => aria2WhenStart(url));
+        aria2RPC.call('aria2.addUri', [[url]]).then(result => aria2WhenStart(url));
     }
 }
 

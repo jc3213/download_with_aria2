@@ -62,8 +62,3 @@ async function aria2StartUp() {
     aria2Store = 'jsonrpc_uri' in json ? json : await getDefaultOptions();
     aria2Update();
 }
-
-function aria2Update() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2Status();
-}

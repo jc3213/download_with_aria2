@@ -1,5 +1,6 @@
-function aria2Status() {
-    aria2RPC.message('aria2.getGlobalOption').then(result => {
+function aria2Update() {
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    aria2RPC.call('aria2.getGlobalOption').then(result => {
         chrome.action.setBadgeText({text: ''});
     }).catch(error => {
         chrome.action.setBadgeText({text: 'E'});
