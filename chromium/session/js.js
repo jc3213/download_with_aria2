@@ -110,7 +110,7 @@ function downloadUrls(urls) {
         method: 'aria2.addUri',
         params: [[url], aria2Global]
     });
-    aria2WhenStart(urls.join());
+    aria2WhenStart(urls.join('\n'));
     return aria2RPC.batch(sessions);
 }
 
@@ -130,7 +130,7 @@ function downloadJSON(json) {
         }
         return {method: 'aria2.addUri', params: [[url], options]};
     });
-    aria2WhenStart(urls.join());
+    aria2WhenStart(urls.join('\n'));
     return aria2RPC.batch(sessions);
 }
 
