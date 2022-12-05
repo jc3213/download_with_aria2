@@ -32,29 +32,28 @@ document.addEventListener('keydown', event => {
 document.querySelector('#referer_btn').addEventListener('click', async event => {
     chrome.tabs.query({active: true, currentWindow: false}, tabs => {
         var {url} = tabs[0];
-        event.target.previousElementSibling.value = options['referer'] = url;
+        event.target.previousElementSibling.value = aria2Global['referer'] = url;
     });
 });
 
 document.querySelector('#proxy_btn').addEventListener('click', event => {
-    event.target.previousElementSibling.value = options['all-proxy'] = aria2Store['proxy_server'];
+    event.target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Store['proxy_server'];
 });
 
 document.querySelector('#submit_btn').addEventListener('click', async event => {
     if (batch.value === '0') {
         var urls = entries.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
         if (urls) {
-            var session = urls.map(url => downloadUrl(url, options));
-            await Promise.all(session);
+            await downloadUrls(urls, aria2Global);
         }
     }
     else if (batch.value === '1') {
         var json = JSON.parse(entries.value);
-        await parseJSON(json, options);
+        await downloadJSON(json, aria2Global);
     }
     else if (batch.value === '2') {
         var metalink = new Blob([entries.value], {type: 'application/metalink;charset=utf-8'});
-        await downloadMetalink(metalink, options);
+        await downloadMetalink(metalink, aria2Global);
     }
     close();
 });
@@ -62,13 +61,13 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var file = event.target.files[0];
     if (file.name.endsWith('torrent')){
-        await downloadTorrent(file, options);
+        await downloadTorrent(file, aria2Global);
     }
     else if (file.name.endsWith('json')) {
-        await downloadJSON(file, options);
+        await parseJSON(file, aria2Global);
     }
     else {
-        await downloadMetalink(file, options);
+        await downloadMetalink(file, aria2Global);
     }
     close();
 });
@@ -83,19 +82,25 @@ document.querySelector('#extra_btn').addEventListener('click', async event => {
 document.addEventListener('change', event => {
     var {name, value} = event.target;
     if (name) {
-        options[name] = value;
+        aria2Global[name] = value;
     }
 });
 
 function fullModeInit() {
-    document.querySelector('[name="user-agent"]').value = options['user-agent'] = aria2Store['user_agent'];
+    document.querySelector('[name="user-agent"]').value = aria2Global['user-agent'] = aria2Store['user_agent'];
 }
 
 function slimModeInit() {
     chrome.runtime.sendMessage({type: 'prompt'}, response => {
-        entries.value = response.url;
-        var extra = document.querySelectorAll('[name]').printOptions(response.options);
-        options = {...options, ...extra};
+        var {url, options} = response;
+        if (Array.isArray(url)) {
+            entries.value = url.join('\n');
+        }
+        else {
+            entries.value = url;
+        }
+        var extra = document.querySelectorAll('[name]').printOptions(options);
+        aria2Global = {...aria2Global, ...extra};
         setInterval(() => {
             countdown.innerText --;
             if (countdown.innerText === '0') {
@@ -105,48 +110,55 @@ function slimModeInit() {
     });
 }
 
-function parseJSON(json, origin) {
+function downloadUrls(urls) {
+    var sessions = urls.map(url => param = {
+        method: 'aria2.addUri',
+        params: [[url], aria2Global]
+    });
+    aria2WhenStart(urls.join());
+    return aria2RPC.batch(sessions);
+}
+
+function downloadJSON(json) {
     if (!Array.isArray(json)) {
         json = [json];
     }
-    var session = json.map(entry => {
+    var urls = [];
+    var sessions = json.map(entry => {
         var {url, options} = entry;
-        if (options) {
-            options = {...origin, ...options};
+        urls.push(url);
+        if (options !== undefined) {
+            options = {...aria2Global, ...options};
         }
         else {
-            options = origin;
+            options = aria2Global;
         }
-        return downloadUrl(url, options);
+        return {method: 'aria2.addUri', params: [[url], options]};
     });
-    return Promise.all(session);
+    aria2WhenStart(urls.join());
+    return aria2RPC.batch(sessions);
 }
 
-function downloadUrl(url, options) {
-    aria2WhenStart(url);
-    return aria2RPC.message('aria2.addUri', [[url], options]);
-}
-
-async function downloadJSON(file, options) {
+async function parseJSON(file) {
     var json = await readFileTypeJSON(file);
-    return parseJSON(json, options);
+    return downloadJSON(json);
 }
 
-async function downloadTorrent(file, options) {
+async function downloadTorrent(file) {
     var torrent = await readFileForAria2(file);
     aria2WhenStart(file.name);
-    return aria2RPC.message('aria2.addTorrent', [torrent]);
+    return aria2RPC.call('aria2.addTorrent', [torrent]);
 }
 
-async function downloadMetalink(file, options) {
+async function downloadMetalink(file) {
     var metalink = await readFileForAria2(file);
     aria2WhenStart(file.name);
-    return aria2RPC.message('aria2.addMetalink', [metalink, options]);
+    return aria2RPC.call('aria2.addMetalink', [metalink, aria2Global]);
 }
 
 async function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    var global = await aria2RPC.message('aria2.getGlobalOption');
-    options = document.querySelectorAll('[name]').printOptions(global);
+    var global = await aria2RPC.call('aria2.getGlobalOption');
+    aria2Global = document.querySelectorAll('[name]').printOptions(global);
     downloadInit();
 }

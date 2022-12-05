@@ -1,6 +1,6 @@
 function aria2StartUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2RPC.message('aria2.tellActive').then(result => {
+    aria2RPC.call('aria2.tellActive').then(result => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
         var active = result.map(({gid}) => gid);
         aria2Badge(active.length);
@@ -16,7 +16,7 @@ function aria2StartUp() {
                 else {
                     active.splice(active.indexOf(gid), 1);
                     if (method === 'aria2.onDownloadComplete') {
-                        var {bittorrent, files} = await aria2RPC.message('aria2.tellStatus', [gid]);
+                        var {bittorrent, files} = await aria2RPC.call('aria2.tellStatus', [gid]);
                         var name = getDownloadName(bittorrent, files);
                         aria2WhenComplete(name);
                     }

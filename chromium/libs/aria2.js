@@ -1,38 +1,34 @@
 class Aria2 {
-    constructor (url, token) {
+    constructor (url, secret) {
         if (url.startsWith('http')) {
-            this.call = this.fetch;
+            this.post = this.fetch;
         }
         else if (url.startsWith('ws')) {
-            this.call = this.websocket;
+            this.post = this.websocket;
         }
         else {
             throw new Error('Invalid JSON-RPC URL, protocal not supported!');
         }
         this.jsonrpc = url;
-        if (token) {
-            this.params = ['token:' + token];
-        }
-        else {
-            this.params = [];
-        }
+        this.secret = secret;
     }
-    message (method, options) {
-        var params = [...this.params];
-        if (options) {
+    message (method, secret, options) {
+        var params = [];
+        if (secret !== undefined) {
+            params.push('token:' + secret);
+        }
+        if (Array.isArray(options)) {
             params.push(...options);
         }
-        var json = {id: '', jsonrpc: '2.0', method, params};
-        var message = JSON.stringify(json);
-        return this.call(message);
+        return {id: '', jsonrpc: '2.0', method, params};
     }
-    fetch (body) {
-        return fetch(this.jsonrpc, {method: 'POST', body})
-        .then(function (response) {
-            return response.json()
-        }).then(function (json) {
+    call (method, options) {
+        var {jsonrpc, secret, message, post} = this;
+        var json = message(method, secret, options);
+        var string = JSON.stringify(json);
+        return post(jsonrpc, string).then(function (json) {
             var {result, error} = json;
-            if (result) {
+            if (result !== undefined) {
                 return result;
             }
             else {
@@ -40,22 +36,49 @@ class Aria2 {
             }
         });
     }
-    websocket (message) {
+    batch (array) {
+        var {jsonrpc, secret, message, post} = this;
+        var json = array.map(function (job) {
+            var {method, params} = job;
+            return message(method, secret, params);
+        });
+        var string = JSON.stringify(json);
+        return post(jsonrpc, string).then(function (array) {
+            var good = [];
+            var evil = [];
+            array.forEach(function (json) {
+                var {result, error} = json;
+                if (result !== undefined) {
+                    good.push(result);
+                }
+                else {
+                    evil.push(error);
+                }
+            });
+            if (good.length !== 0) {
+                return good;
+            }
+            else {
+                throw evil;
+            }
+        });
+    }
+    fetch (jsonrpc, body) {
+        return fetch(jsonrpc, {method: 'POST', body}).then(function (response) {
+            return response.json();
+        });
+    }
+    websocket (jsonrpc, message) {
         return new Promise(function (resolve, reject) {
-            var socket = new WebSocket(this.jsonrpc);
+            var socket = new WebSocket(jsonrpc);
             socket.onopen = function (event) {
                 socket.send(message);
             };
             socket.onclose = reject;
             socket.onmessage = function (event) {
                 socket.close();
-                var {result, error} = JSON.parse(event.data);
-                if (result) {
-                    resolve(result);
-                }
-                else {
-                    reject(error);
-                }
+                var json = JSON.parse(event.data);
+                resolve(json);
             };
         });
     }

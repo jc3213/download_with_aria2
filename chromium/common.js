@@ -38,7 +38,7 @@ function aria2DownloadPrompt(url, options) {
         getDownloadPrompt(url, options);
     }
     else {
-        aria2RPC.message('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
+        aria2RPC.call('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
     }
 }
 
