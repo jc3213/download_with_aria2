@@ -106,11 +106,12 @@ function slimModeInit() {
 }
 
 function downloadUrls(urls) {
-    var sessions = urls.map(url => param = {
-        method: 'aria2.addUri',
-        params: [[url], aria2Global]
+    var message = '';
+    var sessions = urls.map(url => {
+        message += url + '\n';
+        return {method: 'aria2.addUri', params: [[url], aria2Global]};
     });
-    aria2WhenStart(urls.join('\n'));
+    aria2WhenStart(message);
     return aria2RPC.batch(sessions);
 }
 
@@ -118,10 +119,10 @@ function downloadJSON(json) {
     if (!Array.isArray(json)) {
         json = [json];
     }
-    var urls = [];
+    var message = '';
     var sessions = json.map(entry => {
         var {url, options} = entry;
-        urls.push(url);
+        message += url + '\n';
         if (options !== undefined) {
             options = {...aria2Global, ...options};
         }
@@ -130,7 +131,7 @@ function downloadJSON(json) {
         }
         return {method: 'aria2.addUri', params: [[url], options]};
     });
-    aria2WhenStart(urls.join('\n'));
+    aria2WhenStart(message);
     return aria2RPC.batch(sessions);
 }
 
