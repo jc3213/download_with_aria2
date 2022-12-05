@@ -33,19 +33,15 @@ async function aria2Download(url, referer, hostname, options = {}) {
     aria2DownloadPrompt(url, options);
 }
 
-function aria2DownloadPrompt(url, options) {
+async function aria2DownloadPrompt(url, options) {
     if (aria2Store['download_prompt']) {
-        getDownloadPrompt(url, options);
+        var {tabs} = await aria2NewSession('slim');
+        var {id} = tabs[0];
+        aria2Prompt[id] = {url, options};
     }
     else {
         aria2RPC.call('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
     }
-}
-
-async function getDownloadPrompt(url, options) {
-    var {tabs} = await aria2NewSession('slim');
-    var {id} = tabs[0];
-    aria2Prompt[id] = {url, options};
 }
 
 async function getDefaultOptions() {
