@@ -19,7 +19,7 @@ browser.storage.local.get(null, async json => {
 browser.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         var {newValue} = changes[key];
-        if (newValue !== undefined) {
+        if (newValue) {
             aria2Store[key] = newValue;
         }
     });
