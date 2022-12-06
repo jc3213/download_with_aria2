@@ -22,7 +22,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         var {newValue} = changes[key];
-        if (newValue !== undefined) {
+        if (newValue) {
             aria2Store[key] = newValue;
         }
     });
