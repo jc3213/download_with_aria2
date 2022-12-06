@@ -210,10 +210,10 @@
         "message": "Options"
     },
     "popup_download": {
-        "message": "Download Speed"
+        "message": "DL Speed"
     },
     "popup_upload": {
-        "message": "Upload Speed"
+        "message": "UP Speed"
     },
     "task_referer": {
         "message": "Referer"
