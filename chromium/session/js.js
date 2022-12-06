@@ -92,7 +92,7 @@ function slimModeInit() {
         else {
             entries.value = url;
         }
-        if (options !== undefined) {
+        if (options) {
             var extra = document.querySelectorAll('[name]').printOptions(options);
             aria2Global = {...aria2Global, ...extra};
         }
@@ -123,7 +123,7 @@ function downloadJSON(json) {
     var sessions = json.map(entry => {
         var {url, options} = entry;
         message += url + '\n';
-        if (options !== undefined) {
+        if (options) {
             options = {...aria2Global, ...options};
         }
         else {
