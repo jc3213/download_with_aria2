@@ -180,31 +180,32 @@ function parseSession(gid, status, bittorrent) {
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
         if (activeId === gid) {
-            activeId = clearTaskDetail();
+            activeId = closeTaskDetail();
         }
         else {
             if (activeId) {
-                clearTaskDetail();
+                closeTaskDetail();
             }
-            var options = await aria2RPC.call('aria2.getOption', [gid]);
+            var [files, options] = await getTaskDetail(gid);
             task.querySelectorAll('[name]').printOptions(options);
-            var {status, bittorrent, files} = await aria2RPC.call('aria2.tellStatus', [gid]);
             printTaskFiles(task, files);
             task.classList.add('extra');
             activeId = gid;
         }
     });
     task.querySelector('#retry_btn').addEventListener('click', async event => {
-        var [{path, uris}] = await aria2RPC.call('aria2.getFiles', [gid]);
+        var [files, options] = await getTaskDetail(gid);
+        var {uris, path} = files[0];
         var url = [...new Set(uris.map(({uri}) => uri))];
-        var options = await aria2RPC.call('aria2.getOption', [gid]);
         if (path) {
             var li = path.lastIndexOf('/');
             options['dir'] = path.slice(0, li);
             options['out'] = path.slice(li + 1);
         }
-        await aria2RPC.call('aria2.removeDownloadResult', [gid]);
-        var id = await aria2RPC.call('aria2.addUri', [url, options]);
+        var [id] = await aria2RPC.batch([
+            {method: 'aria2.addUri', params: [url, options]},
+            {method: 'aria2.removeDownloadResult', params: [gid]}
+        ]);
         addSession(id);
         removeSession('stopped', gid, task);
     });
@@ -246,7 +247,14 @@ function parseSession(gid, status, bittorrent) {
     return task;
 }
 
-function clearTaskDetail() {
+function getTaskDetail(gid) {
+    return aria2RPC.batch([
+        {method: 'aria2.getFiles', params: [gid]},
+        {method: 'aria2.getOption', params: [gid]}
+    ]);
+}
+
+function closeTaskDetail() {
     var task = document.getElementById(activeId);
     task.classList.remove('extra');
     task.querySelector('#files').innerHTML = task.querySelector('#uris').innerHTML = '';
