@@ -204,9 +204,9 @@ function parseSession(gid, status, bittorrent) {
         var {uris, path} = files[0];
         var url = [...new Set(uris.map(({uri}) => uri))];
         if (path) {
-            var li = path.lastIndexOf('/');
-            options['dir'] = path.slice(0, li);
-            options['out'] = path.slice(li + 1);
+            var ni = path.lastIndexOf('/');
+            options['dir'] = path.slice(0, ni);
+            options['out'] = path.slice(ni + 1);
         }
         var [id] = await aria2RPC.batch([
             {method: 'aria2.addUri', params: [url, options]},
