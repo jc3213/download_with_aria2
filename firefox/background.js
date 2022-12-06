@@ -48,12 +48,7 @@ async function aria2DownloadFirefox(url, referer, hostname, storeId, options = {
         options['referer'] = referer;
         options['header'] = await getRequestHeadersFirefox(url, storeId);
     }
-    if (aria2Store['download_prompt']) {
-        getDownloadPrompt(url, options);
-    }
-    else {
-        aria2RPC.call('aria2.addUri', [[url]]).then(result => aria2WhenStart(url));
-    }
+    aria2DownloadPrompt(url, options);
 }
 
 function aria2Capture() {
