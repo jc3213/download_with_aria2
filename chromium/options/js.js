@@ -62,7 +62,7 @@ savebtn.addEventListener('click', event => {
         chrome.storage.local.set(changes);
     }
     else {
-        aria2RPC.message('aria2.changeGlobalOption', [changes]);
+        aria2RPC.call('aria2.changeGlobalOption', [changes]);
     }
     savebtn.disabled = true;
 });
@@ -97,7 +97,7 @@ document.querySelector('#back_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#aria2_btn').addEventListener('click', event => {
-    aria2RPC.message('aria2.getGlobalOption').then(options => {
+    aria2RPC.call('aria2.getGlobalOption').then(options => {
         aria2Global = document.querySelectorAll('#aria2 [name]').printOptions(options);
         clearChanges();
         global = false;
@@ -158,6 +158,12 @@ document.querySelectorAll('[data-link]').forEach(menu => {
         }
     });
     menu.chain = {major: {name, rule}, minor};
+});
+
+chrome.storage.onChanged.addListener(changes => {
+    if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
+        aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    }
 });
 
 function aria2StartUp() {
