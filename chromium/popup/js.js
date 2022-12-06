@@ -46,10 +46,16 @@ function aria2StartUp() {
     waitingTask = [];
     stoppedTask = [];
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
-    aria2RPC.call('aria2.tellWaiting', [0, 999]).then(async waiting => {
-        updateManager();
-        var stopped = await aria2RPC.call('aria2.tellStopped', [0, 999]);
-        [...waiting, ...stopped].forEach(printSession);
+    aria2RPC.batch([
+        {method: 'aria2.getGlobalStat'},
+        {method: 'aria2.tellActive'},
+        {method: 'aria2.tellWaiting', params: [0, 999]},
+        {method: 'aria2.tellStopped', params: [0, 999]}
+    ]).then(result => {
+        var [{downloadSpeed, uploadSpeed}, active, waiting, stopped] = result;
+        [...active, ...waiting, ...stopped].forEach(printSession);
+        downloadStat.innerText = getFileSize(downloadSpeed);
+        uploadStat.innerText = getFileSize(uploadSpeed);
         aria2Client();
     }).catch(error => {
         activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = downloadStat.innerText = uploadStat.innerText = '0';
