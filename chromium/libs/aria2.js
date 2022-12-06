@@ -28,12 +28,10 @@ class Aria2 {
         var string = JSON.stringify(json);
         return post(jsonrpc, string).then(function (json) {
             var {result, error} = json;
-            if (result !== undefined) {
-                return result;
-            }
-            else {
+            if (result === undefined) {
                 throw error;
             }
+            return result;
         });
     }
     batch (array) {
@@ -46,12 +44,10 @@ class Aria2 {
         return post(jsonrpc, string).then(function (array) {
             var result = array.map(function (json) {
                 var {result, error} = json;
-                if (result !== undefined) {
-                    return result;
-                }
-                else {
+                if (result === undefined) {
                     throw error;
                 }
+                return result;
             });
             return result;
         });
