@@ -24,6 +24,7 @@
         "scripts": [
             "libs/aria2.js",
             "libs/tools.js",
+            "libs/core.js",
             "common.js",
             "indicator.js",
             "background.js"
