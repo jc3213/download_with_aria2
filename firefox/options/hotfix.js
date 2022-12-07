@@ -1,6 +1,6 @@
 var i18n = {
     'en': {
-        folderff: 'Follow Browser Behavior',
+        folderff: 'Browser Behavior',
         folderff_title: 'Save files into browser defined directory',
         webrequest: 'Monitor Web Request',
         webrequest_title: 'Monitor web requests instead of capture browser downloads'

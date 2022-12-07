@@ -85,9 +85,7 @@ document.addEventListener('change', event => {
 
 function slimModeInit() {
     chrome.runtime.sendMessage({type: 'prompt'}, response => {
-        console.log(response);
         var {url, json, options} = response;
-        console.log(url, json, options);
         if (json) {
             batch.value = '1';
             entries.value = JSON.stringify(json);
