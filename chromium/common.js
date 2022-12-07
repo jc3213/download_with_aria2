@@ -8,8 +8,7 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
         response(aria2Prompt[id]);
     }
     else if (type === 'download') {
-        var {url, options} = message;
-        aria2DownloadPrompt(url, options);
+        aria2DownloadPrompt(message);
     }
 });
 
@@ -30,18 +29,18 @@ async function aria2Download(url, referer, hostname, options = {}) {
         options['referer'] = referer;
         options['header'] = await getRequestHeaders(url);
     }
-    aria2DownloadPrompt(url, options);
-}
-
-async function aria2DownloadPrompt(url, options) {
     if (aria2Store['download_prompt']) {
-        var {tabs} = await aria2NewSession('slim');
-        var {id} = tabs[0];
-        aria2Prompt[id] = {url, options};
+        aria2DownloadPrompt({url, options});
     }
     else {
         aria2RPC.call('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
     }
+}
+
+async function aria2DownloadPrompt(message) {
+    var {tabs} = await aria2NewSession('slim');
+    var {id} = tabs[0];
+    aria2Prompt[id] = message;
 }
 
 async function getDefaultOptions() {

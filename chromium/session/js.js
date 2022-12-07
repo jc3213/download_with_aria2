@@ -41,16 +41,16 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
     if (batch.value === '0') {
         var urls = entries.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
         if (urls) {
-            await downloadUrls(urls, aria2Global);
+            await downloadUrls(urls);
         }
     }
     else if (batch.value === '1') {
         var json = JSON.parse(entries.value);
-        await downloadJSON(json, aria2Global);
+        await downloadJSON(json);
     }
     else if (batch.value === '2') {
         var metalink = new Blob([entries.value], {type: 'application/metalink;charset=utf-8'});
-        await downloadMetalink(metalink, aria2Global);
+        await downloadMetalink(metalink);
     }
     close();
 });
@@ -58,13 +58,13 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var file = event.target.files[0];
     if (file.name.endsWith('torrent')){
-        await downloadTorrent(file, aria2Global);
+        await downloadTorrent(file);
     }
     else if (file.name.endsWith('json')) {
-        await parseJSON(file, aria2Global);
+        await parseJSON(file);
     }
     else {
-        await downloadMetalink(file, aria2Global);
+        await downloadMetalink(file);
     }
     close();
 });
@@ -85,8 +85,14 @@ document.addEventListener('change', event => {
 
 function slimModeInit() {
     chrome.runtime.sendMessage({type: 'prompt'}, response => {
-        var {url, options} = response;
-        if (Array.isArray(url)) {
+        console.log(response);
+        var {url, json, options} = response;
+        console.log(url, json, options);
+        if (json) {
+            batch.value = '1';
+            entries.value = JSON.stringify(json);
+        }
+        else if (Array.isArray(url)) {
             entries.value = url.join('\n');
         }
         else {
