@@ -53,13 +53,13 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var file = event.target.files[0];
     var b64encode = await readFileForAria2(file);
-    aria2WhenStart(file.name);
     if (file.name.endsWith('torrent')){
         await aria2RPC.call('aria2.addTorrent', [b64encode]);
     }
     else {
         await aria2RPC.call('aria2.addMetalink', [b64encode, aria2Global]);
     }
+    await aria2WhenStart(file.name);
     close();
 });
 

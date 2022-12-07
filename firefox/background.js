@@ -19,9 +19,7 @@ browser.storage.local.get(null, async json => {
 browser.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         var {newValue} = changes[key];
-        if (newValue) {
-            aria2Store[key] = newValue;
-        }
+        aria2Store[key] = newValue;
     });
     if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
         aria2Update();
@@ -48,12 +46,7 @@ async function aria2DownloadFirefox(url, referer, hostname, storeId, options = {
         options['referer'] = referer;
         options['header'] = await getRequestHeadersFirefox(url, storeId);
     }
-    if (aria2Store['download_prompt']) {
-        aria2DownloadPrompt({url, options});
-    }
-    else {
-        aria2RPC.call('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
-    }
+    aria2DownloadPrompt({url, options});
 }
 
 function aria2Capture() {
