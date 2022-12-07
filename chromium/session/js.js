@@ -1,5 +1,4 @@
-var batch = document.querySelector('#batch');
-var entries = document.querySelector('#entries');
+var entry = document.querySelector('#entry');
 var submitbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
 
@@ -38,40 +37,35 @@ document.querySelector('#proxy_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#submit_btn').addEventListener('click', async event => {
-    if (batch.value === '0') {
-        var urls = entries.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
+    try {
+        var json = JSON.parse(entry.value);
+        await aria2DownloadJSON(json, aria2Global);
+    }
+    catch (error) {
+        var urls = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
         if (urls) {
-            await downloadUrls(urls);
+            await aria2BatchDownload(urls, aria2Global);
         }
-    }
-    else if (batch.value === '1') {
-        var json = JSON.parse(entries.value);
-        await downloadJSON(json);
-    }
-    else if (batch.value === '2') {
-        var metalink = new Blob([entries.value], {type: 'application/metalink;charset=utf-8'});
-        await downloadMetalink(metalink);
     }
     close();
 });
 
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var file = event.target.files[0];
+    var b64encode = await readFileForAria2(file);
+    aria2WhenStart(file.name);
     if (file.name.endsWith('torrent')){
-        await downloadTorrent(file);
-    }
-    else if (file.name.endsWith('json')) {
-        await parseJSON(file);
+        await aria2DownloadTorrent(b64encode);
     }
     else {
-        await downloadMetalink(file);
+        await aria2DownloadMetalink(b64encode, aria2Global);
     }
     close();
 });
 
 document.querySelector('#extra_btn').addEventListener('click', async event => {
     var {id, top, height} = await getCurrentWindow();
-    chrome.windows.update(id, {top: top - 192, height: height + 384});
+    chrome.windows.update(id, {top: top - 192, height: height + 383});
     document.body.className = 'compact';
     countdown.innerText = countdown.innerText * 1 + 90;
 });
@@ -87,14 +81,10 @@ function slimModeInit() {
     chrome.runtime.sendMessage({type: 'prompt'}, response => {
         var {url, json, options} = response;
         if (json) {
-            batch.value = '1';
-            entries.value = JSON.stringify(json);
-        }
-        else if (Array.isArray(url)) {
-            entries.value = url.join('\n');
+            entry.value = JSON.stringify(json);
         }
         else {
-            entries.value = url;
+            entry.value = Array.isArray(url) ? url.join('\n') : url;
         }
         if (options) {
             var extra = document.querySelectorAll('[name]').printOptions(options);
@@ -107,53 +97,6 @@ function slimModeInit() {
             }
         }, 1000);
     });
-}
-
-function downloadUrls(urls) {
-    var message = '';
-    var sessions = urls.map(url => {
-        message += url + '\n';
-        return {method: 'aria2.addUri', params: [[url], aria2Global]};
-    });
-    aria2WhenStart(message);
-    return aria2RPC.batch(sessions);
-}
-
-function downloadJSON(json) {
-    if (!Array.isArray(json)) {
-        json = [json];
-    }
-    var message = '';
-    var sessions = json.map(entry => {
-        var {url, options} = entry;
-        message += url + '\n';
-        if (options) {
-            options = {...aria2Global, ...options};
-        }
-        else {
-            options = aria2Global;
-        }
-        return {method: 'aria2.addUri', params: [[url], options]};
-    });
-    aria2WhenStart(message);
-    return aria2RPC.batch(sessions);
-}
-
-async function parseJSON(file) {
-    var json = await readFileTypeJSON(file);
-    return downloadJSON(json);
-}
-
-async function downloadTorrent(file) {
-    var torrent = await readFileForAria2(file);
-    aria2WhenStart(file.name);
-    return aria2RPC.call('aria2.addTorrent', [torrent]);
-}
-
-async function downloadMetalink(file) {
-    var metalink = await readFileForAria2(file);
-    aria2WhenStart(file.name);
-    return aria2RPC.call('aria2.addMetalink', [metalink, aria2Global]);
 }
 
 async function aria2StartUp() {

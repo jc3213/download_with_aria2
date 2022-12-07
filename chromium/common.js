@@ -33,12 +33,13 @@ async function aria2Download(url, referer, hostname, options = {}) {
         aria2DownloadPrompt({url, options});
     }
     else {
-        aria2RPC.call('aria2.addUri', [[url], options]).then(result => aria2WhenStart(url));
+        await aria2DownloadUrl(url, options);
+        aria2WhenStart(url);
     }
 }
 
 async function aria2DownloadPrompt(message) {
-    var {tabs} = await aria2NewSession('slim');
+    var {tabs} = await getDownloadWindow('slim');
     var {id} = tabs[0];
     aria2Prompt[id] = message;
 }

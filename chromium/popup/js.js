@@ -23,7 +23,7 @@ document.querySelectorAll('#active_btn, #waiting_btn, #stopped_btn').forEach((ta
 });
 
 document.querySelector('#download_btn').addEventListener('click', async event => {
-    await aria2NewSession('full');
+    await getDownloadWindow('full');
     close();
 });
 

@@ -17,13 +17,8 @@
             </div>
             <div class="menu" title="task_batch_title">
                 <span class="title" i18n>task_batch</span>
-                <select id="batch" data-full>
-                    <option value="0">URI</option>
-                    <option value="1">JSON</option>
-                    <option value="2">Metalink</option>
-                </select>
                 <div>
-                    <textarea id="entries" rows="2"></textarea>
+                    <textarea id="entry" rows="2"></textarea>
                 </div>
             </div>
             <div class="flex">
@@ -96,13 +91,14 @@
             </button>
             <button id="upload_btn" data-full><label>
                 <span i18n>task_metaurl</span>
-                <input type="file" accept=".torrent,.json,.metalink,.meta4">
+                <input type="file" accept=".torrent,.metalink,.meta4">
             </label></button>
             <button id="extra_btn" data-slim i18n>popup_options</button>
         </div>
         <script src="/libs/aria2.js"></script>
-        <script src="/libs/main.js"></script>
         <script src="/libs/tools.js"></script>
+        <script src="/libs/main.js"></script>
+        <script src="/libs/core.js"></script>
         <script src="js.js"></script>
     </body>
 </html>

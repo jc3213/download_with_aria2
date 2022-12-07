@@ -1,6 +1,3 @@
-var aria2Start = chrome.i18n.getMessage('download_start');
-var aria2Complete = chrome.i18n.getMessage('download_complete');
-
 function getHostname(url) {
     var si = url.indexOf('//');
     if (si === -1) {
@@ -43,10 +40,10 @@ function getCurrentWindow() {
     });
 }
 
-function aria2NewSession(size) {
+function getDownloadWindow(size) {
     return new Promise(async resolve => {
         var {top, left, height, width} = await getCurrentWindow();
-        var offset = size === 'full' ? 738 : 343;
+        var offset = size === 'full' ? 726 : 343;
         top += (height - offset) / 2 | 0;
         left += (width - 740) / 2 | 0;
         chrome.windows.create({
@@ -58,26 +55,4 @@ function aria2NewSession(size) {
             left
         }, resolve);
     });
-}
-
-function aria2WhenStart(message) {
-    if (aria2Store['notify_start']) {
-        chrome.notifications.create({
-            type: 'basic',
-            iconUrl: '/icons/icon48.png',
-            message,
-            title: aria2Start
-        });
-    }
-}
-
-function aria2WhenComplete(message) {
-    if (aria2Store['notify_complete']) {
-        chrome.notifications.create({
-            type: 'basic',
-            iconUrl: '/icons/icon48.png',
-            message,
-            title: aria2Complete
-        });
-    }
 }
