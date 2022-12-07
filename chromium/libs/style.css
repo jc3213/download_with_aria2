@@ -1,5 +1,5 @@
 @media (prefers-color-scheme: light) {
-    body {
+    body, div {
         background-color: #ffffff;
     }
 
@@ -9,7 +9,7 @@
 }
 
 @media (prefers-color-scheme: dark) { 
-    body {
+    body, div {
         background-color: #202124;
     }
     
@@ -17,7 +17,7 @@
         background-color: #4a4a4a;
     }
 
-    body, button, input, textarea, select {
+    body, div, button, input, textarea, select {
         color: #ffffff;
     }
 

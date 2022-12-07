@@ -22,7 +22,6 @@ input[type="checkbox"] {
 }
 
 #menu {
-    background-color: inherit;
     border-width: 1px;
     border-style: outset;
     position: fixed;
