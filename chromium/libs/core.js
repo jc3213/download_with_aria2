@@ -1,34 +1,25 @@
 var aria2Start = chrome.i18n.getMessage('download_start');
 var aria2Complete = chrome.i18n.getMessage('download_complete');
 
-function aria2DownloadUrl(url, options) {
-    return aria2RPC.call('aria2.addUri', [[url], options]);
-}
-
-function aria2DownloadMetalink(metalink, options) {
-    return aria2RPC.call('aria2.addMetalink', [metalink, options]);
-}
-
-function aria2DownloadTorrent(torrent) {
-    return aria2RPC.call('aria2.addTorrent', [torrent]);
-}
-
-function aria2BatchDownload(urls, options) {
+async function aria2DownloadUrls(urls, options) {
+    if (!Array.isArray(urls)) {
+        urls = [urls];
+    }
     var message = '';
     var sessions = urls.map(url => {
         message += url + '\n';
-        return {method: 'aria2.addUri', params: [[url], aria2Global]};
+        return {method: 'aria2.addUri', params: [[url], options]};
     });
-    aria2WhenStart(message);
-    return aria2RPC.batch(sessions);
+    await aria2RPC.batch(sessions);
+    await aria2WhenStart(message);
 }
 
-function aria2DownloadJSON(json, origin) {
+async function aria2DownloadJSON(json, origin) {
     if (!Array.isArray(json)) {
         json = [json];
     }
     if (json[0].url === undefined) {
-        return;
+        throw new Error('wrong JSON sytanx, "url" is required!');
     }
     var message = '';
     var sessions = json.map(entry => {
@@ -42,28 +33,29 @@ function aria2DownloadJSON(json, origin) {
         }
         return {method: 'aria2.addUri', params: [[url], options]};
     });
-    aria2WhenStart(message);
-    return aria2RPC.batch(sessions);
+    await aria2RPC.batch(sessions);
+    await aria2WhenStart(message);
 }
 
 function aria2WhenStart(message) {
     if (aria2Store['notify_start']) {
-        chrome.notifications.create({
-            type: 'basic',
-            iconUrl: '/icons/icon48.png',
-            message,
-            title: aria2Start
-        });
+        return getNotification(aria2Start, message);
     }
 }
 
 function aria2WhenComplete(message) {
     if (aria2Store['notify_complete']) {
+        return getNotification(aria2Complete, message);
+    }
+}
+
+function getNotification(title, message) {
+    return new Promise((resolve, reject) => {
         chrome.notifications.create({
             type: 'basic',
             iconUrl: '/icons/icon48.png',
-            message,
-            title: aria2Complete
-        });
-    }
+            title,
+            message
+        }, resolve);
+    });
 }

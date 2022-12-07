@@ -17,7 +17,7 @@ chrome.commands.onCommand.addListener(command => {
         chrome.runtime.openOptionsPage();
     }
     else if (command === 'open_new_download') {
-        aria2NewSession('full');
+        getDownloadWindow('full');
     }
 });
 
@@ -29,19 +29,24 @@ async function aria2Download(url, referer, hostname, options = {}) {
         options['referer'] = referer;
         options['header'] = await getRequestHeaders(url);
     }
-    if (aria2Store['download_prompt']) {
-        aria2DownloadPrompt({url, options});
-    }
-    else {
-        await aria2DownloadUrl(url, options);
-        aria2WhenStart(url);
-    }
+    aria2DownloadPrompt({url, options});
 }
 
 async function aria2DownloadPrompt(message) {
-    var {tabs} = await getDownloadWindow('slim');
-    var {id} = tabs[0];
-    aria2Prompt[id] = message;
+    if (aria2Store['download_prompt']) {
+        var {tabs} = await getDownloadWindow('slim');
+        var {id} = tabs[0];
+        aria2Prompt[id] = message;
+    }
+    else {
+        var {url, json, options} = message;
+        if (url) {
+            aria2DownloadUrls(url, options);
+        }
+        else if (json) {
+            aria2DownloadJSON(json, options);
+        }
+    }
 }
 
 async function getDefaultOptions() {

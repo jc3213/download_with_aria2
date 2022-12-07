@@ -1,4 +1,8 @@
-@media (prefers-color-scheme: light) { 
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #ffffff;
+    }
+
     * {
         border-color: #9a9a9a;
     }

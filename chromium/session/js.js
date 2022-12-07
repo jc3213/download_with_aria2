@@ -44,7 +44,7 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
     catch (error) {
         var urls = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
         if (urls) {
-            await aria2BatchDownload(urls, aria2Global);
+            await aria2DownloadUrls(urls, aria2Global);
         }
     }
     close();
@@ -55,10 +55,10 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
     var b64encode = await readFileForAria2(file);
     aria2WhenStart(file.name);
     if (file.name.endsWith('torrent')){
-        await aria2DownloadTorrent(b64encode);
+        await aria2RPC.call('aria2.addTorrent', [b64encode]);
     }
     else {
-        await aria2DownloadMetalink(b64encode, aria2Global);
+        await aria2RPC.call('aria2.addMetalink', [b64encode, aria2Global]);
     }
     close();
 });
