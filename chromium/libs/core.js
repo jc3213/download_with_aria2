@@ -50,7 +50,7 @@ function aria2WhenComplete(message) {
 }
 
 function getNotification(title, message) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         chrome.notifications.create({
             type: 'basic',
             iconUrl: '/icons/icon48.png',
