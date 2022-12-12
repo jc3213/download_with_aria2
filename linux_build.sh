@@ -31,7 +31,7 @@ if [ "$num" == "1" ]; then
     code="chromium"
 elif [ "$num" == "2" ]; then
     code="firefox"
-elif [ "$num" == "2" ]; then
+elif [ "$num" == "3" ]; then
     code="chromium_mv3"
 else
     echo "input error,end execution"
