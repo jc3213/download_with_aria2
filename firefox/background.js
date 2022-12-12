@@ -4,10 +4,10 @@ browser.contextMenus.create({
     contexts: ['link']
 });
 
-browser.contextMenus.onClicked.addListener((info, tab) => {
-    var {linkUrl, pageUrl} = info;
-    var {cookieStoreId} = tab;
-    aria2DownloadFirefox(linkUrl, pageUrl, getHostname(pageUrl), cookieStoreId);
+browser.contextMenus.onClicked.addListener((({menuItemId, linkUrl}, {id, url, cookieStoreId}) => {
+    if (menuItemId === 'downwitharia2') {
+        aria2DownloadFirefox(linkUrl, url, getHostname(url), cookieStoreId);
+    }
 });
 
 browser.storage.local.get(null, async json => {

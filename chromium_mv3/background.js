@@ -14,9 +14,10 @@ chrome.runtime.onInstalled.addListener(details => {
     });
 });
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
-    var {linkUrl, pageUrl} = info;
-    aria2Download(linkUrl, pageUrl, getHostname(pageUrl));
+chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url}) => {
+    if (menuItemId === 'downwitharia2') {
+        aria2Download(linkUrl, url, getHostname(url));
+    }
 });
 
 chrome.storage.onChanged.addListener(changes => {
