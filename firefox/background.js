@@ -4,7 +4,7 @@ browser.contextMenus.create({
     contexts: ['link']
 });
 
-browser.contextMenus.onClicked.addListener((({menuItemId, linkUrl}, {id, url, cookieStoreId}) => {
+browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url, cookieStoreId}) => {
     if (menuItemId === 'downwitharia2') {
         aria2DownloadFirefox(linkUrl, url, getHostname(url), cookieStoreId);
     }
