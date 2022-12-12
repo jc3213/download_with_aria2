@@ -5,7 +5,7 @@ browser.contextMenus.create({
 });
 
 browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url, cookieStoreId}) => {
-    if (menuItemId === 'downwitharia2') {
+    if (menuItemId === 'downwitharia2firefox') {
         aria2DownloadFirefox(linkUrl, url, getHostname(url), cookieStoreId);
     }
 });
