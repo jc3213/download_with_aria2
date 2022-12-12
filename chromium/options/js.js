@@ -213,14 +213,15 @@ function clearChanges() {
 function setChange(name, value) {
     changes[name] = value;
     savebtn.disabled = false;
-    if (name in linkage) {
-        linkage[name].forEach(printLinkage);
-    }
+    var entry = document.querySelector('[name="' + name + '"]');
     if (name in checking) {
-        document.querySelector('[name="' + name + '"]').checked = value;
+        entry.checked = value;
     }
     else {
-        document.querySelector('[name="' + name + '"]').value = value;
+        entry.value = getValue(name, value);
+    }
+    if (name in linkage) {
+        linkage[name].forEach(printLinkage);
     }
 }
 
