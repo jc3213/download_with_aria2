@@ -27,11 +27,11 @@ else
     exit
 fi
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-if [ "$num" == "1" ]; then
+if [ "$num" -eq 1 ]; then
     code="chromium"
-elif [ "$num" == "2" ]; then
+elif [ "$num" -eq 2 ]; then
     code="firefox"
-elif [ "$num" == "3" ]; then
+elif [ "$num" -eq 3 ]; then
     code="chromium_mv3"
 else
     echo "input error,end execution"
@@ -49,11 +49,9 @@ if ! exists zip; then
     echo "NOT EXIST zip,exit"
     exit
 fi
-if [ "$num" == "1" ]; then
-    suffix="crx"
-elif [ "$num" == "2" ]; then
+if [ "$num" -eq 2 ]; then
     suffix="xpi"
-elif [ "$num" == "3" ]; then
+elif [ "$num" -ne 2 ]; then
     suffix="crx"
 fi
 version="$(get_json_value "$manifestPath" version text)"
@@ -62,7 +60,7 @@ addPath="$build_dir/$addFileName"
 if [ -f "$addPath" ]; then
     rm -f "$addPath"
 fi
-if [ "$num" == "2" ]; then
+if [ "$num" -ne 1 ]; then
     cd "$maincode_dir" || exit
     zip -r "$addPath" ./*
     cd "$script_dir" || exit
