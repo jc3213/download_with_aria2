@@ -1,5 +1,5 @@
 #!/bin/bash
-exists() {
+ext() {
   command -v "$1" > /dev/null 2>&1
 }
 get_json_value() {
@@ -43,7 +43,7 @@ build_dir="$script_dir/build/$code"
 code_dir="$script_dir/$code"
 manifestPath="$code_dir/manifest.json"
 [ ! -d "$build_dir" ] && mkdir -p "$build_dir"
-if ! exists zip; then
+if ! ext zip; then
   echo "NOT EXIST zip,exit"
   exit
 fi
@@ -63,7 +63,7 @@ if [ "$num" -ne 1 ]; then
 fi
 cd "$code_dir" || exit
 zip -r "$addPath" ./*
-if exists firefox-developer-edition; then
+if ext firefox-developer-edition; then
   if [ "$2" == "-i" ]; then
     firefox-developer-edition "$addPath"
   fi
