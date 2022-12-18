@@ -92,13 +92,12 @@ async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
     if (url.startsWith('blob') || url.startsWith('data')) {
         return;
     }
-    var referer = 'about:blank'.includes(referrer) ? await getCurrentTabUrl() : referrer;
-    var hostname = getHostname(referer);
+    var hostname = getHostname(referrer);
     if (getCaptureFilter(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
             var options = await getFirefoxOptions(filename);
-            aria2DownloadFirefox(url, referer, hostname, cookieStoreId, options);
+            aria2DownloadFirefox(url, referrer, hostname, cookieStoreId, options);
         }).catch(error => aria2WhenComplete(url));
     }
 }

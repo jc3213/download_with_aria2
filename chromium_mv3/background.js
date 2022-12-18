@@ -32,7 +32,7 @@ chrome.storage.onChanged.addListener(changes => {
 
 chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
     var url = finalUrl;
-    var referer = 'about:blank'.includes(referrer) ? await getCurrentTabUrl() : referrer;
+    var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
     if (!aria2Store['capture_enabled'] || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         var priority = 0;

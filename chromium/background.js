@@ -31,7 +31,7 @@ chrome.storage.onChanged.addListener(changes => {
 
 async function captureOnCreated({id, finalUrl, referrer}) {
     var url = finalUrl;
-    var referer = 'about:blank'.includes(referrer) ? await getCurrentTabUrl() : referrer;
+    var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
     if (finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         var priority = 0;
