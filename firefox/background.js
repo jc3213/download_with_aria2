@@ -195,7 +195,7 @@ function decodeRFC5987(text) {
 function decodeRFC2047(text) {
     var result = '';
     text.split(/\s+/).forEach(s => {
-        if (s.startsWith('=?') && s.includes('?=')) {
+        if (s.startsWith('=?') && s.endsWith('?=')) {
             var raw = s.slice(2, -2);
             var si = raw.indexOf('?');
             var ei = raw.lastIndexOf('?');
