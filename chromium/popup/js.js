@@ -31,9 +31,6 @@ document.querySelector('#purge_btn').addEventListener('click', async event => {
     await aria2RPC.call('aria2.purgeDownloadResult');
     completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     stoppedStat.innerText = '0';
-    if (stoppedTask.includes(activeId)) {
-        activeId = null;
-    }
 });
 
 document.querySelector('#options_btn').addEventListener('click', event => {
@@ -130,9 +127,6 @@ function removeSession(type, gid, task) {
     if (task) {
         task.remove();
     }
-    if (activeId === gid) {
-        activeId = null;
-    }
 }
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
@@ -186,7 +180,8 @@ function parseSession(gid, status, bittorrent) {
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
         if (activeId === gid) {
-            activeId = closeTaskDetail();
+            closeTaskDetail();
+            activeId = null;
         }
         else {
             if (activeId) {
@@ -262,9 +257,11 @@ function getTaskDetail(gid) {
 
 function closeTaskDetail() {
     var task = document.getElementById(activeId);
-    task.classList.remove('extra');
-    task.querySelector('#files').innerHTML = task.querySelector('#uris').innerHTML = '';
-    task.querySelector('#save_btn').style.display = 'none';
+    if (task) {
+        task.classList.remove('extra');
+        task.querySelector('#files').innerHTML = task.querySelector('#uris').innerHTML = '';
+        task.querySelector('#save_btn').style.display = 'none';
+    }
 }
 
 function printFileCell(task, list, {index, path, length, selected, uris}) {
