@@ -71,27 +71,27 @@ function getFileExtension(filename) {
 }
 
 function getCaptureHostname(hostname) {
-    if (aria2Store['capture_exclude'].find(host => hostname.endsWith(host))) {
-        return 0;
+    if (aria2Store['capture_exclude'].find(host => hostname.includes(host))) {
+        return -1;
     }
     else if (aria2Store['capture_always']) {
-        return 2;
+        return 1;
     }
-    else if (aria2Store['capture_include'].find(host => hostname.endsWith(host))) {
-        return 2;
+    else if (aria2Store['capture_include'].find(host => hostname.includes(host))) {
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 function getCaptureFileData(size, ext) {
     if (aria2Store['capture_reject'].includes(ext)) {
-        return -3;
+        return -1;
     }
     else if (aria2Store['capture_resolve'].includes(ext)) {
-        return 2;
+        return 1;
     }
     else if (aria2Store['capture_filesize'] > 0 && size >= aria2Store['capture_filesize']) {
-        return 2;
+        return 1;
     }
     return 0;
 }
@@ -101,7 +101,7 @@ function getProxyServer(hostname) {
         if (aria2Store['proxy_always']) {
             return aria2Store['proxy_server'];
         }
-        else if (aria2Store['proxy_include'].find(host => hostname.endsWith(host))) {
+        else if (aria2Store['proxy_include'].find(host => hostname.includes(host))) {
             return aria2Store['proxy_server'];
         }
     }

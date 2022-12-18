@@ -35,7 +35,7 @@ chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
     if (!aria2Store['capture_enabled'] || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
-        var priority = 0;
+        var priority = -1;
     }
     else {
         priority = getCaptureHostname(hostname);
@@ -45,11 +45,11 @@ chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSize}) => {
     var {url, referer, hostname, priority} = aria2Monitor[id];
-    if (priority < 1) {
+    if (priority < 0) {
         return;
     }
     priority += getCaptureFileData(fileSize, getFileExtension(filename));
-    if (priority > 1) {
+    if (priority > 0) {
         chrome.downloads.erase({id});
         aria2Monitor[id].priority = priority;
         aria2Download(url, referer, hostname, {out: filename});

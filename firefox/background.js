@@ -67,7 +67,7 @@ function aria2Capture() {
 }
 
 function getCaptureFilter(hostname, ext, size) {
-    if (aria2Store['capture_exclude'].find(host => hostname.endsWith(host))) {
+    if (aria2Store['capture_exclude'].find(host => hostname.includes(host))) {
         return false;
     }
     else if (aria2Store['capture_reject'].includes(ext)) {
@@ -76,7 +76,7 @@ function getCaptureFilter(hostname, ext, size) {
     else if (aria2Store['capture_always']) {
         return true;
     }
-    else if (aria2Store['capture_include'].find(host => hostname.endsWith(host))) {
+    else if (aria2Store['capture_include'].find(host => hostname.includes(host))) {
         return true;
     }
     else if (aria2Store['capture_resolve'].includes(ext)) {
@@ -195,7 +195,7 @@ function decodeRFC5987(text) {
 function decodeRFC2047(text) {
     var result = '';
     text.split(/\s+/).forEach(s => {
-        if (s.startsWith('=?') && s.endsWith('?=')) {
+        if (s.startsWith('=?') && s.includes('?=')) {
             var raw = s.slice(2, -2);
             var si = raw.indexOf('?');
             var ei = raw.lastIndexOf('?');
