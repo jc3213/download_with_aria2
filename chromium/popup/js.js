@@ -230,7 +230,7 @@ function parseSession(gid, status, bittorrent) {
     task.querySelector('#save_btn').addEventListener('click', async event => {
         var files = [];
         task.querySelectorAll('#files #index').forEach(index => {
-            if (index.className === 'active') {
+            if (index.className === 'checked') {
                 files.push(index.innerText);
             }
         });
