@@ -180,12 +180,12 @@ function parseSession(gid, status, bittorrent) {
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
         if (activeId === gid) {
-            closeTaskDetail();
+            closeTaskDetail(gid);
             activeId = null;
         }
         else {
             if (activeId) {
-                closeTaskDetail();
+                closeTaskDetail(activeId);
             }
             var [files, options] = await getTaskDetail(gid);
             task.querySelectorAll('[name]').printOptions(options);
@@ -228,12 +228,7 @@ function parseSession(gid, status, bittorrent) {
         event.target.previousElementSibling.value = aria2Store['proxy_server'];
     });
     task.querySelector('#save_btn').addEventListener('click', async event => {
-        var files = [];
-        task.querySelectorAll('#files #index').forEach(index => {
-            if (index.className === 'checked') {
-                files.push(index.innerText);
-            }
-        });
+        var files = [...task.querySelectorAll('#index.checked')].map(index => index.innerText);
         await aria2RPC.call('aria2.changeOption', [gid, {'select-file': files.join()}]);
         event.target.style.display = 'none';
     });
@@ -255,8 +250,8 @@ function getTaskDetail(gid) {
     ]);
 }
 
-function closeTaskDetail() {
-    var task = document.getElementById(activeId);
+function closeTaskDetail(gid) {
+    var task = document.getElementById(gid);
     if (task) {
         task.classList.remove('extra');
         task.querySelector('#files').innerHTML = task.querySelector('#uris').innerHTML = '';
