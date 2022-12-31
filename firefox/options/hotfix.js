@@ -1,13 +1,13 @@
 var i18n = {
     'en': {
-        folderff: 'Browser Behavior',
+        folderff: 'Follow Browser Behavior',
         folderff_title: 'Save files into browser defined directory',
-        webrequest: 'Monitor Web Request',
+        webrequest: 'Monitor Web Requests',
         webrequest_title: 'Monitor web requests instead of capture browser downloads'
     },
     'zh': {
-        folderff: '跟随浏览器',
-        folderff_title: '将文件保存至浏览器下载目录',
+        folderff: '浏览器下载文件夹',
+        folderff_title: '将文件保存至浏览器所选择的下载文件夹',
         webrequest: '监听网络请求',
         webrequest_title: '监听网络请求而非抓取浏览器下载'
     }
@@ -25,9 +25,6 @@ folderff.chain = {
         {name: 'capture_enabled', rule: true}, {name: 'capture_webrequest', rule: false},
     ]
 };
-
-var folderde = document.querySelector('[name="folder_defined"]').parentNode;
-folderde.chain.minor.push({name: 'folder_firefox', rule: false});
 
 var folderen = document.querySelector('[name="folder_enabled"]').parentNode;
 folderen.addEventListener('change', event => {
@@ -71,14 +68,12 @@ captureen.parentNode.after(webrequest);
 checking['folder_firefox'] = 1;
 checking['capture_webrequest'] = 1;
 linkage['folder_enabled'].push(folderff);
-linkage['folder_firefox'] = [folderde];
 linkage['capture_enabled'].push(folderff, webrequest);
 linkage['capture_webrequest'] = [folderff];
 
 function setDefaultFolder() {
     undones.push({name: 'folder_firefox', old_value: true, new_value: false});
     folderff.querySelector('input').checked = changes['folder_firefox'] = false;
-    printLinkage(folderde);
 }
 
 function firefoxExclusive() {
@@ -86,7 +81,6 @@ function firefoxExclusive() {
     webrequest.querySelector('input').checked = changes['capture_webrequest'];
     printLinkage(webrequest);
     printLinkage(folderff);
-    printLinkage(folderde);
 }
 
 document.querySelector('#back_btn').addEventListener('click', firefoxExclusive);
