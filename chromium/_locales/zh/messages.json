@@ -38,7 +38,13 @@
     "time_second_full": {
         "message": "秒"
     },
-    "option_save": {
+    "common_default": {
+        "message": "默认"
+    },
+    "common_disabled": {
+        "message": "禁用"
+    },
+    "common_save": {
         "message": "保存"
     },
     "option_undo": {
@@ -56,17 +62,8 @@
     "option_back": {
         "message": "返回"
     },
-    "option_basic": {
+    "option_common": {
         "message": "基础"
-    },
-    "option_advanced": {
-        "message": "进阶"
-    },
-    "option_default": {
-        "message": "默认"
-    },
-    "option_disabled": {
-        "message": "禁用"
     },
     "option_jsonrpc_uri": {
         "message": "JSON-RPC 链接"
@@ -86,11 +83,35 @@
     "option_refresh_interval_title": {
         "message": "设置任务管理器刷新间隔"
     },
-    "option_folder_enabled": {
-        "message": "自选下载目录"
+    "option_notification": {
+        "message": "通知"
     },
-    "option_folder_enabled_title": {
-        "message": "将文件保存至使用自选下载目录"
+    "option_notify_start": {
+        "message": "下载开始时"
+    },
+    "option_notify_start_title": {
+        "message": "当下载开始时弹出通知"
+    },
+    "option_notify_complete": {
+        "message": "下载完成时"
+    },
+    "option_notify_complete_title": {
+        "message": "当下载完成时弹出通知"
+    },
+    "download_start": {
+        "message": "下载开始..."
+    },
+    "download_complete": {
+        "message": "下载已完成！"
+    },
+    "option_advanced": {
+        "message": "进阶"
+    },
+    "option_user_agent": {
+        "message": "用户代理"
+    },
+    "option_user_agent_title": {
+        "message": "设置新建下载时的用户代理"
     },
     "option_download_headers": {
         "message": "转发请求头"
@@ -104,34 +125,22 @@
     "option_download_prompt_title": {
         "message": "开始下载前再次确认下载信息"
     },
-    "option_notify_start": {
-        "message": "通知下载开始"
+    "option_folder": {
+        "message": "下载文件夹"
     },
-    "option_notify_start_title": {
-        "message": "当下载开始时通知我"
+    "option_folder_title": {
+        "message": "设置首选的下载文件夹"
     },
-    "option_notify_complete": {
-        "message": "通知下载完成"
+    "option_folder_enabled": {
+        "message": "强制下载文件夹"
     },
-    "option_notify_complete_title": {
-        "message": "当下载完成时通知我"
+    "option_folder_enabled_title": {
+        "message": "将文件保存至使用首选的下载文件夹中"
     },
-    "download_start": {
-        "message": "下载开始..."
-    },
-    "download_complete": {
-        "message": "下载已完成！"
-    },
-    "option_user_agent": {
-        "message": "用户代理"
-    },
-    "option_user_agent_title": {
-        "message": "设置新建下载时的用户代理"
-    },
-    "option_proxy_server": {
+    "option_proxy": {
         "message": "代理服务器"
     },
-    "option_proxy_server_title": {
+    "option_proxy_title": {
         "message": "设置首选的代理服务器"
     },
     "option_protocol": {
@@ -149,8 +158,11 @@
     "option_proxy_always_title": {
         "message": "总是在新建下载时的使用代理服务器"
     },
-    "option_capture_enabled": {
+    "option_capture": {
         "message": "抓取浏览器下载"
+    },
+    "option_capture_enabled": {
+        "message": "启用抓取功能"
     },
     "option_capture_enabled_title": {
         "message": "允许抓取来自浏览器的下载"

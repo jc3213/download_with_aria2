@@ -38,7 +38,13 @@
     "time_second_full": {
         "message": "Second(s)"
     },
-    "option_save": {
+    "common_default": {
+        "message": "Default"
+    },
+    "common_disabled": {
+        "message": "Disabled"
+    },
+    "common_save": {
         "message": "Save"
     },
     "option_undo": {
@@ -56,17 +62,8 @@
     "option_back": {
         "message": "Back"
     },
-    "option_basic": {
-        "message": "Basic"
-    },
-    "option_advanced": {
-        "message": "Advanced"
-    },
-    "option_default": {
-        "message": "Default"
-    },
-    "option_disabled": {
-        "message": "Disabled"
+    "option_common": {
+        "message": "Common"
     },
     "option_jsonrpc_uri": {
         "message": "JSON-RPC URI"
@@ -86,11 +83,35 @@
     "option_refresh_interval_title": {
         "message": "Set task manager refresh interval"
     },
-    "option_folder_enabled": {
-        "message": "Download Directory"
+    "option_notification": {
+        "message": "Notifications"
     },
-    "option_folder_enabled_title": {
-        "message": "Save files into your preferred directory"
+    "option_notify_start": {
+        "message": "When Download Start"
+    },
+    "option_notify_start_title": {
+        "message": "Show notification when a new download starts"
+    },
+    "option_notify_complete": {
+        "message": "When Download Complete"
+    },
+    "option_notify_complete_title": {
+        "message": "Show notification when a download is completed"
+    },
+    "download_start": {
+        "message": "Download has started..."
+    },
+    "download_complete": {
+        "message": "Download has completed!"
+    },
+    "option_advanced": {
+        "message": "Advanced"
+    },
+    "option_user_agent": {
+        "message": "User Agent"
+    },
+    "option_user_agent_title": {
+        "message": "Set user agent for new downloads"
     },
     "option_download_headers": {
         "message": "Forward Request Headers"
@@ -104,34 +125,22 @@
     "option_download_prompt_title": {
         "message": "Confirm once again before the download starts"
     },
-    "option_notify_start": {
-        "message": "Notify Downloads Start"
+    "option_folder": {
+        "message": "Download Directory"
     },
-    "option_notify_start_title": {
-        "message": "Notify me when starting new downloads"
+    "option_folder_title": {
+        "message": "Set your preferred download directory"
     },
-    "option_notify_complete": {
-        "message": "Notify Downloads Complete"
+    "option_folder_enabled": {
+        "message": "Override Download Directory"
     },
-    "option_notify_complete_title": {
-        "message": "Notify me when downloada are completed"
+    "option_folder_enabled_title": {
+        "message": "Save files into your preferred download directory"
     },
-    "download_start": {
-        "message": "Download has started..."
-    },
-    "download_complete": {
-        "message": "Download has completed!"
-    },
-    "option_user_agent": {
-        "message": "User Agent"
-    },
-    "option_user_agent_title": {
-        "message": "Set user agent for new downloads"
-    },
-    "option_proxy_server": {
+    "option_proxy": {
         "message": "Proxy Server"
     },
-    "option_proxy_server_title": {
+    "option_proxy_title": {
         "message": "Set your preferred proxy server"
     },
     "option_protocol": {
@@ -149,8 +158,11 @@
     "option_proxy_always_title": {
         "message": "Always use proxy server for new downloads"
     },
-    "option_capture_enabled": {
+    "option_capture": {
         "message": "Capture Browser Downloads"
+    },
+    "option_capture_enabled": {
+        "message": "Enable Capture Downloads"
     },
     "option_capture_enabled_title": {
         "message": "Enable capture downloads from browser"
