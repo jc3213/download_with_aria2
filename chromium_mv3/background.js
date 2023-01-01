@@ -1,12 +1,11 @@
 importScripts('libs/aria2.js', 'libs/tools.js', 'libs/core.js', 'common.js', 'indicator.js');
 
-aria2StartUp();
-
-chrome.runtime.onStartup.addListener(() => {
-    aria2StartUp();
+chrome.storage.local.get(null, async json => {
+    aria2Store = 'jsonrpc_uri' in json ? json : await getDefaultOptions();
+    aria2Update();
 });
 
-chrome.runtime.onInstalled.addListener(details => {
+chrome.runtime.onInstalled.addListener(({reason}) => {
     chrome.contextMenus.create({
         title: chrome.runtime.getManifest().name,
         id: 'downwitharia2',
@@ -31,13 +30,10 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
-    if (!self.aria2Store) {
-        aria2Store = await chrome.storage.local.get(null);
-    }
     var url = finalUrl;
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
-    if (!aria2Store['capture_enabled'] || finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
+    if (finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         var priority = -1;
     }
     else {
@@ -46,7 +42,10 @@ chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
     aria2Monitor[id] = {url, referer, hostname, priority};
 });
 
-chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSize}) => {
+chrome.downloads.onDeterminingFilename.addListener(({id, filename, fileSize}) => {
+    if (!aria2Store['capture_enabled']) {
+        return;
+    }
     var {url, referer, hostname, priority} = aria2Monitor[id];
     if (priority < 0) {
         return;
@@ -58,9 +57,3 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
         aria2Download(url, referer, hostname, {out: filename});
     }
 });
-
-async function aria2StartUp() {
-    var json = await chrome.storage.local.get(null);
-    aria2Store = 'jsonrpc_uri' in json ? json : await getDefaultOptions();
-    aria2Update();
-}
