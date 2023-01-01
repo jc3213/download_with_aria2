@@ -31,6 +31,9 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
+    if (!self.aria2Store) {
+        aria2Store = await chrome.storage.local.get(null);
+    }
     var url = finalUrl;
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);

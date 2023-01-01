@@ -158,6 +158,12 @@
     "option_proxy_always_title": {
         "message": "Always use proxy server for new downloads"
     },
+    "option_proxy_auto": {
+        "message": "Auto Proxy Domains"
+    },
+    "option_proxy_auto_title": {
+        "message": "Add proxy server for new downloads from these domains"
+    },
     "option_capture": {
         "message": "Capture Browser Downloads"
     },

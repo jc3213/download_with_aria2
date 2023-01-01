@@ -147,16 +147,22 @@
         "message": "协议"
     },
     "option_proxy_enabled": {
-        "message": "使用代理"
+        "message": "使用代理服务器"
     },
     "option_proxy_enabled_title": {
         "message": "允许新建下载时的使用代理服务器"
     },
     "option_proxy_always": {
-        "message": "总是使用代理"
+        "message": "总是使用代理服务器"
     },
     "option_proxy_always_title": {
         "message": "总是在新建下载时的使用代理服务器"
+    },
+    "option_proxy_auto": {
+        "message": "自动代理域名"
+    },
+    "option_proxy_auto_title": {
+        "message": "为来自所设置域名的下载添加代理服务器"
     },
     "option_capture": {
         "message": "抓取浏览器下载"
