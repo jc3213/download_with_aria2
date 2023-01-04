@@ -149,7 +149,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     var ratio = (completedLength / totalLength * 10000 | 0) / 100;
     task.querySelector('#ratio').innerText = ratio;
     task.querySelector('#ratio').style.width = ratio + '%';
-    if (activeId === gid && status === 'active') {
+    if (activeId === gid) {
         printTaskFiles(task, files);
     }
     return task;
@@ -179,14 +179,11 @@ function parseSession(gid, status, bittorrent) {
         }
     });
     task.querySelector('#invest_btn').addEventListener('click', async event => {
+        closeTaskDetail();
         if (activeId === gid) {
-            closeTaskDetail(gid);
             activeId = null;
         }
         else {
-            if (activeId) {
-                closeTaskDetail(activeId);
-            }
             var [files, options] = await getTaskDetail(gid);
             task.querySelectorAll('[name]').printOptions(options);
             printTaskFiles(task, files);
@@ -250,8 +247,8 @@ function getTaskDetail(gid) {
     ]);
 }
 
-function closeTaskDetail(gid) {
-    var task = document.getElementById(gid);
+function closeTaskDetail() {
+    var task = document.querySelector('.session.extra');
     if (task) {
         task.classList.remove('extra');
         task.querySelector('#files').innerHTML = task.querySelector('#uris').innerHTML = '';
