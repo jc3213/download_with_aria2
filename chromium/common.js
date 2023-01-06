@@ -39,12 +39,12 @@ async function aria2DownloadPrompt(message) {
         aria2Prompt[id] = message;
     }
     else {
-        var {url, json, options} = message;
-        if (url) {
-            aria2DownloadUrls(url, options);
+        var {url, json, options = {}} = message;
+        if (json) {
+            aria2DownloadUrls(json, options);
         }
-        else if (json) {
-            aria2DownloadJSON(json, options);
+        else if (url) {
+            aria2DownloadJSON(url, options);
         }
     }
 }
