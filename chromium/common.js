@@ -10,7 +10,7 @@ var aria2Default = {
     'download_headers': true,
     'notify_start': false,
     'notify_complete': true,
-    'user_agent': 'Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.76',
+    'user_agent': 'Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
     'proxy_server': '',
     'proxy_enabled': false,
     'proxy_always': false,
