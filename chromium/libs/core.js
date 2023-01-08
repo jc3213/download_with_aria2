@@ -38,8 +38,7 @@ async function aria2DownloadJSON(json, origin) {
         }
         else {
             if (origin) {
-                options = origin;
-                return {method: 'aria2.addUri', params: [[url], options]};
+                return {method: 'aria2.addUri', params: [[url], origin]};
             }
             else {
                 return {method: 'aria2.addUri', params: [[url]]};
