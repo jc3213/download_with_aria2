@@ -57,19 +57,19 @@ async function aria2Download(url, referer, hostname, options = {}) {
     aria2DownloadPrompt({url, options});
 }
 
-async function aria2DownloadPrompt(message) {
+async function aria2DownloadPrompt(aria2c) {
     if (aria2Store['download_prompt']) {
         var {tabs} = await getDownloadWindow('slim');
         var {id} = tabs[0];
-        aria2Prompt[id] = message;
+        aria2Prompt[id] = aria2c;
     }
     else {
-        var {url, json, options = {}} = message;
+        var {url, json, options} = aria2c;
         if (json) {
-            aria2DownloadUrls(json, options);
+            aria2DownloadJSON(json, options);
         }
         else if (url) {
-            aria2DownloadJSON(url, options);
+            aria2DownloadUrls(url, options);
         }
     }
 }

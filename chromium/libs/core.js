@@ -8,7 +8,12 @@ async function aria2DownloadUrls(urls, options) {
     var message = '';
     var sessions = urls.map(url => {
         message += url + '\n';
-        return {method: 'aria2.addUri', params: [[url], options]};
+        if (options) {
+            return {method: 'aria2.addUri', params: [[url], options]};
+        }
+        else {
+            return {method: 'aria2.addUri', params: [[url]]};
+        }
     });
     await aria2RPC.batch(sessions);
     await aria2WhenStart(message);
@@ -26,12 +31,20 @@ async function aria2DownloadJSON(json, origin) {
         var {url, options} = entry;
         message += url + '\n';
         if (options) {
-            options = {...origin, ...options};
+            if (origin) {
+                options = {...origin, ...options};
+            }
+            return {method: 'aria2.addUri', params: [[url], options]};
         }
         else {
-            options = origin;
+            if (origin) {
+                options = origin;
+                return {method: 'aria2.addUri', params: [[url], options]};
+            }
+            else {
+                return {method: 'aria2.addUri', params: [[url]]};
+            }
         }
-        return {method: 'aria2.addUri', params: [[url], options]};
     });
     await aria2RPC.batch(sessions);
     await aria2WhenStart(message);
