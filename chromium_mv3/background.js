@@ -1,7 +1,7 @@
 importScripts('libs/aria2.js', 'libs/tools.js', 'libs/core.js', 'common.js', 'indicator.js');
 
 chrome.storage.local.get(null, async json => {
-    aria2Store = 'jsonrpc_uri' in json ? json : await getDefaultOptions();
+    aria2Store = 'jsonrpc_uri' in json ? json : aria2Default;
     aria2Update();
 });
 

@@ -1,5 +1,30 @@
 var aria2Prompt = {};
 var aria2Monitor = {};
+var aria2Default = {
+    'jsonrpc_uri': 'http://localhost:6800/jsonrpc',
+    'secret_token': '',
+    'refresh_interval': 5000,
+    'folder_enabled': false,
+    'folder_defined': '',
+    'download_prompt': false,
+    'download_headers': true,
+    'notify_start': false,
+    'notify_complete': true,
+    'user_agent': 'Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.76',
+    'proxy_server': '',
+    'proxy_enabled': false,
+    'proxy_always': false,
+    'proxy_include': [],
+    'capture_enabled': false,
+    'capture_always': false,
+    'capture_filesize': 0,
+    'capture_resolve': [],
+    'capture_include': [],
+    'capture_reject': [],
+    'capture_exclude': [],
+    'folder_firefox': false,
+    'capture_webrequest': false
+};
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
     var {type, message} = message;
@@ -47,13 +72,6 @@ async function aria2DownloadPrompt(message) {
             aria2DownloadJSON(url, options);
         }
     }
-}
-
-async function getDefaultOptions() {
-    var response = await fetch('/options.json');
-    var json = await response.json();
-    chrome.storage.local.set(json);
-    return json;
 }
 
 function getCurrentTabUrl() {

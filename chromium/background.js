@@ -11,7 +11,7 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url}) => 
 });
 
 chrome.storage.local.get(null, async json => {
-    aria2Store = 'jsonrpc_uri' in json ? json : await getDefaultOptions();
+    aria2Store = 'jsonrpc_uri' in json ? json : aria2Default;
     aria2StartUp();
     aria2Capture();
 });
