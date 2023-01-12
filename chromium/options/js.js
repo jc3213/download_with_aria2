@@ -1,3 +1,13 @@
+var savebtn = document.querySelector('#save_btn');
+var undobtn = document.querySelector('#undo_btn');
+var redobtn = document.querySelector('#redo_btn');
+var importbtn = document.querySelector('#import_btn');
+var exportbtn = document.querySelector('#export_btn');
+var secret = document.querySelector('[name="secret_token"]');
+var changes = {};
+var undones = [];
+var redones = [];
+var global = true;
 var mapping = {
     'proxy_include': 1,
     'capture_resolve': 1,
@@ -27,16 +37,6 @@ var linkage = {
     'capture_enabled': [],
     'capture_always': []
 };
-var changes = {};
-var undones = [];
-var redones = [];
-var global = true;
-var savebtn = document.querySelector('#save_btn');
-var undobtn = document.querySelector('#undo_btn');
-var redobtn = document.querySelector('#redo_btn');
-var importbtn = document.querySelector('#import_btn');
-var exportbtn = document.querySelector('#export_btn');
-var secret = document.querySelector('[name="secret_token"]');
 
 document.addEventListener('keydown', event => {
     var {ctrlKey, keyCode} = event;
@@ -92,20 +92,22 @@ redobtn.addEventListener('click', event => {
 document.querySelector('#version').innerText = chrome.runtime.getManifest().version;
 
 document.querySelector('#back_btn').addEventListener('click', event => {
-    aria2StartUp();
     clearChanges();
     global = true;
+    aria2StartUp();
     document.body.className = 'local';
 });
 
-document.querySelector('#aria2_btn').addEventListener('click', event => {
-    aria2RPC.call('aria2.getGlobalOption').then(options => {
-        aria2Global = document.querySelectorAll('#aria2 [name]').printOptions(options);
-        clearChanges();
-        global = false;
-        document.querySelector('#aria2ver').innerText = options['user-agent'].slice(6);
-        document.body.className = 'aria2';
-    });
+document.querySelector('#aria2_btn').addEventListener('click', async event => {
+    var [options, version] = await aria2RPC.batch([
+        {method: 'aria2.getGlobalOption'},
+        {method: 'aria2.getVersion'}
+    ]);
+    clearChanges();
+    global = false;
+    aria2Global = document.querySelectorAll('#aria2 [name]').printOptions(options);
+    document.querySelector('#aria2ver').innerText = version.version;
+    document.body.className = 'aria2';
 });
 
 exportbtn.addEventListener('click', event => {
