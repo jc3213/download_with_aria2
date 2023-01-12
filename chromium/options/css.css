@@ -17,6 +17,14 @@ h1 {
     margin: 50px 0px 0px;
 }
 
+#version, #aria2ver {
+    padding: 5px;
+}
+
+#version::before, #aria2ver::before {
+    content: 'v';
+}
+
 #local, #aria2 {
     margin-top: 80px;
 }

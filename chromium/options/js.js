@@ -89,6 +89,8 @@ redobtn.addEventListener('click', event => {
     }
 });
 
+document.querySelector('#version').innerText = chrome.runtime.getManifest().version;
+
 document.querySelector('#back_btn').addEventListener('click', event => {
     aria2StartUp();
     clearChanges();
@@ -101,6 +103,7 @@ document.querySelector('#aria2_btn').addEventListener('click', event => {
         aria2Global = document.querySelectorAll('#aria2 [name]').printOptions(options);
         clearChanges();
         global = false;
+        document.querySelector('#aria2ver').innerText = options['user-agent'].slice(6);
         document.body.className = 'aria2';
     });
 });
