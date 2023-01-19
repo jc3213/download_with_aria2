@@ -90,7 +90,6 @@ body > .session, body > .file, body > .uri,
     display: inline-block;
 }
 
-
 .session {
     border-width: 1px;
     border-style: outset;
