@@ -6,12 +6,12 @@ body {
     grid-template-rows: 35px 493px 35px;
 }
 
-#tools, #options {
+#menu, #tool {
     margin-left: auto;
 }
 
 #queue {
-    grid-area: 2 / 1 / 3 / 7;
+    grid-area: 2 / 1 / 3 / 5;
     overflow-y: auto;
     padding: 5px 0px;
     border-width: 2px 0px;
@@ -19,11 +19,11 @@ body {
 }
 
 #array {
-    grid-area: 1 / 1 / 1 / 6;
+    grid-area: 1 / 1 / 1 / 4;
 }
 
 #speed {
-    grid-area: 3 / 1 / 4 / 6;
+    grid-area: 3 / 1 / 4 / 4;
 }
 
 body > .session, body > .file, body > .uri,
