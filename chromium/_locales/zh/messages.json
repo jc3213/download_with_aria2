@@ -243,7 +243,7 @@
         "message": "下载链接"
     },
     "task_batch_title": {
-        "message": "支持下载 \"URL\", 或 \"JSON\""
+        "message": "支持下载多条 \"URL\", 或 \"JSON\" 字符串"
     },
     "task_name": {
         "message": "文件名"
