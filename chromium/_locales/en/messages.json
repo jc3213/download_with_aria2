@@ -243,7 +243,7 @@
         "message": "Download Urls"
     },
     "task_batch_title": {
-        "message": "Either \"URL\"s, \"JSON\" strings are supported"
+        "message": "Support multi line \"URLs\" or \"JSON\" strings"
     },
     "task_name": {
         "message": "File Name"
