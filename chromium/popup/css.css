@@ -1,6 +1,29 @@
 body {
-    height: 580px;
+    display: grid;
+    grid-gap: 5px;
     width: 680px;
+    margin: 8px;
+    grid-template-rows: 35px 493px 35px;
+}
+
+#tools, #options {
+    margin-left: auto;
+}
+
+#queue {
+    grid-area: 2 / 1 / 3 / 7;
+    overflow-y: auto;
+    padding: 5px 0px;
+    border-width: 2px 0px;
+    border-style: solid;
+}
+
+#array {
+    grid-area: 1 / 1 / 1 / 6;
+}
+
+#speed {
+    grid-area: 3 / 1 / 4 / 6;
 }
 
 body > .session, body > .file, body > .uri,
@@ -67,10 +90,6 @@ body > .session, body > .file, body > .uri,
     display: inline-block;
 }
 
-#queue {
-    height: calc(100% - 102px);
-    overflow-y: auto;
-}
 
 .session {
     border-width: 1px;

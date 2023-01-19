@@ -7,21 +7,18 @@
         <link rel="stylesheet" href="css.css">
     </head>
     <body>
-        <div class="tool">
-            <div>
-                <button id="active_btn" i18n>popup_active</button>
-                <span id="active" class="stats">0</span>
-                <button id="waiting_btn" i18n>popup_waiting</button>
-                <span id="waiting" class="stats">0</span>
-                <button id="stopped_btn" i18n>popup_stopped</button>
-                <span id="stopped" class="stats">0</span>
-            </div>
-            <div>
-                <button id="download_btn" i18n>popup_create</button>
-                <button id="purge_btn" i18n>popup_purge</button>
-            </div>
+        <div id="array">
+            <button id="active_btn" i18n>popup_active</button>
+            <span id="active" class="stats">0</span>
+            <button id="waiting_btn" i18n>popup_waiting</button>
+            <span id="waiting" class="stats">0</span>
+            <button id="stopped_btn" i18n>popup_stopped</button>
+            <span id="stopped" class="stats">0</span>
         </div>
-        <hr>
+        <div id="tools">
+            <button id="download_btn" i18n>popup_create</button>
+            <button id="purge_btn" i18n>popup_purge</button>
+        </div>
         <div id="queue">
             <div class="active"></div>
             <div class="waiting"></div>
@@ -30,17 +27,14 @@
             <div class="removed"></div>
             <div class="error"></div>
         </div>
-        <hr>
-        <div class="tool">
-            <div>
-                <div class="download" i18n>popup_download</div>
-                <span id="download" class="stats">0</span>
-                <div class="upload" i18n>popup_upload</div>
-                <span id="upload" class="stats">0</span>
-            </div>
-            <div>
-                <button id="options_btn" i18n>popup_options</button>
-            </div>
+        <div id="speed">
+            <div class="download" i18n>popup_download</div>
+            <span id="download" class="stats">0</span>
+            <div class="upload" i18n>popup_upload</div>
+            <span id="upload" class="stats">0</span>
+        </div>
+        <div id="options">
+            <button id="options_btn" i18n>popup_options</button>
         </div>
         <div class="session">
             <div id="name" class="title"></div>
