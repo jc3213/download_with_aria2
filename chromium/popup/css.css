@@ -1,13 +1,13 @@
 body {
-    display: grid;
-    grid-gap: 5px;
     width: 680px;
     margin: 8px;
+    display: grid;
+    grid-gap: 5px;
     grid-template-rows: 35px 495px 35px;
 }
 
-#menu, #tool {
-    margin-left: auto;
+#stats {
+    grid-area: 1 / 1 / 1 / 4;
 }
 
 #queue {
@@ -18,12 +18,12 @@ body {
     border-style: solid;
 }
 
-#stats {
-    grid-area: 1 / 1 / 1 / 4;
-}
-
 #speed {
     grid-area: 3 / 1 / 4 / 4;
+}
+
+#menu, #tool {
+    margin-left: auto;
 }
 
 body > div:not([id]),
