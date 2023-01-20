@@ -1,24 +1,25 @@
+var stats = document.querySelector('#stats');
 var activeStat = document.querySelector('#active.stats');
 var waitingStat = document.querySelector('#waiting.stats');
 var stoppedStat = document.querySelector('#stopped.stats');
 var downloadStat = document.querySelector('#download.stats');
 var uploadStat = document.querySelector('#upload.stats');
-var activeQueue = document.querySelector('#queue > .active');
-var waitingQueue = document.querySelector('#queue > .waiting');
-var pausedQueue = document.querySelector('#queue > .paused');
-var completeQueue = document.querySelector('#queue > .complete');
-var removedQueue = document.querySelector('#queue > .removed');
-var errorQueue = document.querySelector('#queue > .error');
+var queue = document.querySelector('#queue');
+var activeQueue = queue.querySelector('.active');
+var waitingQueue = queue.querySelector('.waiting');
+var pausedQueue = queue.querySelector('.paused');
+var completeQueue = queue.querySelector('.complete');
+var removedQueue = queue.querySelector('.removed');
+var errorQueue = queue.querySelector('.error');
 var sessionLET = document.querySelector('div.session');
 var fileLET = document.querySelector('div.file');
 var uriLET = document.querySelector('div.uri');
 var activeId;
 
-document.querySelectorAll('#active_btn, #waiting_btn, #stopped_btn').forEach((tab, index) => {
-    var {body} = document;
-    var type = 'group' + index;
+document.querySelectorAll('#stats > button').forEach((tab, index) => {
+    var style = tab.id.slice(0, tab.id.length === 10 ? 3 : 4);
     tab.addEventListener('click', event => {
-        body.className = body.className === type ? '' : type;
+        stats.className = queue.className = stats.className !== style ? style : '';
     });
 });
 

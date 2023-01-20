@@ -3,7 +3,7 @@ body {
     grid-gap: 5px;
     width: 680px;
     margin: 8px;
-    grid-template-rows: 35px 493px 35px;
+    grid-template-rows: 35px 495px 35px;
 }
 
 #menu, #tool {
@@ -18,7 +18,7 @@ body {
     border-style: solid;
 }
 
-#array {
+#stats {
     grid-area: 1 / 1 / 1 / 4;
 }
 
@@ -26,17 +26,17 @@ body {
     grid-area: 3 / 1 / 4 / 4;
 }
 
-body > .session, body > .file, body > .uri,
-.group0 #queue > :nth-child(n+2),
-.group1 #queue > :not(:nth-child(n+2):nth-child(-n+3)),
-.group2 #queue > :nth-child(-n+3),
+body > div:not([id]),
+#queue.act > :nth-child(n+2),
+#queue.wait > :not(:nth-child(n+2):nth-child(-n+3)),
+#queue.stop > :nth-child(-n+3),
 .http [data-p2p], .p2p [data-http], #retry_btn {
     display: none;
 }
 
-.group0 #active_btn,
-.group1 #waiting_btn,
-.group2 #stopped_btn {
+.act #active_btn,
+.wait #waiting_btn,
+.stop #stopped_btn {
     border-style: inset;
 }
 
