@@ -40,7 +40,7 @@ function getCurrentWindow() {
     });
 }
 
-function getDownloadWindow(size) {
+function aria2NewDownload(size) {
     return new Promise(async resolve => {
         var {top, left, height, width} = await getCurrentWindow();
         var offset = size === 'full' ? 726 : 343;

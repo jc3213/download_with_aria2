@@ -24,7 +24,7 @@ document.querySelectorAll('#stats > button').forEach((tab, index) => {
 });
 
 document.querySelector('#download_btn').addEventListener('click', async event => {
-    await getDownloadWindow('full');
+    await aria2NewDownload('full');
     close();
 });
 

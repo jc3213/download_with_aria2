@@ -34,14 +34,14 @@
     },
     "browser_action": {
         "default_icon": {
-            "24": "icons/icon24.png"
+            "24": "icons/24.png"
         },
         "default_popup": "popup/index.html"
     },
     "icons": {
-        "128": "icons/icon128.png",
-        "16": "icons/icon16.png",
-        "48": "icons/icon48.png"
+        "128": "icons/128.png",
+        "16": "icons/16.png",
+        "48": "icons/48.png"
     },
     "options_ui": {
         "page": "options/index.html",
@@ -53,7 +53,7 @@
                 "default": "Alt+2"
             }
         },
-        "change_options": {
+        "open_options": {
             "suggested_key": {
                 "default": "Alt+Shift+A"
             },

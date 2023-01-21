@@ -38,11 +38,11 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 });
 
 chrome.commands.onCommand.addListener(command => {
-    if (command === 'change_options') {
+    if (command === 'open_options') {
         chrome.runtime.openOptionsPage();
     }
     else if (command === 'open_new_download') {
-        getDownloadWindow('full');
+        aria2NewDownload('full');
     }
 });
 
