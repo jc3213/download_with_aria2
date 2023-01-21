@@ -43,7 +43,7 @@ function getCurrentWindow() {
 function aria2NewDownload(size) {
     return new Promise(async resolve => {
         var {top, left, height, width} = await getCurrentWindow();
-        var offset = size === 'full' ? 726 : 343;
+        var offset = size === 'slim' ? 343 : 726;
         top += (height - offset) / 2 | 0;
         left += (width - 740) / 2 | 0;
         chrome.windows.create({
