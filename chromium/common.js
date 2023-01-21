@@ -59,7 +59,7 @@ async function aria2Download(url, referer, hostname, options = {}) {
 
 async function aria2DownloadPrompt(aria2c) {
     if (aria2Store['download_prompt']) {
-        var {tabs} = await getDownloadWindow('slim');
+        var {tabs} = await aria2NewDownload('slim');
         var {id} = tabs[0];
         aria2Prompt[id] = aria2c;
     }
