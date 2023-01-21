@@ -1,5 +1,3 @@
-var aria2Prompt = {};
-var aria2Monitor = {};
 var aria2Default = {
     'jsonrpc_uri': 'http://localhost:6800/jsonrpc',
     'secret_token': '',
@@ -25,6 +23,8 @@ var aria2Default = {
     'folder_firefox': false,
     'capture_webrequest': false
 };
+var aria2Monitor = {};
+var aria2Prompt = {};
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
     var {type, message} = message;
