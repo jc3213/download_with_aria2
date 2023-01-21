@@ -3,7 +3,7 @@ body {
     margin: 8px;
     display: grid;
     grid-gap: 5px;
-    grid-template-rows: 35px 495px 35px;
+    grid-template-rows: 35px 496px 35px;
 }
 
 #stats {
