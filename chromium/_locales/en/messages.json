@@ -15,10 +15,10 @@
         "message": "New Download - Download with Aria2"
     },
     "shortcut_options": {
-        "message": "Open extension options"
+        "message": "Open options"
     },
     "shortcut_session": {
-        "message": "Open new download window"
+        "message": "Open new download"
     },
     "time_day": {
         "message": "d"
