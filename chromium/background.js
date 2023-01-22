@@ -10,10 +10,11 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url}) => 
     }
 });
 
-chrome.storage.local.get(null, async json => {
-    aria2Store = 'jsonrpc_uri' in json ? json : aria2Default;
+chrome.storage.local.get(null, json => {
+    aria2Store = {...aria2Default, ...json};
     aria2StartUp();
     aria2Capture();
+    aria2Manager();
 });
 
 chrome.storage.onChanged.addListener(changes => {
@@ -22,10 +23,13 @@ chrome.storage.onChanged.addListener(changes => {
         aria2Store[key] = newValue;
     });
     if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
-        aria2Update();
+        aria2StartUp();
     }
     if ('capture_enabled' in changes) {
         aria2Capture();
+    }
+    if ('newtab_manager' in changes) {
+        aria2Manager();
     }
 });
 

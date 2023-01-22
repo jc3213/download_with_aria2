@@ -107,6 +107,12 @@
     "option_advanced": {
         "message": "Advanced"
     },
+    "option_newtab_manager": {
+        "message": "Open Task Manager in New Tab"
+    },
+    "option_newtab_manager_title": {
+        "message": "Set whether to open the task manager in a new tab"
+    },
     "option_user_agent": {
         "message": "User Agent"
     },

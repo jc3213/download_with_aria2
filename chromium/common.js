@@ -2,6 +2,7 @@ var aria2Default = {
     'jsonrpc_uri': 'http://localhost:6800/jsonrpc',
     'secret_token': '',
     'refresh_interval': 5000,
+    'newtab_manager': false,
     'folder_enabled': false,
     'folder_defined': '',
     'download_prompt': false,

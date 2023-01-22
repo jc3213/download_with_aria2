@@ -1,9 +1,8 @@
-importScripts('libs/aria2.js', 'libs/tools.js', 'libs/core.js', 'common.js', 'indicator.js');
+importScripts('libs/aria2.js', 'libs/tools.js', 'libs/core.js', 'common.js', 'expansion.js');
 
-chrome.storage.local.get(null, async json => {
-    aria2Store = 'jsonrpc_uri' in json ? json : aria2Default;
-    aria2Update();
-});
+aria2StartUp();
+
+chrome.runtime.onStartup.addListener(aria2StartUp);
 
 chrome.runtime.onInstalled.addListener(({reason}) => {
     chrome.contextMenus.create({
@@ -26,6 +25,9 @@ chrome.storage.onChanged.addListener(changes => {
     });
     if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
         aria2Update();
+    }
+    if ('newtab_manager' in changes) {
+        aria2Manager();
     }
 });
 
@@ -57,3 +59,10 @@ chrome.downloads.onDeterminingFilename.addListener(({id, filename, fileSize}) =>
         aria2Download(url, referer, hostname, {out: filename});
     }
 });
+
+async function aria2StartUp() {
+    var json = await chrome.storage.local.get(null);
+    aria2Store = {...aria2Default, ...json};
+    aria2Update();
+    aria2Manager();
+}

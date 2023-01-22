@@ -28,8 +28,7 @@
     "action": {
         "default_icon": {
             "24": "icons/24.png"
-        },
-        "default_popup": "popup/index.html"
+        }
     },
     "icons": {
         "128": "icons/128.png",

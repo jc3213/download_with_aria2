@@ -2,14 +2,14 @@ var i18n = {
     'en': {
         folderff: 'Follow Browser Behavior',
         folderff_title: 'Save files into browser defined directory',
-        webrequest: 'Monitor Web Requests',
-        webrequest_title: 'Monitor web requests instead of capture browser downloads'
+        webrequest: 'Capture Web Requests',
+        webrequest_title: 'Capture MIME "application" web requests instead of browser downloads'
     },
     'zh': {
         folderff: '浏览器下载文件夹',
         folderff_title: '将文件保存至浏览器所选择的下载文件夹',
-        webrequest: '监听网络请求',
-        webrequest_title: '监听网络请求而非抓取浏览器下载'
+        webrequest: '抓取网络请求',
+        webrequest_title: '抓取MIME类型为"应用"的网络请求而非浏览器下载'
     }
 };
 var lang = browser.i18n.getUILanguage();

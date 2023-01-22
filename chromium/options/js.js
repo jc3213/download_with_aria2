@@ -16,6 +16,7 @@ var mapping = {
     'capture_exclude': 1
 };
 var checking = {
+    'newtab_manager': 1,
     'folder_enabled': 1,
     'download_headers': 1,
     'download_prompt': 1,

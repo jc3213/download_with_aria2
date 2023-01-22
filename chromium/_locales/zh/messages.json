@@ -107,6 +107,12 @@
     "option_advanced": {
         "message": "进阶"
     },
+    "option_newtab_manager": {
+        "message": "新标签页打开任务管理器"
+    },
+    "option_newtab_manager_title": {
+        "message": "设置是否通过新标签页打开任务管理器"
+    },
     "option_user_agent": {
         "message": "用户代理"
     },
