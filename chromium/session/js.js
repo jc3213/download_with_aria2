@@ -1,12 +1,10 @@
 var entry = document.querySelector('#entry');
 var submitbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
+var slim_mode = location.search === '?slim_mode';
 
-if (location.search === '?slim') {
+if (slim_mode) {
     document.body.className = 'slim';
-}
-else {
-    document.body.className = 'full';
 }
 
 document.addEventListener('keydown', event => {
@@ -66,7 +64,7 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
 document.querySelector('#extra_btn').addEventListener('click', async event => {
     var {id, top, height} = await getCurrentWindow();
     chrome.windows.update(id, {top: top - 192, height: height + 383});
-    document.body.className = 'compact';
+    document.body.className = 'extend';
     countdown.innerText = countdown.innerText * 1 + 90;
 });
 
@@ -104,7 +102,7 @@ async function aria2StartUp() {
     var global = await aria2RPC.call('aria2.getGlobalOption');
     global['user-agent'] = aria2Store['user_agent']
     aria2Global = document.querySelectorAll('[name]').printOptions(global);
-    if (location.search === '?slim') {
+    if (slim_mode) {
         slimModeInit();
     }
 }

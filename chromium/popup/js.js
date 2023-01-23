@@ -29,7 +29,7 @@ document.querySelectorAll('#stats > button').forEach((tab, index) => {
 });
 
 document.querySelector('#download_btn').addEventListener('click', async event => {
-    await aria2NewDownload('full');
+    await aria2NewDownload();
     if (!open_in_tab) {
         close();
     }

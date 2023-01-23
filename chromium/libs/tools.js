@@ -40,19 +40,23 @@ function getCurrentWindow() {
     });
 }
 
-function aria2NewDownload(size) {
+function aria2NewDownload(slim) {
     return new Promise(async resolve => {
         var {top, left, height, width} = await getCurrentWindow();
-        var offset = size === 'slim' ? 343 : 726;
-        top += (height - offset) / 2 | 0;
+        var url = '/session/index.html';
+        if (slim) {
+            url += '?slim_mode';
+            top += (height - 343) / 2 | 0;
+            height = 343;
+        }
+        else {
+            top += (height - 726) / 2 | 0;
+            height = 726;
+        }
         left += (width - 740) / 2 | 0;
         chrome.windows.create({
-            url: '/session/index.html?' + size,
-            type: 'popup',
-            height: offset,
-            width: 680,
-            top,
-            left
+            type: 'popup', url,
+            width: 680, height, left, top
         }, resolve);
     });
 }

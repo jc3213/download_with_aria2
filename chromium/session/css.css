@@ -1,6 +1,11 @@
-.slim [data-full], .slim [data-extra], .full [data-slim],
-.compact [data-full], .compact #extra_btn {
+[data-slim],
+.slim [data-extra], .slim #upload_btn,
+.extend #menu > :not(#submit_btn) {
     display: none;
+}
+
+.slim [data-slim], .extend [data-slim] {
+    display: inline-block;
 }
 
 #menu {
