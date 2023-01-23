@@ -55,8 +55,12 @@ function aria2NewDownload(slim) {
         }
         left += (width - 740) / 2 | 0;
         chrome.windows.create({
-            type: 'popup', url,
-            width: 680, height, left, top
+            type: 'popup',
+            url,
+            width: 680,
+            height,
+            left,
+            top
         }, resolve);
     });
 }
