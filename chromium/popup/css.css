@@ -3,7 +3,7 @@ body {
     margin: 8px;
     display: grid;
     grid-gap: 5px;
-    grid-template-rows: 35px 496px 35px;
+    grid-template-rows: 33px 500px 33px;
 }
 
 #stats {
@@ -24,6 +24,29 @@ body {
 
 #menu, #tool {
     margin-left: auto;
+}
+
+.full {
+    width: 1280px;
+    margin: 8px auto;
+    grid-template-rows: 33px auto;
+    grid-template-columns: repeat(2, auto) repeat(2, max-content);
+}
+
+.full > #stats {
+    grid-area: 1 / 1 / 1 / 2;
+}
+
+.full > #speed {
+    grid-area: 1 / 2 / 1 / 3;
+}
+
+.full > #menu {
+    grid-area: 1 / 3 / 1 / 4;
+}
+
+.full > #queue {
+    border-bottom-width: 0px;
 }
 
 body > div:not([id]),

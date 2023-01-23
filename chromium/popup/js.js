@@ -18,14 +18,6 @@ var activeId;
 var open_in_tab = location.search === '?open_in_tab';
 
 if (open_in_tab) {
-    var css = document.createElement('style');
-    css.innerText = `
-        .full { width: 1280px; margin: 8px auto; grid-template-rows: repeat(2, auto); grid-template-columns: repeat(2, 500px) repeat(2, auto); }
-        .full > #stats { grid-area: 1 / 1 / 1 / 2; }
-        .full > #speed { grid-area: 1 / 2 / 1 / 3; }
-        .full > #menu { grid-area: 1 / 3 / 1 / 4; }
-        .full > #queue { border-bottom-width: 0px; }`;
-    document.head.append(css);
     document.body.className = 'full';
 }
 
