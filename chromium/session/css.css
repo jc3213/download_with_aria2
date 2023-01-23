@@ -1,11 +1,8 @@
-[data-slim],
-.slim [data-extra], .slim #upload_btn,
-.extend #menu > :not(#submit_btn) {
+body:not([class]) [data-slim],
+body[class] #upload_btn,
+.slim [data-extra],
+.extend #extra_btn {
     display: none;
-}
-
-.slim [data-slim], .extend [data-slim] {
-    display: inline-block;
 }
 
 #menu {
