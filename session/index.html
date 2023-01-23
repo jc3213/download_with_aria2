@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title i18n>extension_session</title>
+        <link rel="stylesheet" href="/libs/style.css">
+        <link rel="stylesheet" href="css.css">
+    </head>
+    <body>
+        <div id="download">
+            <div class="menu" title="task_referer_title">
+                <div class="title" i18n>task_referer</div>
+                <div class="fixed">
+                    <input name="referer" type="text">
+                    <button id="referer_btn">🔖</button>
+                </div>
+            </div>
+            <div class="menu" title="task_batch_title">
+                <span class="title" i18n>task_batch</span>
+                <div>
+                    <textarea id="entry" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="flex">
+                <div class="menu" title="task_name_title" data-slim>
+                    <div class="title" i18n>task_name</div>
+                    <div>
+                        <input name="out"></textarea>
+                    </div>
+                </div>
+                <div class="menu" title="aria2_adv_dir_title">
+                    <div class="title" i18n>aria2_adv_dir</div>
+                    <div>
+                        <input name="dir" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="menu" title="option_user_agent_title" data-extra>
+                <div class="title" i18n>option_user_agent</div>
+                <div>
+                    <textarea name="user-agent" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="menu" title="task_proxy_title" data-extra>
+                <div class="title" i18n>task_proxy</div>
+                <div class="fixed">
+                    <input name="all-proxy" type="url">
+                    <button id="proxy_btn">🔖</button>
+                </div>
+            </div>
+            <div class="flex" data-extra>
+                <div class="menu" title="aria2_http_split_title">
+                    <div class="title" i18n>aria2_http_split</div>
+                    <div>
+                        <input name="split" type="number">
+                    </div>
+                    <span i18n>common_default</span>: <u><i>5</i></u>
+                </div>
+                <div class="menu" title="aria2_http_size_title">
+                    <div class="title" i18n>aria2_http_size</div>
+                    <div>
+                        <input name="min-split-size" type="text">
+                        <span class="float">B</span>
+                    </div>
+                    <span i18n>common_default</span>: <u><i>20M</i></u>
+                </div>
+            </div>
+            <div class="flex" data-extra>
+                <div class="menu" title="aria2_max_connection_title">
+                    <div class="title" i18n>aria2_max_connection</div>
+                    <div>
+                        <input name="max-connection-per-server" type="number">
+                    </div>
+                    <span i18n>common_default</span>: <u><i>1</i></u>
+                </div>
+                <div class="menu" title="task_download_title">
+                    <div class="title" i18n>task_download</div>
+                    <div>
+                        <input name="max-download-limit" type="text">
+                        <span class="float">B/s</span>
+                    </div>
+                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div id="menu">
+            <button id="submit_btn">
+                <span i18n>task_submit</span>
+                <span id="countdown" data-slim>30</span>
+            </button>
+            <button id="upload_btn"><label>
+                <span i18n>task_metaurl</span>
+                <input type="file" accept=".torrent,.metalink,.meta4">
+            </label></button>
+            <button id="extra_btn" data-slim i18n>popup_options</button>
+        </div>
+        <script src="/libs/aria2.js"></script>
+        <script src="/libs/tools.js"></script>
+        <script src="/libs/main.js"></script>
+        <script src="/libs/core.js"></script>
+        <script src="js.js"></script>
+    </body>
+</html>

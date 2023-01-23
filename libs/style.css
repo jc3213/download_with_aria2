@@ -1,0 +1,136 @@
+@media (prefers-color-scheme: light) {
+    body, div {
+        background-color: #ffffff;
+    }
+
+    * {
+        border-color: #9a9a9a;
+    }
+}
+
+@media (prefers-color-scheme: dark) { 
+    body, div {
+        background-color: #202124;
+    }
+    
+    button, input, textarea, select {
+        background-color: #4a4a4a;
+    }
+
+    body, div, button, input, textarea, select {
+        color: #ffffff;
+    }
+
+    * {
+        border-color: #9aa0a6;
+    }
+}
+
+body, button, input, textarea, select {
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 16px;
+}
+
+body, div {
+    user-select: none;
+    position: relative;
+}
+
+:disabled {
+    filter: contrast(25%);
+}
+
+select {
+    padding: 4px 5px;
+}
+
+input, textarea {
+    padding: 5px;
+    width: calc(100% - 12px);
+    resize: none;
+    border-width: 1px;
+    border-style: inset;
+}
+
+input + span.float {
+    display: none;
+    top: 5px;
+    right: 8px;
+}
+
+input[type="number"] + span.float {
+    right: 24px;
+}
+
+input:focus + span.float {
+    font-size: 17px;
+    display: block;
+}
+
+textarea {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+select:only-child {
+    width: 100%;
+}
+
+option:checked {
+    font-weight: bold;
+}
+
+button {
+    padding: 5px;
+    border-width: 1px;
+    border-style: outset;
+}
+
+button input[type="file"] {
+    display: none;
+}
+
+button:enabled:hover, button:enabled:hover > * {
+    cursor: pointer;
+    filter: contrast(75%);
+}
+
+button:enabled:active {
+    filter: contrast(45%);
+    border-style: inset;
+}
+
+.menu:nth-child(n+2), .flex > .menu {
+    margin-top: 25px;
+}
+
+.flex, .tool, .fixed {
+    display: flex;
+}
+
+.flex {
+    gap: 3px;
+}
+
+.flex > * {
+    flex: 1;
+}
+
+.fixed > button {
+    width: fit-content;
+}
+
+.tool > :last-child {
+    margin-left: auto;
+}
+
+.float {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.title {
+    font-weight: bold;
+    word-break: break-word;
+}
