@@ -30,7 +30,7 @@ body {
     width: 1280px;
     margin: 8px auto;
     grid-template-rows: 33px auto;
-    grid-template-columns: repeat(2, auto) repeat(2, max-content);
+    grid-template-columns: repeat(2, 550px) repeat(2, max-content);
 }
 
 .full > #stats {
