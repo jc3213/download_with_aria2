@@ -62,20 +62,26 @@
     "option_back": {
         "message": "Back"
     },
-    "option_common": {
-        "message": "Common"
-    },
     "option_jsonrpc_uri": {
-        "message": "JSON-RPC URI"
+        "message": "URI Address"
     },
     "option_jsonrpc_uri_title": {
-        "message": "Set URI of JSON-RPC interface"
+        "message": "Set JSON-RPC internet address"
     },
     "option_secret_token": {
         "message": "Secret Token"
     },
     "option_secret_token_title": {
         "message": "Set JSON-RPC authorization token"
+    },
+    "option_task_manager": {
+        "message": "Task Manager"
+    },
+    "option_newtab_manager": {
+        "message": "Open Task Manager in New Tab"
+    },
+    "option_newtab_manager_title": {
+        "message": "Set whether to open the task manager in a new tab"
     },
     "option_refresh_interval": {
         "message": "Refresh Interval"
@@ -107,18 +113,6 @@
     "option_advanced": {
         "message": "Advanced"
     },
-    "option_newtab_manager": {
-        "message": "Open Task Manager in New Tab"
-    },
-    "option_newtab_manager_title": {
-        "message": "Set whether to open the task manager in a new tab"
-    },
-    "option_user_agent": {
-        "message": "User Agent"
-    },
-    "option_user_agent_title": {
-        "message": "Set user agent for new downloads"
-    },
     "option_download_headers": {
         "message": "Forward Request Headers"
     },
@@ -130,6 +124,12 @@
     },
     "option_download_prompt_title": {
         "message": "Confirm once again before the download starts"
+    },
+    "option_user_agent": {
+        "message": "User Agent"
+    },
+    "option_user_agent_title": {
+        "message": "Set user agent for new downloads"
     },
     "option_folder": {
         "message": "Download Directory"
