@@ -33,7 +33,7 @@ chrome.runtime.onInstalled.addListener(details => {
         chrome.storage.local.set(aria2Default);
     }
     else if (reason === 'update') {
-        if (previousVersion === '4.1.3.1749') {
+        if (previousVersion <= '4.1.3.1749') {
             aria2Store['jsonrpc_token'] = aria2Store['secret_token'];
             aria2Store['manager_newtab'] = aria2Store['newtab_manager'];
             aria2Store['manager_interval'] = aria2Store['refresh_interval'];
