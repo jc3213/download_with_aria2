@@ -3,7 +3,7 @@ var undobtn = document.querySelector('#undo_btn');
 var redobtn = document.querySelector('#redo_btn');
 var importbtn = document.querySelector('#import_btn');
 var exportbtn = document.querySelector('#export_btn');
-var secret = document.querySelector('[name="secret_token"]');
+var secret = document.querySelector('[name="jsonrpc_token"]');
 var changes = {};
 var undones = [];
 var redones = [];
@@ -16,7 +16,7 @@ var mapping = {
     'capture_exclude': 1
 };
 var checking = {
-    'newtab_manager': 1,
+    'manager_newtab': 1,
     'folder_enabled': 1,
     'download_headers': 1,
     'download_prompt': 1,
@@ -28,8 +28,8 @@ var checking = {
     'capture_always': 1
 };
 var offset = {
-    'refresh_interval': 1000,
-    'capture_size': 1048576
+    'manager_interval': 1000,
+    'capture_filesize': 1048576
 };
 var linkage = {
     'folder_enabled': [],
@@ -167,13 +167,13 @@ document.querySelectorAll('[data-link]').forEach(menu => {
 });
 
 chrome.storage.onChanged.addListener(changes => {
-    if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
-        aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
+        aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     }
 });
 
 function aria2StartUp() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     changes = {...aria2Store};
     document.querySelectorAll('#local [name]').forEach(entry => {
         var {name} = entry;

@@ -36,34 +36,34 @@
                     <span i18n>common_default</span>: <u><i>http://localhost:6800/jsonrpc</i></u>
                 </div>
             </div>
-            <div class="menu" title="option_secret_token_title">
-                <div class="title" i18n>option_secret_token</div>
+            <div class="menu" title="option_jsonrpc_token_title">
+                <div class="title" i18n>option_jsonrpc_token</div>
                 <div class="fixed">
-                    <input name="secret_token" type="password" placeholder="$$secret$$">
+                    <input name="jsonrpc_token" type="password" placeholder="$$secret$$">
                     <button id="show_btn">👁️</button>
                 </div>
             </div>
             <h1 i18n>option_task_manager</h1>
-            <div class="menu" title="option_newtab_manager_title">
-                <input name="newtab_manager" type="checkbox">
-                <span class="title" i18n>option_newtab_manager</span>
+            <div class="menu" title="option_manager_newtab_title">
+                <input id="manager_newtab" name="manager_newtab" type="checkbox">
+                <label for="manager_newtab" i18n>option_manager_newtab</label>
             </div>
-            <div class="menu" title="option_refresh_interval_title">
-                <div class="title" i18n>option_refresh_interval</div>
+            <div class="menu" title="option_manager_interval_title">
+                <div class="title" i18n>option_manager_interval</div>
                 <div>
-                    <input name="refresh_interval" type="number" min="1" max="10" step="0.5">
+                    <input name="manager_interval" type="number" min="1" max="10" step="0.5">
                     <span class="float" i18n>time_second_full</span>
                 </div>
             </div>
             <h1 i18n>option_notification</h1>
             <div class="flex">
                 <div class="menu" title="option_notify_start_title">
-                    <input name="notify_start" type="checkbox">
-                    <span class="title" i18n>option_notify_start</span>
+                    <input id="notify_start" name="notify_start" type="checkbox">
+                    <label for="notify_start" i18n>option_notify_start</label>
                 </div>
                 <div class="menu" title="option_notify_complete_title">
-                    <input name="notify_complete" type="checkbox">
-                    <span class="title" i18n>option_notify_complete</span>
+                    <input id="notify_complete" name="notify_complete" type="checkbox">
+                    <label for="notify_complete" i18n>option_notify_complete</label>
                 </div>
             </div>
             <h1 i18n>option_advanced</h1>
@@ -75,12 +75,12 @@
             </div>
             <div class="flex">
                 <div class="menu" title="option_download_headers_title">
-                    <input name="download_headers" type="checkbox">
-                    <span class="title" i18n>option_download_headers</span>
+                    <input id="download_headers" name="download_headers" type="checkbox">
+                    <label for="download_headers" i18n>option_download_headers</label>
                 </div>
                 <div class="menu" title="option_download_prompt_title">
-                    <input name="download_prompt" type="checkbox">
-                    <span class="title" i18n>option_download_prompt</span>
+                    <input id="download_prompt" name="download_prompt" type="checkbox">
+                    <label for="download_prompt" i18n>option_download_prompt</label>
                 </div>
             </div>
             <h1 i18n>option_folder</h1>
@@ -93,8 +93,8 @@
             </div>
             <div class="flex">
                 <div class="menu" title="option_folder_enabled_title">
-                    <input name="folder_enabled" type="checkbox">
-                    <span class="title" i18n>option_folder_enabled</span>
+                    <input id="folder_enabled" name="folder_enabled" type="checkbox">
+                    <label for="folder_enabled" i18n>option_folder_enabled</label>
                 </div>
             </div>
             <h1 i18n>option_proxy</h1>
@@ -108,12 +108,12 @@
             </div>
             <div class="flex">
                 <div class="menu" title="option_proxy_enabled_title">
-                    <input name="proxy_enabled" type="checkbox">
-                    <span class="title" i18n>option_proxy_enabled</span>
+                    <input id="proxy_enabled" name="proxy_enabled" type="checkbox">
+                    <label for="proxy_enabled" i18n>option_proxy_enabled</label>
                 </div>
                 <div class="menu" title="option_proxy_always_title" data-link="proxy_enabled,1">
-                    <input name="proxy_always" type="checkbox">
-                    <span class="title" i18n>option_proxy_always</span>
+                    <input id="proxy_always" name="proxy_always" type="checkbox">
+                    <label for="proxy_always" i18n>option_proxy_always</label>
                 </div>
             </div>
             <div class="menu" title="option_proxy_auto_title" data-link="proxy_enabled,1;proxy_always,0">
@@ -123,12 +123,12 @@
             <h1 i18n>option_capture</h1>
             <div class="flex">
                 <div class="menu" title="option_capture_enabled_title">
-                    <input name="capture_enabled" type="checkbox">
-                    <span class="title" i18n>option_capture_enabled</span>
+                    <input id="capture_enabled" name="capture_enabled" type="checkbox">
+                    <label for="capture_enabled" i18n>option_capture_enabled</label>
                 </div>
                 <div class="menu" title="option_capture_always_title" data-link="capture_enabled,1">
-                    <input name="capture_always" type="checkbox">
-                    <span class="title" i18n>option_capture_always</span>
+                    <input id="capture_always" name="capture_always" type="checkbox">
+                    <label for="capture_always" i18n>option_capture_always</label>
                 </div>
             </div>
             <div class="menu" title="option_capture_filesize_title" data-link="capture_enabled,1;capture_always,0">

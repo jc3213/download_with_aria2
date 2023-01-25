@@ -25,7 +25,7 @@ function aria2StartUp() {
     if (aria2Socket && aria2Socket.readyState === 1) {
         aria2Socket.close();
     }
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     aria2RPC.call('aria2.tellActive').then(result => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
         var active = result.map(({gid}) => gid);

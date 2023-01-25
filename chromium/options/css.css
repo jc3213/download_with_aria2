@@ -13,6 +13,10 @@ input[type="checkbox"] {
     accent-color: #006cbe;
 }
 
+label {
+    font-weight: bold;
+}
+
 h1 {
     margin: 50px 0px 0px;
 }

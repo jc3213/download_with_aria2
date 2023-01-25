@@ -68,25 +68,25 @@
     "option_jsonrpc_uri_title": {
         "message": "设置 JSON-RPC 的网络地址"
     },
-    "option_secret_token": {
+    "option_jsonrpc_token": {
         "message": "授权密钥"
     },
-    "option_secret_token_title": {
+    "option_jsonrpc_token_title": {
         "message": "设置 JSON-RPC 的安全密钥"
     },
     "option_task_manager": {
         "message": "任务管理器"
     },
-    "option_newtab_manager": {
-        "message": "新标签页打开任务管理器"
+    "option_manager_newtab": {
+        "message": "新标签页打开"
     },
-    "option_newtab_manager_title": {
+    "option_manager_newtab_title": {
         "message": "设置是否通过新标签页打开任务管理器"
     },
-    "option_refresh_interval": {
+    "option_manager_interval": {
         "message": "刷新间隔"
     },
-    "option_refresh_interval_title": {
+    "option_manager_interval_title": {
         "message": "设置任务管理器刷新间隔"
     },
     "option_notification": {

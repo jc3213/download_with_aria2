@@ -68,26 +68,26 @@
     "option_jsonrpc_uri_title": {
         "message": "Set JSON-RPC internet address"
     },
-    "option_secret_token": {
+    "option_jsonrpc_token": {
         "message": "Secret Token"
     },
-    "option_secret_token_title": {
+    "option_jsonrpc_token_title": {
         "message": "Set JSON-RPC authorization token"
     },
     "option_task_manager": {
         "message": "Task Manager"
     },
-    "option_newtab_manager": {
-        "message": "Open Task Manager in New Tab"
+    "option_manager_newtab": {
+        "message": "Open in New Tab"
     },
-    "option_newtab_manager_title": {
-        "message": "Set whether to open the task manager in a new tab"
+    "option_manager_newtab_itle": {
+        "message": "Set whether to open task manager in a new tab"
     },
-    "option_refresh_interval": {
+    "option_manager_interval": {
         "message": "Refresh Interval"
     },
-    "option_refresh_interval_title": {
-        "message": "Set task manager refresh interval"
+    "option_manager_interval_title": {
+        "message": "Set the refresh interval of task manager"
     },
     "option_notification": {
         "message": "Notifications"

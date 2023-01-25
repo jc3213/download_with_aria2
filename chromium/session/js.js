@@ -98,7 +98,7 @@ function slimModeInit() {
 }
 
 async function aria2StartUp() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['secret_token']);
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     var global = await aria2RPC.call('aria2.getGlobalOption');
     global['user-agent'] = aria2Store['user_agent']
     aria2Global = document.querySelectorAll('[name]').printOptions(global);

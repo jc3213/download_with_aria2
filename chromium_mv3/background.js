@@ -23,7 +23,7 @@ chrome.storage.onChanged.addListener(changes => {
         var {newValue} = changes[key];
         aria2Store[key] = newValue;
     });
-    if ('jsonrpc_uri' in changes || 'secret_token' in changes) {
+    if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
         aria2Update();
     }
     if ('newtab_manager' in changes) {
