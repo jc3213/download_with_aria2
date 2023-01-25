@@ -7,18 +7,18 @@ body:not(.aria2) [data-aria2], body.aria2 [data-local] {
     display: none;
 }
 
+h1 {
+    margin: 50px 0px 0px;
+}
+
 input[type="checkbox"] {
     width: auto;
     transform: scale(1.5);
     accent-color: #006cbe;
 }
 
-label {
+input[type="checkbox"] + label {
     font-weight: bold;
-}
-
-h1 {
-    margin: 50px 0px 0px;
 }
 
 #version, #aria2ver {
