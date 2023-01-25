@@ -18,19 +18,6 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url}) => 
     }
 });
 
-chrome.storage.onChanged.addListener(changes => {
-    Object.keys(changes).forEach(key => {
-        var {newValue} = changes[key];
-        aria2Store[key] = newValue;
-    });
-    if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
-        aria2Update();
-    }
-    if ('manager_newtab' in changes) {
-        aria2Manager();
-    }
-});
-
 chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
     var url = finalUrl;
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
@@ -63,6 +50,15 @@ chrome.downloads.onDeterminingFilename.addListener(({id, filename, fileSize}) =>
 async function aria2StartUp() {
     var json = await chrome.storage.local.get(null);
     aria2Store = {...aria2Default, ...json};
-    aria2Update();
+    aria2Initial();
     aria2Manager();
+}
+
+function aria2Update(changes) {
+    if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
+        aria2Initial();
+    }
+    if ('manager_newtab' in changes) {
+        aria2Manager();
+    }
 }

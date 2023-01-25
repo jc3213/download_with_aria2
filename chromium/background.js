@@ -17,11 +17,7 @@ chrome.storage.local.get(null, json => {
     aria2Manager();
 });
 
-chrome.storage.onChanged.addListener(changes => {
-    Object.keys(changes).forEach(key => {
-        var {newValue} = changes[key];
-        aria2Store[key] = newValue;
-    });
+function aria2Update(changes) {
     if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
         aria2StartUp();
     }
@@ -31,7 +27,7 @@ chrome.storage.onChanged.addListener(changes => {
     if ('manager_newtab' in changes) {
         aria2Manager();
     }
-});
+}
 
 async function captureOnCreated({id, finalUrl, referrer}) {
     var url = finalUrl;

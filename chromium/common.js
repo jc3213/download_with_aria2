@@ -41,10 +41,18 @@ chrome.runtime.onInstalled.addListener(details => {
             delete aria2Store['newtab_manager'];
             delete aria2Store['refresh_interval'];
             chrome.storage.local.set(aria2Store);
-            aria2StartUp();
-            aria2Manager();
         }
     }
+});
+
+chrome.storage.onChanged.addListener(changes => {
+    Object.keys(changes).forEach(key => {
+        var {newValue} = changes[key];
+        if (newValue !== undefined) {
+            aria2Store[key] = newValue;
+        }
+    });
+    aria2Update(changes);
 });
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
