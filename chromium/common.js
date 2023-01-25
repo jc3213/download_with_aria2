@@ -27,6 +27,20 @@ var aria2Default = {
 var aria2Monitor = {};
 var aria2Prompt = {};
 
+chrome.runtime.onInstalled.addListener(details => {
+    var {reason, previousVersion} = details;
+    if (reason === 'install') {
+        chrome.storage.local.set(aria2Default);
+    }
+    else if (reason === 'update') {
+        if (previousVersion === '4.1.3.1749') {
+            aria2Store['jsonrpc_token'] = aria2Store['secret_token'];
+            aria2Store['manager_newtab'] = aria2Store['newtab_manager'];
+            aria2Store['manager_interval'] = aria2Store['refresh_interval'];
+        }
+    }
+});
+
 chrome.runtime.onMessage.addListener((message, sender, response) => {
     var {type, message} = message;
     if (type === 'prompt') {
