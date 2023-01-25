@@ -13,7 +13,7 @@ chrome.browserAction.onClicked.addListener(tab => {
 });
 
 function aria2Manager() {
-    if (aria2Store['newtab_manager']) {
+    if (aria2Store['manager_newtab']) {
         chrome.browserAction.setPopup({popup: ''});
     }
     else {

@@ -71,7 +71,7 @@ function aria2StartUp() {
 }
 
 function aria2Client() {
-    aria2Alive = setInterval(updateManager, aria2Store['refresh_interval']);
+    aria2Alive = setInterval(updateManager, aria2Store['manager_interval']);
     aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
     aria2Socket.onmessage = async event => {
         var {method, params: [{gid}]} = JSON.parse(event.data);
