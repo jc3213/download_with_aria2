@@ -2,16 +2,14 @@
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
     "version": "4.1.3.1757",
-    "manifest_version": 3,
+    "manifest_version": 2,
     "permissions": [
         "contextMenus",
         "downloads",
         "tabs",
         "cookies",
         "notifications",
-        "storage"
-    ],
-    "host_permissions": [
+        "storage",
         "<all_urls>"
     ],
     "default_locale": "en",
@@ -23,9 +21,16 @@
         }
     ],
     "background": {
-        "service_worker": "background.js"
+        "scripts": [
+            "libs/aria2.js",
+            "libs/tools.js",
+            "libs/core.js",
+            "common.js",
+            "expansion.js",
+            "background.js"
+        ]
     },
-    "action": {
+    "browser_action": {
         "default_icon": {
             "24": "icons/24.png"
         }
@@ -40,7 +45,7 @@
         "open_in_tab": true
     },
     "commands": {
-        "_execute_action": {
+        "_execute_browser_action": {
             "suggested_key": {
                 "default": "Alt+2"
             }
