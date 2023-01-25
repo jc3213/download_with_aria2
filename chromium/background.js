@@ -28,7 +28,7 @@ chrome.storage.onChanged.addListener(changes => {
     if ('capture_enabled' in changes) {
         aria2Capture();
     }
-    if ('newtab_manager' in changes) {
+    if ('manager_newtab' in changes) {
         aria2Manager();
     }
 });

@@ -37,6 +37,12 @@ chrome.runtime.onInstalled.addListener(details => {
             aria2Store['jsonrpc_token'] = aria2Store['secret_token'];
             aria2Store['manager_newtab'] = aria2Store['newtab_manager'];
             aria2Store['manager_interval'] = aria2Store['refresh_interval'];
+            delete aria2Store['secret_token'];
+            delete aria2Store['newtab_manager'];
+            delete aria2Store['refresh_interval'];
+            chrome.storage.local.set(aria2Store);
+            aria2StartUp();
+            aria2Manager();
         }
     }
 });
