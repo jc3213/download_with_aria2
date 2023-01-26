@@ -17,14 +17,14 @@ chrome.storage.local.get(null, json => {
     aria2Manager();
 });
 
-function aria2Update(name) {
-    if (name === 'jsonrpc_uri' || name === 'jsonrpc_token') {
+function aria2Update(changes) {
+    if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
         aria2StartUp();
     }
-    else if (name === 'capture_enabled') {
+    if ('capture_enabled' in changes) {
         aria2Capture();
     }
-    else if (name === 'manager_newtab') {
+    if ('manager_newtab' in changes) {
         aria2Manager();
     }
 }
