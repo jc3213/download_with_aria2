@@ -54,11 +54,11 @@ async function aria2StartUp() {
     aria2Manager();
 }
 
-function aria2Update(changes) {
-    if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
+function aria2Update(name) {
+    if (name === 'jsonrpc_uri' || name === 'jsonrpc_token') {
         aria2Initial();
     }
-    if ('manager_newtab' in changes) {
+    else if (name === 'manager_newtab') {
         aria2Manager();
     }
 }
