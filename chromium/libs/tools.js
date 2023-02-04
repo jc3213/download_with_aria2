@@ -2,12 +2,12 @@ function getHostname(url) {
     var si = url.indexOf('://');
     var result = url.slice(si + 3);
     var ei = result.indexOf('/');
-    var hostname = result.slice(0, ei);
-    var ui = hostname.indexOf('@');
+    var host = result.slice(0, ei);
+    var ui = host.indexOf('@');
     if (ui !== -1) {
-        return hostname.slice(ui + 1);
+        return host.slice(ui + 1);
     }
-    return hostname;
+    return host;
 }
 
 function getDownloadName(bittorrent, [{path, uris}]) {
