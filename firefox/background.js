@@ -6,7 +6,8 @@ browser.contextMenus.create({
 
 browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url, cookieStoreId}) => {
     if (menuItemId === 'downwitharia2firefox') {
-        aria2DownloadFirefox(linkUrl, url, getHostname(url), cookieStoreId);
+        var {hostname} = getUrlComponents(url);
+        aria2DownloadFirefox(linkUrl, url, hostname, cookieStoreId);
     }
 });
 
@@ -92,7 +93,7 @@ async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
     if (url.startsWith('blob') || url.startsWith('data')) {
         return;
     }
-    var hostname = getHostname(referrer);
+    var {hostname} = getUrlComponents(referrer);
     if (getCaptureFilter(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
@@ -122,7 +123,7 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
         else {
             out = ext = null;
         }
-        var hostname = getHostname(originUrl);
+        var {hostname} = getUrlComponents(originUrl);
         if (getCaptureFilter(hostname, ext, length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
             aria2DownloadFirefox(url, originUrl, hostname, cookieStoreId, {out, dir: getDownloadFolder()});

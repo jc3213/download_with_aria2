@@ -6,7 +6,8 @@ chrome.contextMenus.create({
 
 chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url}) => {
     if (menuItemId === 'downwitharia2') {
-        aria2Download(linkUrl, url, getHostname(url));
+        var {hostname} = getUrlComponents(url);
+        aria2Download(linkUrl, url, hostname);
     }
 });
 
@@ -32,7 +33,7 @@ function aria2Update(changes) {
 async function captureOnCreated({id, finalUrl, referrer}) {
     var url = finalUrl;
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
-    var hostname = getHostname(referer);
+    var {hostname} = getUrlComponents(referer);
     if (finalUrl.startsWith('blob') || finalUrl.startsWith('data')) {
         var priority = -1;
     }
