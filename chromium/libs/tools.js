@@ -1,32 +1,13 @@
-function getUrlComponents(url) {
-    var pi = url.indexOf('://');
-    if (pi === -1) {
-        throw new URIError('Invalid URL!');
+function getHostname(url) {
+    var si = url.indexOf('://');
+    var result = url.slice(si + 3);
+    var ei = result.indexOf('/');
+    var hostname = result.slice(0, ei);
+    var ui = hostname.indexOf('@');
+    if (ui !== -1) {
+        return hostname.slice(ui + 1);
     }
-    var protocol = url.slice(0, pi);
-    var result = url.slice(pi + 3);
-    var hi = result.indexOf('/');
-    var host = result.slice(0, hi);
-    var po = host.lastIndexOf(':');
-    if (po === -1) {
-        var hostname = host;
-        var port = '';
-    }
-    else if (host[0] === '[') {
-        if (host[po - 1] === ']') {
-            var hostname = host.slice(0, po);
-            var port = host.slice(po + 1);
-        }
-        else {
-            var hostname = host;
-            var port = '';
-        }
-    }
-    else {
-        var hostname = host.slice(0, po);
-        var port = host.slice(po + 1);
-    }
-    return {protocol, host, hostname, port};
+    return hostname;
 }
 
 function getDownloadName(bittorrent, [{path, uris}]) {
