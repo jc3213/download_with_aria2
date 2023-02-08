@@ -1,4 +1,4 @@
-importScripts('libs/aria2.js', 'libs/tools.js', 'libs/core.js', 'common.js', 'expansion.js');
+importScripts('lib/aria2.js', 'lib/tools.js', 'lib/core.js', 'res/common.js', 'res/expansion.js');
 
 aria2StartUp();
 

@@ -18,7 +18,7 @@
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["content/message.js"],
+            "js": ["content.js"],
             "run_at": "document_idle"
         }
     ],
@@ -27,16 +27,16 @@
     },
     "action": {
         "default_icon": {
-            "24": "icons/24.png"
+            "24": "icon/24.png"
         }
     },
     "icons": {
-        "128": "icons/128.png",
-        "16": "icons/16.png",
-        "48": "icons/48.png"
+        "128": "icon/128.png",
+        "16": "icon/16.png",
+        "48": "icon/48.png"
     },
     "options_ui": {
-        "page": "options/index.html",
+        "page": "page/options.html",
         "open_in_tab": true
     },
     "commands": {
