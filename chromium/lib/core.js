@@ -65,7 +65,7 @@ function getNotification(title, message) {
     return new Promise(resolve => {
         chrome.notifications.create({
             type: 'basic',
-            iconUrl: '/icons/48.png',
+            iconUrl: '/icon/48.png',
             title,
             message
         }, resolve);
