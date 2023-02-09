@@ -77,8 +77,7 @@ async function aria2Download(url, referer, hostname, options = {}) {
 
 async function aria2DownloadPrompt(aria2c) {
     if (aria2Store['download_prompt']) {
-        var {tabs} = await aria2NewDownload(true);
-        var {id} = tabs[0];
+        var id = await aria2NewDownload(true);
         aria2Prompt[id] = aria2c;
     }
     else {
