@@ -46,8 +46,8 @@ chrome.storage.onChanged.addListener(changes => {
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
     var {type, message} = message;
+    var {id} = sender.tab;
     if (type === 'prompt') {
-        var {id} = sender.tab;
         response(aria2Prompt[id]);
     }
     else if (type === 'download') {
