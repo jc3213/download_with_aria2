@@ -27,8 +27,7 @@ var aria2Default = {
 var aria2Monitor = {};
 var aria2Prompt = {};
 
-chrome.runtime.onInstalled.addListener(details => {
-    var {reason, previousVersion} = details;
+chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.local.set(aria2Default);
     }
@@ -45,13 +44,13 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
-    var {type, message} = message;
+    var {action, download} = message;
     var {id} = sender.tab;
-    if (type === 'prompt') {
-        response(aria2Prompt[id]);
+    if (download) {
+        aria2DownloadPrompt(download);
     }
-    else if (type === 'download') {
-        aria2DownloadPrompt(message);
+    else if (action === 'prompt') {
+        response(aria2Prompt[id]);
     }
 });
 
