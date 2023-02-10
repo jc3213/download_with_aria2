@@ -11,13 +11,13 @@
     "extension_manager": {
         "message": "Task Manager - Download with Aria2"
     },
-    "extension_session": {
+    "extension_newdld": {
         "message": "New Download - Download with Aria2"
     },
     "shortcut_options": {
         "message": "Open options"
     },
-    "shortcut_session": {
+    "shortcut_newdld": {
         "message": "Open new download"
     },
     "time_day": {

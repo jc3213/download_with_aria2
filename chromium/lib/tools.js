@@ -51,11 +51,11 @@ function getNewWindow(url, offsetWidth, offsetHeight) {
 
 function aria2NewDownload(slim) {
     if (slim) {
-        var url = '/page/newdl.html?slim_mode';
+        var url = '/page/newdld.html?slim_mode';
         var height = 343;
     }
     else {
-        url = '/page/newdl.html';
+        url = '/page/newdld.html';
         height = 726;
     }
     return getNewWindow(url, 640, height);
