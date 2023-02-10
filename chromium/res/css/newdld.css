@@ -1,0 +1,18 @@
+body:not([class]) [data-slim],
+body[class] #upload_btn,
+.slim [data-extra],
+.extend #extra_btn {
+    display: none;
+}
+
+#menu {
+    text-align: center;
+}
+
+#countdown::before {
+    content: "(";
+}
+
+#countdown::after {
+    content: ")";
+}

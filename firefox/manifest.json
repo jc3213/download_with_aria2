@@ -62,7 +62,7 @@
             "suggested_key": {
                 "default": "Alt+Shift+2"
             },
-            "description": "__MSG_shortcut_session__"
+            "description": "__MSG_shortcut_newdld__"
         }
     },
     "browser_specific_settings": {
