@@ -26,7 +26,7 @@ var aria2Default = {
 };
 var aria2Monitor = {};
 var aria2Prompt = {};
-var aria2Sniffer = {};
+var aria2Images = {};
 
 chrome.runtime.onInstalled.addListener(details => {
     var {reason, previousVersion} = details;
@@ -52,7 +52,7 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
         response(aria2Prompt[id]);
     }
     else if (action === 'internal_sniffer') {
-        response(aria2Sniffer[id]);
+        response(aria2Images[id]);
     }
     else if (action === 'external_download') {
         aria2DownloadPrompt(params);
@@ -100,7 +100,7 @@ async function aria2DownloadPrompt(aria2c) {
 
 async function aria2SnifferPrompt(message) {
     var id = await getNewWindow('/page/images.html', 1280, 800);
-    aria2Sniffer[id] = message;
+    aria2Images[id] = message;
 }
 
 function getCurrentTabUrl() {
