@@ -3,7 +3,7 @@
         "message": "Download with Aria2"
     },
     "extension_description": {
-        "message": "Use aria2c to download links or images, capture browser downloads, and manage downloads via json-rpc protocol"
+        "message": "Use aria2c to download selected links, capture browser downloads, and manage downloads via json-rpc protocol"
     },
     "extension_options": {
         "message": "Options - Download with Aria2"
@@ -14,8 +14,14 @@
     "extension_newdld": {
         "message": "New Download - Download with Aria2"
     },
+    "extension_sniffer": {
+        "message": "Select Images - Download with Aria2"
+    },
     "contextmenu_dldthis": {
         "message": "Download this with Aria2"
+    },
+    "contextmenu_images": {
+        "message": "Download all images with Aria2"
     },
     "shortcut_options": {
         "message": "Open options"

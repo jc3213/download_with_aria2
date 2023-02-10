@@ -26,8 +26,10 @@ var aria2Default = {
 };
 var aria2Monitor = {};
 var aria2Prompt = {};
+var aria2Sniffer = {};
 
-chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
+chrome.runtime.onInstalled.addListener(details => {
+    var {reason, previousVersion} = details;
     if (reason === 'install') {
         chrome.storage.local.set(aria2Default);
     }
@@ -54,6 +56,9 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     }
     else if (action === 'external_download') {
         aria2DownloadPrompt(params);
+    }
+    else if (action = 'external_sniffer') {
+        aria2SnifferPrompt(params);
     }
 });
 
@@ -91,6 +96,11 @@ async function aria2DownloadPrompt(aria2c) {
             aria2DownloadUrls(url, options);
         }
     }
+}
+
+async function aria2SnifferPrompt(message) {
+    var id = await getNewWindow('/page/sniffer.html', 1280, 800);
+    aria2Sniffer[id] = message;
 }
 
 function getCurrentTabUrl() {

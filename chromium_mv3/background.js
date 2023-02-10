@@ -10,11 +10,19 @@ chrome.runtime.onInstalled.addListener(({reason}) => {
         id: 'download_this_item',
         contexts: ['link', 'image']
     });
+    chrome.contextMenus.create({
+        title: chrome.i18n.getMessage('contextmenu_images'),
+        id: 'download_all_images',
+        contexts: ['page']
+    });
 });
 
 chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url}) => {
     if (menuItemId === 'download_this_item') {
         aria2Download(linkUrl, url, getHostname(url));
+    }
+    else if (menuItemId === 'download_all_images') {
+        chrome.tabs.sendMessage(id, 'sniffer');
     }
 });
 
