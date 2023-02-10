@@ -14,8 +14,8 @@
     "extension_newdld": {
         "message": "新下载 - 通过 Aria2 下载"
     },
-    "extension_sniffer": {
-        "message": "选择图像 - 通过 Aria2 下载"
+    "extension_images": {
+        "message": "已探知图像 - 通过 Aria2 下载"
     },
     "contextmenu_dldthis": {
         "message": "通过 Aria2 下载此项目"

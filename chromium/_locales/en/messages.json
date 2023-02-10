@@ -14,8 +14,8 @@
     "extension_newdld": {
         "message": "New Download - Download with Aria2"
     },
-    "extension_sniffer": {
-        "message": "Select Images - Download with Aria2"
+    "extension_images": {
+        "message": "Detected Images - Download with Aria2"
     },
     "contextmenu_dldthis": {
         "message": "Download this with Aria2"

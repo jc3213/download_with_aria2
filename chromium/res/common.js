@@ -99,7 +99,7 @@ async function aria2DownloadPrompt(aria2c) {
 }
 
 async function aria2SnifferPrompt(message) {
-    var id = await getNewWindow('/page/sniffer.html', 1280, 800);
+    var id = await getNewWindow('/page/images.html', 1280, 800);
     aria2Sniffer[id] = message;
 }
 
