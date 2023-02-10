@@ -44,13 +44,16 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
-    var {action, download} = message;
+    var {action, params} = message;
     var {id} = sender.tab;
-    if (download) {
-        aria2DownloadPrompt(download);
-    }
-    else if (action === 'prompt') {
+    if (action === 'internal_prompt') {
         response(aria2Prompt[id]);
+    }
+    else if (action === 'internal_sniffer') {
+        response(aria2Sniffer[id]);
+    }
+    else if (action === 'external_download') {
+        aria2DownloadPrompt(params);
     }
 });
 
