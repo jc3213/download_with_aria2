@@ -173,7 +173,6 @@ chrome.storage.onChanged.addListener(changes => {
 });
 
 function aria2StartUp() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     changes = {...aria2Store};
     document.querySelectorAll('#local [name]').forEach(entry => {
         var {name} = entry;

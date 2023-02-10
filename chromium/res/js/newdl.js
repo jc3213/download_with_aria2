@@ -76,7 +76,7 @@ document.addEventListener('change', event => {
 });
 
 function slimModeInit() {
-    chrome.runtime.sendMessage({action: 'prompt'}, response => {
+    chrome.runtime.sendMessage({action: 'internal_prompt'}, response => {
         var {url, json, options} = response;
         if (json) {
             entry.value = JSON.stringify(json);
@@ -98,7 +98,6 @@ function slimModeInit() {
 }
 
 async function aria2StartUp() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     var global = await aria2RPC.call('aria2.getGlobalOption');
     global['user-agent'] = aria2Store['user_agent']
     aria2Global = document.querySelectorAll('[name]').printOptions(global);
