@@ -1,11 +1,11 @@
 browser.contextMenus.create({
-    title: browser.runtime.getManifest().name,
-    id: 'downwitharia2firefox',
-    contexts: ['link']
+    title: browser.i18n.getMessage('contextmenu_dldthis'),
+    id: 'download_this_item',
+    contexts: ['link', 'image']
 });
 
 browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url, cookieStoreId}) => {
-    if (menuItemId === 'downwitharia2firefox') {
+    if (menuItemId === 'download_this_item') {
         aria2DownloadFirefox(linkUrl, url, getHostname(url), cookieStoreId);
     }
 });

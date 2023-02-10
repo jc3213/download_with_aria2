@@ -3,7 +3,7 @@
         "message": "通过 Aria2 下载"
     },
     "extension_description": {
-        "message": "基于 json-rpc 协议，实现通过 aria2c 下载指定链接，抓取浏览器下载，管理下载任务等"
+        "message": "基于 json-rpc 协议，实现通过 aria2c 下载链接或图像，抓取浏览器下载，管理下载任务等"
     },
     "extension_options": {
         "message": "设置 - 通过 Aria2 下载"
@@ -13,6 +13,9 @@
     },
     "extension_newdld": {
         "message": "新下载 - 通过 Aria2 下载"
+    },
+    "contextmenu_dldthis": {
+        "message": "通过 Aria2 下载此项目"
     },
     "shortcut_options": {
         "message": "打开设置"

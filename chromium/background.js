@@ -1,11 +1,11 @@
 chrome.contextMenus.create({
-    title: chrome.runtime.getManifest().name,
-    id: 'downwitharia2',
-    contexts: ['link']
+    title: chrome.i18n.getMessage('contextmenu_dldthis'),
+    id: 'download_this_item',
+    contexts: ['link', 'image']
 });
 
 chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url}) => {
-    if (menuItemId === 'downwitharia2') {
+    if (menuItemId === 'download_this_item') {
         aria2Download(linkUrl, url, getHostname(url));
     }
 });
