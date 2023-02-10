@@ -1,4 +1,21 @@
 var preview = document.querySelector('#preview');
+var submitbtn = document.querySelector('#submit_btn');
+
+document.addEventListener('keydown', event => {
+    var {ctrlKey, altKey, keyCode} = event;
+    if (altKey) {
+        if (keyCode === 83) {
+            event.preventDefault();
+            submitbtn.click();
+        }
+    }
+    else if (ctrlKey) {
+        if (keyCode === 13) {
+            event.preventDefault();
+            submitbtn.click();
+        }
+    }
+});
 
 document.querySelector('#submit_btn').addEventListener('click', async event => {
     var json = [...document.querySelectorAll('img.checked')].map(img => {
