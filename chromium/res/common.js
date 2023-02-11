@@ -97,9 +97,9 @@ async function aria2DownloadPrompt(aria2c) {
     }
 }
 
-async function aria2SnifferPrompt(message) {
+async function aria2SnifferPrompt(result) {
     var id = await getNewWindow('/page/images.html', 1280, 800);
-    aria2Images[id] = message;
+    aria2Images[id] = result;
 }
 
 function getCurrentTabUrl() {
