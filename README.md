@@ -13,4 +13,5 @@
 - [Feed back](//github.com/jc3213/download_with_aria2/issues/new/)
 
 ## Alternative Manager
-- [Yet Another Aria2 Web Frontend](http://binux.github.io/yaaw/demo/)
+- [Aria2 WebUI](https://ziahamza.github.io/webui-aria2/)
+- [AriaNG](https://aria2ng.github.io/)
