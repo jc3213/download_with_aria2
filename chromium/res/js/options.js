@@ -223,7 +223,6 @@ function printLinkage(menu) {
     var {name, rule} = major;
     var prime = rule === changes[name];
     var second = 0;
-    var length = minor.length;
     minor.forEach(({name, rule}) => {
         var value = changes[name];
         if (rule === value) {
@@ -231,7 +230,7 @@ function printLinkage(menu) {
         }
     });
     if (prime) {
-        menu.style.display = second === length ? 'block' : 'none';
+        menu.style.display = second === minor.length ? 'block' : 'none';
     }
     else {
         menu.style.display = 'none';
