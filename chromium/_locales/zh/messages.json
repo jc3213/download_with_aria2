@@ -173,10 +173,10 @@
     "option_proxy_always_title": {
         "message": "总是在新建下载时的使用代理服务器"
     },
-    "option_proxy_auto": {
+    "option_proxy_include": {
         "message": "自动代理域名"
     },
-    "option_proxy_auto_title": {
+    "option_proxy_include_title": {
         "message": "为来自所设置域名的下载添加代理服务器"
     },
     "option_capture": {
@@ -270,7 +270,7 @@
         "message": "代理服务器"
     },
     "task_proxy_title": {
-        "message": "为本次下载使用首选的代理服务器"
+        "message": "设置本次下载所使用的代理服务器"
     },
     "task_submit": {
         "message": "确认"
@@ -331,6 +331,12 @@
     },
     "aria2_http_size_title": {
         "message": "设置每个线程的最小容量"
+    },
+    "aria2_http_ua": {
+        "message": "用户代理"
+    },
+    "aria2_http_ua_title": {
+        "message": "设置 HTTP(S) 下载的用户代理"
     },
     "aria2_bt_port": {
         "message": "监听端口"

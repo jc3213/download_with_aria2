@@ -49,7 +49,7 @@ body {
     border-bottom-width: 0px;
 }
 
-body > div:not([id]),
+body > :not([id]),
 #queue.act > :nth-child(n+2),
 #queue.wait > :not(:nth-child(n+2):nth-child(-n+3)),
 #queue.stop > :nth-child(-n+3),

@@ -56,7 +56,7 @@ function aria2NewDownload(slim) {
     }
     else {
         url = '/page/newdld.html';
-        height = 726;
+        height = 701;
     }
     return getNewWindow(url, 640, height);
 }

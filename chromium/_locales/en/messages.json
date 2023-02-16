@@ -173,10 +173,10 @@
     "option_proxy_always_title": {
         "message": "Always use proxy server for new downloads"
     },
-    "option_proxy_auto": {
+    "option_proxy_include": {
         "message": "Auto Proxy Domains"
     },
-    "option_proxy_auto_title": {
+    "option_proxy_include_title": {
         "message": "Add proxy server for new downloads from these domains"
     },
     "option_capture": {
@@ -258,7 +258,7 @@
         "message": "Download Urls"
     },
     "task_batch_title": {
-        "message": "Support multi line \"URLs\" or \"JSON\" strings"
+        "message": "Support multi-line \"URLs\" or \"JSON\" strings"
     },
     "task_name": {
         "message": "File Name"
@@ -270,7 +270,7 @@
         "message": "Proxy Server"
     },
     "task_proxy_title": {
-        "message": "Use preferred proxy server for this download"
+        "message": "Set the proxy server for this download"
     },
     "task_submit": {
         "message": "Submit"
@@ -331,6 +331,12 @@
     },
     "aria2_http_size_title": {
         "message": "Set the minimum size of each download section"
+    },
+    "aria2_http_ua": {
+        "message": "User Agent"
+    },
+    "aria2_http_ua_title": {
+        "message": "Set user agent for HTTP(S) downloads"
     },
     "aria2_bt_port": {
         "message": "Listening Port"

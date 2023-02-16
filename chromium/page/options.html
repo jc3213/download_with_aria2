@@ -116,12 +116,13 @@
                     <label for="proxy_always" i18n>option_proxy_always</label>
                 </div>
             </div>
-            <div class="menu" title="option_proxy_auto_title" data-link="proxy_enabled,1;proxy_always,0">
-                <div class="title" i18n>option_proxy_auto</div>
-                <div>
-                    <input name="proxy_include">
+            <div id="proxy_include" class="menu" title="option_proxy_include_title" data-link="proxy_enabled,1;proxy_always,0">
+                <div class="title" i18n>option_proxy_include</div>
+                <div class="fixed">
+                    <input>
+                    <button>➕</button>
                 </div>
-                <div id="proxy_include" class="list"></div>
+                <div class="list"></div>
             </div>
             <h1 i18n>option_capture</h1>
             <div class="flex">
@@ -144,40 +145,42 @@
                     <span i18n>common_disabled</span>: <u><i>0</i></u>
                 </div>
             </div>
-            <div class="menu" title="option_capture_resolve_title" data-link="capture_enabled,1;capture_always,0">
+            <div id="capture_resolve" class="menu" title="option_capture_resolve_title" data-link="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_resolve</div>
-                <div>
-                    <input name="capture_resolve">
+                <div class="fixed">
+                    <input>
+                    <button>➕</button>
                 </div>
-                <div id="capture_resolve" class="list"></div>
+                <div class="list"></div>
             </div>
-            <div class="menu" title="option_capture_include_title" data-link="capture_enabled,1;capture_always,0">
+            <div id="capture_include" class="menu" title="option_capture_include_title" data-link="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_include</div>
-                <div>
-                    <input name="capture_include">
+                <div class="fixed">
+                    <input>
+                    <button>➕</button>
                 </div>
-                <div id="capture_include" class="list"></div>
+                <div class="list"></div>
             </div>
-            <div class="menu" title="option_capture_reject_title" data-link="capture_enabled,1">
+            <div id="capture_reject" class="menu" title="option_capture_reject_title" data-link="capture_enabled,1">
                 <div class="title" i18n>option_capture_reject</div>
-                <div>
-                    <input name="capture_reject">
+                <div class="fixed">
+                    <input>
+                    <button>➕</button>
                 </div>
-                <div id="capture_reject" class="list"></div>
+                <div class="list"></div>
             </div>
-            <div class="menu" title="option_capture_exclude_title" data-link="capture_enabled,1">
+            <div id="capture_exclude" class="menu" title="option_capture_exclude_title" data-link="capture_enabled,1">
                 <div class="title" i18n>option_capture_exclude</div>
-                <div>
-                    <input name="capture_exclude">
+                <div class="fixed">
+                    <input>
+                    <button>➕</button>
                 </div>
-                <div id="capture_exclude" class="list"></div>
+                <div class="list"></div>
             </div>
         </div>
-        <div id="template">
-            <div class="item">
-               <span></span>
-               <button>❌</button>
-            </div>
+        <div class="item">
+           <span></span>
+           <button>❌</button>
         </div>
         <div id="aria2" data-aria2>
             <h1>HTTP/FTP</h1>
@@ -217,6 +220,12 @@
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>20M</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_http_ua_title">
+                <div class="title" i18n>aria2_http_ua</div>
+                <div>
+                    <input name="user-agent">
                 </div>
             </div>
             <h1>BitTorrent</h1>
