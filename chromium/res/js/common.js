@@ -7,7 +7,7 @@ var filesize = {
     'max-overall-upload-limit': 1
 };
 
-NodeList.prototype.printOptions = function (json) {
+NodeList.prototype.disposition = function (json) {
     var options = {};
     this.forEach(node => {
         var {name} = node;

@@ -95,7 +95,8 @@ document.querySelector('#aria2_btn').addEventListener('click', async event => {
     ]);
     clearChanges();
     global = false;
-    aria2Global = document.querySelectorAll('#aria2 [name]').printOptions(options);
+    aria2Global = document.querySelectorAll('#aria2 [name]').disposition(options);
+    changes = {...aria2Global};
     aria2Ver.innerText = aria2UA.innerText = version.version;
     document.body.className = 'aria2';
 });

@@ -89,7 +89,7 @@ function slimModeInit() {
             entry.value = Array.isArray(url) ? url.join('\n') : url;
         }
         if (options) {
-            var extra = document.querySelectorAll('[name]').printOptions(options);
+            var extra = document.querySelectorAll('[name]').disposition(options);
             aria2Global = {...aria2Global, ...extra};
         }
         setInterval(() => {
@@ -103,7 +103,7 @@ function slimModeInit() {
 
 async function aria2StartUp() {
     var global = await aria2RPC.call('aria2.getGlobalOption');
-    aria2Global = document.querySelectorAll('[name]').printOptions(global);
+    aria2Global = document.querySelectorAll('[name]').disposition(global);
     if (slim_mode) {
         slimModeInit();
     }

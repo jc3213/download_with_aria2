@@ -194,7 +194,7 @@ function parseSession(gid, status, bittorrent) {
         }
         else {
             var [files, options] = await getTaskDetail(gid);
-            task.querySelectorAll('[name]').printOptions(options);
+            task.querySelectorAll('[name]').disposition(options);
             printTaskFiles(task, files);
             task.classList.add('extra');
             activeId = gid;
