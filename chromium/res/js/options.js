@@ -3,30 +3,23 @@ var undobtn = document.querySelector('#undo_btn');
 var redobtn = document.querySelector('#redo_btn');
 var importbtn = document.querySelector('#import_btn');
 var exportbtn = document.querySelector('#export_btn');
+var aria2Ver = document.querySelector('#aria2ver');
+var aria2UA = document.querySelector('#aria2ua');
 var secret = document.querySelector('[name="jsonrpc_token"]');
 var changes = {};
 var redoes = [];
 var undoes = [];
 var global = true;
-var rulelist = document.querySelectorAll('#local > [id]');
-var listed = {};
-var listLET = document.querySelector('.item');
-var checkbox = {
-    'manager_newtab': 1,
-    'folder_enabled': 1,
-    'download_headers': 1,
-    'download_prompt': 1,
-    'notify_start': 1,
-    'notify_complete': 1,
-    'proxy_enabled': 1,
-    'proxy_always': 1,
-    'capture_enabled': 1,
-    'capture_always': 1
-};
-var offset = {
+var textarea = document.querySelectorAll('#local [name]:not([type="checkbox"])');
+var multiply = {
     'manager_interval': 1000,
     'capture_filesize': 1048576
 };
+var checkbox = document.querySelectorAll('#local [type="checkbox"]');
+var checked = {};
+var monitor = document.querySelectorAll('#local > [id]');
+var listed = {};
+var listLET = document.querySelector('.item');
 var linkage = {
     'folder_enabled': [],
     'proxy_enabled': [],
@@ -103,7 +96,7 @@ document.querySelector('#aria2_btn').addEventListener('click', async event => {
     clearChanges();
     global = false;
     aria2Global = document.querySelectorAll('#aria2 [name]').printOptions(options);
-    document.querySelector('#aria2ver').innerText = version.version;
+    aria2Ver.innerText = aria2UA.innerText = version.version;
     document.body.className = 'aria2';
 });
 
@@ -132,21 +125,23 @@ document.addEventListener('mouseup', event => {
     secret.type = 'password';
 });
 
-document.querySelector('#local').addEventListener('change', event => {
-    var {name, value, checked} = event.target;
-    if (name) {
-        console.log(name ,value , checked);
-        var new_value = getValue(name, value, checked);
-        setChange(name, new_value);
-    }
+textarea.forEach(entry => {
+    var {name} = entry;
+    entry.addEventListener('change', event => {
+        var value = getValue(name, entry.value);
+        setChange(name, value);
+    });
 });
 
-document.querySelector('#aria2').addEventListener('change', event => {
-    var {name, value} = event.target;
-    setChange(name, value);
+checkbox.forEach(entry => {
+    var {name} = entry;
+    entry.addEventListener('change', event => {
+        setChange(name, entry.checked);
+    });
+    checked[name] = 1;
 });
 
-rulelist.forEach(menu => {
+monitor.forEach(menu => {
     var name = menu.id;
     var entry = menu.querySelector('input');
     var addbtn = menu.querySelector('button');
@@ -193,27 +188,32 @@ chrome.storage.onChanged.addListener(changes => {
     }
 });
 
+document.querySelector('#aria2').addEventListener('change', event => {
+    var {name, value} = event.target;
+    setChange(name, value);
+});
+
 function aria2StartUp() {
     changes = {...aria2Store};
-    rulelist.forEach(menu => {
+    textarea.forEach(entry => {
+        var {name} = entry;
+        var value = changes[name];
+        entry.value = setValue(name, value);
+    });
+    checkbox.forEach(entry => {
+        var {name} = entry;
+        entry.checked = changes[name];
+        if (name in linkage) {
+            linkage[name].forEach(printLinkage);
+        }
+    });
+    monitor.forEach(menu => {
         var {name, list} = menu.match;
+        list.innerHTML = '';
         changes[name].forEach(value => {
             var item = printList(name, value);
             list.appendChild(item);
         });
-    });
-    document.querySelectorAll('#local [name]').forEach(entry => {
-        var {name} = entry;
-        var value = aria2Store[name];
-        if (name in checkbox) {
-            entry.checked = value;
-        }
-        else {
-            entry.value = setValue(name, value);
-        }
-        if (name in linkage) {
-            linkage[name].forEach(printLinkage);
-        }
     });
 }
 
@@ -222,6 +222,7 @@ function printLinkage(menu) {
     var {name, rule} = major;
     var prime = rule === changes[name];
     var second = 0;
+    var length = minor.length;
     minor.forEach(({name, rule}) => {
         var value = changes[name];
         if (rule === value) {
@@ -229,7 +230,7 @@ function printLinkage(menu) {
         }
     });
     if (prime) {
-        menu.style.display = second === minor.length ? 'block' : 'none';
+        menu.style.display = second === length ? 'block' : 'none';
     }
     else {
         menu.style.display = 'none';
@@ -250,7 +251,7 @@ function getChange(name, value) {
     if (name in listed) {
         getList(name, value);
     }
-    else if (name in checkbox) {
+    else if (name in checked) {
         entry.checked = value;
     }
     else {
@@ -271,23 +272,18 @@ function setChange(name, new_value) {
     }
 }
 
-function getValue(name, value, checked) {
-    if (name in checkbox) {
-        return checked;
-    }
-    else if (name in offset) {
-        return value * offset[name];
+function getValue(name, value) {
+    if (name in multiply) {
+        return value * multiply[name];
     }
     return value;
 }
 
 function setValue(name, value) {
-    if (name in offset) {
-        return value / offset[name];
+    if (name in multiply) {
+        return value / multiply[name];
     }
-    else {
-        return value;
-    }
+    return value;
 }
 
 function setList(name, value) {
@@ -310,8 +306,8 @@ function printList(name, value) {
     var item = listLET.cloneNode(true)
     item.querySelector('span').innerText = value;
     item.querySelector('button').addEventListener('click', event => {
-        var idx = old_value.indexOf(value);
-        var new_value = [...old_value.slice(0, idx), ...old_value.slice(idx + 1)];
+        var new_value = [...changes[name]];
+        new_value.splice(new_value.indexOf(value), 1);
         setChange(name, new_value);
         item.remove();
     });

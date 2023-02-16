@@ -177,7 +177,7 @@
         "message": "Auto Proxy Domains"
     },
     "option_proxy_include_title": {
-        "message": "Add proxy server for new downloads from these domains"
+        "message": "Add proxy server for new downloads from these domain names"
     },
     "option_capture": {
         "message": "Capture Browser Downloads"
@@ -204,13 +204,13 @@
         "message": "Include Domains"
     },
     "option_capture_include_title": {
-        "message": "Capture downloads from these domains"
+        "message": "Capture downloads from these domain names"
     },
     "option_capture_exclude": {
         "message": "Exclude Domains"
     },
     "option_capture_exclude_title": {
-        "message": "Ignore downloads from these domains"
+        "message": "Ignore downloads from these domain names"
     },
     "option_capture_resolve": {
         "message": "Includes File Extensions"

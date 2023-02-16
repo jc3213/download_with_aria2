@@ -39,6 +39,10 @@ input[type="checkbox"] + label {
     content: 'v';
 }
 
+#aria2ua::before {
+    content: 'aria2/';
+}
+
 #local, #aria2 {
     margin-top: 80px;
 }
@@ -47,9 +51,12 @@ input[type="checkbox"] + label {
     flex: 1;
 }
 
-.list > * {
-    margin: 10px 10px 0px 0px;
-    display: inline-block;
+.list {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+    grid-gap: 10px;
+    margin-top: 10px;
 }
 
 .list > * > * {
@@ -59,5 +66,4 @@ input[type="checkbox"] + label {
 .list > * > span {
     border-style: solid;
     border-width: 1px;
-    margin-right: -5px;
 }
