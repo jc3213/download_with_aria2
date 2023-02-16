@@ -21,6 +21,20 @@ input[type="checkbox"] + label {
     font-weight: bold;
 }
 
+#template {
+    display: none;
+}
+
+#menu {
+    border-width: 1px;
+    border-style: outset;
+    position: fixed;
+    top: 5px;
+    width: 668px;
+    padding: 5px;
+    z-index: 999999;
+}
+
 #version, #aria2ver {
     padding: 5px;
 }
@@ -37,12 +51,17 @@ input[type="checkbox"] + label {
     flex: 1;
 }
 
-#menu {
+.list > * {
+    margin: 10px 10px 0px 0px;
+    display: inline-block;
+}
+
+.list > * > * {
+    padding: 3px;
+}
+
+.list > * > span {
+    border-style: solid;
     border-width: 1px;
-    border-style: outset;
-    position: fixed;
-    top: 5px;
-    width: 668px;
-    padding: 5px;
-    z-index: 999999;
+    margin-right: -5px;
 }

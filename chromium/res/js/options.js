@@ -8,7 +8,9 @@ var changes = {};
 var undones = [];
 var redones = [];
 var global = true;
+var listLET = document.querySelector('#template > .item');
 var mapping = {
+    //'user_agent': 1,
     'proxy_include': 1,
     'capture_resolve': 1,
     'capture_reject': 1,
@@ -71,6 +73,7 @@ savebtn.addEventListener('click', event => {
 undobtn.addEventListener('click', event => {
     var undo = redones.pop();
     var {name, old_value} = undo;
+    console.log(name, old_value);
     undones.push(undo);
     redobtn.disabled = false;
     setChange(name, old_value);
@@ -141,6 +144,9 @@ document.querySelector('#local').addEventListener('change', event => {
     var new_value = setValue(name, value, checked);
     var old_value = changes[name];
     getChange(name, old_value, new_value);
+    if (mapping[name]) {
+        event.target.value = '';
+    }
 });
 
 document.querySelector('#aria2').addEventListener('change', event => {
@@ -223,6 +229,7 @@ function setChange(name, value) {
         entry.checked = value;
     }
     else {
+        console.log(value);
         entry.value = getValue(name, value);
     }
     if (name in linkage) {
@@ -244,7 +251,7 @@ function setValue(name, value, checked) {
         return checked;
     }
     else if (name in mapping) {
-        return value.split(/[\s\n,;]+/).filter(v => !!v);
+        return setList(name, value);
     }
     else if (name in offset) {
         return value * offset[name];
@@ -254,7 +261,8 @@ function setValue(name, value, checked) {
 
 function getValue(name, value) {
     if (name in mapping) {
-        return value.join(' ');
+        getList(name, value);
+        return '';
     }
     else if (name in offset) {
         return value / offset[name];
@@ -262,4 +270,33 @@ function getValue(name, value) {
     else {
         return value;
     }
+}
+
+function setList(name, value) {
+    var list = document.getElementById(name);
+    var item = printList(name, value);
+    list.appendChild(item);
+    return [...changes[name], value];
+}
+
+function getList(name, value) {
+    var list = document.getElementById(name);
+    list.innerHTML = '';
+    value.forEach(val => {
+        var item = printList(name, val);
+        list.appendChild(item);
+    });
+}
+
+function printList(name, value) {
+    var item = listLET.cloneNode(true)
+    item.querySelector('span').innerText = value;
+    item.querySelector('button').addEventListener('click', event => {
+        var old_value = changes[name];
+        var idx = old_value.indexOf(value);
+        var new_value = [...old_value.slice(0, idx), ...old_value.slice(idx + 1)];
+        getChange(name, old_value, new_value);
+        item.remove();
+    });
+    return item;
 }

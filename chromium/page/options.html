@@ -118,7 +118,10 @@
             </div>
             <div class="menu" title="option_proxy_auto_title" data-link="proxy_enabled,1;proxy_always,0">
                 <div class="title" i18n>option_proxy_auto</div>
-                <textarea name="proxy_include" rows="3" placeholder="example.com domain.net this.co.ar"></textarea>
+                <div>
+                    <input name="proxy_include">
+                </div>
+                <div id="proxy_include" class="list"></div>
             </div>
             <h1 i18n>option_capture</h1>
             <div class="flex">
@@ -144,26 +147,36 @@
             <div class="menu" title="option_capture_resolve_title" data-link="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_resolve</div>
                 <div>
-                    <textarea name="capture_resolve" rows="2" placeholder="zip exe jpg"></textarea>
+                    <input name="capture_resolve">
                 </div>
+                <div id="capture_resolve" class="list"></div>
             </div>
             <div class="menu" title="option_capture_include_title" data-link="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_include</div>
                 <div>
-                    <textarea name="capture_include" rows="3" placeholder="example.com domain.net this.co.ar"></textarea>
+                    <input name="capture_include">
                 </div>
+                <div id="capture_include" class="list"></div>
             </div>
             <div class="menu" title="option_capture_reject_title" data-link="capture_enabled,1">
                 <div class="title" i18n>option_capture_reject</div>
                 <div>
-                    <textarea name="capture_reject" rows="2" placeholder="zip exe jpg"></textarea>
+                    <input name="capture_reject">
                 </div>
+                <div id="capture_reject" class="list"></div>
             </div>
             <div class="menu" title="option_capture_exclude_title" data-link="capture_enabled,1">
                 <div class="title" i18n>option_capture_exclude</div>
                 <div>
-                    <textarea name="capture_exclude" rows="3" placeholder="example.com domain.net this.co.ar"></textarea>
+                    <input name="capture_exclude">
                 </div>
+                <div id="capture_exclude" class="list"></div>
+            </div>
+        </div>
+        <div id="template">
+            <div class="item">
+               <span></span>
+               <button>❌</button>
             </div>
         </div>
         <div id="aria2" data-aria2>
