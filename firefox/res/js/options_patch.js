@@ -18,7 +18,11 @@ i18n = i18n[lang] ?? i18n[lang.slice(0, lang.indexOf('-'))] ?? i18n['en'];
 var folderff = document.createElement('div');
 folderff.title = i18n.folderff_title;
 folderff.className = 'menu';
-folderff.innerHTML = `<input name="folder_firefox" type="checkbox"><span class="title">${i18n.folderff}</span>`;
+folderff.innerHTML = `<input id="folder_firefox" name="folder_firefox" type="checkbox"><label for="folder_firefox">${i18n.folderff}</label>`;
+folderff.addEventListener('change', event => {
+    var {name, checked} = event.target;
+    setChange(name, checked);
+});
 folderff.chain = {
     major: {name: 'folder_enabled', rule: true},
     minor: [
@@ -46,13 +50,15 @@ container.append(folderen, folderff);
 var webrequest = document.createElement('div');
 webrequest.title = i18n.webrequest_title;
 webrequest.className = 'menu';
-webrequest.innerHTML = `<input name="capture_webrequest" type="checkbox"><span class="title">${i18n.webrequest}</span>`;
+webrequest.innerHTML = `<input id="capture_webrequest" name="capture_webrequest" type="checkbox"><label for="capture_webrequest">${i18n.webrequest}</label>`;
 webrequest.chain = {
     major: {name: 'capture_enabled', rule: true},
     minor: []
 };
 webrequest.addEventListener('change', event => {
-    if (event.target.checked) {
+    var {name, checked} = event.target;
+    setChange(name, checked);
+    if (checked) {
         setDefaultFolder();
     }
 });
@@ -65,14 +71,14 @@ captureen.addEventListener('change', event => {
 });
 captureen.parentNode.after(webrequest);
 
-checking['folder_firefox'] = 1;
-checking['capture_webrequest'] = 1;
+checked['folder_firefox'] = 1;
+checked['capture_webrequest'] = 1;
 linkage['folder_enabled'].push(folderff);
 linkage['capture_enabled'].push(folderff, webrequest);
 linkage['capture_webrequest'] = [folderff];
 
 function setDefaultFolder() {
-    undones.push({name: 'folder_firefox', old_value: true, new_value: false});
+    undoes.push({name: 'folder_firefox', old_value: changes['folder_firefox'], new_value: false});
     folderff.querySelector('input').checked = changes['folder_firefox'] = false;
 }
 
