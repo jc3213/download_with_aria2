@@ -30,10 +30,6 @@ document.querySelector('#referer_btn').addEventListener('click', async event => 
     });
 });
 
-document.querySelector('#uagent_btn').addEventListener('click', event => {
-    event.target.previousElementSibling.value = aria2Global['user-agent'] = aria2Store['user_agent'];
-});
-
 document.querySelector('#proxy_btn').addEventListener('click', event => {
     event.target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Store['proxy_server'];
 });
@@ -103,6 +99,7 @@ function slimModeInit() {
 
 async function aria2StartUp() {
     var global = await aria2RPC.call('aria2.getGlobalOption');
+    global['user-agent'] = aria2Store['user_agent']
     aria2Global = document.querySelectorAll('[name]').disposition(global);
     if (slim_mode) {
         slimModeInit();
