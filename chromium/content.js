@@ -28,5 +28,5 @@ function snifferAllImages() {
         }
     });
     var params = {result, options: {referer, header}};
-    chrome.runtime.sendMessage({action: 'external_sniffer', params});
+    chrome.runtime.sendMessage({action: 'external_images', params});
 }

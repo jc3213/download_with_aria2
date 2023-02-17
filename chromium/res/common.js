@@ -50,14 +50,14 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     if (action === 'internal_prompt') {
         response(aria2Prompt[id]);
     }
-    else if (action === 'internal_sniffer') {
+    else if (action === 'internal_images') {
         response(aria2Images[id]);
     }
     else if (action === 'external_download') {
         aria2DownloadPrompt(params);
     }
-    else if (action = 'external_sniffer') {
-        aria2SnifferPrompt(params);
+    else if (action = 'external_images') {
+        aria2ImagesPrompt(params);
     }
 });
 
@@ -97,8 +97,8 @@ async function aria2DownloadPrompt(aria2c) {
     }
 }
 
-async function aria2SnifferPrompt(result) {
-    var id = await getNewWindow('/page/images.html', 1280, 800);
+async function aria2ImagesPrompt(result) {
+    var id = await getNewWindow('/page/images.html', 960, 700);
     aria2Images[id] = result;
 }
 

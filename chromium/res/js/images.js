@@ -34,7 +34,7 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
 });
 
 function aria2StartUp() {
-    chrome.runtime.sendMessage({action: 'internal_sniffer'}, sniffer => {
+    chrome.runtime.sendMessage({action: 'internal_images'}, sniffer => {
         var {result, options} = sniffer;
         result.forEach(getPreview);
         aria2Global = options;
