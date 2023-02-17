@@ -17,9 +17,9 @@ var multiply = {
 };
 var checkbox = document.querySelectorAll('#local [type="checkbox"]');
 var checked = {};
-var monitor = document.querySelectorAll('#local > [id]');
+var rulelist = document.querySelectorAll('[data-list]');
 var listed = {};
-var listLET = document.querySelector('.item');
+var listLET = document.querySelector('.rule');
 var linkage = {
     'folder_enabled': [],
     'proxy_enabled': [],
@@ -142,11 +142,11 @@ checkbox.forEach(entry => {
     checked[name] = 1;
 });
 
-monitor.forEach(menu => {
-    var name = menu.id;
+rulelist.forEach(menu => {
+    var name = menu.getAttribute('data-list');
     var entry = menu.querySelector('input');
     var addbtn = menu.querySelector('button');
-    var list = menu.querySelector('.list');
+    var list = menu.querySelector('.rulelist');
     entry.addEventListener('keydown', event => {
         if (event.keyCode === 13) {
             addbtn.click();
@@ -163,11 +163,11 @@ monitor.forEach(menu => {
         }
     });
     listed[name] = 1;
-    menu.match = {name, list};
+    menu.list = {name, list};
 });
 
-document.querySelectorAll('[data-link]').forEach(menu => {
-    var data = menu.getAttribute('data-link').match(/[^,;]+/g);
+document.querySelectorAll('[data-echo]').forEach(menu => {
+    var data = menu.getAttribute('data-echo').match(/[^,;]+/g);
     var [name, value] = data.splice(0, 2);
     linkage[name].push(menu);
     var minor = [];
@@ -180,7 +180,7 @@ document.querySelectorAll('[data-link]').forEach(menu => {
             minor.push({name, rule});
         }
     });
-    menu.chain = {major: {name, rule}, minor};
+    menu.echo = {major: {name, rule}, minor};
 });
 
 chrome.storage.onChanged.addListener(changes => {
@@ -208,8 +208,8 @@ function aria2StartUp() {
             linkage[name].forEach(printLinkage);
         }
     });
-    monitor.forEach(menu => {
-        var {name, list} = menu.match;
+    rulelist.forEach(menu => {
+        var {name, list} = menu.list;
         list.innerHTML = '';
         changes[name].forEach(value => {
             var item = printList(name, value);
@@ -219,7 +219,7 @@ function aria2StartUp() {
 }
 
 function printLinkage(menu) {
-    var {major, minor} = menu.chain;
+    var {major, minor} = menu.echo;
     var {name, rule} = major;
     var prime = rule === changes[name];
     var second = 0;
@@ -287,14 +287,14 @@ function setValue(name, value) {
 }
 
 function setList(name, value) {
-    var list = document.querySelector('#' + name + ' > .list');
+    var list = document.querySelector('[data-list="' + name + '"] > .rulelist');
     var item = printList(name, value);
     list.appendChild(item);
     return [...changes[name], value];
 }
 
 function getList(name, value) {
-    var list = document.querySelector('#' + name + ' > .list');
+    var list = document.querySelector('[data-list="' + name + '"] > .rulelist');
     list.innerHTML = '';
     value.forEach(val => {
         var item = printList(name, val);

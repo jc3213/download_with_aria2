@@ -111,18 +111,18 @@
                     <input id="proxy_enabled" name="proxy_enabled" type="checkbox">
                     <label for="proxy_enabled" i18n>option_proxy_enabled</label>
                 </div>
-                <div class="menu" title="option_proxy_always_title" data-link="proxy_enabled,1">
+                <div class="menu" title="option_proxy_always_title" data-echo="proxy_enabled,1">
                     <input id="proxy_always" name="proxy_always" type="checkbox">
                     <label for="proxy_always" i18n>option_proxy_always</label>
                 </div>
             </div>
-            <div id="proxy_include" class="menu" title="option_proxy_include_title" data-link="proxy_enabled,1;proxy_always,0">
+            <div class="menu" title="option_proxy_include_title" data-list="proxy_include" data-echo="proxy_enabled,1;proxy_always,0">
                 <div class="title" i18n>option_proxy_include</div>
                 <div class="fixed">
                     <input type="text">
                     <button>➕</button>
                 </div>
-                <div class="list"></div>
+                <div class="rulelist"></div>
             </div>
             <h1 i18n>option_capture</h1>
             <div class="flex">
@@ -130,12 +130,12 @@
                     <input id="capture_enabled" name="capture_enabled" type="checkbox">
                     <label for="capture_enabled" i18n>option_capture_enabled</label>
                 </div>
-                <div class="menu" title="option_capture_always_title" data-link="capture_enabled,1">
+                <div class="menu" title="option_capture_always_title" data-echo="capture_enabled,1">
                     <input id="capture_always" name="capture_always" type="checkbox">
                     <label for="capture_always" i18n>option_capture_always</label>
                 </div>
             </div>
-            <div class="menu" title="option_capture_filesize_title" data-link="capture_enabled,1;capture_always,0">
+            <div class="menu" title="option_capture_filesize_title" data-echo="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_filesize</div>
                 <div>
                     <input name="capture_filesize" type="number" min="0">
@@ -145,40 +145,40 @@
                     <span i18n>common_disabled</span>: <u><i>0</i></u>
                 </div>
             </div>
-            <div id="capture_resolve" class="menu" title="option_capture_resolve_title" data-link="capture_enabled,1;capture_always,0">
+            <div class="menu" title="option_capture_resolve_title" data-list="capture_resolve" data-echo="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_resolve</div>
                 <div class="fixed">
                     <input type="text">
                     <button>➕</button>
                 </div>
-                <div class="list"></div>
+                <div class="rulelist"></div>
             </div>
-            <div id="capture_include" class="menu" title="option_capture_include_title" data-link="capture_enabled,1;capture_always,0">
+            <div class="menu" title="option_capture_include_title" data-list="capture_include" data-echo="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_include</div>
                 <div class="fixed">
                     <input type="text">
                     <button>➕</button>
                 </div>
-                <div class="list"></div>
+                <div class="rulelist"></div>
             </div>
-            <div id="capture_reject" class="menu" title="option_capture_reject_title" data-link="capture_enabled,1">
+            <div class="menu" title="option_capture_reject_title" data-list="capture_reject" data-echo="capture_enabled,1">
                 <div class="title" i18n>option_capture_reject</div>
                 <div class="fixed">
                     <input type="text">
                     <button>➕</button>
                 </div>
-                <div class="list"></div>
+                <div class="rulelist"></div>
             </div>
-            <div id="capture_exclude" class="menu" title="option_capture_exclude_title" data-link="capture_enabled,1">
+            <div class="menu" title="option_capture_exclude_title" data-list="capture_exclude" data-echo="capture_enabled,1">
                 <div class="title" i18n>option_capture_exclude</div>
                 <div class="fixed">
                     <input type="text">
                     <button>➕</button>
                 </div>
-                <div class="list"></div>
+                <div class="rulelist"></div>
             </div>
         </div>
-        <div class="item">
+        <div class="rule">
            <span></span><button>❌</button>
         </div>
         <div id="aria2" data-aria2>
