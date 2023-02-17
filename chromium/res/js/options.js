@@ -166,8 +166,8 @@ rulelist.forEach(menu => {
     menu.list = {name, list};
 });
 
-document.querySelectorAll('[data-echo]').forEach(menu => {
-    var data = menu.getAttribute('data-echo').match(/[^,;]+/g);
+document.querySelectorAll('[data-link]').forEach(menu => {
+    var data = menu.getAttribute('data-link').match(/[^,;]+/g);
     var [name, value] = data.splice(0, 2);
     linkage[name].push(menu);
     var minor = [];
