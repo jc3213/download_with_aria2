@@ -49,11 +49,9 @@ body {
     border-bottom-width: 0px;
 }
 
-body > :not([id]),
 #queue.act > :nth-child(n+2),
 #queue.wait > :not(:nth-child(n+2):nth-child(-n+3)),
-#queue.stop > :nth-child(-n+3),
-.http [data-p2p], .p2p [data-http], #retry_btn {
+#queue.stop > :nth-child(-n+3) {
     display: none;
 }
 
@@ -113,6 +111,22 @@ body > :not([id]),
     display: inline-block;
 }
 
+.complete input, .removed input, .error input,
+.complete select, .removed select, .error select,
+ .p2p [name="max-upload-limit"] {
+    pointer-events: none;
+    filter: contrast(25%);
+}
+
+.http [data-p2p], .p2p [data-http], #retry_btn,
+.complete #options button, .removed #options button, .error #options button {
+    display: none;
+}
+
+.removed .http #retry_btn, .error .http #retry_btn {
+    display: inline-block;
+}
+
 .session {
     border-width: 1px;
     border-style: outset;
@@ -159,10 +173,6 @@ body > :not([id]),
 #save_btn {
     top: -10px;
     padding: 4px;
-    display: none;
-}
-
-input:disabled + button {
     display: none;
 }
 

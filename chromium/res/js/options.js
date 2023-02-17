@@ -19,8 +19,7 @@ var checkbox = document.querySelectorAll('#local [type="checkbox"]');
 var checked = {};
 var rulelist = document.querySelectorAll('[data-list]');
 var listed = {};
-var template = document.querySelector('template').content;
-var listLET = template.querySelector('.rule');
+var listLET = document.querySelector('.template > .rule');
 var linkage = {
     'folder_enabled': [],
     'proxy_enabled': [],

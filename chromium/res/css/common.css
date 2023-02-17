@@ -95,6 +95,10 @@ button:enabled:active {
     border-style: inset;
 }
 
+.template {
+    display: none;
+}
+
 .menu:nth-child(n+2), .flex > .menu {
     margin-top: 25px;
 }
