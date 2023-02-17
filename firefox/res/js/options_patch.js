@@ -23,7 +23,7 @@ folderff.addEventListener('change', event => {
     var {name, checked} = event.target;
     setChange(name, checked);
 });
-folderff.chain = {
+folderff.link = {
     major: {name: 'folder_enabled', rule: true},
     minor: [
         {name: 'capture_enabled', rule: true}, {name: 'capture_webrequest', rule: false},
@@ -51,7 +51,7 @@ var webrequest = document.createElement('div');
 webrequest.title = i18n.webrequest_title;
 webrequest.className = 'menu';
 webrequest.innerHTML = `<input id="capture_webrequest" name="capture_webrequest" type="checkbox"><label for="capture_webrequest">${i18n.webrequest}</label>`;
-webrequest.chain = {
+webrequest.link = {
     major: {name: 'capture_enabled', rule: true},
     minor: []
 };

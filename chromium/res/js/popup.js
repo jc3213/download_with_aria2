@@ -11,11 +11,12 @@ var pausedQueue = queue.querySelector('.paused');
 var completeQueue = queue.querySelector('.complete');
 var removedQueue = queue.querySelector('.removed');
 var errorQueue = queue.querySelector('.error');
-var sessionLET = document.querySelector('div.session');
-var fileLET = document.querySelector('div.file');
-var uriLET = document.querySelector('div.uri');
-var activeId;
+var template = document.querySelector('template').content;
+var sessionLET = template.querySelector('.session');
+var fileLET = template.querySelector('.file');
+var uriLET = template.querySelector('.uri');
 var open_in_tab = location.search === '?open_in_tab';
+var activeId;
 
 if (open_in_tab) {
     document.body.className = 'full';

@@ -19,7 +19,8 @@ var checkbox = document.querySelectorAll('#local [type="checkbox"]');
 var checked = {};
 var rulelist = document.querySelectorAll('[data-list]');
 var listed = {};
-var listLET = document.querySelector('.rule');
+var template = document.querySelector('template').content;
+var listLET = template.querySelector('.rule');
 var linkage = {
     'folder_enabled': [],
     'proxy_enabled': [],
@@ -180,7 +181,7 @@ document.querySelectorAll('[data-link]').forEach(menu => {
             minor.push({name, rule});
         }
     });
-    menu.echo = {major: {name, rule}, minor};
+    menu.link = {major: {name, rule}, minor};
 });
 
 chrome.storage.onChanged.addListener(changes => {
@@ -219,7 +220,7 @@ function aria2StartUp() {
 }
 
 function printLinkage(menu) {
-    var {major, minor} = menu.echo;
+    var {major, minor} = menu.link;
     var {name, rule} = major;
     var prime = rule === changes[name];
     var second = 0;

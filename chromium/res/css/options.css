@@ -3,7 +3,7 @@ body {
     width: 680px;
 }
 
-body > :not([id]), body:not(.aria2) [data-aria2], body.aria2 [data-local] {
+body:not(.aria2) [data-aria2], body.aria2 [data-local] {
     display: none;
 }
 
