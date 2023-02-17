@@ -11,6 +11,10 @@ h1 {
     margin: 50px 0px 0px;
 }
 
+button:disabled {
+    filter: contrast(25%);
+}
+
 input[type="checkbox"] {
     width: auto;
     transform: scale(1.5);

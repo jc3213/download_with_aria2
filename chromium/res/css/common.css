@@ -36,10 +36,6 @@ body, div {
     position: relative;
 }
 
-:disabled {
-    filter: contrast(25%);
-}
-
 select {
     padding: 4px 5px;
 }
