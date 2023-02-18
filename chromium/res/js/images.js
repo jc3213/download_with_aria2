@@ -28,8 +28,6 @@ submitbtn.addEventListener('click', async event => {
         }
         return {url};
     });
-    console.log(json);
-    return;
     if (json.length !== 0) {
         await aria2DownloadJSON(json);
     }
@@ -50,7 +48,8 @@ function getPreview({src, alt, title}) {
     }
     var image = imageLET.cloneNode(true);
     var url = image.querySelector('#src');
-    url.innerText = url.title = url.href = image.querySelector('img').src = src;
+    var img = image.querySelector('img');
+    url.innerText = url.title = url.href = img.src = src;
     if (alt) {
         var path = src.slice(src.lastIndexOf('/'));
         var idx = path.indexOf('.');

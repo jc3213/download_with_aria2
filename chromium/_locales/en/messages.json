@@ -224,6 +224,18 @@
     "option_capture_reject_title": {
         "message": "Ignore downloads with these extensions"
     },
+    "image_select": {
+        "message": "Select"
+    },
+    "image_preview": {
+        "message": "Preview"
+    },
+    "image_source": {
+        "message": "Source"
+    },
+    "image_description": {
+        "message": "Description"
+    },
     "popup_active": {
         "message": "Active"
     },
