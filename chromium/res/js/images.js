@@ -19,11 +19,11 @@ document.addEventListener('keydown', event => {
 });
 
 submitbtn.addEventListener('click', async event => {
-    var options = aria2Global;
     var json = [...document.querySelectorAll('.image :checked')].map(input => {
         var image = input.parentNode.parentNode;
         var url = image.querySelector('#src').title;
         var name = image.querySelector('#alt').title;
+        var options = {...aria2Global};
         if (name) {
             options['out'] = name;
         }
