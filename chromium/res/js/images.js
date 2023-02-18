@@ -1,4 +1,5 @@
-var preview = document.querySelector('#preview');
+var output = document.querySelector('#output');
+var imageLET = document.querySelector('.template > .image');
 var submitbtn = document.querySelector('#submit_btn');
 
 document.addEventListener('keydown', event => {
@@ -17,16 +18,18 @@ document.addEventListener('keydown', event => {
     }
 });
 
-document.querySelector('#submit_btn').addEventListener('click', async event => {
-    var json = [...document.querySelectorAll('img.checked')].map(img => {
-        var {src, alt, title} = img;
-        var url = src;
-        var options = {...aria2Global};
-        if (alt) {
-            options['out'] = alt;
+submitbtn.addEventListener('click', async event => {
+    var json = [...document.querySelectorAll('.image :checked')].map(input => {
+        var image = input.parentNode.parentNode;
+        var url = image.querySelector('#src').title;
+        var out = image.querySelector('#alt').title;
+        if (out) {
+            return {url, options: {out}};
         }
-        return {url, options};
+        return {url};
     });
+    console.log(json);
+    return;
     if (json.length !== 0) {
         await aria2DownloadJSON(json);
     }
@@ -34,8 +37,8 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
 });
 
 function aria2StartUp() {
-    chrome.runtime.sendMessage({action: 'internal_images'}, sniffer => {
-        var {result, options} = sniffer;
+    chrome.runtime.sendMessage({action: 'internal_images'}, images => {
+        var {result, options} = images;
         result.forEach(getPreview);
         aria2Global = options;
     });
@@ -45,19 +48,16 @@ function getPreview({src, alt, title}) {
     if (!src) {
         return;
     }
-    var img = document.createElement('img');
-    img.src = src;
+    var image = imageLET.cloneNode(true);
+    var url = image.querySelector('#src');
+    url.innerText = url.title = url.href = image.querySelector('img').src = src;
     if (alt) {
         var path = src.slice(src.lastIndexOf('/'));
         var idx = path.indexOf('.');
         var type = idx === -1 ? '.jpg' : path.slice(idx);
-        img.alt = alt + type;
+        var out = alt + type;
+        var name = image.querySelector('#alt');
+        name.innerText = name.title = out;
     }
-    img.addEventListener('load', event => {
-        img.title = img.offsetWidth + 'x' + img.offsetHeight;
-    });
-    img.addEventListener('click', event => {
-        img.className = img.className === 'checked' ? '' : 'checked';
-    });
-    preview.append(img);
+    output.append(image);
 }

@@ -98,7 +98,7 @@ async function aria2DownloadPrompt(aria2c) {
 }
 
 async function aria2ImagesPrompt(result) {
-    var id = await getNewWindow('/page/images.html', 960, 700);
+    var id = await getNewWindow('/page/images.html', 800, 700);
     aria2Images[id] = result;
 }
 

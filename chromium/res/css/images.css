@@ -1,16 +1,36 @@
-#preview {
+img {
+    display: none;
+    position: absolute;
+    z-index: 3213;
+    left: 160px;
+}
+
+#images {
     height: 594px;
+    width: 776px;
     overflow-y: auto;
 }
 
-img {
-    margin: 3px;
-    border-width: 1px;
-    border-style: solid;
+.title, .image {
+    display: grid;
+    grid-template-columns: 80px 80px auto 120px;
+    text-align: center;
 }
 
-img.checked {
-    filter: contrast(45%);
+.title > *, .image > :not(img) {
+    border-width: 1px;
+    border-style: solid;
+    padding: 5px;
+    overflow: hidden;
+    word-wrap: normal;
+}
+
+.image > :nth-child(n+4) {
+    text-align: left;
+}
+
+#preview:hover + img {
+    display: block;
 }
 
 #menu {

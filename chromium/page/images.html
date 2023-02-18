@@ -7,7 +7,24 @@
         <link rel="stylesheet" href="/res/css/images.css">
     </head>
     <body>
-        <div id="preview"></div>
+        <div id="images">
+            <div class="title">
+                <div>Select</div>
+                <div>Preview</div>
+                <div>URL</div>
+                <div>Description</div>
+            </div>
+            <div id="output"></div>
+        </div>
+        <div class="template">
+            <div class="image">
+                <div><input type="checkbox"></div>
+                <div id="preview">🖼️</div>
+                <img></img>
+                <div id="src"></div>
+                <div id="alt" contenteditable="true"></div>
+            </div>
+        </div>
         <hr>
         <div id="menu">
             <button id="submit_btn" i18n>task_submit</button>
