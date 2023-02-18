@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title i18n>extension_options</title>
+        <link rel="stylesheet" href="/res/css/common.css">
+        <link rel="stylesheet" href="/res/css/options.css">
+    </head>
+    <body>
+        <div id="menu" class="tool">
+            <div>
+                <button id="save_btn" disabled i18n>common_save</button>
+                <button id="undo_btn" disabled i18n>option_undo</button>
+                <button id="redo_btn" disabled i18n>option_redo</button>
+            </div>
+            <div>
+                <span id="version" data-local></span>
+                <span id="aria2ver" data-aria2></span>
+                <button id="export_btn" data-local i18n>option_export</button>
+                <button id="import_btn" data-local>
+                    <label for="uploader" i18n>option_import</label>
+                    <input id="uploader" type="file" accept=".json">
+                </button>
+                <button id="back_btn" data-aria2 i18n>option_back</button>
+            </div>
+        </div>
+        <div id="local" data-local>
+            <h1>JSON-RPC</h1>
+            <div class="menu" title="option_jsonrpc_uri_title">
+                <div class="title" i18n>option_jsonrpc_uri</div>
+                <div class="fixed">
+                    <input name="jsonrpc_uri" type="url">
+                    <button id="aria2_btn">⚙️</button>
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>http://localhost:6800/jsonrpc</i></u>
+                </div>
+            </div>
+            <div class="menu" title="option_jsonrpc_token_title">
+                <div class="title" i18n>option_jsonrpc_token</div>
+                <div class="fixed">
+                    <input name="jsonrpc_token" type="password" placeholder="$$secret$$">
+                    <button id="show_btn">👁️</button>
+                </div>
+            </div>
+            <h1 i18n>option_task_manager</h1>
+            <div class="menu" title="option_manager_newtab_title">
+                <input id="manager_newtab" name="manager_newtab" type="checkbox">
+                <label for="manager_newtab" i18n>option_manager_newtab</label>
+            </div>
+            <div class="menu" title="option_manager_interval_title">
+                <div class="title" i18n>option_manager_interval</div>
+                <div>
+                    <input name="manager_interval" type="number" min="5" max="30" step="1">
+                    <span class="float" i18n>time_second_full</span>
+                </div>
+            </div>
+            <h1 i18n>option_notification</h1>
+            <div class="flex">
+                <div class="menu" title="option_notify_start_title">
+                    <input id="notify_start" name="notify_start" type="checkbox">
+                    <label for="notify_start" i18n>option_notify_start</label>
+                </div>
+                <div class="menu" title="option_notify_complete_title">
+                    <input id="notify_complete" name="notify_complete" type="checkbox">
+                    <label for="notify_complete" i18n>option_notify_complete</label>
+                </div>
+            </div>
+            <h1 i18n>option_advanced</h1>
+            <div class="menu" title="option_user_agent_title">
+                <div class="title" i18n>option_user_agent</div>
+                <div>
+                    <input name="user_agent">
+                </div>
+            </div>
+            <div class="flex">
+                <div class="menu" title="option_download_headers_title">
+                    <input id="download_headers" name="download_headers" type="checkbox">
+                    <label for="download_headers" i18n>option_download_headers</label>
+                </div>
+                <div class="menu" title="option_download_prompt_title">
+                    <input id="download_prompt" name="download_prompt" type="checkbox">
+                    <label for="download_prompt" i18n>option_download_prompt</label>
+                </div>
+            </div>
+            <h1 i18n>option_folder</h1>
+            <div class="menu" title="option_folder_title">
+                <input name="folder_defined" type="text">
+                <div class="flex">
+                    <span>Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;</span>
+                    <span>Linux: <u><i>home/aria2/download</i></u></span>
+                </div>
+            </div>
+            <div class="flex">
+                <div class="menu" title="option_folder_enabled_title">
+                    <input id="folder_enabled" name="folder_enabled" type="checkbox">
+                    <label for="folder_enabled" i18n>option_folder_enabled</label>
+                </div>
+            </div>
+            <h1 i18n>option_proxy</h1>
+            <div class="menu" title="option_proxy_title">
+                <div>
+                    <input name="proxy_server" type="url" placeholder="http://127.0.0.1:1180/">
+                </div>
+                <div>
+                    <span i18n>option_protocol</span>: <u><i>http</i></u> / <u><i>https</i></u>
+                </div>
+            </div>
+            <div class="flex">
+                <div class="menu" title="option_proxy_enabled_title">
+                    <input id="proxy_enabled" name="proxy_enabled" type="checkbox">
+                    <label for="proxy_enabled" i18n>option_proxy_enabled</label>
+                </div>
+                <div class="menu" title="option_proxy_always_title" data-link="proxy_enabled,1">
+                    <input id="proxy_always" name="proxy_always" type="checkbox">
+                    <label for="proxy_always" i18n>option_proxy_always</label>
+                </div>
+            </div>
+            <div class="menu" title="option_proxy_include_title" data-list="proxy_include" data-link="proxy_enabled,1;proxy_always,0">
+                <div class="title" i18n>option_proxy_include</div>
+                <div class="fixed">
+                    <input type="text">
+                    <button>➕</button>
+                </div>
+                <div class="rulelist"></div>
+            </div>
+            <h1 i18n>option_capture</h1>
+            <div class="flex">
+                <div class="menu" title="option_capture_enabled_title">
+                    <input id="capture_enabled" name="capture_enabled" type="checkbox">
+                    <label for="capture_enabled" i18n>option_capture_enabled</label>
+                </div>
+                <div class="menu" title="option_capture_always_title" data-link="capture_enabled,1">
+                    <input id="capture_always" name="capture_always" type="checkbox">
+                    <label for="capture_always" i18n>option_capture_always</label>
+                </div>
+            </div>
+            <div class="menu" title="option_capture_filesize_title" data-link="capture_enabled,1;capture_always,0">
+                <div class="title" i18n>option_capture_filesize</div>
+                <div>
+                    <input name="capture_filesize" type="number" min="0">
+                    <span class="float">MB</span>
+                </div>
+                <div>
+                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                </div>
+            </div>
+            <div class="menu" title="option_capture_resolve_title" data-list="capture_resolve" data-link="capture_enabled,1;capture_always,0">
+                <div class="title" i18n>option_capture_resolve</div>
+                <div class="fixed">
+                    <input type="text">
+                    <button>➕</button>
+                </div>
+                <div class="rulelist"></div>
+            </div>
+            <div class="menu" title="option_capture_include_title" data-list="capture_include" data-link="capture_enabled,1;capture_always,0">
+                <div class="title" i18n>option_capture_include</div>
+                <div class="fixed">
+                    <input type="text">
+                    <button>➕</button>
+                </div>
+                <div class="rulelist"></div>
+            </div>
+            <div class="menu" title="option_capture_reject_title" data-list="capture_reject" data-link="capture_enabled,1">
+                <div class="title" i18n>option_capture_reject</div>
+                <div class="fixed">
+                    <input type="text">
+                    <button>➕</button>
+                </div>
+                <div class="rulelist"></div>
+            </div>
+            <div class="menu" title="option_capture_exclude_title" data-list="capture_exclude" data-link="capture_enabled,1">
+                <div class="title" i18n>option_capture_exclude</div>
+                <div class="fixed">
+                    <input type="text">
+                    <button>➕</button>
+                </div>
+                <div class="rulelist"></div>
+            </div>
+        </div>
+        <div class="template">
+            <div class="rule">
+                <span></span><button>❌</button>
+            </div>
+        </div>
+        <div id="aria2" data-aria2>
+            <h1>HTTP/FTP</h1>
+            <div class="menu" title="aria2_http_retry_title">
+                <div class="title" i18n>aria2_http_retry</div>
+                <div>
+                    <input name="max-tries" type="number">
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>5</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_http_wait_title">
+                <div class="title" i18n>aria2_http_wait</div>
+                <div>
+                    <input name="retry-wait" type="number">
+                    <span class="float" i18n>time_second_full</span>
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>0</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_http_split_title">
+                <div class="title" i18n>aria2_http_split</div>
+                <div>
+                    <input name="split" type="number">
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>5</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_http_size_title">
+                <div class="title" i18n>aria2_http_size</div>
+                <div>
+                    <input name="min-split-size" type="text">
+                    <span class="float">B</span>
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>20M</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_http_ua_title">
+                <div class="title" i18n>aria2_http_ua</div>
+                <div>
+                    <input name="user-agent">
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i id="aria2ua"></i></u>
+                </div>
+            </div>
+            <h1>BitTorrent</h1>
+            <div class="menu" title="aria2_bt_port_title">
+                <div class="title" i18n>aria2_bt_port</div>
+                <div>
+                    <input name="listen-port" type="text">
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>6881-6999</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_bt_peers_title">
+                <div class="title" i18n>aria2_bt_peers</div>
+                <div>
+                    <input name="bt-max-peers" type="number">
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>55</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_bt_follow_title">
+                <div class="title" i18n>aria2_bt_follow</div>
+                <div>
+                    <select name="follow-torrent">
+                        <option value="true" i18n>aria2_true</option>
+                        <option value="false" i18n>aria2_false</option>
+                    </select>
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i i18n>aria2_true</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_bt_remove_title">
+                <div class="title" i18n>aria2_bt_remove</div>
+                <div>
+                    <select name="bt-remove-unselected-file">
+                        <option value="true" i18n>aria2_true</option>
+                        <option value="false" i18n>aria2_false</option>
+                    </select>
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i i18n>aria2_false</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_bt_ratio_title">
+                <div class="title" i18n>aria2_bt_ratio</div>
+                <div>
+                    <input name="seed-ratio" type="number" min="0" step="0.1">
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>1.0</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_bt_seed_title">
+                <div class="title" i18n>aria2_bt_seed</div>
+                <div>
+                    <input name="seed-time" type="number">
+                    <span class="float" i18n>time_minute_full</span>
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>30</i></u>
+                </div>
+            </div>
+            <h1 i18n>option_advanced</h1>
+            <div class="menu" title="aria2_adv_dir_title">
+                <div class="title" i18n>aria2_adv_dir</div>
+                <div>
+                    <input name="dir" type="text">
+                </div>
+                <div class="flex">
+                    <span>Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;</span>
+                    <span>Linux: <u><i>home/aria2/download</i></u></span>
+                </div>
+            </div>
+            <div class="menu" title="aria2_adv_cache_title">
+                <div class="title" i18n>aria2_adv_cache</div>
+                <div>
+                    <input name="disk-cache" type="text">
+                    <span class="float">B</span>
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>16M</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_max_concurrent_title">
+                <div class="title" i18n>aria2_max_concurrent</div>
+                <div>
+                    <input name="max-concurrent-downloads" type="number">
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>5</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_max_connection_title">
+                <div class="title" i18n>aria2_max_connection</div>
+                <div>
+                    <input name="max-connection-per-server" type="number">
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>1</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_max_download_title">
+                <div class="title" i18n>aria2_max_download</div>
+                <div>
+                    <input name="max-overall-download-limit" type="text">
+                    <span class="float">B/s</span>
+                </div>
+                <div>
+                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_max_upload_title">
+                <div class="title" i18n>aria2_max_upload</div>
+                <div>
+                    <input name="max-overall-upload-limit" type="text">
+                    <span class="float">B/s</span>
+                </div>
+                <div>
+                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                </div>
+            </div>
+        </div>
+        <script src="/lib/aria2.js"></script>
+        <script src="/res/js/common.js"></script>
+        <script src="/res/js/options.js"></script>
+        <script src="/res/js/options_patch.js"></script>
+    </body>
+</html>

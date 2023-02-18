@@ -1,0 +1,425 @@
+{
+    "extension_name": {
+        "message": "通过 Aria2 下载"
+    },
+    "extension_description": {
+        "message": "基于 json-rpc 协议，实现通过 aria2c 下载链接或图像，抓取浏览器下载，管理下载任务等"
+    },
+    "extension_options": {
+        "message": "设置 - 通过 Aria2 下载"
+    },
+    "extension_manager": {
+        "message": "任务管理器 - 通过 Aria2 下载"
+    },
+    "extension_newdld": {
+        "message": "新下载 - 通过 Aria2 下载"
+    },
+    "extension_images": {
+        "message": "已探知图像 - 通过 Aria2 下载"
+    },
+    "contextmenu_dldthis": {
+        "message": "通过 Aria2 下载此项目"
+    },
+    "contextmenu_images": {
+        "message": "通过 Aria2 下载所有图像"
+    },
+    "shortcut_options": {
+        "message": "打开设置"
+    },
+    "shortcut_newdld": {
+        "message": "打开新下载"
+    },
+    "time_day": {
+        "message": "天"
+    },
+    "time_hour": {
+        "message": "时"
+    },
+    "time_minute": {
+        "message": "分"
+    },
+    "time_second": {
+        "message": "秒"
+    },
+    "time_minute_full": {
+        "message": "分"
+    },
+    "time_second_full": {
+        "message": "秒"
+    },
+    "common_default": {
+        "message": "默认"
+    },
+    "common_disabled": {
+        "message": "禁用"
+    },
+    "common_save": {
+        "message": "保存"
+    },
+    "option_undo": {
+        "message": "撤销"
+    },
+    "option_redo": {
+        "message": "恢复"
+    },
+    "option_export": {
+        "message": "导出"
+    },
+    "option_import": {
+        "message": "导入"
+    },
+    "option_back": {
+        "message": "返回"
+    },
+    "option_jsonrpc_uri": {
+        "message": "主机地址"
+    },
+    "option_jsonrpc_uri_title": {
+        "message": "设置 JSON-RPC 的网络地址"
+    },
+    "option_jsonrpc_token": {
+        "message": "授权密钥"
+    },
+    "option_jsonrpc_token_title": {
+        "message": "设置 JSON-RPC 的安全密钥"
+    },
+    "option_task_manager": {
+        "message": "任务管理器"
+    },
+    "option_manager_newtab": {
+        "message": "新标签页打开"
+    },
+    "option_manager_newtab_title": {
+        "message": "设置是否通过新标签页打开任务管理器"
+    },
+    "option_manager_interval": {
+        "message": "刷新间隔"
+    },
+    "option_manager_interval_title": {
+        "message": "设置任务管理器刷新间隔"
+    },
+    "option_notification": {
+        "message": "通知"
+    },
+    "option_notify_start": {
+        "message": "下载开始时"
+    },
+    "option_notify_start_title": {
+        "message": "当下载开始时弹出通知"
+    },
+    "option_notify_complete": {
+        "message": "下载完成时"
+    },
+    "option_notify_complete_title": {
+        "message": "当下载完成时弹出通知"
+    },
+    "download_start": {
+        "message": "下载开始..."
+    },
+    "download_complete": {
+        "message": "下载已完成！"
+    },
+    "option_advanced": {
+        "message": "进阶"
+    },
+    "option_download_headers": {
+        "message": "转发请求头"
+    },
+    "option_download_headers_title": {
+        "message": "设置开始下载时是否转发请求头"
+    },
+    "option_download_prompt": {
+        "message": "确认下载信息"
+    },
+    "option_download_prompt_title": {
+        "message": "开始下载前再次确认下载信息"
+    },
+    "option_user_agent": {
+        "message": "用户代理"
+    },
+    "option_user_agent_title": {
+        "message": "设置新建下载时的用户代理"
+    },
+    "option_folder": {
+        "message": "下载文件夹"
+    },
+    "option_folder_title": {
+        "message": "设置首选的下载文件夹"
+    },
+    "option_folder_enabled": {
+        "message": "强制下载文件夹"
+    },
+    "option_folder_enabled_title": {
+        "message": "将文件保存至使用首选的下载文件夹中"
+    },
+    "option_proxy": {
+        "message": "代理服务器"
+    },
+    "option_proxy_title": {
+        "message": "设置首选的代理服务器"
+    },
+    "option_protocol": {
+        "message": "协议"
+    },
+    "option_proxy_enabled": {
+        "message": "使用代理服务器"
+    },
+    "option_proxy_enabled_title": {
+        "message": "允许新建下载时的使用代理服务器"
+    },
+    "option_proxy_always": {
+        "message": "总是使用代理服务器"
+    },
+    "option_proxy_always_title": {
+        "message": "总是在新建下载时的使用代理服务器"
+    },
+    "option_proxy_include": {
+        "message": "自动代理域名"
+    },
+    "option_proxy_include_title": {
+        "message": "为来自所设置域名的下载添加代理服务器"
+    },
+    "option_capture": {
+        "message": "抓取浏览器下载"
+    },
+    "option_capture_enabled": {
+        "message": "启用抓取功能"
+    },
+    "option_capture_enabled_title": {
+        "message": "允许抓取来自浏览器的下载"
+    },
+    "option_capture_always": {
+        "message": "总是抓取下载"
+    },
+    "option_capture_always_title": {
+        "message": "总是抓取来自除了例外以外的浏览器的下载"
+    },
+    "option_capture_filesize": {
+        "message": "文件大小"
+    },
+    "option_capture_filesize_title": {
+        "message": "抓取文件大小超过设置的下载"
+    },
+    "option_capture_include": {
+        "message": "监视域名"
+    },
+    "option_capture_include_title": {
+        "message": "抓取来自所设置域名的下载"
+    },
+    "option_capture_exclude": {
+        "message": "忽略域名"
+    },
+    "option_capture_exclude_title": {
+        "message": "忽略来自所设置域名的下载"
+    },
+    "option_capture_resolve": {
+        "message": "监视文件后缀"
+    },
+    "option_capture_resolve_title": {
+        "message": "抓取拥有所设置文件后缀的下载"
+    },
+    "option_capture_reject": {
+        "message": "忽略文件后缀"
+    },
+    "option_capture_reject_title": {
+        "message": "忽略拥有所设置文件后缀的下载"
+    },
+    "image_select": {
+        "message": "选择"
+    },
+    "image_preview": {
+        "message": "预览"
+    },
+    "image_source": {
+        "message": "来源"
+    },
+    "image_description": {
+        "message": "描述"
+    },
+    "popup_active": {
+        "message": "下载中"
+    },
+    "popup_waiting": {
+        "message": "等待中"
+    },
+    "popup_stopped": {
+        "message": "已停止"
+    },
+    "popup_create": {
+        "message": "新下载"
+    },
+    "popup_purge": {
+        "message": "清理"
+    },
+    "popup_options": {
+        "message": "选项"
+    },
+    "popup_download": {
+        "message": "下载速度"
+    },
+    "popup_upload": {
+        "message": "上传速度"
+    },
+    "task_referer": {
+        "message": "引用页"
+    },
+    "task_referer_title": {
+        "message": "为本次下载添加\"Referer\"请求头"
+    },
+    "task_batch": {
+        "message": "下载链接"
+    },
+    "task_batch_title": {
+        "message": "支持下载多条 \"URL\", 或 \"JSON\" 字符串"
+    },
+    "task_name": {
+        "message": "文件名"
+    },
+    "task_name_title": {
+        "message": "设置本次下载的文件名"
+    },
+    "task_proxy": {
+        "message": "代理服务器"
+    },
+    "task_proxy_title": {
+        "message": "设置本次下载所使用的代理服务器"
+    },
+    "task_submit": {
+        "message": "确认"
+    },
+    "task_metaurl": {
+        "message": "上传"
+    },
+    "task_download": {
+        "message": "最大下载速度"
+    },
+    "task_download_title": {
+        "message": "设置本次下载的最大下载速度"
+    },
+    "task_upload": {
+        "message": "最大上传速度"
+    },
+    "task_upload_title": {
+        "message": "设置本次下载的最大上传速度"
+    },
+    "task_urls": {
+        "message": "下载中的链接"
+    },
+    "task_urls_title": {
+        "message": "本次下载中正在使用的链接"
+    },
+    "task_files": {
+        "message": "下载中的文件"
+    },
+    "task_files_title": {
+        "message": "本次下载中正在下载的文件"
+    },
+    "aria2_true": {
+        "message": "是"
+    },
+    "aria2_false": {
+        "message": "否"
+    },
+    "aria2_http_retry": {
+        "message": "重试次数"
+    },
+    "aria2_http_retry_title": {
+        "message": "设置最大重试次数"
+    },
+    "aria2_http_wait": {
+        "message": "重试间隔"
+    },
+    "aria2_http_wait_title": {
+        "message": "设置两次重试之间的间隔 (秒)"
+    },
+    "aria2_http_split": {
+        "message": "多线程"
+    },
+    "aria2_http_split_title": {
+        "message": "设置每个任务的最大线程数"
+    },
+    "aria2_http_size": {
+        "message": "线程容量"
+    },
+    "aria2_http_size_title": {
+        "message": "设置每个线程的最小容量"
+    },
+    "aria2_http_ua": {
+        "message": "用户代理"
+    },
+    "aria2_http_ua_title": {
+        "message": "设置 HTTP(S) 下载的用户代理"
+    },
+    "aria2_bt_port": {
+        "message": "监听端口"
+    },
+    "aria2_bt_port_title": {
+        "message": "设置与 DHT 以及 UDP 服务器交互的端口"
+    },
+    "aria2_bt_peers": {
+        "message": "最大连接数"
+    },
+    "aria2_bt_peers_title": {
+        "message": "设置每个 BT 任务的最大连接数"
+    },
+    "aria2_bt_follow": {
+        "message": "自动解析种子"
+    },
+    "aria2_bt_follow_title": {
+        "message": "当完成 .torrent 文件下载后，自动开始 BT 下载"
+    },
+    "aria2_bt_remove": {
+        "message": "删除未选定文件"
+    },
+    "aria2_bt_remove_title": {
+        "message": "当 BT 任务完成后删除未被选定的文件"
+    },
+    "aria2_bt_ratio": {
+        "message": "分享率"
+    },
+    "aria2_bt_ratio_title": {
+        "message": "设置每个 BT 任务的分享率"
+    },
+    "aria2_bt_seed": {
+        "message": "分享时间"
+    },
+    "aria2_bt_seed_title": {
+        "message": "设置每个 BT 任务的分享时间 (分)"
+    },
+    "aria2_adv_dir": {
+        "message": "下载文件夹"
+    },
+    "aria2_adv_dir_title": {
+        "message": "设置用于保存下载文件的文件夹"
+    },
+    "aria2_adv_cache": {
+        "message": "磁盘缓存"
+    },
+    "aria2_adv_cache_title": {
+        "message": "设置磁盘缓存以减少对磁盘的读写"
+    },
+    "aria2_max_concurrent": {
+        "message": "最大并行任务数"
+    },
+    "aria2_max_concurrent_title": {
+        "message": "设置可同时进行下载的最大任务数"
+    },
+    "aria2_max_connection": {
+        "message": "每服务器最大连接数"
+    },
+    "aria2_max_connection_title": {
+        "message": "设置每个服务器允许的最大连接数"
+    },
+    "aria2_max_download": {
+        "message": "全局下载速度"
+    },
+    "aria2_max_download_title": {
+        "message": "设置所有进行中的任务所能达到的最大下载速度"
+    },
+    "aria2_max_upload": {
+        "message": "全局上传速度"
+    },
+    "aria2_max_upload_title": {
+        "message": "设置所有进行中的任务所能达到的最大上传速度"
+    }
+}
