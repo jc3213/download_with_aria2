@@ -29,8 +29,6 @@ submitbtn.addEventListener('click', async event => {
         }
         return {url, options};
     });
-    console.log(json);
-    return;
     if (json.length !== 0) {
         await aria2DownloadJSON(json);
     }
