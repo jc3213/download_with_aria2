@@ -1,5 +1,4 @@
-var output = document.querySelector('#output');
-var imageLET = document.querySelector('.template > .image');
+var viewer = document.querySelector('#viewer');
 var submitbtn = document.querySelector('#submit_btn');
 
 document.addEventListener('keydown', event => {
@@ -19,15 +18,13 @@ document.addEventListener('keydown', event => {
 });
 
 submitbtn.addEventListener('click', async event => {
-    var json = [...document.querySelectorAll('.image :checked')].map(input => {
-        var image = input.parentNode.parentNode;
-        var url = image.querySelector('#src').title;
-        var name = image.querySelector('#alt').title;
+    var json = [...document.querySelectorAll('.checked')].map(img => {
+        var {src, alt} = img;
         var options = {...aria2Global};
-        if (name) {
-            options['out'] = name;
+        if (alt) {
+            options['out'] = alt;
         }
-        return {url, options};
+        return {url: src, options};
     });
     if (json.length !== 0) {
         await aria2DownloadJSON(json);
@@ -47,19 +44,24 @@ function getPreview({src, alt, title}) {
     if (!src) {
         return;
     }
-    var image = imageLET.cloneNode(true);
-    var url = image.querySelector('#src');
-    var img = image.querySelector('img');
-    url.innerText = url.title = src;
-    image.querySelectorAll('img').forEach(img => {
-        img.src = src;
-    });
+    var img = document.createElement('img');
+    img.src = src;
     if (alt) {
         var path = src.slice(src.lastIndexOf('/'));
-        var idx = path.indexOf('.');
-        var type = idx === -1 ? '.jpg' : path.slice(idx);
-        var name = image.querySelector('#alt');
-        name.innerText = name.title = alt + type;
+        var ix = path.indexOf('.');
+        var ext = ix === -1 ? '.jpg' : path.slice(ix);
+        var ax = ext.indexOf('@');
+        if (ax !== -1) {
+            ext = ext.slice(0, ax);
+        }
+        img.alt = alt + ext;
     }
-    output.append(image);
+    img.addEventListener('load', event => {
+        var {offsetWidth, offsetHeight} = img;
+        img.title = offsetWidth + 'x' + offsetHeight;
+    });
+    img.addEventListener('click', event => {
+        img.className = img.className === 'checked' ? '' : 'checked';
+    });
+    viewer.append(img);
 }

@@ -1,44 +1,11 @@
-input[type="checkbox"] {
-    accent-color: #006cbe;
+.checked {
+    filter: contrast(45%);
 }
 
-#images {
-    height: 594px;
-    width: 776px;
+#viewer {
+    height: 614px;
+    width: 736px;
     overflow-y: auto;
-}
-
-.title, .image {
-    display: grid;
-    grid-template-columns: 80px 80px auto 120px;
-    text-align: center;
-}
-
-.title > *, .image > :not(img) {
-    border-width: 1px;
-    border-style: solid;
-    padding: 5px;
-    overflow: hidden;
-    height: 23px;
-}
-
-#src, #alt {
-    text-align: left;
-}
-
-#thumb > img {
-    height: 24px;
-}
-
-#thumb + img {
-    display: none;
-}
-
-#thumb:hover + img {
-    display: block;
-    position: absolute;
-    z-index: 3213;
-    left: 160px;
 }
 
 #menu {

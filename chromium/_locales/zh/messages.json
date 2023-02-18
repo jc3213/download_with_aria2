@@ -224,18 +224,6 @@
     "option_capture_reject_title": {
         "message": "忽略拥有所设置文件后缀的下载"
     },
-    "image_select": {
-        "message": "选择"
-    },
-    "image_preview": {
-        "message": "预览"
-    },
-    "image_source": {
-        "message": "来源"
-    },
-    "image_description": {
-        "message": "描述"
-    },
     "popup_active": {
         "message": "下载中"
     },

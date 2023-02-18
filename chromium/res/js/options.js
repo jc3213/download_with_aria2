@@ -183,15 +183,15 @@ document.querySelectorAll('[data-link]').forEach(menu => {
     menu.link = {major: {name, rule}, minor};
 });
 
+document.querySelector('#aria2').addEventListener('change', event => {
+    var {name, value} = event.target;
+    setChange(name, value);
+});
+
 chrome.storage.onChanged.addListener(changes => {
     if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
         aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     }
-});
-
-document.querySelector('#aria2').addEventListener('change', event => {
-    var {name, value} = event.target;
-    setChange(name, value);
 });
 
 function aria2StartUp() {
