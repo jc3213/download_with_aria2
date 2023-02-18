@@ -57,8 +57,7 @@ function getPreview({src, alt, title}) {
         img.alt = alt + ext;
     }
     img.addEventListener('load', event => {
-        var {offsetWidth, offsetHeight} = img;
-        img.title = offsetWidth + 'x' + offsetHeight;
+        img.title = img.offsetWidth + 'x' + img.offsetHeight;
     });
     img.addEventListener('click', event => {
         img.className = img.className === 'checked' ? '' : 'checked';
