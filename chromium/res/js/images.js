@@ -49,7 +49,7 @@ function getPreview({src, alt, title}) {
     var image = imageLET.cloneNode(true);
     var url = image.querySelector('#src');
     var img = image.querySelector('img');
-    url.innerText = url.title = url.href = img.src = src;
+    url.innerText = url.title = img.src = src;
     if (alt) {
         var path = src.slice(src.lastIndexOf('/'));
         var idx = path.indexOf('.');

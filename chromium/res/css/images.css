@@ -5,6 +5,10 @@ img {
     left: 160px;
 }
 
+input[type="checkbox"] {
+    accent-color: #006cbe;
+}
+
 #images {
     height: 594px;
     width: 776px;
