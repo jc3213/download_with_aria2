@@ -1,10 +1,3 @@
-img {
-    display: none;
-    position: absolute;
-    z-index: 3213;
-    left: 160px;
-}
-
 input[type="checkbox"] {
     accent-color: #006cbe;
 }
@@ -33,8 +26,19 @@ input[type="checkbox"] {
     text-align: left;
 }
 
-#preview:hover + img {
+#thumb > img {
+    height: 24px;
+}
+
+#thumb + img {
+    display: none;
+}
+
+#thumb:hover + img {
     display: block;
+    position: absolute;
+    z-index: 3213;
+    left: 160px;
 }
 
 #menu {

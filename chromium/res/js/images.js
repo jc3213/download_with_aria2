@@ -19,15 +19,18 @@ document.addEventListener('keydown', event => {
 });
 
 submitbtn.addEventListener('click', async event => {
+    var options = aria2Global;
     var json = [...document.querySelectorAll('.image :checked')].map(input => {
         var image = input.parentNode.parentNode;
         var url = image.querySelector('#src').title;
-        var out = image.querySelector('#alt').title;
-        if (out) {
-            return {url, options: {out}};
+        var name = image.querySelector('#alt').title;
+        if (name) {
+            options['out'] = name;
         }
-        return {url};
+        return {url, options};
     });
+    console.log(json);
+    return;
     if (json.length !== 0) {
         await aria2DownloadJSON(json);
     }
@@ -49,7 +52,10 @@ function getPreview({src, alt, title}) {
     var image = imageLET.cloneNode(true);
     var url = image.querySelector('#src');
     var img = image.querySelector('img');
-    url.innerText = url.title = img.src = src;
+    url.innerText = url.title = src;
+    image.querySelectorAll('img').forEach(img => {
+        img.src = src;
+    });
     if (alt) {
         var path = src.slice(src.lastIndexOf('/'));
         var idx = path.indexOf('.');
