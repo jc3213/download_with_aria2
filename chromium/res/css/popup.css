@@ -118,7 +118,7 @@ body {
     filter: contrast(25%);
 }
 
-.http [data-p2p], .p2p [data-http], #retry_btn,
+.http [data-p2p], .p2p [data-http], #retry_btn, #save_btn,
 .complete #options button, .removed #options button, .error #options button {
     display: none;
 }
@@ -173,7 +173,6 @@ body {
 #save_btn {
     top: -10px;
     padding: 4px;
-    display: none;
 }
 
 .file {
