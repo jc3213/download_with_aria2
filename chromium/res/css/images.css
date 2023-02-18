@@ -26,10 +26,10 @@ input[type="checkbox"] {
     border-style: solid;
     padding: 5px;
     overflow: hidden;
-    word-wrap: normal;
+    height: 23px;
 }
 
-.image > :nth-child(n+4) {
+#src, #alt {
     text-align: left;
 }
 
