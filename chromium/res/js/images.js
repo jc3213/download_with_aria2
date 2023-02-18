@@ -55,9 +55,8 @@ function getPreview({src, alt, title}) {
         var path = src.slice(src.lastIndexOf('/'));
         var idx = path.indexOf('.');
         var type = idx === -1 ? '.jpg' : path.slice(idx);
-        var out = alt + type;
         var name = image.querySelector('#alt');
-        name.innerText = name.title = out;
+        name.innerText = name.title = alt + type;
     }
     output.append(image);
 }
