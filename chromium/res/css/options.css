@@ -40,11 +40,11 @@ input[type="checkbox"] + label {
 }
 
 #version::before, #aria2ver::before {
-    content: 'v';
+    content: "v";
 }
 
 #aria2ua::before {
-    content: 'aria2/';
+    content: "aria2/";
 }
 
 #local, #aria2 {
