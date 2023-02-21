@@ -99,7 +99,7 @@ button:enabled:active {
     margin-top: 25px;
 }
 
-.flex, .tool {
+.flex, .tool, .fixed {
     display: flex;
 }
 
@@ -111,9 +111,8 @@ button:enabled:active {
     flex: 1;
 }
 
-.fixed {
-    display: grid;
-    grid-template-columns: auto 33px;
+.fixed > button {
+    width: fit-content;
 }
 
 .tool > :last-child {

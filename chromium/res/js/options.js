@@ -118,6 +118,14 @@ importbtn.addEventListener('change', async event => {
     event.target.value = '';
 });
 
+document.querySelector('#show_btn').addEventListener('mousedown', event => {
+    secret.type = 'text';
+});
+
+document.addEventListener('mouseup', event => {
+    secret.type = 'password';
+});
+
 textarea.forEach(entry => {
     var {name} = entry;
     entry.addEventListener('change', event => {

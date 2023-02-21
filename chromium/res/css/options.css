@@ -25,15 +25,6 @@ input[type="checkbox"] + label {
     font-weight: bold;
 }
 
-input[name="jsonrpc_token"] {
-    grid-area: 1 / 1 / 1 / 2;
-    -webkit-text-security: disc;
-}
-
-#show_btn:active + input[name="jsonrpc_token"] {
-    -webkit-text-security: none;
-}
-
 #menu {
     border-width: 1px;
     border-style: outset;
