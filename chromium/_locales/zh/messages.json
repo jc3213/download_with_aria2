@@ -158,9 +158,6 @@
     "option_proxy_title": {
         "message": "设置首选的代理服务器"
     },
-    "option_protocol": {
-        "message": "协议"
-    },
     "option_proxy_enabled": {
         "message": "使用代理服务器"
     },

@@ -158,9 +158,6 @@
     "option_proxy_title": {
         "message": "Set your preferred proxy server"
     },
-    "option_protocol": {
-        "message": "Protocol"
-    },
     "option_proxy_enabled": {
         "message": "Use Proxy Server"
     },
