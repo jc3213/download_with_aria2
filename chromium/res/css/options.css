@@ -21,10 +21,6 @@ input[type="checkbox"] {
     accent-color: #006cbe;
 }
 
-input[type="checkbox"] + label {
-    font-weight: bold;
-}
-
 #menu {
     border-width: 1px;
     border-style: outset;
@@ -51,8 +47,8 @@ input[type="checkbox"] + label {
     margin-top: 80px;
 }
 
-#local .flex > * {
-    flex: 1;
+.menu label {
+    font-weight: bold;
 }
 
 .rulelist > * {

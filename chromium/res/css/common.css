@@ -99,7 +99,7 @@ button:enabled:active {
     margin-top: 25px;
 }
 
-.flex, .tool, .fixed {
+.flex, .tool {
     display: flex;
 }
 
@@ -107,12 +107,8 @@ button:enabled:active {
     gap: 3px;
 }
 
-.flex > * {
+.flex > :not(button) {
     flex: 1;
-}
-
-.fixed > button {
-    width: fit-content;
 }
 
 .tool > :last-child {
