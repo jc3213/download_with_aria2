@@ -137,12 +137,6 @@
     "option_download_prompt_title": {
         "message": "开始下载前再次确认下载信息"
     },
-    "option_user_agent": {
-        "message": "用户代理"
-    },
-    "option_user_agent_title": {
-        "message": "设置新建下载时的用户代理"
-    },
     "option_folder": {
         "message": "下载文件夹"
     },
@@ -154,6 +148,12 @@
     },
     "option_folder_enabled_title": {
         "message": "将文件保存至使用首选的下载文件夹中"
+    },
+    "option_user_agent": {
+        "message": "用户代理"
+    },
+    "option_user_agent_title": {
+        "message": "设置新建下载时的用户代理"
     },
     "option_proxy": {
         "message": "代理服务器"
