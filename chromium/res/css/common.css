@@ -95,7 +95,7 @@ button:enabled:active {
     display: none;
 }
 
-.menu:nth-child(n+2), .flex > .menu {
+.menu:nth-child(n+2) {
     margin-top: 25px;
 }
 

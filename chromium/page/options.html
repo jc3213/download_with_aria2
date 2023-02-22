@@ -53,29 +53,23 @@
                 </div>
             </div>
             <h1 i18n>option_notification</h1>
-            <div class="flex">
-                <div class="menu" title="option_notify_start_title">
+            <div class="menu flex">
+                <div title="option_notify_start_title">
                     <input id="notify_start" name="notify_start" type="checkbox">
                     <label for="notify_start" i18n>option_notify_start</label>
                 </div>
-                <div class="menu" title="option_notify_complete_title">
+                <div title="option_notify_complete_title">
                     <input id="notify_complete" name="notify_complete" type="checkbox">
                     <label for="notify_complete" i18n>option_notify_complete</label>
                 </div>
             </div>
             <h1 i18n>option_advanced</h1>
-            <div class="menu" title="option_user_agent_title">
-                <div class="title" i18n>option_user_agent</div>
-                <div>
-                    <input name="user_agent" type="text">
-                </div>
-            </div>
-            <div class="flex">
-                <div class="menu" title="option_download_headers_title">
+            <div class="menu flex">
+                <div title="option_download_headers_title">
                     <input id="download_headers" name="download_headers" type="checkbox">
                     <label for="download_headers" i18n>option_download_headers</label>
                 </div>
-                <div class="menu" title="option_download_prompt_title">
+                <div title="option_download_prompt_title">
                     <input id="download_prompt" name="download_prompt" type="checkbox">
                     <label for="download_prompt" i18n>option_download_prompt</label>
                 </div>
@@ -84,22 +78,26 @@
             <div class="menu" title="option_folder_title">
                 <input name="folder_defined" type="text">
             </div>
-            <div class="flex">
-                <div class="menu" title="option_folder_enabled_title">
+            <div class="menu flex">
+                <div title="option_folder_enabled_title">
                     <input id="folder_enabled" name="folder_enabled" type="checkbox">
                     <label for="folder_enabled" i18n>option_folder_enabled</label>
                 </div>
+            </div>
+            <h1 i18n>option_user_agent</h1>
+            <div class="menu flex" title="option_user_agent_title">
+                <input name="user_agent" type="text">
             </div>
             <h1 i18n>option_proxy</h1>
             <div class="menu" title="option_proxy_title">
                 <input name="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
             </div>
-            <div class="flex">
-                <div class="menu" title="option_proxy_enabled_title">
+            <div class="menu flex">
+                <div title="option_proxy_enabled_title">
                     <input id="proxy_enabled" name="proxy_enabled" type="checkbox">
                     <label for="proxy_enabled" i18n>option_proxy_enabled</label>
                 </div>
-                <div class="menu" title="option_proxy_always_title" data-link="proxy_enabled,1">
+                <div title="option_proxy_always_title" data-link="proxy_enabled,1">
                     <input id="proxy_always" name="proxy_always" type="checkbox">
                     <label for="proxy_always" i18n>option_proxy_always</label>
                 </div>
@@ -113,12 +111,12 @@
                 <div class="rulelist"></div>
             </div>
             <h1 i18n>option_capture</h1>
-            <div class="flex">
-                <div class="menu" title="option_capture_enabled_title">
+            <div class="menu flex">
+                <div title="option_capture_enabled_title">
                     <input id="capture_enabled" name="capture_enabled" type="checkbox">
                     <label for="capture_enabled" i18n>option_capture_enabled</label>
                 </div>
-                <div class="menu" title="option_capture_always_title" data-link="capture_enabled,1">
+                <div title="option_capture_always_title" data-link="capture_enabled,1">
                     <input id="capture_always" name="capture_always" type="checkbox">
                     <label for="capture_always" i18n>option_capture_always</label>
                 </div>

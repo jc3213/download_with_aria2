@@ -53,6 +53,9 @@
     "common_disabled": {
         "message": "禁用"
     },
+    "common_submit": {
+        "message": "确认"
+    },
     "common_save": {
         "message": "保存"
     },
@@ -268,9 +271,6 @@
     },
     "task_proxy_title": {
         "message": "设置本次下载所使用的代理服务器"
-    },
-    "task_submit": {
-        "message": "确认"
     },
     "task_metaurl": {
         "message": "上传"

@@ -53,6 +53,9 @@
     "common_disabled": {
         "message": "Disabled"
     },
+    "common_submit": {
+        "message": "Submit"
+    },
     "common_save": {
         "message": "Save"
     },
@@ -268,9 +271,6 @@
     },
     "task_proxy_title": {
         "message": "Set the proxy server for this download"
-    },
-    "task_submit": {
-        "message": "Submit"
     },
     "task_metaurl": {
         "message": "Upload"

@@ -7,8 +7,10 @@ body:not(.aria2) [data-aria2], body.aria2 [data-local] {
     display: none;
 }
 
-h1 {
-    margin: 50px 0px 0px;
+summary {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 50px;
 }
 
 button:disabled {
