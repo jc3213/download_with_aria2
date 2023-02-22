@@ -99,7 +99,7 @@ button:enabled:active {
     margin-top: 25px;
 }
 
-.flex, .tool {
+.flex {
     display: flex;
 }
 
@@ -109,10 +109,6 @@ button:enabled:active {
 
 .flex > :not(button) {
     flex: 1;
-}
-
-.tool > :last-child {
-    margin-left: auto;
 }
 
 .float {

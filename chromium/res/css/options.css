@@ -31,6 +31,11 @@ input[type="checkbox"] {
     z-index: 999999;
 }
 
+#menu > :last-child {
+    flex: none;
+    margin-left: auto;
+}
+
 #version, #aria2ver {
     padding: 5px;
 }
