@@ -113,7 +113,7 @@ body {
 
 .complete input, .removed input, .error input,
 .complete select, .removed select, .error select,
-.p2p [name="max-upload-limit"] {
+.http [name="max-upload-limit"] {
     pointer-events: none;
     filter: contrast(25%);
 }
