@@ -54,7 +54,12 @@ class Aria2 {
     }
     fetch (jsonrpc, body) {
         return fetch(jsonrpc, {method: 'POST', body}).then(function (response) {
-            return response.json();
+            if (response.ok) {
+                return response.json();
+            }
+            else {
+                throw new Error(response.statusText);
+            }
         });
     }
     websocket (jsonrpc, message) {
