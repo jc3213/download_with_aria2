@@ -10,8 +10,6 @@
         "cookies",
         "notifications",
         "storage",
-        "webRequest",
-        "webRequestBlocking",
         "<all_urls>"
     ],
     "default_locale": "en",

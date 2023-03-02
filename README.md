@@ -1,6 +1,6 @@
 ## User Manual
 - [How to use](//github.com/jc3213/download_with_aria2/wiki)
-- [How to build](//github.com/jc3213/download_with_aria2/wiki/Building)
+- [How to build](//github.com/jc3213/download_with_aria2/wiki/HowToBuild)
 - [Feed back](//github.com/jc3213/download_with_aria2/issues/new/)
 
 ## Download the extension
