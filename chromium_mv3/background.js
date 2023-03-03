@@ -17,6 +17,8 @@ chrome.runtime.onInstalled.addListener(async details => {
     });
 });
 
+chrome.runtime.onMessage.addListener(aria2Storage);
+
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl}, {id, url}) => {
     await aria2Storage();
     if (menuItemId === 'download_this_item') {
