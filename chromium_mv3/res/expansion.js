@@ -21,7 +21,7 @@ function aria2Manager() {
     }
 }
 
-function aria2Initial() {
+function aria2Client() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
 }
 

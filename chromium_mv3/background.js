@@ -1,14 +1,9 @@
 importScripts('lib/aria2.js', 'lib/tools.js', 'lib/core.js', 'res/common.js', 'res/expansion.js');
 
-chrome.runtime.onStartup.addListener(() => {
-    aria2Storage();
-    aria2Initial();
-    aria2Manager();
-});
+chrome.runtime.onStartup.addListener(aria2StartUp);
 
 chrome.runtime.onInstalled.addListener(async details => {
-    await aria2Storage();
-    aria2Manager();
+    await aria2StartUp();
 
     chrome.contextMenus.create({
         title: chrome.i18n.getMessage('contextmenu_dldthis'),
@@ -63,15 +58,21 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
     }
 });
 
+async function aria2StartUp() {
+    await aria2Storage();
+    aria2Manager();
+    aria2Badge();
+}
+
 async function aria2Storage() {
     var json = await chrome.storage.local.get(null);
     aria2Store = {...aria2Default, ...json};
-    aria2Initial();
+    aria2Client();
 }
 
 function aria2Update(changes) {
     if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
-        aria2Initial();
+        aria2Client();
         aria2Badge();
     }
     if ('manager_newtab' in changes) {
