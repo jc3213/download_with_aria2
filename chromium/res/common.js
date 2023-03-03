@@ -38,6 +38,12 @@ chrome.storage.onChanged.addListener(changes => {
     aria2Update(changes);
 });
 
+chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
+    if (reason === 'install') {
+        chrome.storage.local.set(aria2Store);
+    }
+});
+
 chrome.runtime.onMessage.addListener((message, sender, response) => {
     var {action, params} = message;
     var {id} = sender.tab;

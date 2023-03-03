@@ -6,13 +6,9 @@ chrome.runtime.onStartup.addListener(() => {
     aria2Manager();
 });
 
-chrome.runtime.onInstalled.addListener(async ({reason, previousVersion}) => {
+chrome.runtime.onInstalled.addListener(async details => {
     await aria2Storage();
     aria2Manager();
-    
-    if (reason === 'install') {
-        chrome.storage.local.set(aria2Store);
-    }
 
     chrome.contextMenus.create({
         title: chrome.i18n.getMessage('contextmenu_dldthis'),

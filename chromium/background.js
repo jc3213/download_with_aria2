@@ -19,12 +19,6 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url}) => 
     }
 });
 
-chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    if (reason === 'install') {
-        chrome.storage.local.set(aria2Store);
-    }
-});
-
 chrome.storage.local.get(null, json => {
     aria2Store = {...aria2Default, ...json};
     aria2StartUp();

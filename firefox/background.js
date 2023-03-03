@@ -19,12 +19,6 @@ browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url, coo
     }
 });
 
-browser.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    if (reason === 'install') {
-        browser.storage.local.set(aria2Store);
-    }
-});
-
 browser.storage.local.get(null, json => {
     aria2Store = {...aria2Default, ...json};
     aria2StartUp();
