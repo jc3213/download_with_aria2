@@ -20,6 +20,6 @@ IF %1 EQU chromium GOTO :Exit
 :Exit
 ECHO.
 ECHO.
-ECHO ^<%Zip%^> build completed, script will be terminated in 5 seconds...
+ECHO ^<%Out%^> build completed, script will be terminated in 5 seconds...
 TIMEOUT /T 5
 EXIT
