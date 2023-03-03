@@ -17,10 +17,10 @@ chrome.runtime.onInstalled.addListener(async details => {
     });
 });
 
-chrome.runtime.onMessage.addListener(aria2Storage);
+chrome.runtime.onMessage.addListener(aria2Initial);
 
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl}, {id, url}) => {
-    await aria2Storage();
+    await aria2Initial();
     if (menuItemId === 'download_this_item') {
         aria2Download(linkUrl, url, getHostname(url));
     }
@@ -30,7 +30,7 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl}, {id, url
 });
 
 chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
-    await aria2Storage();
+    await aria2Initial();
     var url = finalUrl;
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
@@ -44,7 +44,7 @@ chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
 });
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSize}) => {
-    await aria2Storage();
+    await aria2Initial();
     if (!aria2Store['capture_enabled']) {
         return;
     }
@@ -61,12 +61,12 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
 });
 
 async function aria2StartUp() {
-    await aria2Storage();
+    await aria2Initial();
     aria2Manager();
     aria2Badge();
 }
 
-async function aria2Storage() {
+async function aria2Initial() {
     var json = await chrome.storage.local.get(null);
     aria2Store = {...aria2Default, ...json};
     aria2Client();
