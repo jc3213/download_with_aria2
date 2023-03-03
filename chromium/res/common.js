@@ -28,12 +28,6 @@ var aria2Monitor = {};
 var aria2Prompt = {};
 var aria2Images = {};
 
-chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    if (reason === 'install') {
-        chrome.storage.local.set(aria2Default);
-    }
-});
-
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
         var {newValue} = changes[key];
