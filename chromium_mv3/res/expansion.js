@@ -23,6 +23,9 @@ function aria2Manager() {
 
 function aria2Initial() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
+}
+
+function aria2Badge() {
     aria2RPC.call('aria2.getGlobalOption').then(result => {
         chrome.action.setBadgeText({text: ''});
     }).catch(error => {
