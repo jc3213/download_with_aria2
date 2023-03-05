@@ -112,7 +112,7 @@ function getCurrentTabUrl() {
     });
 }
 
-function getfileext(filename) {
+function getFileExtension(filename) {
     var fileext = filename.slice(filename.lastIndexOf('.') + 1);
     return fileext.toLowerCase();
 }
