@@ -17,7 +17,6 @@ i18n = i18n[lang] ?? i18n[lang.slice(0, lang.indexOf('-'))] ?? i18n['en'];
 
 var folderff = document.createElement('div');
 folderff.title = i18n.folderff_title;
-folderff.className = 'menu';
 folderff.innerHTML = `<input id="folder_firefox" name="folder_firefox" type="checkbox"><label for="folder_firefox">${i18n.folderff}</label>`;
 folderff.addEventListener('change', event => {
     var {name, checked} = event.target;
