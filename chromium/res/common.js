@@ -24,6 +24,7 @@ var aria2Default = {
     'folder_firefox': false,
     'capture_webrequest': false
 };
+var aria2Store = {};
 var aria2Monitor = {};
 var aria2Prompt = {};
 var aria2Images = {};
@@ -40,7 +41,7 @@ chrome.storage.onChanged.addListener(changes => {
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
-        chrome.storage.local.set(aria2Store);
+        chrome.storage.local.set({...aria2Default, ...aria2Store});
     }
 });
 
@@ -111,9 +112,31 @@ function getCurrentTabUrl() {
     });
 }
 
-function getFileExtension(filename) {
+function getfileext(filename) {
     var fileext = filename.slice(filename.lastIndexOf('.') + 1);
     return fileext.toLowerCase();
+}
+
+function getCaptureGeneral(hostname, fileext, size) {
+    if (aria2Store['capture_exclude'].find(host => hostname.includes(host))) {
+        return false;
+    }
+    else if (aria2Store['capture_reject'].includes(fileext)) {
+        return false;
+    }
+    else if (aria2Store['capture_always']) {
+        return true;
+    }
+    else if (aria2Store['capture_include'].find(host => hostname.includes(host))) {
+        return true;
+    }
+    else if (aria2Store['capture_resolve'].includes(fileext)) {
+        return true;
+    }
+    else if (aria2Store['capture_size'] > 0 && size >= aria2Store['capture_size']) {
+        return true;
+    }
+    return false;
 }
 
 function getCaptureHostname(hostname) {
@@ -129,11 +152,11 @@ function getCaptureHostname(hostname) {
     return 0;
 }
 
-function getCaptureFileData(size, ext) {
-    if (aria2Store['capture_reject'].includes(ext)) {
+function getCaptureFileData(size, fileext) {
+    if (aria2Store['capture_reject'].includes(fileext)) {
         return -1;
     }
-    else if (aria2Store['capture_resolve'].includes(ext)) {
+    else if (aria2Store['capture_resolve'].includes(fileext)) {
         return 1;
     }
     else if (aria2Store['capture_filesize'] > 0 && size >= aria2Store['capture_filesize']) {

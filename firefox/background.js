@@ -75,34 +75,12 @@ function aria2Capture() {
     }
 }
 
-function getCaptureFilter(hostname, ext, size) {
-    if (aria2Store['capture_exclude'].find(host => hostname.includes(host))) {
-        return false;
-    }
-    else if (aria2Store['capture_reject'].includes(ext)) {
-        return false;
-    }
-    else if (aria2Store['capture_always']) {
-        return true;
-    }
-    else if (aria2Store['capture_include'].find(host => hostname.includes(host))) {
-        return true;
-    }
-    else if (aria2Store['capture_resolve'].includes(ext)) {
-        return true;
-    }
-    else if (aria2Store['capture_filesize'] > 0 && size >= aria2Store['capture_filesize']) {
-        return true;
-    }
-    return false;
-}
-
 async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
     if (url.startsWith('blob') || url.startsWith('data')) {
         return;
     }
     var hostname = getHostname(referrer);
-    if (getCaptureFilter(hostname, getFileExtension(filename))) {
+    if (getCaptureGeneral(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
             var options = await getFirefoxOptions(filename);
@@ -132,7 +110,7 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
             out = ext = null;
         }
         var hostname = getHostname(originUrl);
-        if (getCaptureFilter(hostname, ext, length)) {
+        if (getCaptureGeneral(hostname, ext, length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
             aria2DownloadFirefox(url, originUrl, hostname, cookieStoreId, {out, dir: getDownloadFolder()});
             return {cancel: true};
