@@ -1,10 +1,10 @@
 importScripts('lib/aria2.js', 'lib/tools.js', 'lib/core.js', 'res/common.js', 'res/expansion.js');
 
+self.addEventListener('activate', aria2StartUp);
+
 chrome.runtime.onStartup.addListener(aria2StartUp);
 
 chrome.runtime.onInstalled.addListener(async details => {
-    await aria2StartUp();
-
     chrome.contextMenus.create({
         title: chrome.i18n.getMessage('contextmenu_dldthis'),
         id: 'download_this_item',
@@ -17,10 +17,7 @@ chrome.runtime.onInstalled.addListener(async details => {
     });
 });
 
-chrome.runtime.onMessage.addListener(aria2Initial);
-
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl}, {id, url}) => {
-    await aria2Initial();
     if (menuItemId === 'download_this_item') {
         aria2Download(linkUrl, url, getHostname(url));
     }
