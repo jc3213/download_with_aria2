@@ -82,22 +82,6 @@ async function aria2Download(url, referer, hostname, options = {}) {
     aria2DownloadPrompt({url, options});
 }
 
-async function aria2DownloadPrompt(aria2c) {
-    if (aria2Store['download_prompt']) {
-        var id = await aria2NewDownload(true);
-        aria2Prompt[id] = aria2c;
-    }
-    else {
-        var {url, json, options} = aria2c;
-        if (json) {
-            aria2DownloadJSON(json, options);
-        }
-        else if (url) {
-            aria2DownloadUrls(url, options);
-        }
-    }
-}
-
 async function aria2ImagesPrompt(result) {
     var id = await getNewWindow('/page/images.html', 760, 710);
     aria2Images[id] = result;

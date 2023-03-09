@@ -2,8 +2,6 @@ importScripts('lib/aria2.js', 'lib/tools.js', 'lib/core.js', 'res/common.js', 'r
 
 self.addEventListener('activate', aria2StartUp);
 
-chrome.runtime.onMessage.addListener(aria2Initial);
-
 chrome.runtime.onStartup.addListener(aria2StartUp);
 
 chrome.runtime.onInstalled.addListener(async details => {

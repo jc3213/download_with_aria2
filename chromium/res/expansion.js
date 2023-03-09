@@ -13,6 +13,22 @@ chrome.browserAction.onClicked.addListener(tab => {
     });
 });
 
+async function aria2DownloadPrompt(aria2c) {
+    if (aria2Store['download_prompt']) {
+        var id = await aria2NewDownload(true);
+        aria2Prompt[id] = aria2c;
+    }
+    else {
+        var {url, json, options} = aria2c;
+        if (json) {
+            aria2DownloadJSON(json, options);
+        }
+        else if (url) {
+            aria2DownloadUrls(url, options);
+        }
+    }
+}
+
 function aria2Manager() {
     if (aria2Store['manager_newtab']) {
         chrome.browserAction.setPopup({popup: ''});
