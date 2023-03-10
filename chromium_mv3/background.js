@@ -51,7 +51,6 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
 async function aria2StartUp() {
     await aria2Initial();
     aria2Manager();
-    aria2Badge();
 }
 
 async function aria2Initial() {
@@ -63,7 +62,6 @@ async function aria2Initial() {
 function aria2Update(changes) {
     if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
         aria2Client();
-        aria2Badge();
     }
     if ('manager_newtab' in changes) {
         aria2Manager();
