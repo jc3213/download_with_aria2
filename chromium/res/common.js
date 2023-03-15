@@ -24,6 +24,7 @@ var aria2Default = {
     'folder_firefox': false,
     'capture_webrequest': false
 };
+var aria2RPC;
 var aria2Store = {};
 var aria2Monitor = {};
 var aria2Prompt = {};

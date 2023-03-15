@@ -49,14 +49,17 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
 });
 
 async function aria2StartUp() {
-    await aria2Initial();
+    var json = await chrome.storage.local.get(null);
+    aria2Store = {...aria2Default, ...json};
+    aria2Client();
     aria2Manager();
 }
 
 async function aria2Initial() {
-    var json = await chrome.storage.local.get(null);
-    aria2Store = {...aria2Default, ...json};
-    aria2Client();
+    if (!aria2RPC) {
+        aria2Store = await chrome.storage.local.get(null);
+        aria2Client();
+    }
 }
 
 function aria2Update(changes) {
