@@ -42,7 +42,7 @@ chrome.storage.onChanged.addListener(changes => {
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
-        chrome.storage.local.set({...aria2Default, ...aria2Store});
+        chrome.storage.local.set(aria2Default);
     }
 });
 
