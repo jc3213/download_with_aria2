@@ -212,12 +212,12 @@ body {
     background-color: #4cc;
 }
 
-.waiting #meter, .paused #meter {
-    background-color: #488;
+.waiting #meter {
+    background-color: #48c;
 }
 
-.complete #meter {
-    background-color: #4c4;
+.paused #meter {
+    background-color: #488;
 }
 
 .removed #meter, .error #meter {
@@ -232,7 +232,7 @@ body {
     background-color: #cc4;
 }
 
-.complete #meter #ratio, .upload {
+.complete #meter, .complete #meter #ratio, .upload {
     background-color: #4c4;
 }
 
