@@ -213,9 +213,11 @@ function parseSession(gid, status, bittorrent) {
         var status = task.parentNode.className;
         if ('active,waiting'.includes(status)) {
             await aria2RPC.call('aria2.forcePause', [gid]);
+            pausedQueue.appendChild(task);
         }
         else if (status === 'paused') {
             await aria2RPC.call('aria2.unpause', [gid]);
+            waitingQueue.appendChild(task);
         }
     });
     task.querySelector('#options').addEventListener('change', event => {
