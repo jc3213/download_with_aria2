@@ -19,6 +19,7 @@ chrome.runtime.onInstalled.addListener(async details => {
 
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl}, {id, url}) => {
     if (menuItemId === 'download_this_item') {
+        await aria2Client();
         aria2Download(linkUrl, url, getHostname(url));
     }
     else if (menuItemId === 'download_all_images') {
