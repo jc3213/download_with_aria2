@@ -42,8 +42,7 @@ function getNewWindow(url, offsetWidth, offsetHeight) {
             left,
             top
         }, popup => {
-            var {tabs} = popup;
-            var {id} = tabs[0];
+            var {id} = popup.tabs[0];
             resolve(id);
         });
     });
@@ -51,12 +50,7 @@ function getNewWindow(url, offsetWidth, offsetHeight) {
 
 function aria2NewDownload(slim) {
     if (slim) {
-        var url = '/page/newdld.html?slim_mode';
-        var height = 343;
+        return getNewWindow('/pages/newdld/newdld.html?slim_mode', 640, 343);
     }
-    else {
-        url = '/page/newdld.html';
-        height = 701;
-    }
-    return getNewWindow(url, 640, height);
+    return getNewWindow('/pages/newdld/newdld.html', 640, 701);
 }

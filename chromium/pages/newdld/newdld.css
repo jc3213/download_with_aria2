@@ -1,0 +1,35 @@
+@media (prefers-color-scheme: dark) {
+    textarea {
+        background-color: #4a4a4a;
+        color: #ffffff;
+    }
+}
+
+body:not([class]) [data-slim],
+body[class] #upload_btn,
+.slim [data-extra],
+.extend #extra_btn {
+    display: none;
+}
+
+textarea {
+    padding: 5px;
+    width: calc(100% - 12px);
+    resize: none;
+    border-width: 1px;
+    border-style: inset;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#menu {
+    text-align: center;
+}
+
+#countdown::before {
+    content: "(";
+}
+
+#countdown::after {
+    content: ")";
+}

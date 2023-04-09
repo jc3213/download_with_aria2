@@ -1,5 +1,5 @@
 chrome.runtime.onMessage.addListener(message => {
-    if (message === 'sniffer') {
+    if (message === 'download_all_images') {
         snifferAllImages();
     }
 });

@@ -1,0 +1,19 @@
+img {
+    margin: 3px;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.checked {
+    filter: contrast(45%);
+}
+
+#viewer {
+    height: 604px;
+    width: 736px;
+    overflow-y: auto;
+}
+
+#menu {
+    text-align: center;
+}

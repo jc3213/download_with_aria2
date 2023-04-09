@@ -15,7 +15,7 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url}) => 
         aria2Download(linkUrl, url, getHostname(url));
     }
     else if (menuItemId === 'download_all_images') {
-        chrome.tabs.sendMessage(id, 'sniffer');
+        chrome.tabs.sendMessage(id, menuItemId);
     }
 });
 
