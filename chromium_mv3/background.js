@@ -1,6 +1,4 @@
-importScripts('lib/aria2.js', 'lib/tools.js', 'lib/core.js', 'res/common.js', 'res/expansion.js');
-
-self.addEventListener('activate', aria2StartUp);
+importScripts('libs/aria2.js', 'libs/tools.js', 'libs/core.js', 'crossbrowser.js', 'expansion.js');
 
 chrome.runtime.onStartup.addListener(aria2StartUp);
 
@@ -15,15 +13,16 @@ chrome.runtime.onInstalled.addListener(async details => {
         id: 'download_all_images',
         contexts: ['page']
     });
+    aria2StartUp();
 });
 
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl}, {id, url}) => {
     if (menuItemId === 'download_this_item') {
-        await aria2Client();
+        await aria2Initial();
         aria2Download(linkUrl, url, getHostname(url));
     }
     else if (menuItemId === 'download_all_images') {
-        chrome.tabs.sendMessage(id, 'sniffer');
+        chrome.tabs.sendMessage(id, menuItemId);
     }
 });
 

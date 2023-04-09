@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.2.2.1918",
+    "version": "4.2.3.1945",
     "manifest_version": 3,
     "permissions": [
         "contextMenus",
@@ -27,16 +27,16 @@
     },
     "action": {
         "default_icon": {
-            "24": "icon/24.png"
+            "24": "icons/24.png"
         }
     },
     "icons": {
-        "128": "icon/128.png",
-        "16": "icon/16.png",
-        "48": "icon/48.png"
+        "128": "icons/128.png",
+        "16": "icons/16.png",
+        "48": "icons/48.png"
     },
     "options_ui": {
-        "page": "page/options.html",
+        "page": "pages/options/options.html",
         "open_in_tab": true
     },
     "commands": {

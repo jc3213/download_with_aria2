@@ -1,4 +1,3 @@
-var aria2Popup = 'pages/popup/popup.html';
 var aria2Socket;
 var aria2Retry;
 var aria2Active;

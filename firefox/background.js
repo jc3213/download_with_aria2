@@ -15,7 +15,7 @@ browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url, coo
         aria2DownloadFirefox(linkUrl, url, getHostname(url), cookieStoreId);
     }
     else if (menuItemId === 'download_all_images') {
-        browser.tabs.sendMessage(id, 'sniffer');
+        browser.tabs.sendMessage(id, menuItemId);
     }
 });
 
