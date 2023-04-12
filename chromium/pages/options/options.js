@@ -5,12 +5,12 @@ var importbtn = document.querySelector('#import_btn');
 var exportbtn = document.querySelector('#export_btn');
 var aria2Ver = document.querySelector('#aria2ver');
 var aria2UA = document.querySelector('#aria2ua');
-var secret = document.querySelector('[name="jsonrpc_token"]');
+var secret = document.querySelector('#jsonrpc_token');
 var changes = {};
 var redoes = [];
 var undoes = [];
 var global = true;
-var textarea = document.querySelectorAll('#local [name]:not([type="checkbox"])');
+var textarea = document.querySelectorAll('#local input[id]:not([type="checkbox"])');
 var multiply = {
     'manager_interval': 1000,
     'capture_filesize': 1048576
@@ -59,10 +59,10 @@ savebtn.addEventListener('click', event => {
 
 undobtn.addEventListener('click', event => {
     var undo = undoes.pop();
-    var {name, old_value} = undo;
+    var {id, old_value} = undo;
     redoes.push(undo);
     redobtn.disabled = false;
-    getChange(name, old_value);
+    getChange(id, old_value);
     if (undoes.length === 0) {
         undobtn.disabled = true;
     }
@@ -70,10 +70,10 @@ undobtn.addEventListener('click', event => {
 
 redobtn.addEventListener('click', event => {
     var redo = redoes.pop();
-    var {name, new_value} = redo;
+    var {id, new_value} = redo;
     undoes.push(redo);
     undobtn.disabled = false;
-    getChange(name, new_value);
+    getChange(id, new_value);
     if (redoes.length === 0) {
         redobtn.disabled = true;
     }
@@ -95,7 +95,7 @@ document.querySelector('#aria2_btn').addEventListener('click', async event => {
     ]);
     clearChanges();
     global = false;
-    aria2Global = document.querySelectorAll('#aria2 [name]').disposition(options);
+    aria2Global = document.querySelectorAll('#aria2 input').disposition(options);
     changes = {...aria2Global};
     aria2Ver.innerText = aria2UA.innerText = version.version;
     document.body.className = 'aria2';
@@ -127,23 +127,23 @@ document.addEventListener('mouseup', event => {
 });
 
 textarea.forEach(entry => {
-    var {name} = entry;
+    var {id} = entry;
     entry.addEventListener('change', event => {
-        var value = getValue(name, entry.value);
-        setChange(name, value);
+        var value = getValue(id, entry.value);
+        setChange(id, value);
     });
 });
 
 checkbox.forEach(entry => {
-    var {name} = entry;
+    var {id} = entry;
     entry.addEventListener('change', event => {
-        setChange(name, entry.checked);
+        setChange(id, entry.checked);
     });
-    checked[name] = 1;
+    checked[id] = 1;
 });
 
 rulelist.forEach(menu => {
-    var name = menu.getAttribute('data-list');
+    var id = menu.getAttribute('data-list');
     var entry = menu.querySelector('input');
     var addbtn = menu.querySelector('button');
     var list = menu.querySelector('.rulelist');
@@ -155,37 +155,37 @@ rulelist.forEach(menu => {
     addbtn.addEventListener('click', event => {
         var {value} = entry;
         if (value !== '') {
-            var item = printList(name, value);
+            var item = printList(id, value);
             list.appendChild(item);
-            var new_value = [...changes[name], value];
-            setChange(name, new_value);
+            var new_value = [...changes[id], value];
+            setChange(id, new_value);
             entry.value = '';
         }
     });
-    listed[name] = 1;
-    menu.list = {name, list};
+    listed[id] = 1;
+    menu.list = {id, list};
 });
 
 document.querySelectorAll('[data-link]').forEach(menu => {
     var data = menu.getAttribute('data-link').match(/[^,;]+/g);
-    var [name, value] = data.splice(0, 2);
-    linkage[name].push(menu);
+    var [id, value] = data.splice(0, 2);
+    linkage[id].push(menu);
     var minor = [];
     var rule = value === '1' ? true : false;
-    data.forEach((name, idx) => {
-       if (isNaN(name)) {
+    data.forEach((id, idx) => {
+       if (isNaN(id)) {
             var value = data[idx + 1];
             var rule = value === '1' ? true : false;
-            linkage[name].push(menu);
-            minor.push({name, rule});
+            linkage[id].push(menu);
+            minor.push({id, rule});
         }
     });
-    menu.link = {major: {name, rule}, minor};
+    menu.link = {major: {id, rule}, minor};
 });
 
 document.querySelector('#aria2').addEventListener('change', event => {
-    var {name, value} = event.target;
-    setChange(name, value);
+    var {id, value} = event.target;
+    setChange(id, value);
 });
 
 chrome.storage.onChanged.addListener(changes => {
@@ -197,22 +197,22 @@ chrome.storage.onChanged.addListener(changes => {
 function aria2StartUp() {
     changes = {...aria2Store};
     textarea.forEach(entry => {
-        var {name} = entry;
-        var value = changes[name];
-        entry.value = setValue(name, value);
+        var {id} = entry;
+        var value = changes[id];
+        entry.value = setValue(id, value);
     });
     checkbox.forEach(entry => {
-        var {name} = entry;
-        entry.checked = changes[name];
-        if (name in linkage) {
-            linkage[name].forEach(printLinkage);
+        var {id} = entry;
+        entry.checked = changes[id];
+        if (id in linkage) {
+            linkage[id].forEach(printLinkage);
         }
     });
     rulelist.forEach(menu => {
-        var {name, list} = menu.list;
+        var {id, list} = menu.list;
         list.innerHTML = '';
-        changes[name].forEach(value => {
-            var item = printList(name, value);
+        changes[id].forEach(value => {
+            var item = printList(id, value);
             list.appendChild(item);
         });
     });
@@ -220,11 +220,11 @@ function aria2StartUp() {
 
 function printLinkage(menu) {
     var {major, minor} = menu.link;
-    var {name, rule} = major;
-    var prime = rule === changes[name];
+    var {id, rule} = major;
+    var prime = rule === changes[id];
     var second = 0;
-    minor.forEach(({name, rule}) => {
-        var value = changes[name];
+    minor.forEach(({id, rule}) => {
+        var value = changes[id];
         if (rule === value) {
             second ++;
         }
@@ -244,71 +244,71 @@ function clearChanges() {
     savebtn.disabled = undobtn.disabled = redobtn.disabled = true;
 }
 
-function getChange(name, value) {
-    changes[name] = value;
+function getChange(id, value) {
+    changes[id] = value;
     savebtn.disabled = false;
-    var entry = document.querySelector('[name="' + name + '"]');
-    if (name in listed) {
-        getList(name, value);
+    var entry = document.getElementById(id);
+    if (id in listed) {
+        getList(id, value);
     }
-    else if (name in checked) {
+    else if (id in checked) {
         entry.checked = value;
     }
     else {
-        entry.value = setValue(name, value);
+        entry.value = setValue(id, value);
     }
-    if (name in linkage) {
-        linkage[name].forEach(printLinkage);
+    if (id in linkage) {
+        linkage[id].forEach(printLinkage);
     }
 }
 
-function setChange(name, new_value) {
-    var old_value = changes[name];
-    undoes.push({name, old_value, new_value});
+function setChange(id, new_value) {
+    var old_value = changes[id];
+    undoes.push({id, old_value, new_value});
     savebtn.disabled = undobtn.disabled = false;
-    changes[name] = new_value;
-    if (name in linkage) {
-        linkage[name].forEach(printLinkage);
+    changes[id] = new_value;
+    if (id in linkage) {
+        linkage[id].forEach(printLinkage);
     }
 }
 
-function getValue(name, value) {
-    if (name in multiply) {
-        return value * multiply[name];
-    }
-    return value;
-}
-
-function setValue(name, value) {
-    if (name in multiply) {
-        return value / multiply[name];
+function getValue(id, value) {
+    if (id in multiply) {
+        return value * multiply[id];
     }
     return value;
 }
 
-function setList(name, value) {
-    var list = document.querySelector('[data-list="' + name + '"] > .rulelist');
-    var item = printList(name, value);
+function setValue(id, value) {
+    if (id in multiply) {
+        return value / multiply[id];
+    }
+    return value;
+}
+
+function setList(id, value) {
+    var list = document.querySelector('[data-list="' + id + '"] > .rulelist');
+    var item = printList(id, value);
     list.appendChild(item);
-    return [...changes[name], value];
+    return [...changes[id], value];
 }
 
-function getList(name, value) {
-    var list = document.querySelector('[data-list="' + name + '"] > .rulelist');
+function getList(id, value) {
+    var list = document.querySelector('[data-list="' + id + '"] > .rulelist');
     list.innerHTML = '';
     value.forEach(val => {
-        var item = printList(name, val);
+        var item = printList(id, val);
         list.appendChild(item);
     });
 }
 
-function printList(name, value) {
+function printList(id, value) {
     var item = listLET.cloneNode(true)
     item.querySelector('span').innerText = value;
     item.querySelector('button').addEventListener('click', event => {
-        var new_value = [...changes[name]];
+        var new_value = [...changes[id]];
         new_value.splice(new_value.indexOf(value), 1);
-        setChange(name, new_value);
+        setChange(id, new_value);
         item.remove();
     });
     return item;

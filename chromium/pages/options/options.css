@@ -56,6 +56,11 @@ input[type="checkbox"] {
     font-weight: bold;
 }
 
+.flex > label {
+    padding: 5px;
+    flex: none;
+}
+
 .rulelist > * {
     display: inline-block;
     margin: 10px 10px 0px 0px;

@@ -187,7 +187,7 @@ function parseSession(gid, status, bittorrent) {
         }
         else {
             var [files, options] = await getTaskDetail(gid);
-            task.querySelectorAll('[name]').disposition(options);
+            task.querySelectorAll('[id]').disposition(options);
             printTaskFiles(task, files);
             task.classList.add('extra');
             activeId = gid;
@@ -221,8 +221,8 @@ function parseSession(gid, status, bittorrent) {
         }
     });
     task.querySelector('#options').addEventListener('change', event => {
-        var {name, value} = event.target;
-        aria2RPC.call('aria2.changeOption', [gid, {[name]: value}]);
+        var {id, value} = event.target;
+        aria2RPC.call('aria2.changeOption', [gid, {[id]: value}]);
     });
     task.querySelector('#proxy_btn').addEventListener('click', async event => {
         await aria2RPC.call('aria2.changeOption', [gid, {'all-proxy': aria2Store['proxy_server']}]);

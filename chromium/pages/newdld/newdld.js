@@ -69,9 +69,9 @@ document.querySelector('#extra_btn').addEventListener('click', async event => {
 });
 
 document.addEventListener('change', event => {
-    var {name, value} = event.target;
-    if (name) {
-        aria2Global[name] = value;
+    var {id, value} = event.target;
+    if (id) {
+        aria2Global[id] = value;
     }
 });
 
@@ -85,7 +85,7 @@ function slimModeInit() {
             entry.value = Array.isArray(url) ? url.join('\n') : url;
         }
         if (options) {
-            var extra = document.querySelectorAll('[name]').disposition(options);
+            var extra = document.querySelectorAll('[id]').disposition(options);
             aria2Global = {...aria2Global, ...extra};
         }
         setInterval(() => {
@@ -100,7 +100,7 @@ function slimModeInit() {
 async function aria2StartUp() {
     var global = await aria2RPC.call('aria2.getGlobalOption');
     global['user-agent'] = aria2Store['user_agent']
-    aria2Global = document.querySelectorAll('[name]').disposition(global);
+    aria2Global = document.querySelectorAll('[id]').disposition(global);
     if (slim_mode) {
         slimModeInit();
     }

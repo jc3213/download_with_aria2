@@ -10,15 +10,15 @@ var filesize = {
 NodeList.prototype.disposition = function (json) {
     var options = {};
     this.forEach(node => {
-        var {name} = node;
-        var value = json[name];
+        var {id} = node;
+        var value = json[id];
         if (!value) {
             return;
         }
-        if (filesize[name]) {
+        if (filesize[id]) {
             value = getFileSize(value);
         }
-        node.value = options[name] = value;
+        node.value = options[id] = value;
     });
     return options;
 }
