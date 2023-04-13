@@ -1,12 +1,14 @@
 @ECHO OFF
+TITLE Download with Aria2
 FOR /F "tokens=1,2*" %%I IN ('REG QUERY HKLM\Software\7-Zip /V Path') DO (IF "%%I"=="Path" SET Zip=%%K7z.exe)
 IF NOT EXIST "%Zip%" GOTO :Exit
 :Type
-ECHO Auto build script for extension ^<Download with Aria2^>
+ECHO ================================================================
 ECHO 1. Chromium
 ECHO 2. Chromium Manifest V3
 ECHO 3. Firefox
-SET /P Option=Build for: 
+ECHO ================================================================
+SET /P Option=^> 
 IF %Option% EQU 1 CALL :Make chromium
 IF %Option% EQU 2 CALL :Make chromium_mv3
 IF %Option% EQU 3 CALL :Make firefox
@@ -20,6 +22,7 @@ IF %1 EQU chromium GOTO :Exit
 :Exit
 ECHO.
 ECHO.
-ECHO ^<%Out%^> build completed, script will be terminated in 5 seconds...
+ECHO File "%Out%"
+ECHO Return to main menu in 5 seconds...
 TIMEOUT /T 5
-EXIT
+EXIT /B
