@@ -1,6 +1,7 @@
 var entry = document.querySelector('#entry');
 var submitbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
+var filename = document.querySelector('#out');
 var slim_mode = location.search === '?slim_mode';
 
 if (slim_mode) {
@@ -23,6 +24,17 @@ document.addEventListener('keydown', event => {
     }
 });
 
+entry.addEventListener('change', event => {
+    try {
+        entry.json = JSON.parse(entry.value);
+        filename.disabled = true;
+    }
+    catch (error) {
+        entry.json = null;
+        filename.disabled = false;
+    }
+});
+
 document.querySelector('#referer_btn').addEventListener('click', async event => {
     chrome.tabs.query({active: true, currentWindow: false}, tabs => {
         var {url} = tabs[0];
@@ -35,11 +47,11 @@ document.querySelector('#proxy_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#submit_btn').addEventListener('click', async event => {
-    try {
-        var json = JSON.parse(entry.value);
+    var {json, value} = entry;
+    if (json) {
         await aria2DownloadJSON(json, aria2Global);
     }
-    catch (error) {
+    else {
         var urls = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
         if (urls) {
             await aria2DownloadUrls(urls, aria2Global);
@@ -80,12 +92,14 @@ function slimModeInit() {
         var {url, json, options} = response;
         if (json) {
             entry.value = JSON.stringify(json);
+            entry.json = json;
+            filename.diabled = true;
         }
         else {
             entry.value = Array.isArray(url) ? url.join('\n') : url;
         }
         if (options) {
-            var extra = document.querySelectorAll('[id]').disposition(options);
+            var extra = document.querySelectorAll('input[id]').disposition(options);
             aria2Global = {...aria2Global, ...extra};
         }
         setInterval(() => {

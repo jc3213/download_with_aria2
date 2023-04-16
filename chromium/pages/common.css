@@ -91,6 +91,10 @@ button:enabled:active {
     border-style: inset;
 }
 
+:disabled {
+    filter: contrast(25%);
+}
+
 .template {
     display: none;
 }

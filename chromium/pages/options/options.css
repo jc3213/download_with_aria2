@@ -11,10 +11,6 @@ h1 {
     margin: 50px 0px 0px;
 }
 
-button:disabled {
-    filter: contrast(25%);
-}
-
 label {
     padding: 5px 0px;
 }
