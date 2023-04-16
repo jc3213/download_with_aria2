@@ -19,6 +19,7 @@ input[type="checkbox"] {
     width: auto;
     transform: scale(1.5);
     accent-color: #006cbe;
+    margin-top: 10px;
 }
 
 #menu {
