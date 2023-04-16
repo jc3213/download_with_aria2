@@ -6,7 +6,7 @@ body {
     grid-template-rows: 33px 500px 33px;
 }
 
-#stats {
+#stat {
     grid-area: 1 / 1 / 1 / 4;
 }
 
@@ -33,7 +33,7 @@ body {
     grid-template-columns: repeat(2, 550px) repeat(2, max-content);
 }
 
-.full > #stats {
+.full > #stat {
     grid-area: 1 / 1 / 1 / 2;
 }
 
@@ -49,15 +49,15 @@ body {
     border-bottom-width: 0px;
 }
 
-#queue.act > :nth-child(n+2),
-#queue.wait > :not(:nth-child(n+2):nth-child(-n+3)),
-#queue.stop > :nth-child(-n+3) {
+#active > #queue > :nth-child(n+2),
+#waiting > #queue > :not(:nth-child(n+2):nth-child(-n+3)),
+#stopped > #queue > :nth-child(-n+3) {
     display: none;
 }
 
-.act #active_btn,
-.wait #waiting_btn,
-.stop #stopped_btn {
+#active > #stat > #active_btn,
+#waiting > #stat > #waiting_btn,
+#stopped > #stat > #stopped_btn {
     border-style: inset;
 }
 

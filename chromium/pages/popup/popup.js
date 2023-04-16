@@ -1,16 +1,14 @@
-var stats = document.querySelector('#stats');
 var activeStat = document.querySelector('#active.stats');
 var waitingStat = document.querySelector('#waiting.stats');
 var stoppedStat = document.querySelector('#stopped.stats');
 var downloadStat = document.querySelector('#download.stats');
 var uploadStat = document.querySelector('#upload.stats');
-var queue = document.querySelector('#queue');
-var activeQueue = queue.querySelector('.active');
-var waitingQueue = queue.querySelector('.waiting');
-var pausedQueue = queue.querySelector('.paused');
-var completeQueue = queue.querySelector('.complete');
-var removedQueue = queue.querySelector('.removed');
-var errorQueue = queue.querySelector('.error');
+var activeQueue = document.querySelector('#queue > .active');
+var waitingQueue = document.querySelector('#queue > .waiting');
+var pausedQueue = document.querySelector('#queue > .paused');
+var completeQueue = document.querySelector('#queue > .complete');
+var removedQueue = document.querySelector('#queue > .removed');
+var errorQueue = document.querySelector('#queue > .error');
 var sessionLET = document.querySelector('.template > .session');
 var fileLET = document.querySelector('.template > .file');
 var uriLET = document.querySelector('.template > .uri');
@@ -22,9 +20,10 @@ if (open_in_tab) {
 }
 
 document.querySelectorAll('#stats > button').forEach((tab, index) => {
-    var style = tab.id.slice(0, tab.id.length === 10 ? 3 : 4);
+    var {body} = document;
+    var id = tab.id.slice(0, tab.id.indexOf('_'));
     tab.addEventListener('click', event => {
-        stats.className = queue.className = stats.className !== style ? style : '';
+        body.id = body.id !== id ? id : '';
     });
 });
 
