@@ -92,7 +92,7 @@ function slimModeInit() {
         if (json) {
             entry.value = JSON.stringify(json);
             entry.json = json;
-            filename.diabled = true;
+            filename.disabled = true;
         }
         else {
             entry.value = Array.isArray(url) ? url.join('\n') : url;
