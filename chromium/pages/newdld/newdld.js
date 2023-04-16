@@ -27,10 +27,12 @@ document.addEventListener('keydown', event => {
 entry.addEventListener('change', event => {
     try {
         entry.json = JSON.parse(entry.value);
+        entry.urls = null;
         filename.disabled = true;
     }
     catch (error) {
         entry.json = null;
+        entry.urls = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
         filename.disabled = false;
     }
 });
@@ -47,15 +49,12 @@ document.querySelector('#proxy_btn').addEventListener('click', event => {
 });
 
 document.querySelector('#submit_btn').addEventListener('click', async event => {
-    var {json, value} = entry;
+    var {json, urls} = entry;
     if (json) {
         await aria2DownloadJSON(json, aria2Global);
     }
-    else {
-        var urls = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-        if (urls) {
-            await aria2DownloadUrls(urls, aria2Global);
-        }
+    else if (urls) {
+        await aria2DownloadUrls(urls, aria2Global);
     }
     close();
 });
@@ -97,6 +96,7 @@ function slimModeInit() {
         }
         else {
             entry.value = Array.isArray(url) ? url.join('\n') : url;
+            entry.urls = url;
         }
         if (options) {
             var extra = document.querySelectorAll('input[id]').disposition(options);
