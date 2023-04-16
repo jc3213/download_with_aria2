@@ -4,8 +4,12 @@ img {
     border-style: solid;
 }
 
-.checked {
+img.checked {
     filter: contrast(45%);
+}
+
+button.checked {
+    border-style: inset;
 }
 
 #viewer {

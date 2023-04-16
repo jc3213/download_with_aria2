@@ -1,5 +1,7 @@
 var viewer = document.querySelector('#viewer');
 var submitbtn = document.querySelector('#submit_btn');
+var aria2Options = {};
+var aria2Proxy;
 
 document.addEventListener('keydown', event => {
     var {ctrlKey, altKey, keyCode} = event;
@@ -17,10 +19,16 @@ document.addEventListener('keydown', event => {
     }
 });
 
+chrome.runtime.sendMessage({action: 'internal_images'}, images => {
+    var {result, options} = images;
+    result.forEach(getPreview);
+    aria2Options = options;
+});
+
 submitbtn.addEventListener('click', async event => {
-    var json = [...document.querySelectorAll('.checked')].map(img => {
+    var json = [...viewer.querySelectorAll('.checked')].map(img => {
         var {src, alt} = img;
-        var options = {...aria2Global};
+        var options = {...aria2Options};
         if (alt) {
             options['out'] = alt;
         }
@@ -32,12 +40,14 @@ submitbtn.addEventListener('click', async event => {
     close();
 });
 
+document.querySelector('#proxy_btn').addEventListener('click', event => {
+    var {classList} = event.target;
+    aria2Options['all-proxy'] = classList.contains('checked') ? null : aria2Proxy;
+    classList.toggle('checked');
+});
+
 function aria2StartUp() {
-    chrome.runtime.sendMessage({action: 'internal_images'}, images => {
-        var {result, options} = images;
-        result.forEach(getPreview);
-        aria2Global = options;
-    });
+    aria2Proxy = aria2Store['proxy_server'];
 }
 
 function getPreview({src, alt, title}) {
@@ -48,7 +58,7 @@ function getPreview({src, alt, title}) {
     img.src = src;
     if (alt) {
         var path = src.slice(src.lastIndexOf('/'));
-        var ix = path.indexOf('.');
+        var ix = path.lastIndexOf('.');
         var ext = ix === -1 ? '.jpg' : path.slice(ix);
         var ax = ext.indexOf('@');
         if (ax !== -1) {
