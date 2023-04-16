@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.2.3.1948",
+    "version": "4.2.4.1965",
     "manifest_version": 2,
     "permissions": [
         "contextMenus",
@@ -18,7 +18,7 @@
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["content.js"],
+            "js": ["scripts/message.js"],
             "run_at": "document_idle"
         }
     ],
