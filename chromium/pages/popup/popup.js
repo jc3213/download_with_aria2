@@ -19,7 +19,7 @@ if (open_in_tab) {
     document.body.className = 'full';
 }
 
-document.querySelectorAll('#stats > button').forEach((tab, index) => {
+document.querySelectorAll('#stat > button').forEach((tab, index) => {
     var {body} = document;
     var id = tab.id.slice(0, tab.id.indexOf('_'));
     tab.addEventListener('click', event => {
