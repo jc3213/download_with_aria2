@@ -1,10 +1,6 @@
-chrome.runtime.onMessage.addListener(message => {
-    if (message === 'download_all_images') {
-        snifferAllImages();
-    }
+window.addEventListener('load', event => {
+    window.postMessage({extension_name: 'Download With Aria2'});
 });
-
-window.postMessage({extension_name: 'Download With Aria2'});
 
 window.addEventListener('message', event => {
     var {aria2c, download} = event.data;
@@ -13,7 +9,13 @@ window.addEventListener('message', event => {
     }
 });
 
-function snifferAllImages() {
+chrome.runtime.onMessage.addListener(message => {
+    if (message === 'download_all_images') {
+        getAllImages();
+    }
+});
+
+function getAllImages() {
     var referer = location.href;
     var header = ['Cookie: ' + document.cookie];
     var result = [];
