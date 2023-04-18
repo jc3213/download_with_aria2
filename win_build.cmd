@@ -1,7 +1,6 @@
 @ECHO OFF
 TITLE Download with Aria2
 FOR /F "tokens=1,2*" %%I IN ('REG QUERY HKLM\Software\7-Zip /V Path') DO (IF "%%I"=="Path" SET Zip=%%K7z.exe)
-IF NOT EXIST "%Zip%" GOTO :Exit
 :Type
 ECHO ================================================================
 ECHO 1. Chromium
