@@ -17,6 +17,7 @@ var activeId;
 
 if (open_in_tab) {
     document.body.className = 'full';
+    document.querySelector('#menu').appendChild(document.querySelector('#tool'));
 }
 
 document.querySelectorAll('#stat > button').forEach((tab, index) => {
