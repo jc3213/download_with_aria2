@@ -69,46 +69,6 @@ body {
     padding: 6px 3px;
 }
 
-#download::after, #upload::after {
-    content: "B/s";
-}
-
-#remote::after, #local::after, #size::after {
-    content: "B";
-}
-
-#ratio::after {
-    content: "%";
-}
-
-#day:not(:empty)::after {
-    content: "__MSG_time_day__";
-    vertical-align: sub;
-}
-
-#hour:not(:empty)::after {
-    content: "__MSG_time_hour__";
-    vertical-align: sub;
-}
-
-#minute:not(:empty)::after {
-    content: "__MSG_time_minute__";
-    vertical-align: sub;
-}
-
-#second:not(:empty)::after {
-    content: "__MSG_time_second__";
-    vertical-align: sub;
-}
-
-#infinite {
-    display: none;
-}
-
-#day:empty + #hour:empty + #minute:empty + #second:empty + #infinite {
-    display: inline-block;
-}
-
 .complete input, .removed input, .error input,
 .complete select, .removed select, .error select,
 .http [name="max-upload-limit"] {
