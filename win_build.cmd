@@ -1,26 +1,28 @@
-@ECHO OFF
-TITLE Download with Aria2
-FOR /F "tokens=1,2*" %%I IN ('REG QUERY HKLM\Software\7-Zip /V Path') DO (IF "%%I"=="Path" SET Zip=%%K7z.exe)
-:Select
-ECHO ================================================================
-ECHO 1. Chromium
-ECHO 2. Chromium Manifest V3
-ECHO 3. Firefox
-ECHO ================================================================
-SET /P Act=^> 
-IF [%Act%] EQU [1] CALL :Make chromium
-IF [%Act%] EQU [2] CALL :Make chromium_mv3
-IF [%Act%] EQU [3] CALL :Make firefox
-CLS && GOTO :Select
-:Make
-SET Type=%~DP0%1
-FOR /F "USEBACKQ SKIP=3 TOKENS=1,2 DELIMS=,: " %%I IN (%Type%\manifest.json) DO (IF %%~I EQU version SET Out=%Type%-%%~J.zip)
-"%Zip%" a "%Out%" "%CD%\chromium\*"
-IF %1 EQU chromium GOTO :Exit
-"%Zip%" u "%Out%" -ux2 "%Type%\*"
-:Exit
-ECHO.
-ECHO.
-ECHO File "%Out%"
-ECHO Return to main menu in 5 seconds...
-TIMEOUT /T 5
+@echo off
+title Download with Aria2
+for /f "tokens=1,2*" %%a in ('reg query HKLM\Software\7-Zip /v Path') do (if [%%a] equ [Path] set zip=%%c7z.exe)
+:main
+echo ================================================================
+echo 1. Chromium
+echo 2. Chromium Manifest V3
+echo 3. Firefox
+echo ================================================================
+set /p act=^> 
+if [%act%] equ [1] set bow=chromium
+if [%act%] equ [2] set bow=chromium_mv3
+if [%act%] equ [3] set bow=firefox
+if not defined bow cls && goto :main
+for /f "usebackq skip=3 tokens=1,2 delims=,: " %%a in (%bow%\manifest.json) do (if %%~a equ version set output=%bow%-%%~b.zip)
+"%zip%" a "%output%" "%~dp0chromium\*"
+if %bow% equ chromium goto :exit
+"%zip%" u "%output%" -ux2 "%~dp0%bow%\*"
+:exit
+echo.
+echo.
+echo File "%output%"
+echo Return to main menu in 5 seconds...
+timeout /t 5
+set act=
+set bow=
+cls
+goto :main
