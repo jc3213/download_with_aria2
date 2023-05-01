@@ -1,6 +1,6 @@
 @echo off
 title Download with Aria2
-for /f "tokens=1,2*" %%a in ('reg query "HKLM\Software\7-Zip" /v "Path"') do (if [%%a] equ [Path] set zip=%%c7z.exe)
+for /f "tokens=2*" %%a in ('reg query "HKLM\Software\7-Zip" /v "Path"') do (set zip=%%b7z.exe)
 :main
 echo ================================================================
 echo 1. Chromium
