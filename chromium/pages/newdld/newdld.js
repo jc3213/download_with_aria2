@@ -61,7 +61,7 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
 
 document.querySelector('#upload_btn').addEventListener('change', async event => {
     var file = event.target.files[0];
-    var b64encode = await readFileForAria2(file);
+    var b64encode = await getFileData(file);
     if (file.name.endsWith('torrent')){
         await aria2RPC.call('aria2.addTorrent', [b64encode]);
     }
@@ -111,11 +111,24 @@ function slimModeInit() {
     });
 }
 
-async function aria2StartUp() {
+chrome.storage.local.get(null, async json => {
+    aria2Store = json;
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     var global = await aria2RPC.call('aria2.getGlobalOption');
     global['user-agent'] = aria2Store['user_agent']
     aria2Global = document.querySelectorAll('[id]').disposition(global);
     if (slim_mode) {
         slimModeInit();
     }
+});
+
+function getFileData(file) {
+    return new Promise(resolve => {
+        var reader = new FileReader();
+        reader.onload = () => {
+            var base64 = reader.result.slice(reader.result.indexOf(',') + 1);
+            resolve(base64);
+        };
+        reader.readAsDataURL(file);
+    });
 }

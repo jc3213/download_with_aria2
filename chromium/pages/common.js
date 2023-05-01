@@ -1,3 +1,11 @@
+document.querySelectorAll('[i18n]').forEach(item => {
+    item.innerText = chrome.i18n.getMessage(item.innerText);
+});
+
+document.querySelectorAll('[title]').forEach(item => {
+    item.title = chrome.i18n.getMessage(item.title);
+});
+
 var filesize = {
     'min-split-size': 1,
     'disk-cache': 1,
@@ -23,20 +31,6 @@ NodeList.prototype.disposition = function (json) {
     return options;
 }
 
-document.querySelectorAll('[i18n]').forEach(item => {
-    item.innerText = chrome.i18n.getMessage(item.innerText);
-});
-
-document.querySelectorAll('[title]').forEach(item => {
-    item.title = chrome.i18n.getMessage(item.title);
-});
-
-chrome.storage.local.get(null, json => {
-    aria2Store = json;
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
-    aria2StartUp();
-});
-
 function getFileSize(bytes) {
     if (isNaN(bytes)) {
         return '?? ';
@@ -56,26 +50,4 @@ function getFileSize(bytes) {
     else {
         return (bytes / 10995116277.76 | 0) / 100 + 'T';
     }
-}
-
-function readFileTypeJSON(file) {
-    return new Promise(resolve => {
-        var reader = new FileReader();
-        reader.onload = () => {
-            var json = JSON.parse(reader.result);
-            resolve(json);
-        };
-        reader.readAsText(file);
-    });
-}
-
-function readFileForAria2(file) {
-    return new Promise(resolve => {
-        var reader = new FileReader();
-        reader.onload = () => {
-            var base64 = reader.result.slice(reader.result.indexOf(',') + 1);
-            resolve(base64);
-        };
-        reader.readAsDataURL(file);
-    });
 }

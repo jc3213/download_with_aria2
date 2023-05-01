@@ -110,7 +110,7 @@ exportbtn.addEventListener('click', event => {
 });
 
 importbtn.addEventListener('change', async event => {
-    var json = await readFileTypeJSON(event.target.files[0]);
+    var json = await getOptionsJSON(event.target.files[0]);
     chrome.storage.local.set(json);
     clearChanges();
     aria2Store = json;
@@ -312,4 +312,15 @@ function printList(id, value) {
         item.remove();
     });
     return item;
+}
+
+function getOptionsJSON(file) {
+    return new Promise(resolve => {
+        var reader = new FileReader();
+        reader.onload = () => {
+            var json = JSON.parse(reader.result);
+            resolve(json);
+        };
+        reader.readAsText(file);
+    });
 }

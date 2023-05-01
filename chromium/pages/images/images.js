@@ -46,9 +46,11 @@ document.querySelector('#proxy_btn').addEventListener('click', event => {
     classList.toggle('checked');
 });
 
-function aria2StartUp() {
+chrome.storage.local.get(null, json => {
+    aria2Store = json;
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     aria2Proxy = aria2Store['proxy_server'];
-}
+});
 
 function getPreview({src, alt, title}) {
     if (!src) {

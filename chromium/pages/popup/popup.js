@@ -12,13 +12,7 @@ var errorQueue = document.querySelector('#queue > .error');
 var sessionLET = document.querySelector('.template > .session');
 var fileLET = document.querySelector('.template > .file');
 var uriLET = document.querySelector('.template > .uri');
-var open_in_tab = location.search === '?open_in_tab';
 var activeId;
-
-if (open_in_tab) {
-    document.body.className = 'full';
-    document.querySelector('#menu').appendChild(document.querySelector('#tool'));
-}
 
 document.querySelectorAll('#stat > button').forEach((tab, index) => {
     var {body} = document;
@@ -28,24 +22,10 @@ document.querySelectorAll('#stat > button').forEach((tab, index) => {
     });
 });
 
-document.querySelector('#download_btn').addEventListener('click', async event => {
-    await aria2NewDownload();
-    if (!open_in_tab) {
-        close();
-    }
-});
-
 document.querySelector('#purge_btn').addEventListener('click', async event => {
     await aria2RPC.call('aria2.purgeDownloadResult');
     completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     stoppedStat.innerText = '0';
-});
-
-document.querySelector('#options_btn').addEventListener('click', event => {
-    chrome.runtime.openOptionsPage();
-    if (!open_in_tab) {
-        close();
-    }
 });
 
 function aria2StartUp() {
