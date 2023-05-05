@@ -11,7 +11,7 @@ set /p act=^>
 if [%act%] equ [1] set bow=chromium
 if [%act%] equ [2] set bow=chromium_mv3
 if [%act%] equ [3] set bow=firefox
-if not defined bow :back
+if not defined bow cls && goto :main
 for /f "usebackq skip=3 tokens=1,2 delims=,: " %%a in (%bow%\manifest.json) do (if %%~a equ version set output=%bow%-%%~b.zip)
 "%zip%" a "%output%" "%~dp0chromium\*"
 if %bow% equ chromium goto :exit
@@ -22,7 +22,6 @@ echo.
 echo File "%output%"
 echo Return to main menu in 5 seconds...
 timeout /t 5
-:back
 set act=
 set bow=
 cls
