@@ -239,7 +239,7 @@ function closeTaskDetail() {
     }
 }
 
-function printFileCell(task, list, {index, path, length, selected, uris}) {
+function printFileCell(list, {index, path, length, selected, uris}) {
     var column = fileLET.cloneNode(true);
     var tile = column.querySelector('#index');
     tile.innerText = index;
@@ -249,14 +249,14 @@ function printFileCell(task, list, {index, path, length, selected, uris}) {
     column.querySelector('#size').innerText = getFileSize(length);
     if (uris.length === 0) {
         tile.addEventListener('click', event => {
-            if (task.type !== 'stopped') {
+            if (detailed.type !== 'stopped') {
                 tile.className = tile.className === 'checked' ? 'suspend' : 'checked';
-                task.querySelector('#save_btn').style.display = 'block';
+                detailed.querySelector('#save_btn').style.display = 'block';
             }
         });
     }
     else {
-        printTaskUris(task, uris);
+        printTaskUris(uris);
     }
     list.appendChild(column);
     return column;
@@ -266,7 +266,7 @@ function printTaskFiles(files) {
     var fileList = detailed.querySelector('#files');
     var columns = fileList.childNodes;
     files.forEach((file, index) => {
-        var column = columns[index] ?? printFileCell(detailed, fileList, file);
+        var column = columns[index] ?? printFileCell(fileList, file);
         var {length, completedLength} = file;
         column.querySelector('#ratio').innerText = (completedLength / length * 10000 | 0) / 100;
     });
@@ -286,8 +286,8 @@ function printUriCell(list, uri) {
     return column;
 }
 
-function printTaskUris(task, uris) {
-    var uriList = task.querySelector('#uris');
+function printTaskUris(uris) {
+    var uriList = detailed.querySelector('#uris');
     var columns = uriList.childNodes;
     var used;
     var wait;
