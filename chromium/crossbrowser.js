@@ -104,7 +104,7 @@ function getFileExtension(filename) {
 }
 
 function getCaptureGeneral(hostname, fileext, size) {
-    if (aria2Store['capture_exclude'].find(host => hostname.includes(host))) {
+    if (aria2Store['capture_exclude'].some(host => hostname.includes(host))) {
         return false;
     }
     else if (aria2Store['capture_reject'].includes(fileext)) {
@@ -113,7 +113,7 @@ function getCaptureGeneral(hostname, fileext, size) {
     else if (aria2Store['capture_always']) {
         return true;
     }
-    else if (aria2Store['capture_include'].find(host => hostname.includes(host))) {
+    else if (aria2Store['capture_include'].some(host => hostname.includes(host))) {
         return true;
     }
     else if (aria2Store['capture_resolve'].includes(fileext)) {
@@ -126,13 +126,13 @@ function getCaptureGeneral(hostname, fileext, size) {
 }
 
 function getCaptureHostname(hostname) {
-    if (aria2Store['capture_exclude'].find(host => hostname.includes(host))) {
+    if (aria2Store['capture_exclude'].some(host => hostname.includes(host))) {
         return -1;
     }
     else if (aria2Store['capture_always']) {
         return 1;
     }
-    else if (aria2Store['capture_include'].find(host => hostname.includes(host))) {
+    else if (aria2Store['capture_include'].some(host => hostname.includes(host))) {
         return 1;
     }
     return 0;
@@ -156,7 +156,7 @@ function getProxyServer(hostname) {
         if (aria2Store['proxy_always']) {
             return aria2Store['proxy_server'];
         }
-        else if (aria2Store['proxy_include'].find(host => hostname.includes(host))) {
+        else if (aria2Store['proxy_include'].some(host => hostname.includes(host))) {
             return aria2Store['proxy_server'];
         }
     }
