@@ -12,7 +12,7 @@ var errorQueue = document.querySelector('#queue > .error');
 var sessionLET = document.querySelector('.template > .session');
 var fileLET = document.querySelector('.template > .file');
 var uriLET = document.querySelector('.template > .uri');
-var activeId;
+var detailed;
 
 document.querySelectorAll('#stat > button').forEach((tab, index) => {
     var {body} = document;
@@ -132,8 +132,8 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     var ratio = (completedLength / totalLength * 10000 | 0) / 100;
     task.querySelector('#ratio').innerText = ratio;
     task.querySelector('#ratio').style.width = ratio + '%';
-    if (activeId === gid) {
-        printTaskFiles(task, files);
+    if (detailed === task) {
+        printTaskFiles(files);
     }
     return task;
 }
@@ -160,17 +160,17 @@ function parseSession(gid, status, bittorrent) {
             removeSession('stopped', gid, task);
         }
     });
-    task.querySelector('#invest_btn').addEventListener('click', async event => {
+    task.querySelector('#detail_btn').addEventListener('click', async event => {
         closeTaskDetail();
-        if (activeId === gid) {
-            activeId = null;
+        if (detailed === task) {
+            detailed = null;
         }
         else {
             var [files, options] = await getTaskDetail(gid);
             task.querySelectorAll('[id]').disposition(options);
-            printTaskFiles(task, files);
+            detailed = task;
+            printTaskFiles(files);
             task.classList.add('extra');
-            activeId = gid;
         }
     });
     task.querySelector('#retry_btn').addEventListener('click', async event => {
@@ -232,11 +232,10 @@ function getTaskDetail(gid) {
 }
 
 function closeTaskDetail() {
-    var task = document.querySelector('.session.extra');
-    if (task) {
-        task.classList.remove('extra');
-        task.querySelector('#files').innerHTML = task.querySelector('#uris').innerHTML = '';
-        task.querySelector('#save_btn').style.display = 'none';
+    if (detailed) {
+        detailed.classList.remove('extra');
+        detailed.querySelector('#files').innerHTML = detailed.querySelector('#uris').innerHTML = '';
+        detailed.querySelector('#save_btn').style.display = 'none';
     }
 }
 
@@ -263,11 +262,11 @@ function printFileCell(task, list, {index, path, length, selected, uris}) {
     return column;
 }
 
-function printTaskFiles(task, files) {
-    var fileList = task.querySelector('#files');
+function printTaskFiles(files) {
+    var fileList = detailed.querySelector('#files');
     var columns = fileList.childNodes;
     files.forEach((file, index) => {
-        var column = columns[index] ?? printFileCell(task, fileList, file);
+        var column = columns[index] ?? printFileCell(detailed, fileList, file);
         var {length, completedLength} = file;
         column.querySelector('#ratio').innerText = (completedLength / length * 10000 | 0) / 100;
     });
@@ -277,7 +276,7 @@ function printUriCell(list, uri) {
     var column = uriLET.cloneNode(true);
     column.addEventListener('click', event => {
         if (event.ctrlKey) {
-            aria2RPC.call('aria2.changeUri', [activeId, 1, [uri], []]);
+            aria2RPC.call('aria2.changeUri', [detailed, 1, [uri], []]);
         }
         else {
            navigator.clipboard.writeText(uri);
