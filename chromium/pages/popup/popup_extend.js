@@ -20,10 +20,7 @@ document.querySelector('#options_btn').addEventListener('click', event => {
 });
 
 chrome.storage.local.get(null, json => {
-    jsonrpc_uri = json['jsonrpc_uri'];
-    jsonrpc_token = json['jsonrpc_token'];
-    manager_interval = json['manager_interval'];
-    proxy_server = json['proxy_server'];
-    aria2RPC = new Aria2(jsonrpc_uri, jsonrpc_token);
+    aria2Store = json;
+    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     aria2StartUp();
 });
