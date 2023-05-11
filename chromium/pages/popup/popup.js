@@ -50,8 +50,8 @@ function aria2StartUp() {
 }
 
 function aria2Client() {
-    aria2Alive = setInterval(updateManager, aria2Store['manager_interval']);
-    aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
+    aria2Alive = setInterval(updateManager, manager_interval);
+    aria2Socket = new WebSocket(jsonrpc_uri.replace('http', 'ws'));
     aria2Socket.onmessage = async event => {
         var {method, params: [{gid}]} = JSON.parse(event.data);
         if (method !== 'aria2.onBtDownloadComplete') {
@@ -205,8 +205,8 @@ function parseSession(gid, status, bittorrent) {
         aria2RPC.call('aria2.changeOption', [gid, {[id]: value}]);
     });
     task.querySelector('#proxy_btn').addEventListener('click', async event => {
-        await aria2RPC.call('aria2.changeOption', [gid, {'all-proxy': aria2Store['proxy_server']}]);
-        event.target.previousElementSibling.value = aria2Store['proxy_server'];
+        await aria2RPC.call('aria2.changeOption', [gid, {'all-proxy': proxy_server}]);
+        event.target.previousElementSibling.value = proxy_server;
     });
     task.querySelector('#save_btn').addEventListener('click', async event => {
         var files = [...task.querySelectorAll('#index.checked')].map(index => index.innerText);
