@@ -17,21 +17,22 @@ i18n = i18n[lang] ?? i18n[lang.slice(0, lang.indexOf('-'))] ?? i18n['en'];
 
 var folderff = document.createElement('div');
 folderff.title = i18n.folderff_title;
-folderff.innerHTML = `<input id="folder_firefox" name="folder_firefox" type="checkbox"><label for="folder_firefox">${i18n.folderff}</label>`;
+folderff.innerHTML = `<input id="folder_firefox" id="folder_firefox" type="checkbox"><label for="folder_firefox">${i18n.folderff}</label>`;
 folderff.addEventListener('change', event => {
-    var {name, checked} = event.target;
-    setChange(name, checked);
+    var {id, checked} = event.target;
+    setChange(id, checked);
 });
 folderff.link = {
-    major: {name: 'folder_enabled', rule: true},
+    major: {id: 'folder_enabled', rule: true},
     minor: [
-        {name: 'capture_enabled', rule: true}, {name: 'capture_webrequest', rule: false},
+        {id: 'capture_enabled', rule: true}, {id: 'capture_webrequest', rule: false},
     ]
 };
 
-var folderen = document.querySelector('[name="folder_enabled"]').parentNode;
+var folderen = document.querySelector('#folder_enabled').parentNode;
 folderen.addEventListener('change', event => {
     if (event.target.checked) {
+        console.log(changes, changes['capture_webrequest']);
         if (changes['capture_webrequest']) {
             folderff.style.display = 'none';
         }
@@ -42,27 +43,27 @@ folderen.addEventListener('change', event => {
 });
 
 var container = document.createElement('div');
-container.className = 'flex';
+container.className = 'menu flex';
 folderen.replaceWith(container);
 container.append(folderen, folderff);
 
 var webrequest = document.createElement('div');
 webrequest.title = i18n.webrequest_title;
 webrequest.className = 'menu';
-webrequest.innerHTML = `<input id="capture_webrequest" name="capture_webrequest" type="checkbox"><label for="capture_webrequest">${i18n.webrequest}</label>`;
+webrequest.innerHTML = `<input id="capture_webrequest" id="capture_webrequest" type="checkbox"><label for="capture_webrequest">${i18n.webrequest}</label>`;
 webrequest.link = {
-    major: {name: 'capture_enabled', rule: true},
+    major: {id: 'capture_enabled', rule: true},
     minor: []
 };
 webrequest.addEventListener('change', event => {
-    var {name, checked} = event.target;
-    setChange(name, checked);
+    var {id, checked} = event.target;
+    setChange(id, checked);
     if (checked) {
         setDefaultFolder();
     }
 });
 
-var captureen = document.querySelector('[name="capture_enabled"]').parentNode;
+var captureen = document.querySelector('#capture_enabled').parentNode;
 captureen.addEventListener('change', event => {
     if (!event.target.checked) {
         setDefaultFolder();
@@ -77,7 +78,7 @@ linkage['capture_enabled'].push(folderff, webrequest);
 linkage['capture_webrequest'] = [folderff];
 
 function setDefaultFolder() {
-    undoes.push({name: 'folder_firefox', old_value: changes['folder_firefox'], new_value: false});
+    undoes.push({id: 'folder_firefox', old_value: changes['folder_firefox'], new_value: false});
     folderff.querySelector('input').checked = changes['folder_firefox'] = false;
 }
 
