@@ -144,11 +144,11 @@ body {
 
 .file > :not(:nth-child(2)), .uri > :nth-child(n+2) {
     text-align: center;
-    padding: 5px 0px;
+    padding: 3px 0px;
 }
 
 .file > :nth-child(2), .uri > :nth-child(1) {
-    padding: 5px;
+    padding: 3px;
 }
 
 #queue > :not(.complete, .removed, .error) #meter:active,
