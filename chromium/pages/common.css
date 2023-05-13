@@ -50,7 +50,7 @@ input {
 
 input + span.float {
     display: none;
-    top: 5px;
+    top: 3px;
     right: 8px;
 }
 
