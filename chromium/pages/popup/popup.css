@@ -2,8 +2,7 @@ body {
     width: 680px;
     margin: 8px;
     display: grid;
-    grid-gap: 5px;
-    grid-template-rows: 33px 500px 33px;
+    grid-template-rows: 29px 509px 29px;
 }
 
 #stat {
@@ -13,6 +12,7 @@ body {
 #queue {
     grid-area: 2 / 1 / 3 / 4;
     padding: 5px 0px;
+    margin: 5px 0px;
     border-width: 2px 0px;
     border-style: solid;
     overflow-y: auto;
@@ -53,12 +53,12 @@ body {
 
 .download, .upload {
     display: inline-block;
-    padding: 6px;
+    padding: 4px 6px;
 }
 
 .stats {
     margin-right: 10px;
-    padding: 6px 3px;
+    padding: 3px 5px;
 }
 
 .complete input, .removed input, .error input,

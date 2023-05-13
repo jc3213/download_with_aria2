@@ -1,7 +1,7 @@
 .full {
     width: 1280px;
     margin: 8px auto;
-    grid-template-rows: 33px auto;
+    grid-template-rows: 29px auto;
     grid-template-columns: minmax(400px, 500px) minmax(500px, 600px) minmax(300px, 400px);
 }
 

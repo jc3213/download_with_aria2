@@ -37,11 +37,11 @@ body, div {
 }
 
 select {
-    padding: 4px 5px;
+    padding: 2px 5px;
 }
 
 input {
-    padding: 5px;
+    padding: 3px 5px;
     width: calc(100% - 12px);
     resize: none;
     border-width: 1px;
@@ -72,7 +72,7 @@ option:checked {
 }
 
 button {
-    padding: 5px;
+    padding: 3px 5px;
     border-width: 1px;
     border-style: outset;
 }
@@ -100,7 +100,7 @@ button:enabled:active {
 }
 
 .menu:nth-child(n+2) {
-    margin-top: 25px;
+    margin-top: 15px;
 }
 
 .flex {

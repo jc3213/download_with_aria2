@@ -50,7 +50,7 @@ function getNewWindow(url, offsetWidth, offsetHeight) {
 
 function aria2NewDownload(slim) {
     if (slim) {
-        return getNewWindow('/pages/newdld/newdld.html?slim_mode', 640, 343);
+        return getNewWindow('/pages/newdld/newdld.html?slim_mode', 640, 313);
     }
-    return getNewWindow('/pages/newdld/newdld.html', 640, 701);
+    return getNewWindow('/pages/newdld/newdld.html', 640, 613);
 }

@@ -13,8 +13,10 @@ button.checked {
 }
 
 #viewer {
-    height: 604px;
-    width: 736px;
+    margin: 0px 0px 7px;
+    height: 586px;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
     overflow-y: auto;
 }
 
