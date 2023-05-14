@@ -13,7 +13,7 @@ body[class] #upload_btn,
 }
 
 textarea {
-    padding: 5px;
+    padding: 3px;
     width: calc(100% - 12px);
     resize: none;
     border-width: 1px;
