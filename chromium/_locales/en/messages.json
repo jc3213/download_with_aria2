@@ -234,7 +234,7 @@
         "message": "Stopped"
     },
     "popup_create": {
-        "message": "New Download"
+        "message": "New DL"
     },
     "popup_purge": {
         "message": "Purge"
@@ -246,7 +246,7 @@
         "message": "DL Speed"
     },
     "popup_upload": {
-        "message": "UP Speed"
+        "message": "UL Speed"
     },
     "task_referer": {
         "message": "Referer"
