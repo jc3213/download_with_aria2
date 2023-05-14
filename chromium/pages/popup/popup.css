@@ -137,18 +137,16 @@ body {
 
 .file > *, .uri > * {
     border-width: 1px;
-    border-style: ridge;
+    border-style: solid;
+    height: 21px;
+    padding: 3px;
     overflow: hidden;
-    height: 23px;
+    white-space: nowrap;
 }
 
 .file > :not(:nth-child(2)), .uri > :nth-child(n+2) {
     text-align: center;
     padding: 3px 0px;
-}
-
-.file > :nth-child(2), .uri > :nth-child(1) {
-    padding: 3px;
 }
 
 #queue > :not(.complete, .removed, .error) #meter:active,
