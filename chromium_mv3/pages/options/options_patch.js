@@ -1,1 +1,1 @@
-document.querySelector('[name="notify_complete"]').parentNode.style.display = 'none';
+document.querySelector('#notify_complete').parentNode.style.display = 'none';
