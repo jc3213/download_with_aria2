@@ -6,7 +6,7 @@ class Aria2 {
         this.params = secret ? ['token:' + secret] : [];
     }
     error (protocol) {
-        throw new Error(`Invalid protocol: "${protocol}" is not supported. Please use http(s), or ws(s)`);
+        throw new Error('Invalid protocol: "' + protocol + '" is not supported.');
     }
     message (method, options) {
         var params = Array.isArray(options) ? [...this.params, ...options] : [...this.params];
@@ -16,7 +16,9 @@ class Aria2 {
         var json = this.message(method, options);
         var message = JSON.stringify(json);
         return this.post(message).then(({result, error}) => {
-            if (result) return result;
+            if (result) {
+                return result;
+            }
             throw error;
         });
     }
@@ -25,7 +27,9 @@ class Aria2 {
         var message = JSON.stringify(json);
         return this.post(message).then((response) => {
             return response.map(({result, error}) => {
-                if (result) return result;
+                if (result) {
+                    return result;
+                }
                 throw error;
             });
         });
@@ -33,7 +37,9 @@ class Aria2 {
     fetch (body) {
         return fetch(this.jsonrpc, {method: 'POST', body})
             .then((response) => {
-                if (response.ok) return response.json();
+                if (response.ok) {
+                    return response.json();
+                }
                 throw new Error(response.statusText);
             });
     }
