@@ -1,75 +1,48 @@
 class Aria2 {
     constructor (url, secret) {
-        if (url.startsWith('http')) {
-            this.post = this.fetch;
-        }
-        else if (url.startsWith('ws')) {
-            this.post = this.websocket;
-        }
-        else {
-            throw new Error('Invalid JSON-RPC URL, protocal not supported!');
-        }
+        var [protocol, http, socket] = url.match(/(^http)s?|^(ws)s?|^([^:]+)/);
+        this.post = http ? this.fetch : socket ? this.websocket : this.error(protocol);
         this.jsonrpc = url;
-        this.secret = secret;
+        this.params = secret ? ['token:' + secret] : [];
     }
-    message (method, secret, options) {
-        var params = [];
-        if (secret !== undefined) {
-            params.push('token:' + secret);
-        }
-        if (Array.isArray(options)) {
-            params.push(...options);
-        }
+    error (protocol) {
+        throw new Error(`Invalid protocol: "${protocol}" is not supported. Please use http(s), or ws(s)`);
+    }
+    message (method, options) {
+        var params = Array.isArray(options) ? [...this.params, ...options] : [...this.params];
         return {id: '', jsonrpc: '2.0', method, params};
     }
     call (method, options) {
-        var {jsonrpc, secret, message, post} = this;
-        var json = message(method, secret, options);
-        var string = JSON.stringify(json);
-        return post(jsonrpc, string).then(function (json) {
-            var {result, error} = json;
-            if (result) {
-                return result;
-            }
+        var json = this.message(method, options);
+        var message = JSON.stringify(json);
+        return this.post(message).then(({result, error}) => {
+            if (result) return result;
             throw error;
         });
     }
     batch (array) {
-        var {jsonrpc, secret, message, post} = this;
-        var json = array.map(function (job) {
-            var {method, params} = job;
-            return message(method, secret, params);
-        });
-        var string = JSON.stringify(json);
-        return post(jsonrpc, string).then(function (array) {
-            var result = array.map(function (json) {
-                var {result, error} = json;
-                if (result) {
-                    return result;
-                }
+        var json = array.map(({method, params}) => this.message(method, params));
+        var message = JSON.stringify(json);
+        return this.post(message).then((response) => {
+            return response.map(({result, error}) => {
+                if (result) return result;
                 throw error;
             });
-            return result;
         });
     }
-    fetch (jsonrpc, body) {
-        return fetch(jsonrpc, {method: 'POST', body}).then(function (response) {
-            if (response.ok) {
-                return response.json();
-            }
-            else {
+    fetch (body) {
+        return fetch(this.jsonrpc, {method: 'POST', body})
+            .then((response) => {
+                if (response.ok) return response.json();
                 throw new Error(response.statusText);
-            }
-        });
+            });
     }
-    websocket (jsonrpc, message) {
-        return new Promise(function (resolve, reject) {
-            var socket = new WebSocket(jsonrpc);
-            socket.onopen = function (event) {
-                socket.send(message);
-            };
+    websocket (message) {
+        return new Promise((resolve, reject) => {
+            var socket = new WebSocket(this.jsonrpc);
+            socket.onopen = (event) => socket.send(message);
             socket.onclose = reject;
-            socket.onmessage = function (event) {
+            socket.onmessage = (event) => {
                 socket.close();
                 var json = JSON.parse(event.data);
                 resolve(json);
