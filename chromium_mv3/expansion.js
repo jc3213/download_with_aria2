@@ -1,13 +1,12 @@
-chrome.action.onClicked.addListener(tab => {
-    chrome.tabs.query({currentWindow: true}, tabs => {
-        try {
-            var {id} = tabs.find(tab => tab.url.includes(aria2Popup));
-            chrome.tabs.update(id, {active: true});
-        }
-        catch (error) {
-            chrome.tabs.create({active: true, url: aria2Popup + '?open_in_tab'});
-        }
-    });
+chrome.action.onClicked.addListener(async tab => {
+    var tabs = await chrome.tabs.query({currentWindow: true});
+    var tab = tabs.find(tab => tab.url.includes(aria2Popup));
+    if (tab) {
+        chrome.tabs.update(tab.id, {active: true});
+    }
+    else {
+        chrome.tabs.create({active: true, url: aria2Popup + '?open_in_tab'});
+    }
 });
 
 async function aria2DownloadPrompt(aria2c) {
