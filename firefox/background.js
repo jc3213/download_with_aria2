@@ -163,14 +163,13 @@ function decodeISO8859(text) {
 
 function decodeRFC5987(text) {
     var idx = text.indexOf('\'');
-    var code = text.slice(0, idx).toLowerCase();
+    var code = text.slice(0, idx);
     var data = text.slice(idx + 2);
-    if ('utf-8,utf8'.includes(code)) {
+    if (/utf-?8/i.test(code)) {
         return decodeFileName(data);
     }
     var decode = [];
-    var tmp = data.match(/%[0-9a-fA-F]{2}|./g) ?? [];
-    tmp.forEach(s => {
+    data.match(/%[0-9a-fA-F]{2}|./g)?.forEach(s => {
         var c = s.length === 3 ? parseInt(s.slice(1), 16) : s.charCodeAt(0);
         if (c < 256) {
             decode.push(c);
@@ -192,11 +191,9 @@ function decodeRFC2047(text) {
                 var data = raw.slice(ei + 1);
                 if (type === 'b') {
                     var decode = [...atob(data)].map(s => s.charCodeAt(0));
-                    result += new TextDecoder(code).decode(Uint8Array.from(decode));
                 }
                 else if (type === 'q') {
-                    var tmp = data.match(/=[0-9a-fA-F]{2}|./g) ?? [];
-                    var decode = tmp.map(v => {
+                    var decode = data.match(/=[0-9a-fA-F]{2}|./g)?.map(v => {
                         if (v === '_') {
                             return 0x20;
                         }
@@ -204,9 +201,9 @@ function decodeRFC2047(text) {
                             return parseInt(v.slice(1), 16)
                         }
                         return v.charCodeAt(0);
-                    });
-                    result += new TextDecoder(code).decode(Uint8Array.from(decode));
+                    }) ?? [];
                 }
+                result += new TextDecoder(code).decode(Uint8Array.from(decode));
             }
         }
     });
