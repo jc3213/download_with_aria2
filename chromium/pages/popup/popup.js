@@ -80,15 +80,8 @@ async function updateManager() {
 }
 
 function updateSession(task, status) {
-    if (status === 'active') {
-        var type = 'active';
-    }
-    else if ('waiting,paused'.includes(status)) {
-        type = 'waiting';
-    }
-    else {
-        type = 'stopped';
-    }
+    var type = status === 'active' ? 'active' :
+        'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
     self[status + 'Queue'].appendChild(task);
     return type;
 }
@@ -141,12 +134,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
 function parseSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
     task.id = gid;
-    if (bittorrent) {
-        task.classList.add('p2p');
-    }
-    else {
-        task.classList.add('http');
-    }
+    task.classList.add(bittorrent ? 'p2p' : 'http');
     task.querySelector('#remove_btn').addEventListener('click', async event => {
         var status = task.parentNode.className;
         if ('active,waiting,paused'.includes(status)) {
@@ -276,7 +264,7 @@ function printUriCell(list, uri) {
     var column = uriLET.cloneNode(true);
     column.addEventListener('click', event => {
         if (event.ctrlKey) {
-            aria2RPC.call('aria2.changeUri', [detailed, 1, [uri], []]);
+            aria2RPC.call('aria2.changeUri', [detailed.id, 1, [uri], []]);
         }
         else {
            navigator.clipboard.writeText(uri);
@@ -289,9 +277,10 @@ function printUriCell(list, uri) {
 function printTaskUris(uris) {
     var uriList = detailed.querySelector('#uris');
     var columns = uriList.childNodes;
+    var idx = -1;
+    var all = column.length;
     var used;
     var wait;
-    var idx = -1;
     uris.forEach(({uri, status}) => {
         var column = columns[idx] ?? printUriCell(uriList, uri);
         var link = column.querySelector('#uri');
@@ -309,9 +298,9 @@ function printTaskUris(uris) {
             wait.innerText ++;
         }
     });
-    columns.forEach((column, index) => {
-        if (index > idx) {
-            column.remove();
+    for (idx < all; idx ++) {
+        if (columns[i]) {
+            columns[i].remove();
         }
-    });
+    }
 }
