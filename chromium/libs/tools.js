@@ -1,19 +1,13 @@
 var aria2NewDL = '/pages/newdld/newdld.html';
 
 function getHostname(url) {
-    var si = url.indexOf('://');
-    var result = url.slice(si + 3);
-    var ei = result.indexOf('/');
-    var host = result.slice(0, ei);
-    var ui = host.indexOf('@');
-    if (ui !== -1) {
-        return host.slice(ui + 1);
-    }
-    return host;
+    var temp = url.slice(url.indexOf('://') + 3);
+    var host = temp.slice(0, temp.indexOf('/'));
+    return host.slice(host.indexOf('@') + 1);
 }
 
 function getDownloadName(gid, bittorrent, [{path, uris}]) {
-    return bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1) ?? uris[0].uri ?? gid;
+    return bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
 }
 
 function getCurrentWindow() {
