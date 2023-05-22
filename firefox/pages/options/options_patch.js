@@ -32,13 +32,7 @@ folderff.link = {
 var folderen = document.querySelector('#folder_enabled').parentNode;
 folderen.addEventListener('change', event => {
     if (event.target.checked) {
-        console.log(changes, changes['capture_webrequest']);
-        if (changes['capture_webrequest']) {
-            folderff.style.display = 'none';
-        }
-        else {
-            folderff.style.display = 'block';
-        }
+        folderff.style.display = changes['capture_webrequest'] ? 'none' : 'block';
     }
 });
 
