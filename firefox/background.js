@@ -134,15 +134,15 @@ async function getFirefoxOptions(filename) {
 }
 
 function getFileName(disposition) {
-    var RFC2047 = /filename="?(=\?[^;]+\?=)/.exec(disposition);
+    var RFC2047 = disposition.match(/filename="?(=\?[^;]+\?=)/);
     if (RFC2047) {
         return decodeRFC2047(RFC2047[1]);
     }
-    var RFC5987 = /filename\*="?([^;]+''[^";]+)/i.exec(disposition);
+    var RFC5987 = disposition.match(/filename\*="?([^;]+''[^";]+)/i);
     if (RFC5987) {
         return decodeRFC5987(RFC5987[1]);
     }
-    var match = /filename="?([^";]+);?/.exec(disposition);
+    var match = disposition.match(/filename="?([^";]+);?/);
     if (match) {
         return decodeFileName(match.pop());
     }
@@ -162,10 +162,8 @@ function decodeISO8859(text) {
 }
 
 function decodeRFC5987(text) {
-    var idx = text.indexOf('\'');
-    var code = text.slice(0, idx);
-    var data = text.slice(idx + 2);
-    if (/utf-?8/i.test(code)) {
+    var [string, utf8, code, data] = text.match(/(?:(utf-?8)|([^']+))''([^']+)/i);
+    if (utf8) {
         return decodeFileName(data);
     }
     var decode = [];
@@ -180,31 +178,24 @@ function decodeRFC5987(text) {
 
 function decodeRFC2047(text) {
     var result = '';
-    text.split(/\s+/).forEach(s => {
-        if (s.startsWith('=?') && s.endsWith('?=')) {
-            var raw = s.slice(2, -2);
-            var si = raw.indexOf('?');
-            var ei = raw.lastIndexOf('?');
-            if (ei - si === 2) {
-                var code = raw.slice(0, si);
-                var type = raw.slice(si + 1, ei).toLowerCase();
-                var data = raw.slice(ei + 1);
-                if (type === 'b') {
-                    var decode = [...atob(data)].map(s => s.charCodeAt(0));
+    text.match(/[^\s]+/g).forEach(s => {
+        var [string, code, b, q, data] = s.match(/=\?([^\?]+)\?(?:(b)|(q))\?([^\?]+)\?=/i);
+        if (b) {
+            var decode = [...atob(data)].map(s => s.charCodeAt(0));
+        }
+        else if (q) {
+            decode = data.match(/=[0-9a-fA-F]{2}|./g)?.map(v => {
+                if (v === '_') {
+                    return 0x20;
                 }
-                else if (type === 'q') {
-                    var decode = data.match(/=[0-9a-fA-F]{2}|./g)?.map(v => {
-                        if (v === '_') {
-                            return 0x20;
-                        }
-                        else if (v.length === 3) {
-                            return parseInt(v.slice(1), 16)
-                        }
-                        return v.charCodeAt(0);
-                    }) ?? [];
+                else if (v.length === 3) {
+                    return parseInt(v.slice(1), 16)
                 }
-                result += new TextDecoder(code).decode(Uint8Array.from(decode));
-            }
+                return v.charCodeAt(0);
+            });
+        }
+        if (decode) {
+            result += new TextDecoder(code).decode(Uint8Array.from(decode));
         }
     });
     return result;
