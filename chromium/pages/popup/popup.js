@@ -114,7 +114,7 @@ function removeSession(type, gid, task) {
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
     var task = document.getElementById(gid) ?? parseSession(gid, status, bittorrent);
-    task.querySelector('#name').innerText = getDownloadName(bittorrent, files);
+    task.querySelector('#name').innerText = getDownloadName(gid, bittorrent, files);
     task.querySelector('#local').innerText = getFileSize(completedLength);
     task.querySelector('#remote').innerText = getFileSize(totalLength);
     var time = (totalLength - completedLength) / downloadSpeed;

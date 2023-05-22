@@ -1,3 +1,5 @@
+var aria2NewDL = '/pages/newdld/newdld.html';
+
 function getHostname(url) {
     var si = url.indexOf('://');
     var result = url.slice(si + 3);
@@ -10,17 +12,8 @@ function getHostname(url) {
     return host;
 }
 
-function getDownloadName(bittorrent, [{path, uris}]) {
-    if (bittorrent && bittorrent.info) {
-        return bittorrent.info.name;
-    }
-    else if (path) {
-        return path.slice(path.lastIndexOf('/') + 1);
-    }
-    else if (uris[0]) {
-        return uris[0].uri;
-    }
-    return '???';
+function getDownloadName(gid, bittorrent, [{path, uris}]) {
+    return bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1) ?? uris[0].uri ?? gid;
 }
 
 function getCurrentWindow() {
@@ -50,7 +43,7 @@ function getNewWindow(url, offsetWidth, offsetHeight) {
 
 function aria2NewDownload(slim) {
     if (slim) {
-        return getNewWindow('/pages/newdld/newdld.html?slim_mode', 640, 308);
+        return getNewWindow(aria2NewDL + '?slim_mode', 640, 308);
     }
-    return getNewWindow('/pages/newdld/newdld.html', 640, 610);
+    return getNewWindow(aria2NewDL, 640, 610);
 }
