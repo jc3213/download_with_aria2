@@ -8,12 +8,8 @@ async function aria2DownloadUrls(urls, options) {
     var message = '';
     var sessions = urls.map(url => {
         message += url + '\n';
-        if (options) {
-            return {method: 'aria2.addUri', params: [[url], options]};
-        }
-        else {
-            return {method: 'aria2.addUri', params: [[url]]};
-        }
+        var params = options ? [[url], options] : [[url]];
+        return {method: 'aria2.addUri', params};
     });
     await aria2RPC.batch(sessions);
     await aria2WhenStart(message);
@@ -23,27 +19,20 @@ async function aria2DownloadJSON(json, origin) {
     if (!Array.isArray(json)) {
         json = [json];
     }
-    if (json[0].url === undefined) {
-        throw new Error('wrong JSON sytanx, "url" is required!');
-    }
     var message = '';
     var sessions = json.map(entry => {
         var {url, options} = entry;
+        if (!url) {
+            throw new SyntaxError('Wrong JSON format: "url" is required!');
+        }
         message += url + '\n';
         if (options) {
-            if (origin) {
-                options = {...origin, ...options};
-            }
-            return {method: 'aria2.addUri', params: [[url], options]};
+            var params = origin ? [[url], {...origin, ...options}] : [[url], options];
         }
         else {
-            if (origin) {
-                return {method: 'aria2.addUri', params: [[url], origin]};
-            }
-            else {
-                return {method: 'aria2.addUri', params: [[url]]};
-            }
+            params = origin ? [[url], origin] : [[url]];
         }
+        return {method: 'aria2.addUri', params};
     });
     await aria2RPC.batch(sessions);
     await aria2WhenStart(message);
