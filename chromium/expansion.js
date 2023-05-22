@@ -4,11 +4,11 @@ var aria2Active;
 
 chrome.browserAction.onClicked.addListener(tab => {
     chrome.tabs.query({currentWindow: true}, tabs => {
-        try {
-            var {id} = tabs.find(tab => tab.url.includes(aria2Popup));
-            chrome.tabs.update(id, {active: true});
+        var tab = tabs.find(tab => tab.url.includes(aria2Popup));
+        if (tab) {
+            chrome.tabs.update(tab.id, {active: true});
         }
-        catch (error) {
+        else {
             chrome.tabs.create({active: true, url: aria2Popup + '?open_in_tab'});
         }
     });
@@ -81,12 +81,7 @@ function aria2StartUp() {
 
 function aria2Badge(text) {
     if (!isNaN(text)) {
-        if (text === 0) {
-            text = '';
-        }
-        else {
-            text += '';
-        }
+        text = text === 0 ? '' : text + '';
     }
     chrome.browserAction.setBadgeText({text});
 }
