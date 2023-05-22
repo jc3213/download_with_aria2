@@ -100,9 +100,7 @@ async function addSession(gid) {
 function removeSession(type, gid, task) {
     self[type + 'Stat'].innerText --;
     self[type + 'Task'].splice(self[type + 'Task'].indexOf(gid), 1);
-    if (task) {
-        task.remove();
-    }
+    task?.remove();
 }
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
@@ -278,7 +276,7 @@ function printTaskUris(uris) {
     var uriList = detailed.querySelector('#uris');
     var columns = uriList.childNodes;
     var idx = -1;
-    var all = column.length;
+    var all = columns.length;
     var used;
     var wait;
     uris.forEach(({uri, status}) => {
@@ -298,9 +296,7 @@ function printTaskUris(uris) {
             wait.innerText ++;
         }
     });
-    for (idx < all; idx ++) {
-        if (columns[i]) {
-            columns[i].remove();
-        }
+    for (idx < all; idx ++;) {
+        columns[i]?.remove();
     }
 }
