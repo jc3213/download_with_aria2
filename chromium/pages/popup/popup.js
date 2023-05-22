@@ -37,8 +37,7 @@ function aria2StartUp() {
         {method: 'aria2.tellActive'},
         {method: 'aria2.tellWaiting', params: [0, 999]},
         {method: 'aria2.tellStopped', params: [0, 999]}
-    ]).then(result => {
-        var [{downloadSpeed, uploadSpeed}, active, waiting, stopped] = result;
+    ]).then(([{downloadSpeed, uploadSpeed}, active, waiting, stopped]) => {
         [...active, ...waiting, ...stopped].forEach(printSession);
         downloadStat.innerText = getFileSize(downloadSpeed);
         uploadStat.innerText = getFileSize(uploadSpeed);
@@ -67,16 +66,13 @@ function aria2Client() {
 }
 
 async function updateManager() {
-    var download = 0;
-    var upload = 0;
-    var active = await aria2RPC.call('aria2.tellActive');
-    active.forEach(result => {
-        printSession(result);
-        download += result.downloadSpeed | 0;
-        upload += result.uploadSpeed | 0;
-    });
-    downloadStat.innerText = getFileSize(download);
-    uploadStat.innerText = getFileSize(upload);
+    var [{downloadSpeed, uploadSpeed}, active] = await aria2RPC.batch([
+        {method: 'aria2.getGlobalStat'},
+        {method: 'aria2.tellActive'}
+    ]);
+    active.forEach(printSession);
+    downloadStat.innerText = getFileSize(downloadSpeed);
+    uploadStat.innerText = getFileSize(uploadSpeed);
 }
 
 function updateSession(task, gid, status) {
