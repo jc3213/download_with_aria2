@@ -79,27 +79,26 @@ async function updateManager() {
     uploadStat.innerText = getFileSize(upload);
 }
 
-function updateSession(task, status) {
-    var type = status === 'active' ? 'active' :
-        'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
+function updateSession(task, gid, status) {
+    var cate = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
+    if (self[cate + 'Task'].indexOf(gid) === -1) {
+        self[cate + 'Task'].push(gid);
+        self[cate + 'Stat'].innerText ++;
+    }
     self[status + 'Queue'].appendChild(task);
-    return type;
+    task.cate = cate;
 }
 
 async function addSession(gid) {
     var result = await aria2RPC.call('aria2.tellStatus', [gid]);
     var task = printSession(result);
     var {status} = result;
-    var type = task.type = updateSession(task, status);
-    if (self[type + 'Task'].indexOf(gid) === -1) {
-        self[type + 'Stat'].innerText ++;
-        self[type + 'Task'].push(gid);
-    }
+    updateSession(task, gid, status);
 }
 
-function removeSession(type, gid, task) {
-    self[type + 'Stat'].innerText --;
-    self[type + 'Task'].splice(self[type + 'Task'].indexOf(gid), 1);
+function removeSession(cate, gid, task) {
+    self[cate + 'Stat'].innerText --;
+    self[cate + 'Task'].splice(self[cate + 'Task'].indexOf(gid), 1);
     task?.remove();
 }
 
@@ -124,7 +123,7 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     task.querySelector('#ratio').innerText = ratio;
     task.querySelector('#ratio').style.width = ratio + '%';
     if (detailed === task) {
-        printTaskFiles(files);
+        printTaskFileList(files);
     }
     return task;
 }
@@ -155,7 +154,7 @@ function parseSession(gid, status, bittorrent) {
             var [files, options] = await getTaskDetail(gid);
             task.querySelectorAll('[id]').disposition(options);
             detailed = task;
-            printTaskFiles(files);
+            printTaskFileList(files);
             task.classList.add('extra');
         }
     });
@@ -204,9 +203,7 @@ function parseSession(gid, status, bittorrent) {
         await aria2RPC.call('aria2.changeUri', [gid, 1, [], [uri.value]]);
         uri.value = '';
     });
-    var type = task.type = updateSession(task, status);
-    self[type + 'Stat'].innerText ++;
-    self[type + 'Task'].push(gid);
+    updateSession(task, gid, status);
     return task;
 }
 
@@ -225,42 +222,40 @@ function closeTaskDetail() {
     }
 }
 
-function printFileCell(list, {index, path, length, selected, uris}) {
-    var column = fileLET.cloneNode(true);
-    var tile = column.querySelector('#index');
+function printFileItem(list, index, path, length, selected, uris) {
+    var item = fileLET.cloneNode(true);
+    var push = uris.length === 0;
+    var tile = item.querySelector('#index');
     tile.innerText = index;
     tile.className = selected === 'true' ? 'checked' : 'suspend';
-    column.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
-    column.querySelector('#name').title = path;
-    column.querySelector('#size').innerText = getFileSize(length);
-    if (uris.length === 0) {
-        tile.addEventListener('click', event => {
-            if (detailed.type !== 'stopped') {
-                tile.className = tile.className === 'checked' ? 'suspend' : 'checked';
-                detailed.querySelector('#save_btn').style.display = 'block';
-            }
-        });
-    }
-    else {
-        printTaskUris(uris);
-    }
-    list.appendChild(column);
-    return column;
+    tile.addEventListener('click', event => {
+        if (detailed.cate !== 'stopped' && push) {
+            tile.className = tile.className === 'checked' ? 'suspend' : 'checked';
+            detailed.querySelector('#save_btn').style.display = 'block';
+        }
+    });
+    item.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
+    item.querySelector('#name').title = path;
+    item.querySelector('#size').innerText = getFileSize(length);
+    list.appendChild(item);
+    return item;
 }
 
-function printTaskFiles(files) {
+function printTaskFileList(files) {
     var fileList = detailed.querySelector('#files');
-    var columns = fileList.childNodes;
-    files.forEach((file, index) => {
-        var column = columns[index] ?? printFileCell(fileList, file);
-        var {length, completedLength} = file;
-        column.querySelector('#ratio').innerText = (completedLength / length * 10000 | 0) / 100;
+    var items = [...fileList.childNodes];
+    files.forEach(({index, path, length, selected, completedLength, uris}, step) => {
+        var item = items[step] ?? printFileItem(fileList, index, path, length, selected, uris);
+        item.querySelector('#ratio').innerText = (completedLength / length * 10000 | 0) / 100;
+        if (uris.length !== 0) {
+            printTaskUriList(uris);
+        }
     });
 }
 
-function printUriCell(list, uri) {
-    var column = uriLET.cloneNode(true);
-    column.addEventListener('click', event => {
+function printUriItem(list, uri) {
+    var item = uriLET.cloneNode(true);
+    item.addEventListener('click', event => {
         if (event.ctrlKey) {
             aria2RPC.call('aria2.changeUri', [detailed.id, 1, [uri], []]);
         }
@@ -268,35 +263,32 @@ function printUriCell(list, uri) {
            navigator.clipboard.writeText(uri);
         }
     });
-    list.appendChild(column);
-    return column;
+    list.appendChild(item);
+    return item;
 }
 
-function printTaskUris(uris) {
+function printTaskUriList(uris) {
     var uriList = detailed.querySelector('#uris');
-    var columns = uriList.childNodes;
-    var idx = -1;
-    var all = columns.length;
-    var used;
-    var wait;
+    var items = [...uriList.childNodes];
+    var all = items.length;
+    var result = {};
+    var urls = [];
     uris.forEach(({uri, status}) => {
-        var column = columns[idx] ?? printUriCell(uriList, uri);
-        var link = column.querySelector('#uri');
-        var {innerText} = link;
-        if (innerText !== uri) {
-            link.innerText = link.title = uri;
-            used = column.querySelector('#used');
-            wait = column.querySelector('#wait');
-            idx ++;
+        var it = result[uri];
+        var used = it?.used ?? 0;
+        var wait = it?.wait ?? 0;
+        if (!it) {
+            urls.push(uri);
         }
-        if (status === 'used') {
-            used.innerText ++;
-        }
-        else {
-            wait.innerText ++;
-        }
+        status === 'used' ? used ++ : wait ++;
+        result[uri] = {used, wait};
     });
-    for (idx < all; idx ++;) {
-        columns[i]?.remove();
-    }
+    urls.forEach((uri, step) => {
+        var item = items[step] ?? printUriItem(uriList, uri);
+        var {used, wait} = result[uri];
+        item.querySelector('#uri').innerText = uri;
+        item.querySelector('#used').innerText = used;
+        item.querySelector('#wait').innerText = wait;
+    });
+    items.slice(urls.length).forEach(item => item.remove());
 }
