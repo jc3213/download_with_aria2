@@ -26,10 +26,8 @@ async function aria2DownloadJSON(json, origin) {
             throw new SyntaxError('Wrong JSON format: "url" is required!');
         }
         message += url + '\n';
-        var params = options && origin ? [[url], {...origin, ...options}] :
-            options ? [[url], options] :
-            origin ? [[url], origin] : [[url]];
-        return {method: 'aria2.addUri', params};
+        options = options && origin ? {...origin, ...options} : options ? options : origin ? origin : {};
+        return {method: 'aria2.addUri', params: [[url], options]};
     });
     await aria2RPC.batch(sessions);
     await aria2WhenStart(message);
