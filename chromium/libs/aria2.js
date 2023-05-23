@@ -14,8 +14,7 @@ class Aria2 {
     }
     call (method, options) {
         var json = this.message(method, options);
-        var message = JSON.stringify(json);
-        return this.post(message).then(({result, error}) => {
+        return this.post(JSON.stringify(json)).then(({result, error}) => {
             if (result) {
                 return result;
             }
@@ -24,8 +23,7 @@ class Aria2 {
     }
     batch (array) {
         var json = array.map(({method, params}) => this.message(method, params));
-        var message = JSON.stringify(json);
-        return this.post(message).then((response) => {
+        return this.post(JSON.stringify(json)).then((response) => {
             return response.map(({result, error}) => {
                 if (result) {
                     return result;
@@ -35,13 +33,12 @@ class Aria2 {
         });
     }
     fetch (body) {
-        return fetch(this.jsonrpc, {method: 'POST', body})
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error(response.statusText);
-            });
+        return fetch(this.jsonrpc, {method: 'POST', body}).then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(response.statusText);
+        });
     }
     websocket (message) {
         return new Promise((resolve, reject) => {
@@ -50,8 +47,7 @@ class Aria2 {
             socket.onclose = reject;
             socket.onmessage = (event) => {
                 socket.close();
-                var json = JSON.parse(event.data);
-                resolve(json);
+                resolve(JSON.parse(event.data));
             };
         });
     }
