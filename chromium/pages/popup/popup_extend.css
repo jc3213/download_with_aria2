@@ -7,7 +7,7 @@ body.full > #queue {
     height: auto;
 }
 
-body:not(.full) > #status > :nth-child(-n+3) {
+body:not(.full) #status > :nth-child(-n+3) {
     display: none;
 }
 

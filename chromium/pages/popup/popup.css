@@ -1,11 +1,5 @@
 body {
     width: 760px;
-    display: grid;
-}
-
-hr {
-    grid-area: 2 / 1 / 3 / 3;
-    width: 100%;
 }
 
 .active > #choose > #active > :first-child,
@@ -48,7 +42,6 @@ hr {
 }
 
 #choose > * > * {
-    display: inline-block;
     padding: 5px;
 }
 
@@ -57,29 +50,30 @@ hr {
     visibility: visible;
 }
 
-@media (prefers-color-scheme: dark) {
-    #status > div > :nth-child(1) {
-        background-color: #4a4a4a;
-    }
-}
-
-#status {
-    text-align: right;
-    margin-top: 4px;
-}
-
-#status > * {
+#menu, #status, #status > * {
     display: inline-block;
 }
 
-#status span {
-    padding: 4px;
+#status {
+    margin: 0px auto;
+}
+
+#status > :nth-child(4) {
+    margin-left: auto;
+}
+
+#status > * > :nth-child(1) {
+    border-style: solid;
+    border-width: 1px;
+}
+
+#status > * > * {
+    padding: 3px;
 }
 
 #queue {
-    grid-area: 3 / 1 / 4 / 3;
-    overflow-y: auto;
     height: 537px;
+    overflow-y: auto;
 
     #complete input, #removed input, #error input,
     #complete select, #removed select, #error select,
@@ -93,7 +87,7 @@ hr {
         display: none;
     }
 
-    .removed .http #retry_btn, .error .http #retry_btn {
+    #removed .http #retry_btn, #error .http #retry_btn {
         display: inline-block;
     }
 
@@ -221,6 +215,10 @@ hr {
         top: -10px;
         padding: 4px;
     }
+}
+
+.session > :nth-last-child(n+3) {
+    height: 24px;
 }
 
 .session.extra > #options {

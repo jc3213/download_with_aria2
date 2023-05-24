@@ -135,7 +135,7 @@ function parseSession(gid, status, bittorrent) {
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.querySelector('#remove_btn').addEventListener('click', async event => {
-        var status = task.parentNode.className;
+        var status = task.parentNode.id;
         if ('active,waiting,paused'.includes(status)) {
             await aria2RPC.call('aria2.forceRemove', [gid]);
             if (status !== 'active') {
@@ -177,7 +177,7 @@ function parseSession(gid, status, bittorrent) {
         removeSession('stopped', gid, task);
     });
     task.querySelector('#meter').addEventListener('click', async event => {
-        var status = task.parentNode.className;
+        var status = task.parentNode.id;
         if ('active,waiting'.includes(status)) {
             await aria2RPC.call('aria2.forcePause', [gid]);
             pausedQueue.appendChild(task);
