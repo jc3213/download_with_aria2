@@ -129,8 +129,7 @@ body {
 }
 
 #queue > :not(#complete, #removed, #error) {
-    #meter:active,
-    #meter > #ratio:active,
+    #meter:active, #meter > #ratio:active,
     .p2p .file > :nth-child(1):active {
         filter: contrast(45%);
     }

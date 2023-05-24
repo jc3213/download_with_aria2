@@ -16,16 +16,17 @@ var fileLET = document.querySelector('.template > .file');
 var uriLET = document.querySelector('.template > .uri');
 var detailed;
 
+queuebtn.addEventListener('click', (event) => {
+    document.body.classList.toggle('queue');
+});
+
+chooseQueue.style.left = `${queuebtn.offsetLeft}px`;
 chooseQueue.querySelectorAll('div').forEach((node) => {
     var {body} = document;
     var {id} = node;
     node.addEventListener('click', event => {
         body.classList.toggle(id);
     });
-});
-
-queuebtn.addEventListener('click', (event) => {
-    document.body.classList.toggle('queue');
 });
 
 document.querySelector('#purge_btn').addEventListener('click', async (event) => {
