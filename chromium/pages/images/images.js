@@ -66,13 +66,13 @@ function getPreview({src, alt, title}) {
         if (ax !== -1) {
             ext = ext.slice(0, ax);
         }
-        img.alt = alt + ext;
+        img.alt = `${alt}${ext}`;
     }
     img.addEventListener('load', event => {
-        img.title = img.offsetWidth + 'x' + img.offsetHeight;
+        img.title = `${img.offsetWidth}x${img.offsetHeight}`;
     });
     img.addEventListener('click', event => {
-        img.className = img.className === 'checked' ? '' : 'checked';
+        img.className = img.className === '' ? 'checked' : '';
     });
     viewer.append(img);
 }
