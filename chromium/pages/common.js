@@ -33,7 +33,7 @@ NodeList.prototype.disposition = function (json) {
 
 function getFileSize(bytes) {
     if (isNaN(bytes)) {
-        return '?? ';
+        return '??';
     }
     else if (bytes < 1024) {
         return bytes;
