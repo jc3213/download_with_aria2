@@ -1,28 +1,34 @@
-var activeStat = document.querySelector('#active.stats');
-var waitingStat = document.querySelector('#waiting.stats');
-var stoppedStat = document.querySelector('#stopped.stats');
-var downloadStat = document.querySelector('#download.stats');
-var uploadStat = document.querySelector('#upload.stats');
-var activeQueue = document.querySelector('#queue > .active');
-var waitingQueue = document.querySelector('#queue > .waiting');
-var pausedQueue = document.querySelector('#queue > .paused');
-var completeQueue = document.querySelector('#queue > .complete');
-var removedQueue = document.querySelector('#queue > .removed');
-var errorQueue = document.querySelector('#queue > .error');
+var queuebtn = document.querySelector('#queue_btn');
+var chooseQueue = document.querySelector('#choose');
+var activeStat = document.querySelector('#status #active');
+var waitingStat = document.querySelector('#status #waiting');
+var stoppedStat = document.querySelector('#status #stopped');
+var downloadStat = document.querySelector('#status #download');
+var uploadStat = document.querySelector('#status #upload');
+var activeQueue = document.querySelector('#queue > #active');
+var waitingQueue = document.querySelector('#queue > #waiting');
+var pausedQueue = document.querySelector('#queue > #paused');
+var completeQueue = document.querySelector('#queue > #complete');
+var removedQueue = document.querySelector('#queue > #removed');
+var errorQueue = document.querySelector('#queue > #error');
 var sessionLET = document.querySelector('.template > .session');
 var fileLET = document.querySelector('.template > .file');
 var uriLET = document.querySelector('.template > .uri');
 var detailed;
 
-document.querySelectorAll('#stat > button').forEach((tab, index) => {
+chooseQueue.querySelectorAll('div').forEach((node) => {
     var {body} = document;
-    var id = tab.id.slice(0, tab.id.indexOf('_'));
-    tab.addEventListener('click', event => {
-        body.id = body.id !== id ? id : '';
+    var {id} = node;
+    node.addEventListener('click', event => {
+        body.classList.toggle(id);
     });
 });
 
-document.querySelector('#purge_btn').addEventListener('click', async event => {
+queuebtn.addEventListener('click', (event) => {
+    document.body.classList.toggle('queue');
+});
+
+document.querySelector('#purge_btn').addEventListener('click', async (event) => {
     await aria2RPC.call('aria2.purgeDownloadResult');
     completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     stoppedStat.innerText = '0';
@@ -100,7 +106,7 @@ function removeSession(cate, gid, task) {
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
     var task = document.getElementById(gid) ?? parseSession(gid, status, bittorrent);
-    task.querySelector('#name').innerText = getDownloadName(gid, bittorrent, files);
+    task.querySelector('#title').innerText = getDownloadName(gid, bittorrent, files);
     task.querySelector('#local').innerText = getFileSize(completedLength);
     task.querySelector('#remote').innerText = getFileSize(totalLength);
     var time = (totalLength - completedLength) / downloadSpeed;
@@ -190,7 +196,7 @@ function parseSession(gid, status, bittorrent) {
         event.target.previousElementSibling.value = aria2Store['proxy_server'];
     });
     task.querySelector('#save_btn').addEventListener('click', async event => {
-        var files = [...task.querySelectorAll('#index.checked')].map(index => index.innerText);
+        var files = [...task.querySelectorAll('#index.ready')].map(index => index.innerText);
         await aria2RPC.call('aria2.changeOption', [gid, {'select-file': files.join()}]);
         event.target.style.display = 'none';
     });
@@ -223,10 +229,10 @@ function printFileItem(list, index, path, length, selected, uris) {
     var push = uris.length === 0;
     var tile = item.querySelector('#index');
     tile.innerText = index;
-    tile.className = selected === 'true' ? 'checked' : 'suspend';
+    tile.className = selected === 'true' ? 'ready' : '';
     tile.addEventListener('click', event => {
         if (detailed.cate !== 'stopped' && push) {
-            tile.className = tile.className === 'checked' ? 'suspend' : 'checked';
+            tile.className = tile.className === 'ready' ? '' : 'ready';
             detailed.querySelector('#save_btn').style.display = 'block';
         }
     });

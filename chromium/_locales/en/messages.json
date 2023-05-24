@@ -224,16 +224,10 @@
     "option_capture_reject_title": {
         "message": "Ignore downloads with these extensions"
     },
-    "popup_active": {
-        "message": "Active"
+    "popup_queue": {
+        "message": "Queue"
     },
-    "popup_waiting": {
-        "message": "Waiting"
-    },
-    "popup_stopped": {
-        "message": "Stopped"
-    },
-    "popup_create": {
+    "popup_newdld": {
         "message": "New DL"
     },
     "popup_purge": {
@@ -242,10 +236,37 @@
     "popup_options": {
         "message": "Options"
     },
-    "popup_download": {
+    "popup_active": {
+        "message": "Downloading"
+    },
+    "popup_waiting": {
+        "message": "Wait in Queue"
+    },
+    "popup_paused": {
+        "message": "Download Paused"
+    },
+    "popup_complete": {
+        "message": "Completed"
+    },
+    "popup_removed": {
+        "message": "Download Stopped"
+    },
+    "popup_error": {
+        "message": "Error Occured"
+    },
+    "popup_active_queue": {
+        "message": "Active"
+    },
+    "popup_waiting_queue": {
+        "message": "Waiting"
+    },
+    "popup_stopped_queue": {
+        "message": "Stopped"
+    },
+    "popup_download_speed": {
         "message": "DL Speed"
     },
-    "popup_upload": {
+    "popup_upload_speed": {
         "message": "UL Speed"
     },
     "task_referer": {

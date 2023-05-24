@@ -1,8 +1,7 @@
 var open_in_tab = location.search === '?open_in_tab';
 
 if (open_in_tab) {
-    document.body.className = 'full';
-    document.querySelector('#menu').appendChild(document.querySelector('#tool'));
+    document.body.classList.add('full');
 }
 
 document.querySelector('#download_btn').addEventListener('click', async event => {

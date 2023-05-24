@@ -72,6 +72,7 @@ option:checked {
 }
 
 button {
+    width: fit-content;
     padding: 3px 5px;
     border-width: 1px;
     border-style: outset;
@@ -88,6 +89,10 @@ button:enabled:hover, button:enabled:hover > * {
 
 button:enabled:active {
     filter: contrast(45%);
+    border-style: inset;
+}
+
+button.checked {
     border-style: inset;
 }
 
