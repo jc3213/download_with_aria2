@@ -105,7 +105,7 @@ exportbtn.addEventListener('click', event => {
     var blob = new Blob([JSON.stringify(aria2Store)], {type: 'application/json; charset=utf-8'});
     var saver = document.createElement('a');
     saver.href = URL.createObjectURL(blob);
-    saver.download = 'downwitharia2_options-' + new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_') + '.json';
+    saver.download = `downwitharia2_options-${new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_')}.json`;
     saver.click();
 });
 
@@ -293,14 +293,14 @@ function setValue(id, value) {
 }
 
 function setList(id, value) {
-    var list = document.querySelector('[data-list="' + id + '"] > .rulelist');
+    var list = document.querySelector(`[data-list="${id}"] > .rulelist`);
     var item = printList(id, value);
     list.appendChild(item);
     return [...changes[id], value];
 }
 
 function getList(id, value) {
-    var list = document.querySelector('[data-list="' + id + '"] > .rulelist');
+    var list = document.querySelector(`[data-list="${id}"] > .rulelist`);
     list.innerHTML = '';
     value.forEach(val => {
         var item = printList(id, val);

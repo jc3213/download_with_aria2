@@ -11,10 +11,6 @@ h1 {
     margin: 50px 0px 0px;
 }
 
-label {
-    padding: 3px 0px;
-}
-
 input[type="checkbox"] {
     width: auto;
     transform: scale(1.5);
@@ -53,6 +49,7 @@ input[type="checkbox"] {
 }
 
 .menu label {
+    padding: 3px 0px;
     font-weight: bold;
 }
 

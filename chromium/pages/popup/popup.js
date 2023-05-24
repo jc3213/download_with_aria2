@@ -84,11 +84,11 @@ async function updateManager() {
 
 function updateSession(task, gid, status) {
     var cate = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
-    if (self[cate + 'Task'].indexOf(gid) === -1) {
-        self[cate + 'Task'].push(gid);
-        self[cate + 'Stat'].innerText ++;
+    if (self[`${cate}Task`].indexOf(gid) === -1) {
+        self[`${cate}Task`].push(gid);
+        self[`${cate}Stat`].innerText ++;
     }
-    self[status + 'Queue'].appendChild(task);
+    self[`${status}Queue`].appendChild(task);
     task.cate = cate;
 }
 
@@ -100,8 +100,8 @@ async function addSession(gid) {
 }
 
 function removeSession(cate, gid, task) {
-    self[cate + 'Stat'].innerText --;
-    self[cate + 'Task'].splice(self[cate + 'Task'].indexOf(gid), 1);
+    self[`${cate}Stat`].innerText --;
+    self[`${cate}Task`].splice(self[`${cate}Task`].indexOf(gid), 1);
     task?.remove();
 }
 
@@ -119,12 +119,12 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     task.querySelector('#hour').innerText = hours > 0 ? hours : '';
     task.querySelector('#minute').innerText = minutes > 0 ? minutes : '';
     task.querySelector('#second').innerText = seconds > 0 ? seconds : '';
-    task.querySelector('#connect').innerText = bittorrent ? numSeeders + ' (' + connections + ')' : connections;
+    task.querySelector('#connect').innerText = bittorrent ? `${numSeeders} (${connections})` : connections;
     task.querySelector('#download').innerText = getFileSize(downloadSpeed);
     task.querySelector('#upload').innerText = getFileSize(uploadSpeed);
     var ratio = (completedLength / totalLength * 10000 | 0) / 100;
     task.querySelector('#ratio').innerText = ratio;
-    task.querySelector('#ratio').style.width = ratio + '%';
+    task.querySelector('#ratio').style.width = `${ratio}%`;
     if (detailed === task) {
         printTaskFileList(files);
     }
