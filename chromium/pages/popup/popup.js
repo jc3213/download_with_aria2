@@ -155,7 +155,7 @@ function parseSession(gid, status, bittorrent) {
         }
         else {
             var [files, options] = await getTaskDetail(gid);
-            task.querySelectorAll('[id]').disposition(options);
+            task.querySelectorAll('input, select').disposition(options);
             detailed = task;
             printTaskFileList(files);
             task.classList.add('extra');
