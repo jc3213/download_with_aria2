@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.3.2.2011",
+    "version": "4.4.0.2028",
     "manifest_version": 2,
     "permissions": [
         "contextMenus",
@@ -47,7 +47,7 @@
     "commands": {
         "_execute_browser_action": {
             "suggested_key": {
-                "default": "Alt+2"
+                "default": "Alt+Shift+2"
             }
         },
         "open_options": {
@@ -58,7 +58,7 @@
         },
         "open_new_download": {
             "suggested_key": {
-                "default": "Alt+Shift+2"
+                "default": "Alt+Shift+D"
             },
             "description": "__MSG_shortcut_newdld__"
         }
