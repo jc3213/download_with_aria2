@@ -31,11 +31,11 @@ document.addEventListener('keydown', (event) => {
             event.preventDefault();
             purgebtn.click();
         }
-        else if (key === 'n') {
+        else if (key === 'd') {
             event.preventDefault();
             downloadbtn.click();
         }
-        else if (key === 'o') {
+        else if (key === 's') {
             event.preventDefault();
             optionsbtn.click();
         }
