@@ -1,13 +1,11 @@
 var aria2Start = chrome.i18n.getMessage('download_start');
 var aria2Complete = chrome.i18n.getMessage('download_complete');
 
-async function aria2DownloadUrls(urls, options) {
-    if (!Array.isArray(urls)) {
-        urls = [urls];
-    }
+async function aria2DownloadUrls(url, options) {
+    var urls = Array.isArray(url) ? url : [url];
     var message = '';
     var sessions = urls.map(url => {
-        message += url + '\n';
+        message += `${url}\n`;
         var params = options ? [[url], options] : [[url]];
         return {method: 'aria2.addUri', params};
     });
@@ -16,16 +14,14 @@ async function aria2DownloadUrls(urls, options) {
 }
 
 async function aria2DownloadJSON(json, origin) {
-    if (!Array.isArray(json)) {
-        json = [json];
-    }
+    var jsons = Array.isArray(json) ? json : [json];
     var message = '';
-    var sessions = json.map(entry => {
+    var sessions = jsons.map(entry => {
         var {url, options} = entry;
         if (!url) {
             throw new SyntaxError('Wrong JSON format: "url" is required!');
         }
-        message += url + '\n';
+        message += `${url}\n`;
         options = options && origin ? {...origin, ...options} : options ? options : origin ? origin : {};
         return {method: 'aria2.addUri', params: [[url], options]};
     });

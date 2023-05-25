@@ -1,5 +1,5 @@
 body {
-    width: 760px;
+    width: 680px;
 }
 
 .active > #choose > #active > :first-child,
@@ -46,7 +46,7 @@ body > #menu {
     filter: contrast(45%);
 }
 
-#choose > * > * {
+#choose span {
     padding: 5px;
 }
 

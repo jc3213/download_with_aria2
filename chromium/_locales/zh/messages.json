@@ -224,14 +224,14 @@
     "option_capture_reject_title": {
         "message": "忽略拥有所设置文件后缀的下载"
     },
-    "popup_queue": {
-        "message": "队列"
-    },
     "popup_newdld": {
         "message": "下载"
     },
     "popup_purge": {
         "message": "清理"
+    },
+    "popup_queue": {
+        "message": "队列"
     },
     "popup_options": {
         "message": "选项"

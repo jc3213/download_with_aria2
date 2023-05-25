@@ -8,23 +8,15 @@ if (slim_mode) {
     document.body.className = 'slim';
 }
 
-document.addEventListener('keydown', event => {
-    var {ctrlKey, altKey, keyCode} = event;
-    if (altKey) {
-        if (keyCode === 83) {
-            event.preventDefault();
-            submitbtn.click();
-        }
-    }
-    else if (ctrlKey) {
-        if (keyCode === 13) {
-            event.preventDefault();
-            submitbtn.click();
-        }
+document.addEventListener('keydown', (event) => {
+    var {ctrlKey, altKey, key} = event;
+    if (ctrlKey && key === 'Enter' || altKey && key === 's') {
+        event.preventDefault();
+        submitbtn.click();
     }
 });
 
-entry.addEventListener('change', event => {
+entry.addEventListener('change', (event) => {
     try {
         entry.json = JSON.parse(entry.value);
         entry.urls = null;
@@ -37,18 +29,7 @@ entry.addEventListener('change', event => {
     }
 });
 
-document.querySelector('#referer_btn').addEventListener('click', async event => {
-    chrome.tabs.query({active: true, currentWindow: false}, tabs => {
-        var {url} = tabs[0];
-        event.target.previousElementSibling.value = aria2Global['referer'] = url;
-    });
-});
-
-document.querySelector('#proxy_btn').addEventListener('click', event => {
-    event.target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Store['proxy_server'];
-});
-
-document.querySelector('#submit_btn').addEventListener('click', async event => {
+submitbtn.addEventListener('click', async (event) => {
     var {json, urls} = entry;
     if (json) {
         await aria2DownloadJSON(json, aria2Global);
@@ -59,8 +40,19 @@ document.querySelector('#submit_btn').addEventListener('click', async event => {
     close();
 });
 
-document.querySelector('#upload_btn').addEventListener('change', async event => {
-    var file = event.target.files[0];
+document.querySelector('#referer_btn').addEventListener('click', async ({target}) => {
+    chrome.tabs.query({active: true, currentWindow: false}, tabs => {
+        var {url} = tabs[0];
+        target.previousElementSibling.value = aria2Global['referer'] = url;
+    });
+});
+
+document.querySelector('#proxy_btn').addEventListener('click', ({target}) => {
+    target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Store['proxy_server'];
+});
+
+document.querySelector('#upload_btn').addEventListener('change', async ({target}) => {
+    var file = target.files[0];
     var b64encode = await getFileData(file);
     if (file.name.endsWith('torrent')){
         await aria2RPC.call('aria2.addTorrent', [b64encode]);
@@ -72,22 +64,22 @@ document.querySelector('#upload_btn').addEventListener('change', async event => 
     close();
 });
 
-document.querySelector('#extra_btn').addEventListener('click', async event => {
+document.querySelector('#extra_btn').addEventListener('click', async (event) => {
     var {id, top, height} = await getCurrentWindow();
     chrome.windows.update(id, {top: top - 151, height: height + 302});
     document.body.className = 'extend';
     countdown.innerText = countdown.innerText * 1 + 90;
 });
 
-document.addEventListener('change', event => {
-    var {id, value} = event.target;
+document.addEventListener('change', ({target}) => {
+    var {id, value} = target;
     if (id) {
         aria2Global[id] = value;
     }
 });
 
 function slimModeInit() {
-    chrome.runtime.sendMessage({action: 'internal_prompt'}, response => {
+    chrome.runtime.sendMessage({action: 'internal_prompt'}, (response) => {
         var {url, json, options} = response;
         if (json) {
             entry.value = JSON.stringify(json);
@@ -111,7 +103,7 @@ function slimModeInit() {
     });
 }
 
-chrome.storage.local.get(null, async json => {
+chrome.storage.local.get(null, async (json) => {
     aria2Store = json;
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     var global = await aria2RPC.call('aria2.getGlobalOption');
@@ -123,9 +115,9 @@ chrome.storage.local.get(null, async json => {
 });
 
 function getFileData(file) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         var reader = new FileReader();
-        reader.onload = () => {
+        reader.onload = (event) => {
             var base64 = reader.result.slice(reader.result.indexOf(',') + 1);
             resolve(base64);
         };

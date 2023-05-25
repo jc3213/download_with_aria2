@@ -224,14 +224,14 @@
     "option_capture_reject_title": {
         "message": "Ignore downloads with these extensions"
     },
-    "popup_queue": {
-        "message": "Queue"
-    },
     "popup_newdld": {
         "message": "New DL"
     },
     "popup_purge": {
         "message": "Purge"
+    },
+    "popup_queue": {
+        "message": "Queue"
     },
     "popup_options": {
         "message": "Options"

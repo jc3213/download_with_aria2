@@ -28,25 +28,25 @@ var linkage = {
     'capture_always': []
 };
 
-document.addEventListener('keydown', event => {
-    var {ctrlKey, keyCode} = event;
+document.addEventListener('keydown', (event) => {
+    var {ctrlKey, key} = event;
     if (ctrlKey) {
-        if (keyCode === 83) {
+        if (key === 's') {
             event.preventDefault();
             savebtn.click();
         }
-        else if (keyCode === 90) {
+        else if (key === 'z') {
             event.preventDefault();
             undobtn.click();
         }
-        else if (keyCode === 89) {
+        else if (key === 'y') {
             event.preventDefault();
             redobtn.click();
         }
     }
 });
 
-savebtn.addEventListener('click', event => {
+savebtn.addEventListener('click', (event) => {
     if (global) {
         aria2Store = {...changes};
         chrome.storage.local.set(changes);
@@ -57,7 +57,7 @@ savebtn.addEventListener('click', event => {
     savebtn.disabled = true;
 });
 
-undobtn.addEventListener('click', event => {
+undobtn.addEventListener('click', (event) => {
     var undo = undoes.pop();
     var {id, old_value} = undo;
     redoes.push(undo);
@@ -68,7 +68,7 @@ undobtn.addEventListener('click', event => {
     }
 });
 
-redobtn.addEventListener('click', event => {
+redobtn.addEventListener('click', (event) => {
     var redo = redoes.pop();
     var {id, new_value} = redo;
     undoes.push(redo);
@@ -81,14 +81,14 @@ redobtn.addEventListener('click', event => {
 
 document.querySelector('#version').innerText = chrome.runtime.getManifest().version;
 
-document.querySelector('#back_btn').addEventListener('click', event => {
+document.querySelector('#back_btn').addEventListener('click', (event) => {
     clearChanges();
     global = true;
     aria2StartUp();
     document.body.className = 'local';
 });
 
-document.querySelector('#aria2_btn').addEventListener('click', async event => {
+document.querySelector('#aria2_btn').addEventListener('click', async (event) => {
     var [options, version] = await aria2RPC.batch([
         {method: 'aria2.getGlobalOption'},
         {method: 'aria2.getVersion'}
@@ -101,7 +101,7 @@ document.querySelector('#aria2_btn').addEventListener('click', async event => {
     document.body.className = 'aria2';
 });
 
-exportbtn.addEventListener('click', event => {
+exportbtn.addEventListener('click', (event) => {
     var blob = new Blob([JSON.stringify(aria2Store)], {type: 'application/json; charset=utf-8'});
     var saver = document.createElement('a');
     saver.href = URL.createObjectURL(blob);
@@ -109,26 +109,26 @@ exportbtn.addEventListener('click', event => {
     saver.click();
 });
 
-importbtn.addEventListener('change', async event => {
-    var json = await getOptionsJSON(event.target.files[0]);
+importbtn.addEventListener('change', async ({target}) => {
+    var json = await getOptionsJSON(target.files[0]);
     chrome.storage.local.set(json);
     clearChanges();
     aria2Store = json;
     aria2StartUp();
-    event.target.value = '';
+    target.value = '';
 });
 
-document.querySelector('#show_btn').addEventListener('mousedown', event => {
+document.querySelector('#show_btn').addEventListener('mousedown', (event) => {
     secret.type = 'text';
 });
 
-document.addEventListener('mouseup', event => {
+document.addEventListener('mouseup', (event) => {
     secret.type = 'password';
 });
 
 textarea.forEach(entry => {
     var {id} = entry;
-    entry.addEventListener('change', event => {
+    entry.addEventListener('change', (event) => {
         var value = getValue(id, entry.value);
         setChange(id, value);
     });
@@ -136,7 +136,7 @@ textarea.forEach(entry => {
 
 checkbox.forEach(entry => {
     var {id} = entry;
-    entry.addEventListener('change', event => {
+    entry.addEventListener('change', (event) => {
         setChange(id, entry.checked);
     });
     checked[id] = 1;
@@ -147,12 +147,12 @@ rulelist.forEach(menu => {
     var entry = menu.querySelector('input');
     var addbtn = menu.querySelector('button');
     var list = menu.querySelector('.rulelist');
-    entry.addEventListener('keydown', event => {
-        if (event.keyCode === 13) {
+    entry.addEventListener('keydown', ({keyCode}) => {
+        if (keyCode === 13) {
             addbtn.click();
         }
     });
-    addbtn.addEventListener('click', event => {
+    addbtn.addEventListener('click', (event) => {
         var {value} = entry;
         if (value !== '') {
             var item = printList(id, value);
@@ -166,7 +166,7 @@ rulelist.forEach(menu => {
     menu.list = {id, list};
 });
 
-document.querySelectorAll('[data-link]').forEach(menu => {
+document.querySelectorAll('[data-link]').forEach((menu) => {
     var data = menu.getAttribute('data-link').match(/[^,;]+/g);
     var [id, value] = data.splice(0, 2);
     linkage[id].push(menu);
@@ -183,18 +183,18 @@ document.querySelectorAll('[data-link]').forEach(menu => {
     menu.link = {major: {id, rule}, minor};
 });
 
-document.querySelector('#aria2').addEventListener('change', event => {
+document.querySelector('#aria2').addEventListener('change', (event) => {
     var {id, value} = event.target;
     setChange(id, value);
 });
 
-chrome.storage.onChanged.addListener(changes => {
+chrome.storage.onChanged.addListener((changes) => {
     if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
         aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     }
 });
 
-chrome.storage.local.get(null, json => {
+chrome.storage.local.get(null, (json) => {
     aria2Store = json;
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     aria2StartUp();
@@ -202,22 +202,22 @@ chrome.storage.local.get(null, json => {
 
 function aria2StartUp() {
     changes = {...aria2Store};
-    textarea.forEach(entry => {
+    textarea.forEach((entry) => {
         var {id} = entry;
         var value = changes[id];
         entry.value = setValue(id, value);
     });
-    checkbox.forEach(entry => {
+    checkbox.forEach((entry) => {
         var {id} = entry;
         entry.checked = changes[id];
         if (id in linkage) {
             linkage[id].forEach(printLinkage);
         }
     });
-    rulelist.forEach(menu => {
+    rulelist.forEach((menu) => {
         var {id, list} = menu.list;
         list.innerHTML = '';
-        changes[id].forEach(value => {
+        changes[id].forEach((value) => {
             var item = printList(id, value);
             list.appendChild(item);
         });
@@ -302,7 +302,7 @@ function setList(id, value) {
 function getList(id, value) {
     var list = document.querySelector(`[data-list="${id}"] > .rulelist`);
     list.innerHTML = '';
-    value.forEach(val => {
+    value.forEach((val) => {
         var item = printList(id, val);
         list.appendChild(item);
     });
@@ -311,7 +311,7 @@ function getList(id, value) {
 function printList(id, value) {
     var item = listLET.cloneNode(true)
     item.querySelector('span').innerText = value;
-    item.querySelector('button').addEventListener('click', event => {
+    item.querySelector('button').addEventListener('click', (event) => {
         var new_value = [...changes[id]];
         new_value.splice(new_value.indexOf(value), 1);
         setChange(id, new_value);
@@ -321,9 +321,9 @@ function printList(id, value) {
 }
 
 function getOptionsJSON(file) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         var reader = new FileReader();
-        reader.onload = () => {
+        reader.onload = (event) => {
             var json = JSON.parse(reader.result);
             resolve(json);
         };

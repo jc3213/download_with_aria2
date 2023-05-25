@@ -4,14 +4,14 @@ if (open_in_tab) {
     document.body.classList.add('full');
 }
 
-document.querySelector('#download_btn').addEventListener('click', async event => {
+downloadbtn.addEventListener('click', async event => {
     await aria2NewDownload();
     if (!open_in_tab) {
         close();
     }
 });
 
-document.querySelector('#options_btn').addEventListener('click', event => {
+optionsbtn.addEventListener('click', event => {
     chrome.runtime.openOptionsPage();
     if (!open_in_tab) {
         close();

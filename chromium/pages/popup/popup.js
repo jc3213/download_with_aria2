@@ -1,4 +1,8 @@
+var container = document.body;
+var downloadbtn = document.querySelector('#download_btn');
+var purgebtn = document.querySelector('#purge_btn');
 var queuebtn = document.querySelector('#queue_btn');
+var optionsbtn = document.querySelector('#options_btn');
 var chooseQueue = document.querySelector('#choose');
 var activeStat = document.querySelector('#status #active');
 var waitingStat = document.querySelector('#status #waiting');
@@ -16,27 +20,47 @@ var fileLET = document.querySelector('.template > .file');
 var uriLET = document.querySelector('.template > .uri');
 var detailed;
 
+document.addEventListener('keydown', (event) => {
+    var {ctrlKey, key} = event;
+    if (ctrlKey) {
+        if (key === 'q') {
+            event.preventDefault();
+            queuebtn.click();
+        }
+        else if (key === 'r') {
+            event.preventDefault();
+            purgebtn.click();
+        }
+        else if (key === 'n') {
+            event.preventDefault();
+            downloadbtn.click();
+        }
+        else if (key === 'o') {
+            event.preventDefault();
+            optionsbtn.click();
+        }
+    }
+});
+
 queuebtn.addEventListener('click', (event) => {
-    document.body.classList.toggle('queue');
+    container.classList.toggle('queue');
 });
 
 chooseQueue.style.left = `${queuebtn.offsetLeft}px`;
 chooseQueue.querySelectorAll('div').forEach((node) => {
-    var {body} = document;
     var {id} = node;
-    node.addEventListener('click', event => {
-        body.classList.toggle(id);
+    node.addEventListener('click', (event) => {
+        container.classList.toggle(id);
     });
 });
 
-document.addEventListener('click', (event) => {
-    var {target} = event;
+document.addEventListener('click', ({target}) => {
     if (queuebtn !== target && !chooseQueue.contains(target)) {
-        document.body.classList.remove('queue');
+        container.classList.remove('queue');
     }
 });
 
-document.querySelector('#purge_btn').addEventListener('click', async (event) => {
+purgebtn.addEventListener('click', async (event) => {
     await aria2RPC.call('aria2.purgeDownloadResult');
     completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     stoppedStat.innerText = '0';
@@ -56,7 +80,7 @@ function aria2StartUp() {
         downloadStat.innerText = getFileSize(downloadSpeed);
         uploadStat.innerText = getFileSize(uploadSpeed);
         aria2Client();
-    }).catch(error => {
+    }).catch((error) => {
         activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = downloadStat.innerText = uploadStat.innerText = '0';
         activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     });
@@ -65,8 +89,8 @@ function aria2StartUp() {
 function aria2Client() {
     aria2Alive = setInterval(updateManager, aria2Store['manager_interval']);
     aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
-    aria2Socket.onmessage = async event => {
-        var {method, params: [{gid}]} = JSON.parse(event.data);
+    aria2Socket.onmessage = async ({data}) => {
+        var {method, params: [{gid}]} = JSON.parse(data);
         if (method !== 'aria2.onBtDownloadComplete') {
             addSession(gid);
             if (method === 'aria2.onDownloadStart' && waitingTask.includes(gid)) {
@@ -168,7 +192,7 @@ function parseSession(gid, status, bittorrent) {
             task.classList.add('extra');
         }
     });
-    task.querySelector('#retry_btn').addEventListener('click', async event => {
+    task.querySelector('#retry_btn').addEventListener('click', async (event) => {
         var [files, options] = await getTaskDetail(gid);
         var {uris, path} = files[0];
         var url = [...new Set(uris.map(({uri}) => uri))];
@@ -184,7 +208,7 @@ function parseSession(gid, status, bittorrent) {
         addSession(id);
         removeSession('stopped', gid, task);
     });
-    task.querySelector('#meter').addEventListener('click', async event => {
+    task.querySelector('#meter').addEventListener('click', async (event) => {
         var status = task.parentNode.id;
         if ('active,waiting'.includes(status)) {
             await aria2RPC.call('aria2.forcePause', [gid]);
@@ -195,21 +219,21 @@ function parseSession(gid, status, bittorrent) {
             waitingQueue.appendChild(task);
         }
     });
-    task.querySelector('#options').addEventListener('change', event => {
-        var {id, value} = event.target;
+    task.querySelector('#options').addEventListener('change', ({target}) => {
+        var {id, value} = target;
         aria2RPC.call('aria2.changeOption', [gid, {[id]: value}]);
     });
-    task.querySelector('#proxy_btn').addEventListener('click', async event => {
+    task.querySelector('#proxy_btn').addEventListener('click', async ({target}) => {
         await aria2RPC.call('aria2.changeOption', [gid, {'all-proxy': aria2Store['proxy_server']}]);
-        event.target.previousElementSibling.value = aria2Store['proxy_server'];
+        target.previousElementSibling.value = aria2Store['proxy_server'];
     });
-    task.querySelector('#save_btn').addEventListener('click', async event => {
+    task.querySelector('#save_btn').addEventListener('click', async ({target}) => {
         var files = [...task.querySelectorAll('#index.ready')].map(index => index.innerText);
         await aria2RPC.call('aria2.changeOption', [gid, {'select-file': files.join()}]);
-        event.target.style.display = 'none';
+        target.style.display = 'none';
     });
-    task.querySelector('#append_btn').addEventListener('click', async event => {
-        var uri = event.target.previousElementSibling;
+    task.querySelector('#append_btn').addEventListener('click', async ({target}) => {
+        var uri = target.previousElementSibling;
         await aria2RPC.call('aria2.changeUri', [gid, 1, [], [uri.value]]);
         uri.value = '';
     });
@@ -238,7 +262,7 @@ function printFileItem(list, index, path, length, selected, uris) {
     var tile = item.querySelector('#index');
     tile.innerText = index;
     tile.className = selected === 'true' ? 'ready' : '';
-    tile.addEventListener('click', event => {
+    tile.addEventListener('click', (event) => {
         if (detailed.cate !== 'stopped' && push) {
             tile.className = tile.className === 'ready' ? '' : 'ready';
             detailed.querySelector('#save_btn').style.display = 'block';
@@ -265,13 +289,8 @@ function printTaskFileList(files) {
 
 function printUriItem(list, uri) {
     var item = uriLET.cloneNode(true);
-    item.addEventListener('click', event => {
-        if (event.ctrlKey) {
-            aria2RPC.call('aria2.changeUri', [detailed.id, 1, [uri], []]);
-        }
-        else {
-           navigator.clipboard.writeText(uri);
-        }
+    item.addEventListener('click', ({ctrlKey}) => {
+        ctrlKey ? aria2RPC.call('aria2.changeUri', [detailed.id, 1, [uri], []]) : navigator.clipboard.writeText(uri);
     });
     list.appendChild(item);
     return item;
@@ -300,5 +319,5 @@ function printTaskUriList(uris) {
         item.querySelector('#used').innerText = used;
         item.querySelector('#wait').innerText = wait;
     });
-    items.slice(urls.length).forEach(item => item.remove());
+    items.slice(urls.length).forEach((item) => item.remove());
 }
