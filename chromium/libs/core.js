@@ -4,7 +4,7 @@ var aria2Complete = chrome.i18n.getMessage('download_complete');
 async function aria2DownloadUrls(url, options) {
     var urls = Array.isArray(url) ? url : [url];
     var message = '';
-    var sessions = urls.map(url => {
+    var sessions = urls.map((url) => {
         message += `${url}\n`;
         var params = options ? [[url], options] : [[url]];
         return {method: 'aria2.addUri', params};
@@ -16,8 +16,7 @@ async function aria2DownloadUrls(url, options) {
 async function aria2DownloadJSON(json, origin) {
     var jsons = Array.isArray(json) ? json : [json];
     var message = '';
-    var sessions = jsons.map(entry => {
-        var {url, options} = entry;
+    var sessions = jsons.map(({url, options}) => {
         if (!url) {
             throw new SyntaxError('Wrong JSON format: "url" is required!');
         }
