@@ -24,13 +24,9 @@ body {
     display: block;
 }
 
-#menu {
+body > #menu {
     display: flex;
     gap: 3px;
-}
-
-#menu > button {
-    width: auto;
 }
 
 #choose {
