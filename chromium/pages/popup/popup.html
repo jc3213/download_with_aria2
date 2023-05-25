@@ -8,17 +8,19 @@
         <link rel="stylesheet" href="popup_extend.css">
     </head>
     <body>
-        <button id="download_btn" i18n>popup_newdld</button>
-        <button id="queue_btn" i18n>popup_queue</button>
-        <div id="status">
-            <div title="popup_active_queue"><span i18n>popup_active_queue</span><span id="active">0</span></div>
-            <div title="popup_waiting_queue"><span i18n>popup_waiting_queue</span><span id="waiting">0</span></div>
-            <div title="popup_stopped_queue"><span i18n>popup_stopped_queue</span><span id="stopped">0</span></div>
-            <div title="popup_download_speed"><span i18n>popup_download_speed</span><span id="download">0</span></div>
-            <div title="popup_upload_speed"><span i18n>popup_upload_speed</span><span id="upload">0</span></div>
+        <div id="menu">
+            <button id="download_btn" i18n>popup_newdld</button>
+            <button id="queue_btn" i18n>popup_queue</button>
+            <div id="status">
+                <div><span i18n>popup_active_queue</span><span id="active">0</span></div>
+                <div><span i18n>popup_waiting_queue</span><span id="waiting">0</span></div>
+                <div><span i18n>popup_stopped_queue</span><span id="stopped">0</span></div>
+                <div><span i18n>popup_download_speed</span><span id="download">0</span></div>
+                <div><span i18n>popup_upload_speed</span><span id="upload">0</span></div>
+            </div>
+            <button id="purge_btn" i18n>popup_purge</button>
+            <button id="options_btn" i18n>popup_options</button>
         </div>
-        <button id="purge_btn" i18n>popup_purge</button>
-        <button id="options_btn" i18n>popup_options</button>
         <div id="choose">
             <div id="active"><span>✔️</span><span i18n>popup_active</span></div>
             <div id="waiting"><span>✔️</span><span i18n>popup_waiting</span></div>

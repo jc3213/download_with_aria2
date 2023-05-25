@@ -20,6 +20,19 @@ body {
     display: none;
 }
 
+.queue #choose {
+    display: block;
+}
+
+#menu {
+    display: flex;
+    gap: 3px;
+}
+
+#menu > button {
+    width: auto;
+}
+
 #choose {
     position: absolute;
     display: none;
@@ -27,10 +40,6 @@ body {
     border-style: solid;
     top: 38px;
     z-index: 999999;
-}
-
-.queue #choose {
-    display: block;
 }
 
 #choose > :hover {
@@ -50,25 +59,31 @@ body {
     visibility: visible;
 }
 
-#menu, #status, #status > * {
-    display: inline-block;
-}
-
 #status {
-    margin: 0px auto;
+    margin: auto;
 }
 
-#status > :nth-child(4) {
-    margin-left: auto;
+#status * {
+    display: inline-block;
+    margin: 0px 3px;
 }
 
-#status > * > :nth-child(1) {
-    border-style: solid;
-    border-width: 1px;
+#status span {
+    padding: 4px;
 }
 
-#status > * > * {
-    padding: 3px;
+@media (prefers-color-scheme: dark) {
+    #status span:first-child {
+        background-color: #4a4a4a;
+    }
+}
+
+#status > :nth-child(-n+3) > :last-child {
+    width: 30px;
+}
+
+#status > :nth-child(n+4) > :last-child {
+    width: 60px;
 }
 
 #queue {

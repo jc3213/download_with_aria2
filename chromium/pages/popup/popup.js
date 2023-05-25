@@ -29,6 +29,13 @@ chooseQueue.querySelectorAll('div').forEach((node) => {
     });
 });
 
+document.addEventListener('click', (event) => {
+    var {target} = event;
+    if (queuebtn !== target && !chooseQueue.contains(target)) {
+        document.body.classList.remove('queue');
+    }
+});
+
 document.querySelector('#purge_btn').addEventListener('click', async (event) => {
     await aria2RPC.call('aria2.purgeDownloadResult');
     completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
