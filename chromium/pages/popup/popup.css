@@ -2,12 +2,12 @@ body {
     width: 680px;
 }
 
-.active > #choose > #active > :first-child,
-.waiting > #choose > #waiting > :first-child,
-.paused > #choose > #paused > :first-child,
-.complete > #choose > #complete > :first-child,
-.removed > #choose > #removed > :first-child,
-.error > #choose > #error > :first-child {
+.active > #choose > #active::before,
+.waiting > #choose > #waiting::before,
+.paused > #choose > #paused::before,
+.complete > #choose > #complete::before,
+.removed > #choose > #removed::before,
+.error > #choose > #error::before {
     visibility: hidden;
 }
 
@@ -47,8 +47,14 @@ body > #menu {
     filter: contrast(45%);
 }
 
-#choose span {
+#choose > * {
     padding: 5px;
+}
+
+#choose > ::before {
+    content: "✔️";
+    padding: 5px;
+    margin-right: 5px;
 }
 
 #choose > * > :first-child {
@@ -58,19 +64,22 @@ body > #menu {
 
 #status {
     margin: auto;
+    display: flex;
 }
 
-#status * {
-    display: inline-block;
-    margin: 0px 3px;
-}
-
-#status span {
+#status > *, #status > ::before {
     padding: 4px;
+    margin: 0px 5px;
+}
+
+@media (prefers-color-scheme: light) {
+    #status > ::before {
+        background-color: #e5e5e5;
+    }
 }
 
 @media (prefers-color-scheme: dark) {
-    #status span:first-child {
+    #status > ::before {
         background-color: #4a4a4a;
     }
 }
@@ -165,6 +174,14 @@ body > #menu {
 
 #ratio::after {
     content: "%";
+}
+
+#infinite {
+    display: none;
+}
+
+#day:empty + #hour:empty + #minute:empty + #second:empty + #infinite {
+    display: inline-block;
 }
 
 .session {

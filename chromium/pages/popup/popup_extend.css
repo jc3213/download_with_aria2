@@ -11,6 +11,26 @@ body:not(.full) #status > :nth-child(-n+3) {
     display: none;
 }
 
+#status > #active::before {
+    content: "__MSG_popup_active_queue__";
+}
+
+#status > #waiting::before {
+    content: "__MSG_popup_waiting_queue__";
+}
+
+#status > #stopped::before {
+    content: "__MSG_popup_stopped_queue__";
+}
+
+#status > #download::before {
+    content: "__MSG_popup_download_speed__";
+}
+
+#status > #upload::before {
+    content: "__MSG_popup_upload_speed__";
+}
+
 #day:not(:empty)::after {
     content: "__MSG_time_day__";
     vertical-align: sub;
@@ -29,12 +49,4 @@ body:not(.full) #status > :nth-child(-n+3) {
 #second:not(:empty)::after {
     content: "__MSG_time_second__";
     vertical-align: sub;
-}
-
-#infinite {
-    display: none;
-}
-
-#day:empty + #hour:empty + #minute:empty + #second:empty + #infinite {
-    display: inline-block;
 }
