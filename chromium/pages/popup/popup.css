@@ -35,6 +35,7 @@ body > #menu {
     border-width: 1px;
     border-style: solid;
     top: 38px;
+    left: 0px;
     z-index: 999999;
 }
 

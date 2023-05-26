@@ -46,7 +46,6 @@ queuebtn.addEventListener('click', (event) => {
     container.classList.toggle('queue');
 });
 
-chooseQueue.style.left = `${queuebtn.offsetLeft}px`;
 chooseQueue.querySelectorAll('div').forEach((node) => {
     var {id} = node;
     node.addEventListener('click', (event) => {
