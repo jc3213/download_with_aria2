@@ -85,65 +85,69 @@ body > #menu {
 #queue {
     height: 537px;
     overflow-y: auto;
-
-    #complete input, #removed input, #error input,
-    #complete select, #removed select, #error select,
-    .http [name="max-upload-limit"] {
-        pointer-events: none;
-        filter: contrast(25%);
-    }
-
-    .http [data-p2p], .p2p [data-http], #retry_btn, #save_btn,
-    #complete #options button, #removed #options button, #error #options button {
-        display: none;
-    }
-
-    #removed .http #retry_btn, #error .http #retry_btn {
-        display: inline-block;
-    }
-
-    #active #meter {
-        background-color: #4cc;
-    }
-
-    #waiting #meter {
-        background-color: #48c;
-    }
-
-    #paused #meter {
-        background-color: #488;
-    }
-
-    #removed #meter, #error #meter {
-        background-color: #844;
-    }
-
-    #active #meter > #ratio, .ready {
-        background-color: #44c;
-    }
-
-    #waiting #meter > #ratio, #paused #meter > #ratio {
-        background-color: #cc4;
-    }
-
-    #complete #meter, #complete #meter > #ratio {
-        background-color: #4c4;
-    }
-
-    #removed #meter > #ratio, #error #meter > #ratio {
-        background-color: #c48;
-    }
-
-    #meter, .ready {
-        color: #fff;
-    }
 }
 
-#queue > :not(#complete, #removed, #error) {
-    #meter:active, #meter > #ratio:active,
-    .p2p .file > :nth-child(1):active {
-        filter: contrast(45%);
-    }
+#queue > #complete input, #queue > #complete select,
+#queue > #removed input, #queue > #removed select,
+#queue > #error input, #queue > #error select,
+.session.http [name="max-upload-limit"] {
+    pointer-events: none;
+    filter: contrast(25%);
+}
+
+#queue > #complete #options button,
+#queue > #removed #options button,
+#queue > #error #options button,
+.session.http [data-p2p],
+.session.p2p [data-http],
+#retry_btn, #save_btn {
+    display: none;
+}
+
+#queue > #removed .http #retry_btn, #queue > #error .http #retry_btn {
+    display: inline-block;
+}
+
+#queue > #active #meter {
+    background-color: #4cc;
+}
+
+#queue > #waiting #meter {
+    background-color: #48c;
+}
+
+#queue > #paused #meter {
+    background-color: #488;
+}
+
+#queue > #removed #meter, #queue > #error #meter {
+    background-color: #844;
+}
+
+#queue > #active #meter > #ratio, .session .ready {
+    background-color: #44c;
+}
+
+#queue > #waiting #meter > #ratio, #queue > #paused #meter > #ratio {
+    background-color: #cc4;
+}
+
+#queue > #complete #meter, #queue > #complete #meter > #ratio {
+    background-color: #4c4;
+}
+
+#queue > #removed #meter > #ratio, #queue > #error #meter > #ratio {
+    background-color: #c48;
+}
+
+#queue #meter, .session .ready {
+    color: #fff;
+}
+
+#queue > :nth-child(-n+3) #meter:active,
+#queue > :nth-child(-n+3) #meter > #ratio:active,
+#queue > :nth-child(-n+3) .p2p .file > :nth-child(1):active {
+    filter: contrast(45%);
 }
 
 #queue .http .uri > :nth-child(1):active {
@@ -169,62 +173,62 @@ body > #menu {
     margin-bottom: 5px;
     display: grid;
     grid-template-columns: repeat(3, calc(33.33% - 7.5px)) 22.5px;
+}
 
-    #title {
-        grid-area: 1 / 1 / 1 / 4;
-    }
+.session > #title {
+    grid-area: 1 / 1 / 1 / 4;
+}
 
-    #menu {
-        grid-area: 1 / 4 / 4 / 5;
-    }
+.session > #menu {
+    grid-area: 1 / 4 / 4 / 5;
+}
 
-    #menu > button {
-        font-size: 12px;
-        padding: 2px;
-    }
+.session > #menu > button {
+    font-size: 12px;
+    padding: 2px;
+}
 
-    #meter {
-        grid-area: 4 / 1 / 4 / 5;
-        text-align: center;
-    }
+.session > #meter {
+    grid-area: 4 / 1 / 4 / 5;
+    text-align: center;
+}
 
-    #options {
-        grid-area: 5 / 1 / 5 / 5;
-        display: none;
-    }
+.session > #options {
+    grid-area: 5 / 1 / 5 / 5;
+    display: none;
+}
 
-    .menu {
-        margin-top: 10px;
-    }
+.session #save_btn {
+    top: -10px;
+    padding: 4px;
+}
 
-    .file > *, .uri > * {
-        border-width: 1px;
-        border-style: solid;
-        height: 21px;
-        padding: 3px;
-        overflow: hidden;
-        white-space: nowrap;
-    }
+.session .menu {
+    margin-top: 5px;
+}
 
-    .file > :not(:nth-child(2)), .uri > :nth-child(n+2) {
-        text-align: center;
-        padding: 3px 0px;
-    }
+.file > *, .uri > * {
+    border-width: 1px;
+    border-style: solid;
+    height: 21px;
+    padding: 3px;
+    overflow: hidden;
+    white-space: nowrap;
+}
 
-    .file {
-        display: grid;
-        grid-template-columns: 40px auto 80px 60px;
-    }
+.file > :not(:nth-child(2)), .uri > :nth-child(n+2) {
+    text-align: center;
+    padding: 3px 0px;
+}
 
-    .uri {
-        display: grid;
-        grid-template-columns: auto 40px 40px;
-    }
+.file {
+    display: grid;
+    grid-template-columns: 40px auto 80px 60px;
+}
 
-    #save_btn {
-        top: -10px;
-        padding: 4px;
-    }
+.uri {
+    display: grid;
+    grid-template-columns: auto 40px 40px;
 }
 
 .session > :nth-last-child(n+3) {
