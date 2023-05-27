@@ -1,0 +1,52 @@
+body.full {
+    width: 1280px;
+    margin: 8px auto;
+}
+
+body.full > #queue {
+    height: auto;
+}
+
+body:not(.full) #status > :nth-child(-n+3) {
+    display: none;
+}
+
+body:not(.full) > #queue {
+    height: 537px;
+}
+
+#status > #active::before {
+    content: "__MSG_popup_active_queue__";
+}
+
+#status > #waiting::before {
+    content: "__MSG_popup_waiting_queue__";
+}
+
+#status > #stopped::before {
+    content: "__MSG_popup_stopped_queue__";
+}
+
+#status > #download::before {
+    content: "__MSG_popup_download_speed__";
+}
+
+#status > #upload::before {
+    content: "__MSG_popup_upload_speed__";
+}
+
+#day:not(:empty)::after {
+    content: "__MSG_time_day__";
+}
+
+#hour:not(:empty)::after {
+    content: "__MSG_time_hour__";
+}
+
+#minute:not(:empty)::after {
+    content: "__MSG_time_minute__";
+}
+
+#second:not(:empty)::after {
+    content: "__MSG_time_second__";
+}
