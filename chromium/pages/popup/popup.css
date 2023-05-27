@@ -56,11 +56,6 @@ body > #menu {
     margin-right: 5px;
 }
 
-#choose > * > :first-child {
-    text-align: center;
-    visibility: visible;
-}
-
 #status {
     margin: auto;
     display: flex;
@@ -117,40 +112,48 @@ body > #menu {
     display: inline-block;
 }
 
-#queue > #active #meter {
-    background-color: #4cc;
+#queue #meter {
+    background-color: #4a4a4a;
 }
 
-#queue > #waiting #meter {
-    background-color: #48c;
-}
-
-#queue > #paused #meter {
-    background-color: #488;
-}
-
-#queue > #removed #meter, #queue > #error #meter {
-    background-color: #844;
-}
-
-#queue > #active #meter > #ratio, .session .ready {
-    background-color: #44c;
+#queue > #active #meter > #ratio, #queue > #complete #meter > #ratio, .session .ready {
+    background-color: #4ac84a;
 }
 
 #queue > #waiting #meter > #ratio, #queue > #paused #meter > #ratio {
-    background-color: #cc4;
-}
-
-#queue > #complete #meter, #queue > #complete #meter > #ratio {
-    background-color: #4c4;
+    background-color: #c6c84a;
 }
 
 #queue > #removed #meter > #ratio, #queue > #error #meter > #ratio {
-    background-color: #c48;
+    background-color: #cb4a86;
 }
 
 #queue #meter, .session .ready {
     color: #fff;
+}
+
+#queue > #active #title::before {
+    content: "▶️";
+}
+
+#queue > #waiting #title::before {
+    content: "⌛";
+}
+
+#queue > #paused #title::before {
+    content: "⏸️";
+}
+
+#queue > #complete #title::before {
+    content: "✔️";
+}
+
+#queue > #removed #title::before {
+    content: "⏹️";
+}
+
+#queue > #error #title::before {
+    content: "❌";
 }
 
 #queue > :nth-child(-n+3) #meter:active,
@@ -196,13 +199,20 @@ body > #menu {
     grid-area: 1 / 1 / 1 / 4;
 }
 
+.session > #title::before {
+    margin-right: 3px;
+}
+
 .session > #menu {
     grid-area: 1 / 4 / 4 / 5;
 }
 
 .session > #menu > button {
-    font-size: 12px;
-    padding: 2px;
+    font-size: 14px;
+    padding: 1px;
+    margin-bottom: 1px;
+    width: 22.5px;
+    height: 22.5px;
 }
 
 .session > #meter {
