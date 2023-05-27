@@ -187,7 +187,7 @@ body > #menu {
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
-    grid-template-columns: repeat(3, calc(33.33% - 7.5px)) 22.5px;
+    grid-template-columns: repeat(3, 1fr) 22.5px;
 }
 
 .session > #title {
