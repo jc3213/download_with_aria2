@@ -24,7 +24,7 @@
                 <button id="back_btn" data-aria2 i18n>option_back</button>
             </div>
         </div>
-        <div id="local" data-local>
+        <div id="local" class="options" data-local>
             <h1>JSON-RPC</h1>
             <div class="menu" title="option_jsonrpc_uri_title">
                 <div class="title" i18n>option_jsonrpc_uri</div>
@@ -41,70 +41,60 @@
                 </div>
             </div>
             <h1 i18n>option_task_manager</h1>
-            <div class="menu flex">
-            <div title="option_manager_newtab_title">
+            <div class="menu" title="option_manager_newtab_title">
                 <input id="manager_newtab" id="manager_newtab" type="checkbox">
                 <label for="manager_newtab" i18n>option_manager_newtab</label>
             </div>
-            <div class="flex" title="option_manager_interval_title">
+            <div class="menu flex" title="option_manager_interval_title">
                 <label class="title" i18n>option_manager_interval</label>
                 <div>
                     <input id="manager_interval" type="number" min="5" max="30" step="1">
                     <span class="float" i18n>time_second_full</span>
                 </div>
             </div>
-            </div>
             <h1 i18n>option_notification</h1>
-            <div class="menu flex">
-                <div title="option_notify_start_title">
-                    <input id="notify_start" type="checkbox">
-                    <label for="notify_start" i18n>option_notify_start</label>
-                </div>
-                <div title="option_notify_complete_title">
-                    <input id="notify_complete" type="checkbox">
-                    <label for="notify_complete" i18n>option_notify_complete</label>
-                </div>
+            <div class="menu" title="option_notify_start_title">
+                <input id="notify_start" type="checkbox">
+                <label for="notify_start" i18n>option_notify_start</label>
+            </div>
+            <div class="menu" title="option_notify_complete_title">
+                <input id="notify_complete" type="checkbox">
+                <label for="notify_complete" i18n>option_notify_complete</label>
             </div>
             <h1 i18n>option_advanced</h1>
-            <div class="menu flex">
-                <div title="option_download_headers_title">
-                    <input id="download_headers" type="checkbox">
-                    <label for="download_headers" i18n>option_download_headers</label>
-                </div>
-                <div title="option_download_prompt_title">
-                    <input id="download_prompt" type="checkbox">
-                    <label for="download_prompt" i18n>option_download_prompt</label>
-                </div>
+            <div class="menu" title="option_download_headers_title">
+                <input id="download_headers" type="checkbox">
+                <label for="download_headers" i18n>option_download_headers</label>
+            </div>
+            <div class="menu" title="option_download_prompt_title">
+                <input id="download_prompt" type="checkbox">
+                <label for="download_prompt" i18n>option_download_prompt</label>
             </div>
             <h1 i18n>option_folder</h1>
-            <div class="menu" title="option_folder_title">
+            <div title="option_folder_title">
                 <input id="folder_defined" type="text">
             </div>
-            <div class="menu flex">
-                <div title="option_folder_enabled_title">
-                    <input id="folder_enabled" type="checkbox">
-                    <label for="folder_enabled" i18n>option_folder_enabled</label>
-                </div>
+            <div class="menu" title="option_folder_enabled_title">
+                <input id="folder_enabled" type="checkbox">
+                <label for="folder_enabled" i18n>option_folder_enabled</label>
             </div>
             <h1 i18n>option_user_agent</h1>
-            <div class="menu flex" title="option_user_agent_title">
+            <div title="option_user_agent_title">
                 <input id="user_agent" type="text">
             </div>
             <h1 i18n>option_proxy</h1>
-            <div class="menu" title="option_proxy_title">
+            <div title="option_proxy_title">
                 <input id="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
             </div>
-            <div class="menu flex">
-                <div title="option_proxy_enabled_title">
-                    <input id="proxy_enabled" type="checkbox">
-                    <label for="proxy_enabled" i18n>option_proxy_enabled</label>
-                </div>
-                <div title="option_proxy_always_title" data-link="proxy_enabled,1">
-                    <input id="proxy_always" type="checkbox">
-                    <label for="proxy_always" i18n>option_proxy_always</label>
-                </div>
+            <div class="menu" title="option_proxy_enabled_title">
+                <input id="proxy_enabled" type="checkbox">
+                <label for="proxy_enabled" i18n>option_proxy_enabled</label>
             </div>
-            <div class="menu" title="option_proxy_include_title" data-list="proxy_include" data-link="proxy_enabled,1;proxy_always,0">
+            <div class="menu" title="option_proxy_always_title" data-link="proxy_enabled,1">
+                <input id="proxy_always" type="checkbox">
+                <label for="proxy_always" i18n>option_proxy_always</label>
+            </div>
+            <div title="option_proxy_include_title" data-list="proxy_include" data-link="proxy_enabled,1;proxy_always,0">
                 <div class="title" i18n>option_proxy_include</div>
                 <div class="flex">
                     <input type="text">
@@ -113,17 +103,15 @@
                 <div class="rulelist"></div>
             </div>
             <h1 i18n>option_capture</h1>
-            <div class="menu flex">
-                <div title="option_capture_enabled_title">
-                    <input id="capture_enabled" type="checkbox">
-                    <label for="capture_enabled" i18n>option_capture_enabled</label>
-                </div>
-                <div title="option_capture_always_title" data-link="capture_enabled,1">
-                    <input id="capture_always" type="checkbox">
-                    <label for="capture_always" i18n>option_capture_always</label>
-                </div>
+            <div class="menu" title="option_capture_enabled_title">
+                <input id="capture_enabled" type="checkbox">
+                <label for="capture_enabled" i18n>option_capture_enabled</label>
             </div>
-            <div class="menu" title="option_capture_filesize_title" data-link="capture_enabled,1;capture_always,0">
+            <div class="menu" title="option_capture_always_title" data-link="capture_enabled,1">
+                <input id="capture_always" type="checkbox">
+                <label for="capture_always" i18n>option_capture_always</label>
+            </div>
+            <div title="option_capture_filesize_title" data-link="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_filesize</div>
                 <div>
                     <input id="capture_filesize" type="number" min="0">
@@ -133,7 +121,7 @@
                     <span i18n>common_disabled</span>: <u><i>0</i></u>
                 </div>
             </div>
-            <div class="menu" title="option_capture_resolve_title" data-list="capture_resolve" data-link="capture_enabled,1;capture_always,0">
+            <div title="option_capture_resolve_title" data-list="capture_resolve" data-link="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_resolve</div>
                 <div class="flex">
                     <input type="text">
@@ -141,7 +129,7 @@
                 </div>
                 <div class="rulelist"></div>
             </div>
-            <div class="menu" title="option_capture_include_title" data-list="capture_include" data-link="capture_enabled,1;capture_always,0">
+            <div title="option_capture_include_title" data-list="capture_include" data-link="capture_enabled,1;capture_always,0">
                 <div class="title" i18n>option_capture_include</div>
                 <div class="flex">
                     <input type="text">
@@ -149,7 +137,7 @@
                 </div>
                 <div class="rulelist"></div>
             </div>
-            <div class="menu" title="option_capture_reject_title" data-list="capture_reject" data-link="capture_enabled,1">
+            <div title="option_capture_reject_title" data-list="capture_reject" data-link="capture_enabled,1">
                 <div class="title" i18n>option_capture_reject</div>
                 <div class="flex">
                     <input type="text">
@@ -157,7 +145,7 @@
                 </div>
                 <div class="rulelist"></div>
             </div>
-            <div class="menu" title="option_capture_exclude_title" data-list="capture_exclude" data-link="capture_enabled,1">
+            <div title="option_capture_exclude_title" data-list="capture_exclude" data-link="capture_enabled,1">
                 <div class="title" i18n>option_capture_exclude</div>
                 <div class="flex">
                     <input type="text">
@@ -171,7 +159,7 @@
                 <span></span><button>❌</button>
             </div>
         </div>
-        <div id="aria2" data-aria2>
+        <div id="aria2" class="options" data-aria2>
             <h1>HTTP/FTP</h1>
             <div class="menu" title="aria2_http_retry_title">
                 <div class="title" i18n>aria2_http_retry</div>
@@ -211,7 +199,7 @@
                     <span i18n>common_default</span>: <u><i>20M</i></u>
                 </div>
             </div>
-            <div class="menu" title="aria2_http_ua_title">
+            <div title="aria2_http_ua_title">
                 <div class="title" i18n>aria2_http_ua</div>
                 <div>
                     <input id="user-agent" type="text">
