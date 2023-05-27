@@ -16,8 +16,9 @@ var lang = browser.i18n.getUILanguage();
 i18n = i18n[lang] ?? i18n[lang.slice(0, lang.indexOf('-'))] ?? i18n['en'];
 
 var folderff = document.createElement('div');
+folderff.className = 'menu';
 folderff.title = i18n.folderff_title;
-folderff.innerHTML = `<input id="folder_firefox" id="folder_firefox" type="checkbox"><label for="folder_firefox">${i18n.folderff}</label>`;
+folderff.innerHTML = `<input id="folder_firefox" id="folder_firefox" type="checkbox">\n<label for="folder_firefox">${i18n.folderff}</label>`;
 folderff.addEventListener('change', event => {
     var {id, checked} = event.target;
     setChange(id, checked);
@@ -35,16 +36,12 @@ folderen.addEventListener('change', event => {
         folderff.style.display = changes['capture_webrequest'] ? 'none' : 'block';
     }
 });
-
-var container = document.createElement('div');
-container.className = 'menu flex';
-folderen.replaceWith(container);
-container.append(folderen, folderff);
+folderen.after(folderff);
 
 var webrequest = document.createElement('div');
 webrequest.title = i18n.webrequest_title;
 webrequest.className = 'menu';
-webrequest.innerHTML = `<input id="capture_webrequest" id="capture_webrequest" type="checkbox"><label for="capture_webrequest">${i18n.webrequest}</label>`;
+webrequest.innerHTML = `<input id="capture_webrequest" id="capture_webrequest" type="checkbox">\n<label for="capture_webrequest">${i18n.webrequest}</label>`;
 webrequest.link = {
     major: {id: 'capture_enabled', rule: true},
     minor: []
@@ -63,7 +60,7 @@ captureen.addEventListener('change', event => {
         setDefaultFolder();
     }
 });
-captureen.parentNode.after(webrequest);
+captureen.after(webrequest);
 
 checked['folder_firefox'] = 1;
 checked['capture_webrequest'] = 1;
