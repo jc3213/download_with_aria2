@@ -179,6 +179,10 @@ body > #menu {
     display: none;
 }
 
+#day::after, #hour::after, #minute::after, #second::after {
+    vertical-align: sub;
+}
+
 #day:empty + #hour:empty + #minute:empty + #second:empty + #infinite {
     display: inline-block;
 }

@@ -33,20 +33,16 @@ body:not(.full) #status > :nth-child(-n+3) {
 
 #day:not(:empty)::after {
     content: "__MSG_time_day__";
-    vertical-align: sub;
 }
 
 #hour:not(:empty)::after {
     content: "__MSG_time_hour__";
-    vertical-align: sub;
 }
 
 #minute:not(:empty)::after {
     content: "__MSG_time_minute__";
-    vertical-align: sub;
 }
 
 #second:not(:empty)::after {
     content: "__MSG_time_second__";
-    vertical-align: sub;
 }
