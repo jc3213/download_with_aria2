@@ -11,6 +11,10 @@ body:not(.full) #status > :nth-child(-n+3) {
     display: none;
 }
 
+body:not(.full) > #queue {
+    height: 537px;
+}
+
 #status > #active::before {
     content: "__MSG_popup_active_queue__";
 }

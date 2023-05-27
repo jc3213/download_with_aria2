@@ -56,11 +56,6 @@ body > #menu {
     margin-right: 5px;
 }
 
-#choose > * > :first-child {
-    text-align: center;
-    visibility: visible;
-}
-
 #status {
     margin: auto;
     display: flex;
@@ -92,7 +87,6 @@ body > #menu {
 }
 
 #queue {
-    height: 537px;
     overflow-y: auto;
 }
 
