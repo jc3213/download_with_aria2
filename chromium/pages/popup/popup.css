@@ -210,16 +210,15 @@ body > #menu {
 
 .session > #options {
     grid-area: 5 / 1 / 5 / 5;
-    display: none;
+}
+
+.session #options > * {
+    margin-top: 5px;
 }
 
 .session #save_btn {
     top: -10px;
     padding: 4px;
-}
-
-.session .menu {
-    margin-top: 5px;
 }
 
 .file > *, .uri > * {
@@ -250,8 +249,8 @@ body > #menu {
     height: 24px;
 }
 
-.session.extra > #options {
-    display: block;
+.session:not(.extra) > #options {
+    display: none;
 }
 
 .queue #queue_btn, .session.extra #detail_btn {
