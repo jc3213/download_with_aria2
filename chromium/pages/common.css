@@ -114,8 +114,12 @@ button.checked {
     grid-gap: 5px;
 }
 
-.options > .menu, .menu:nth-child(n+2) {
+.options > *, .menu:nth-child(n+2) {
     margin-top: 15px;
+}
+
+.options > :not(.menu) {
+    grid-column: span 2;
 }
 
 .flex {
