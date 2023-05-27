@@ -145,7 +145,7 @@ body > #menu {
 }
 
 #queue > #complete #title::before {
-    content: "✔️";
+    content: "✅";
 }
 
 #queue > #removed #title::before {
@@ -153,7 +153,7 @@ body > #menu {
 }
 
 #queue > #error #title::before {
-    content: "❌";
+    content: "⛔";
 }
 
 #queue > :nth-child(-n+3) #meter:active,
@@ -200,7 +200,10 @@ body > #menu {
 }
 
 .session > #title::before {
-    margin-right: 3px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-right: 2px;
 }
 
 .session > #menu {
