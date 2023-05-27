@@ -16,12 +16,9 @@ body {
 .paused > #queue > #paused,
 .complete > #queue > #complete,
 .removed > #queue > #removed,
-.error > #queue > #error {
+.error > #queue > #error,
+:not(.queue) > #choose {
     display: none;
-}
-
-.queue #choose {
-    display: block;
 }
 
 body > #menu {
@@ -31,7 +28,6 @@ body > #menu {
 
 #choose {
     position: absolute;
-    display: none;
     border-width: 1px;
     border-style: solid;
     top: 38px;
@@ -212,7 +208,7 @@ body > #menu {
     grid-area: 5 / 1 / 5 / 5;
 }
 
-.session #options > * {
+.session > #options > * {
     margin-top: 5px;
 }
 
