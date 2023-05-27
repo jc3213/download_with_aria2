@@ -39,5 +39,5 @@ function aria2NewDownload(slim) {
     if (slim) {
         return getNewWindow(aria2NewDL + '?slim_mode', 640, 308);
     }
-    return getNewWindow(aria2NewDL, 640, 610);
+    return getNewWindow(aria2NewDL, 640, 560);
 }
