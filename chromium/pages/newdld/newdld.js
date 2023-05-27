@@ -4,9 +4,7 @@ var countdown = document.querySelector('#countdown');
 var filename = document.querySelector('#out');
 var slim_mode = location.search === '?slim_mode';
 
-if (slim_mode) {
-    document.body.className = 'slim';
-}
+document.body.className = slim_mode ? 'slim' : 'full';
 
 document.addEventListener('keydown', (event) => {
     var {ctrlKey, altKey, key} = event;
@@ -67,7 +65,7 @@ document.querySelector('#upload_btn').addEventListener('change', async ({target}
 document.querySelector('#extra_btn').addEventListener('click', async (event) => {
     var {id, top, height} = await getCurrentWindow();
     chrome.windows.update(id, {top: top - 151, height: height + 302});
-    document.body.className = 'extend';
+    document.body.className = 'extra';
     countdown.innerText = countdown.innerText * 1 + 90;
 });
 

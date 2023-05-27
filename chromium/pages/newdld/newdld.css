@@ -5,13 +5,6 @@
     }
 }
 
-body:not([class]) [data-slim],
-body[class] #upload_btn,
-.slim [data-extra],
-.extend #extra_btn {
-    display: none;
-}
-
 textarea {
     padding: 3px;
     width: calc(100% - 12px);
@@ -20,6 +13,12 @@ textarea {
     border-style: inset;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.slim .options > :nth-child(n+3),
+.slim #upload_btn, .extra #upload_btn,
+.full #countdown, .full #extra_btn {
+    display: none;
 }
 
 #menu {

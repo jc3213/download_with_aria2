@@ -7,32 +7,30 @@
         <link rel="stylesheet" href="newdld.css">
     </head>
     <body>
-        <div id="download">
-            <div class="menu" title="task_referer_title">
-                <div class="title" i18n>task_referer</div>
-                <div class="flex">
-                    <input id="referer" type="text">
-                    <button id="referer_btn">🔖</button>
-                </div>
+        <div class="menu" title="task_referer_title">
+            <div class="title" i18n>task_referer</div>
+            <div class="flex">
+                <input id="referer" type="text">
+                <button id="referer_btn">🔖</button>
             </div>
-            <div class="menu" title="task_batch_title">
-                <div class="title" i18n>task_batch</div>
+        </div>
+        <div class="menu" title="task_batch_title">
+            <div class="title" i18n>task_batch</div>
+            <div>
+                <textarea id="entry" rows="2"></textarea>
+            </div>
+        </div>
+        <div class="options">
+            <div class="menu" title="task_name_title">
+                <div class="title" i18n>task_name</div>
                 <div>
-                    <textarea id="entry" rows="2"></textarea>
+                    <input id="out" type="text">
                 </div>
             </div>
-            <div class="menu flex">
-                <div title="task_name_title">
-                    <div class="title" i18n>task_name</div>
-                    <div>
-                        <input id="out" type="text">
-                    </div>
-                </div>
-                <div title="aria2_adv_dir_title">
-                    <div class="title" i18n>aria2_adv_dir</div>
-                    <div>
-                        <input id="dir" type="text">
-                    </div>
+            <div class="menu" title="aria2_adv_dir_title">
+                <div class="title" i18n>aria2_adv_dir</div>
+                <div>
+                    <input id="dir" type="text">
                 </div>
             </div>
             <div class="menu" title="aria2_http_ua_title" data-extra>
@@ -48,39 +46,35 @@
                     <button id="proxy_btn">🔖</button>
                 </div>
             </div>
-            <div class="menu flex" data-extra>
-                <div title="aria2_http_split_title">
-                    <div class="title" i18n>aria2_http_split</div>
-                    <div>
-                        <input id="split" type="number">
-                    </div>
-                    <span i18n>common_default</span>: <u><i>5</i></u>
+            <div class="menu" title="aria2_http_split_title">
+                <div class="title" i18n>aria2_http_split</div>
+                <div>
+                    <input id="split" type="number">
                 </div>
-                <div title="aria2_http_size_title">
-                    <div class="title" i18n>aria2_http_size</div>
-                    <div>
-                        <input id="min-split-size" type="text">
-                        <span class="float">B</span>
-                    </div>
-                    <span i18n>common_default</span>: <u><i>20M</i></u>
-                </div>
+                <span i18n>common_default</span>: <u><i>5</i></u>
             </div>
-            <div class="menu flex" data-extra>
-                <div title="aria2_max_connection_title">
-                    <div class="title" i18n>aria2_max_connection</div>
-                    <div>
-                        <input id="max-connection-per-server" type="number">
-                    </div>
-                    <span i18n>common_default</span>: <u><i>1</i></u>
+            <div class="menu" title="aria2_http_size_title">
+                <div class="title" i18n>aria2_http_size</div>
+                <div>
+                    <input id="min-split-size" type="text">
+                    <span class="float">B</span>
                 </div>
-                <div title="task_download_title">
-                    <div class="title" i18n>task_download</div>
-                    <div>
-                        <input id="max-download-limit" type="text">
-                        <span class="float">B/s</span>
-                    </div>
-                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                <span i18n>common_default</span>: <u><i>20M</i></u>
+            </div>
+            <div class="menu" title="aria2_max_connection_title">
+                <div class="title" i18n>aria2_max_connection</div>
+                <div>
+                    <input id="max-connection-per-server" type="number">
                 </div>
+                <span i18n>common_default</span>: <u><i>1</i></u>
+            </div>
+            <div class="menu" title="task_download_title">
+                <div class="title" i18n>task_download</div>
+                <div>
+                    <input id="max-download-limit" type="text">
+                    <span class="float">B/s</span>
+                </div>
+                <span i18n>common_disabled</span>: <u><i>0</i></u>
             </div>
         </div>
         <hr>

@@ -108,7 +108,13 @@ button.checked {
     display: none;
 }
 
-.menu:nth-child(n+2) {
+.options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 5px;
+}
+
+.options > .menu, .menu:nth-child(n+2) {
     margin-top: 15px;
 }
 
