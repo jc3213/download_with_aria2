@@ -15,10 +15,13 @@ textarea {
     overflow-x: hidden;
 }
 
-.slim .options > :nth-child(n+3),
-.slim #upload_btn, .extra #upload_btn,
-.full #countdown, .full #extra_btn {
+.slim .options > :nth-child(n+3), .full #countdown,
+#extra_btn, #upload_btn {
     display: none;
+}
+
+.slim #extra_btn, .full #upload_btn {
+    display: inline-block;
 }
 
 #menu {
