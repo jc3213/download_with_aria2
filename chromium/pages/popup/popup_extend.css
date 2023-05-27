@@ -3,12 +3,22 @@ body.full {
     margin: 8px auto;
 }
 
-body.full > #queue {
-    height: auto;
+body.full > #menu {
+    position: fixed;
+    z-index: 999999;
+    padding: 5px;
+    border-width: 1px;
+    border-style: solid;
+    top: 8px;
+    width: 1268px;
 }
 
-body:not(.full) #status > :nth-child(-n+3) {
+body.full > hr, body:not(.full) #status > :nth-child(-n+3) {
     display: none;
+}
+
+body.full > #queue {
+    margin-top: 56px;
 }
 
 body:not(.full) > #queue {
