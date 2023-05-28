@@ -17,7 +17,7 @@
     top: 48px;
 }
 
-.full > hr, :not(.full) > #menu > #status > :nth-child(-n+3) {
+.full > hr, body:not(.full) > #status > :nth-child(-n+3) {
     display: none;
 }
 
@@ -25,7 +25,7 @@
     margin-top: 56px;
 }
 
-:not(.full) > #queue {
+body:not(.full) > #queue {
     height: 537px;
 }
 
