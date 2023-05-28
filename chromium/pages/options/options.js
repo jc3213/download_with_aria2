@@ -9,6 +9,7 @@ var secret = document.querySelector('#jsonrpc_token');
 var changes = {};
 var redoes = [];
 var undoes = [];
+var undone = false;
 var global = true;
 var textarea = document.querySelectorAll('#local input[id]:not([type="checkbox"])');
 var multiply = {
@@ -62,6 +63,7 @@ undobtn.addEventListener('click', (event) => {
     var {id, old_value} = undo;
     redoes.push(undo);
     redobtn.disabled = false;
+    undone = true;
     getChange(id, old_value);
     if (undoes.length === 0) {
         undobtn.disabled = true;
@@ -155,11 +157,10 @@ rulelist.forEach(menu => {
     addbtn.addEventListener('click', (event) => {
         var {value} = entry;
         if (value !== '') {
-            var item = printList(id, value);
-            list.appendChild(item);
             var new_value = [...changes[id], value];
             setChange(id, new_value);
             entry.value = '';
+            printList(list, id, value);
         }
     });
     listed[id] = 1;
@@ -210,17 +211,12 @@ function aria2StartUp() {
     checkbox.forEach((entry) => {
         var {id} = entry;
         entry.checked = changes[id];
-        if (id in linkage) {
-            linkage[id].forEach(printLinkage);
-        }
+        linkage[id]?.forEach(printLinkage);
     });
     rulelist.forEach((menu) => {
         var {id, list} = menu.list;
         list.innerHTML = '';
-        changes[id].forEach((value) => {
-            var item = printList(id, value);
-            list.appendChild(item);
-        });
+        changes[id].forEach((value) => printList(list, id, value));
     });
 }
 
@@ -236,7 +232,7 @@ function printLinkage(menu) {
         }
     });
     if (prime) {
-        menu.style.display = second === minor.length ? 'block' : 'none';
+        menu.style.display = second === minor.length ? '' : 'none';
     }
     else {
         menu.style.display = 'none';
@@ -263,9 +259,7 @@ function getChange(id, value) {
     else {
         entry.value = setValue(id, value);
     }
-    if (id in linkage) {
-        linkage[id].forEach(printLinkage);
-    }
+    linkage[id]?.forEach(printLinkage);
 }
 
 function setChange(id, new_value) {
@@ -273,8 +267,11 @@ function setChange(id, new_value) {
     undoes.push({id, old_value, new_value});
     savebtn.disabled = undobtn.disabled = false;
     changes[id] = new_value;
-    if (id in linkage) {
-        linkage[id].forEach(printLinkage);
+    linkage[id]?.forEach(printLinkage);
+    if (undone) {
+        redoes = [];
+        undone = false;
+        redobtn.disabled = true;
     }
 }
 
@@ -292,23 +289,13 @@ function setValue(id, value) {
     return value;
 }
 
-function setList(id, value) {
-    var list = document.querySelector(`[data-list="${id}"] > .rulelist`);
-    var item = printList(id, value);
-    list.appendChild(item);
-    return [...changes[id], value];
-}
-
 function getList(id, value) {
     var list = document.querySelector(`[data-list="${id}"] > .rulelist`);
     list.innerHTML = '';
-    value.forEach((val) => {
-        var item = printList(id, val);
-        list.appendChild(item);
-    });
+    value.forEach((val) => printList(list, id, val));
 }
 
-function printList(id, value) {
+function printList(list, id, value) {
     var item = listLET.cloneNode(true)
     item.querySelector('span').innerText = value;
     item.querySelector('button').addEventListener('click', (event) => {
@@ -317,7 +304,7 @@ function printList(id, value) {
         setChange(id, new_value);
         item.remove();
     });
-    return item;
+    list.append(item);
 }
 
 function getOptionsJSON(file) {
