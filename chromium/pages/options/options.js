@@ -3,6 +3,7 @@ var undobtn = document.querySelector('#undo_btn');
 var redobtn = document.querySelector('#redo_btn');
 var importbtn = document.querySelector('#import_btn');
 var exportbtn = document.querySelector('#export_btn');
+var appver = chrome.runtime.getManifest().version;
 var aria2ver = document.querySelector('#version');
 var aria2ua = document.querySelector('#aria2ua');
 var secret = document.querySelector('#jsonrpc_token');
@@ -201,7 +202,7 @@ chrome.storage.local.get(null, (json) => {
 
 function aria2StartUp() {
     changes = {...aria2Store};
-    aria2ver.innerText = chrome.runtime.getManifest().version;
+    aria2ver.innerText = appver;
     textarea.forEach((entry) => {
         var {id} = entry;
         var value = changes[id];
