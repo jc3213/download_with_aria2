@@ -36,11 +36,11 @@ input[type="checkbox"] {
     margin-left: auto;
 }
 
-#version, #aria2ver {
+#version {
     padding: 5px;
 }
 
-#version::before, #aria2ver::before {
+#version::before {
     content: "v";
 }
 

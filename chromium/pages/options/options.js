@@ -3,8 +3,8 @@ var undobtn = document.querySelector('#undo_btn');
 var redobtn = document.querySelector('#redo_btn');
 var importbtn = document.querySelector('#import_btn');
 var exportbtn = document.querySelector('#export_btn');
-var aria2Ver = document.querySelector('#aria2ver');
-var aria2UA = document.querySelector('#aria2ua');
+var aria2ver = document.querySelector('#version');
+var aria2ua = document.querySelector('#aria2ua');
 var secret = document.querySelector('#jsonrpc_token');
 var changes = {};
 var redoes = [];
@@ -81,8 +81,6 @@ redobtn.addEventListener('click', (event) => {
     }
 });
 
-document.querySelector('#version').innerText = chrome.runtime.getManifest().version;
-
 document.querySelector('#back_btn').addEventListener('click', (event) => {
     clearChanges();
     global = true;
@@ -99,7 +97,7 @@ document.querySelector('#aria2_btn').addEventListener('click', async (event) => 
     global = false;
     aria2Global = document.querySelectorAll('#aria2 input').disposition(options);
     changes = {...aria2Global};
-    aria2Ver.innerText = aria2UA.innerText = version.version;
+    aria2ver.innerText = aria2ua.innerText = version.version;
     document.body.className = 'aria2';
 });
 
@@ -203,6 +201,7 @@ chrome.storage.local.get(null, (json) => {
 
 function aria2StartUp() {
     changes = {...aria2Store};
+    aria2ver.innerText = chrome.runtime.getManifest().version;
     textarea.forEach((entry) => {
         var {id} = entry;
         var value = changes[id];
