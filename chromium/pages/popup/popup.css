@@ -27,11 +27,10 @@ body > #menu {
 }
 
 #choose {
-    position: absolute;
+    position: fixed;
     border-width: 1px;
     border-style: solid;
-    top: 38px;
-    left: 0px;
+    top: 46px;
     z-index: 999999;
 }
 

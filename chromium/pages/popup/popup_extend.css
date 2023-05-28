@@ -1,9 +1,9 @@
-body.full {
+.full {
     width: 1280px;
     margin: 8px auto;
 }
 
-body.full > #menu {
+.full > #menu {
     position: fixed;
     z-index: 999999;
     padding: 5px;
@@ -13,15 +13,19 @@ body.full > #menu {
     width: 1268px;
 }
 
-body.full > hr, body:not(.full) #status > :nth-child(-n+3) {
+.full > #choose {
+    top: 48px;
+}
+
+.full > hr, :not(.full) #status > :nth-child(-n+3) {
     display: none;
 }
 
-body.full > #queue {
+.full > #queue {
     margin-top: 56px;
 }
 
-body:not(.full) > #queue {
+:not(.full) > #queue {
     height: 537px;
 }
 
