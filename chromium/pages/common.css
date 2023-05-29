@@ -44,7 +44,7 @@ select {
     padding: 2px 5px;
 }
 
-input {
+input:not([type="checkbox"]) {
     padding: 3px 5px;
     width: calc(100% - 12px);
     resize: none;
