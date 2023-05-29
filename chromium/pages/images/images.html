@@ -9,9 +9,36 @@
     <body>
         <div id="viewer"></div>
         <hr>
+        <div id="options" class="options">
+            <div class="menu" title="task_referer_title">
+                <div class="title" i18n>task_referer</div>
+                <div>
+                    <input id="referer" type="text">
+                </div>
+            </div>
+            <div class="menu" title="aria2_http_ua_title">
+                <div class="title" i18n>aria2_http_ua</div>
+                <div>
+                    <input id="user-agent" type="text">
+                </div>
+            </div>
+            <div class="menu" title="aria2_adv_dir_title">
+                <div class="title" i18n>aria2_adv_dir</div>
+                <div>
+                    <input id="dir" type="text">
+                </div>
+            </div>
+            <div class="menu" title="task_proxy_title">
+                <div class="title" i18n>task_proxy</div>
+                <div class="flex">
+                    <input id="all-proxy" type="url">
+                    <button id="proxy_btn">🔖</button>
+                </div>
+            </div>
+        </div>
         <div id="menu">
             <button id="submit_btn" i18n>common_submit</button>
-            <button id="proxy_btn">✈️</button>
+            <button id="extra_btn" i18n>popup_options</button>
         </div>
         <script src="/libs/aria2.js"></script>
         <script src="/libs/core.js"></script>

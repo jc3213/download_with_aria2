@@ -1,6 +1,7 @@
 var viewer = document.querySelector('#viewer');
 var submitbtn = document.querySelector('#submit_btn');
-var aria2Options = {};
+var optionsbtn = document.querySelector('#extra_btn');
+var aria2Options;
 var aria2Proxy;
 
 document.addEventListener('keydown', (event) => {
@@ -9,11 +10,10 @@ document.addEventListener('keydown', (event) => {
         event.preventDefault();
         submitbtn.click();
     }
-});
-
-chrome.runtime.sendMessage({action: 'internal_images'}, ({result, options}) => {
-    result.forEach(getPreview);
-    aria2Options = options;
+    else if (ctrlKey && key === 's') {
+        event.preventDefault();
+        optionsbtn.click();
+    }
 });
 
 submitbtn.addEventListener('click', async (event) => {
@@ -30,16 +30,20 @@ submitbtn.addEventListener('click', async (event) => {
     close();
 });
 
-document.querySelector('#proxy_btn').addEventListener('click', ({target}) => {
-    var {classList} = target;
-    aria2Options['all-proxy'] = classList.contains('checked') ? null : aria2Proxy;
-    classList.toggle('checked');
+optionsbtn.addEventListener('click', (event) => {
+    document.body.classList.toggle('extra');
 });
 
 chrome.storage.local.get(null, (json) => {
     aria2Store = json;
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     aria2Proxy = aria2Store['proxy_server'];
+});
+
+chrome.runtime.sendMessage({action: 'internal_images'}, async ({result, options}) => {
+    result.forEach(getPreview);
+    var global = await aria2RPC.call('aria2.getGlobalOption');
+    aria2Options = document.querySelectorAll('#options input').disposition({...global, ...options});
 });
 
 function getPreview({src, alt, title}) {

@@ -8,8 +8,13 @@ img.checked {
     filter: contrast(45%);
 }
 
-button.checked {
-    border-style: inset;
+input[type="checkbox"] {
+    transform: scale(1.5);
+    accent-color: #006cbe;
+}
+
+body:not(.extra) #options {
+    display: none;
 }
 
 #viewer {
@@ -17,6 +22,23 @@ button.checked {
     overflow-y: auto;
 }
 
+#options {
+    border-width: 1px;
+    border-style: solid;
+    padding: 5px;
+    position: absolute;
+    right: 0px;
+    bottom: 38px;
+}
+
+#options > :nth-child(-n+2) {
+    margin-top: 0px;
+}
+
 #menu {
     text-align: center;
+}
+
+.extra #extra_btn {
+    border-style: inset;
 }
