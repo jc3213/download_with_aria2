@@ -21,9 +21,9 @@ input[type="checkbox"] {
     border-style: outset;
     position: fixed;
     top: 5px;
+    z-index: 999999;
     width: 668px;
     padding: 5px;
-    z-index: 999999;
 }
 
 #menu > div {

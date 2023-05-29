@@ -52,17 +52,18 @@ input:not([type="checkbox"]) {
     border-style: inset;
 }
 
-input + span.float {
+input + span {
     display: none;
+    position: absolute;
     top: 3px;
     right: 8px;
 }
 
-input[type="number"] + span.float {
+input[type="number"] + span {
     right: 24px;
 }
 
-input:focus + span.float {
+input:focus + span {
     font-size: 17px;
     display: block;
 }
@@ -125,12 +126,6 @@ button.checked {
 .flex {
     display: flex;
     gap: 3px;
-}
-
-.float {
-    position: absolute;
-    top: 0px;
-    right: 0px;
 }
 
 .title {

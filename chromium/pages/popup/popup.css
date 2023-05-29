@@ -22,9 +22,9 @@ body {
 }
 
 #choose {
-    position: fixed;
     border-width: 1px;
     border-style: solid;
+    position: fixed;
     top: 46px;
     z-index: 999999;
 }
@@ -207,7 +207,9 @@ body {
 }
 
 .session #save_btn {
+    position: absolute;
     top: -10px;
+    right: 0px;
     padding: 4px;
 }
 

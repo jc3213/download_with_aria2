@@ -17,20 +17,20 @@ body:not(.extra) #options {
 }
 
 #viewer {
-    height: calc(100vh - 63px);
+    height: calc(100vh - 64px);
     overflow-y: auto;
 }
 
 #options {
     border-width: 1px;
     border-style: solid;
-    padding: 5px;
     position: absolute;
     right: 0px;
     bottom: 38px;
+    padding: 5px;
 }
 
-#options > :nth-child(-n+2) {
+#options > :first-child {
     margin-top: 0px;
 }
 
