@@ -246,7 +246,3 @@ body {
 .queue #queue_btn, .session.extra #detail_btn {
     border-style: inset;
 }
-
-.queue #queue_btn:active, .session.extra #detail_btn:active {
-    border-style: outset;
-}
