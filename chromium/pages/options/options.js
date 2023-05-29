@@ -162,7 +162,7 @@ rulelist.forEach(menu => {
             printList(list, id, value);
         }
     });
-    listed[id] = 1;
+    listed[id] = list;
     menu.list = {id, list};
 });
 
@@ -290,7 +290,7 @@ function setValue(id, value) {
 }
 
 function getList(id, value) {
-    var list = document.querySelector(`[data-list="${id}"] > .rulelist`);
+    var list = listed[id];
     list.innerHTML = '';
     value.forEach((val) => printList(list, id, val));
 }
