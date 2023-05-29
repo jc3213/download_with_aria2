@@ -124,14 +124,7 @@ button.checked {
 
 .flex {
     display: flex;
-}
-
-.flex {
     gap: 3px;
-}
-
-.flex > :not(button) {
-    flex: 1;
 }
 
 .float {

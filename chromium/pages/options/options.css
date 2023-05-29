@@ -27,11 +27,6 @@ input[type="checkbox"] {
     z-index: 999999;
 }
 
-#menu {
-    display: flex;
-    gap: 3px;
-}
-
 #menu > div {
     margin-left: auto;
 }
@@ -53,8 +48,11 @@ input[type="checkbox"] {
 }
 
 .menu.flex > :first-child {
-    flex: none;
     margin: 3px 3px 0px 0px;
+}
+
+.menu.flex > :last-child {
+    flex-grow: 1;
 }
 
 .menu label {

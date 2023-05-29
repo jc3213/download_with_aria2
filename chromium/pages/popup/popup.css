@@ -21,11 +21,6 @@ body {
     display: none;
 }
 
-body > #menu {
-    display: flex;
-    gap: 3px;
-}
-
 #choose {
     position: fixed;
     border-width: 1px;
