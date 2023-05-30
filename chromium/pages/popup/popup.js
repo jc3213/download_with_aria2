@@ -1,4 +1,4 @@
-var container = document.body;
+var manager = document.body;
 var downloadbtn = document.querySelector('#download_btn');
 var purgebtn = document.querySelector('#purge_btn');
 var queuebtn = document.querySelector('#queue_btn');
@@ -43,19 +43,19 @@ document.addEventListener('keydown', (event) => {
 });
 
 queuebtn.addEventListener('click', (event) => {
-    container.classList.toggle('queue');
+    manager.classList.toggle('queue');
 });
 
 chooseQueue.querySelectorAll('div').forEach((node) => {
     var {id} = node;
     node.addEventListener('click', (event) => {
-        container.classList.toggle(id);
+        manager.classList.toggle(id);
     });
 });
 
 document.addEventListener('click', ({target}) => {
     if (queuebtn !== target && !chooseQueue.contains(target)) {
-        container.classList.remove('queue');
+        manager.classList.remove('queue');
     }
 });
 
@@ -164,83 +164,113 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
 
 function parseSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
-    var [name, completed, total, day, hour, minute, second, connect, download, upload, ratio, files, urls] = task.querySelectorAll('#title, #local, #remote, #day, #hour, #minute, #second, #connect, #download, #upload, #ratio, #files, #uris');
-    Object.assign(task, {name, completed, total, day, hour, minute, second, connect, download, upload, ratio, files, urls});
+    var [name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, urls] = task.querySelectorAll('#title, #local, #remote, #day, #hour, #minute, #second, #connect, #download, #upload, #ratio, #files, #uris');
+    Object.assign(task, {name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, urls});
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
-    task.querySelector('#remove_btn').addEventListener('click', async event => {
+    task.addEventListener('click', async ({target}) => {
         var status = task.parentNode.id;
-        if ('active,waiting,paused'.includes(status)) {
-            await aria2RPC.call('aria2.forceRemove', [gid]);
-            if (status !== 'active') {
-                removeSession('waiting', gid, task);
-            }
+        var id = target.id;
+        if (id === 'remove_btn') {
+            taskRemove(task, gid, status);
         }
-        else {
-            await aria2RPC.call('aria2.removeDownloadResult', [gid]);
-            removeSession('stopped', gid, task);
+        else if (id === 'detail_btn') {
+            taskDetail(task, gid);
         }
-    });
-    task.querySelector('#detail_btn').addEventListener('click', async event => {
-        closeTaskDetail();
-        if (detailed === task) {
-            detailed = null;
+        else if (id === 'retry_btn') {
+            taskRetry(task, gid);
         }
-        else {
-            var [files, options] = await getTaskDetail(gid);
-            task.querySelectorAll('input, select').disposition(options);
-            detailed = task;
-            printTaskFileList(files);
-            task.classList.add('extra');
+        else if (id === 'meter' || id === 'ratio') {
+            taskPause(task, gid, status);
         }
-    });
-    task.querySelector('#retry_btn').addEventListener('click', async (event) => {
-        var [files, options] = await getTaskDetail(gid);
-        var {uris, path} = files[0];
-        var url = [...new Set(uris.map(({uri}) => uri))];
-        if (path) {
-            var ni = path.lastIndexOf('/');
-            options['dir'] = path.slice(0, ni);
-            options['out'] = path.slice(ni + 1);
+        else if (id === 'proxy_btn') {
+            taskProxy(target, gid);
         }
-        var [id] = await aria2RPC.batch([
-            {method: 'aria2.addUri', params: [url, options]},
-            {method: 'aria2.removeDownloadResult', params: [gid]}
-        ]);
-        addSession(id);
-        removeSession('stopped', gid, task);
-    });
-    task.querySelector('#meter').addEventListener('click', async (event) => {
-        var status = task.parentNode.id;
-        if ('active,waiting'.includes(status)) {
-            await aria2RPC.call('aria2.forcePause', [gid]);
-            pausedQueue.appendChild(task);
+        else if (id === 'save_btn') {
+            taskFiles(target, files, gid);
         }
-        else if (status === 'paused') {
-            await aria2RPC.call('aria2.unpause', [gid]);
-            waitingQueue.appendChild(task);
+        else if (id === 'adduri_btn') {
+            taskAddUri(target, gid);
         }
     });
     task.querySelector('#options').addEventListener('change', ({target}) => {
         var {id, value} = target;
         aria2RPC.call('aria2.changeOption', [gid, {[id]: value}]);
     });
-    task.querySelector('#proxy_btn').addEventListener('click', async ({target}) => {
-        await aria2RPC.call('aria2.changeOption', [gid, {'all-proxy': aria2Store['proxy_server']}]);
-        target.previousElementSibling.value = aria2Store['proxy_server'];
-    });
-    task.querySelector('#save_btn').addEventListener('click', async ({target}) => {
-        var files = [...task.querySelectorAll('#index.ready')].map(index => index.innerText);
-        await aria2RPC.call('aria2.changeOption', [gid, {'select-file': files.join()}]);
-        target.style.display = 'none';
-    });
-    task.querySelector('#append_btn').addEventListener('click', async ({target}) => {
-        var uri = target.previousElementSibling;
-        await aria2RPC.call('aria2.changeUri', [gid, 1, [], [uri.value]]);
-        uri.value = '';
-    });
     updateSession(task, gid, status);
     return task;
+}
+
+async function taskRemove(task, gid, status) {
+    if ('active,waiting,paused'.includes(status)) {
+        await aria2RPC.call('aria2.forceRemove', [gid]);
+        if (status !== 'active') {
+            removeSession('waiting', gid, task);
+        }
+    }
+    else {
+        await aria2RPC.call('aria2.removeDownloadResult', [gid]);
+        removeSession('stopped', gid, task);
+    }
+}
+
+async function taskDetail(task, gid) {
+    closeTaskDetail();
+    if (detailed === task) {
+        detailed = null;
+    }
+    else {
+        var [files, options] = await getTaskDetail(gid);
+        task.querySelectorAll('input, select').disposition(options);
+        detailed = task;
+        printTaskFileList(files);
+        task.classList.add('extra');
+    }
+}
+
+async function taskRetry(task, gid) {
+    var [files, options] = await getTaskDetail(gid);
+    var {uris, path} = files[0];
+    var url = [...new Set(uris.map(({uri}) => uri))];
+    if (path) {
+        var ni = path.lastIndexOf('/');
+        options['dir'] = path.slice(0, ni);
+        options['out'] = path.slice(ni + 1);
+     }
+     var [id] = await aria2RPC.batch([
+        {method: 'aria2.addUri', params: [url, options]},
+        {method: 'aria2.removeDownloadResult', params: [gid]}
+     ]);
+     addSession(id);
+     removeSession('stopped', gid, task);
+}
+
+async function taskPause(task, gid, status) {
+    if ('active,waiting'.includes(status)) {
+        await aria2RPC.call('aria2.forcePause', [gid]);
+        pausedQueue.appendChild(task);
+    }
+    else if (status === 'paused') {
+        await aria2RPC.call('aria2.unpause', [gid]);
+        waitingQueue.appendChild(task);
+    }
+}
+
+async function taskProxy(proxy, gid) {
+    await aria2RPC.call('aria2.changeOption', [gid, {'all-proxy': aria2Store['proxy_server']}]);
+    proxy.previousElementSibling.value = aria2Store['proxy_server'];
+}
+
+async function taskFiles(save, files, gid) {
+    var selected = [...files.querySelectorAll('#index.ready')].map(index => index.innerText);
+    await aria2RPC.call('aria2.changeOption', [gid, {'select-file': selected.join()}]);
+    save.style.display = 'none';
+}
+
+async function taskAddUri(adduri, gid) {
+    var uri = adduri.previousElementSibling;
+    await aria2RPC.call('aria2.changeUri', [gid, 1, [], [uri.value]]);
+    uri.value = '';
 }
 
 function getTaskDetail(gid) {
