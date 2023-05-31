@@ -16,8 +16,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.querySelector('#menu').addEventListener('click', ({target}) => {
-    var id = target.id;
-    if (id === 'submit_btn') {
+    var {id} = target;
+    if (id === 'submit_btn' || id === 'countdown') {
         downloadSubmit();
     }
     else if (id === 'extra_btn') {
@@ -67,7 +67,7 @@ document.querySelector('#proxy_btn').addEventListener('click', ({target}) => {
     target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Store['proxy_server'];
 });
 
-document.querySelector('#upload_btn').addEventListener('change', async ({target}) => {
+document.querySelector('#uploader').addEventListener('change', async ({target}) => {
     var file = target.files[0];
     var b64encode = await getFileData(file);
     if (file.name.endsWith('torrent')){

@@ -47,7 +47,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.querySelector('#menu').addEventListener('click', ({target}) => {
-    var id = target.id;
+    var {id} = target;
     if (id === 'save_btn') {
         optionsSave();
     }
@@ -181,8 +181,18 @@ rulelist.forEach(menu => {
             var new_value = [...changes[id], value];
             setChange(id, new_value);
             entry.value = '';
-            printList(list, id, value);
+            printList(list, value);
         }
+    });
+    list.addEventListener('click', ({target}) => {
+        var {rule} = target;
+        if (rule) {
+            var new_value = [...changes[id]];
+            new_value.splice(new_value.indexOf(rule), 1);
+            setChange(id, new_value);
+            target.parentNode.remove();
+        }
+        
     });
     listed[id] = list;
     menu.list = {id, list};
@@ -238,7 +248,7 @@ function aria2StartUp() {
     rulelist.forEach((menu) => {
         var {id, list} = menu.list;
         list.innerHTML = '';
-        changes[id].forEach((value) => printList(list, id, value));
+        changes[id].forEach((value) => printList(list, value));
     });
 }
 
@@ -314,17 +324,11 @@ function setValue(id, value) {
 function getList(id, value) {
     var list = listed[id];
     list.innerHTML = '';
-    value.forEach((val) => printList(list, id, val));
+    value.forEach((val) => printList(list, val));
 }
 
-function printList(list, id, value) {
-    var item = listLET.cloneNode(true)
-    item.querySelector('span').innerText = value;
-    item.querySelector('button').addEventListener('click', (event) => {
-        var new_value = [...changes[id]];
-        new_value.splice(new_value.indexOf(value), 1);
-        setChange(id, new_value);
-        item.remove();
-    });
+function printList(list, value) {
+    var item = listLET.cloneNode(true);
+    item.querySelector('span').innerText = item.querySelector('button').rule = value;
     list.append(item);
 }

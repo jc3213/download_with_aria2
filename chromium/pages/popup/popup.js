@@ -47,7 +47,7 @@ document.addEventListener('click', ({target}) => {
 });
 
 document.querySelector('#menu').addEventListener('click', ({target}) => {
-    var id = target.id;
+    var {id} = target;
     if (id === 'queue_btn') {
         managerQueue()
     }
