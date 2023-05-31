@@ -16,10 +16,10 @@ chrome.runtime.onInstalled.addListener(async details => {
     aria2StartUp();
 });
 
-chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl}, {id, url}) => {
+chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url}) => {
     if (menuItemId === 'download_this_item') {
         await aria2Initial();
-        aria2Download(linkUrl, url, getHostname(url));
+        aria2Download(linkUrl ?? srcUrl, url, getHostname(url));
     }
     else if (menuItemId === 'download_all_images') {
         chrome.tabs.sendMessage(id, menuItemId);
