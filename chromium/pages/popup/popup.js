@@ -189,14 +189,14 @@ function parseSession(gid, status, bittorrent) {
         else if (id === 'save_btn') {
             taskFiles(target, files, gid);
         }
+        else if (id === 'select_file') {
+            taskSelectFile(task, target);
+        }
         else if (id === 'adduri_btn') {
             taskAddUri(target, gid);
         }
         else if (id === 'this_uri') {
             taskRemoveUri(gid, target.innerText, ctrlKey);
-        }
-        else if (id === 'select_file') {
-            taskSelectFile(task, target);
         }
     });
     task.querySelector('#options').addEventListener('change', ({target}) => {
