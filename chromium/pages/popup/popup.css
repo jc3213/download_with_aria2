@@ -155,7 +155,7 @@ body {
     content: "B";
 }
 
-#ratio::after {
+#ratio::after, #done::after {
     content: "%";
 }
 

@@ -164,11 +164,11 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
 
 function parseSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
-    var [name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, urls] = task.querySelectorAll('#title, #local, #remote, #day, #hour, #minute, #second, #connect, #download, #upload, #ratio, #files, #uris');
-    Object.assign(task, {name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, urls});
+    var [name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, urls] = task.querySelectorAll('#title, #local, #day, #hour, #minute, #second, #remote, #connect, #download, #upload, #ratio, #files, #save_btn, #uris');
+    Object.assign(task, {name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, urls});
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
-    task.addEventListener('click', async ({target}) => {
+    task.addEventListener('click', async ({target, ctrlKey}) => {
         var status = task.parentNode.id;
         var id = target.id;
         if (id === 'remove_btn') {
@@ -191,6 +191,12 @@ function parseSession(gid, status, bittorrent) {
         }
         else if (id === 'adduri_btn') {
             taskAddUri(target, gid);
+        }
+        else if (id === 'this_uri') {
+            taskRemoveUri(gid, target.innerText, ctrlKey);
+        }
+        else if (id === 'select_file') {
+            taskSelectFile(task, target);
         }
     });
     task.querySelector('#options').addEventListener('change', ({target}) => {
@@ -273,6 +279,17 @@ async function taskAddUri(adduri, gid) {
     uri.value = '';
 }
 
+async function taskRemoveUri(gid, uri, ctrl) {
+    ctrl ? aria2RPC.call('aria2.changeUri', [gid, 1, [uri], []]) : navigator.clipboard.writeText(uri);
+}
+
+function taskSelectFile({cate, save}, file) {
+    if (cate !== 'stopped' && file.checkbox) {
+        file.className = file.className === 'ready' ? '' : 'ready';
+        save.style.display = 'block';
+    }
+}
+
 function getTaskDetail(gid) {
     return aria2RPC.batch([
         {method: 'aria2.getFiles', params: [gid]},
@@ -290,20 +307,14 @@ function closeTaskDetail() {
 
 function printFileItem(list, index, path, length, selected, uris) {
     var item = fileLET.cloneNode(true);
-    var push = uris.length === 0;
-    var tile = item.querySelector('#index');
-    tile.innerText = index;
-    tile.className = selected === 'true' ? 'ready' : '';
-    tile.addEventListener('click', (event) => {
-        if (detailed.cate !== 'stopped' && push) {
-            tile.className = tile.className === 'ready' ? '' : 'ready';
-            detailed.querySelector('#save_btn').style.display = 'block';
-        }
-    });
-    item.querySelector('#name').innerText = path.slice(path.lastIndexOf('/') + 1);
-    item.querySelector('#name').title = path;
-    item.querySelector('#size').innerText = getFileSize(length);
-    item.ratio = item.querySelector('#ratio');
+    var [file, name, size, ratio] = item.querySelectorAll('#select_file, #name, #size, #done');
+    Object.assign(item, {file, name, size, ratio});
+    file.checkbox = uris.length === 0; 
+    file.innerText = index;
+    file.className = selected === 'true' ? 'ready' : '';
+    name.innerText = path.slice(path.lastIndexOf('/') + 1);
+    name.title = path;
+    size.innerText = getFileSize(length);
     list.appendChild(item);
     return item;
 }
@@ -322,11 +333,8 @@ function printTaskFileList(files) {
 
 function printUriItem(list, uri) {
     var item = uriLET.cloneNode(true);
-    var [url, used, wait] = item.querySelectorAll('#uri, #used, #wait');
+    var [url, used, wait] = item.querySelectorAll('#this_uri, #used, #wait');
     Object.assign(item, {url, used, wait});
-    item.addEventListener('click', ({ctrlKey}) => {
-        ctrlKey ? aria2RPC.call('aria2.changeUri', [detailed.id, 1, [uri], []]) : navigator.clipboard.writeText(uri);
-    });
     list.appendChild(item);
     return item;
 }
