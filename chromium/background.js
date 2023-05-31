@@ -10,9 +10,9 @@ chrome.contextMenus.create({
     contexts: ['page']
 });
 
-chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url}) => {
+chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url}) => {
     if (menuItemId === 'download_this_item') {
-        aria2Download(linkUrl, url, getHostname(url));
+        aria2Download(linkUrl ?? srcUrl, url, getHostname(url));
     }
     else if (menuItemId === 'download_all_images') {
         chrome.tabs.sendMessage(id, menuItemId);
