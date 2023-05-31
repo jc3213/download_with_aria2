@@ -187,13 +187,13 @@ function parseSession(gid, status, bittorrent) {
             taskFiles(target, files, gid);
         }
         else if (id === 'select_file') {
-            taskSelectFile(task, target);
+            taskSelectFile(task.cate, save, target);
         }
         else if (id === 'adduri_btn') {
             taskAddUri(target, gid);
         }
         else if (id === 'this_uri') {
-            taskRemoveUri(gid, target.innerText, ctrlKey);
+            taskRemoveUri(target.innerText, gid, ctrlKey);
         }
     });
     task.querySelector('#options').addEventListener('change', ({target}) => {
@@ -265,9 +265,16 @@ async function taskProxy(proxy, gid) {
 }
 
 async function taskFiles(save, files, gid) {
-    var selected = [...files.querySelectorAll('#index.ready')].map(index => index.innerText);
+    var selected = [...files.querySelectorAll('.ready')].map(index => index.innerText);
     await aria2RPC.call('aria2.changeOption', [gid, {'select-file': selected.join()}]);
     save.style.display = 'none';
+}
+
+function taskSelectFile(cate, save, file) {
+    if (cate !== 'stopped' && file.checkbox) {
+        file.className = file.className === 'ready' ? '' : 'ready';
+        save.style.display = 'block';
+    }
 }
 
 async function taskAddUri(adduri, gid) {
@@ -276,15 +283,8 @@ async function taskAddUri(adduri, gid) {
     uri.value = '';
 }
 
-async function taskRemoveUri(gid, uri, ctrl) {
+async function taskRemoveUri(uri, gid, ctrl) {
     ctrl ? aria2RPC.call('aria2.changeUri', [gid, 1, [uri], []]) : navigator.clipboard.writeText(uri);
-}
-
-function taskSelectFile({cate, save}, file) {
-    if (cate !== 'stopped' && file.checkbox) {
-        file.className = file.className === 'ready' ? '' : 'ready';
-        save.style.display = 'block';
-    }
 }
 
 function getTaskDetail(gid) {
