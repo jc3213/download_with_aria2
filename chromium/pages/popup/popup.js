@@ -46,11 +46,8 @@ queuebtn.addEventListener('click', (event) => {
     manager.classList.toggle('queue');
 });
 
-chooseQueue.querySelectorAll('div').forEach((node) => {
-    var {id} = node;
-    node.addEventListener('click', (event) => {
-        manager.classList.toggle(id);
-    });
+chooseQueue.addEventListener('click', ({target}) => {
+    manager.classList.toggle(target.id);
 });
 
 document.addEventListener('click', ({target}) => {
