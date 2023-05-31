@@ -10,9 +10,9 @@ browser.contextMenus.create({
     contexts: ['page']
 });
 
-browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl}, {id, url, cookieStoreId}) => {
+browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
     if (menuItemId === 'download_this_item') {
-        aria2DownloadFirefox(linkUrl, url, getHostname(url), cookieStoreId);
+        aria2DownloadFirefox(linkUrl ?? srcUrl, url, getHostname(url), cookieStoreId);
     }
     else if (menuItemId === 'download_all_images') {
         browser.tabs.sendMessage(id, menuItemId);
