@@ -186,7 +186,7 @@ function parseSession(gid, status, bittorrent) {
         else if (id === 'save_btn') {
             taskFiles(target, files, gid);
         }
-        else if (id === 'select_file') {
+        else if (id === 'this_file') {
             taskSelectFile(task.cate, save, target);
         }
         else if (id === 'adduri_btn') {
@@ -304,7 +304,7 @@ function closeTaskDetail() {
 
 function printFileItem(list, index, path, length, selected, uris) {
     var item = fileLET.cloneNode(true);
-    var [file, name, size, ratio] = item.querySelectorAll('#select_file, #name, #size, #done');
+    var [file, name, size, ratio] = item.querySelectorAll('#this_file, #name, #size, #done');
     Object.assign(item, {file, name, size, ratio});
     file.checkbox = uris.length === 0; 
     file.innerText = index;
