@@ -1,8 +1,6 @@
 var savebtn = document.querySelector('#save_btn');
 var undobtn = document.querySelector('#undo_btn');
 var redobtn = document.querySelector('#redo_btn');
-var importbtn = document.querySelector('#import_btn');
-var exportbtn = document.querySelector('#export_btn');
 var appver = chrome.runtime.getManifest().version;
 var aria2ver = document.querySelector('#version');
 var aria2ua = document.querySelector('#aria2ua');
@@ -48,7 +46,26 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-savebtn.addEventListener('click', (event) => {
+document.querySelector('#menu').addEventListener('click', ({target}) => {
+    var id = target.id;
+    if (id === 'save_btn') {
+        optionsSave();
+    }
+    else if (id === 'undo_btn') {
+        optionsUndo();
+    }
+    else if (id === 'redo_btn') {
+        optionsRedo();
+    }
+    else if (id === 'export_btn') {
+        optionsExport();
+    }
+    else if (id === 'back_btn') {
+        optionsBack();
+    }
+});
+
+function optionsSave() {
     if (global) {
         aria2Store = {...changes};
         chrome.storage.local.set(changes);
@@ -57,9 +74,9 @@ savebtn.addEventListener('click', (event) => {
         aria2RPC.call('aria2.changeGlobalOption', [changes]);
     }
     savebtn.disabled = true;
-});
+}
 
-undobtn.addEventListener('click', (event) => {
+function optionsUndo() {
     var undo = undoes.pop();
     var {id, old_value} = undo;
     redoes.push(undo);
@@ -69,9 +86,9 @@ undobtn.addEventListener('click', (event) => {
     if (undoes.length === 0) {
         undobtn.disabled = true;
     }
-});
+}
 
-redobtn.addEventListener('click', (event) => {
+function optionsRedo() {
     var redo = redoes.pop();
     var {id, new_value} = redo;
     undoes.push(redo);
@@ -80,14 +97,36 @@ redobtn.addEventListener('click', (event) => {
     if (redoes.length === 0) {
         redobtn.disabled = true;
     }
+}
+
+function optionsExport() {
+    var blob = new Blob([JSON.stringify(aria2Store)], {type: 'application/json; charset=utf-8'});
+    var saver = document.createElement('a');
+    saver.href = URL.createObjectURL(blob);
+    saver.download = `downwitharia2_options-${new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_')}.json`;
+    saver.click();
+}
+
+document.querySelector('#import_btn').addEventListener('change', ({target}) => {
+    var file = target.files[0];
+    var reader = new FileReader();
+    reader.onload = (event) => {
+        var json = JSON.parse(reader.result);
+        chrome.storage.local.set(json);
+        clearChanges();
+        aria2Store = json;
+        aria2StartUp();
+        target.value = '';
+    };
+    reader.readAsText(file);
 });
 
-document.querySelector('#back_btn').addEventListener('click', (event) => {
+function optionsBack() {
     clearChanges();
     global = true;
     aria2StartUp();
     document.body.className = 'local';
-});
+}
 
 document.querySelector('#aria2_btn').addEventListener('click', async (event) => {
     var [options, version] = await aria2RPC.batch([
@@ -100,23 +139,6 @@ document.querySelector('#aria2_btn').addEventListener('click', async (event) => 
     changes = {...aria2Global};
     aria2ver.innerText = aria2ua.innerText = version.version;
     document.body.className = 'aria2';
-});
-
-exportbtn.addEventListener('click', (event) => {
-    var blob = new Blob([JSON.stringify(aria2Store)], {type: 'application/json; charset=utf-8'});
-    var saver = document.createElement('a');
-    saver.href = URL.createObjectURL(blob);
-    saver.download = `downwitharia2_options-${new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_')}.json`;
-    saver.click();
-});
-
-importbtn.addEventListener('change', async ({target}) => {
-    var json = await getOptionsJSON(target.files[0]);
-    chrome.storage.local.set(json);
-    clearChanges();
-    aria2Store = json;
-    aria2StartUp();
-    target.value = '';
 });
 
 document.querySelector('#show_btn').addEventListener('mousedown', (event) => {
@@ -305,15 +327,4 @@ function printList(list, id, value) {
         item.remove();
     });
     list.append(item);
-}
-
-function getOptionsJSON(file) {
-    return new Promise((resolve) => {
-        var reader = new FileReader();
-        reader.onload = (event) => {
-            var json = JSON.parse(reader.result);
-            resolve(json);
-        };
-        reader.readAsText(file);
-    });
 }

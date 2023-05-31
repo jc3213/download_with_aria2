@@ -1,6 +1,4 @@
 var viewer = document.querySelector('#viewer');
-var submitbtn = document.querySelector('#submit_btn');
-var optionsbtn = document.querySelector('#extra_btn');
 var aria2Options;
 var aria2Proxy;
 
@@ -8,15 +6,35 @@ document.addEventListener('keydown', (event) => {
     var {ctrlKey, altKey, key} = event;
     if (ctrlKey && key === 'Enter' || altKey && key === 's') {
         event.preventDefault();
-        submitbtn.click();
+        imagesSubmit();
     }
     else if (ctrlKey && key === 's') {
         event.preventDefault();
-        optionsbtn.click();
+        imagesOptions();
     }
 });
 
-submitbtn.addEventListener('click', async (event) => {
+document.querySelector('#menu').addEventListener('click', ({target}) => {
+    var id = target.id;
+    if (id === 'submit_btn') {
+        imagesSubmit();
+    }
+    else if (id === 'extra_btn') {
+        imagesOptions();
+    }
+});
+
+viewer.addEventListener('click', ({target}) => {
+    if (target.tagName === 'IMG') {
+        target.className = target.className === '' ? 'checked' : '';
+    }
+});
+
+viewer.addEventListener('load', ({target}) => {
+    target.title = `${target.offsetWidth}x${target.offsetHeight}`;
+}, true);
+
+async function imagesSubmit() {
     var json = [...viewer.querySelectorAll('.checked')].map(({src, alt}) => {
         var options = {...aria2Options};
         if (alt) {
@@ -28,11 +46,11 @@ submitbtn.addEventListener('click', async (event) => {
         await aria2DownloadJSON(json);
     }
     close();
-});
+}
 
-optionsbtn.addEventListener('click', (event) => {
+function imagesOptions() {
     document.body.classList.toggle('extra');
-});
+}
 
 chrome.storage.local.get(null, (json) => {
     aria2Store = json;
@@ -62,11 +80,5 @@ function getPreview({src, alt, title}) {
         }
         img.alt = `${alt}${ext}`;
     }
-    img.addEventListener('load', (event) => {
-        img.title = `${img.offsetWidth}x${img.offsetHeight}`;
-    });
-    img.addEventListener('click', (event) => {
-        img.className = img.className === '' ? 'checked' : '';
-    });
     viewer.append(img);
 }

@@ -1,6 +1,4 @@
 var manager = document.body;
-var downloadbtn = document.querySelector('#download_btn');
-var purgebtn = document.querySelector('#purge_btn');
 var queuebtn = document.querySelector('#queue_btn');
 var optionsbtn = document.querySelector('#options_btn');
 var chooseQueue = document.querySelector('#choose');
@@ -25,29 +23,21 @@ document.addEventListener('keydown', (event) => {
     if (ctrlKey) {
         if (key === 'q') {
             event.preventDefault();
-            queuebtn.click();
+            managerQueue();
         }
         else if (key === 'r') {
             event.preventDefault();
-            purgebtn.click();
+            managerPurge();
         }
         else if (key === 'd') {
             event.preventDefault();
-            downloadbtn.click();
+            managerDownload();
         }
         else if (key === 's') {
             event.preventDefault();
-            optionsbtn.click();
+            managerOptions();
         }
     }
-});
-
-queuebtn.addEventListener('click', (event) => {
-    manager.classList.toggle('queue');
-});
-
-chooseQueue.addEventListener('click', ({target}) => {
-    manager.classList.toggle(target.id);
 });
 
 document.addEventListener('click', ({target}) => {
@@ -56,11 +46,35 @@ document.addEventListener('click', ({target}) => {
     }
 });
 
-purgebtn.addEventListener('click', async (event) => {
+document.querySelector('#menu').addEventListener('click', ({target}) => {
+    var id = target.id;
+    if (id === 'queue_btn') {
+        managerQueue()
+    }
+    else if (id === 'purge_btn') {
+        managerPurge();
+    }
+    else if (id === 'download_btn') {
+        managerDownload();
+    }
+    else if (id === 'options_btn') {
+        managerOptions();
+    }
+});
+
+chooseQueue.addEventListener('click', ({target}) => {
+    manager.classList.toggle(target.id);
+});
+
+function managerQueue() {
+    manager.classList.toggle('queue');
+}
+
+async function managerPurge() {
     await aria2RPC.call('aria2.purgeDownloadResult');
     completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     stoppedStat.innerText = '0';
-});
+}
 
 function aria2StartUp() {
     activeTask = [];

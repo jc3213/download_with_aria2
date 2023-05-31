@@ -4,19 +4,19 @@ if (open_in_tab) {
     document.body.classList.add('full');
 }
 
-downloadbtn.addEventListener('click', async event => {
+async function managerDownload() {
     await aria2NewDownload();
     if (!open_in_tab) {
         close();
     }
-});
+}
 
-optionsbtn.addEventListener('click', event => {
+function managerOptions() {
     chrome.runtime.openOptionsPage();
     if (!open_in_tab) {
         close();
     }
-});
+}
 
 chrome.storage.local.get(null, json => {
     aria2Store = json;

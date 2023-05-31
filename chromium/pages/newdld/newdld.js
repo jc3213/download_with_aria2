@@ -1,18 +1,47 @@
 var entry = document.querySelector('#entry');
+var downloader = document.body;
 var submitbtn = document.querySelector('#submit_btn');
 var countdown = document.querySelector('#countdown');
 var filename = document.querySelector('#out');
 var slim_mode = location.search === '?slim_mode';
 
-document.body.className = slim_mode ? 'slim' : 'full';
+downloader.className = slim_mode ? 'slim' : 'full';
 
 document.addEventListener('keydown', (event) => {
     var {ctrlKey, altKey, key} = event;
     if (ctrlKey && key === 'Enter' || altKey && key === 's') {
         event.preventDefault();
-        submitbtn.click();
+        downloadSubmit();
     }
 });
+
+document.querySelector('#menu').addEventListener('click', ({target}) => {
+    var id = target.id;
+    if (id === 'submit_btn') {
+        downloadSubmit();
+    }
+    else if (id === 'extra_btn') {
+        downloadExpand();
+    }
+});
+
+async function downloadSubmit() {
+    var {json, urls} = entry;
+    if (json) {
+        await aria2DownloadJSON(json, aria2Global);
+    }
+    else if (urls) {
+        await aria2DownloadUrls(urls, aria2Global);
+    }
+    close();
+}
+
+async function downloadExpand() {
+    var {id, top, height} = await getCurrentWindow();
+    chrome.windows.update(id, {top: top - 105, height: height + 210});
+    downloader.className = 'extra';
+    countdown.innerText = countdown.innerText * 1 + 90;
+}
 
 entry.addEventListener('change', (event) => {
     try {
@@ -25,17 +54,6 @@ entry.addEventListener('change', (event) => {
         entry.urls = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
         filename.disabled = false;
     }
-});
-
-submitbtn.addEventListener('click', async (event) => {
-    var {json, urls} = entry;
-    if (json) {
-        await aria2DownloadJSON(json, aria2Global);
-    }
-    else if (urls) {
-        await aria2DownloadUrls(urls, aria2Global);
-    }
-    close();
 });
 
 document.querySelector('#referer_btn').addEventListener('click', async ({target}) => {
@@ -60,13 +78,6 @@ document.querySelector('#upload_btn').addEventListener('change', async ({target}
     }
     await aria2WhenStart(file.name);
     close();
-});
-
-document.querySelector('#extra_btn').addEventListener('click', async (event) => {
-    var {id, top, height} = await getCurrentWindow();
-    chrome.windows.update(id, {top: top - 105, height: height + 210});
-    document.body.className = 'extra';
-    countdown.innerText = countdown.innerText * 1 + 90;
 });
 
 document.addEventListener('change', ({target}) => {
