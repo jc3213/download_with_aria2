@@ -17,7 +17,7 @@ document.addEventListener('keydown', (event) => {
 
 document.querySelector('#menu').addEventListener('click', ({target}) => {
     var {id} = target;
-    if (id === 'submit_btn' || id === 'countdown') {
+    if (id === 'submit' || id === 'countdown') {
         downloadSubmit();
     }
     else if (id === 'extra_btn') {
@@ -91,8 +91,7 @@ document.querySelector('#proxy_btn').addEventListener('click', ({target}) => {
 });
 
 function slimModeInit() {
-    chrome.runtime.sendMessage({action: 'internal_prompt'}, (response) => {
-        var {url, json, options} = response;
+    chrome.runtime.sendMessage({action: 'internal_prompt'}, ({url, json, options}) => {
         if (json) {
             entry.value = JSON.stringify(json);
             entry.json = json;
