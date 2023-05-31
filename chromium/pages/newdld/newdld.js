@@ -43,6 +43,29 @@ async function downloadExpand() {
     countdown.innerText = countdown.innerText * 1 + 90;
 }
 
+document.addEventListener('change', ({target}) => {
+    var {id, value, files} = target;
+    if (files) {
+        downloadFiles(files);
+    }
+    else if (id) {
+        aria2Global[id] = value;
+    }
+});
+
+async function downloadFiles(files) {
+    var file = files[0];
+    var b64encode = await getFileData(file);
+    if (file.name.endsWith('torrent')){
+        await aria2RPC.call('aria2.addTorrent', [b64encode]);
+    }
+    else {
+        await aria2RPC.call('aria2.addMetalink', [b64encode, aria2Global]);
+    }
+    await aria2WhenStart(file.name);
+    close();
+}
+
 entry.addEventListener('change', (event) => {
     try {
         entry.json = JSON.parse(entry.value);
@@ -65,26 +88,6 @@ document.querySelector('#referer_btn').addEventListener('click', async ({target}
 
 document.querySelector('#proxy_btn').addEventListener('click', ({target}) => {
     target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Store['proxy_server'];
-});
-
-document.querySelector('#uploader').addEventListener('change', async ({target}) => {
-    var file = target.files[0];
-    var b64encode = await getFileData(file);
-    if (file.name.endsWith('torrent')){
-        await aria2RPC.call('aria2.addTorrent', [b64encode]);
-    }
-    else {
-        await aria2RPC.call('aria2.addMetalink', [b64encode, aria2Global]);
-    }
-    await aria2WhenStart(file.name);
-    close();
-});
-
-document.addEventListener('change', ({target}) => {
-    var {id, value} = target;
-    if (id) {
-        aria2Global[id] = value;
-    }
 });
 
 function slimModeInit() {
