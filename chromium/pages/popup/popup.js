@@ -77,9 +77,10 @@ async function managerPurge() {
 }
 
 function aria2StartUp() {
-    activeTask = [];
-    waitingTask = [];
-    stoppedTask = [];
+    activeTask = {};
+    waitingTask = {};
+    stoppedTask = {};
+    globalTask = {};
     aria2RPC.batch([
         {method: 'aria2.getGlobalStat'},
         {method: 'aria2.tellActive'},
@@ -103,10 +104,10 @@ function aria2Client() {
         var {method, params: [{gid}]} = JSON.parse(data);
         if (method !== 'aria2.onBtDownloadComplete') {
             addSession(gid);
-            if (method === 'aria2.onDownloadStart' && waitingTask.includes(gid)) {
+            if (method === 'aria2.onDownloadStart' && waitingTask[gid]) {
                 removeSession('waiting', gid);
             }
-            else if (method !== 'aria2.onDownloadStart' && activeTask.includes(gid)) {
+            else if (method !== 'aria2.onDownloadStart' && activeTask[gid]) {
                 removeSession('active', gid);
             }
         }
@@ -125,8 +126,8 @@ async function updateManager() {
 
 function updateSession(task, gid, status) {
     var cate = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
-    if (self[`${cate}Task`].indexOf(gid) === -1) {
-        self[`${cate}Task`].push(gid);
+    if (self[`${cate}Task`][gid] === undefined) {
+        self[`${cate}Task`][gid] = true;
         self[`${cate}Stat`].innerText ++;
     }
     self[`${status}Queue`].appendChild(task);
@@ -142,12 +143,13 @@ async function addSession(gid) {
 
 function removeSession(cate, gid, task) {
     self[`${cate}Stat`].innerText --;
-    self[`${cate}Task`].splice(self[`${cate}Task`].indexOf(gid), 1);
+    delete self[`${cate}Task`][gid];
+    delete globalTask[gid];
     task?.remove();
 }
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    var task = document.getElementById(gid) ?? parseSession(gid, status, bittorrent);
+    var task = globalTask[gid] ?? parseSession(gid, status, bittorrent);
     var time = (totalLength - completedLength) / downloadSpeed;
     var days = time / 86400 | 0;
     var hours = time / 3600 - days * 24 | 0;
@@ -214,6 +216,7 @@ function parseSession(gid, status, bittorrent) {
         var {id, value} = target;
         aria2RPC.call('aria2.changeOption', [gid, {[id]: value}]);
     });
+    globalTask[gid] = task;
     updateSession(task, gid, status);
     return task;
 }

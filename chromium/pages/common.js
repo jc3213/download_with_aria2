@@ -7,12 +7,12 @@ document.querySelectorAll('[title]').forEach(item => {
 });
 
 var filesize = {
-    'min-split-size': 1,
-    'disk-cache': 1,
-    'max-download-limit': 1,
-    'max-overall-download-limit': 1,
-    'max-upload-limit': 1,
-    'max-overall-upload-limit': 1
+    'min-split-size': true,
+    'disk-cache': true,
+    'max-download-limit': true,
+    'max-overall-download-limit': true,
+    'max-upload-limit': true,
+    'max-overall-upload-limit': true
 };
 
 NodeList.prototype.disposition = function (json) {
