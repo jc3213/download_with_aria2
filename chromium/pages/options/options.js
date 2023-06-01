@@ -162,7 +162,7 @@ checkbox.forEach(entry => {
     entry.addEventListener('change', (event) => {
         setChange(id, entry.checked);
     });
-    checked[id] = 1;
+    checked[id] = true;
 });
 
 rulelist.forEach(menu => {
