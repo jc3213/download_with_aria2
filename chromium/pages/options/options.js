@@ -170,8 +170,8 @@ rulelist.forEach(menu => {
     var entry = menu.querySelector('input');
     var addbtn = menu.querySelector('button');
     var list = menu.querySelector('.rulelist');
-    entry.addEventListener('keydown', ({keyCode}) => {
-        if (keyCode === 13) {
+    entry.addEventListener('keydown', ({key}) => {
+        if (key === 'Enter') {
             addbtn.click();
         }
     });
