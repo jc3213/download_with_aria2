@@ -108,7 +108,7 @@ function slimModeInit() {
         setInterval(() => {
             countdown.textContent --;
             if (countdown.textContent === '0') {
-                submitbtn.click();
+                downloadSubmit();
             }
         }, 1000);
     });
