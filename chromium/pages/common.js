@@ -1,5 +1,5 @@
 document.querySelectorAll('[i18n]').forEach(item => {
-    item.innerText = chrome.i18n.getMessage(item.innerText);
+    item.textContent = chrome.i18n.getMessage(item.textContent);
 });
 
 document.querySelectorAll('[title]').forEach(item => {

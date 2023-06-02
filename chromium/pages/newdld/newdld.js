@@ -40,7 +40,7 @@ async function downloadExpand() {
     var {id, top, height} = await getCurrentWindow();
     chrome.windows.update(id, {top: top - 105, height: height + 210});
     downloader.className = 'extra';
-    countdown.innerText = countdown.innerText * 1 + 90;
+    countdown.textContent = countdown.textContent * 1 + 90;
 }
 
 document.addEventListener('change', ({target}) => {
@@ -106,8 +106,8 @@ function slimModeInit() {
             aria2Global = {...aria2Global, ...extra};
         }
         setInterval(() => {
-            countdown.innerText --;
-            if (countdown.innerText === '0') {
+            countdown.textContent --;
+            if (countdown.textContent === '0') {
                 submitbtn.click();
             }
         }, 1000);

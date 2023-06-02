@@ -137,7 +137,7 @@ document.querySelector('#aria2_btn').addEventListener('click', async (event) => 
     global = false;
     aria2Global = document.querySelectorAll('#aria2 input').disposition(options);
     changes = {...aria2Global};
-    aria2ver.innerText = aria2ua.innerText = version.version;
+    aria2ver.textContent = aria2ua.textContent = version.version;
     document.body.className = 'aria2';
 });
 
@@ -234,7 +234,7 @@ chrome.storage.local.get(null, (json) => {
 
 function aria2StartUp() {
     changes = {...aria2Store};
-    aria2ver.innerText = appver;
+    aria2ver.textContent = appver;
     textarea.forEach((entry) => {
         var {id} = entry;
         var value = changes[id];
@@ -329,6 +329,6 @@ function getList(id, value) {
 
 function printList(list, value) {
     var item = listLET.cloneNode(true);
-    item.querySelector('span').innerText = item.querySelector('button').rule = value;
+    item.querySelector('span').textContent = item.querySelector('button').rule = value;
     list.append(item);
 }

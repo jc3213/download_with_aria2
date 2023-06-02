@@ -74,7 +74,9 @@ function managerQueue() {
 async function managerPurge() {
     await aria2RPC.call('aria2.purgeDownloadResult');
     completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
-    stoppedStat.innerText = '0';
+    stoppedStat.textContent = '0';
+    stoppedTask = {};
+    globalTask = {...activeTask, ...waitingTask};
 }
 
 function aria2StartUp() {
@@ -89,11 +91,11 @@ function aria2StartUp() {
         {method: 'aria2.tellStopped', params: [0, 999]}
     ]).then(([{downloadSpeed, uploadSpeed}, active, waiting, stopped]) => {
         [...active, ...waiting, ...stopped].forEach(printSession);
-        downloadStat.innerText = getFileSize(downloadSpeed);
-        uploadStat.innerText = getFileSize(uploadSpeed);
+        downloadStat.textContent = getFileSize(downloadSpeed);
+        uploadStat.textContent = getFileSize(uploadSpeed);
         aria2Client();
     }).catch((error) => {
-        activeStat.innertext = waitingStat.innerText = stoppedStat.innerText = downloadStat.innerText = uploadStat.innerText = '0';
+        activeStat.textContent = waitingStat.textContent = stoppedStat.textContent = downloadStat.textContent = uploadStat.textContent = '0';
         activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     });
 }
@@ -121,15 +123,15 @@ async function updateManager() {
         {method: 'aria2.tellActive'}
     ]);
     active.forEach(printSession);
-    downloadStat.innerText = getFileSize(downloadSpeed);
-    uploadStat.innerText = getFileSize(uploadSpeed);
+    downloadStat.textContent = getFileSize(downloadSpeed);
+    uploadStat.textContent = getFileSize(uploadSpeed);
 }
 
 function updateSession(task, gid, status) {
     var cate = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
     if (self[`${cate}Task`][gid] === undefined) {
-        self[`${cate}Task`][gid] = true;
-        self[`${cate}Stat`].innerText ++;
+        self[`${cate}Task`][gid] = task;
+        self[`${cate}Stat`].textContent ++;
     }
     self[`${status}Queue`].appendChild(task);
     task.cate = cate;
@@ -143,7 +145,7 @@ async function addSession(gid) {
 }
 
 function removeSession(cate, gid, task) {
-    self[`${cate}Stat`].innerText --;
+    self[`${cate}Stat`].textContent --;
     delete self[`${cate}Task`][gid];
     if (task) {
         task.remove();
@@ -160,17 +162,17 @@ function printSession({gid, status, files, bittorrent, completedLength, totalLen
     var seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
     var percent = (completedLength / totalLength * 10000 | 0) / 100;
     var {name, completed, total, day, hour, minute, second, connect, download, upload, ratio} = task;
-    name.innerText = getDownloadName(gid, bittorrent, files);
-    completed.innerText = getFileSize(completedLength);
-    total.innerText = getFileSize(totalLength);
-    day.innerText = days > 0 ? days : '';
-    hour.innerText = hours > 0 ? hours : '';
-    minute.innerText = minutes > 0 ? minutes : '';
-    second.innerText = seconds > 0 ? seconds : '';
-    connect.innerText = bittorrent ? `${numSeeders} (${connections})` : connections;
-    download.innerText = getFileSize(downloadSpeed);
-    upload.innerText = getFileSize(uploadSpeed);
-    ratio.innerText = percent;
+    name.textContent = getDownloadName(gid, bittorrent, files);
+    completed.textContent = getFileSize(completedLength);
+    total.textContent = getFileSize(totalLength);
+    day.textContent = days > 0 ? days : '';
+    hour.textContent = hours > 0 ? hours : '';
+    minute.textContent = minutes > 0 ? minutes : '';
+    second.textContent = seconds > 0 ? seconds : '';
+    connect.textContent = bittorrent ? `${numSeeders} (${connections})` : connections;
+    download.textContent = getFileSize(downloadSpeed);
+    upload.textContent = getFileSize(uploadSpeed);
+    ratio.textContent = percent;
     ratio.style.width = `${percent}%`;
     if (detailed === task) {
         printTaskFileList(files);
@@ -212,7 +214,7 @@ function parseSession(gid, status, bittorrent) {
             taskAddUri(target, gid);
         }
         else if (id === 'this_uri') {
-            taskRemoveUri(target.innerText, gid, ctrlKey);
+            taskRemoveUri(target.textContent, gid, ctrlKey);
         }
     });
     task.querySelector('#options').addEventListener('change', ({target}) => {
@@ -285,7 +287,7 @@ async function taskProxy(proxy, gid) {
 }
 
 async function taskFiles(save, files, gid) {
-    var selected = [...files.querySelectorAll('.ready')].map(index => index.innerText);
+    var selected = [...files.querySelectorAll('.ready')].map(index => index.textContent);
     await aria2RPC.call('aria2.changeOption', [gid, {'select-file': selected.join()}]);
     save.style.display = 'none';
 }
@@ -327,11 +329,11 @@ function printFileItem(list, index, path, length, selected, uris) {
     var [file, name, size, ratio] = item.querySelectorAll('#this_file, #name, #size, #done');
     Object.assign(item, {file, name, size, ratio});
     file.checkbox = uris.length === 0; 
-    file.innerText = index;
+    file.textContent = index;
     file.className = selected === 'true' ? 'ready' : '';
-    name.innerText = path.slice(path.lastIndexOf('/') + 1);
+    name.textContent = path.slice(path.lastIndexOf('/') + 1);
     name.title = path;
-    size.innerText = getFileSize(length);
+    size.textContent = getFileSize(length);
     list.appendChild(item);
     return item;
 }
@@ -341,7 +343,7 @@ function printTaskFileList(files) {
     var items = [...fileList.childNodes];
     files.forEach(({index, path, length, selected, completedLength, uris}, step) => {
         var item = items[step] ?? printFileItem(fileList, index, path, length, selected, uris);
-        item.ratio.innerText = (completedLength / length * 10000 | 0) / 100;
+        item.ratio.textContent = (completedLength / length * 10000 | 0) / 100;
         if (uris.length !== 0) {
             printTaskUriList(uris);
         }
@@ -373,9 +375,9 @@ function printTaskUriList(uris) {
         var item = items[step] ?? printUriItem(uriList, uri);
         var {yes, no} = result[uri];
         var {url, used, wait} = item;
-        url.innerText = uri;
-        used.innerText = yes;
-        wait.innerText = no;
+        url.textContent = uri;
+        used.textContent = yes;
+        wait.textContent = no;
     });
     items.slice(urls.length).forEach((item) => item.remove());
 }
