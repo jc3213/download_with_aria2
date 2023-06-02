@@ -41,7 +41,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('click', ({target}) => {
-    if (queuebtn !== target && !chooseQueue.contains(target)) {
+    var {id} = target;
+    if (id !== 'queue_btn' && !chooseQueue.contains(target)) {
         manager.classList.remove('queue');
     }
 });
@@ -144,8 +145,10 @@ async function addSession(gid) {
 function removeSession(cate, gid, task) {
     self[`${cate}Stat`].innerText --;
     delete self[`${cate}Task`][gid];
-    delete globalTask[gid];
-    task?.remove();
+    if (task) {
+        task.remove();
+        delete globalTask[gid];
+    }
 }
 
 function printSession({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
