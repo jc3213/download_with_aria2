@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.4.0.2102",
+    "version": "4.4.0.2106",
     "manifest_version": 3,
     "permissions": [
         "contextMenus",
