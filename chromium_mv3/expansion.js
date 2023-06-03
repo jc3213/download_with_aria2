@@ -1,6 +1,6 @@
 chrome.action.onClicked.addListener(async tab => {
     var tabs = await chrome.tabs.query({currentWindow: true});
-    var tab = tabs.find(tab => tab.url.includes(aria2Popup));
+    var tab = tabs.find(tab => tab.url.includes(aria2InTab));
     if (tab) {
         chrome.tabs.update(tab.id, {active: true});
     }

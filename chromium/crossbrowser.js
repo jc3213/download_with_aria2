@@ -26,10 +26,12 @@ var aria2Default = {
 };
 var aria2Store = {};
 var aria2RPC;
-var aria2Popup = 'pages/popup/popup.html';
+var aria2Popup = '/pages/popup/popup.html';
+var aria2InTab = `${chrome.runtime.id}/pages/popup/popup.html`;
+var aria2Images = '/pages/images/images.html';
 var aria2Monitor = {};
 var aria2Prompt = {};
-var aria2Images = {};
+var aria2Message = {};
 
 chrome.storage.onChanged.addListener(changes => {
     Object.keys(changes).forEach(key => {
@@ -47,14 +49,13 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }
 });
 
-chrome.runtime.onMessage.addListener((message, sender, response) => {
-    var {action, params} = message;
-    var {id} = sender.tab;
+chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
+    var {id} = tab;
     if (action === 'internal_prompt') {
         response(aria2Prompt[id]);
     }
     else if (action === 'internal_images') {
-        response(aria2Images[id]);
+        response(aria2Message[id]);
     }
     else if (action === 'external_download') {
         aria2DownloadPrompt(params);
@@ -85,8 +86,8 @@ async function aria2Download(url, referer, hostname, options = {}) {
 }
 
 async function aria2ImagesPrompt(result) {
-    var id = await getNewWindow('/pages/images/images.html', 720, 680);
-    aria2Images[id] = result;
+    var id = await getNewWindow(aria2Images, 720, 680);
+    aria2Message[id] = result;
 }
 
 function getCurrentTabUrl() {
