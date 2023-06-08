@@ -101,44 +101,41 @@ body {
     display: inline-block;
 }
 
-#queue > #active #meter {
-    background-color: #4cc;
+#queue #meter {
+    background-color: #4a4a4a;
 }
 
-#queue > #waiting #meter {
-    background-color: #48c;
+#queue #ratio, .session .ready {
+    background-color: #1d4e7d;
+    color: #ffffff;
 }
 
-#queue > #paused #meter {
-    background-color: #488;
+#queue > #active .title::before {
+    background-color: #4a4ac9;
 }
 
-#queue > #removed #meter, #queue > #error #meter {
-    background-color: #844;
+#queue > #waiting .title::before {
+    background-color: #4a4a94;
 }
 
-#queue > #active #meter > #ratio, .session .ready {
-    background-color: #44c;
+#queue > #paused .title::before {
+    background-color: #c9c94a;
 }
 
-#queue > #waiting #meter > #ratio, #queue > #paused #meter > #ratio {
-    background-color: #cc4;
+#queue > #complete .title::before {
+    background-color: #4ac94a;
 }
 
-#queue > #complete #meter, #queue > #complete #meter > #ratio {
-    background-color: #4c4;
+#queue > #removed .title::before {
+    background-color: #944a94;
 }
 
-#queue > #removed #meter > #ratio, #queue > #error #meter > #ratio {
-    background-color: #c48;
-}
-
-#queue #meter, .session .ready {
-    color: #fff;
+#queue > #error .title::before {
+    background-color: #c94a4a;
 }
 
 #queue > :nth-child(-n+3) #meter:active,
-#queue > :nth-child(-n+3) #meter > #ratio:active,
+#queue > :nth-child(-n+3) #ratio:active,
 #queue > :nth-child(-n+3) .p2p .file > :nth-child(1):active {
     filter: contrast(45%);
 }
@@ -177,11 +174,23 @@ body {
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
+    grid-gap: 3px;
     grid-template-columns: repeat(3, 1fr) 22.5px;
 }
 
 .session > #title {
     grid-area: 1 / 1 / 1 / 4;
+}
+
+.session > #title::before {
+    content: "";
+    display: inline-block;
+    border-radius: 12px;
+    width: 12px;
+    height: 12px;
+    position: relative;
+    top: 1px;
+    margin: 0px 9px 0px 5px;
 }
 
 .session > #menu {
@@ -235,10 +244,6 @@ body {
 .uri {
     display: grid;
     grid-template-columns: auto 40px 40px;
-}
-
-.session > :nth-last-child(n+3) {
-    height: 24px;
 }
 
 .session:not(.extra) > #options {
