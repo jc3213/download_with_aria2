@@ -47,25 +47,13 @@ body {
 }
 
 #status {
-    margin: auto;
     display: flex;
+    margin: auto;
 }
 
 #status > *, #status > ::before {
     padding: 4px;
     margin: 0px 5px;
-}
-
-@media (prefers-color-scheme: light) {
-    #status > ::before {
-        background-color: #e5e5e5;
-    }
-}
-
-@media (prefers-color-scheme: dark) {
-    #status > ::before {
-        background-color: #4a4a4a;
-    }
 }
 
 #status > :nth-child(-n+3) > :last-child {
@@ -106,32 +94,35 @@ body {
 }
 
 #queue #ratio, .session .ready {
-    background-color: #1d4e7d;
+    background-color: #0e4d7b;
     color: #ffffff;
 }
 
 #queue > #active .title::before {
-    background-color: #4a4ac9;
+    background-color: #0e4d7b;
 }
 
 #queue > #waiting .title::before {
-    background-color: #4a4a94;
+    background-color: #445568;
 }
 
-#queue > #paused .title::before {
-    background-color: #c9c94a;
+#queue > #paused .title::before,
+#queue > #paused #ratio {
+    background-color: #d7ad51;
 }
 
-#queue > #complete .title::before {
-    background-color: #4ac94a;
+#queue > #complete .title::before,
+#queue > #complete #ratio {
+    background-color: #146032;
 }
 
 #queue > #removed .title::before {
-    background-color: #944a94;
+    background-color: #6d3aaa;
 }
 
-#queue > #error .title::before {
-    background-color: #c94a4a;
+#queue > #error .title::before,
+#queue > #error #ratio {
+    background-color: #a81524;
 }
 
 #queue > :nth-child(-n+3) #meter:active,
