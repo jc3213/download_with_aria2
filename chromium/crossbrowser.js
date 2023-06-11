@@ -33,10 +33,13 @@ var aria2Monitor = {};
 var aria2Prompt = {};
 var aria2Message = {};
 
-chrome.storage.onChanged.addListener(changes => {
-    Object.keys(changes).forEach(key => {
+chrome.storage.onChanged.addListener((changes) => {
+    Object.keys(changes).forEach((key) => {
         var {newValue} = changes[key];
-        if (newValue !== undefined) {
+        if (newValue === undefined) {
+            delete aria2Store[key];
+        }
+        else {
             aria2Store[key] = newValue;
         }
     });
@@ -65,7 +68,7 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     }
 });
 
-chrome.commands.onCommand.addListener(command => {
+chrome.commands.onCommand.addListener((command) => {
     if (command === 'open_options') {
         chrome.runtime.openOptionsPage();
     }
@@ -91,7 +94,7 @@ async function aria2ImagesPrompt(result) {
 }
 
 function getCurrentTabUrl() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
             var {url} = tabs[0];
             resolve(url);
@@ -165,12 +168,12 @@ function getProxyServer(hostname) {
 }
 
 function getRequestHeaders(url) {
-    return new Promise(resolve => {
-        chrome.cookies.getAll({url}, cookies => {
+    return new Promise((resolve) => {
+        chrome.cookies.getAll({url}, (cookies) => {
             var header = 'Cookie:';
-            cookies.forEach(cookie => {
+            cookies.forEach((cookie) => {
                 var {name, value} = cookie;
-                header += ' ' + name + '=' + value + ';';
+                header += ` ${name}=${value};`;
             });
             resolve([header]);
         });
