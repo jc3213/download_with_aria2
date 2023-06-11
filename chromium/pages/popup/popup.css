@@ -102,10 +102,7 @@ body {
     background-color: #0e4d7b;
 }
 
-#queue > #waiting .title::before {
-    background-color: #445568;
-}
-
+#queue > #waiting .title::before,
 #queue > #paused .title::before,
 #queue > #paused #ratio {
     background-color: #d7ad51;
@@ -116,10 +113,7 @@ body {
     background-color: #146032;
 }
 
-#queue > #removed .title::before {
-    background-color: #6d3aaa;
-}
-
+#queue > #removed .title::before,
 #queue > #error .title::before,
 #queue > #error #ratio {
     background-color: #a81524;
