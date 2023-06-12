@@ -36,10 +36,7 @@ var aria2Message = {};
 chrome.storage.onChanged.addListener((changes) => {
     Object.keys(changes).forEach((key) => {
         var {newValue} = changes[key];
-        if (newValue === undefined) {
-            delete aria2Store[key];
-        }
-        else {
+        if (newValue !== undefined) {
             aria2Store[key] = newValue;
         }
     });
