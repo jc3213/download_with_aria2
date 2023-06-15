@@ -71,6 +71,9 @@
     "option_import": {
         "message": "导入"
     },
+    "option_aria2": {
+        "message": "修改 JSON-RPC 设置"
+    },
     "option_back": {
         "message": "返回"
     },

@@ -71,6 +71,9 @@
     "option_import": {
         "message": "Import"
     },
+    "option_aria2": {
+        "message": "Open JSON-RPC Options"
+    },
     "option_back": {
         "message": "Back"
     },

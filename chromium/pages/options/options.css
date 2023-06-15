@@ -3,7 +3,8 @@ body {
     width: 680px;
 }
 
-body:not(.aria2) [data-aria2], body.aria2 [data-local] {
+body:not(.aria2) #aria2, body:not(.aria2) #back_btn,
+body.aria2 #local, body.aria2 #export_btn, body.aria2 #import_btn {
     display: none;
 }
 

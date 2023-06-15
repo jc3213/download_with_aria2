@@ -4,7 +4,6 @@ var redobtn = document.querySelector('#redo_btn');
 var appver = chrome.runtime.getManifest().version;
 var aria2ver = document.querySelector('#version');
 var aria2ua = document.querySelector('#aria2ua');
-var secret = document.querySelector('#jsonrpc_token');
 var changes = {};
 var redoes = [];
 var undoes = [];
@@ -139,14 +138,6 @@ document.querySelector('#aria2_btn').addEventListener('click', async (event) => 
     changes = {...aria2Global};
     aria2ver.textContent = aria2ua.textContent = version.version;
     document.body.className = 'aria2';
-});
-
-document.querySelector('#show_btn').addEventListener('mousedown', (event) => {
-    secret.type = 'text';
-});
-
-document.addEventListener('mouseup', (event) => {
-    secret.type = 'password';
 });
 
 textarea.forEach(entry => {
