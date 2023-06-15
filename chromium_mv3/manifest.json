@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.4.0.2108",
+    "version": "4.4.0.2116",
     "manifest_version": 3,
     "permissions": [
         "contextMenus",
@@ -47,7 +47,7 @@
         },
         "open_options": {
             "suggested_key": {
-                "default": "Alt+Shift+A"
+                "default": "Alt+Shift+S"
             },
             "description": "__MSG_shortcut_options__"
         },
