@@ -75,7 +75,7 @@
         "message": "修改 JSON-RPC 设置"
     },
     "option_back": {
-        "message": "返回"
+        "message": "返回 扩展 设置"
     },
     "option_jsonrpc_uri": {
         "message": "主机地址"

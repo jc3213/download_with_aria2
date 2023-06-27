@@ -13,11 +13,10 @@
             <button id="redo_btn" disabled i18n>option_redo</button>
             <div id="version"></div>
             <button id="export_btn" i18n>option_export</button>
-            <button id="import_btn">
-                <label for="uploader" i18n>option_import</label>
-                <input id="uploader" type="file" accept=".json">
-            </button>
-            <button id="back_btn" data-aria2 i18n>option_back</button>
+            <button id="import_btn" i18n>option_import</button>
+            <input type="file" accept=".json">
+            <input type="file" accept=".conf">
+            <a id="exporter"></a>
         </div>
         <div id="local" class="options">
             <h1>JSON-RPC</h1>
@@ -156,6 +155,9 @@
             </div>
         </div>
         <div id="aria2" class="options" data-aria2>
+            <div class="menu">
+                <button id="back_btn" data-aria2 i18n>option_back</button>
+            </div>
             <h1>HTTP/FTP</h1>
             <div class="menu" title="aria2_http_retry_title">
                 <div class="title" i18n>aria2_http_retry</div>

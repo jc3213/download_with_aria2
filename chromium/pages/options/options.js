@@ -4,6 +4,10 @@ var redobtn = document.querySelector('#redo_btn');
 var appver = chrome.runtime.getManifest().version;
 var aria2ver = document.querySelector('#version');
 var aria2ua = document.querySelector('#aria2ua');
+var aria2options = document.querySelectorAll('#aria2 input');
+var importJSON = document.querySelector('input[accept=".json"]');
+var importCONF = document.querySelector('input[accept=".conf"]');
+var exporter = document.querySelector('#exporter');
 var changes = {};
 var redoes = [];
 var undoes = [];
@@ -59,8 +63,8 @@ document.querySelector('#menu').addEventListener('click', ({target}) => {
     else if (id === 'export_btn') {
         optionsExport();
     }
-    else if (id === 'back_btn') {
-        optionsBack();
+    else if (id === 'import_btn') {
+        optionsImport();
     }
 });
 
@@ -99,33 +103,61 @@ function optionsRedo() {
 }
 
 function optionsExport() {
-    var blob = new Blob([JSON.stringify(aria2Store)], {type: 'application/json; charset=utf-8'});
-    var saver = document.createElement('a');
-    saver.href = URL.createObjectURL(blob);
-    saver.download = `downwitharia2_options-${new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_')}.json`;
-    saver.click();
+    var time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
+    if (global) {
+        var output = [JSON.stringify(aria2Store)];
+        var name = `downwitharia2_options-${time}.json`;
+    }
+    else {
+        output = Object.entries(aria2CONF).map(([key, value]) => `${key}=${value}\n`);
+        name = `aria2c_jsonrpc-${time}.conf`;
+    }
+    var blob = new Blob(output, {type: 'application/json; charset=utf-8'});
+    exporter.href = URL.createObjectURL(blob);
+    exporter.download = name;
+    exporter.click();
 }
 
-document.querySelector('#import_btn').addEventListener('change', ({target}) => {
-    var file = target.files[0];
-    var reader = new FileReader();
-    reader.onload = (event) => {
-        var json = JSON.parse(reader.result);
+function optionsImport() {
+    global ? importJSON.click() : importCONF.click();
+}
+
+document.querySelector('#menu').addEventListener('change', async ({target}) => {
+    clearChanges();
+    var text = await getFileText(target.files[0]);
+    if (global) {
+        var json = JSON.parse(text);
         chrome.storage.local.set(json);
-        clearChanges();
         aria2Store = json;
         aria2StartUp();
-        target.value = '';
-    };
-    reader.readAsText(file);
+    }
+    else {
+        var conf = {};
+        text.split('\n').forEach((entry) => {
+            var [key, value] = entry.split('=');
+            conf[key] = value;
+        });
+        await aria2RPC.call('aria2.changeGlobalOption', [conf]);
+        aria2options.disposition(conf);
+    }
+    target.value = '';
 });
 
-function optionsBack() {
+function getFileText(file) {
+    return new Promise((resolve, reject) => {
+        var reader = new FileReader();
+        reader.onload = (event) => resolve(reader.result);
+        reader.onerror = (event) => reject(reader.error);
+        reader.readAsText(file);
+    });
+}
+
+document.querySelector('#back_btn').addEventListener('click', (event) => {
     clearChanges();
     global = true;
     aria2StartUp();
     document.body.className = 'local';
-}
+});
 
 document.querySelector('#aria2_btn').addEventListener('click', async (event) => {
     var [options, version] = await aria2RPC.batch([
@@ -134,7 +166,8 @@ document.querySelector('#aria2_btn').addEventListener('click', async (event) => 
     ]);
     clearChanges();
     global = false;
-    aria2Global = document.querySelectorAll('#aria2 input').disposition(options);
+    aria2Global = aria2options.disposition(options);
+    aria2CONF = {'enable-rpc': true, ...options};
     changes = {...aria2Global};
     aria2ver.textContent = aria2ua.textContent = version.version;
     document.body.className = 'aria2';

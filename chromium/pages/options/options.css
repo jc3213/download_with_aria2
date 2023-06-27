@@ -3,8 +3,7 @@ body {
     width: 680px;
 }
 
-body:not(.aria2) #aria2, body:not(.aria2) #back_btn,
-body.aria2 #local, body.aria2 #export_btn, body.aria2 #import_btn {
+body:not(.aria2) #aria2, body.aria2 #local {
     display: none;
 }
 
@@ -18,17 +17,21 @@ input[type="checkbox"] {
 }
 
 #menu {
-    border-width: 1px;
-    border-style: outset;
+    border-width: 0px 1px 1px;
+    border-style: solid;
     position: fixed;
-    top: 5px;
+    top: 0px;
     z-index: 999999;
-    width: 668px;
-    padding: 5px;
+    width: 662px;
+    padding: 8px;
 }
 
 #menu > div {
     margin-left: auto;
+}
+
+#menu > input, #menu > a {
+    display: none;
 }
 
 #version {

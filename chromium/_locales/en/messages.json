@@ -75,7 +75,7 @@
         "message": "Open JSON-RPC Options"
     },
     "option_back": {
-        "message": "Back"
+        "message": "Back to Extension Options"
     },
     "option_jsonrpc_uri": {
         "message": "URI Address"
