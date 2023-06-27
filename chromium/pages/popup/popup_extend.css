@@ -4,13 +4,13 @@
 }
 
 .full > #menu {
-    position: fixed;
-    z-index: 999999;
-    padding: 5px;
-    border-width: 1px;
+    border-width: 0px 1px 1px;
     border-style: solid;
-    top: 8px;
-    width: 1268px;
+    padding: 8px;
+    position: fixed;
+    top: 0px;
+    z-index: 999999;
+    width: 1262px;
 }
 
 .full > #choose {
