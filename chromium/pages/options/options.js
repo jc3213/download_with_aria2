@@ -109,7 +109,7 @@ function optionsExport() {
         var name = `downwitharia2_options-${time}.json`;
     }
     else {
-        output = Object.entries(aria2CONF).map(([key, value]) => `${key}=${value}\n`);
+        output = Object.keys(aria2CONF).map((key) => `${key}=${aria2CONF[key]}\n`);
         name = `aria2c_jsonrpc-${time}.conf`;
     }
     var blob = new Blob(output, {type: 'application/json; charset=utf-8'});
@@ -138,7 +138,8 @@ document.querySelector('#menu').addEventListener('change', async ({target}) => {
             conf[key] = value;
         });
         await aria2RPC.call('aria2.changeGlobalOption', [conf]);
-        aria2options.disposition(conf);
+        aria2Global = aria2options.disposition(conf);
+        changes = {...aria2Global};
     }
     target.value = '';
 });
@@ -296,7 +297,6 @@ function printLinkage(menu) {
 }
 
 function clearChanges() {
-    changes = {};
     undoes = [];
     redoes = [];
     savebtn.disabled = undobtn.disabled = redobtn.disabled = true;
