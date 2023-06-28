@@ -2,10 +2,6 @@
     body, div {
         background-color: #ffffff;
     }
-
-    * {
-        border-color: #9a9a9a;
-    }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -14,16 +10,16 @@
     }
     
     button, input, textarea, select {
-        background-color: #4a4a4a;
+        background-color: #56585d;
     }
 
     body, div, button, input, textarea, select {
         color: #ffffff;
     }
+}
 
-    * {
-        border-color: #9aa0a6;
-    }
+* {
+    border-color: #aab0b6;
 }
 
 body, button, input, textarea, select {
@@ -87,7 +83,7 @@ button input[type="file"] {
     display: none;
 }
 
-button:enabled:hover, button:enabled:hover > * {
+button:enabled:hover {
     cursor: pointer;
     filter: contrast(75%);
 }
