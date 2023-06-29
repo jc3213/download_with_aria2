@@ -3,7 +3,8 @@ body {
     width: 680px;
 }
 
-body:not(.aria2) #aria2, body.aria2 #local {
+body:not(.aria2) #aria2, body.aria2 #local,
+#menu input, #menu a {
     display: none;
 }
 
@@ -28,10 +29,6 @@ input[type="checkbox"] {
 
 #menu > div {
     margin-left: auto;
-}
-
-#menu > input, #menu > a {
-    display: none;
 }
 
 #version {
