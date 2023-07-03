@@ -85,10 +85,8 @@ function aria2StartUp() {
     stoppedTask = {};
     globalTask = {};
     aria2RPC.batch([
-        {method: 'aria2.getGlobalStat'},
-        {method: 'aria2.tellActive'},
-        {method: 'aria2.tellWaiting', params: [0, 999]},
-        {method: 'aria2.tellStopped', params: [0, 999]}
+        ['aria2.getGlobalStat'], ['aria2.tellActive'],
+        ['aria2.tellWaiting', 0, 999], ['aria2.tellStopped', 0, 999]
     ]).then(([{downloadSpeed, uploadSpeed}, active, waiting, stopped]) => {
         [...active, ...waiting, ...stopped].forEach(printSession);
         downloadStat.textContent = getFileSize(downloadSpeed);
@@ -119,8 +117,7 @@ function aria2Client() {
 
 async function updateManager() {
     var [{downloadSpeed, uploadSpeed}, active] = await aria2RPC.batch([
-        {method: 'aria2.getGlobalStat'},
-        {method: 'aria2.tellActive'}
+        ['aria2.getGlobalStat'], ['aria2.tellActive']
     ]);
     active.forEach(printSession);
     downloadStat.textContent = getFileSize(downloadSpeed);
@@ -138,7 +135,7 @@ function updateSession(task, gid, status) {
 }
 
 async function addSession(gid) {
-    var result = await aria2RPC.call('aria2.tellStatus', [gid]);
+    var result = await aria2RPC.call('aria2.tellStatus', gid);
     var task = printSession(result);
     var {status} = result;
     updateSession(task, gid, status);
@@ -219,7 +216,7 @@ function parseSession(gid, status, bittorrent) {
     });
     task.querySelector('#options').addEventListener('change', ({target}) => {
         var {id, value} = target;
-        aria2RPC.call('aria2.changeOption', [gid, {[id]: value}]);
+        aria2RPC.call('aria2.changeOption', gid, {[id]: value});
     });
     globalTask[gid] = task;
     updateSession(task, gid, status);
@@ -228,13 +225,13 @@ function parseSession(gid, status, bittorrent) {
 
 async function taskRemove(task, gid, status) {
     if ('active,waiting,paused'.includes(status)) {
-        await aria2RPC.call('aria2.forceRemove', [gid]);
+        await aria2RPC.call('aria2.forceRemove', gid);
         if (status !== 'active') {
             removeSession('waiting', gid, task);
         }
     }
     else {
-        await aria2RPC.call('aria2.removeDownloadResult', [gid]);
+        await aria2RPC.call('aria2.removeDownloadResult', gid);
         removeSession('stopped', gid, task);
     }
 }
@@ -263,8 +260,7 @@ async function taskRetry(task, gid) {
         options['out'] = path.slice(ni + 1);
      }
      var [id] = await aria2RPC.batch([
-        {method: 'aria2.addUri', params: [url, options]},
-        {method: 'aria2.removeDownloadResult', params: [gid]}
+        ['aria2.addUri', url, options], ['aria2.removeDownloadResult', gid]
      ]);
      addSession(id);
      removeSession('stopped', gid, task);
@@ -272,23 +268,23 @@ async function taskRetry(task, gid) {
 
 async function taskPause(task, gid, status) {
     if ('active,waiting'.includes(status)) {
-        await aria2RPC.call('aria2.forcePause', [gid]);
+        await aria2RPC.call('aria2.forcePause', gid);
         pausedQueue.appendChild(task);
     }
     else if (status === 'paused') {
-        await aria2RPC.call('aria2.unpause', [gid]);
+        await aria2RPC.call('aria2.unpause', gid);
         waitingQueue.appendChild(task);
     }
 }
 
 async function taskProxy(proxy, gid) {
-    await aria2RPC.call('aria2.changeOption', [gid, {'all-proxy': aria2Store['proxy_server']}]);
+    await aria2RPC.call('aria2.changeOption', gid, {'all-proxy': aria2Store['proxy_server']});
     proxy.previousElementSibling.value = aria2Store['proxy_server'];
 }
 
 async function taskFiles(save, files, gid) {
     var selected = [...files.querySelectorAll('.ready')].map(index => index.textContent);
-    await aria2RPC.call('aria2.changeOption', [gid, {'select-file': selected.join()}]);
+    await aria2RPC.call('aria2.changeOption', gid, {'select-file': selected.join()});
     save.style.display = 'none';
 }
 
@@ -301,18 +297,17 @@ function taskSelectFile(cate, save, file) {
 
 async function taskAddUri(adduri, gid) {
     var uri = adduri.previousElementSibling;
-    await aria2RPC.call('aria2.changeUri', [gid, 1, [], [uri.value]]);
+    await aria2RPC.call('aria2.changeUri', gid, 1, [], [uri.value]);
     uri.value = '';
 }
 
 async function taskRemoveUri(uri, gid, ctrl) {
-    ctrl ? aria2RPC.call('aria2.changeUri', [gid, 1, [uri], []]) : navigator.clipboard.writeText(uri);
+    ctrl ? aria2RPC.call('aria2.changeUri', gid, 1, [uri], []) : navigator.clipboard.writeText(uri);
 }
 
 function getTaskDetail(gid) {
     return aria2RPC.batch([
-        {method: 'aria2.getFiles', params: [gid]},
-        {method: 'aria2.getOption', params: [gid]}
+        ['aria2.getFiles', gid], ['aria2.getOption', gid]
     ]);
 }
 

@@ -8,12 +8,9 @@ class Aria2 {
     error (protocol) {
         throw new Error(`Invalid protocol: "${protocol}" is not supported.`);
     }
-    message (method, options) {
-        var params = Array.isArray(options) ? [...this.params, ...options] : [...this.params];
-        return {id: '', jsonrpc: '2.0', method, params};
-    }
-    call (method, options) {
-        var json = this.message(method, options);
+    call (method, ...options) {
+        var params = [...this.params, ...options];
+        var json = {id: '', jsonrpc: '2.0', method, params};
         return this.post(JSON.stringify(json)).then(({result, error}) => {
             if (result) {
                 return result;
@@ -22,7 +19,10 @@ class Aria2 {
         });
     }
     batch (array) {
-        var json = array.map(({method, params}) => this.message(method, params));
+        var json = array.map(([method, ...options]) => {
+            var params = [...this.params, ...options];
+            return {id: '', jsonrpc: '2.0', method, params};
+        });
         return this.post(JSON.stringify(json)).then((response) => {
             return response.map(({result, error}) => {
                 if (result) {

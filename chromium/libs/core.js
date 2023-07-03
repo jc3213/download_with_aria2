@@ -1,13 +1,12 @@
 var aria2Start = chrome.i18n.getMessage('download_start');
 var aria2Complete = chrome.i18n.getMessage('download_complete');
 
-async function aria2DownloadUrls(url, options) {
+async function aria2DownloadUrls(url, options = {}) {
     var urls = Array.isArray(url) ? url : [url];
     var message = '';
     var sessions = urls.map((url) => {
         message += `${url}\n`;
-        var params = options ? [[url], options] : [[url]];
-        return {method: 'aria2.addUri', params};
+        return ['aria2.addUri', [url], options];
     });
     await aria2RPC.batch(sessions);
     await aria2WhenStart(message);
@@ -22,7 +21,7 @@ async function aria2DownloadJSON(json, origin) {
         }
         message += `${url}\n`;
         options = options && origin ? {...origin, ...options} : options ? options : origin ? origin : {};
-        return {method: 'aria2.addUri', params: [[url], options]};
+        return [method: 'aria2.addUri', [url], options];
     });
     await aria2RPC.batch(sessions);
     await aria2WhenStart(message);

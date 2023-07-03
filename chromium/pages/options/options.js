@@ -74,7 +74,7 @@ function optionsSave() {
         chrome.storage.local.set(changes);
     }
     else {
-        aria2RPC.call('aria2.changeGlobalOption', [changes]);
+        aria2RPC.call('aria2.changeGlobalOption', changes);
     }
     savebtn.disabled = true;
 }
@@ -137,7 +137,7 @@ document.querySelector('#menu').addEventListener('change', async ({target}) => {
             var [key, value] = entry.split('=');
             conf[key] = value;
         });
-        await aria2RPC.call('aria2.changeGlobalOption', [conf]);
+        await aria2RPC.call('aria2.changeGlobalOption', conf);
         aria2Global = aria2options.disposition(conf);
         changes = {...aria2Global};
     }
@@ -162,8 +162,7 @@ document.querySelector('#back_btn').addEventListener('click', (event) => {
 
 document.querySelector('#aria2_btn').addEventListener('click', async (event) => {
     var [options, version] = await aria2RPC.batch([
-        {method: 'aria2.getGlobalOption'},
-        {method: 'aria2.getVersion'}
+        ['aria2.getGlobalOption'], ['aria2.getVersion']
     ]);
     clearChanges();
     global = false;
