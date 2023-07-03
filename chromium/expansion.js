@@ -64,7 +64,7 @@ function aria2StartUp() {
                 else {
                     aria2Active.splice(aria2Active.indexOf(gid), 1);
                     if (method === 'aria2.onDownloadComplete') {
-                        var {bittorrent, files} = await aria2RPC.call('aria2.tellStatus', [gid]);
+                        var {bittorrent, files} = await aria2RPC.call('aria2.tellStatus', gid);
                         var name = getDownloadName(gid, bittorrent, files);
                         aria2WhenComplete(name);
                     }
