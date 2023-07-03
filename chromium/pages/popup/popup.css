@@ -85,7 +85,7 @@ body {
     display: none;
 }
 
-#queue > #removed .http #retry_btn, #queue > #error .http #retry_btn {
+#queue > #complete .http #retry_btn, #queue > #removed .http #retry_btn, #queue > #error .http #retry_btn {
     display: inline-block;
 }
 
