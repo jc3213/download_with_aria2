@@ -16,12 +16,15 @@ async function aria2DownloadJSON(json, origin) {
     var jsons = Array.isArray(json) ? json : [json];
     var message = '';
     var sessions = jsons.map(({url, options}) => {
-        if (!url) {
-            throw new SyntaxError('Wrong JSON format: "url" is required!');
+        if (Array.isArray(url)) {
+            message += `${url.join('+')}\n`;
         }
-        message += `${url}\n`;
+        else {
+            url = [url];
+            message += `${url}\n`;
+        }
         options = options && origin ? {...origin, ...options} : options ? options : origin ? origin : {};
-        return [method: 'aria2.addUri', [url], options];
+        return ['aria2.addUri', url, options];
     });
     await aria2RPC.batch(sessions);
     await aria2WhenStart(message);
