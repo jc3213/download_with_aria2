@@ -25,9 +25,10 @@
 
 .full > #choose::before {
     content: "__MSG_popup_task_queue__";
-    font-size: 20px;
+    display: block;
+    font-size: 18px;
     font-weight: bold;
-    margin: 5px 0px 5px 42px;
+    text-align: center;
 }
 
 .full > #queue {
