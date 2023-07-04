@@ -26,6 +26,7 @@ body {
     border-style: solid;
     position: fixed;
     top: 46px;
+    right: 8px;
     z-index: 999999;
 }
 
@@ -48,20 +49,16 @@ body {
 
 #status {
     display: flex;
-    margin: auto;
+    margin-right: auto;
 }
 
 #status > *, #status > ::before {
-    padding: 4px;
-    margin: 0px 5px;
+    padding: 4px 8px 4px 0px;
+    text-align: center;
 }
 
-#status > :nth-child(-n+3) > :last-child {
-    width: 30px;
-}
-
-#status > :nth-child(n+4) > :last-child {
-    width: 60px;
+#status > * {
+    margin-right: 50px;
 }
 
 #queue {

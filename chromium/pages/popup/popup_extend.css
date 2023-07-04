@@ -15,9 +15,10 @@
 
 .full > #choose {
     top: 48px;
+    right: calc(50% - 640px);
 }
 
-.full > hr, body:not(.full) #status > :nth-child(-n+3) {
+.full > hr, body:not(.full) #status > :nth-child(n+3) {
     display: none;
 }
 
