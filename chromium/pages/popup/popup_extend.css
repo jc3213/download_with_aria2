@@ -13,13 +13,21 @@
     width: 1262px;
 }
 
-.full > #choose {
-    top: 48px;
-    right: calc(50% - 640px);
+.full > hr, body:not(.full) #status > :nth-child(n+3),
+.full #queue_btn, body:not(.full):not(.queue) > #choose {
+    display: none;
 }
 
-.full > hr, body:not(.full) #status > :nth-child(n+3) {
-    display: none;
+.full > #choose {
+    top: 56px;
+    left: calc(50% + 642px);
+}
+
+.full > #choose::before {
+    content: "__MSG_popup_task_queue__";
+    font-size: 20px;
+    font-weight: bold;
+    margin: 5px 0px 5px 42px;
 }
 
 .full > #queue {
@@ -31,23 +39,23 @@ body:not(.full) > #queue {
 }
 
 #status > #active::before {
-    content: "__MSG_popup_active_queue__";
+    content: "__MSG_popup_active__";
 }
 
 #status > #waiting::before {
-    content: "__MSG_popup_waiting_queue__";
+    content: "__MSG_popup_waiting__";
 }
 
 #status > #stopped::before {
-    content: "__MSG_popup_stopped_queue__";
+    content: "__MSG_popup_stopped__";
 }
 
 #status > #download::before {
-    content: "__MSG_popup_download_speed__";
+    content: "__MSG_popup_download__";
 }
 
 #status > #upload::before {
-    content: "__MSG_popup_upload_speed__";
+    content: "__MSG_popup_upload__";
 }
 
 #day:not(:empty)::after {

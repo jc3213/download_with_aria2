@@ -239,37 +239,40 @@
     "popup_options": {
         "message": "选项"
     },
-    "popup_active": {
+    "popup_active_queue": {
         "message": "正在下载"
     },
-    "popup_waiting": {
+    "popup_waiting_queue": {
         "message": "等待队列"
     },
-    "popup_paused": {
+    "popup_paused_queue": {
         "message": "下载暂停"
     },
-    "popup_complete": {
+    "popup_complete_queue": {
         "message": "已经完成"
     },
-    "popup_removed": {
+    "popup_removed_queue": {
         "message": "下载停止"
     },
-    "popup_error": {
+    "popup_error_queue": {
         "message": "发生错误"
     },
-    "popup_active_queue": {
+    "popup_task_queue": {
+        "message": "任务队列"
+    },
+    "popup_active": {
         "message": "活跃"
     },
-    "popup_waiting_queue": {
+    "popup_waiting": {
         "message": "等待"
     },
-    "popup_stopped_queue": {
+    "popup_stopped": {
         "message": "停止"
     },
-    "popup_download_speed": {
+    "popup_download": {
         "message": "下载速度"
     },
-    "popup_upload_speed": {
+    "popup_upload": {
         "message": "上传速度"
     },
     "task_referer": {

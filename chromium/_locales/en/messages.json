@@ -239,37 +239,40 @@
     "popup_options": {
         "message": "Options"
     },
-    "popup_active": {
+    "popup_active_queue": {
         "message": "Downloading"
     },
-    "popup_waiting": {
+    "popup_waiting_queue": {
         "message": "Wait in Queue"
     },
-    "popup_paused": {
+    "popup_paused_queue": {
         "message": "Download Paused"
     },
-    "popup_complete": {
+    "popup_complete_queue": {
         "message": "Completed"
     },
-    "popup_removed": {
+    "popup_removed_queue": {
         "message": "Download Stopped"
     },
-    "popup_error": {
+    "popup_error_queue": {
         "message": "Error Occured"
     },
-    "popup_active_queue": {
+    "popup_task_queue": {
+        "message": "Task Queue"
+    },
+    "popup_active": {
         "message": "Active"
     },
-    "popup_waiting_queue": {
+    "popup_waiting": {
         "message": "Waiting"
     },
-    "popup_stopped_queue": {
+    "popup_stopped": {
         "message": "Stopped"
     },
-    "popup_download_speed": {
+    "popup_download": {
         "message": "DL Speed"
     },
-    "popup_upload_speed": {
+    "popup_upload": {
         "message": "UL Speed"
     },
     "task_referer": {

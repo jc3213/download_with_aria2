@@ -3,6 +3,9 @@ var open_in_tab = location.search === '?open_in_tab';
 if (open_in_tab) {
     document.body.classList.add('full');
 }
+else {
+    chooseQueue.style.left = `${queuebtn.offsetLeft + 8}px`;
+}
 
 async function managerDownload() {
     await aria2NewDownload();
