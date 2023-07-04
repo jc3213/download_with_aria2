@@ -16,15 +16,15 @@ function getCurrentWindow() {
     });
 }
 
-function getNewWindow(url, offsetWidth, offsetHeight) {
+function getNewWindow(url, offsetHeight) {
     return new Promise(async resolve => {
         var {width, height, left, top} = await getCurrentWindow();
         top += (height - offsetHeight) / 2 | 0;
-        left += (width - offsetWidth) / 2 | 0;
+        left += (width - 710) / 2 | 0;
         chrome.windows.create({
             type: 'popup',
             url,
-            width: offsetWidth,
+            width: 698,
             height: offsetHeight,
             left,
             top
@@ -37,7 +37,7 @@ function getNewWindow(url, offsetWidth, offsetHeight) {
 
 function aria2NewDownload(slim) {
     if (slim) {
-        return getNewWindow(aria2NewDL + '?slim_mode', 640, 308);
+        return getNewWindow(aria2NewDL + '?slim_mode', 308);
     }
-    return getNewWindow(aria2NewDL, 640, 518);
+    return getNewWindow(aria2NewDL, 518);
 }
