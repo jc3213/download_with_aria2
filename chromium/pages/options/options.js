@@ -4,7 +4,7 @@ var redobtn = document.querySelector('#redo_btn');
 var appver = chrome.runtime.getManifest().version;
 var aria2ver = document.querySelector('#version');
 var aria2ua = document.querySelector('#aria2ua');
-var aria2options = document.querySelectorAll('#aria2 input');
+var aria2options = document.querySelectorAll('#aria2 input, #aria2 select');
 var importJSON = document.querySelector('input[accept=".json"]');
 var importCONF = document.querySelector('input[accept=".conf"]');
 var exporter = document.querySelector('#exporter');
