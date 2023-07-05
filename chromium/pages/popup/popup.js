@@ -64,18 +64,6 @@ document.querySelector('#menu').addEventListener('click', ({target}) => {
     }
 });
 
-Object.keys(localStorage).forEach((key) => {
-    if (localStorage[key] === 'true') {
-        manager.classList.add(key);
-    }
-});
-
-chooseQueue.addEventListener('click', ({target}) => {
-    var {id} = target;
-    manager.classList.toggle(id);
-    localStorage[id] = localStorage[id] === 'true' ? 'false' : 'true';
-});
-
 function managerQueue() {
     manager.classList.toggle('queue');
 }
@@ -87,6 +75,13 @@ async function managerPurge() {
     stoppedTask = {};
     globalTask = {...activeTask, ...waitingTask};
 }
+
+Object.keys(localStorage).forEach((key) => manager.classList.add(key));
+chooseQueue.addEventListener('click', ({target}) => {
+    var {id} = target;
+    manager.classList.toggle(id);
+    localStorage.getItem(id) ? localStorage.removeItem(id) : localStorage.setItem(id, id);
+});
 
 function aria2StartUp() {
     activeTask = {};
