@@ -19,14 +19,17 @@ var sessionLET = document.querySelector('.template > .session');
 var fileLET = document.querySelector('.template > .file');
 var uriLET = document.querySelector('.template > .uri');
 
+Object.keys(localStorage).forEach((key) => manager.classList.add(key));
+chooseQueue.addEventListener('click', ({target}) => {
+    var {id} = target;
+    manager.classList.toggle(id);
+    localStorage.getItem(id) ? localStorage.removeItem(id) : localStorage.setItem(id, id);
+});
+
 document.addEventListener('keydown', (event) => {
     var {ctrlKey, key} = event;
     if (ctrlKey) {
-        if (key === 'q') {
-            event.preventDefault();
-            managerQueue();
-        }
-        else if (key === 'r') {
+        if (key === 'r') {
             event.preventDefault();
             managerPurge();
         }
@@ -41,19 +44,9 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-document.addEventListener('click', ({target}) => {
-    var {id} = target;
-    if (id !== 'queue_btn' && !chooseQueue.contains(target)) {
-        manager.classList.remove('queue');
-    }
-});
-
 document.querySelector('#menu').addEventListener('click', ({target}) => {
     var {id} = target;
-    if (id === 'queue_btn') {
-        managerQueue()
-    }
-    else if (id === 'purge_btn') {
+    if (id === 'purge_btn') {
         managerPurge();
     }
     else if (id === 'download_btn') {
@@ -64,10 +57,6 @@ document.querySelector('#menu').addEventListener('click', ({target}) => {
     }
 });
 
-function managerQueue() {
-    manager.classList.toggle('queue');
-}
-
 async function managerPurge() {
     await aria2RPC.call('aria2.purgeDownloadResult');
     completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
@@ -75,13 +64,6 @@ async function managerPurge() {
     stoppedTask = {};
     globalTask = {...activeTask, ...waitingTask};
 }
-
-Object.keys(localStorage).forEach((key) => manager.classList.add(key));
-chooseQueue.addEventListener('click', ({target}) => {
-    var {id} = target;
-    manager.classList.toggle(id);
-    localStorage.getItem(id) ? localStorage.removeItem(id) : localStorage.setItem(id, id);
-});
 
 function aria2StartUp() {
     activeTask = {};

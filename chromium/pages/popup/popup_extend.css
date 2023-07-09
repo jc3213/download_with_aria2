@@ -13,8 +13,7 @@
     width: 1262px;
 }
 
-.full > hr, body:not(.full) #status > :nth-child(n+3),
-.full #queue_btn, body:not(.full):not(.queue) > #choose {
+.full > hr, body:not(.full) #status > :nth-child(n+3) {
     display: none;
 }
 
@@ -24,7 +23,7 @@
 }
 
 .full > #choose::before {
-    content: "__MSG_popup_task_queue__";
+    content: "__MSG_popup_queue__";
     display: block;
     font-size: 18px;
     font-weight: bold;

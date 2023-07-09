@@ -228,7 +228,7 @@
         "message": "忽略拥有所设置文件后缀的下载"
     },
     "popup_queue": {
-        "message": "队列"
+        "message": "任务队列"
     },
     "popup_purge": {
         "message": "清理"
@@ -256,9 +256,6 @@
     },
     "popup_error_queue": {
         "message": "发生错误"
-    },
-    "popup_task_queue": {
-        "message": "任务队列"
     },
     "popup_active": {
         "message": "活跃"

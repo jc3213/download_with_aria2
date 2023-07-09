@@ -228,7 +228,7 @@
         "message": "Ignore downloads with these extensions"
     },
     "popup_queue": {
-        "message": "Queue"
+        "message": "Task Queue"
     },
     "popup_purge": {
         "message": "Purge"
@@ -256,9 +256,6 @@
     },
     "popup_error_queue": {
         "message": "Error Occured"
-    },
-    "popup_task_queue": {
-        "message": "Task Queue"
     },
     "popup_active": {
         "message": "Active"
