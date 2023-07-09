@@ -1,15 +1,14 @@
 var open_in_tab = location.search === '?open_in_tab';
-var allQueue = document.querySelector('#queue');
 
 if (open_in_tab) {
     document.body.classList.add('full');
 }
 else {
-    var positionLeft = allQueue.offsetWidth - choose.offsetWidth;
-    var positionTop = allQueue.offsetHeight - choose.offsetHeight;
+    var positionLeft = aria2Queue.offsetWidth - choose.offsetWidth;
+    var positionTop = aria2Queue.offsetHeight - choose.offsetHeight;
     choose.style.display = 'none';
 
-    allQueue.addEventListener('contextmenu', (event) => {
+    aria2Queue.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         var {target, clientX, clientY} = event;
         if (clientX > positionLeft) {
@@ -31,7 +30,7 @@ else {
         chooseQueue.style.cssText = `display: block; left: ${left}; right: ${right}; top: ${top}; bottom: ${bottom};`;
     });
 
-    allQueue.addEventListener('click', ({target}) => {
+    aria2Queue.addEventListener('click', ({target}) => {
         chooseQueue.style.display = 'none';
     });
 }

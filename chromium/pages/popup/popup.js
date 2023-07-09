@@ -1,7 +1,6 @@
 var manager = document.body;
 var detailed;
 var aria2Alive;
-var queuebtn = document.querySelector('#queue_btn');
 var optionsbtn = document.querySelector('#options_btn');
 var chooseQueue = document.querySelector('#choose');
 var activeStat = document.querySelector('#status #active');
@@ -9,6 +8,7 @@ var waitingStat = document.querySelector('#status #waiting');
 var stoppedStat = document.querySelector('#status #stopped');
 var downloadStat = document.querySelector('#status #download');
 var uploadStat = document.querySelector('#status #upload');
+var aria2Queue = document.querySelector('#queue');
 var activeQueue = document.querySelector('#queue > #active');
 var waitingQueue = document.querySelector('#queue > #waiting');
 var pausedQueue = document.querySelector('#queue > #paused');

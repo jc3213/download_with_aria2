@@ -230,6 +230,6 @@ body {
     display: none;
 }
 
-.queue #queue_btn, .session.extra #detail_btn {
+.session.extra #detail_btn {
     border-style: inset;
 }
