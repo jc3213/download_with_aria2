@@ -6,6 +6,7 @@ if (open_in_tab) {
 else {
     var positionLeft = aria2Queue.offsetWidth - choose.offsetWidth;
     var positionTop = aria2Queue.offsetHeight - choose.offsetHeight;
+    var positionHeight = manager.offsetHeight + 15;
     choose.style.display = 'none';
 
     aria2Queue.addEventListener('contextmenu', (event) => {
@@ -21,7 +22,7 @@ else {
         }
         if (clientY > positionTop) {
             var top = 'auto';
-            var bottom = '0px';
+            var bottom = `${positionHeight - clientY}px`;
         }
         else {
             top = `${clientY}px`;
