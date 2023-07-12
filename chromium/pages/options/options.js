@@ -105,7 +105,7 @@ function optionsRedo() {
 function optionsExport() {
     var time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
     if (global) {
-        var output = [JSON.stringify(aria2Store)];
+        var output = [JSON.stringify(aria2Store, null, 4)];
         var name = `downwitharia2_options-${time}.json`;
     }
     else {
