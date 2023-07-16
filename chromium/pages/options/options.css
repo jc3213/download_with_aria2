@@ -3,8 +3,7 @@ body {
     width: 680px;
 }
 
-body:not(.aria2) #aria2, body.aria2 #local,
-#menu input, #menu a {
+body:not(.aria2) #aria2, body.aria2 #local {
     display: none;
 }
 

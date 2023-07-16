@@ -1,6 +1,7 @@
 var entry = document.querySelector('#entry');
 var downloader = document.body;
 var submitbtn = document.querySelector('#submit_btn');
+var uploader = document.querySelector('#uploader');
 var countdown = document.querySelector('#countdown');
 var filename = document.querySelector('#out');
 var slim_mode = location.search === '?slim_mode';
@@ -19,6 +20,9 @@ document.querySelector('#menu').addEventListener('click', ({target}) => {
     var {id} = target;
     if (id === 'submit' || id === 'countdown') {
         downloadSubmit();
+    }
+    else if (id === 'upload_btn') {
+        uploader.click();
     }
     else if (id === 'extra_btn') {
         downloadExpand();
@@ -48,6 +52,18 @@ document.addEventListener('change', ({target}) => {
     if (files) {
         downloadFiles(files);
     }
+    else if (id === 'entry') {
+        try {
+            entry.json = JSON.parse(value);
+            entry.urls = null;
+            filename.disabled = true;
+        }
+        catch (error) {
+            entry.json = null;
+            entry.urls = value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
+            filename.disabled = false;
+        }
+    }
     else if (id) {
         aria2Global[id] = value;
     }
@@ -65,19 +81,6 @@ async function downloadFiles(files) {
     await aria2WhenStart(file.name);
     close();
 }
-
-entry.addEventListener('change', (event) => {
-    try {
-        entry.json = JSON.parse(entry.value);
-        entry.urls = null;
-        filename.disabled = true;
-    }
-    catch (error) {
-        entry.json = null;
-        entry.urls = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-        filename.disabled = false;
-    }
-});
 
 document.querySelector('#referer_btn').addEventListener('click', async ({target}) => {
     chrome.tabs.query({active: true, currentWindow: false}, tabs => {

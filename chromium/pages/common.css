@@ -48,7 +48,7 @@ input {
     border-style: inset;
 }
 
-input[type="file"] {
+input[type="file"], a {
     display: none;
 }
 
