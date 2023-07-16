@@ -13,6 +13,7 @@ h1 {
 }
 
 input[type="checkbox"] {
+    width: auto;
     transform: scale(1.5);
     accent-color: #006cbe;
 }
@@ -32,7 +33,7 @@ input[type="checkbox"] {
 }
 
 #version {
-    padding: 5px;
+    padding: 4px;
 }
 
 #version::before {

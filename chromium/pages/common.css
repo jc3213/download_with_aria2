@@ -40,12 +40,16 @@ select {
     padding: 2px 5px;
 }
 
-input:not([type="checkbox"]) {
+input {
     padding: 3px 5px;
     width: calc(100% - 12px);
     resize: none;
     border-width: 1px;
     border-style: inset;
+}
+
+input[type="file"] {
+    display: none;
 }
 
 input + span {
@@ -77,10 +81,6 @@ button {
     padding: 3px 5px;
     border-width: 1px;
     border-style: outset;
-}
-
-button input[type="file"] {
-    display: none;
 }
 
 button:enabled:hover {
