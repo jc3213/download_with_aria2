@@ -53,16 +53,7 @@ document.addEventListener('change', ({target}) => {
         downloadFiles(files);
     }
     else if (id === 'entry') {
-        try {
-            entry.json = JSON.parse(value);
-            entry.urls = null;
-            filename.disabled = true;
-        }
-        catch (error) {
-            entry.json = null;
-            entry.urls = value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-            filename.disabled = false;
-        }
+        changedEntries(value);
     }
     else if (id) {
         aria2Global[id] = value;
@@ -80,6 +71,21 @@ async function downloadFiles(files) {
     }
     await aria2WhenStart(file.name);
     close();
+}
+
+function changedEntries(value) {
+    try {
+        entry.json = JSON.parse(value);
+        entry.urls = null;
+        filename.disabled = true;
+        delete aria2Global['out'];
+    }
+    catch (error) {
+        entry.json = null;
+        entry.urls = value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
+        filename.disabled = false;
+        aria2Global['out'] = filename.value;
+    }
 }
 
 document.querySelector('#referer_btn').addEventListener('click', async ({target}) => {
