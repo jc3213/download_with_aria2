@@ -13,7 +13,7 @@
     width: 1262px;
 }
 
-.full > hr, body:not(.full) #status > :nth-child(n+3) {
+.full > hr {
     display: none;
 }
 
@@ -39,11 +39,17 @@ body:not(.full) > #queue {
 }
 
 body:not(.full) #status {
+    margin-right: 50px;
     grid-template-columns: repeat(2, 1fr);
 }
 
+body:not(.full) #status > :nth-child(n+3) {
+    display: none;
+}
+
 .full #status {
-    grid-template-columns: repeat(2, 26%) repeat(3, 16%);
+    margin-right: 150px;
+    grid-template-columns: repeat(2, 1fr) repeat(3, 15%);
 }
 
 #status > #active::before {
