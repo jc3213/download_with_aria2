@@ -161,7 +161,7 @@ body {
     content: "";
     border-radius: 50%;
     display: inline-block;
-    line-height: 12px;
+    vertical-align: middle;
     height: 12px;
     width: 12px;
     margin: 0px 9px 0px 5px;
