@@ -46,17 +46,13 @@ body {
 }
 
 #status {
-    display: flex;
-    margin-right: auto;
+    flex: 1;
+    margin-right: 50px;
+    display: grid;
 }
 
 #status > *, #status > ::before {
     padding: 4px 8px 4px 0px;
-    text-align: center;
-}
-
-#status > * {
-    margin-right: 50px;
 }
 
 #queue {

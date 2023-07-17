@@ -38,6 +38,14 @@ body:not(.full) > #queue {
     height: 537px;
 }
 
+body:not(.full) #status {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.full #status {
+    grid-template-columns: repeat(2, 26%) repeat(3, 16%);
+}
+
 #status > #active::before {
     content: "__MSG_popup_active__";
 }
