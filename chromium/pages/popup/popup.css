@@ -2,21 +2,21 @@ body {
     width: 680px;
 }
 
-.active > #choose > #active::before,
-.waiting > #choose > #waiting::before,
-.paused > #choose > #paused::before,
-.complete > #choose > #complete::before,
-.removed > #choose > #removed::before,
-.error > #choose > #error::before {
+.active > #choose > :nth-child(1)::before,
+.waiting > #choose > :nth-child(2)::before,
+.paused > #choose > :nth-child(3)::before,
+.complete > #choose > :nth-child(4)::before,
+.removed > #choose > :nth-child(5)::before,
+.error > #choose > :nth-child(6)::before {
     visibility: hidden;
 }
 
-.active > #queue > #active,
-.waiting > #queue > #waiting,
-.paused > #queue > #paused,
-.complete > #queue > #complete,
-.removed > #queue > #removed,
-.error > #queue > #error {
+.active > #queue > :nth-child(1),
+.waiting > #queue > :nth-child(2),
+.paused > #queue > :nth-child(3),
+.complete > #queue > :nth-child(4),
+.removed > #queue > :nth-child(5),
+.error > #queue > :nth-child(6) {
     display: none;
 }
 
@@ -58,9 +58,7 @@ body {
     overflow-y: auto;
 }
 
-#queue > #complete input, #queue > #complete select,
-#queue > #removed input, #queue > #removed select,
-#queue > #error input, #queue > #error select,
+#queue > :nth-child(n+4) input, #queue > :nth-child(n+4) select,
 .session.http [name="max-upload-limit"] {
     pointer-events: none;
     filter: contrast(25%);
@@ -75,7 +73,7 @@ body {
     display: none;
 }
 
-#queue > #complete .http #retry_btn, #queue > #removed .http #retry_btn, #queue > #error .http #retry_btn {
+#queue > :nth-child(n+4) > .http #retry_btn {
     display: inline-block;
 }
 
@@ -88,24 +86,22 @@ body {
     color: #ffffff;
 }
 
-#queue > #active .title::before {
+#queue > :nth-child(1) .title::before {
     background-color: #0e4d7b;
 }
 
-#queue > #waiting .title::before,
-#queue > #paused .title::before,
-#queue > #paused #ratio {
+#queue > :nth-child(n+2):nth-child(-n+3) .title::before,
+#queue > :nth-child(3) #ratio {
     background-color: #d7ad51;
 }
 
-#queue > #complete .title::before,
-#queue > #complete #ratio {
+#queue > :nth-child(4) .title::before,
+#queue > :nth-child(4) #ratio {
     background-color: #146032;
 }
 
-#queue > #removed .title::before,
-#queue > #error .title::before,
-#queue > #error #ratio {
+#queue > :nth-child(n+5) .title::before,
+#queue > :nth-child(6) #ratio {
     background-color: #a81524;
 }
 

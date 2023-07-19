@@ -3,21 +3,9 @@ var detailed;
 var aria2Alive;
 var optionsbtn = document.querySelector('#options_btn');
 var chooseQueue = document.querySelector('#choose');
-var activeStat = document.querySelector('#status #active');
-var waitingStat = document.querySelector('#status #waiting');
-var stoppedStat = document.querySelector('#status #stopped');
-var downloadStat = document.querySelector('#status #download');
-var uploadStat = document.querySelector('#status #upload');
-var aria2Queue = document.querySelector('#queue');
-var activeQueue = document.querySelector('#queue > #active');
-var waitingQueue = document.querySelector('#queue > #waiting');
-var pausedQueue = document.querySelector('#queue > #paused');
-var completeQueue = document.querySelector('#queue > #complete');
-var removedQueue = document.querySelector('#queue > #removed');
-var errorQueue = document.querySelector('#queue > #error');
-var sessionLET = document.querySelector('.template > .session');
-var fileLET = document.querySelector('.template > .file');
-var uriLET = document.querySelector('.template > .uri');
+var [activeStat, waitingStat, stoppedStat, downloadStat, uploadStat] = document.querySelectorAll('#status > *');
+var [aria2Queue, activeQueue, waitingQueue, pausedQueue, completeQueue, removedQueue, errorQueue] = document.querySelectorAll('#queue, #queue > *');
+var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
 
 Object.keys(localStorage).forEach((key) => manager.classList.add(key));
 chooseQueue.addEventListener('click', ({target}) => {
@@ -172,7 +160,7 @@ function createSession(gid, status, bittorrent) {
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', async ({target, ctrlKey}) => {
         var status = task.parentNode.id;
-        var id = target.id;
+        var {id} = target;
         if (id === 'remove_btn') {
             taskRemove(task, gid, status);
         }
