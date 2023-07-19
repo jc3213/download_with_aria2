@@ -5,9 +5,7 @@ var appver = chrome.runtime.getManifest().version;
 var aria2ver = document.querySelector('#version');
 var aria2ua = document.querySelector('#aria2ua');
 var aria2options = document.querySelectorAll('#aria2 input, #aria2 select');
-var importJSON = document.querySelector('input[accept=".json"]');
-var importCONF = document.querySelector('input[accept=".conf"]');
-var exporter = document.querySelector('#exporter');
+var [importJson, importConf, exporter] = document.querySelectorAll('#menu > input, #menu > a');
 var changes = {};
 var redoes = [];
 var undoes = [];
@@ -119,7 +117,7 @@ function optionsExport() {
 }
 
 function optionsImport() {
-    global ? importJSON.click() : importCONF.click();
+    global ? importJson.click() : importConf.click();
 }
 
 document.querySelector('#menu').addEventListener('change', async ({target}) => {
