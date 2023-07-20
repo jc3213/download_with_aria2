@@ -155,7 +155,8 @@ function sessionUpdated({gid, status, files, bittorrent, completedLength, totalL
 function createSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
     var [name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, urls] = task.querySelectorAll('.name, .completed, .day, .hour, .minute, .second, .total, .connect, .download, .upload, .ratio, .files, .files + button, .uris');
-    Object.assign(task, {name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, urls});
+    var settings = task.querySelectorAll('input, select');
+    Object.assign(task, {name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, urls, settings});
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', async ({target, ctrlKey}) => {
@@ -213,16 +214,20 @@ async function taskRemove(task, gid, status) {
 }
 
 async function taskDetail(task, gid) {
-    closeTaskDetail();
+    if (detailed) {
+        detailed.classList.remove('extra');
+        detailed.files.innerHTML = detailed.urls.innerHTML = '';
+        detailed.save.style.display = 'none';
+    }
     if (detailed === task) {
         detailed = null;
     }
     else {
         var [files, options] = await getTaskDetail(gid);
-        task.querySelectorAll('input, select').disposition(options);
         detailed = task;
+        detailed.settings.disposition(options);
+        detailed.classList.add('extra');
         printTaskFileList(files);
-        task.classList.add('extra');
     }
 }
 
@@ -287,17 +292,9 @@ function getTaskDetail(gid) {
     ]);
 }
 
-function closeTaskDetail() {
-    if (detailed) {
-        detailed.classList.remove('extra');
-        detailed.files.innerHTML = detailed.urls.innerHTML = '';
-        detailed.save.style.display = 'none';
-    }
-}
-
 function printFileItem(list, index, path, length, selected, uris) {
     var item = fileLET.cloneNode(true);
-    var [file, name, size, ratio] = item.querySelectorAll('.index, .name, .size, .ratio');
+    var [file, name, size, ratio] = item.querySelectorAll('div');
     Object.assign(item, {file, name, size, ratio});
     file.checkbox = uris.length === 0; 
     file.textContent = index;
@@ -323,7 +320,7 @@ function printTaskFileList(files) {
 
 function printUriItem(list, uri) {
     var item = uriLET.cloneNode(true);
-    var [url, used, wait] = item.querySelectorAll('.link, .used, .wait');
+    var [url, used, wait] = item.querySelectorAll('div');
     Object.assign(item, {url, used, wait});
     list.appendChild(item);
     return item;
