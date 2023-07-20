@@ -52,38 +52,38 @@ body:not(.full) #status > :nth-child(n+3) {
     grid-template-columns: repeat(2, 1fr) repeat(3, 15%);
 }
 
-#status > #active::before {
-    content: "__MSG_popup_active__";
-}
-
-#status > #waiting::before {
-    content: "__MSG_popup_waiting__";
-}
-
-#status > #stopped::before {
-    content: "__MSG_popup_stopped__";
-}
-
-#status > #download::before {
+#status > :nth-child(1)::before {
     content: "__MSG_popup_download__";
 }
 
-#status > #upload::before {
+#status > :nth-child(2)::before {
     content: "__MSG_popup_upload__";
 }
 
-#day:not(:empty)::after {
+#status > :nth-child(3)::before {
+    content: "__MSG_popup_active__";
+}
+
+#status > :nth-child(4)::before {
+    content: "__MSG_popup_waiting__";
+}
+
+#status > :nth-child(5)::before {
+    content: "__MSG_popup_stopped__";
+}
+
+.day:not(:empty)::after {
     content: "__MSG_time_day__";
 }
 
-#hour:not(:empty)::after {
+.hour:not(:empty)::after {
     content: "__MSG_time_hour__";
 }
 
-#minute:not(:empty)::after {
+.minute:not(:empty)::after {
     content: "__MSG_time_minute__";
 }
 
-#second:not(:empty)::after {
+.second:not(:empty)::after {
     content: "__MSG_time_second__";
 }

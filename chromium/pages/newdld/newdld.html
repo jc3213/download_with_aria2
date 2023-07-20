@@ -10,78 +10,78 @@
         <div class="menu" title="task_referer_title">
             <div class="title" i18n>task_referer</div>
             <div class="flex">
-                <input id="referer" type="text">
+                <input data-id="referer" type="text">
                 <button id="referer_btn">🔖</button>
             </div>
         </div>
         <div class="menu" title="task_batch_title">
             <div class="title" i18n>task_batch</div>
             <div>
-                <textarea id="entry" rows="2"></textarea>
+                <textarea rows="2"></textarea>
             </div>
         </div>
         <div class="options">
             <div class="menu" title="task_name_title">
                 <div class="title" i18n>task_name</div>
                 <div>
-                    <input id="out" type="text">
+                    <input data-id="out" type="text">
                 </div>
             </div>
             <div class="menu" title="aria2_adv_dir_title">
                 <div class="title" i18n>aria2_adv_dir</div>
                 <div>
-                    <input id="dir" type="text">
+                    <input data-id="dir" type="text">
                 </div>
             </div>
             <div class="menu" title="aria2_http_ua_title">
                 <div class="title" i18n>aria2_http_ua</div>
                 <div>
-                    <input id="user-agent" type="text">
+                    <input data-id="user-agent" type="text">
                 </div>
             </div>
             <div class="menu" title="task_proxy_title">
                 <div class="title" i18n>task_proxy</div>
                 <div class="flex">
-                    <input id="all-proxy" type="url">
+                    <input data-id="all-proxy" type="url">
                     <button id="proxy_btn">🔖</button>
                 </div>
             </div>
             <div class="menu" title="aria2_http_split_title">
                 <div class="title" i18n>aria2_http_split</div>
                 <div>
-                    <input id="split" type="number">
+                    <input data-id="split" type="number">
                 </div>
             </div>
             <div class="menu" title="aria2_http_size_title">
                 <div class="title" i18n>aria2_http_size</div>
                 <div>
-                    <input id="min-split-size" type="text">
+                    <input data-id="min-split-size" type="text">
                     <span>B</span>
                 </div>
             </div>
             <div class="menu" title="aria2_max_connection_title">
                 <div class="title" i18n>aria2_max_connection</div>
                 <div>
-                    <input id="max-connection-per-server" type="number">
+                    <input data-id="max-connection-per-server" type="number">
                 </div>
             </div>
             <div class="menu" title="task_download_title">
                 <div class="title" i18n>task_download</div>
                 <div>
-                    <input id="max-download-limit" type="text">
+                    <input data-id="max-download-limit" type="text">
                     <span>B/s</span>
                 </div>
             </div>
         </div>
         <hr>
         <div id="menu">
-            <button id="submit_btn">
-                <span id="submit" i18n>common_submit</span>
-                <span id="countdown">30</span>
+            <button>
+                <span data-id="submit_btn" i18n>common_submit</span>
+                <span class="countdown" data-id="submit_btn">30</span>
             </button>
-            <button id="upload_btn" i18n>task_metaurl</button>
-            <input id="uploader" type="file" accept=".torrent,.metalink,.meta4">
-            <button id="extra_btn" i18n>popup_options</button>
+            <button data-id="upload_btn" i18n>task_metaurl</button>
+            <button data-id="extra_btn" i18n>popup_options</button>
+            <input type="file" accept=".torrent,.metalink,.meta4">
         </div>
         <script src="/libs/aria2.js"></script>
         <script src="/libs/core.js"></script>

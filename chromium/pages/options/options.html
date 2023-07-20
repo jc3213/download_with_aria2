@@ -162,7 +162,7 @@
             <div class="menu" title="aria2_http_retry_title">
                 <div class="title" i18n>aria2_http_retry</div>
                 <div>
-                    <input id="max-tries" type="number">
+                    <input data-id="max-tries" type="number">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>5</i></u>
@@ -171,7 +171,7 @@
             <div class="menu" title="aria2_http_wait_title">
                 <div class="title" i18n>aria2_http_wait</div>
                 <div>
-                    <input id="retry-wait" type="number">
+                    <input data-id="retry-wait" type="number">
                     <span i18n>time_second_full</span>
                 </div>
                 <div>
@@ -181,7 +181,7 @@
             <div class="menu" title="aria2_http_split_title">
                 <div class="title" i18n>aria2_http_split</div>
                 <div>
-                    <input id="split" type="number">
+                    <input data-id="split" type="number">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>5</i></u>
@@ -190,7 +190,7 @@
             <div class="menu" title="aria2_http_size_title">
                 <div class="title" i18n>aria2_http_size</div>
                 <div>
-                    <input id="min-split-size" type="text">
+                    <input data-id="min-split-size" type="text">
                     <span>B</span>
                 </div>
                 <div>
@@ -200,7 +200,7 @@
             <div title="aria2_http_ua_title">
                 <div class="title" i18n>aria2_http_ua</div>
                 <div>
-                    <input id="user-agent" type="text">
+                    <input data-id="user-agent" type="text">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i id="aria2ua"></i></u>
@@ -210,7 +210,7 @@
             <div class="menu" title="aria2_bt_port_title">
                 <div class="title" i18n>aria2_bt_port</div>
                 <div>
-                    <input id="listen-port" type="text">
+                    <input data-id="listen-port" type="text">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>6881-6999</i></u>
@@ -219,7 +219,7 @@
             <div class="menu" title="aria2_bt_peers_title">
                 <div class="title" i18n>aria2_bt_peers</div>
                 <div>
-                    <input id="bt-max-peers" type="number">
+                    <input data-id="bt-max-peers" type="number">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>55</i></u>
@@ -228,7 +228,7 @@
             <div class="menu" title="aria2_bt_follow_title">
                 <div class="title" i18n>aria2_bt_follow</div>
                 <div>
-                    <select id="follow-torrent">
+                    <select data-id="follow-torrent">
                         <option value="true" i18n>aria2_true</option>
                         <option value="false" i18n>aria2_false</option>
                     </select>
@@ -240,7 +240,7 @@
             <div class="menu" title="aria2_bt_remove_title">
                 <div class="title" i18n>aria2_bt_remove</div>
                 <div>
-                    <select id="bt-remove-unselected-file">
+                    <select data-id="bt-remove-unselected-file">
                         <option value="true" i18n>aria2_true</option>
                         <option value="false" i18n>aria2_false</option>
                     </select>
@@ -252,7 +252,7 @@
             <div class="menu" title="aria2_bt_ratio_title">
                 <div class="title" i18n>aria2_bt_ratio</div>
                 <div>
-                    <input id="seed-ratio" type="number" min="0" step="0.1">
+                    <input data-id="seed-ratio" type="number" min="0" step="0.1">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>1.0</i></u>
@@ -261,7 +261,7 @@
             <div class="menu" title="aria2_bt_seed_title">
                 <div class="title" i18n>aria2_bt_seed</div>
                 <div>
-                    <input id="seed-time" type="number">
+                    <input data-id="seed-time" type="number">
                     <span i18n>time_minute_full</span>
                 </div>
                 <div>
@@ -272,7 +272,7 @@
             <div class="menu" title="aria2_adv_dir_title">
                 <div class="title" i18n>aria2_adv_dir</div>
                 <div>
-                    <input id="dir" type="text">
+                    <input data-id="dir" type="text">
                 </div>
                 <div class="flex">
                     <span>Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;</span>
@@ -282,7 +282,7 @@
             <div class="menu" title="aria2_adv_cache_title">
                 <div class="title" i18n>aria2_adv_cache</div>
                 <div>
-                    <input id="disk-cache" type="text">
+                    <input data-id="disk-cache" type="text">
                     <span>B</span>
                 </div>
                 <div>
@@ -292,7 +292,7 @@
             <div class="menu" title="aria2_max_concurrent_title">
                 <div class="title" i18n>aria2_max_concurrent</div>
                 <div>
-                    <input id="max-concurrent-downloads" type="number">
+                    <input data-id="max-concurrent-downloads" type="number">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>5</i></u>
@@ -301,7 +301,7 @@
             <div class="menu" title="aria2_max_connection_title">
                 <div class="title" i18n>aria2_max_connection</div>
                 <div>
-                    <input id="max-connection-per-server" type="number">
+                    <input data-id="max-connection-per-server" type="number">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>1</i></u>
@@ -310,7 +310,7 @@
             <div class="menu" title="aria2_max_download_title">
                 <div class="title" i18n>aria2_max_download</div>
                 <div>
-                    <input id="max-overall-download-limit" type="text">
+                    <input data-id="max-overall-download-limit" type="text">
                     <span>B/s</span>
                 </div>
                 <div>
@@ -320,7 +320,7 @@
             <div class="menu" title="aria2_max_upload_title">
                 <div class="title" i18n>aria2_max_upload</div>
                 <div>
-                    <input id="max-overall-upload-limit" type="text">
+                    <input data-id="max-overall-upload-limit" type="text">
                     <span>B/s</span>
                 </div>
                 <div>

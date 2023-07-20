@@ -3,13 +3,13 @@ var detailed;
 var aria2Alive;
 var optionsbtn = document.querySelector('#options_btn');
 var chooseQueue = document.querySelector('#choose');
-var [activeStat, waitingStat, stoppedStat, downloadStat, uploadStat] = document.querySelectorAll('#status > *');
+var [downloadStat, uploadStat, activeStat, waitingStat, stoppedStat] = document.querySelectorAll('#status > *');
 var [aria2Queue, activeQueue, waitingQueue, pausedQueue, completeQueue, removedQueue, errorQueue] = document.querySelectorAll('#queue, #queue > *');
 var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
 
 Object.keys(localStorage).forEach((key) => manager.classList.add(key));
 chooseQueue.addEventListener('click', ({target}) => {
-    var {id} = target;
+    var id = target.dataset.id;
     manager.classList.toggle(id);
     localStorage.getItem(id) ? localStorage.removeItem(id) : localStorage.setItem(id, id);
 });
@@ -154,13 +154,13 @@ function sessionUpdated({gid, status, files, bittorrent, completedLength, totalL
 
 function createSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
-    var [name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, urls] = task.querySelectorAll('#title, #local, #day, #hour, #minute, #second, #remote, #connect, #download, #upload, #ratio, #files, #save_btn, #uris');
+    var [name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, urls] = task.querySelectorAll('.name, .completed, .day, .hour, .minute, .second, .total, .connect, .download, .upload, .ratio, .files, .files + button, .uris');
     Object.assign(task, {name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, urls});
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', async ({target, ctrlKey}) => {
         var status = task.parentNode.id;
-        var {id} = target;
+        var id = target.dataset.id;
         if (id === 'remove_btn') {
             taskRemove(task, gid, status);
         }
@@ -170,7 +170,7 @@ function createSession(gid, status, bittorrent) {
         else if (id === 'retry_btn') {
             taskRetry(task, gid);
         }
-        else if (id === 'meter' || id === 'ratio') {
+        else if (id === 'pause_btn') {
             taskPause(task, gid, status);
         }
         else if (id === 'proxy_btn') {
@@ -189,8 +189,9 @@ function createSession(gid, status, bittorrent) {
             taskRemoveUri(target.textContent, gid, ctrlKey);
         }
     });
-    task.querySelector('#options').addEventListener('change', ({target}) => {
-        var {id, value} = target;
+    task.querySelector('.options').addEventListener('change', ({target}) => {
+        var id = target.dataset.id;
+        var value = target.value;
         aria2RPC.call('aria2.changeOption', gid, {[id]: value});
     });
     globalTask[gid] = task;
@@ -289,14 +290,14 @@ function getTaskDetail(gid) {
 function closeTaskDetail() {
     if (detailed) {
         detailed.classList.remove('extra');
-        detailed.querySelector('#files').innerHTML = detailed.querySelector('#uris').innerHTML = '';
-        detailed.querySelector('#save_btn').style.display = 'none';
+        detailed.files.innerHTML = detailed.urls.innerHTML = '';
+        detailed.save.style.display = 'none';
     }
 }
 
 function printFileItem(list, index, path, length, selected, uris) {
     var item = fileLET.cloneNode(true);
-    var [file, name, size, ratio] = item.querySelectorAll('#this_file, #name, #size, #done');
+    var [file, name, size, ratio] = item.querySelectorAll('.index, .name, .size, .ratio');
     Object.assign(item, {file, name, size, ratio});
     file.checkbox = uris.length === 0; 
     file.textContent = index;
@@ -322,7 +323,7 @@ function printTaskFileList(files) {
 
 function printUriItem(list, uri) {
     var item = uriLET.cloneNode(true);
-    var [url, used, wait] = item.querySelectorAll('#this_uri, #used, #wait');
+    var [url, used, wait] = item.querySelectorAll('.link, .used, .wait');
     Object.assign(item, {url, used, wait});
     list.appendChild(item);
     return item;

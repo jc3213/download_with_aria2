@@ -16,9 +16,9 @@ var filesize = {
 };
 
 NodeList.prototype.disposition = function (json) {
-    var options = {};
-    this.forEach(node => {
-        var {id} = node;
+    var result = {};
+    this.forEach((node) => {
+        var id = node.dataset.id;
         var value = json[id];
         if (!value) {
             return;
@@ -26,9 +26,9 @@ NodeList.prototype.disposition = function (json) {
         if (filesize[id]) {
             value = getFileSize(value);
         }
-        node.value = options[id] = value;
+        node.value = result[id] = value;
     });
-    return options;
+    return result;
 }
 
 function getFileSize(bytes) {

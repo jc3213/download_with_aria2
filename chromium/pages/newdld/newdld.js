@@ -1,9 +1,6 @@
-var entry = document.querySelector('#entry');
 var downloader = document.body;
-var submitbtn = document.querySelector('#submit_btn');
-var uploader = document.querySelector('#uploader');
-var countdown = document.querySelector('#countdown');
-var filename = document.querySelector('#out');
+var [entry, filename, countdown, uploader] = document.querySelectorAll('textarea, [data-id="out"], .countdown, input[type="file"]');
+var settings = document.querySelectorAll('input[data-id]');
 var slim_mode = location.search === '?slim_mode';
 
 downloader.className = slim_mode ? 'slim' : 'full';
@@ -17,8 +14,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.querySelector('#menu').addEventListener('click', ({target}) => {
-    var {id} = target;
-    if (id === 'submit' || id === 'countdown') {
+    var id = target.dataset.id;
+    if (id === 'submit_btn') {
         downloadSubmit();
     }
     else if (id === 'upload_btn') {
@@ -111,7 +108,7 @@ function slimModeInit() {
             entry.urls = url;
         }
         if (options) {
-            var extra = document.querySelectorAll('input[id]').disposition(options);
+            var extra = settings.disposition(options);
             aria2Global = {...aria2Global, ...extra};
         }
         setInterval(() => {
@@ -128,7 +125,7 @@ chrome.storage.local.get(null, async (json) => {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     var global = await aria2RPC.call('aria2.getGlobalOption');
     global['user-agent'] = aria2Store['user_agent']
-    aria2Global = document.querySelectorAll('[id]').disposition(global);
+    aria2Global = settings.disposition(global);
     if (slim_mode) {
         slimModeInit();
     }

@@ -64,24 +64,24 @@ body {
     filter: contrast(25%);
 }
 
-#queue > #complete #options button,
-#queue > #removed #options button,
-#queue > #error #options button,
+#queue > #complete .options button,
+#queue > #removed .options button,
+#queue > #error .options button,
 .session.http [data-p2p],
 .session.p2p [data-http],
-#retry_btn, #save_btn {
+[data-id="retry_btn"], [data-id="save_btn"] {
     display: none;
 }
 
-#queue > :nth-child(n+4) > .http #retry_btn {
+#queue > :nth-child(n+4) > .http [data-id="retry_btn"] {
     display: inline-block;
 }
 
-#queue #meter {
+#queue .meter {
     background-color: #4a4a4a;
 }
 
-#queue #ratio, .session .ready {
+#queue .meter > .ratio, .session .ready {
     background-color: #0e4d7b;
     color: #ffffff;
 }
@@ -91,22 +91,22 @@ body {
 }
 
 #queue > :nth-child(n+2):nth-child(-n+3) .title::before,
-#queue > :nth-child(3) #ratio {
+#queue > :nth-child(3) .meter > .ratio {
     background-color: #d7ad51;
 }
 
 #queue > :nth-child(4) .title::before,
-#queue > :nth-child(4) #ratio {
+#queue > :nth-child(4) .meter > .ratio {
     background-color: #146032;
 }
 
 #queue > :nth-child(n+5) .title::before,
-#queue > :nth-child(6) #ratio {
+#queue > :nth-child(6) .meter > .ratio {
     background-color: #a81524;
 }
 
-#queue > :nth-child(-n+3) #meter:active,
-#queue > :nth-child(-n+3) #ratio:active,
+#queue > :nth-child(-n+3) .meter:active,
+#queue > :nth-child(-n+3) .meter > .ratio:active,
 #queue > :nth-child(-n+3) .p2p .file > :nth-child(1):active {
     filter: contrast(45%);
 }
@@ -115,27 +115,27 @@ body {
     filter: contrast(45%);
 }
 
-#download::after, #upload::after {
+.download::after, .upload::after {
     content: "B/s";
 }
 
-#remote::after, #local::after, #size::after {
+.total::after, .completed::after, .size::after {
     content: "B";
 }
 
-#ratio::after, #done::after {
+.ratio::after {
     content: "%";
 }
 
-#infinite {
+.infinite {
     display: none;
 }
 
-#day::after, #hour::after, #minute::after, #second::after {
+.day::after, .hour::after, .minute::after, .second::after {
     vertical-align: sub;
 }
 
-#day:empty + #hour:empty + #minute:empty + #second:empty + #infinite {
+.day:empty + .hour:empty + .minute:empty + .second:empty + .infinite {
     display: inline-block;
 }
 
@@ -149,11 +149,11 @@ body {
     grid-template-columns: repeat(3, 1fr) 22.5px;
 }
 
-.session > #title {
+.session > .title {
     grid-area: 1 / 1 / 1 / 4;
 }
 
-.session > #title::before {
+.session > .title::before {
     content: "";
     border-radius: 50%;
     display: inline-block;
@@ -163,29 +163,29 @@ body {
     margin: 0px 9px 0px 5px;
 }
 
-.session > #menu {
+.session > .manage {
     grid-area: 1 / 4 / 4 / 5;
 }
 
-.session > #menu > button {
+.session > .manage > button {
     font-size: 12px;
     padding: 2px;
 }
 
-.session > #meter {
+.session > .meter {
     grid-area: 4 / 1 / 4 / 5;
     text-align: center;
 }
 
-.session > #options {
+.session > .options {
     grid-area: 5 / 1 / 5 / 5;
 }
 
-.session > #options > * {
+.session > .options > * {
     margin-top: 5px;
 }
 
-.session #save_btn {
+.session [data-id="save_btn"] {
     position: absolute;
     top: -10px;
     right: 0px;
@@ -216,10 +216,10 @@ body {
     grid-template-columns: auto 40px 40px;
 }
 
-.session:not(.extra) > #options {
+.session:not(.extra) > .options {
     display: none;
 }
 
-.session.extra #detail_btn {
+.session.extra [data-id="detail_btn"] {
     border-style: inset;
 }

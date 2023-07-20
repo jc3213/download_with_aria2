@@ -8,24 +8,20 @@ textarea {
     overflow-x: hidden;
 }
 
-.slim #upload_btn, .slim .options > :nth-child(n+3),
-.full #countdown, .full #extra_btn,
-.extra #extra_btn, .extra #upload_btn {
+.slim #menu > :nth-child(2), .slim .options > :nth-child(n+3),
+.full .countdown, .full #menu > :nth-child(3),
+.extra #menu > :nth-child(n+2):nth-child(-n+3) {
     display: none;
-}
-
-#options > :first-child {
-    margin-top: 0px;
 }
 
 #menu {
     text-align: center;
 }
 
-#countdown::before {
+.countdown::before {
     content: "(";
 }
 
-#countdown::after {
+.countdown::after {
     content: ")";
 }
