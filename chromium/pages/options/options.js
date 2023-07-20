@@ -1,24 +1,21 @@
-var savebtn = document.querySelector('#save_btn');
-var undobtn = document.querySelector('#undo_btn');
-var redobtn = document.querySelector('#redo_btn');
-var appver = chrome.runtime.getManifest().version;
-var aria2ver = document.querySelector('#version');
-var aria2ua = document.querySelector('#aria2ua');
-var aria2options = document.querySelectorAll('#aria2 input, #aria2 select');
+var [saveBtn, undoBtn, redoBtn] = document.querySelectorAll('#save_btn, #undo_btn, #redo_btn');
+var [aria2ver, aria2ua] = document.querySelectorAll('#version, #aria2ua');
 var [importJson, importConf, exporter] = document.querySelectorAll('#menu > input, #menu > a');
+var settings = document.querySelectorAll('#aria2 input, #aria2 select');
+var appver = chrome.runtime.getManifest().version;
 var changes = {};
 var redoes = [];
 var undoes = [];
 var undone = false;
 var global = true;
-var textarea = document.querySelectorAll('#local input[id]:not([type="checkbox"])');
+var entries = document.querySelectorAll('#local input[id]:not([type="checkbox"])');
 var multiply = {
     'manager_interval': 1000,
     'capture_filesize': 1048576
 };
-var checkbox = document.querySelectorAll('#local [type="checkbox"]');
+var checkes = document.querySelectorAll('#local [type="checkbox"]');
 var checked = {};
-var rulelist = document.querySelectorAll('[data-list]');
+var rulelist = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .rule');
 var linkage = {
@@ -34,15 +31,15 @@ document.addEventListener('keydown', (event) => {
     if (ctrlKey) {
         if (key === 's') {
             event.preventDefault();
-            savebtn.click();
+            saveBtn.click();
         }
         else if (key === 'z') {
             event.preventDefault();
-            undobtn.click();
+            undoBtn.click();
         }
         else if (key === 'y') {
             event.preventDefault();
-            redobtn.click();
+            redoBtn.click();
         }
     }
 });
@@ -74,18 +71,18 @@ function optionsSave() {
     else {
         aria2RPC.call('aria2.changeGlobalOption', changes);
     }
-    savebtn.disabled = true;
+    saveBtn.disabled = true;
 }
 
 function optionsUndo() {
     var undo = undoes.pop();
     var {id, old_value} = undo;
     redoes.push(undo);
-    redobtn.disabled = false;
+    redoBtn.disabled = false;
     undone = true;
     getChange(id, old_value);
     if (undoes.length === 0) {
-        undobtn.disabled = true;
+        undoBtn.disabled = true;
     }
 }
 
@@ -93,10 +90,10 @@ function optionsRedo() {
     var redo = redoes.pop();
     var {id, new_value} = redo;
     undoes.push(redo);
-    undobtn.disabled = false;
+    undoBtn.disabled = false;
     getChange(id, new_value);
     if (redoes.length === 0) {
-        redobtn.disabled = true;
+        redoBtn.disabled = true;
     }
 }
 
@@ -136,7 +133,7 @@ document.querySelector('#menu').addEventListener('change', async ({target}) => {
             conf[key] = value;
         });
         await aria2RPC.call('aria2.changeGlobalOption', conf);
-        aria2Global = aria2options.disposition(conf);
+        aria2Global = settings.disposition(conf);
         changes = {...aria2Global};
     }
     target.value = '';
@@ -164,14 +161,14 @@ document.querySelector('#aria2_btn').addEventListener('click', async (event) => 
     ]);
     clearChanges();
     global = false;
-    aria2Global = aria2options.disposition(options);
+    aria2Global = settings.disposition(options);
     aria2CONF = {'enable-rpc': true, ...options};
     changes = {...aria2Global};
     aria2ver.textContent = aria2ua.textContent = version.version;
     document.body.className = 'aria2';
 });
 
-textarea.forEach(entry => {
+entries.forEach(entry => {
     var {id} = entry;
     entry.addEventListener('change', (event) => {
         var value = getValue(id, entry.value);
@@ -179,7 +176,7 @@ textarea.forEach(entry => {
     });
 });
 
-checkbox.forEach(entry => {
+checkes.forEach(entry => {
     var {id} = entry;
     entry.addEventListener('change', (event) => {
         setChange(id, entry.checked);
@@ -188,16 +185,14 @@ checkbox.forEach(entry => {
 });
 
 rulelist.forEach(menu => {
-    var id = menu.getAttribute('data-list');
-    var entry = menu.querySelector('input');
-    var addbtn = menu.querySelector('button');
-    var list = menu.querySelector('.rulelist');
+    var id = menu.dataset.map;
+    var [entry, addBtn, list] = menu.querySelectorAll('input, button, .rulelist');
     entry.addEventListener('keydown', ({key}) => {
         if (key === 'Enter') {
-            addbtn.click();
+            addBtn.click();
         }
     });
-    addbtn.addEventListener('click', (event) => {
+    addBtn.addEventListener('click', (event) => {
         var {value} = entry;
         if (value !== '') {
             var new_value = [...changes[id], value];
@@ -220,8 +215,8 @@ rulelist.forEach(menu => {
     menu.list = {id, list};
 });
 
-document.querySelectorAll('[data-link]').forEach((menu) => {
-    var data = menu.getAttribute('data-link').match(/[^,;]+/g);
+document.querySelectorAll('[data-rel]').forEach((menu) => {
+    var data = menu.dataset.rel.match(/[^,;]+/g);
     var [id, value] = data.splice(0, 2);
     linkage[id].push(menu);
     var minor = [];
@@ -257,12 +252,12 @@ chrome.storage.local.get(null, (json) => {
 function aria2StartUp() {
     changes = {...aria2Store};
     aria2ver.textContent = appver;
-    textarea.forEach((entry) => {
+    entries.forEach((entry) => {
         var {id} = entry;
         var value = changes[id];
         entry.value = setValue(id, value);
     });
-    checkbox.forEach((entry) => {
+    checkes.forEach((entry) => {
         var {id} = entry;
         entry.checked = changes[id];
         linkage[id]?.forEach(printLinkage);
@@ -296,12 +291,12 @@ function printLinkage(menu) {
 function clearChanges() {
     undoes = [];
     redoes = [];
-    savebtn.disabled = undobtn.disabled = redobtn.disabled = true;
+    saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
 }
 
 function getChange(id, value) {
     changes[id] = value;
-    savebtn.disabled = false;
+    saveBtn.disabled = false;
     var entry = document.getElementById(id);
     if (id in listed) {
         getList(id, value);
@@ -318,13 +313,13 @@ function getChange(id, value) {
 function setChange(id, new_value) {
     var old_value = changes[id];
     undoes.push({id, old_value, new_value});
-    savebtn.disabled = undobtn.disabled = false;
+    saveBtn.disabled = undoBtn.disabled = false;
     changes[id] = new_value;
     linkage[id]?.forEach(printLinkage);
     if (undone) {
         redoes = [];
         undone = false;
-        redobtn.disabled = true;
+        redoBtn.disabled = true;
     }
 }
 
