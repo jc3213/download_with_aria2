@@ -23,28 +23,25 @@ folderff.addEventListener('change', event => {
     var {id, checked} = event.target;
     setChange(id, checked);
 });
-folderff.link = {
+folderff.rel = {
     major: {id: 'folder_enabled', rule: true},
     minor: [
         {id: 'capture_enabled', rule: true}, {id: 'capture_webrequest', rule: false},
-    ]
+    ],
+    length: 2
 };
 
 var folderen = document.querySelector('#folder_enabled').parentNode;
-folderen.addEventListener('change', event => {
-    if (event.target.checked) {
-        folderff.style.display = changes['capture_webrequest'] ? 'none' : 'block';
-    }
-});
 folderen.after(folderff);
 
 var webrequest = document.createElement('div');
 webrequest.title = i18n.webrequest_title;
 webrequest.className = 'menu';
 webrequest.innerHTML = `<input id="capture_webrequest" id="capture_webrequest" type="checkbox">\n<label for="capture_webrequest">${i18n.webrequest}</label>`;
-webrequest.link = {
+webrequest.rel = {
     major: {id: 'capture_enabled', rule: true},
-    minor: []
+    minor: [],
+    length: 0
 };
 webrequest.addEventListener('change', event => {
     var {id, checked} = event.target;
@@ -80,7 +77,7 @@ function firefoxExclusive() {
     printLinkage(folderff);
 }
 
-document.querySelector('#back_btn').addEventListener('click', firefoxExclusive);
+document.querySelector('[data-bid="back_btn"]').addEventListener('click', firefoxExclusive);
 
 var observer = setInterval(() => {
     if (aria2Store) {

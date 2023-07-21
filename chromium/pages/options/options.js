@@ -235,7 +235,8 @@ document.querySelectorAll('[data-rel]').forEach((menu) => {
             minor.push({id, rule});
         }
     });
-    menu.link = {major: {id, rule}, minor};
+    menu.rel = {major: {id, rule}, minor, length: minor.length};
+    console.log(menu.rel);
 });
 
 document.querySelector('#aria2').addEventListener('change', (event) => {
@@ -276,7 +277,7 @@ function aria2StartUp() {
 }
 
 function printLinkage(menu) {
-    var {major, minor} = menu.link;
+    var {major, minor, length} = menu.rel;
     var {id, rule} = major;
     var prime = rule === changes[id];
     var second = 0;
@@ -285,9 +286,11 @@ function printLinkage(menu) {
         if (rule === value) {
             second ++;
         }
+        console.log(id, rule, value, rule === value);
     });
+    console.log(second, length, second === length);
     if (prime) {
-        menu.style.display = second === minor.length ? '' : 'none';
+        menu.style.display = second === length ? '' : 'none';
     }
     else {
         menu.style.display = 'none';
