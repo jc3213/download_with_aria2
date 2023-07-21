@@ -236,7 +236,6 @@ document.querySelectorAll('[data-rel]').forEach((menu) => {
         }
     });
     menu.rel = {major: {id, rule}, minor, length: minor.length};
-    console.log(menu.rel);
 });
 
 document.querySelector('#aria2').addEventListener('change', (event) => {
@@ -282,13 +281,10 @@ function printLinkage(menu) {
     var prime = rule === changes[id];
     var second = 0;
     minor.forEach(({id, rule}) => {
-        var value = changes[id];
-        if (rule === value) {
+        if (rule === changes[id]) {
             second ++;
         }
-        console.log(id, rule, value, rule === value);
     });
-    console.log(second, length, second === length);
     if (prime) {
         menu.style.display = second === length ? '' : 'none';
     }
