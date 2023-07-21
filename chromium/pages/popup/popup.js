@@ -9,7 +9,7 @@ var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
 
 Object.keys(localStorage).forEach((key) => manager.classList.add(key));
 chooseQueue.addEventListener('click', ({target}) => {
-    var id = target.dataset.id;
+    var id = target.dataset.qid;
     manager.classList.toggle(id);
     localStorage.getItem(id) ? localStorage.removeItem(id) : localStorage.setItem(id, id);
 });
@@ -161,7 +161,7 @@ function createSession(gid, status, bittorrent) {
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', async ({target, ctrlKey}) => {
         var status = task.parentNode.id;
-        var id = target.dataset.id;
+        var id = target.dataset.bid;
         if (id === 'remove_btn') {
             taskRemove(task, gid, status);
         }
@@ -190,10 +190,14 @@ function createSession(gid, status, bittorrent) {
             taskRemoveUri(target.textContent, gid, ctrlKey);
         }
     });
-    task.querySelector('.options').addEventListener('change', ({target}) => {
-        var id = target.dataset.id;
-        var value = target.value;
-        aria2RPC.call('aria2.changeOption', gid, {[id]: value});
+    task.addEventListener('change', ({target}) => {
+        var {id} = target.dataset;
+        var {value} = target;
+        var {options} = task;
+        if (id && options[id] !== value) {
+            options[id] = value;
+            aria2RPC.call('aria2.changeOption', gid, options);
+        }
     });
     globalTask[gid] = task;
     sessionStatusChange(task, gid, status);
@@ -225,7 +229,7 @@ async function taskDetail(task, gid) {
     else {
         var [files, options] = await getTaskDetail(gid);
         detailed = task;
-        detailed.settings.disposition(options);
+        detailed.options = detailed.settings.disposition(options);
         detailed.classList.add('extra');
         printTaskFileList(files);
     }

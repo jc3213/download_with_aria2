@@ -69,11 +69,11 @@ body {
 #queue > #error .options button,
 .session.http [data-p2p],
 .session.p2p [data-http],
-[data-id="retry_btn"], [data-id="save_btn"] {
+[data-bid="retry_btn"], [data-bid="save_btn"] {
     display: none;
 }
 
-#queue > :nth-child(n+4) > .http [data-id="retry_btn"] {
+#queue > :nth-child(n+4) > .http [data-bid="retry_btn"] {
     display: inline-block;
 }
 
@@ -168,8 +168,14 @@ body {
 }
 
 .session > .manage > button {
-    font-size: 12px;
-    padding: 2px;
+    font-size: 14px;
+    padding: 1px;
+    width: 22px;
+    height: 22px;
+}
+
+.session > .manage > :nth-child(n+2) {
+    margin-top: 1px;
 }
 
 .session > .meter {
@@ -185,7 +191,7 @@ body {
     margin-top: 5px;
 }
 
-.session [data-id="save_btn"] {
+.session [data-bid="save_btn"] {
     position: absolute;
     top: -10px;
     right: 0px;
@@ -220,6 +226,6 @@ body {
     display: none;
 }
 
-.session.extra [data-id="detail_btn"] {
+.session.extra [data-bid="detail_btn"] {
     border-style: inset;
 }
