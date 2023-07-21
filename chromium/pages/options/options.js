@@ -18,6 +18,24 @@ var checked = {};
 var rulelist = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .rule');
+var binded = {
+    'proxy_always': [
+        {id: 'proxy_enabled', rel: true}
+    ],
+    'proxy_include': [
+        {id: 'proxy_enabled', rel: true},
+        {id: 'proxy_always', rel: false}
+    ],
+    'capture_always': [
+        {id: 'capture_enabled', rel: true}
+    ],
+    'capture_filesize': [
+        {id: 'capture_enabled', rel: true},
+        {id: 'capture_always', rel: false}
+    ]
+}
+binded['capture_exclude'] = binded['capture_reject'] = binded['capture_always'];
+binded['capture_include'] = binded['capture_resolve'] = binded['capture_filesize'];
 var linkage = {
     'folder_enabled': [],
     'proxy_enabled': [],
@@ -222,20 +240,11 @@ rulelist.forEach(menu => {
 });
 
 document.querySelectorAll('[data-rel]').forEach((menu) => {
-    var data = menu.dataset.rel.match(/[^,;]+/g);
-    var [id, value] = data.splice(0, 2);
-    linkage[id].push(menu);
-    var minor = [];
-    var rule = value === '1' ? true : false;
-    data.forEach((id, idx) => {
-       if (isNaN(id)) {
-            var value = data[idx + 1];
-            var rule = value === '1' ? true : false;
-            linkage[id].push(menu);
-            minor.push({id, rule});
-        }
-    });
-    menu.rel = {major: {id, rule}, minor, length: minor.length};
+    var id = menu.dataset.rel;
+    var bind = binded[id];
+    var match = bind.length;
+    bind.forEach(({id}) => linkage[id]?.push(menu));
+    menu.rel = {bind, match};
 });
 
 document.querySelector('#aria2').addEventListener('change', (event) => {
@@ -276,21 +285,14 @@ function aria2StartUp() {
 }
 
 function printLinkage(menu) {
-    var {major, minor, length} = menu.rel;
-    var {id, rule} = major;
-    var prime = rule === changes[id];
-    var second = 0;
-    minor.forEach(({id, rule}) => {
-        if (rule === changes[id]) {
-            second ++;
+    var {bind, match} = menu.rel;
+    var count = 0;
+    bind.forEach(({id, rel}) => {
+        if (rel === changes[id]) {
+            count ++;
         }
     });
-    if (prime) {
-        menu.style.display = second === length ? '' : 'none';
-    }
-    else {
-        menu.style.display = 'none';
-    }
+    menu.style.display = count === match ? '' : 'none';
 }
 
 function clearChanges() {
