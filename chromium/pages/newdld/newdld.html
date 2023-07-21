@@ -11,7 +11,7 @@
             <div class="title" i18n>task_referer</div>
             <div class="flex">
                 <input data-id="referer" type="text">
-                <button id="referer_btn">🔖</button>
+                <button data-bid="referer_btn">🔖</button>
             </div>
         </div>
         <div class="menu" title="task_batch_title">
@@ -43,7 +43,7 @@
                 <div class="title" i18n>task_proxy</div>
                 <div class="flex">
                     <input data-id="all-proxy" type="url">
-                    <button id="proxy_btn">💾</button>
+                    <button data-bid="proxy_btn">💾</button>
                 </div>
             </div>
             <div class="menu" title="aria2_http_split_title">
@@ -76,11 +76,11 @@
         <hr>
         <div id="menu">
             <button>
-                <span data-id="submit_btn" i18n>common_submit</span>
-                <span class="countdown" data-id="submit_btn">30</span>
+                <span data-bid="submit_btn" i18n>common_submit</span>
+                <span class="countdown" data-bid="submit_btn">30</span>
             </button>
-            <button data-id="upload_btn" i18n>task_metaurl</button>
-            <button data-id="extra_btn" i18n>popup_options</button>
+            <button data-bid="upload_btn" i18n>task_metaurl</button>
+            <button data-bid="extra_btn" i18n>popup_options</button>
             <input type="file" accept=".torrent,.metalink,.meta4">
         </div>
         <script src="/libs/aria2.js"></script>

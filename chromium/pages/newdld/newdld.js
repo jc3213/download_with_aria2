@@ -13,8 +13,8 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-document.querySelector('#menu').addEventListener('click', ({target}) => {
-    var id = target.dataset.id;
+document.addEventListener('click', ({target}) => {
+    var id = target.dataset.bid;
     if (id === 'submit_btn') {
         downloadSubmit();
     }
@@ -23,6 +23,12 @@ document.querySelector('#menu').addEventListener('click', ({target}) => {
     }
     else if (id === 'extra_btn') {
         downloadExpand();
+    }
+    else if (id === 'referer_btn') {
+        downloadReferer(target);
+    }
+    else if (id === 'proxy_btn') {
+        downloadProxy(target);
     }
 });
 
@@ -42,6 +48,17 @@ async function downloadExpand() {
     chrome.windows.update(id, {top: top - 105, height: height + 210});
     downloader.className = 'extra';
     countdown.textContent = countdown.textContent * 1 + 90;
+}
+
+function downloadReferer(refererBtn) {
+    chrome.tabs.query({active: true, currentWindow: false}, tabs => {
+        var {url} = tabs[0];
+        refererBtn.previousElementSibling.value = aria2Global['referer'] = url;
+    });
+}
+
+function downloadProxy(proxyBtn) {
+    proxyBtn.previousElementSibling.value = aria2Global['all-proxy'] = aria2Store['proxy_server'];
 }
 
 document.addEventListener('change', ({target}) => {
@@ -84,17 +101,6 @@ function changedEntries(value) {
         aria2Global['out'] = filename.value;
     }
 }
-
-document.querySelector('#referer_btn').addEventListener('click', async ({target}) => {
-    chrome.tabs.query({active: true, currentWindow: false}, tabs => {
-        var {url} = tabs[0];
-        target.previousElementSibling.value = aria2Global['referer'] = url;
-    });
-});
-
-document.querySelector('#proxy_btn').addEventListener('click', ({target}) => {
-    target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Store['proxy_server'];
-});
 
 function slimModeInit() {
     chrome.runtime.sendMessage({action: 'internal_prompt'}, ({url, json, options}) => {

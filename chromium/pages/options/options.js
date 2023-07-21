@@ -1,4 +1,4 @@
-var [saveBtn, undoBtn, redoBtn] = document.querySelectorAll('#save_btn, #undo_btn, #redo_btn');
+var [saveBtn, undoBtn, redoBtn] = document.querySelectorAll('#menu > button');
 var [aria2ver, aria2ua] = document.querySelectorAll('#version, #aria2ua');
 var [importJson, importConf, exporter] = document.querySelectorAll('#menu > input, #menu > a');
 var settings = document.querySelectorAll('#aria2 input, #aria2 select');
@@ -44,8 +44,8 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-document.querySelector('#menu').addEventListener('click', ({target}) => {
-    var {id} = target;
+document.addEventListener('click', ({target}) => {
+    var id = target.dataset.bid;
     if (id === 'save_btn') {
         optionsSave();
     }
@@ -60,6 +60,12 @@ document.querySelector('#menu').addEventListener('click', ({target}) => {
     }
     else if (id === 'import_btn') {
         optionsImport();
+    }
+    else if (id === 'aria2_btn') {
+        optionsJsonrpc();
+    }
+    else if (id === 'back_btn') {
+        optionsExtension();
     }
 });
 
@@ -117,6 +123,26 @@ function optionsImport() {
     global ? importJson.click() : importConf.click();
 }
 
+async function optionsJsonrpc() {
+    var [options, version] = await aria2RPC.batch([
+        ['aria2.getGlobalOption'], ['aria2.getVersion']
+    ]);
+    clearChanges();
+    global = false;
+    aria2Global = settings.disposition(options);
+    aria2CONF = {'enable-rpc': true, ...options};
+    changes = {...aria2Global};
+    aria2ver.textContent = aria2ua.textContent = version.version;
+    document.body.className = 'aria2';
+}
+
+function optionsExtension() {
+    clearChanges();
+    global = true;
+    aria2StartUp();
+    document.body.className = 'local';
+}
+
 document.querySelector('#menu').addEventListener('change', async ({target}) => {
     clearChanges();
     var text = await getFileText(target.files[0]);
@@ -147,26 +173,6 @@ function getFileText(file) {
         reader.readAsText(file);
     });
 }
-
-document.querySelector('#back_btn').addEventListener('click', (event) => {
-    clearChanges();
-    global = true;
-    aria2StartUp();
-    document.body.className = 'local';
-});
-
-document.querySelector('#aria2_btn').addEventListener('click', async (event) => {
-    var [options, version] = await aria2RPC.batch([
-        ['aria2.getGlobalOption'], ['aria2.getVersion']
-    ]);
-    clearChanges();
-    global = false;
-    aria2Global = settings.disposition(options);
-    aria2CONF = {'enable-rpc': true, ...options};
-    changes = {...aria2Global};
-    aria2ver.textContent = aria2ua.textContent = version.version;
-    document.body.className = 'aria2';
-});
 
 entries.forEach(entry => {
     var {id} = entry;

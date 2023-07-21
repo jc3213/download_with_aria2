@@ -8,12 +8,12 @@
     </head>
     <body>
         <div id="menu" class="flex">
-            <button id="save_btn" disabled i18n>common_save</button>
-            <button id="undo_btn" disabled i18n>option_undo</button>
-            <button id="redo_btn" disabled i18n>option_redo</button>
+            <button data-bid="save_btn" disabled i18n>common_save</button>
+            <button data-bid="undo_btn" disabled i18n>option_undo</button>
+            <button data-bid="redo_btn" disabled i18n>option_redo</button>
             <div id="version"></div>
-            <button id="export_btn" i18n>option_export</button>
-            <button id="import_btn" i18n>option_import</button>
+            <button data-bid="export_btn" i18n>option_export</button>
+            <button data-bid="import_btn" i18n>option_import</button>
             <input type="file" accept=".json">
             <input type="file" accept=".conf">
             <a></a>
@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="menu">
-                <button id="aria2_btn" i18n>option_aria2</button>
+                <button data-bid="aria2_btn" i18n>option_aria2</button>
             </div>
             <h1 i18n>option_task_manager</h1>
             <div class="menu" title="option_manager_newtab_title">
@@ -156,7 +156,7 @@
         </div>
         <div id="aria2" class="options">
             <div class="menu">
-                <button id="back_btn" i18n>option_back</button>
+                <button data-bid="back_btn" i18n>option_back</button>
             </div>
             <h1>HTTP/FTP</h1>
             <div class="menu" title="aria2_http_retry_title">

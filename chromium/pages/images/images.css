@@ -12,7 +12,7 @@ body:not(.extra) #options {
     display: none;
 }
 
-.extra #extra_btn {
+.extra [data-bid="extra_btn"] {
     border-style: inset;
 }
 

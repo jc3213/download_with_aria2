@@ -14,25 +14,18 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-document.querySelector('#menu').addEventListener('click', ({target}) => {
-    var {id} = target;
+document.addEventListener('click', ({target}) => {
+    var id = target.dataset.bid;
     if (id === 'submit_btn') {
         imagesSubmit();
     }
     else if (id === 'extra_btn') {
         imagesOptions();
     }
-});
-
-viewer.addEventListener('click', ({target}) => {
-    if (target.tagName === 'IMG') {
-        target.className = target.className === '' ? 'checked' : '';
+    else if (id === 'proxy_btn') {
+        imagesProxy(target);
     }
 });
-
-viewer.addEventListener('load', ({target}) => {
-    target.title = `${target.offsetWidth}x${target.offsetHeight}`;
-}, true);
 
 async function imagesSubmit() {
     var json = [...viewer.querySelectorAll('.checked')].map(({src, alt}) => {
@@ -51,6 +44,20 @@ async function imagesSubmit() {
 function imagesOptions() {
     document.body.classList.toggle('extra');
 }
+
+function imagesProxy(proxyBtn) {
+    proxyBtn.previousElementSibling.value = aria2Options['all-proxy'] = aria2Store['proxy_server'];
+}
+
+viewer.addEventListener('click', ({target}) => {
+    if (target.tagName === 'IMG') {
+        target.className = target.className === '' ? 'checked' : '';
+    }
+});
+
+viewer.addEventListener('load', ({target}) => {
+    target.title = `${target.offsetWidth}x${target.offsetHeight}`;
+}, true);
 
 chrome.storage.local.get(null, (json) => {
     aria2Store = json;
