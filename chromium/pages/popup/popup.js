@@ -178,15 +178,15 @@ function createSession(gid, status, bittorrent) {
             taskProxy(target, gid);
         }
         else if (id === 'save_btn') {
-            taskFiles(target, files, gid);
+            taskFiles(files, save, gid);
         }
-        else if (id === 'this_file') {
-            taskSelectFile(task.cate, save, target);
+        else if (id === 'file_btn') {
+            taskSelectFile(save, task.cate, target);
         }
         else if (id === 'adduri_btn') {
             taskAddUri(target, gid);
         }
-        else if (id === 'this_uri') {
+        else if (id === 'uri_btn') {
             taskRemoveUri(target.textContent, gid, ctrlKey);
         }
     });
@@ -267,13 +267,13 @@ async function taskProxy(proxy, gid) {
     proxy.previousElementSibling.value = aria2Proxy;
 }
 
-async function taskFiles(save, files, gid) {
+async function taskFiles(files, save, gid) {
     var selected = [...files.querySelectorAll('.ready')].map(index => index.textContent);
     await aria2RPC.call('aria2.changeOption', gid, {'select-file': selected.join()});
     save.style.display = 'none';
 }
 
-function taskSelectFile(cate, save, file) {
+function taskSelectFile(save, cate, file) {
     if (cate !== 'stopped' && file.checkbox) {
         file.className = file.className === 'ready' ? '' : 'ready';
         save.style.display = 'block';
