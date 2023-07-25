@@ -1,7 +1,7 @@
 var [saveBtn, undoBtn, redoBtn] = document.querySelectorAll('#menu > button');
 var [aria2ver, aria2ua] = document.querySelectorAll('#version, #aria2ua');
 var [importJson, importConf, exporter] = document.querySelectorAll('#menu > input, #menu > a');
-var settings = document.querySelectorAll('#aria2 input, #aria2 select');
+var settings = document.querySelectorAll('#aria2 [data-id]');
 var appver = chrome.runtime.getManifest().version;
 var changes = {};
 var redoes = [];
@@ -218,18 +218,19 @@ rulelist.forEach(menu => {
     });
     addBtn.addEventListener('click', (event) => {
         var {value} = entry;
-        if (value !== '') {
-            var new_value = [...changes[id], value];
+        var old_value = changes[id];
+        if (value !== '' && !old_value.includes(value)) {
+            var new_value = [...old_value, value];
             setChange(id, new_value);
             entry.value = '';
-            printList(list, value);
+            printList(list, old_value.length, value);
         }
     });
     list.addEventListener('click', ({target}) => {
-        var {rule} = target;
-        if (rule) {
+        var mid = target.dataset.mid;
+        if (mid) {
             var new_value = [...changes[id]];
-            new_value.splice(new_value.indexOf(rule), 1);
+            new_value.splice(mid, 1);
             setChange(id, new_value);
             target.parentNode.remove();
         }
@@ -280,7 +281,7 @@ function aria2StartUp() {
     rulelist.forEach((menu) => {
         var {id, list} = menu.list;
         list.innerHTML = '';
-        changes[id].forEach((value) => printList(list, value));
+        changes[id].forEach((value, mid) => printList(list, mid, value));
     });
 }
 
@@ -347,11 +348,12 @@ function setValue(id, value) {
 function getList(id, value) {
     var list = listed[id];
     list.innerHTML = '';
-    value.forEach((val) => printList(list, val));
+    value.forEach((val, mid) => printList(list, mid, val));
 }
 
-function printList(list, value) {
+function printList(list, mid, value) {
     var item = listLET.cloneNode(true);
-    item.querySelector('span').textContent = item.querySelector('button').rule = value;
+    item.querySelector('span').textContent = value;
+    item.querySelector('button').dataset.mid = mid;
     list.append(item);
 }
