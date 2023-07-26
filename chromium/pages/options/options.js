@@ -1,20 +1,32 @@
 var [saveBtn, undoBtn, redoBtn] = document.querySelectorAll('#menu > button');
 var [aria2ver, aria2ua] = document.querySelectorAll('#version, #aria2ua');
 var [importJson, importConf, exporter] = document.querySelectorAll('#menu > input, #menu > a');
-var settings = document.querySelectorAll('#aria2 [data-id]');
+var options = document.querySelectorAll('[data-eid]');
+var jsonrpc = document.querySelectorAll('[data-rid]');
 var appver = chrome.runtime.getManifest().version;
 var changes = {};
 var redoes = [];
 var undoes = [];
 var undone = false;
 var global = true;
-var entries = document.querySelectorAll('#local input[id]:not([type="checkbox"])');
+var entries = {};
+options.forEach((entry) => entries[entry.dataset.eid] = entry);
 var multiply = {
     'manager_interval': 1000,
     'capture_filesize': 1048576
 };
-var checkes = document.querySelectorAll('#local [type="checkbox"]');
-var checked = {};
+var toggle = {
+    'manager_newtab': true,
+    'notify_start': true,
+    'notify_complete': true,
+    'download_headers': true,
+    'download_prompt': true,
+    'folder_enabled': true,
+    'proxy_enabled': true,
+    'proxy_always': true,
+    'capture_enabled': true,
+    'capture_always': true
+};
 var rulelist = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .rule');
@@ -36,7 +48,7 @@ var binded = {
 }
 binded['capture_exclude'] = binded['capture_reject'] = binded['capture_always'];
 binded['capture_include'] = binded['capture_resolve'] = binded['capture_filesize'];
-var linkage = {
+var related = {
     'folder_enabled': [],
     'proxy_enabled': [],
     'proxy_always': [],
@@ -128,7 +140,7 @@ function optionsExport() {
         var name = `downwitharia2_options-${time}.json`;
     }
     else {
-        output = Object.keys(aria2CONF).map((key) => `${key}=${aria2CONF[key]}\n`);
+        output = Object.keys(aria2Conf).map((key) => `${key}=${aria2Conf[key]}`);
         name = `aria2c_jsonrpc-${time}.conf`;
     }
     var blob = new Blob(output, {type: 'application/json; charset=utf-8'});
@@ -147,8 +159,8 @@ async function optionsJsonrpc() {
     ]);
     clearChanges();
     global = false;
-    aria2Global = settings.disposition(options);
-    aria2CONF = {'enable-rpc': true, ...options};
+    aria2Global = jsonrpc.disposition(options);
+    aria2Conf = {'enable-rpc': true, ...options};
     changes = {...aria2Global};
     aria2ver.textContent = aria2ua.textContent = version.version;
     document.body.className = 'aria2';
@@ -161,52 +173,43 @@ function optionsExtension() {
     document.body.className = 'local';
 }
 
-document.querySelector('#menu').addEventListener('change', async ({target}) => {
+document.addEventListener('change', ({target}) => {
+    var {dataset: {eid, rid}, value, checked, files} = target;
+    if (eid) {
+        setChange(eid, eid in toggle ? checked : eid in multiply ? value * multiply[eid] : value);
+    }
+    else if (rid) {
+        setChange(rid, value);
+    }
+    else if (files) {
+        optionsImport(files[0]);
+        target.value = '';
+    }
+});
+
+function optionsImport(file) {
     clearChanges();
-    var text = await getFileText(target.files[0]);
-    if (global) {
-        var json = JSON.parse(text);
-        chrome.storage.local.set(json);
-        aria2Store = json;
-        aria2StartUp();
-    }
-    else {
-        var conf = {};
-        text.split('\n').forEach((entry) => {
-            var [key, value] = entry.split('=');
-            conf[key] = value;
-        });
-        await aria2RPC.call('aria2.changeGlobalOption', conf);
-        aria2Global = settings.disposition(conf);
-        changes = {...aria2Global};
-    }
-    target.value = '';
-});
-
-function getFileText(file) {
-    return new Promise((resolve, reject) => {
-        var reader = new FileReader();
-        reader.onload = (event) => resolve(reader.result);
-        reader.onerror = (event) => reject(reader.error);
-        reader.readAsText(file);
-    });
+    var reader = new FileReader();
+    reader.onload = async (event) => {
+        if (global) {
+            var json = JSON.parse(reader.result);
+            chrome.storage.local.set(json);
+            aria2Store = json;
+            aria2StartUp();
+        }
+        else {
+            var conf = {};
+            reader.result.split('').forEach((entry) => {
+                var [key, value] = entry.split('=');
+                conf[key] = value;
+            });
+            await aria2RPC.call('aria2.changeGlobalOption', conf);
+            aria2Global = jsonrpc.disposition(conf);
+            changes = {...aria2Global};
+        }
+    };
+    reader.readAsText(file);
 }
-
-entries.forEach(entry => {
-    var {id} = entry;
-    entry.addEventListener('change', (event) => {
-        var value = getValue(id, entry.value);
-        setChange(id, value);
-    });
-});
-
-checkes.forEach(entry => {
-    var {id} = entry;
-    entry.addEventListener('change', (event) => {
-        setChange(id, entry.checked);
-    });
-    checked[id] = true;
-});
 
 rulelist.forEach(menu => {
     var id = menu.dataset.map;
@@ -244,13 +247,8 @@ document.querySelectorAll('[data-rel]').forEach((menu) => {
     var id = menu.dataset.rel;
     var bind = binded[id];
     var match = bind.length;
-    bind.forEach(({id}) => linkage[id]?.push(menu));
+    bind.forEach(({id}) => related[id]?.push(menu));
     menu.rel = {bind, match};
-});
-
-document.querySelector('#aria2').addEventListener('change', (event) => {
-    var {id, value} = event.target;
-    setChange(id, value);
 });
 
 chrome.storage.onChanged.addListener((changes) => {
@@ -268,15 +266,17 @@ chrome.storage.local.get(null, (json) => {
 function aria2StartUp() {
     changes = {...aria2Store};
     aria2ver.textContent = appver;
-    entries.forEach((entry) => {
-        var {id} = entry;
-        var value = changes[id];
-        entry.value = setValue(id, value);
-    });
-    checkes.forEach((entry) => {
-        var {id} = entry;
-        entry.checked = changes[id];
-        linkage[id]?.forEach(printLinkage);
+    options.forEach((entry) => {
+        var eid = entry.dataset.eid;
+        var value = changes[eid];
+        entries[eid] = entry;
+        if (eid in toggle) {
+            entry.checked = changes[eid];
+            related[eid]?.forEach(printrelated);
+        }
+        else {
+            entry.value = eid in multiply ? value / multiply[eid] : value;
+        }
     });
     rulelist.forEach((menu) => {
         var {id, list} = menu.list;
@@ -285,7 +285,7 @@ function aria2StartUp() {
     });
 }
 
-function printLinkage(menu) {
+function printrelated(menu) {
     var {bind, match} = menu.rel;
     var count = 0;
     bind.forEach(({id, rel}) => {
@@ -305,17 +305,17 @@ function clearChanges() {
 function getChange(id, value) {
     changes[id] = value;
     saveBtn.disabled = false;
-    var entry = document.getElementById(id);
+    var entry = entries[id];
     if (id in listed) {
         getList(id, value);
     }
-    else if (id in checked) {
+    else if (id in toggle) {
         entry.checked = value;
     }
     else {
-        entry.value = setValue(id, value);
+        entry.value = id in multiply ? value / multiply[id] : value;
     }
-    linkage[id]?.forEach(printLinkage);
+    related[id]?.forEach(printrelated);
 }
 
 function setChange(id, new_value) {
@@ -323,26 +323,12 @@ function setChange(id, new_value) {
     undoes.push({id, old_value, new_value});
     saveBtn.disabled = undoBtn.disabled = false;
     changes[id] = new_value;
-    linkage[id]?.forEach(printLinkage);
+    related[id]?.forEach(printrelated);
     if (undone) {
         redoes = [];
         undone = false;
         redoBtn.disabled = true;
     }
-}
-
-function getValue(id, value) {
-    if (id in multiply) {
-        return value * multiply[id];
-    }
-    return value;
-}
-
-function setValue(id, value) {
-    if (id in multiply) {
-        return value / multiply[id];
-    }
-    return value;
 }
 
 function getList(id, value) {

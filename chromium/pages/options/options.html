@@ -23,13 +23,13 @@
             <div class="menu" title="option_jsonrpc_uri_title">
                 <div class="title" i18n>option_jsonrpc_uri</div>
                 <div class="flex">
-                    <input id="jsonrpc_uri" type="url">
+                    <input data-eid="jsonrpc_uri" type="url">
                 </div>
             </div>
             <div class="menu" title="option_jsonrpc_token_title">
                 <div class="title" i18n>option_jsonrpc_token</div>
                 <div class="flex">
-                    <input id="jsonrpc_token" type="text" placeholder="$$secret$$">
+                    <input data-eid="jsonrpc_token" type="text" placeholder="$$secret$$">
                 </div>
             </div>
             <div class="menu">
@@ -37,56 +37,56 @@
             </div>
             <h1 i18n>option_task_manager</h1>
             <div class="menu" title="option_manager_newtab_title">
-                <input id="manager_newtab" id="manager_newtab" type="checkbox">
+                <input data-eid="manager_newtab" type="checkbox">
                 <label for="manager_newtab" i18n>option_manager_newtab</label>
             </div>
             <div class="menu flex" title="option_manager_interval_title">
                 <div class="title" i18n>option_manager_interval</div>
                 <div>
-                    <input id="manager_interval" type="number" min="5" max="30" step="1">
+                    <input data-eid="manager_interval" type="number" min="5" max="30" step="1">
                     <span i18n>time_second_full</span>
                 </div>
             </div>
             <h1 i18n>option_notification</h1>
             <div class="menu" title="option_notify_start_title">
-                <input id="notify_start" type="checkbox">
+                <input data-eid="notify_start" type="checkbox">
                 <label for="notify_start" i18n>option_notify_start</label>
             </div>
             <div class="menu" title="option_notify_complete_title">
-                <input id="notify_complete" type="checkbox">
+                <input data-eid="notify_complete" type="checkbox">
                 <label for="notify_complete" i18n>option_notify_complete</label>
             </div>
             <h1 i18n>option_advanced</h1>
             <div class="menu" title="option_download_headers_title">
-                <input id="download_headers" type="checkbox">
+                <input data-eid="download_headers" type="checkbox">
                 <label for="download_headers" i18n>option_download_headers</label>
             </div>
             <div class="menu" title="option_download_prompt_title">
-                <input id="download_prompt" type="checkbox">
+                <input data-eid="download_prompt" type="checkbox">
                 <label for="download_prompt" i18n>option_download_prompt</label>
             </div>
             <h1 i18n>option_folder</h1>
             <div title="option_folder_title">
-                <input id="folder_defined" type="text">
+                <input data-eid="folder_defined" type="text">
             </div>
             <div class="menu" title="option_folder_enabled_title">
-                <input id="folder_enabled" type="checkbox">
+                <input data-eid="folder_enabled" type="checkbox">
                 <label for="folder_enabled" i18n>option_folder_enabled</label>
             </div>
             <h1 i18n>option_user_agent</h1>
             <div title="option_user_agent_title">
-                <input id="user_agent" type="text">
+                <input data-eid="user_agent" type="text">
             </div>
             <h1 i18n>option_proxy</h1>
             <div title="option_proxy_title">
-                <input id="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
+                <input data-eid="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
             </div>
             <div class="menu" title="option_proxy_enabled_title">
-                <input id="proxy_enabled" type="checkbox">
+                <input data-eid="proxy_enabled" type="checkbox">
                 <label for="proxy_enabled" i18n>option_proxy_enabled</label>
             </div>
             <div class="menu" title="option_proxy_always_title" data-rel="proxy_always">
-                <input id="proxy_always" type="checkbox">
+                <input data-eid="proxy_always" type="checkbox">
                 <label for="proxy_always" i18n>option_proxy_always</label>
             </div>
             <div title="option_proxy_include_title" data-map="proxy_include" data-rel="proxy_include">
@@ -99,17 +99,17 @@
             </div>
             <h1 i18n>option_capture</h1>
             <div class="menu" title="option_capture_enabled_title">
-                <input id="capture_enabled" type="checkbox">
+                <input data-eid="capture_enabled" type="checkbox">
                 <label for="capture_enabled" i18n>option_capture_enabled</label>
             </div>
             <div class="menu" title="option_capture_always_title" data-rel="capture_always">
-                <input id="capture_always" type="checkbox">
+                <input data-eid="capture_always" type="checkbox">
                 <label for="capture_always" i18n>option_capture_always</label>
             </div>
             <div title="option_capture_filesize_title" data-rel="capture_filesize">
                 <div class="title" i18n>option_capture_filesize</div>
                 <div>
-                    <input id="capture_filesize" type="number" min="0">
+                    <input data-eid="capture_filesize" type="number" min="0">
                     <span>MB</span>
                 </div>
                 <div>
@@ -162,7 +162,7 @@
             <div class="menu" title="aria2_http_retry_title">
                 <div class="title" i18n>aria2_http_retry</div>
                 <div>
-                    <input data-id="max-tries" type="number">
+                    <input data-rid="max-tries" type="number">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>5</i></u>
@@ -171,7 +171,7 @@
             <div class="menu" title="aria2_http_wait_title">
                 <div class="title" i18n>aria2_http_wait</div>
                 <div>
-                    <input data-id="retry-wait" type="number">
+                    <input data-rid="retry-wait" type="number">
                     <span i18n>time_second_full</span>
                 </div>
                 <div>
@@ -181,7 +181,7 @@
             <div class="menu" title="aria2_http_split_title">
                 <div class="title" i18n>aria2_http_split</div>
                 <div>
-                    <input data-id="split" type="number">
+                    <input data-rid="split" type="number">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>5</i></u>
@@ -190,7 +190,7 @@
             <div class="menu" title="aria2_http_size_title">
                 <div class="title" i18n>aria2_http_size</div>
                 <div>
-                    <input data-id="min-split-size" type="text">
+                    <input data-rid="min-split-size" type="text">
                     <span>B</span>
                 </div>
                 <div>
@@ -200,7 +200,7 @@
             <div title="aria2_http_ua_title">
                 <div class="title" i18n>aria2_http_ua</div>
                 <div>
-                    <input data-id="user-agent" type="text">
+                    <input data-rid="user-agent" type="text">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i id="aria2ua"></i></u>
@@ -210,7 +210,7 @@
             <div class="menu" title="aria2_bt_port_title">
                 <div class="title" i18n>aria2_bt_port</div>
                 <div>
-                    <input data-id="listen-port" type="text">
+                    <input data-rid="listen-port" type="text">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>6881-6999</i></u>
@@ -219,7 +219,7 @@
             <div class="menu" title="aria2_bt_peers_title">
                 <div class="title" i18n>aria2_bt_peers</div>
                 <div>
-                    <input data-id="bt-max-peers" type="number">
+                    <input data-rid="bt-max-peers" type="number">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>55</i></u>
@@ -228,7 +228,7 @@
             <div class="menu" title="aria2_bt_follow_title">
                 <div class="title" i18n>aria2_bt_follow</div>
                 <div>
-                    <select data-id="follow-torrent">
+                    <select data-rid="follow-torrent">
                         <option value="true" i18n>aria2_true</option>
                         <option value="false" i18n>aria2_false</option>
                     </select>
@@ -240,7 +240,7 @@
             <div class="menu" title="aria2_bt_remove_title">
                 <div class="title" i18n>aria2_bt_remove</div>
                 <div>
-                    <select data-id="bt-remove-unselected-file">
+                    <select data-rid="bt-remove-unselected-file">
                         <option value="true" i18n>aria2_true</option>
                         <option value="false" i18n>aria2_false</option>
                     </select>
@@ -252,7 +252,7 @@
             <div class="menu" title="aria2_bt_ratio_title">
                 <div class="title" i18n>aria2_bt_ratio</div>
                 <div>
-                    <input data-id="seed-ratio" type="number" min="0" step="0.1">
+                    <input data-rid="seed-ratio" type="number" min="0" step="0.1">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>1.0</i></u>
@@ -261,7 +261,7 @@
             <div class="menu" title="aria2_bt_seed_title">
                 <div class="title" i18n>aria2_bt_seed</div>
                 <div>
-                    <input data-id="seed-time" type="number">
+                    <input data-rid="seed-time" type="number">
                     <span i18n>time_minute_full</span>
                 </div>
                 <div>
@@ -272,7 +272,7 @@
             <div class="menu" title="aria2_adv_dir_title">
                 <div class="title" i18n>aria2_adv_dir</div>
                 <div>
-                    <input data-id="dir" type="text">
+                    <input data-rid="dir" type="text">
                 </div>
                 <div class="flex">
                     <span>Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;</span>
@@ -282,7 +282,7 @@
             <div class="menu" title="aria2_adv_cache_title">
                 <div class="title" i18n>aria2_adv_cache</div>
                 <div>
-                    <input data-id="disk-cache" type="text">
+                    <input data-rid="disk-cache" type="text">
                     <span>B</span>
                 </div>
                 <div>
@@ -292,7 +292,7 @@
             <div class="menu" title="aria2_max_concurrent_title">
                 <div class="title" i18n>aria2_max_concurrent</div>
                 <div>
-                    <input data-id="max-concurrent-downloads" type="number">
+                    <input data-rid="max-concurrent-downloads" type="number">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>5</i></u>
@@ -301,7 +301,7 @@
             <div class="menu" title="aria2_max_connection_title">
                 <div class="title" i18n>aria2_max_connection</div>
                 <div>
-                    <input data-id="max-connection-per-server" type="number">
+                    <input data-rid="max-connection-per-server" type="number">
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>1</i></u>
@@ -310,7 +310,7 @@
             <div class="menu" title="aria2_max_download_title">
                 <div class="title" i18n>aria2_max_download</div>
                 <div>
-                    <input data-id="max-overall-download-limit" type="text">
+                    <input data-rid="max-overall-download-limit" type="text">
                     <span>B/s</span>
                 </div>
                 <div>
@@ -320,7 +320,7 @@
             <div class="menu" title="aria2_max_upload_title">
                 <div class="title" i18n>aria2_max_upload</div>
                 <div>
-                    <input data-id="max-overall-upload-limit" type="text">
+                    <input data-rid="max-overall-upload-limit" type="text">
                     <span>B/s</span>
                 </div>
                 <div>

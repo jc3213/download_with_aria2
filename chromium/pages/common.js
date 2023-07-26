@@ -18,7 +18,7 @@ var filesize = {
 NodeList.prototype.disposition = function (json) {
     var result = {};
     this.forEach((node) => {
-        var id = node.dataset.id;
+        var id = node.dataset.rid;
         var value = json[id];
         if (!value) {
             return;
