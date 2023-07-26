@@ -140,7 +140,7 @@ function optionsExport() {
         var name = `downwitharia2_options-${time}.json`;
     }
     else {
-        output = Object.keys(aria2Conf).map((key) => `${key}=${aria2Conf[key]}`);
+        output = Object.keys(aria2Conf).map((key) => `${key}=${aria2Conf[key]}\n`);
         name = `aria2c_jsonrpc-${time}.conf`;
     }
     var blob = new Blob(output, {type: 'application/json; charset=utf-8'});
@@ -269,10 +269,9 @@ function aria2StartUp() {
     options.forEach((entry) => {
         var eid = entry.dataset.eid;
         var value = changes[eid];
-        entries[eid] = entry;
         if (eid in toggle) {
-            entry.checked = changes[eid];
-            related[eid]?.forEach(printrelated);
+            entry.checked = value;
+            related[eid]?.forEach(optionRelated);
         }
         else {
             entry.value = eid in multiply ? value / multiply[eid] : value;
@@ -285,7 +284,7 @@ function aria2StartUp() {
     });
 }
 
-function printrelated(menu) {
+function optionRelated(menu) {
     var {bind, match} = menu.rel;
     var count = 0;
     bind.forEach(({id, rel}) => {
@@ -311,11 +310,11 @@ function getChange(id, value) {
     }
     else if (id in toggle) {
         entry.checked = value;
+        related[id]?.forEach(optionRelated);
     }
     else {
         entry.value = id in multiply ? value / multiply[id] : value;
     }
-    related[id]?.forEach(printrelated);
 }
 
 function setChange(id, new_value) {
@@ -323,7 +322,7 @@ function setChange(id, new_value) {
     undoes.push({id, old_value, new_value});
     saveBtn.disabled = undoBtn.disabled = false;
     changes[id] = new_value;
-    related[id]?.forEach(printrelated);
+    related[id]?.forEach(optionRelated);
     if (undone) {
         redoes = [];
         undone = false;
