@@ -18,11 +18,7 @@ i18n = i18n[lang] ?? i18n[lang.slice(0, lang.indexOf('-'))] ?? i18n['en'];
 var folderff = document.createElement('div');
 folderff.className = 'menu';
 folderff.title = i18n.folderff_title;
-folderff.innerHTML = `<input id="folder_firefox" id="folder_firefox" type="checkbox">\n<label for="folder_firefox">${i18n.folderff}</label>`;
-folderff.addEventListener('change', event => {
-    var {id, checked} = event.target;
-    setChange(id, checked);
-});
+folderff.innerHTML = `<input id="folder_firefox" data-eid="folder_firefox" type="checkbox">\n<label for="folder_firefox">${i18n.folderff}</label>`;
 folderff.rel = {
     bind: [
         {id: 'folder_enabled', rel: true},
@@ -38,7 +34,7 @@ folderen.after(folderff);
 var webrequest = document.createElement('div');
 webrequest.title = i18n.webrequest_title;
 webrequest.className = 'menu';
-webrequest.innerHTML = `<input id="capture_webrequest" id="capture_webrequest" type="checkbox">\n<label for="capture_webrequest">${i18n.webrequest}</label>`;
+webrequest.innerHTML = `<input id="capture_webrequest" data-eid="capture_webrequest" type="checkbox">\n<label for="capture_webrequest">${i18n.webrequest}</label>`;
 webrequest.rel = {
     bind: [
         {id: 'capture_enabled', rel: true}
@@ -46,37 +42,32 @@ webrequest.rel = {
     match: 1
 };
 webrequest.addEventListener('change', event => {
-    var {id, checked} = event.target;
-    setChange(id, checked);
-    if (checked) {
-        setDefaultFolder();
+    if (event.target.checked) {
+        folderff.querySelector('input').checked = changes['folder_firefox'] = false;
     }
 });
 
 var captureen = document.querySelector('#capture_enabled').parentNode;
 captureen.addEventListener('change', event => {
     if (!event.target.checked) {
-        setDefaultFolder();
+        folderff.querySelector('input').checked = changes['folder_firefox'] = false;
     }
 });
 captureen.after(webrequest);
 
-checked['folder_firefox'] = true;
-checked['capture_webrequest'] = true;
-linkage['folder_enabled'].push(folderff);
-linkage['capture_enabled'].push(folderff, webrequest);
-linkage['capture_webrequest'] = [folderff];
-
-function setDefaultFolder() {
-    undoes.push({id: 'folder_firefox', old_value: changes['folder_firefox'], new_value: false});
-    folderff.querySelector('input').checked = changes['folder_firefox'] = false;
-}
+entries['folder_firefox'] = folderff.querySelector('input');
+entries['capture_webrequest'] = webrequest.querySelector('input');
+switches['folder_firefox'] = true;
+switches['capture_webrequest'] = true;
+related['folder_enabled'].push(folderff);
+related['capture_enabled'].push(folderff, webrequest);
+related['capture_webrequest'] = [folderff];
 
 function firefoxExclusive() {
-    folderff.querySelector('input').checked = changes['folder_firefox'];
-    webrequest.querySelector('input').checked = changes['capture_webrequest'];
-    printLinkage(webrequest);
-    printLinkage(folderff);
+    entries['folder_firefox'].checked = changes['folder_firefox'];
+    entries['capture_webrequest'].checked = changes['capture_webrequest'];
+    optionsRelated(webrequest);
+    optionsRelated(folderff);
 }
 
 document.querySelector('[data-bid="back_btn"]').addEventListener('click', firefoxExclusive);

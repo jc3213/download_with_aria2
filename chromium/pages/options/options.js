@@ -15,7 +15,7 @@ var multiply = {
     'manager_interval': 1000,
     'capture_filesize': 1048576
 };
-var toggle = {
+var switches = {
     'manager_newtab': true,
     'notify_start': true,
     'notify_complete': true,
@@ -116,6 +116,7 @@ function optionsUndo() {
     redoes.push(undo);
     redoBtn.disabled = false;
     undone = true;
+    console.log(id, old_value);
     getChange(id, old_value);
     if (undoes.length === 0) {
         undoBtn.disabled = true;
@@ -176,7 +177,7 @@ function optionsExtension() {
 document.addEventListener('change', ({target}) => {
     var {dataset: {eid, rid}, value, checked, files} = target;
     if (eid) {
-        setChange(eid, eid in toggle ? checked : eid in multiply ? value * multiply[eid] : value);
+        setChange(eid, eid in switches ? checked : eid in multiply ? value * multiply[eid] : value);
     }
     else if (rid) {
         setChange(rid, value);
@@ -251,6 +252,17 @@ document.querySelectorAll('[data-rel]').forEach((menu) => {
     menu.rel = {bind, match};
 });
 
+function optionsRelated(menu) {
+    var {bind, match} = menu.rel;
+    var count = 0;
+    bind.forEach(({id, rel}) => {
+        if (rel === changes[id]) {
+            count ++;
+        }
+    });
+    menu.style.display = count === match ? '' : 'none';
+}
+
 chrome.storage.onChanged.addListener((changes) => {
     if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
         aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
@@ -269,9 +281,9 @@ function aria2StartUp() {
     options.forEach((entry) => {
         var eid = entry.dataset.eid;
         var value = changes[eid];
-        if (eid in toggle) {
+        if (eid in switches) {
             entry.checked = value;
-            related[eid]?.forEach(optionRelated);
+            related[eid]?.forEach(optionsRelated);
         }
         else {
             entry.value = eid in multiply ? value / multiply[eid] : value;
@@ -284,17 +296,6 @@ function aria2StartUp() {
     });
 }
 
-function optionRelated(menu) {
-    var {bind, match} = menu.rel;
-    var count = 0;
-    bind.forEach(({id, rel}) => {
-        if (rel === changes[id]) {
-            count ++;
-        }
-    });
-    menu.style.display = count === match ? '' : 'none';
-}
-
 function clearChanges() {
     undoes = [];
     redoes = [];
@@ -305,12 +306,13 @@ function getChange(id, value) {
     changes[id] = value;
     saveBtn.disabled = false;
     var entry = entries[id];
+    console.log(entry, id, value);
     if (id in listed) {
         getList(id, value);
     }
-    else if (id in toggle) {
+    else if (id in switches) {
         entry.checked = value;
-        related[id]?.forEach(optionRelated);
+        related[id]?.forEach(optionsRelated);
     }
     else {
         entry.value = id in multiply ? value / multiply[id] : value;
@@ -322,7 +324,7 @@ function setChange(id, new_value) {
     undoes.push({id, old_value, new_value});
     saveBtn.disabled = undoBtn.disabled = false;
     changes[id] = new_value;
-    related[id]?.forEach(optionRelated);
+    related[id]?.forEach(optionsRelated);
     if (undone) {
         redoes = [];
         undone = false;
