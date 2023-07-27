@@ -27,7 +27,7 @@ var switches = {
     'capture_enabled': true,
     'capture_always': true
 };
-var rulelist = document.querySelectorAll('[data-map]');
+var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .rule');
 var binded = {
@@ -89,7 +89,7 @@ document.addEventListener('click', ({target}) => {
         optionsExport();
     }
     else if (id === 'import_btn') {
-        optionsImport();
+        optionsUpload();
     }
     else if (id === 'aria2_btn') {
         optionsJsonrpc();
@@ -116,7 +116,6 @@ function optionsUndo() {
     redoes.push(undo);
     redoBtn.disabled = false;
     undone = true;
-    console.log(id, old_value);
     getChange(id, old_value);
     if (undoes.length === 0) {
         undoBtn.disabled = true;
@@ -150,7 +149,7 @@ function optionsExport() {
     exporter.click();
 }
 
-function optionsImport() {
+function optionsUpload() {
     global ? importJson.click() : importConf.click();
 }
 
@@ -212,7 +211,7 @@ function optionsImport(file) {
     reader.readAsText(file);
 }
 
-rulelist.forEach(menu => {
+mapped.forEach(menu => {
     var id = menu.dataset.map;
     var [entry, addBtn, list] = menu.querySelectorAll('input, button, .rulelist');
     entry.addEventListener('keydown', ({key}) => {
@@ -254,13 +253,7 @@ document.querySelectorAll('[data-rel]').forEach((menu) => {
 
 function optionsRelated(menu) {
     var {bind, match} = menu.rel;
-    var count = 0;
-    bind.forEach(({id, rel}) => {
-        if (rel === changes[id]) {
-            count ++;
-        }
-    });
-    menu.style.display = count === match ? '' : 'none';
+    menu.style.display = bind.filter(({id, rel}) => rel === changes[id]).length === match ? '' : 'none';
 }
 
 chrome.storage.onChanged.addListener((changes) => {
@@ -289,7 +282,7 @@ function aria2StartUp() {
             entry.value = eid in multiply ? value / multiply[eid] : value;
         }
     });
-    rulelist.forEach((menu) => {
+    mapped.forEach((menu) => {
         var {id, list} = menu.list;
         list.innerHTML = '';
         changes[id].forEach((value, mid) => printList(list, mid, value));
@@ -306,7 +299,6 @@ function getChange(id, value) {
     changes[id] = value;
     saveBtn.disabled = false;
     var entry = entries[id];
-    console.log(entry, id, value);
     if (id in listed) {
         getList(id, value);
     }
