@@ -10,23 +10,17 @@ class Aria2 {
     }
     call (method, ...options) {
         const json = {id: '', jsonrpc: '2.0', method, params: [this.secret, ...options]};
-        return this.post(JSON.stringify(json)).then(({result, error}) => {
-            if (result) {
-                return result;
-            }
-            throw error;
-        });
+        return this.post(JSON.stringify(json)).then(this.parse);
     }
     batch (array) {
         const json = array.map(([method, ...options]) => ({id: '', jsonrpc: '2.0', method, params: [this.secret, ...options]}));
-        return this.post(JSON.stringify(json)).then((response) => {
-            return response.map(({result, error}) => {
-                if (result) {
-                    return result;
-                }
-                throw error;
-            });
-        });
+        return this.post(JSON.stringify(json)).then((response) => response.map(this.parse));
+    }
+    parse ({result, error}) {
+        if (result) {
+            return result;
+        }
+        throw error;
     }
     fetch (body) {
         return fetch(this.jsonrpc, {method: 'POST', body}).then((response) => {
