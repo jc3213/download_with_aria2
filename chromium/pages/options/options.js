@@ -220,12 +220,11 @@ mapped.forEach(menu => {
         }
     });
     menu.addEventListener('click', ({target}) => {
-        var {bid} = target.dataset;
-        if (bid === 'add') {
+        var {mid} = target.dataset;
+        if (mid === 'add') {
             newRule(id, entry, list);
         }
-        else if (bid === 'remove') {
-            var mid = target.dataset.mid;
+        else if (mid) {
             var new_value = [...changes[id]];
             new_value.splice(mid, 1);
             setChange(id, new_value);
