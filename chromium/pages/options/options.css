@@ -64,16 +64,16 @@ input[type="checkbox"] {
     font-weight: bold;
 }
 
-.rulelist > * {
+.map {
     display: inline-block;
     margin: 10px 10px 0px 0px;
 }
 
-.rule > * {
+.map > * {
     padding: 3px;
 }
 
-.rule > span {
+.map > span {
     border-style: solid;
     border-width: 1px;
 }

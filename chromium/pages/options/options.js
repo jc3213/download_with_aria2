@@ -29,7 +29,7 @@ var switches = {
 };
 var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
-var listLET = document.querySelector('.template > .rule');
+var listLET = document.querySelector('.template > .map');
 var binded = {
     'proxy_always': [
         {id: 'proxy_enabled', rel: true}
@@ -213,35 +213,45 @@ function optionsImport(file) {
 
 mapped.forEach(menu => {
     var id = menu.dataset.map;
-    var [entry, addBtn, list] = menu.querySelectorAll('input, button, .rulelist');
-    entry.addEventListener('keydown', ({key}) => {
+    var [entry, list] = menu.querySelectorAll('input, .rule');
+    menu.addEventListener('keydown', ({key}) => {
         if (key === 'Enter') {
-            addBtn.click();
+            newRule(id, entry, list);
         }
     });
-    addBtn.addEventListener('click', (event) => {
-        var {value} = entry;
-        var old_value = changes[id];
-        if (value !== '' && !old_value.includes(value)) {
-            var new_value = [...old_value, value];
-            setChange(id, new_value);
-            entry.value = '';
-            printList(list, old_value.length, value);
+    menu.addEventListener('click', ({target}) => {
+        var {bid} = target.dataset;
+        if (bid === 'add') {
+            newRule(id, entry, list);
         }
-    });
-    list.addEventListener('click', ({target}) => {
-        var mid = target.dataset.mid;
-        if (mid) {
+        else if (bid === 'remove') {
+            var mid = target.dataset.mid;
             var new_value = [...changes[id]];
             new_value.splice(mid, 1);
             setChange(id, new_value);
             target.parentNode.remove();
         }
-        
     });
     listed[id] = list;
-    menu.list = {id, list};
 });
+
+function newRule(id, entry, list) {
+    var {value} = entry;
+    var old_value = changes[id];
+    if (value !== '' && !old_value.includes(value)) {
+        var new_value = [...old_value, value];
+        setChange(id, new_value);
+        entry.value = '';
+        addRule(list, old_value.length, value);
+    }
+}
+
+function addRule(list, mid, value) {
+    var item = listLET.cloneNode(true);
+    item.querySelector('span').textContent = value;
+    item.querySelector('button').dataset.mid = mid;
+    list.append(item);
+}
 
 document.querySelectorAll('[data-rel]').forEach((menu) => {
     var id = menu.dataset.rel;
@@ -283,9 +293,10 @@ function aria2StartUp() {
         }
     });
     mapped.forEach((menu) => {
-        var {id, list} = menu.list;
+        var id = menu.dataset.map;
+        var list = listed[id];
         list.innerHTML = '';
-        changes[id].forEach((value, mid) => printList(list, mid, value));
+        changes[id].forEach((value, mid) => addRule(list, mid, value));
     });
 }
 
@@ -300,7 +311,9 @@ function getChange(id, value) {
     saveBtn.disabled = false;
     var entry = entries[id];
     if (id in listed) {
-        getList(id, value);
+        var list = listed[id];
+        list.innerHTML = '';
+        value.forEach((val, mid) => addRule(list, mid, val));
     }
     else if (id in switches) {
         entry.checked = value;
@@ -322,17 +335,4 @@ function setChange(id, new_value) {
         undone = false;
         redoBtn.disabled = true;
     }
-}
-
-function getList(id, value) {
-    var list = listed[id];
-    list.innerHTML = '';
-    value.forEach((val, mid) => printList(list, mid, val));
-}
-
-function printList(list, mid, value) {
-    var item = listLET.cloneNode(true);
-    item.querySelector('span').textContent = value;
-    item.querySelector('button').dataset.mid = mid;
-    list.append(item);
 }
