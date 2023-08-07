@@ -1,22 +1,19 @@
 class Aria2 {
     constructor (url, secret) {
         const [protocol, http, socket] = url.match(/(^http)s?|^(ws)s?|^([^:]+)/);
-        this.post = http ? this.fetch : socket ? this.websocket : this.error(protocol);
+        this.post = http ? this.fetch : socket ? this.websocket : this.handle({error: new Error(`Invalid protocol: "${protocol}" is not supported.`)});
         this.jsonrpc = url;
         this.secret = `token:${secret}`;
     }
-    error (protocol) {
-        throw new Error(`Invalid protocol: "${protocol}" is not supported.`);
-    }
     call (method, ...options) {
         const json = {id: '', jsonrpc: '2.0', method, params: [this.secret, ...options]};
-        return this.post(JSON.stringify(json)).then(this.parse);
+        return this.post(JSON.stringify(json)).then(this.handle);
     }
     batch (array) {
         const json = array.map(([method, ...options]) => ({id: '', jsonrpc: '2.0', method, params: [this.secret, ...options]}));
-        return this.post(JSON.stringify(json)).then((response) => response.map(this.parse));
+        return this.post(JSON.stringify(json)).then((response) => response.map(this.handle));
     }
-    parse ({result, error}) {
+    handle ({result, error}) {
         if (result) {
             return result;
         }
