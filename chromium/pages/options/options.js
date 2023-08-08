@@ -245,11 +245,17 @@ function newRule(id, entry, list) {
     }
 }
 
-function addRule(list, mid, value) {
+function addRule(list, mid, rule) {
     var item = listLET.cloneNode(true);
-    item.querySelector('span').textContent = value;
+    item.querySelector('span').textContent = rule;
     item.querySelector('button').dataset.mid = mid;
     list.append(item);
+}
+
+function updateRule(id, rules) {
+    var list = listed[id];
+    list.innerHTML = '';
+    rules.forEach((rule, mid) => addRule(list, mid, rule));
 }
 
 document.querySelectorAll('[data-rel]').forEach((menu) => {
@@ -293,9 +299,7 @@ function aria2StartUp() {
     });
     mapped.forEach((menu) => {
         var id = menu.dataset.map;
-        var list = listed[id];
-        list.innerHTML = '';
-        changes[id].forEach((value, mid) => addRule(list, mid, value));
+        updateRule(id, changes[id]);
     });
 }
 
@@ -310,9 +314,7 @@ function getChange(id, value) {
     saveBtn.disabled = false;
     var entry = entries[id];
     if (id in listed) {
-        var list = listed[id];
-        list.innerHTML = '';
-        value.forEach((val, mid) => addRule(list, mid, val));
+        updateRule(id, value);
     }
     else if (id in switches) {
         entry.checked = value;
