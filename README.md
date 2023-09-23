@@ -1,3 +1,6 @@
+## About
+- Download links or images, capture browser downloads, and manage downloads with aria2c via json-rpc protocol
+
 ## Main Functions
 - Context menus
     - Download this with Aria2
