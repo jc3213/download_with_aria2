@@ -1,3 +1,16 @@
+## Main Functions
+- Context menus
+    - Download this with Aria2
+    - Download all images with Aria2
+- Capture browser downloads
+    - Capture downloads via [downloads](https://developer.chrome.com/docs/extensions/reference/downloads) API
+    - Capture downloads via [webRequest](https://developer.chrome.com/docs/extensions/reference/webRequest) API
+        - *Firefox only*
+    - Forward downloads request headers
+- Backup/Restore options for this extension and Aria2 JSON-RPC
+- Prompt a new window before sending downloads to Aria2
+- Notification when downloads start/complete
+
 ## User Manual
 - [How to use](//github.com/jc3213/download_with_aria2/wiki)
 - [How to build](//github.com/jc3213/download_with_aria2/wiki/HowToBuild)
