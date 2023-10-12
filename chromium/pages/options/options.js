@@ -31,6 +31,12 @@ var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .map');
 var binded = {
+    'folder_defined': [
+        {id: 'folder_enabled', rel: true}
+    ],
+    'proxy_server': [
+        {id: 'proxy_enabled', rel: true}
+    ],
     'proxy_always': [
         {id: 'proxy_enabled', rel: true}
     ],

@@ -147,7 +147,7 @@
         "message": "下载文件夹"
     },
     "option_folder_title": {
-        "message": "设置首选的下载文件夹"
+        "message": "所有扩展新建的下载任务将使用此下载文件夹"
     },
     "option_folder_enabled": {
         "message": "强制下载文件夹"

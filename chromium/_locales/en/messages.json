@@ -150,10 +150,10 @@
         "message": "Set your preferred download directory"
     },
     "option_folder_enabled": {
-        "message": "Override Download Directory"
+        "message": "Use Download Directory"
     },
     "option_folder_enabled_title": {
-        "message": "Save files into your preferred download directory"
+        "message": "Override download directory for downloads created by this extension"
     },
     "option_user_agent": {
         "message": "User Agent"
