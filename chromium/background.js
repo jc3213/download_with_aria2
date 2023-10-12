@@ -1,18 +1,27 @@
 chrome.contextMenus.create({
-    title: chrome.i18n.getMessage('contextmenu_dldthis'),
-    id: 'download_this_item',
-    contexts: ['link', 'image']
+    title: chrome.i18n.getMessage('contextmenu_thisurl'),
+    id: 'download_this_url',
+    contexts: ['link']
 });
 
 chrome.contextMenus.create({
-    title: chrome.i18n.getMessage('contextmenu_images'),
+    title: chrome.i18n.getMessage('contextmenu_thisimage'),
+    id: 'download_this_image',
+    contexts: ['image']
+});
+
+chrome.contextMenus.create({
+    title: chrome.i18n.getMessage('contextmenu_allimages'),
     id: 'download_all_images',
     contexts: ['page']
 });
 
 chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url}) => {
-    if (menuItemId === 'download_this_item') {
-        aria2Download(linkUrl ?? srcUrl, url, getHostname(url));
+    if (menuItemId === 'download_this_url') {
+        aria2Download(linkUrl, url, getHostname(url));
+    }
+    else if (menuItemId === 'download_this_image') {
+        aria2Download(srcUrl, url, getHostname(url));
     }
     else if (menuItemId === 'download_all_images') {
         chrome.tabs.sendMessage(id, menuItemId);

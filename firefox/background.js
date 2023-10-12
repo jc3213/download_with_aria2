@@ -1,18 +1,27 @@
 browser.contextMenus.create({
-    title: browser.i18n.getMessage('contextmenu_dldthis'),
-    id: 'download_this_item',
-    contexts: ['link', 'image']
+    title: browser.i18n.getMessage('contextmenu_thisurl'),
+    id: 'download_this_url',
+    contexts: ['link']
 });
 
 browser.contextMenus.create({
-    title: browser.i18n.getMessage('contextmenu_images'),
+    title: browser.i18n.getMessage('contextmenu_thisimage'),
+    id: 'download_this_image',
+    contexts: ['image']
+});
+
+browser.contextMenus.create({
+    title: browser.i18n.getMessage('contextmenu_allimages'),
     id: 'download_all_images',
     contexts: ['page']
 });
 
 browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
-    if (menuItemId === 'download_this_item') {
-        aria2DownloadFirefox(linkUrl ?? srcUrl, url, getHostname(url), cookieStoreId);
+    if (menuItemId === 'download_this_url') {
+        aria2Download(linkUrl, url, getHostname(url), cookieStoreId);
+    }
+    else if (menuItemId === 'download_this_image') {
+        aria2Download(srcUrl, url, getHostname(url), cookieStoreId);
     }
     else if (menuItemId === 'download_all_images') {
         browser.tabs.sendMessage(id, menuItemId);

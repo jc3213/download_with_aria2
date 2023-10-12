@@ -14,14 +14,17 @@
     "extension_newdld": {
         "message": "New Download - Download with Aria2"
     },
-    "extension_images": {
+    "extension_allimages": {
         "message": "Detected Images - Download with Aria2"
     },
-    "contextmenu_dldthis": {
-        "message": "Download this with Aria2"
+    "contextmenu_thisurl": {
+        "message": "Download this url"
     },
-    "contextmenu_images": {
-        "message": "Download all images with Aria2"
+    "contextmenu_thisimage": {
+        "message": "Download this image"
+    },
+    "contextmenu_allimages": {
+        "message": "Download all images on this page"
     },
     "shortcut_options": {
         "message": "Open options"

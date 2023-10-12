@@ -17,11 +17,14 @@
     "extension_images": {
         "message": "已探知图像 - 通过 Aria2 下载"
     },
-    "contextmenu_dldthis": {
-        "message": "通过 Aria2 下载此项目"
+    "contextmenu_thisurl": {
+        "message": "下载此链接"
     },
-    "contextmenu_images": {
-        "message": "通过 Aria2 下载所有图像"
+    "contextmenu_thisimage": {
+        "message": "下载此图像"
+    },
+    "contextmenu_allimages": {
+        "message": "下载此页面的所有图像"
     },
     "shortcut_options": {
         "message": "打开设置"

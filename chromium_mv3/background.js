@@ -4,12 +4,17 @@ chrome.runtime.onStartup.addListener(aria2StartUp);
 
 chrome.runtime.onInstalled.addListener(async details => {
     chrome.contextMenus.create({
-        title: chrome.i18n.getMessage('contextmenu_dldthis'),
-        id: 'download_this_item',
-        contexts: ['link', 'image']
+        title: chrome.i18n.getMessage('contextmenu_thisurl'),
+        id: 'download_this_url',
+        contexts: ['link']
     });
     chrome.contextMenus.create({
-        title: chrome.i18n.getMessage('contextmenu_images'),
+        title: chrome.i18n.getMessage('contextmenu_thisimage'),
+        id: 'download_this_image',
+        contexts: ['image']
+    });
+    chrome.contextMenus.create({
+        title: chrome.i18n.getMessage('contextmenu_allimages'),
         id: 'download_all_images',
         contexts: ['page']
     });
@@ -17,9 +22,13 @@ chrome.runtime.onInstalled.addListener(async details => {
 });
 
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url}) => {
-    if (menuItemId === 'download_this_item') {
+    if (menuItemId === 'download_this_url') {
         await aria2Initial();
-        aria2Download(linkUrl ?? srcUrl, url, getHostname(url));
+        aria2Download(linkUrl, url, getHostname(url));
+    }
+    else if (menuItemId === 'download_this_image') {
+        await aria2Initial();
+        aria2Download(srcUrl, url, getHostname(url));
     }
     else if (menuItemId === 'download_all_images') {
         chrome.tabs.sendMessage(id, menuItemId);
