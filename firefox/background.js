@@ -62,16 +62,6 @@ async function getRequestHeadersFirefox(url, storeId) {
     return [header];
 }
 
-async function aria2DownloadFirefox(url, referer, hostname, storeId, options = {}) {
-    options['user-agent'] = aria2Store['user_agent'];
-    options['all-proxy'] = getProxyServer(hostname);
-        if (aria2Store['headers_enabled'] && !aria2Store['headers_exclude'].some(host => hostname.includes(host))) {
-        options['referer'] = referer;
-        options['header'] = await getRequestHeadersFirefox(url, storeId);
-    }
-    aria2DownloadPrompt({url, options});
-}
-
 function aria2Capture() {
     if (aria2Store['capture_enabled']) {
         if (aria2Store['capture_webrequest']) {
@@ -97,8 +87,7 @@ async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
     if (getCaptureGeneral(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
-            var options = await getFirefoxOptions(filename);
-            aria2DownloadFirefox(url, referrer, hostname, cookieStoreId, options);
+            aria2Download(url, referrer, hostname, await getFirefoxOptions(filename), cookieStoreId);
         }).catch(error => aria2WhenComplete(url));
     }
 }
@@ -126,7 +115,7 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
         var hostname = getHostname(originUrl);
         if (getCaptureGeneral(hostname, ext, length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            aria2DownloadFirefox(url, originUrl, hostname, cookieStoreId, {out, dir: getDownloadFolder()});
+            aria2Download(url, originUrl, hostname, {out, dir: getDownloadFolder()}, cookieStoreId);
             return {cancel: true};
         }
     }

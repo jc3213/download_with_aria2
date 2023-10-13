@@ -5,6 +5,7 @@ var aria2Default = {
     'manager_interval': 10000,
     'folder_enabled': false,
     'folder_defined': '',
+    'folder_firefox': false,
     'download_prompt': false,
     'headers_enabled': false,
     'headers_exclude': [],
@@ -17,13 +18,12 @@ var aria2Default = {
     'proxy_include': [],
     'capture_enabled': false,
     'capture_always': false,
+    'capture_webrequest': false,
     'capture_filesize': 0,
     'capture_resolve': [],
     'capture_include': [],
     'capture_reject': [],
-    'capture_exclude': [],
-    'folder_firefox': false,
-    'capture_webrequest': false
+    'capture_exclude': []
 };
 var aria2Store = {};
 var aria2RPC;
@@ -75,13 +75,13 @@ chrome.commands.onCommand.addListener((command) => {
     }
 });
 
-async function aria2Download(url, referer, hostname, options = {}) {
+async function aria2Download(url, referer, hostname, options = {}, storeId) {
     options['user-agent'] = aria2Store['user_agent'];
     options['all-proxy'] = getProxyServer(hostname);
     options['dir'] = getDownloadFolder();
     if (aria2Store['headers_enabled'] && !aria2Store['headers_exclude'].some(host => hostname.includes(host))) {
         options['referer'] = referer;
-        options['header'] = await getRequestHeaders(url);
+        options['header'] = storeId ? await getRequestHeadersFirefox(url, storeId) : await getRequestHeaders(url);
     }
     aria2DownloadPrompt({url, options});
 }
