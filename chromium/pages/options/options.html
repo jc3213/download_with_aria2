@@ -65,21 +65,25 @@
                 <input id="download_prompt" data-eid="download_prompt" type="checkbox">
                 <label for="download_prompt" i18n>option_download_prompt</label>
             </div>
-            <div class="menu" title="option_download_headers_title">
-                <input id="download_headers" data-eid="download_headers" type="checkbox">
-                <label for="download_headers" i18n>option_download_headers</label>
+            <div class="menu" title="option_headers_enabled_title">
+                <input id="headers_enabled" data-eid="headers_enabled" type="checkbox">
+                <label for="headers_enabled" i18n>option_headers_enabled</label>
             </div>
-            <h1 i18n>option_folder</h1>
-            <div title="option_folder_title" data-rel="folder_defined">
-                <input data-eid="folder_defined" type="text">
+            <div title="option_headers_exclude_title" data-map="headers_exclude" data-rel="headers_exclude">
+                <div class="title" i18n>option_headers_exclude</div>
+                <div class="flex">
+                    <input type="text">
+                    <button data-bid="add">➕</button>
+                </div>
+                <div class="rule"></div>
             </div>
-            <div class="menu" title="option_folder_enabled_title">
+            <div title="option_folder_enabled_title">
                 <input id="folder_enabled" data-eid="folder_enabled" type="checkbox">
                 <label for="folder_enabled" i18n>option_folder_enabled</label>
             </div>
-            <h1 i18n>option_proxy</h1>
-            <div title="option_proxy_title" data-rel="proxy_server">
-                <input data-eid="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
+            <div title="option_folder_title" data-rel="folder_defined">
+                <div class="title" i18n>option_folder</div>
+                <input data-eid="folder_defined" type="text">
             </div>
             <div class="menu" title="option_proxy_enabled_title">
                 <input id="proxy_enabled" data-eid="proxy_enabled" type="checkbox">
@@ -88,6 +92,10 @@
             <div class="menu" title="option_proxy_always_title" data-rel="proxy_always">
                 <input id="proxy_always" data-eid="proxy_always" type="checkbox">
                 <label for="proxy_always" i18n>option_proxy_always</label>
+            </div>
+            <div title="option_proxy_title" data-rel="proxy_server">
+                <div class="title" i18n>option_proxy</div>
+                <input data-eid="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
             </div>
             <div title="option_proxy_include_title" data-map="proxy_include" data-rel="proxy_include">
                 <div class="title" i18n>option_proxy_include</div>

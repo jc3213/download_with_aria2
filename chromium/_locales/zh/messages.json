@@ -131,17 +131,26 @@
     "option_advanced": {
         "message": "进阶"
     },
-    "option_download_headers": {
-        "message": "转发请求头"
-    },
-    "option_download_headers_title": {
-        "message": "设置开始下载时是否转发请求头"
+    "option_user_agent": {
+        "message": "用户代理"
     },
     "option_download_prompt": {
         "message": "确认下载信息"
     },
     "option_download_prompt_title": {
         "message": "开始下载前再次确认下载信息"
+    },
+    "option_download_headers": {
+        "message": "转发请求头"
+    },
+    "option_download_headers_title": {
+        "message": "为新建下载转发来自浏览器的请求头"
+    },
+    "option_download_headers": {
+        "message": "请求头例外域名"
+    },
+    "option_download_headers_title": {
+        "message": "停止为来自所设置域名的下载添加请求头"
     },
     "option_folder": {
         "message": "下载文件夹"
@@ -154,9 +163,6 @@
     },
     "option_folder_enabled_title": {
         "message": "将文件保存至使用首选的下载文件夹中"
-    },
-    "option_user_agent": {
-        "message": "用户代理"
     },
     "option_user_agent_title": {
         "message": "设置新建下载时的用户代理"

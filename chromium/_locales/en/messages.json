@@ -131,14 +131,26 @@
     "option_advanced": {
         "message": "Advanced"
     },
-    "option_download_headers": {
-        "message": "Forward Request Headers"
+    "option_user_agent": {
+        "message": "User Agent"
     },
-    "option_download_headers_title": {
-        "message": "Set whether to forward the request headers"
+    "option_user_agent_title": {
+        "message": "Set user agent for new downloads"
     },
     "option_download_prompt": {
         "message": "Display Download Prompt"
+    },
+    "option_headers_enabled": {
+        "message": "Forward Request Headers"
+    },
+    "option_headers_enabled_title": {
+        "message": "Forward the request headers from browser for new downloads"
+    },
+    "option_headers_exclude": {
+        "message": "Exclude Domains for Headers"
+    },
+    "option_headers_exclude_title": {
+        "message": "Don't forward request headers for new downloads from these domains"
     },
     "option_download_prompt_title": {
         "message": "Confirm once again before the download starts"
@@ -154,12 +166,6 @@
     },
     "option_folder_enabled_title": {
         "message": "Override download directory for downloads created by this extension"
-    },
-    "option_user_agent": {
-        "message": "User Agent"
-    },
-    "option_user_agent_title": {
-        "message": "Set user agent for new downloads"
     },
     "option_proxy": {
         "message": "Proxy Server"

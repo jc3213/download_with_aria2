@@ -19,8 +19,8 @@ var switches = {
     'manager_newtab': true,
     'notify_start': true,
     'notify_complete': true,
-    'download_headers': true,
     'download_prompt': true,
+    'headers_enabled': true,
     'folder_enabled': true,
     'proxy_enabled': true,
     'proxy_always': true,
@@ -31,6 +31,9 @@ var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .map');
 var binded = {
+    'headers_exclude': [
+        {id: 'headers_enabled', rel: true}
+    ],
     'folder_defined': [
         {id: 'folder_enabled', rel: true}
     ],
@@ -55,6 +58,7 @@ var binded = {
 binded['capture_exclude'] = binded['capture_reject'] = binded['capture_always'];
 binded['capture_include'] = binded['capture_resolve'] = binded['capture_filesize'];
 var related = {
+    'headers_enabled': [],
     'folder_enabled': [],
     'proxy_enabled': [],
     'proxy_always': [],
