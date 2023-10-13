@@ -6,7 +6,8 @@ var aria2Default = {
     'folder_enabled': false,
     'folder_defined': '',
     'download_prompt': false,
-    'download_headers': true,
+    'headers_enabled': false,
+    'headers_exclude': [],
     'notify_start': false,
     'notify_complete': true,
     'user_agent': 'Transmission/4.0.0',
@@ -78,7 +79,7 @@ async function aria2Download(url, referer, hostname, options = {}) {
     options['user-agent'] = aria2Store['user_agent'];
     options['all-proxy'] = getProxyServer(hostname);
     options['dir'] = getDownloadFolder();
-    if (aria2Store['download_headers']) {
+    if (aria2Store['headers_enabled'] && !aria2Store['headers_exclude'].some(host => hostname.includes(host))) {
         options['referer'] = referer;
         options['header'] = await getRequestHeaders(url);
     }

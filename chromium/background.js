@@ -30,6 +30,11 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, u
 
 chrome.storage.local.get(null, json => {
     aria2Store = {...aria2Default, ...json};
+    if ('download_headers' in aria2Store) {
+        aria2Store['headers_enabled'] = aria2Store['download_headers'];
+        delete aria2Store['download_headers'];
+        chrome.storage.local.set(aria2Store);
+    }
     aria2StartUp();
     aria2Capture();
     aria2Manager();

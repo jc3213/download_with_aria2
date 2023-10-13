@@ -30,6 +30,11 @@ browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, 
 
 browser.storage.local.get(null, json => {
     aria2Store = {...aria2Default, ...json};
+    if ('download_headers' in aria2Store) {
+        aria2Store['headers_enabled'] = aria2Store['download_headers'];
+        delete aria2Store['download_headers'];
+        chrome.storage.local.set(aria2Store);
+    }
     aria2StartUp();
     aria2Capture();
     aria2Manager();
@@ -60,7 +65,7 @@ async function getRequestHeadersFirefox(url, storeId) {
 async function aria2DownloadFirefox(url, referer, hostname, storeId, options = {}) {
     options['user-agent'] = aria2Store['user_agent'];
     options['all-proxy'] = getProxyServer(hostname);
-    if (aria2Store['download_headers']) {
+        if (aria2Store['headers_enabled'] && !aria2Store['headers_exclude'].some(host => hostname.includes(host))) {
         options['referer'] = referer;
         options['header'] = await getRequestHeadersFirefox(url, storeId);
     }

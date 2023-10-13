@@ -59,6 +59,11 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
 
 async function aria2StartUp() {
     var json = await chrome.storage.local.get(null);
+    if ('download_headers' in aria2Store) {
+        aria2Store['headers_enabled'] = aria2Store['download_headers'];
+        delete aria2Store['download_headers'];
+        chrome.storage.local.set(aria2Store);
+    }
     aria2Store = {...aria2Default, ...json};
     aria2Client();
     aria2Manager();
