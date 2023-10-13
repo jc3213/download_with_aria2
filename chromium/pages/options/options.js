@@ -1,6 +1,4 @@
-var [saveBtn, undoBtn, redoBtn] = document.querySelectorAll('#menu > button');
-var [aria2ver, aria2ua] = document.querySelectorAll('#version, #aria2ua');
-var [importJson, importConf, exporter] = document.querySelectorAll('#menu > input, #menu > a');
+var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, importJson, importConf, exporter, aria2ua] = document.querySelectorAll('#menu > *, #aria2ua');
 var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('[data-rid]');
 var appver = chrome.runtime.getManifest().version;
