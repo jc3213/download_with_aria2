@@ -3,8 +3,9 @@
 
 ## Main Functions
 - Context menus
-    - Download this with Aria2
-    - Download all images with Aria2
+    - Download this url
+    - Download this image
+    - Download all images on this page
 - Capture browser downloads
     - Capture downloads via [downloads](https://developer.chrome.com/docs/extensions/reference/downloads) API
     - Capture downloads via [webRequest](https://developer.chrome.com/docs/extensions/reference/webRequest) API
