@@ -35,15 +35,8 @@ var binded = {
     'folder_defined': [
         {id: 'folder_enabled', rel: true}
     ],
-    'proxy_server': [
-        {id: 'proxy_enabled', rel: true}
-    ],
-    'proxy_always': [
-        {id: 'proxy_enabled', rel: true}
-    ],
     'proxy_include': [
-        {id: 'proxy_enabled', rel: true},
-        {id: 'proxy_always', rel: false}
+        {id: 'proxy_enabled', rel: false}
     ],
     'capture_always': [
         {id: 'capture_enabled', rel: true}

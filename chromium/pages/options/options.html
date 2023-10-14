@@ -70,7 +70,7 @@
                 <label for="headers_enabled" i18n>option_headers_enabled</label>
             </div>
             <div title="option_headers_exclude_title" data-map="headers_exclude" data-rel="headers_exclude">
-                <div class="title" i18n>option_headers_exclude</div>
+                <div class="title" i18n>option_match_exclude</div>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add">➕</button>
@@ -82,8 +82,7 @@
                 <input id="folder_enabled" data-eid="folder_enabled" type="checkbox">
                 <label for="folder_enabled" i18n>option_folder_enabled</label>
             </div>
-            <div title="option_folder_title" data-rel="folder_defined">
-                <div class="title" i18n>option_folder</div>
+            <div class="menu" title="option_folder_title" data-rel="folder_defined">
                 <input data-eid="folder_defined" type="text">
             </div>
             <h1 i18n>option_proxy</h1>
@@ -91,16 +90,11 @@
                 <input id="proxy_enabled" data-eid="proxy_enabled" type="checkbox">
                 <label for="proxy_enabled" i18n>option_proxy_enabled</label>
             </div>
-            <div class="menu" title="option_proxy_always_title" data-rel="proxy_always">
-                <input id="proxy_always" data-eid="proxy_always" type="checkbox">
-                <label for="proxy_always" i18n>option_proxy_always</label>
-            </div>
-            <div title="option_proxy_title" data-rel="proxy_server">
-                <div class="title" i18n>option_proxy</div>
+            <div class="menu" title="option_proxy_title">
                 <input data-eid="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
             </div>
             <div title="option_proxy_include_title" data-map="proxy_include" data-rel="proxy_include">
-                <div class="title" i18n>option_proxy_include</div>
+                <div class="title" i18n>option_match_include</div>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add">➕</button>
@@ -135,7 +129,7 @@
                 <div class="rule"></div>
             </div>
             <div title="option_capture_include_title" data-map="capture_include" data-rel="capture_include">
-                <div class="title" i18n>option_capture_include</div>
+                <div class="title" i18n>option_match_include</div>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add">➕</button>
@@ -151,7 +145,7 @@
                 <div class="rule"></div>
             </div>
             <div title="option_capture_exclude_title" data-map="capture_exclude" data-rel="capture_exclude">
-                <div class="title" i18n>option_capture_exclude</div>
+                <div class="title" i18n>option_match_exclude</div>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add">➕</button>

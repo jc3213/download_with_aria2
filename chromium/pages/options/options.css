@@ -59,7 +59,7 @@ input[type="checkbox"] {
     flex-grow: 1;
 }
 
-label {
+.menu label {
     padding: 3px 0px;
     font-weight: bold;
 }

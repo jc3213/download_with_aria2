@@ -35,6 +35,11 @@ browser.storage.local.get(null, json => {
         delete aria2Store['download_headers'];
         chrome.storage.local.set(aria2Store);
     }
+    if ('proxy_always' in aria2Store) {
+        aria2Store['proxy_enabled'] = aria2Store['proxy_always'];
+        delete aria2Store['proxy_always'];
+        chrome.storage.local.set(aria2Store);
+    }
     aria2StartUp();
     aria2Capture();
     aria2Manager();

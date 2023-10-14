@@ -128,6 +128,12 @@
     "download_complete": {
         "message": "Download has completed!"
     },
+    "option_match_include": {
+        "message": "Include Domains"
+    },
+    "option_match_exclude": {
+        "message": "Exclude Domains"
+    },
     "option_advanced": {
         "message": "Advanced"
     },
@@ -140,20 +146,17 @@
     "option_download_prompt": {
         "message": "Display Download Prompt"
     },
+    "option_download_prompt_title": {
+        "message": "Prompt a new window to confirm the download before it starts"
+    },
     "option_headers_enabled": {
         "message": "Forward Request Headers"
     },
     "option_headers_enabled_title": {
         "message": "Forward the request headers from browser for new downloads"
     },
-    "option_headers_exclude": {
-        "message": "Exclude Domains for Headers"
-    },
     "option_headers_exclude_title": {
-        "message": "Don't forward request headers for new downloads from these domains"
-    },
-    "option_download_prompt_title": {
-        "message": "Confirm once again before the download starts"
+        "message": "Don't forward request headers for downloads from these domains"
     },
     "option_folder": {
         "message": "Download Directory"
@@ -165,7 +168,7 @@
         "message": "Use Download Directory"
     },
     "option_folder_enabled_title": {
-        "message": "Override download directory for downloads created by this extension"
+        "message": "Use preferred download directory for downloads created by this extension"
     },
     "option_proxy": {
         "message": "Proxy Server"
@@ -173,23 +176,14 @@
     "option_proxy_title": {
         "message": "Set your preferred proxy server"
     },
-    "option_proxy_enabled": {
-        "message": "Use Proxy Server"
-    },
-    "option_proxy_enabled_title": {
-        "message": "Enable use proxy server for new downloads"
-    },
-    "option_proxy_always": {
-        "message": "Always Use Proxy Server"
-    },
-    "option_proxy_always_title": {
-        "message": "Always use proxy server for new downloads"
-    },
-    "option_proxy_include": {
-        "message": "Auto Proxy Domains"
-    },
     "option_proxy_include_title": {
         "message": "Add proxy server for new downloads from these domain names"
+    },
+    "option_proxy_enabled": {
+        "message": "Always Use Proxy Server"
+    },
+    "option_proxy_enabled_title": {
+        "message": "Always use proxy server for new downloads"
     },
     "option_capture": {
         "message": "Capture Browser Downloads"
@@ -212,14 +206,8 @@
     "option_capture_filesize_title": {
         "message": "Capture downloads those are larger than user setting"
     },
-    "option_capture_include": {
-        "message": "Include Domains"
-    },
     "option_capture_include_title": {
         "message": "Capture downloads from these domain names"
-    },
-    "option_capture_exclude": {
-        "message": "Exclude Domains"
     },
     "option_capture_exclude_title": {
         "message": "Ignore downloads from these domain names"
@@ -228,13 +216,13 @@
         "message": "Includes File Extensions"
     },
     "option_capture_resolve_title": {
-        "message": "Capture downloads with these extensions"
+        "message": "Capture downloads with these file extensions"
     },
     "option_capture_reject": {
         "message": "Exclude File Extensions"
     },
     "option_capture_reject_title": {
-        "message": "Ignore downloads with these extensions"
+        "message": "Ignore downloads with these file extensions"
     },
     "popup_download": {
         "message": "DL Speed"

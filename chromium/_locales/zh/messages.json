@@ -128,29 +128,35 @@
     "download_complete": {
         "message": "下载已完成！"
     },
+    "option_match_include": {
+        "message": "监视域名"
+    },
+    "option_match_exclude": {
+        "message": "例外域名"
+    },
     "option_advanced": {
         "message": "进阶"
     },
     "option_user_agent": {
         "message": "用户代理"
     },
+    "option_user_agent_title": {
+        "message": "设置新建下载时的用户代理"
+    },
     "option_download_prompt": {
         "message": "确认下载信息"
     },
     "option_download_prompt_title": {
-        "message": "开始下载前再次确认下载信息"
+        "message": "开始下载前弹出窗口确认下载信息"
     },
-    "option_download_headers": {
+    "option_headers_enabled": {
         "message": "转发请求头"
     },
-    "option_download_headers_title": {
+    "option_headers_enabled_title": {
         "message": "为新建下载转发来自浏览器的请求头"
     },
-    "option_download_headers": {
-        "message": "请求头例外域名"
-    },
-    "option_download_headers_title": {
-        "message": "停止为来自所设置域名的下载添加请求头"
+    "option_headers_exclude_title": {
+        "message": "停止为所设置域名的下载转发请求头"
     },
     "option_folder": {
         "message": "下载文件夹"
@@ -159,13 +165,10 @@
         "message": "所有扩展新建的下载任务将使用此下载文件夹"
     },
     "option_folder_enabled": {
-        "message": "强制下载文件夹"
+        "message": "使用下载文件夹"
     },
     "option_folder_enabled_title": {
-        "message": "将文件保存至使用首选的下载文件夹中"
-    },
-    "option_user_agent_title": {
-        "message": "设置新建下载时的用户代理"
+        "message": "将此扩展的新建下载保存到首选的下载文件夹中"
     },
     "option_proxy": {
         "message": "代理服务器"
@@ -174,22 +177,13 @@
         "message": "设置首选的代理服务器"
     },
     "option_proxy_enabled": {
-        "message": "使用代理服务器"
-    },
-    "option_proxy_enabled_title": {
-        "message": "允许新建下载时的使用代理服务器"
-    },
-    "option_proxy_always": {
         "message": "总是使用代理服务器"
     },
-    "option_proxy_always_title": {
+    "option_proxy_enabled_title": {
         "message": "总是在新建下载时的使用代理服务器"
     },
-    "option_proxy_include": {
-        "message": "自动代理域名"
-    },
     "option_proxy_include_title": {
-        "message": "为来自所设置域名的下载添加代理服务器"
+        "message": "为所设置域名的下载添加代理服务器"
     },
     "option_capture": {
         "message": "抓取浏览器下载"
@@ -212,14 +206,8 @@
     "option_capture_filesize_title": {
         "message": "抓取文件大小超过设置的下载"
     },
-    "option_capture_include": {
-        "message": "监视域名"
-    },
     "option_capture_include_title": {
         "message": "抓取来自所设置域名的下载"
-    },
-    "option_capture_exclude": {
-        "message": "忽略域名"
     },
     "option_capture_exclude_title": {
         "message": "忽略来自所设置域名的下载"
