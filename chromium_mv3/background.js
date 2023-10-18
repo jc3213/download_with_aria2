@@ -3,34 +3,20 @@ importScripts('libs/aria2.js', 'libs/tools.js', 'libs/core.js', 'crossbrowser.js
 chrome.runtime.onStartup.addListener(aria2StartUp);
 
 chrome.runtime.onInstalled.addListener(async details => {
-    chrome.contextMenus.create({
-        title: chrome.i18n.getMessage('contextmenu_thisurl'),
-        id: 'download_this_url',
-        contexts: ['link']
-    });
-    chrome.contextMenus.create({
-        title: chrome.i18n.getMessage('contextmenu_thisimage'),
-        id: 'download_this_image',
-        contexts: ['image']
-    });
-    chrome.contextMenus.create({
-        title: chrome.i18n.getMessage('contextmenu_allimages'),
-        id: 'download_all_images',
-        contexts: ['page']
-    });
     aria2StartUp();
+    aria2ContextMenus();
 });
 
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url}) => {
-    if (menuItemId === 'download_this_url') {
+    if (menuItemId === 'aria2c_this_url') {
         await aria2Initial();
         aria2Download(linkUrl, url, getHostname(url));
     }
-    else if (menuItemId === 'download_this_image') {
+    else if (menuItemId === 'aria2c_this_image') {
         await aria2Initial();
         aria2Download(srcUrl, url, getHostname(url));
     }
-    else if (menuItemId === 'download_all_images') {
+    else if (menuItemId === 'aria2c_all_images') {
         chrome.tabs.sendMessage(id, menuItemId);
     }
 });
@@ -60,16 +46,6 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
 async function aria2StartUp() {
     var json = await chrome.storage.local.get(null);
     aria2Store = {...aria2Default, ...json};
-    if ('download_headers' in aria2Store) {
-        aria2Store['headers_enabled'] = aria2Store['download_headers'];
-        delete aria2Store['download_headers'];
-        chrome.storage.local.set(aria2Store);
-    }
-    if ('proxy_always' in aria2Store) {
-        aria2Store['proxy_enabled'] = aria2Store['proxy_always'];
-        delete aria2Store['proxy_always'];
-        chrome.storage.local.set(aria2Store);
-    }
     aria2Client();
     aria2Manager();
 }

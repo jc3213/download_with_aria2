@@ -1,48 +1,21 @@
-browser.contextMenus.create({
-    title: browser.i18n.getMessage('contextmenu_thisurl'),
-    id: 'download_this_url',
-    contexts: ['link']
-});
-
-browser.contextMenus.create({
-    title: browser.i18n.getMessage('contextmenu_thisimage'),
-    id: 'download_this_image',
-    contexts: ['image']
-});
-
-browser.contextMenus.create({
-    title: browser.i18n.getMessage('contextmenu_allimages'),
-    id: 'download_all_images',
-    contexts: ['page']
-});
-
 browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
-    if (menuItemId === 'download_this_url') {
+    if (menuItemId === 'aria2c_this_url') {
         aria2Download(linkUrl, url, getHostname(url), cookieStoreId);
     }
-    else if (menuItemId === 'download_this_image') {
+    else if (menuItemId === 'aria2c_this_image') {
         aria2Download(srcUrl, url, getHostname(url), cookieStoreId);
     }
-    else if (menuItemId === 'download_all_images') {
+    else if (menuItemId === 'aria2c_all_images') {
         browser.tabs.sendMessage(id, menuItemId);
     }
 });
 
 browser.storage.local.get(null, json => {
     aria2Store = {...aria2Default, ...json};
-    if ('download_headers' in aria2Store) {
-        aria2Store['headers_enabled'] = aria2Store['download_headers'];
-        delete aria2Store['download_headers'];
-        chrome.storage.local.set(aria2Store);
-    }
-    if ('proxy_always' in aria2Store) {
-        aria2Store['proxy_enabled'] = aria2Store['proxy_always'];
-        delete aria2Store['proxy_always'];
-        chrome.storage.local.set(aria2Store);
-    }
     aria2StartUp();
     aria2Capture();
     aria2Manager();
+    aria2ContextMenus();
 });
 
 function aria2Update(changes) {

@@ -1,6 +1,11 @@
 var aria2Default = {
     'jsonrpc_uri': 'http://localhost:6800/jsonrpc',
     'jsonrpc_token': '',
+    'context_enabled': true,
+    'context_cascade': true,
+    'context_thisurl': true,
+    'context_thisimage': true,
+    'context_allimages': true,
     'manager_newtab': false,
     'manager_interval': 10000,
     'folder_enabled': false,
@@ -41,6 +46,7 @@ chrome.storage.onChanged.addListener((changes) => {
         }
     });
     aria2Update(changes);
+    aria2ContextMenus();
 });
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
@@ -88,6 +94,45 @@ async function aria2Download(url, referer, hostname, options = {}, storeId) {
 async function aria2ImagesPrompt(result) {
     var id = await getNewWindow(aria2Images, 680);
     aria2Message[id] = result;
+}
+
+function aria2ContextMenus(params = {}) {
+    if (!aria2Store['context_enabled']) {
+        chrome.contextMenus.remove('aria2c_contextmenu');
+        chrome.contextMenus.remove('aria2c_this_url');
+        chrome.contextMenus.remove('aria2c_this_image');
+        chrome.contextMenus.remove('aria2c_all_images');
+        return;
+    }
+    if (aria2Store['context_cascade']) {
+        getContextMenu('aria2c_contextmenu', 'extension_name', ['all'], {});
+        params.parentId = 'aria2c_contextmenu';
+    }
+    else {
+        chrome.contextMenus.remove('aria2c_contextmenu');
+    }
+    if (aria2Store['context_thisurl']) {
+        getContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], params);
+    }
+    else {
+        chrome.contextMenus.remove('aria2c_this_url');
+    }
+    if (aria2Store['context_thisimage']) {
+        getContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], params);
+    }
+    else {
+        chrome.contextMenus.remove('aria2c_this_image');
+    }
+    if (aria2Store['context_allimages']) {
+        getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], params);
+    }
+    else {
+        chrome.contextMenus.remove('aria2c_all_images');
+    }
+}
+
+function getContextMenu(id, title, contexts, params = {}) {
+    chrome.contextMenus.create({...params, title: chrome.i18n.getMessage(title), id, contexts});
 }
 
 function getCurrentTabUrl() {
