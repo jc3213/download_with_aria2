@@ -105,34 +105,30 @@ function aria2ContextMenus(params = {}) {
         return;
     }
     if (aria2Store['context_cascade']) {
-        getContextMenu('aria2c_contextmenu', 'extension_name', ['all'], {});
+        chrome.contextMenus.create({id: 'aria2c_contextmenu', title: chrome.i18n.getMessage('extension_name'), contexts: ['link', 'image', 'page']});
         params.parentId = 'aria2c_contextmenu';
     }
     else {
         chrome.contextMenus.remove('aria2c_contextmenu');
     }
     if (aria2Store['context_thisurl']) {
-        getContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], params);
+        chrome.contextMenus.create({...params, id: 'aria2c_this_url', title: chrome.i18n.getMessage('contextmenu_thisurl'), contexts: ['link']});
     }
     else {
         chrome.contextMenus.remove('aria2c_this_url');
     }
     if (aria2Store['context_thisimage']) {
-        getContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], params);
+        chrome.contextMenus.create({...params, id: 'aria2c_this_image', title: chrome.i18n.getMessage('contextmenu_thisimage'), contexts: ['image']});
     }
     else {
         chrome.contextMenus.remove('aria2c_this_image');
     }
     if (aria2Store['context_allimages']) {
-        getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], params);
+        chrome.contextMenus.create({...params, id: 'aria2c_all_images', title: chrome.i18n.getMessage('contextmenu_allimages'), contexts: ['page']});
     }
     else {
         chrome.contextMenus.remove('aria2c_all_images');
     }
-}
-
-function getContextMenu(id, title, contexts, params = {}) {
-    chrome.contextMenus.create({...params, title: chrome.i18n.getMessage(title), id, contexts});
 }
 
 function getCurrentTabUrl() {
