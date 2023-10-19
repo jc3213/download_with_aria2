@@ -35,6 +35,29 @@
             <div class="menu">
                 <button data-bid="aria2_btn" i18n>option_aria2</button>
             </div>
+            <h1 i18n>option_context_menu</h1>
+            <div class="menu" title="option_context_enabled_title">
+                <input id="context_enabled" data-eid="context_enabled" type="checkbox">
+                <label for="context_enabled" i18n>option_context_enabled</label>
+            </div>
+            <div class="menu" title="option_capture_always_title" data-rel="context_cascade">
+                <input id="context_cascade" data-eid="context_cascade" type="checkbox">
+                <label for="context_cascade" i18n>option_context_cascade</label>
+            </div>
+            <div class="options" data-rel="context_menus">
+                <div class="menu" title="option_context_thisurl_title">
+                    <input id="context_thisurl" data-eid="context_thisurl" type="checkbox">
+                    <label for="context_thisurl" i18n>contextmenu_thisurl</label>
+                </div>
+                <div class="menu" title="option_context_thisimage_title">
+                    <input id="context_thisimage" data-eid="context_thisimage" type="checkbox">
+                    <label for="context_thisimage" i18n>contextmenu_thisimage</label>
+                </div>
+                <div class="menu" title="option_context_allimages_title">
+                    <input id="context_allimages" data-eid="context_allimages" type="checkbox">
+                    <label for="context_allimages" i18n>contextmenu_allimages</label>
+                </div>
+            </div>
             <h1 i18n>option_task_manager</h1>
             <div class="menu" title="option_manager_newtab_title">
                 <input id="manager_newtab" data-eid="manager_newtab" type="checkbox">

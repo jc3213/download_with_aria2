@@ -51,6 +51,10 @@ input[type="checkbox"] {
     margin-bottom: 30px;
 }
 
+.options > .options {
+    margin: 0px;
+}
+
 .menu.flex > :first-child {
     margin: 3px 3px 0px 0px;
 }

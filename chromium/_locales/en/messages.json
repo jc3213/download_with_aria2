@@ -92,6 +92,30 @@
     "option_jsonrpc_token_title": {
         "message": "Set JSON-RPC authorization token"
     },
+    "option_context_menu": {
+        "message": "Context Menus"
+    },
+    "option_context_enabled": {
+        "message": "Enable Context Menus"
+    },
+    "option_context_enabled_title": {
+        "message": ""
+    },
+    "option_context_cascade": {
+        "message": "Cascaded Context Menu"
+    },
+    "option_context_cascade_title": {
+        "message": ""
+    },
+    "option_context_thisurl_title": {
+        "message": ""
+    },
+    "option_context_thisimage_title": {
+        "message": ""
+    },
+    "option_context_allimages_title": {
+        "message": ""
+    },
     "option_task_manager": {
         "message": "Task Manager"
     },

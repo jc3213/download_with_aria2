@@ -14,6 +14,11 @@ var multiply = {
     'capture_filesize': 1048576
 };
 var switches = {
+    'context_enabled': true,
+    'context_cascade': true,
+    'context_thisurl': true,
+    'context_thisimage': true,
+    'context_allimages': true,
     'manager_newtab': true,
     'notify_start': true,
     'notify_complete': true,
@@ -29,6 +34,9 @@ var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .map');
 var binded = {
+    'context_cascade': [
+        {id: 'context_enabled', rel: true}
+    ],
     'headers_exclude': [
         {id: 'headers_enabled', rel: true}
     ],
@@ -46,9 +54,11 @@ var binded = {
         {id: 'capture_always', rel: false}
     ]
 }
+binded['context_menus'] = binded['context_cascade'];
 binded['capture_exclude'] = binded['capture_reject'] = binded['capture_always'];
 binded['capture_include'] = binded['capture_resolve'] = binded['capture_filesize'];
 var related = {
+    'context_enabled': [],
     'headers_enabled': [],
     'folder_enabled': [],
     'proxy_enabled': [],
