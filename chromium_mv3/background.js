@@ -2,7 +2,10 @@ importScripts('libs/aria2.js', 'libs/tools.js', 'libs/core.js', 'crossbrowser.js
 
 chrome.runtime.onStartup.addListener(aria2StartUp);
 
-chrome.runtime.onInstalled.addListener(aria2StartUp);
+chrome.runtime.onInstalled.addListener(async ({reason}) => {
+    await aria2StartUp();
+    aria2ContextMenus();
+});
 
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url}) => {
     if (menuItemId === 'aria2c_this_url') {
@@ -45,7 +48,6 @@ async function aria2StartUp() {
     aria2Store = {...aria2Default, ...json};
     aria2Client();
     aria2Manager();
-    aria2ContextMenus();
 }
 
 async function aria2Initial() {
