@@ -45,8 +45,10 @@ chrome.storage.onChanged.addListener((changes) => {
             aria2Store[key] = newValue;
         }
     });
+    if ('context_enabled' in changes || 'context_cascade' in changes || 'context_thisurl' in changes || 'context_thisimage' in changes || 'context_allimages' in changes) {
+        aria2ContextMenus();
+    }
     aria2Update(changes);
-    aria2ContextMenus();
 });
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
@@ -97,37 +99,25 @@ async function aria2ImagesPrompt(result) {
 }
 
 function aria2ContextMenus(params = {}) {
+    chrome.contextMenus.remove('aria2c_contextmenu');
+    chrome.contextMenus.remove('aria2c_this_url');
+    chrome.contextMenus.remove('aria2c_this_image');
+    chrome.contextMenus.remove('aria2c_all_images');
     if (!aria2Store['context_enabled']) {
-        chrome.contextMenus.remove('aria2c_contextmenu');
-        chrome.contextMenus.remove('aria2c_this_url');
-        chrome.contextMenus.remove('aria2c_this_image');
-        chrome.contextMenus.remove('aria2c_all_images');
         return;
     }
     if (aria2Store['context_cascade']) {
         chrome.contextMenus.create({id: 'aria2c_contextmenu', title: chrome.i18n.getMessage('extension_name'), contexts: ['link', 'image', 'page']});
         params.parentId = 'aria2c_contextmenu';
     }
-    else {
-        chrome.contextMenus.remove('aria2c_contextmenu');
-    }
     if (aria2Store['context_thisurl']) {
         chrome.contextMenus.create({...params, id: 'aria2c_this_url', title: chrome.i18n.getMessage('contextmenu_thisurl'), contexts: ['link']});
-    }
-    else {
-        chrome.contextMenus.remove('aria2c_this_url');
     }
     if (aria2Store['context_thisimage']) {
         chrome.contextMenus.create({...params, id: 'aria2c_this_image', title: chrome.i18n.getMessage('contextmenu_thisimage'), contexts: ['image']});
     }
-    else {
-        chrome.contextMenus.remove('aria2c_this_image');
-    }
     if (aria2Store['context_allimages']) {
         chrome.contextMenus.create({...params, id: 'aria2c_all_images', title: chrome.i18n.getMessage('contextmenu_allimages'), contexts: ['page']});
-    }
-    else {
-        chrome.contextMenus.remove('aria2c_all_images');
     }
 }
 
