@@ -34,29 +34,15 @@ var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .map');
 var binded = {
-    'context_cascade': [
-        {id: 'context_enabled', rel: true}
-    ],
-    'headers_exclude': [
-        {id: 'headers_enabled', rel: true}
-    ],
-    'folder_defined': [
-        {id: 'folder_enabled', rel: true}
-    ],
-    'proxy_include': [
-        {id: 'proxy_enabled', rel: false}
-    ],
-    'capture_always': [
-        {id: 'capture_enabled', rel: true}
-    ],
-    'capture_filesize': [
-        {id: 'capture_enabled', rel: true},
-        {id: 'capture_always', rel: false}
-    ]
-}
-binded['context_menus'] = binded['context_cascade'];
-binded['capture_exclude'] = binded['capture_reject'] = binded['capture_always'];
-binded['capture_include'] = binded['capture_resolve'] = binded['capture_filesize'];
+    'context_cascade': {id: 'context_enabled', rel: true},
+    'context_menus': {id: 'context_enabled', rel: true},
+    'headers_exclude': {id: 'headers_enabled', rel: true},
+    'folder_defined': {id: 'folder_enabled', rel: true},
+    'proxy_include': {id: 'proxy_enabled', rel: false},
+    'capture_always': {id: 'capture_enabled', rel: true},
+    'capture_options': {id: 'capture_enabled', rel: true},
+    'capture_bypass': {id: 'capture_always', rel: false}
+};
 var related = {
     'context_enabled': [],
     'headers_enabled': [],
@@ -270,16 +256,14 @@ function updateRule(id, rules) {
 }
 
 document.querySelectorAll('[data-rel]').forEach((menu) => {
-    var id = menu.dataset.rel;
-    var bind = binded[id];
-    var match = bind.length;
-    bind.forEach(({id}) => related[id]?.push(menu));
-    menu.rel = {bind, match};
+    var bid = menu.dataset.rel;
+    var {id, rel} = menu.rel = binded[bid];
+    related[id].push(menu);
 });
 
 function optionsRelated(menu) {
-    var {bind, match} = menu.rel;
-    menu.style.display = bind.filter(({id, rel}) => rel === changes[id]).length === match ? '' : 'none';
+    var {id, rel} = menu.rel;
+    menu.style.display = changes[id] === rel ? '' : 'none';
 }
 
 chrome.storage.onChanged.addListener((changes) => {
