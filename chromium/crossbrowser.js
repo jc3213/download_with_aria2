@@ -99,10 +99,7 @@ async function aria2ImagesPrompt(result) {
 }
 
 function aria2ContextMenus(params = {}) {
-    chrome.contextMenus.remove('aria2c_contextmenu');
-    chrome.contextMenus.remove('aria2c_this_url');
-    chrome.contextMenus.remove('aria2c_this_image');
-    chrome.contextMenus.remove('aria2c_all_images');
+    chrome.contextMenus.removeAll();
     if (!aria2Store['context_enabled']) {
         return;
     }
