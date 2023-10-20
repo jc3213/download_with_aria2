@@ -3,7 +3,7 @@
 
 ## Main Functions
 - Context menus
-    - Download this url
+    - Download this link
     - Download this image
     - Download all images on this page
 - Capture browser downloads
