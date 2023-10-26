@@ -12,7 +12,7 @@ var i18n = {
         webrequest_title: '抓取MIME类型为"应用"的网络请求而非浏览器下载'
     }
 };
-var lang = chrome.i18n.getUILanguage();
+var lang = browser.i18n.getUILanguage();
 i18n = i18n[lang] ?? i18n[lang.slice(0, lang.indexOf('-'))] ?? i18n['en'];
 
 var css = document.createElement('style');
@@ -51,9 +51,7 @@ captureen.after(webrequest);
 
 entries['folder_firefox'] = folderff.querySelector('input');
 entries['capture_webrequest'] = webrequest.querySelector('input');
-switches['folder_firefox'] = true;
-switches['capture_webrequest'] = true;
-related['capture_webrequest'] = [folderff];
+switches['folder_firefox'] = switches['capture_webrequest'] = related['capture_webrequest'] = true;
 
 function firefoxExclusive() {
     entries['folder_firefox'].checked = changes['folder_firefox'];
