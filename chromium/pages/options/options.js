@@ -7,6 +7,7 @@ var redoes = [];
 var undoes = [];
 var undone = false;
 var global = true;
+var extension = document.body;
 var entries = {};
 options.forEach((entry) => entries[entry.dataset.eid] = entry);
 var multiply = {
@@ -33,24 +34,14 @@ var switches = {
 var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .map');
-var binded = {
-    'context_cascade': {id: 'context_enabled', rel: true},
-    'context_menus': {id: 'context_enabled', rel: true},
-    'headers_exclude': {id: 'headers_enabled', rel: true},
-    'folder_defined': {id: 'folder_enabled', rel: true},
-    'proxy_include': {id: 'proxy_enabled', rel: false},
-    'capture_always': {id: 'capture_enabled', rel: true},
-    'capture_options': {id: 'capture_enabled', rel: true},
-    'capture_bypass': {id: 'capture_always', rel: false}
-};
 var related = {
-    'context_enabled': [],
-    'headers_enabled': [],
-    'folder_enabled': [],
-    'proxy_enabled': [],
-    'proxy_always': [],
-    'capture_enabled': [],
-    'capture_always': []
+    'context_enabled': true,
+    'headers_enabled': true,
+    'folder_enabled': true,
+    'proxy_enabled': true,
+    'proxy_always': true,
+    'capture_enabled': true,
+    'capture_always': true
 };
 
 document.addEventListener('keydown', (event) => {
@@ -160,14 +151,14 @@ async function optionsJsonrpc() {
     aria2Conf = {'enable-rpc': true, ...options};
     changes = {...aria2Global};
     aria2ver.textContent = aria2ua.textContent = version.version;
-    document.body.className = 'aria2';
+    extension.id = 'global';
 }
 
 function optionsExtension() {
     clearChanges();
     global = true;
     aria2StartUp();
-    document.body.className = 'local';
+    extension.id = 'local';
 }
 
 document.addEventListener('change', ({target}) => {
@@ -255,12 +246,6 @@ function updateRule(id, rules) {
     rules.forEach((rule, mid) => addRule(list, mid, rule));
 }
 
-document.querySelectorAll('[data-rel]').forEach((menu) => {
-    var bid = menu.dataset.rel;
-    var {id, rel} = menu.rel = binded[bid];
-    related[id].push(menu);
-});
-
 function optionsRelated(menu) {
     var {id, rel} = menu.rel;
     menu.style.display = changes[id] === rel ? '' : 'none';
@@ -286,7 +271,9 @@ function aria2StartUp() {
         var value = changes[eid];
         if (eid in switches) {
             entry.checked = value;
-            related[eid]?.forEach(optionsRelated);
+            if (eid in related && value) {
+                extension.classList.toggle(eid);
+            }
         }
         else {
             entry.value = eid in multiply ? value / multiply[eid] : value;
@@ -313,7 +300,9 @@ function getChange(id, value) {
     }
     else if (id in switches) {
         entry.checked = value;
-        related[id]?.forEach(optionsRelated);
+        if (eid in related) {
+            extension.classList.toggle(eid);
+        }
     }
     else {
         entry.value = id in multiply ? value / multiply[id] : value;
@@ -325,7 +314,9 @@ function setChange(id, new_value) {
     undoes.push({id, old_value, new_value});
     saveBtn.disabled = undoBtn.disabled = false;
     changes[id] = new_value;
-    related[id]?.forEach(optionsRelated);
+    if (id in related) {
+        extension.classList.toggle(id);
+    }
     if (undone) {
         redoes = [];
         undone = false;

@@ -18,7 +18,7 @@
             <input type="file" accept=".conf">
             <a></a>
         </div>
-        <div id="local" class="options">
+        <div id="options" class="options">
             <h1>JSON-RPC</h1>
             <div class="menu" title="option_jsonrpc_uri_title">
                 <div class="title" i18n>option_jsonrpc_uri</div>
@@ -40,23 +40,21 @@
                 <input id="context_enabled" data-eid="context_enabled" type="checkbox">
                 <label for="context_enabled" i18n>option_context_enabled</label>
             </div>
-            <div class="menu" title="option_context_cascade_title" data-rel="context_cascade">
+            <div class="menu" title="option_context_cascade_title" data-rel="context_enabled">
                 <input id="context_cascade" data-eid="context_cascade" type="checkbox">
                 <label for="context_cascade" i18n>option_context_cascade</label>
             </div>
-            <div class="options" data-rel="context_menus">
-                <div class="menu" title="option_context_thisurl_title">
-                    <input id="context_thisurl" data-eid="context_thisurl" type="checkbox">
-                    <label for="context_thisurl" i18n>contextmenu_thisurl</label>
-                </div>
-                <div class="menu" title="option_context_thisimage_title">
-                    <input id="context_thisimage" data-eid="context_thisimage" type="checkbox">
-                    <label for="context_thisimage" i18n>contextmenu_thisimage</label>
-                </div>
-                <div class="menu" title="option_context_allimages_title">
-                    <input id="context_allimages" data-eid="context_allimages" type="checkbox">
-                    <label for="context_allimages" i18n>contextmenu_allimages</label>
-                </div>
+            <div class="menu" title="option_context_thisurl_title" data-rel="context_enabled">
+                <input id="context_thisurl" data-eid="context_thisurl" type="checkbox">
+                <label for="context_thisurl" i18n>contextmenu_thisurl</label>
+            </div>
+            <div class="menu" title="option_context_thisimage_title" data-rel="context_enabled">
+                <input id="context_thisimage" data-eid="context_thisimage" type="checkbox">
+                <label for="context_thisimage" i18n>contextmenu_thisimage</label>
+            </div>
+            <div class="menu" title="option_context_allimages_title" data-rel="context_enabled">
+                <input id="context_allimages" data-eid="context_allimages" type="checkbox">
+                <label for="context_allimages" i18n>contextmenu_allimages</label>
             </div>
             <h1 i18n>option_task_manager</h1>
             <div class="menu" title="option_manager_newtab_title">
@@ -92,7 +90,7 @@
                 <input id="headers_enabled" data-eid="headers_enabled" type="checkbox">
                 <label for="headers_enabled" i18n>option_headers_enabled</label>
             </div>
-            <div title="option_headers_exclude_title" data-map="headers_exclude" data-rel="headers_exclude">
+            <div title="option_headers_exclude_title" data-map="headers_exclude" data-rel="headers_enabled">
                 <div class="title" i18n>option_match_exclude</div>
                 <div class="flex">
                     <input type="text">
@@ -105,7 +103,7 @@
                 <input id="folder_enabled" data-eid="folder_enabled" type="checkbox">
                 <label for="folder_enabled" i18n>option_folder_enabled</label>
             </div>
-            <div class="menu" title="option_folder_title" data-rel="folder_defined">
+            <div class="menu" title="option_folder_title" data-rel="folder_enabled">
                 <input data-eid="folder_defined" type="text">
             </div>
             <h1 i18n>option_proxy</h1>
@@ -116,7 +114,7 @@
             <div class="menu" title="option_proxy_title">
                 <input data-eid="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
             </div>
-            <div title="option_proxy_include_title" data-map="proxy_include" data-rel="proxy_include">
+            <div title="option_proxy_include_title" data-map="proxy_include" data-rel="proxy_enabled">
                 <div class="title" i18n>option_match_include</div>
                 <div class="flex">
                     <input type="text">
@@ -129,38 +127,36 @@
                 <input id="capture_enabled" data-eid="capture_enabled" type="checkbox">
                 <label for="capture_enabled" i18n>option_capture_enabled</label>
             </div>
-            <div class="menu" title="option_capture_always_title" data-rel="capture_always">
+            <div class="menu" title="option_capture_always_title" data-rel="capture_enabled">
                 <input id="capture_always" data-eid="capture_always" type="checkbox">
                 <label for="capture_always" i18n>option_capture_always</label>
             </div>
-            <div class="options" data-rel="capture_options">
-                <div class="options" data-rel="capture_bypass">
-                    <div title="option_capture_filesize_title">
-                        <div class="title" i18n>option_capture_filesize</div>
-                        <div>
-                            <input data-eid="capture_filesize" type="number" min="0">
-                            <span>MB</span>
-                        </div>
-                        <div>
-                            <span i18n>common_disabled</span>: <u><i>0</i></u>
-                        </div>
+            <div class="options" data-rel="capture_enabled">
+                <div title="option_capture_filesize_title" data-rel="capture_always">
+                    <div class="title" i18n>option_capture_filesize</div>
+                    <div>
+                        <input data-eid="capture_filesize" type="number" min="0">
+                        <span>MB</span>
                     </div>
-                    <div title="option_capture_resolve_title" data-map="capture_resolve">
-                        <div class="title" i18n>option_capture_resolve</div>
-                        <div class="flex">
-                            <input type="text">
-                            <button data-bid="add">➕</button>
-                        </div>
-                        <div class="rule"></div>
+                    <div>
+                        <span i18n>common_disabled</span>: <u><i>0</i></u>
                     </div>
-                    <div title="option_capture_include_title" data-map="capture_include">
-                        <div class="title" i18n>option_match_include</div>
-                        <div class="flex">
-                            <input type="text">
-                            <button data-bid="add">➕</button>
-                        </div>
-                        <div class="rule"></div>
+                </div>
+                <div title="option_capture_resolve_title" data-map="capture_resolve" data-rel="capture_always">
+                    <div class="title" i18n>option_capture_resolve</div>
+                    <div class="flex">
+                        <input type="text">
+                        <button data-bid="add">➕</button>
                     </div>
+                    <div class="rule"></div>
+                </div>
+                <div title="option_capture_include_title" data-map="capture_include" data-rel="capture_always">
+                    <div class="title" i18n>option_match_include</div>
+                    <div class="flex">
+                        <input type="text">
+                        <button data-bid="add">➕</button>
+                    </div>
+                    <div class="rule"></div>
                 </div>
                 <div title="option_capture_reject_title" data-map="capture_reject">
                     <div class="title" i18n>option_capture_reject</div>
@@ -185,7 +181,7 @@
                 <span></span><button data-bid="remove">❌</button>
             </div>
         </div>
-        <div id="aria2" class="options">
+        <div id="jsonrpc" class="options">
             <div class="menu">
                 <button data-bid="back_btn" i18n>option_back</button>
             </div>

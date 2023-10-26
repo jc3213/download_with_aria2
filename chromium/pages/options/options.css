@@ -3,7 +3,7 @@ body {
     width: 680px;
 }
 
-body:not(.aria2) #aria2, body.aria2 #local {
+body:not(#global) #jsonrpc, body#global #options {
     display: none;
 }
 
@@ -43,7 +43,7 @@ input[type="checkbox"] {
     content: "aria2/";
 }
 
-#local, #aria2 {
+#options, #jsonrpc {
     margin-top: 56px;
 }
 
@@ -80,4 +80,10 @@ input[type="checkbox"] {
 .map > span {
     border-style: solid;
     border-width: 1px;
+}
+
+body:not(.context_enabled) [data-rel="context_enabled"], body:not(.headers_enabled) [data-rel="headers_enabled"],
+body:not(.folder_enabled) [data-rel="folder_enabled"],  body.proxy_enabled [data-rel="proxy_enabled"], 
+body:not(.capture_enabled) [data-rel="capture_enabled"], body.capture_always [data-rel="capture_always"] {
+    display: none;
 }
