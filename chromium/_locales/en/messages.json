@@ -99,22 +99,22 @@
         "message": "Enable Context Menus"
     },
     "option_context_enabled_title": {
-        "message": ""
+        "message": "Enable context menus for this extension"
     },
     "option_context_cascade": {
         "message": "Cascaded Context Menu"
     },
     "option_context_cascade_title": {
-        "message": ""
+        "message": "Use cascaded context menu instead of default behavior"
     },
     "option_context_thisurl_title": {
-        "message": ""
+        "message": "Enable 「Download this link」"
     },
     "option_context_thisimage_title": {
-        "message": ""
+        "message": "Enable 「Download this image」"
     },
     "option_context_allimages_title": {
-        "message": ""
+        "message": "Enable 「Download all images on this page」"
     },
     "option_task_manager": {
         "message": "Task Manager"

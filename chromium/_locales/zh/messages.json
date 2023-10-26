@@ -99,22 +99,22 @@
         "message": "启用右键菜单"
     },
     "option_context_enabled_title": {
-        "message": ""
+        "message": "启用右键菜单"
     },
     "option_context_cascade": {
         "message": "层叠式菜单"
     },
     "option_context_cascade_title": {
-        "message": ""
+        "message": "切换为层叠式右键菜单"
     },
     "option_context_thisurl_title": {
-        "message": ""
+        "message": "启用「下载此链接」菜单"
     },
     "option_context_thisimage_title": {
-        "message": ""
+        "message": "启用「下载此图像」菜单"
     },
     "option_context_allimages_title": {
-        "message": ""
+        "message": "启用「下载此页面的所有图像」菜单"
     },
     "option_task_manager": {
         "message": "任务管理器"
