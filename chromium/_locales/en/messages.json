@@ -92,6 +92,21 @@
     "option_jsonrpc_token_title": {
         "message": "Set JSON-RPC authorization token"
     },
+    "option_task_manager": {
+        "message": "Task Manager"
+    },
+    "option_manager_newtab": {
+        "message": "Open in New Tab"
+    },
+    "option_manager_newtab_itle": {
+        "message": "Set whether to open task manager in a new tab"
+    },
+    "option_manager_interval": {
+        "message": "Refresh Interval"
+    },
+    "option_manager_interval_title": {
+        "message": "Set the refresh interval of task manager"
+    },
     "option_context_menu": {
         "message": "Context Menus"
     },
@@ -115,21 +130,6 @@
     },
     "option_context_allimages_title": {
         "message": "Enable 「Download all images on this page」"
-    },
-    "option_task_manager": {
-        "message": "Task Manager"
-    },
-    "option_manager_newtab": {
-        "message": "Open in New Tab"
-    },
-    "option_manager_newtab_itle": {
-        "message": "Set whether to open task manager in a new tab"
-    },
-    "option_manager_interval": {
-        "message": "Refresh Interval"
-    },
-    "option_manager_interval_title": {
-        "message": "Set the refresh interval of task manager"
     },
     "option_notification": {
         "message": "Notifications"

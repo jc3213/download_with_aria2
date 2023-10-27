@@ -92,6 +92,21 @@
     "option_jsonrpc_token_title": {
         "message": "设置 JSON-RPC 的安全密钥"
     },
+    "option_task_manager": {
+        "message": "任务管理器"
+    },
+    "option_manager_newtab": {
+        "message": "新标签页打开"
+    },
+    "option_manager_newtab_title": {
+        "message": "设置是否通过新标签页打开任务管理器"
+    },
+    "option_manager_interval": {
+        "message": "刷新间隔"
+    },
+    "option_manager_interval_title": {
+        "message": "设置任务管理器刷新间隔"
+    },
     "option_context_menu": {
         "message": "右键菜单"
     },
@@ -115,21 +130,6 @@
     },
     "option_context_allimages_title": {
         "message": "启用「下载此页面的所有图像」菜单"
-    },
-    "option_task_manager": {
-        "message": "任务管理器"
-    },
-    "option_manager_newtab": {
-        "message": "新标签页打开"
-    },
-    "option_manager_newtab_title": {
-        "message": "设置是否通过新标签页打开任务管理器"
-    },
-    "option_manager_interval": {
-        "message": "刷新间隔"
-    },
-    "option_manager_interval_title": {
-        "message": "设置任务管理器刷新间隔"
     },
     "option_notification": {
         "message": "通知"

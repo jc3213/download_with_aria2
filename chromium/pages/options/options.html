@@ -35,6 +35,18 @@
             <div class="menu">
                 <button data-bid="aria2_btn" i18n>option_aria2</button>
             </div>
+            <h1 i18n>option_task_manager</h1>
+            <div class="menu" title="option_manager_newtab_title">
+                <input id="manager_newtab" data-eid="manager_newtab" type="checkbox">
+                <label for="manager_newtab" i18n>option_manager_newtab</label>
+            </div>
+            <div class="menu flex" title="option_manager_interval_title">
+                <div class="title" i18n>option_manager_interval</div>
+                <div>
+                    <input data-eid="manager_interval" type="number" min="5" max="30" step="1">
+                    <span i18n>time_second_full</span>
+                </div>
+            </div>
             <h1 i18n>option_context_menu</h1>
             <div class="menu" title="option_context_enabled_title">
                 <input id="context_enabled" data-eid="context_enabled" type="checkbox">
@@ -55,18 +67,6 @@
             <div class="menu" title="option_context_allimages_title" data-rel="context_enabled">
                 <input id="context_allimages" data-eid="context_allimages" type="checkbox">
                 <label for="context_allimages" i18n>contextmenu_allimages</label>
-            </div>
-            <h1 i18n>option_task_manager</h1>
-            <div class="menu" title="option_manager_newtab_title">
-                <input id="manager_newtab" data-eid="manager_newtab" type="checkbox">
-                <label for="manager_newtab" i18n>option_manager_newtab</label>
-            </div>
-            <div class="menu flex" title="option_manager_interval_title">
-                <div class="title" i18n>option_manager_interval</div>
-                <div>
-                    <input data-eid="manager_interval" type="number" min="5" max="30" step="1">
-                    <span i18n>time_second_full</span>
-                </div>
             </div>
             <h1 i18n>option_notification</h1>
             <div class="menu" title="option_notify_start_title">
