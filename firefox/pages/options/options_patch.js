@@ -12,12 +12,8 @@ var i18n = {
         webrequest_title: '抓取MIME类型为"应用"的网络请求而非浏览器下载'
     }
 };
-var lang = browser.i18n.getUILanguage();
+var lang = chrome.i18n.getUILanguage();
 i18n = i18n[lang] ?? i18n[lang.slice(0, lang.indexOf('-'))] ?? i18n['en'];
-
-var css = document.createElement('style');
-css.textContent = `body.capture_webrequest [data-exc="capture_webrequest"] {display: none;}`;
-document.head.appendChild(css);
 
 var folderff = document.createElement('div');
 folderff.className = 'menu';

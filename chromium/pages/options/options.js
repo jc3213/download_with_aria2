@@ -27,22 +27,20 @@ var switches = {
     'headers_enabled': true,
     'folder_enabled': true,
     'proxy_enabled': true,
-    'proxy_always': true,
+    'capture_enabled': true,
+    'capture_always': true
+};
+var related = {
+    'context_enabled': true,
+    'headers_enabled': true,
+    'folder_enabled': true,
+    'proxy_enabled': true,
     'capture_enabled': true,
     'capture_always': true
 };
 var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .map');
-var related = {
-    'context_enabled': true,
-    'headers_enabled': true,
-    'folder_enabled': true,
-    'proxy_enabled': true,
-    'proxy_always': true,
-    'capture_enabled': true,
-    'capture_always': true
-};
 
 document.addEventListener('keydown', (event) => {
     var {ctrlKey, key} = event;
