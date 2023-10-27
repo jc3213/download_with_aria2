@@ -16,22 +16,14 @@ var multiply = {
 };
 var switches = {
     'context_enabled': true,
-    'context_cascade': true,
-    'context_thisurl': true,
-    'context_thisimage': true,
-    'context_allimages': true,
-    'manager_newtab': true,
-    'notify_start': true,
-    'notify_complete': true,
-    'download_prompt': true,
-    'headers_enabled': true,
-    'folder_enabled': true,
-    'proxy_enabled': true,
-    'capture_enabled': true,
-    'capture_always': true
-};
-var related = {
-    'context_enabled': true,
+    'context_cascade': false,
+    'context_thisurl': false,
+    'context_thisimage': false,
+    'context_allimages': false,
+    'manager_newtab': false,
+    'notify_start': false,
+    'notify_complete': false,
+    'download_prompt': false,
     'headers_enabled': true,
     'folder_enabled': true,
     'proxy_enabled': true,
@@ -269,8 +261,8 @@ function aria2StartUp() {
         var value = changes[eid];
         if (eid in switches) {
             entry.checked = value;
-            if (eid in related && value) {
-                extension.classList.toggle(eid);
+            if (switches[eid]) {
+                value ? extension.classList.add(eid) : extension.classList.remove(eid);
             }
         }
         else {
@@ -298,7 +290,7 @@ function getChange(id, value) {
     }
     else if (id in switches) {
         entry.checked = value;
-        if (eid in related) {
+        if (switches[eid]) {
             extension.classList.toggle(eid);
         }
     }
@@ -312,7 +304,7 @@ function setChange(id, new_value) {
     undoes.push({id, old_value, new_value});
     saveBtn.disabled = undoBtn.disabled = false;
     changes[id] = new_value;
-    if (id in related) {
+    if (switches[id]) {
         extension.classList.toggle(id);
     }
     if (undone) {
