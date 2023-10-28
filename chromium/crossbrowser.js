@@ -60,7 +60,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }
     else if (reason === 'update' && previousVersion <= '4.5.2.2208') {
         chrome.storage.local.get(null, (json) => {
-            aria2Store = json;
+            aria2Store = {...aria2Store, ...json};
             chrome.storage.sync.set(json);
             chrome.storage.local.clear();
         });
