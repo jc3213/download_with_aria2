@@ -192,7 +192,13 @@
         "message": "使用下载文件夹"
     },
     "option_folder_enabled_title": {
-        "message": "将此扩展的新建下载保存到首选的下载文件夹中"
+        "message": "将新建下载保存到首选的下载文件夹中"
+    },
+    "option_folder_forefox": {
+        "message": "遵循浏览器行为"
+    },
+    "option_folder_enabled_title": {
+        "message": "将新建下载保存到浏览器对话框选中的文件夹中"
     },
     "option_proxy": {
         "message": "代理服务器"
@@ -217,6 +223,12 @@
     },
     "option_capture_enabled_title": {
         "message": "允许抓取来自浏览器的下载"
+    },
+    "option_capture_webrequest": {
+        "message": "启用抓取网络请求"
+    },
+    "option_capture_always_title": {
+        "message": "抓取网络请求而非下载请求，可能存在问题"
     },
     "option_capture_always": {
         "message": "总是抓取下载"

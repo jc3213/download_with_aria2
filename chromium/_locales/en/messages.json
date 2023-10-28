@@ -192,7 +192,13 @@
         "message": "Use Download Directory"
     },
     "option_folder_enabled_title": {
-        "message": "Use preferred download directory for downloads created by this extension"
+        "message": "Use preferred download directory for new downloads"
+    },
+    "option_folder_forefox": {
+        "message": "Follow Browser Behavior"
+    },
+    "option_folder_enabled_title": {
+        "message": "Save downloads into the directory follow browser dialog window"
     },
     "option_proxy": {
         "message": "Proxy Server"
@@ -217,6 +223,12 @@
     },
     "option_capture_enabled_title": {
         "message": "Enable capture downloads from browser"
+    },
+    "option_capture_webrequest": {
+        "message": "Enable Capture Web Requests"
+    },
+    "option_capture_always_title": {
+        "message": "Enable capture web requests instead of downloads, may be buggy"
     },
     "option_capture_always": {
         "message": "Always Capture Downloads"
