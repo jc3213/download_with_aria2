@@ -73,7 +73,7 @@
                 <input id="notify_start" data-eid="notify_start" type="checkbox">
                 <label for="notify_start" i18n>option_notify_start</label>
             </div>
-            <div class="menu" title="option_notify_complete_title">
+            <div class="menu" title="option_notify_complete_title" data-app="manifest_v3">
                 <input id="notify_complete" data-eid="notify_complete" type="checkbox">
                 <label for="notify_complete" i18n>option_notify_complete</label>
             </div>
@@ -103,6 +103,10 @@
                 <input id="folder_enabled" data-eid="folder_enabled" type="checkbox">
                 <label for="folder_enabled" i18n>option_folder_enabled</label>
             </div>
+            <div class="menu" title="option_folder_firefox_title" data-app="firefox" data-rel="folder_enabled" data-exc="capture_webrequest">
+                <input id="folder_firefox" data-eid="folder_firefox" type="checkbox">
+                <label for="folder_firefox" i18n>option_folder_firefox</label>
+            </div>
             <div class="menu" title="option_folder_title" data-rel="folder_enabled">
                 <input data-eid="folder_defined" type="text">
             </div>
@@ -126,6 +130,10 @@
             <div class="menu" title="option_capture_enabled_title">
                 <input id="capture_enabled" data-eid="capture_enabled" type="checkbox">
                 <label for="capture_enabled" i18n>option_capture_enabled</label>
+            </div>
+            <div class="menu" title="option_capture_webrequest_title" data-app="firefox" data-rel="capture_enabled">
+                <input id="capture_webrequest" data-eid="capture_webrequest" type="checkbox">
+                <label for="capture_webrequest" i18n>option_capture_webrequest</label>
             </div>
             <div class="menu" title="option_capture_always_title" data-rel="capture_enabled">
                 <input id="capture_always" data-eid="capture_always" type="checkbox">
@@ -358,6 +366,5 @@
         <script src="/libs/aria2.js"></script>
         <script src="/pages/common.js"></script>
         <script src="options.js"></script>
-        <script src="options_patch.js"></script>
     </body>
 </html>

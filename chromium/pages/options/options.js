@@ -1,7 +1,9 @@
 var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, importJson, importConf, exporter, aria2ua] = document.querySelectorAll('#menu > *, #aria2ua');
 var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('[data-rid]');
-var appver = chrome.runtime.getManifest().version;
+var manifest = chrome.runtime.getManifest();
+var appver = manifest.version;
+var platver = manifest.manifest_version;
 var changes = {};
 var redoes = [];
 var undoes = [];
@@ -26,13 +28,25 @@ var switches = {
     'download_prompt': false,
     'headers_enabled': true,
     'folder_enabled': true,
+    'folder_firefox': false,
     'proxy_enabled': true,
     'capture_enabled': true,
+    'capture_webrequest': true,
     'capture_always': true
 };
 var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .map');
+
+if (typeof browser === 'function') {
+    extension.classList.add('firefox');
+    var firefox = document.createElement('script');
+    firefox.src = 'options_firefox.js';
+    extension.appendChild(firefox);
+}
+else if (platver === 3) {
+    extension.classList.add('manifest_v3');
+}
 
 document.addEventListener('keydown', (event) => {
     var {ctrlKey, key} = event;
@@ -141,14 +155,14 @@ async function optionsJsonrpc() {
     aria2Conf = {'enable-rpc': true, ...options};
     changes = {...aria2Global};
     aria2ver.textContent = aria2ua.textContent = version.version;
-    extension.id = 'global';
+    extension.classList.add('jsonrpc');
 }
 
 function optionsExtension() {
     clearChanges();
     global = true;
     aria2StartUp();
-    extension.id = 'local';
+    extension.classList.remove('jsonrpc');
 }
 
 document.addEventListener('change', ({target}) => {

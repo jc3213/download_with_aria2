@@ -3,7 +3,12 @@ body {
     width: 680px;
 }
 
-body:not(#global) #jsonrpc, body#global #options {
+body:not(.jsonrpc) #jsonrpc, body.jsonrpc #options,
+body:not(.context_enabled) [data-rel="context_enabled"], body:not(.headers_enabled) [data-rel="headers_enabled"],
+body:not(.folder_enabled) [data-rel="folder_enabled"], body.proxy_enabled [data-rel="proxy_enabled"],
+body:not(.capture_enabled) [data-rel="capture_enabled"], body.capture_always [data-rel="capture_always"],
+body:not(.firefox) [data-app="firefox"], body.manifest_v3 [data-app="manifest_v3"],
+body.capture_webrequest [data-exc="capture_webrequest"] {
     display: none;
 }
 
@@ -80,11 +85,4 @@ input[type="checkbox"] {
 .map > span {
     border-style: solid;
     border-width: 1px;
-}
-
-body:not(.context_enabled) [data-rel="context_enabled"], body:not(.headers_enabled) [data-rel="headers_enabled"],
-body:not(.folder_enabled) [data-rel="folder_enabled"], body.proxy_enabled [data-rel="proxy_enabled"], 
-body:not(.capture_enabled) [data-rel="capture_enabled"], body.capture_always [data-rel="capture_always"],
-body.capture_webrequest [data-exc="capture_webrequest"] {
-    display: none;
 }
