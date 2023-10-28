@@ -192,7 +192,7 @@
         "message": "Use Download Directory"
     },
     "option_folder_enabled_title": {
-        "message": "Use preferred download directory for new downloads"
+        "message": "Save new downloads into preferred download directory"
     },
     "option_folder_forefox": {
         "message": "Follow Browser Behavior"
