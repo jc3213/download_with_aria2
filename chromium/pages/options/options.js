@@ -80,7 +80,7 @@ document.addEventListener('click', ({target}) => {
 function optionsSave() {
     if (global) {
         aria2Store = {...changes};
-        chrome.storage.local.set(changes);
+        chrome.storage.sync.set(changes);
     }
     else {
         aria2RPC.call('aria2.changeGlobalOption', changes);
@@ -171,7 +171,7 @@ function optionsImport(file) {
     reader.onload = async (event) => {
         if (global) {
             var json = JSON.parse(reader.result);
-            chrome.storage.local.set(json);
+            chrome.storage.sync.set(json);
             aria2Store = json;
             aria2StartUp();
         }
@@ -247,7 +247,7 @@ chrome.storage.onChanged.addListener((changes) => {
     }
 });
 
-chrome.storage.local.get(null, (json) => {
+chrome.storage.sync.get(null, (json) => {
     aria2Store = json;
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     aria2StartUp();

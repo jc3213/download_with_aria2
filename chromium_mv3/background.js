@@ -44,7 +44,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
 });
 
 async function aria2StartUp() {
-    var json = await chrome.storage.local.get(null);
+    var json = await chrome.storage.sync.get(null);
     aria2Store = {...aria2Default, ...json};
     aria2Client();
     aria2Manager();
@@ -52,7 +52,7 @@ async function aria2StartUp() {
 
 async function aria2Initial() {
     if (!aria2RPC) {
-        aria2Store = await chrome.storage.local.get(null);
+        aria2Store = await chrome.storage.sync.get(null);
         aria2Client();
     }
 }

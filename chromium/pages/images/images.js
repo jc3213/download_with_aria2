@@ -59,7 +59,7 @@ viewer.addEventListener('load', ({target}) => {
     target.title = `${target.offsetWidth}x${target.offsetHeight}`;
 }, true);
 
-chrome.storage.local.get(null, (json) => {
+chrome.storage.sync.get(null, (json) => {
     aria2Store = json;
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     aria2Proxy = aria2Store['proxy_server'];

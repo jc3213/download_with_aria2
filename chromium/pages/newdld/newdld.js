@@ -126,7 +126,7 @@ function slimModeInit() {
     });
 }
 
-chrome.storage.local.get(null, async (json) => {
+chrome.storage.sync.get(null, async (json) => {
     aria2Store = json;
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
     var global = await aria2RPC.call('aria2.getGlobalOption');

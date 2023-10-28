@@ -10,7 +10,7 @@ browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, 
     }
 });
 
-browser.storage.local.get(null, json => {
+browser.storage.sync.get(null, json => {
     aria2Store = {...aria2Default, ...json};
     aria2StartUp();
     aria2Capture();

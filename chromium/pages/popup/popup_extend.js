@@ -72,7 +72,7 @@ chrome.storage.onChanged.addListener((changes) => {
     }
 });
 
-chrome.storage.local.get(null, json => {
+chrome.storage.sync.get(null, json => {
     aria2Server = json['jsonrpc_uri'];
     aria2Token = json['jsonrpc_token'];
     aria2Interval = json['manager_interval'];

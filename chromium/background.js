@@ -10,7 +10,7 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, u
     }
 });
 
-chrome.storage.local.get(null, json => {
+chrome.storage.sync.get(null, json => {
     aria2Store = {...aria2Default, ...json};
     aria2StartUp();
     aria2Capture();
