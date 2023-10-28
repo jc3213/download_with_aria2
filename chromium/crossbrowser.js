@@ -38,7 +38,10 @@ var aria2Monitor = {};
 var aria2Prompt = {};
 var aria2Message = {};
 
-chrome.storage.onChanged.addListener((changes) => {
+chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'local') {
+        return;
+    }
     Object.keys(changes).forEach((key) => {
         var {newValue} = changes[key];
         if (newValue !== undefined) {
@@ -54,6 +57,13 @@ chrome.storage.onChanged.addListener((changes) => {
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
+    }
+    else if (reason === 'update' && previousVersion <= '4.5.2.2208') {
+        chrome.storage.local.get(null, (json) => {
+            aria2Store = json;
+            chrome.storage.sync.set(json);
+            chrome.storage.local.clear();
+        });
     }
 });
 
