@@ -139,49 +139,47 @@
                 <input id="capture_always" data-eid="capture_always" type="checkbox">
                 <label for="capture_always" i18n>option_capture_always</label>
             </div>
-            <div class="options" data-rel="capture_enabled">
-                <div title="option_capture_filesize_title" data-rel="capture_always">
-                    <div class="title" i18n>option_capture_filesize</div>
-                    <div>
-                        <input data-eid="capture_filesize" type="number" min="0">
-                        <span>MB</span>
-                    </div>
-                    <div>
-                        <span i18n>common_disabled</span>: <u><i>0</i></u>
-                    </div>
+            <div title="option_capture_filesize_title"  data-rel="capture_enabled" data-exc="capture_always">
+                <div class="title" i18n>option_capture_filesize</div>
+                <div>
+                    <input data-eid="capture_filesize" type="number" min="0">
+                    <span>MB</span>
                 </div>
-                <div title="option_capture_resolve_title" data-map="capture_resolve" data-rel="capture_always">
-                    <div class="title" i18n>option_capture_resolve</div>
-                    <div class="flex">
-                        <input type="text">
-                        <button data-bid="add">➕</button>
-                    </div>
-                    <div class="rule"></div>
+                <div>
+                    <span i18n>common_disabled</span>: <u><i>0</i></u>
                 </div>
-                <div title="option_capture_include_title" data-map="capture_include" data-rel="capture_always">
-                    <div class="title" i18n>option_match_include</div>
-                    <div class="flex">
-                        <input type="text">
-                        <button data-bid="add">➕</button>
-                    </div>
-                    <div class="rule"></div>
+            </div>
+            <div title="option_capture_resolve_title" data-map="capture_resolve" data-rel="capture_enabled" data-exc="capture_always">
+                <div class="title" i18n>option_capture_resolve</div>
+                <div class="flex">
+                    <input type="text">
+                    <button data-bid="add">➕</button>
                 </div>
-                <div title="option_capture_reject_title" data-map="capture_reject">
-                    <div class="title" i18n>option_capture_reject</div>
-                    <div class="flex">
-                        <input type="text">
-                        <button data-bid="add">➕</button>
-                    </div>
-                    <div class="rule"></div>
+                <div class="rule"></div>
+            </div>
+            <div title="option_capture_include_title" data-map="capture_include" data-rel="capture_enabled" data-exc="capture_always">
+                <div class="title" i18n>option_match_include</div>
+                <div class="flex">
+                    <input type="text">
+                    <button data-bid="add">➕</button>
                 </div>
-                <div title="option_capture_exclude_title" data-map="capture_exclude">
-                    <div class="title" i18n>option_match_exclude</div>
-                    <div class="flex">
-                        <input type="text">
-                        <button data-bid="add">➕</button>
-                    </div>
-                    <div class="rule"></div>
+                <div class="rule"></div>
+            </div>
+            <div title="option_capture_reject_title" data-map="capture_reject" data-rel="capture_enabled">
+                <div class="title" i18n>option_capture_reject</div>
+                <div class="flex">
+                    <input type="text">
+                    <button data-bid="add">➕</button>
                 </div>
+                <div class="rule"></div>
+            </div>
+            <div title="option_capture_exclude_title" data-map="capture_exclude" data-rel="capture_enabled">
+                <div class="title" i18n>option_match_exclude</div>
+                <div class="flex">
+                    <input type="text">
+                    <button data-bid="add">➕</button>
+                </div>
+                <div class="rule"></div>
             </div>
         </div>
         <div class="template">

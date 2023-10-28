@@ -38,7 +38,7 @@ var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .map');
 
-if (typeof browser !== 'undefined') {
+if (typeof browser === 'function') {
     extension.classList.add('firefox');
     var firefox = document.createElement('script');
     firefox.src = 'options_firefox.js';
