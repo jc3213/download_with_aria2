@@ -194,10 +194,10 @@
     "option_folder_enabled_title": {
         "message": "Save new downloads into preferred download directory"
     },
-    "option_folder_forefox": {
+    "option_folder_firefox": {
         "message": "Follow Browser Behavior"
     },
-    "option_folder_enabled_title": {
+    "option_folder_firefox_title": {
         "message": "Save downloads into the directory follow browser dialog window"
     },
     "option_proxy": {
@@ -227,7 +227,7 @@
     "option_capture_webrequest": {
         "message": "Enable Capture Web Requests"
     },
-    "option_capture_always_title": {
+    "option_capture_webrequest_title": {
         "message": "Enable capture web requests instead of downloads, may be buggy"
     },
     "option_capture_always": {
