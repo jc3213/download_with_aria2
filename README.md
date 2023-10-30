@@ -1,5 +1,5 @@
 ## About
-- This is a browser extension for [Google Chrome](https://www.google.com/intl/en-US/chrome/), [Microsoft Edge](https://www.microsoft.com/edge), [Mozilla Firefox](https://www.mozilla.org/firefox/), and any other chromium and gecko browsers
+- This is a browser extension for [Google Chrome](https://www.google.com/intl/en-US/chrome/), [Microsoft Edge](https://www.microsoft.com/edge), [Mozilla Firefox](https://www.mozilla.org/firefox/), and so like browsers
 - Download links or images, capture browser downloads, and manage downloads with aria2c via json-rpc protocol
 
 ## Main Functions
