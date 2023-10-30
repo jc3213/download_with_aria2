@@ -191,13 +191,8 @@ function getCaptureFileData(size, fileext) {
 }
 
 function getProxyServer(hostname) {
-    if (aria2Store['proxy_enabled']) {
-        if (aria2Store['proxy_always']) {
-            return aria2Store['proxy_server'];
-        }
-        else if (aria2Store['proxy_include'].some(host => hostname.includes(host))) {
-            return aria2Store['proxy_server'];
-        }
+    if (aria2Store['proxy_enabled'] || aria2Store['proxy_include'].some(host => hostname.includes(host))) {
+        return aria2Store['proxy_server'];
     }
     return null;
 }
