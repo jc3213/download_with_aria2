@@ -40,9 +40,23 @@ var listLET = document.querySelector('.template > .map');
 
 if (typeof browser !== 'undefined') {
     extension.classList.add('firefox');
-    var firefox = document.createElement('script');
-    firefox.src = 'options_firefox.js';
-    extension.appendChild(firefox);
+    (function firefoxDiffusion() {
+        var [folderff, captureen, captureff] = document.querySelectorAll('#folder_firefox, #capture_enabled, #capture_webrequest');
+
+        folderff.parentNode.nextElementSibling.removeAttribute('class');
+
+        captureen.addEventListener('change', event => {
+            if (!captureen.checked) {
+                folderff.checked = changes['folder_firefox'] = false;
+            }
+        });
+
+        captureff.addEventListener('change', event => {
+            if (captureff.checked) {
+                folderff.checked = changes['folder_firefox'] = false;
+            }
+        });
+    })();
 }
 else if (platver === 3) {
     extension.classList.add('manifest_v3');
