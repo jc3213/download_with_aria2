@@ -38,7 +38,7 @@ var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
 var listLET = document.querySelector('.template > .map');
 
-
+if (typeof browser !== 'undefined') {
     extension.classList.add('firefox');
     var [folderff, captureen, captureff] = document.querySelectorAll('#folder_firefox, #capture_enabled, #capture_webrequest');
     folderff.parentNode.nextElementSibling.removeAttribute('class');
@@ -51,7 +51,7 @@ var listLET = document.querySelector('.template > .map');
         if (captureff.checked) {
             folderff.checked = changes['folder_firefox'] = false;
         }
-    });if (typeof browser !== 'undefined') {
+    });
 }
 else if (platver === 3) {
     extension.classList.add('manifest_v3');
