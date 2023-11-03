@@ -62,15 +62,15 @@ function downloadProxy(proxyBtn) {
 }
 
 document.addEventListener('change', ({target}) => {
-    var {id, value, files} = target;
+    var {id, value, files, dataset: {rid}} = target;
     if (files) {
         downloadFiles(files);
     }
-    else if (id === 'entry') {
+    else if (id === 'entries') {
         changedEntries(value);
     }
-    else if (id) {
-        aria2Global[id] = value;
+    else if (rid) {
+        aria2Global[rid] = value;
     }
 });
 
