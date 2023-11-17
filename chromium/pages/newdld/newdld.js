@@ -1,5 +1,5 @@
 var downloader = document.body;
-var [entry, filename, countdown, uploader] = document.querySelectorAll('textarea, [data-id="out"], .countdown, input[type="file"]');
+var [entry, filename, countdown, uploader] = document.querySelectorAll('textarea, [data-rid="out"], .countdown, input[type="file"]');
 var settings = document.querySelectorAll('input[data-id]');
 var slim_mode = location.search === '?slim_mode';
 
