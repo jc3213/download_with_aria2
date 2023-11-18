@@ -93,7 +93,7 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
         var hostname = getHostname(originUrl);
         if (getCaptureGeneral(hostname, ext, length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            aria2Download(url, originUrl, hostname, {out, dir: getDownloadFolder()}, cookieStoreId);
+            aria2Download(url, originUrl, hostname, {out}, cookieStoreId);
             return {cancel: true};
         }
     }
@@ -111,7 +111,7 @@ async function getFirefoxOptions(filename) {
             return {out, dir: aria2Store['folder_defined']};
         }
     }
-    return {out};
+    return {out, dir: null};
 }
 
 function getFileName(disposition) {
