@@ -94,8 +94,12 @@ chrome.commands.onCommand.addListener((command) => {
 
 async function aria2Download(url, referer, hostname, options = {}, storeId) {
     options['user-agent'] = aria2Store['user_agent'];
-    options['all-proxy'] = getProxyServer(hostname);
-    options['dir'] = getDownloadFolder();
+    if (aria2Store['proxy_enabled'] || aria2Store['proxy_include'].some(host => hostname.includes(host))) {
+        options['all-proxy'] = aria2Store['proxy_server'];
+    }
+    if (options['dir'] !== undefined && aria2Store['folder_enabled'] && aria2Store['folder_defined'] !== '') {
+        options['dir'] = aria2Store['folder_defined'];
+    }
     if (aria2Store['headers_enabled'] && !aria2Store['headers_exclude'].some(host => hostname.includes(host))) {
         options['referer'] = referer;
         options['header'] = storeId ? await getRequestHeadersFirefox(url, storeId) : await getRequestHeaders(url);
@@ -190,13 +194,6 @@ function getCaptureFileData(size, fileext) {
     return 0;
 }
 
-function getProxyServer(hostname) {
-    if (aria2Store['proxy_enabled'] || aria2Store['proxy_include'].some(host => hostname.includes(host))) {
-        return aria2Store['proxy_server'];
-    }
-    return null;
-}
-
 function getRequestHeaders(url) {
     return new Promise((resolve) => {
         chrome.cookies.getAll({url}, (cookies) => {
@@ -208,11 +205,4 @@ function getRequestHeaders(url) {
             resolve([header]);
         });
     });
-}
-
-function getDownloadFolder() {
-    if (aria2Store['folder_enabled'] && aria2Store['folder_defined'] !== '') {
-        return aria2Store['folder_defined'];
-    }
-    return null;
 }
