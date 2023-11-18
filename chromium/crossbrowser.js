@@ -97,7 +97,7 @@ async function aria2Download(url, referer, hostname, options = {}, storeId) {
     if (aria2Store['proxy_enabled'] || aria2Store['proxy_include'].some(host => hostname.includes(host))) {
         options['all-proxy'] = aria2Store['proxy_server'];
     }
-    if (options['dir'] !== undefined && aria2Store['folder_enabled'] && aria2Store['folder_defined'] !== '') {
+    if (options['dir'] === undefined && aria2Store['folder_enabled'] && aria2Store['folder_defined'] !== '') {
         options['dir'] = aria2Store['folder_defined'];
     }
     if (aria2Store['headers_enabled'] && !aria2Store['headers_exclude'].some(host => hostname.includes(host))) {
