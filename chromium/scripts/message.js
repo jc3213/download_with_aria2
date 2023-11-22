@@ -10,7 +10,7 @@ window.addEventListener('message', event => {
 });
 
 chrome.runtime.onMessage.addListener(message => {
-    if (message === 'download_all_images') {
+    if (message === 'aria2c_all_images') {
         getAllImages();
     }
 });
