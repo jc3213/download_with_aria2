@@ -26,7 +26,7 @@ async function aria2DownloadPrompt(aria2c) {
     }
 }
 
-function aria2Manager() {
+function aria2TaskManager() {
     if (aria2Store['manager_newtab']) {
         chrome.action.setPopup({popup: ''});
     }
@@ -35,6 +35,6 @@ function aria2Manager() {
     }
 }
 
-function aria2Client() {
+function aria2ClientSetUp() {
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
 }

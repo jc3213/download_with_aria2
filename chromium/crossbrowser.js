@@ -30,6 +30,20 @@ var aria2Default = {
     'capture_exclude': []
 };
 var aria2Store = {};
+var aria2Changes = [
+    {
+        keys: ['jsonrpc_uri', 'jsonrpc_token'],
+        action: aria2ClientSetUp
+    },
+    {
+        keys: ['context_enabled', 'context_cascade', 'context_thisurl', 'context_thisimage', 'context_allimages'],
+        action: aria2ContextMenus
+    },
+    {
+        keys: ['manager_newtab'],
+        action: aria2TaskManager
+    }
+];
 var aria2RPC;
 var aria2Popup = '/pages/popup/popup.html';
 var aria2InTab = `${chrome.runtime.id}/pages/popup/popup.html`;
@@ -45,10 +59,11 @@ chrome.storage.onChanged.addListener((changes) => {
             aria2Store[key] = newValue;
         }
     });
-    if ('context_enabled' in changes || 'context_cascade' in changes || 'context_thisurl' in changes || 'context_thisimage' in changes || 'context_allimages' in changes) {
-        aria2ContextMenus();
-    }
-    aria2Update(changes);
+    aria2Changes.forEach(({keys, action}) => {
+        if (keys.some(key => key in changes)) {
+            action();
+        }
+    });
 });
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {

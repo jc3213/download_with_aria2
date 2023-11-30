@@ -1,9 +1,9 @@
-importScripts('libs/aria2.js', 'libs/tools.js', 'libs/core.js', 'crossbrowser.js', 'expansion.js');
+importScripts('libs/aria2.js', 'libs/tools.js', 'libs/core.js', 'expansion.js', 'crossbrowser.js');
 
-chrome.runtime.onStartup.addListener(aria2StartUp);
+chrome.runtime.onStartup.addListener(aria2Activate);
 
 chrome.runtime.onInstalled.addListener(async ({reason}) => {
-    await aria2StartUp();
+    await aria2Activate();
     aria2ContextMenus();
 });
 
@@ -43,25 +43,16 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
     aria2Monitor[id].captured = captured;
 });
 
-async function aria2StartUp() {
+async function aria2Activate() {
     var json = await chrome.storage.sync.get(null);
     aria2Store = {...aria2Default, ...json};
-    aria2Client();
-    aria2Manager();
+    aria2ClientSetUp();
+    aria2TaskManager();
 }
 
 async function aria2Initial() {
     if (!aria2RPC) {
         aria2Store = await chrome.storage.sync.get(null);
-        aria2Client();
-    }
-}
-
-function aria2Update(changes) {
-    if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
-        aria2Client();
-    }
-    if ('manager_newtab' in changes) {
-        aria2Manager();
+        aria2ClientSetUp();
     }
 }

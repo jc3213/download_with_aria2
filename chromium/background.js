@@ -1,3 +1,8 @@
+aria2Changes.push({
+    keys: ['capture_enabled'],
+    action: aria2CaptureSwitch
+});
+
 chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url}) => {
     if (menuItemId === 'aria2c_this_url') {
         aria2Download(linkUrl, url, getHostname(url));
@@ -12,23 +17,11 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, u
 
 chrome.storage.sync.get(null, json => {
     aria2Store = {...aria2Default, ...json};
-    aria2StartUp();
-    aria2Capture();
-    aria2Manager();
+    aria2ClientSetUp();
+    aria2CaptureSwitch();
+    aria2TaskManager();
     aria2ContextMenus();
 });
-
-function aria2Update(changes) {
-    if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
-        aria2StartUp();
-    }
-    if ('capture_enabled' in changes) {
-        aria2Capture();
-    }
-    if ('manager_newtab' in changes) {
-        aria2Manager();
-    }
-}
 
 async function captureOnCreated({id, finalUrl, referrer}) {
     var url = finalUrl;
@@ -56,7 +49,7 @@ async function captureOnFilename({id, filename, fileSize}) {
     }
 }
 
-function aria2Capture() {
+function aria2CaptureSwitch() {
     if (aria2Store['capture_enabled']) {
         chrome.downloads.onCreated.addListener(captureOnCreated);
         chrome.downloads.onDeterminingFilename.addListener(captureOnFilename);

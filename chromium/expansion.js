@@ -30,7 +30,7 @@ async function aria2DownloadPrompt(aria2c) {
     }
 }
 
-function aria2Manager() {
+function aria2TaskManager() {
     if (aria2Store['manager_newtab']) {
         chrome.browserAction.setPopup({popup: ''});
     }
@@ -39,7 +39,7 @@ function aria2Manager() {
     }
 }
 
-function aria2StartUp() {
+function aria2ClientSetUp() {
     if (aria2Retry) {
         clearTimeout(aria2Retry);
     }
@@ -51,7 +51,7 @@ function aria2StartUp() {
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
         aria2Retry = null;
         aria2Active = result.map(({gid}) => gid);
-        aria2Badge(aria2Active.length);
+        aria2ToolbarBadge(aria2Active.length);
         aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
         aria2Socket.onmessage = async event => {
             var {method, params: [{gid}]} = JSON.parse(event.data);
@@ -70,16 +70,16 @@ function aria2StartUp() {
                     }
                 }
             }
-            aria2Badge(aria2Active.length);
+            aria2ToolbarBadge(aria2Active.length);
         };
     }).catch(error => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
-        aria2Badge('E');
+        aria2ToolbarBadge('E');
         aria2Retry = setTimeout(aria2StartUp, aria2Store['manager_interval'])
     });
 }
 
-function aria2Badge(text) {
+function aria2ToolbarBadge(text) {
     if (!isNaN(text)) {
         text = text === 0 ? '' : text + '';
     }

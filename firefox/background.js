@@ -1,3 +1,8 @@
+aria2Changes.push({
+    keys: ['capture_enabled', 'capture_webrequest'],
+    action: aria2CaptureSwitch
+});
+
 browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
     if (menuItemId === 'aria2c_this_url') {
         aria2Download(linkUrl, url, getHostname(url), cookieStoreId);
@@ -12,23 +17,11 @@ browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, 
 
 browser.storage.sync.get(null, json => {
     aria2Store = {...aria2Default, ...json};
-    aria2StartUp();
-    aria2Capture();
-    aria2Manager();
+    aria2ClientSetUp();
+    aria2CaptureSwitch();
+    aria2TaskManager();
     aria2ContextMenus();
 });
-
-function aria2Update(changes) {
-    if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
-        aria2StartUp();
-    }
-    if ('capture_enabled' in changes || 'capture_webrequest' in changes) {
-        aria2Capture();
-    }
-    if ('manager_newtab' in changes) {
-        aria2Manager();
-    }
-}
 
 async function getRequestHeadersFirefox(url, storeId) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
@@ -40,7 +33,7 @@ async function getRequestHeadersFirefox(url, storeId) {
     return [header];
 }
 
-function aria2Capture() {
+function aria2CaptureSwitch() {
     if (aria2Store['capture_enabled']) {
         if (aria2Store['capture_webrequest']) {
             browser.downloads.onCreated.removeListener(downloadCapture);
