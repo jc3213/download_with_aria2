@@ -60,7 +60,7 @@ chrome.storage.onChanged.addListener((changes) => {
         }
     });
     aria2Changes.forEach(({keys, action}) => {
-        if (keys.some(key => key in changes)) {
+        if (keys.some((key) => key in changes)) {
             action();
         }
     });
@@ -116,32 +116,29 @@ async function aria2ImagesPrompt(result) {
     aria2Message[id] = result;
 }
 
-function aria2ContextMenus(params = {}) {
+function aria2ContextMenus() {
     chrome.contextMenus.removeAll();
     if (!aria2Store['context_enabled']) {
         return;
     }
     if (aria2Store['context_cascade']) {
+        var parentId = 'aria2c_contextmenu';
         chrome.contextMenus.create({id: 'aria2c_contextmenu', title: chrome.i18n.getMessage('extension_name'), contexts: ['link', 'image', 'page']});
-        params.parentId = 'aria2c_contextmenu';
     }
     if (aria2Store['context_thisurl']) {
-        chrome.contextMenus.create({...params, id: 'aria2c_this_url', title: chrome.i18n.getMessage('contextmenu_thisurl'), contexts: ['link']});
+        chrome.contextMenus.create({id: 'aria2c_this_url', title: chrome.i18n.getMessage('contextmenu_thisurl'), contexts: ['link'], parentId});
     }
     if (aria2Store['context_thisimage']) {
-        chrome.contextMenus.create({...params, id: 'aria2c_this_image', title: chrome.i18n.getMessage('contextmenu_thisimage'), contexts: ['image']});
+        chrome.contextMenus.create({id: 'aria2c_this_image', title: chrome.i18n.getMessage('contextmenu_thisimage'), contexts: ['image'], parentId});
     }
     if (aria2Store['context_allimages']) {
-        chrome.contextMenus.create({...params, id: 'aria2c_all_images', title: chrome.i18n.getMessage('contextmenu_allimages'), contexts: ['page']});
+        chrome.contextMenus.create({ id: 'aria2c_all_images', title: chrome.i18n.getMessage('contextmenu_allimages'), contexts: ['page'], parentId});
     }
 }
 
 function getCurrentTabUrl() {
     return new Promise((resolve) => {
-        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-            var {url} = tabs[0];
-            resolve(url);
-        });
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => resolve(tabs[0].url));
     });
 }
 
@@ -202,10 +199,7 @@ function getRequestHeaders(url) {
     return new Promise((resolve) => {
         chrome.cookies.getAll({url}, (cookies) => {
             var header = 'Cookie:';
-            cookies.forEach((cookie) => {
-                var {name, value} = cookie;
-                header += ` ${name}=${value};`;
-            });
+            cookies.forEach(({name, value}) => header += ` ${name}=${value};`);
             resolve([header]);
         });
     });

@@ -26,10 +26,7 @@ browser.storage.sync.get(null, json => {
 async function getRequestHeadersFirefox(url, storeId) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
     var header = 'Cookie:';
-    cookies.forEach(cookie => {
-        var {name, value} = cookie;
-        header += ' ' + name + '=' + value + ';';
-    });
+    cookies.forEach(({name, value}) => header += ` ${name}=${value};`);
     return [header];
 }
 
