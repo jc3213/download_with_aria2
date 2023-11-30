@@ -73,12 +73,11 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 });
 
 chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
-    var {id} = tab;
     if (action === 'internal_prompt') {
-        response(aria2Prompt[id]);
+        response(aria2Prompt[tab.id]);
     }
     else if (action === 'internal_images') {
-        response(aria2Message[id]);
+        response(aria2Message[tab.id]);
     }
     else if (action === 'external_download') {
         aria2DownloadPrompt(params);
