@@ -1,8 +1,20 @@
 var aria2Changes = [
-    {keys: ['jsonrpc_uri', 'jsonrpc_token'], action: aria2UpdateRPC},
-    {keys: ['manager_newtab'], action: aria2UpdateManager},
-    {keys: ['manager_interval'], action: aria2UpdateInterval},
-    {keys: ['proxy_server'], action: aria2UpdateProxy}
+    {
+        keys: ['jsonrpc_uri', 'jsonrpc_token'],
+        action: aria2UpdateRPC
+    },
+    {
+        keys: ['manager_newtab'],
+        action: aria2UpdateManager
+    },
+    {
+        keys: ['manager_interval'],
+        action: aria2UpdateInterval
+    },
+    {
+        keys: ['proxy_server'],
+        action: aria2UpdateProxy
+    }
 ];
 var open_in_tab = location.search === '?open_in_tab';
 
