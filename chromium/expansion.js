@@ -43,7 +43,7 @@ function aria2ClientSetUp() {
     if (aria2Retry) {
         clearTimeout(aria2Retry);
     }
-    if (aria2Socket && aria2Socket.readyState === 1) {
+    if (aria2Socket.readyState === 1) {
         aria2Socket.close();
     }
     aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
@@ -53,21 +53,19 @@ function aria2ClientSetUp() {
         aria2Active = result.map(({gid}) => gid);
         aria2ToolbarBadge(aria2Active.length);
         aria2Socket = new WebSocket(aria2Store['jsonrpc_uri'].replace('http', 'ws'));
-        aria2Socket.onmessage = async event => {
-            var {method, params: [{gid}]} = JSON.parse(event.data);
-            if (method !== 'aria2.onBtDownloadComplete') {
-                if (method === 'aria2.onDownloadStart') {
-                    if (aria2Active.indexOf(gid) === -1) {
-                        aria2Active.push(gid);
-                    }
+        aria2Socket.onmessage = async ({data}) => {
+            var {method, params: [{gid}]} = JSON.parse(data);
+            if (method === 'aria2.onDownloadStart') {
+                if (aria2Active.indexOf(gid) === -1) {
+                    aria2Active.push(gid);
                 }
-                else {
-                    aria2Active.splice(aria2Active.indexOf(gid), 1);
-                    if (method === 'aria2.onDownloadComplete') {
-                        var {bittorrent, files} = await aria2RPC.call('aria2.tellStatus', gid);
-                        var name = getDownloadName(gid, bittorrent, files);
-                        aria2WhenComplete(name);
-                    }
+            }
+            else if (method !== 'aria2.onBtDownloadComplete') { {
+                aria2Active.splice(aria2Active.indexOf(gid), 1);
+                if (method === 'aria2.onDownloadComplete') {
+                    var {bittorrent, files} = await aria2RPC.call('aria2.tellStatus', gid);
+                    var name = getDownloadName(gid, bittorrent, files);
+                    aria2WhenComplete(name);
                 }
             }
             aria2ToolbarBadge(aria2Active.length);
@@ -75,7 +73,7 @@ function aria2ClientSetUp() {
     }).catch(error => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
         aria2ToolbarBadge('E');
-        aria2Retry = setTimeout(aria2StartUp, aria2Store['manager_interval'])
+        aria2Retry = setTimeout(aria2ClientSetUp, aria2Store['manager_interval'])
     });
 }
 
