@@ -2,11 +2,11 @@ var aria2Socket;
 var aria2Retry;
 var aria2Active;
 
-chrome.browserAction.onClicked.addListener(tab => {
-    chrome.tabs.query({currentWindow: true}, tabs => {
-        var tab = tabs.find(tab => tab.url.includes(aria2InTab));
-        if (tab) {
-            chrome.tabs.update(tab.id, {active: true});
+chrome.browserAction.onClicked.addListener((tab) => {
+    chrome.tabs.query({currentWindow: true}, (tabs) => {
+        var popup = tabs.find(tab => tab.url.includes(aria2InTab));
+        if (popup) {
+            chrome.tabs.update(popup.id, {active: true});
         }
         else {
             chrome.tabs.create({active: true, url: aria2Popup + '?open_in_tab'});
@@ -47,7 +47,7 @@ function aria2ClientSetUp() {
         aria2Socket.close();
     }
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
-    aria2RPC.call('aria2.tellActive').then(result => {
+    aria2RPC.call('aria2.tellActive').then((result) => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
         aria2Retry = null;
         aria2Active = result.map(({gid}) => gid);
@@ -60,7 +60,7 @@ function aria2ClientSetUp() {
                     aria2Active.push(gid);
                 }
             }
-            else if (method !== 'aria2.onBtDownloadComplete') { {
+            else if (method !== 'aria2.onBtDownloadComplete') {
                 aria2Active.splice(aria2Active.indexOf(gid), 1);
                 if (method === 'aria2.onDownloadComplete') {
                     var {bittorrent, files} = await aria2RPC.call('aria2.tellStatus', gid);
@@ -70,7 +70,7 @@ function aria2ClientSetUp() {
             }
             aria2ToolbarBadge(aria2Active.length);
         };
-    }).catch(error => {
+    }).catch((error) => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#c33'});
         aria2ToolbarBadge('E');
         aria2Retry = setTimeout(aria2ClientSetUp, aria2Storage['manager_interval'])
