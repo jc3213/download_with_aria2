@@ -190,12 +190,11 @@ function createSession(gid, status, bittorrent) {
             taskRemoveUri(target.textContent, gid, ctrlKey);
         }
     });
-    task.addEventListener('change', ({target}) => {
-        var {id} = target.dataset;
-        var {value} = target;
+    task.addEventListener('change', (event) => {
+        var {dataset: {rid}, value} = event.target;
         var {options} = task;
-        if (id && options[id] !== value) {
-            options[id] = value;
+        if (rid && options[rid] !== value) {
+            options[rid] = value;
             aria2RPC.call('aria2.changeOption', gid, options);
         }
     });
