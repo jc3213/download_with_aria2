@@ -16,7 +16,7 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, u
 });
 
 chrome.storage.sync.get(null, json => {
-    aria2Store = {...aria2Default, ...json};
+    aria2Storage = {...aria2Default, ...json};
     aria2ClientSetUp();
     aria2CaptureSwitch();
     aria2TaskManager();
@@ -50,7 +50,7 @@ async function captureOnFilename({id, filename, fileSize}) {
 }
 
 function aria2CaptureSwitch() {
-    if (aria2Store['capture_enabled']) {
+    if (aria2Storage['capture_enabled']) {
         chrome.downloads.onCreated.addListener(captureOnCreated);
         chrome.downloads.onDeterminingFilename.addListener(captureOnFilename);
     }

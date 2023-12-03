@@ -10,7 +10,7 @@ chrome.action.onClicked.addListener(async tab => {
 });
 
 async function aria2DownloadPrompt(aria2c) {
-    if (aria2Store['download_prompt']) {
+    if (aria2Storage['download_prompt']) {
         var id = await aria2NewDownload(true);
         aria2Prompt[id] = aria2c;
     }
@@ -27,7 +27,7 @@ async function aria2DownloadPrompt(aria2c) {
 }
 
 function aria2TaskManager() {
-    if (aria2Store['manager_newtab']) {
+    if (aria2Storage['manager_newtab']) {
         chrome.action.setPopup({popup: ''});
     }
     else {
@@ -36,5 +36,5 @@ function aria2TaskManager() {
 }
 
 function aria2ClientSetUp() {
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
 }

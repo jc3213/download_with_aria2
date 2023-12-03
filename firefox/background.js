@@ -16,7 +16,7 @@ browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, 
 });
 
 browser.storage.sync.get(null, json => {
-    aria2Store = {...aria2Default, ...json};
+    aria2Storage = {...aria2Default, ...json};
     aria2ClientSetUp();
     aria2CaptureSwitch();
     aria2TaskManager();
@@ -31,8 +31,8 @@ async function getRequestHeadersFirefox(url, storeId) {
 }
 
 function aria2CaptureSwitch() {
-    if (aria2Store['capture_enabled']) {
-        if (aria2Store['capture_webrequest']) {
+    if (aria2Storage['capture_enabled']) {
+        if (aria2Storage['capture_webrequest']) {
             browser.downloads.onCreated.removeListener(downloadCapture);
             browser.webRequest.onHeadersReceived.addListener(webRequestCapture, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
         }
@@ -93,12 +93,12 @@ async function getFirefoxOptions(filename) {
     var {os} = await browser.runtime.getPlatformInfo();
     var idx = os === 'win' ? filename.lastIndexOf('\\') : filename.lastIndexOf('/');
     var out = filename.slice(idx + 1);
-    if (aria2Store['folder_enabled']) {
-        if (aria2Store['folder_firefox']) {
+    if (aria2Storage['folder_enabled']) {
+        if (aria2Storage['folder_firefox']) {
             return {out, dir: filename.slice(0, idx + 1)};
         }
-        else if (aria2Store['folder_defined'] !== '') {
-            return {out, dir: aria2Store['folder_defined']};
+        else if (aria2Storage['folder_defined'] !== '') {
+            return {out, dir: aria2Storage['folder_defined']};
         }
     }
     return {out, dir: null};

@@ -58,7 +58,7 @@ function downloadReferer(refererBtn) {
 }
 
 function downloadProxy(proxyBtn) {
-    proxyBtn.previousElementSibling.value = aria2Global['all-proxy'] = aria2Store['proxy_server'];
+    proxyBtn.previousElementSibling.value = aria2Global['all-proxy'] = aria2Storage['proxy_server'];
 }
 
 document.addEventListener('change', ({target}) => {
@@ -133,10 +133,10 @@ function slimModeInit() {
 }
 
 chrome.storage.sync.get(null, async (json) => {
-    aria2Store = json;
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
+    aria2Storage = json;
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
     var global = await aria2RPC.call('aria2.getGlobalOption');
-    global['user-agent'] = aria2Store['user_agent']
+    global['user-agent'] = aria2Storage['user_agent']
     aria2Global = settings.disposition(global);
     if (slim_mode) {
         slimModeInit();

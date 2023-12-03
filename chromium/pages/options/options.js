@@ -102,7 +102,7 @@ document.addEventListener('click', ({target}) => {
 
 function optionsSave() {
     if (global) {
-        aria2Store = {...changes};
+        aria2Storage = {...changes};
         chrome.storage.sync.set(changes);
     }
     else {
@@ -137,7 +137,7 @@ function optionsRedo() {
 function optionsExport() {
     var time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
     if (global) {
-        var output = [JSON.stringify(aria2Store, null, 4)];
+        var output = [JSON.stringify(aria2Storage, null, 4)];
         var name = `downwitharia2_options-${time}.json`;
     }
     else {
@@ -195,7 +195,7 @@ function optionsImport(file) {
         if (global) {
             var json = JSON.parse(reader.result);
             chrome.storage.sync.set(json);
-            aria2Store = json;
+            aria2Storage = json;
             aria2StartUp();
         }
         else {
@@ -266,18 +266,18 @@ function optionsRelated(menu) {
 
 chrome.storage.onChanged.addListener((changes) => {
     if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
-        aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
+        aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
     }
 });
 
 chrome.storage.sync.get(null, (json) => {
-    aria2Store = json;
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
+    aria2Storage = json;
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
     aria2StartUp();
 });
 
 function aria2StartUp() {
-    changes = {...aria2Store};
+    changes = {...aria2Storage};
     aria2ver.textContent = appver;
     options.forEach((entry) => {
         var eid = entry.dataset.eid;

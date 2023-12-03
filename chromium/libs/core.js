@@ -31,13 +31,13 @@ async function aria2DownloadJSON(json, origin) {
 }
 
 function aria2WhenStart(message) {
-    if (aria2Store['notify_start']) {
+    if (aria2Storage['notify_start']) {
         return getNotification(aria2Start, message);
     }
 }
 
 function aria2WhenComplete(message) {
-    if (aria2Store['notify_complete']) {
+    if (aria2Storage['notify_complete']) {
         return getNotification(aria2Complete, message);
     }
 }

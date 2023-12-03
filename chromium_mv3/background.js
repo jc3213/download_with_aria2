@@ -32,7 +32,7 @@ chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
 chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSize}) => {
     await aria2Initial();
     var {url, referer, hostname, skipped} = aria2Monitor[id];
-    if (!aria2Store['capture_enabled'] || skipped) {
+    if (!aria2Storage['capture_enabled'] || skipped) {
         return;
     }
     var captured = getCaptureGeneral(hostname, getFileExtension(filename), fileSize);
@@ -45,14 +45,14 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
 
 async function aria2Activate() {
     var json = await chrome.storage.sync.get(null);
-    aria2Store = {...aria2Default, ...json};
+    aria2Storage = {...aria2Default, ...json};
     aria2ClientSetUp();
     aria2TaskManager();
 }
 
 async function aria2Initial() {
     if (!aria2RPC) {
-        aria2Store = await chrome.storage.sync.get(null);
+        aria2Storage = await chrome.storage.sync.get(null);
         aria2ClientSetUp();
     }
 }

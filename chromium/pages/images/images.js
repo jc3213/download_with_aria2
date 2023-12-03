@@ -46,7 +46,7 @@ function imagesOptions() {
 }
 
 function imagesProxy(proxyBtn) {
-    proxyBtn.previousElementSibling.value = aria2Options['all-proxy'] = aria2Store['proxy_server'];
+    proxyBtn.previousElementSibling.value = aria2Options['all-proxy'] = aria2Storage['proxy_server'];
 }
 
 viewer.addEventListener('click', ({target}) => {
@@ -60,9 +60,9 @@ viewer.addEventListener('load', ({target}) => {
 }, true);
 
 chrome.storage.sync.get(null, (json) => {
-    aria2Store = json;
-    aria2RPC = new Aria2(aria2Store['jsonrpc_uri'], aria2Store['jsonrpc_token']);
-    aria2Proxy = aria2Store['proxy_server'];
+    aria2Storage = json;
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
+    aria2Proxy = aria2Storage['proxy_server'];
 });
 
 chrome.runtime.sendMessage({action: 'internal_images'}, async ({result, options}) => {
