@@ -1,6 +1,7 @@
 var manager = document.body;
 var detailed;
 var aria2Alive;
+var aria2Socket;
 var optionsbtn = document.querySelector('#options_btn');
 var chooseQueue = document.querySelector('#choose');
 var [downloadStat, uploadStat, activeStat, waitingStat, stoppedStat] = document.querySelectorAll('#status > *');
@@ -66,14 +67,14 @@ function aria2StartUp() {
         [...active, ...waiting, ...stopped].forEach(sessionUpdated);
         downloadStat.textContent = getFileSize(downloadSpeed);
         uploadStat.textContent = getFileSize(uploadSpeed);
-        aria2Client();
+        aria2ClientSetUp();
     }).catch((error) => {
         activeStat.textContent = waitingStat.textContent = stoppedStat.textContent = downloadStat.textContent = uploadStat.textContent = '0';
         activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     });
 }
 
-function aria2Client() {
+function aria2ClientSetUp() {
     aria2Alive = setInterval(updateManager, aria2Interval);
     aria2Socket = new WebSocket(aria2Server.replace('http', 'ws'));
     aria2Socket.onmessage = async ({data}) => {

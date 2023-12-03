@@ -1,3 +1,9 @@
+var aria2Changes = [
+    {keys: ['jsonrpc_uri', 'jsonrpc_token'], action: aria2UpdateRPC},
+    {keys: ['manager_newtab'], action: aria2UpdateManager},
+    {keys: ['manager_interval'], action: aria2UpdateInterval},
+    {keys: ['proxy_server'], action: aria2UpdateProxy}
+];
 var open_in_tab = location.search === '?open_in_tab';
 
 if (open_in_tab) {
@@ -11,7 +17,7 @@ else {
 
     aria2Queue.addEventListener('contextmenu', (event) => {
         event.preventDefault();
-        var {target, clientX, clientY} = event;
+        var {clientX, clientY} = event;
         if (clientX > positionLeft) {
             var left = 'auto';
             var right = '0px';
@@ -31,7 +37,7 @@ else {
         chooseQueue.style.cssText = `display: block; left: ${left}; right: ${right}; top: ${top}; bottom: ${bottom};`;
     });
 
-    aria2Queue.addEventListener('click', ({target}) => {
+    aria2Queue.addEventListener('click', (event) => {
         chooseQueue.style.display = 'none';
     });
 }
@@ -51,26 +57,36 @@ function managerOptions() {
 }
 
 chrome.storage.onChanged.addListener((changes) => {
-    var {jsonrpc_uri, jsonrpc_token, manager_newtab, manager_interval, proxy_server} = changes;
-    if (jsonrpc_uri || jsonrpc_token) {
-        aria2Server = jsonrpc_uri?.newValue ?? aria2Server;
-        aria2Token = jsonrpc_token?.newValue ?? aria2Token;
-        clearInterval(aria2Alive);
-        aria2Socket?.close();
-        aria2StartUp();
-    }
-    if (manager_interval) {
-        aria2Interval = manager_interval.newValue;
-        clearInterval(aria2Alive);
-        aria2Alive = setInterval(updateManager, aria2Interval);
-    }
-    if (manager_newtab?.newValue === false) {
+    aria2Changes.forEach(({keys, action}) => {
+        if (keys.some((key) => key in changes)) {
+            action(changes);
+        }
+    });
+});
+
+function aria2UpdateRPC(changes) {
+    aria2Server = changes['jsonrpc_uri']?.newValue ?? aria2Server;
+    aria2Token = changes['jsonrpc_token']?.newValue ?? aria2Token;
+    clearInterval(aria2Alive);
+    aria2Socket?.close();
+    aria2StartUp();
+}
+
+function aria2UpdateManager(changes) {
+    if (changes['manager_newtab'].newValue === false) {
         close();
     }
-    if (proxy_server) {
-        aria2Proxy = proxy_server.newValue;
-    }
-});
+}
+
+function aria2UpdateInterval(changes) {
+    aria2Interval = changes['manager_interval'].newValue;
+    clearInterval(aria2Alive);
+    aria2Alive = setInterval(updateManager, aria2Interval);
+}
+
+function aria2UpdateProxy(changes) {
+    aria2Proxy = changes['proxy_server'].newValue;
+}
 
 chrome.storage.sync.get(null, json => {
     aria2Server = json['jsonrpc_uri'];
