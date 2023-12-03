@@ -2,17 +2,20 @@ var manager = document.body;
 var detailed;
 var aria2Alive;
 var aria2Socket;
+var aria2Queue = localStorage['queues']?.match(/[^\s,]+/g) ?? [];
 var optionsbtn = document.querySelector('#options_btn');
 var chooseQueue = document.querySelector('#choose');
 var [downloadStat, uploadStat, activeStat, waitingStat, stoppedStat] = document.querySelectorAll('#status > *');
-var [aria2Queue, activeQueue, waitingQueue, pausedQueue, completeQueue, removedQueue, errorQueue] = document.querySelectorAll('#queue, #queue > *');
+var [allQueues, activeQueue, waitingQueue, pausedQueue, completeQueue, removedQueue, errorQueue] = document.querySelectorAll('#queue, #queue > *');
 var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
 
-Object.keys(localStorage).forEach((key) => manager.classList.add(key));
-chooseQueue.addEventListener('click', ({target}) => {
-    var id = target.dataset.qid;
-    manager.classList.toggle(id);
-    localStorage.getItem(id) ? localStorage.removeItem(id) : localStorage.setItem(id, id);
+manager.classList.add(...aria2Queue);
+chooseQueue.addEventListener('click', (event) => {
+    var {qid} = event.target.dataset;
+    var qpo = aria2Queue.indexOf(qid);
+    qpo === -1 ? aria2Queue.push(qid) : aria2Queue.splice(qpo, 1);
+    manager.classList.toggle(qid);
+    localStorage['queues'] = aria2Queue.join(', ');
 });
 
 document.addEventListener('keydown', (event) => {
@@ -33,8 +36,8 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-document.querySelector('#menu').addEventListener('click', ({target}) => {
-    var {id} = target;
+document.querySelector('#menu').addEventListener('click', (event) => {
+    var {id} = event.target;
     if (id === 'purge_btn') {
         managerPurge();
     }
@@ -194,7 +197,7 @@ function createSession(gid, status, bittorrent) {
     task.addEventListener('change', (event) => {
         var {dataset: {rid}, value} = event.target;
         var {options} = task;
-        if (rid && options[rid] !== value) {
+        if (rid) {
             options[rid] = value;
             aria2RPC.call('aria2.changeOption', gid, options);
         }

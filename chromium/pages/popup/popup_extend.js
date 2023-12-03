@@ -22,12 +22,12 @@ if (open_in_tab) {
     document.body.classList.add('full');
 }
 else {
-    var positionLeft = aria2Queue.offsetWidth - choose.offsetWidth;
-    var positionTop = aria2Queue.offsetHeight - choose.offsetHeight;
+    var positionLeft = allQueues.offsetWidth - choose.offsetWidth;
+    var positionTop = allQueues.offsetHeight - choose.offsetHeight;
     var positionHeight = manager.offsetHeight + 15;
     choose.style.display = 'none';
 
-    aria2Queue.addEventListener('contextmenu', (event) => {
+    allQueues.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         var {clientX, clientY} = event;
         if (clientX > positionLeft) {
@@ -49,7 +49,7 @@ else {
         chooseQueue.style.cssText = `display: block; left: ${left}; right: ${right}; top: ${top}; bottom: ${bottom};`;
     });
 
-    aria2Queue.addEventListener('click', (event) => {
+    allQueues.addEventListener('click', (event) => {
         chooseQueue.style.display = 'none';
     });
 }
