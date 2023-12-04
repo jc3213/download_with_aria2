@@ -3,26 +3,28 @@ var images = [];
 var aria2Options = {};
 
 document.addEventListener('keydown', (event) => {
-    var {ctrlKey, altKey, key} = event;
-    if (ctrlKey && key === 'Enter' || altKey && key === 's') {
-        event.preventDefault();
-        imagesSubmit();
-    }
-    else if (ctrlKey && key === 's') {
-        event.preventDefault();
-        imagesOptions();
-    }
-    else if (ctrlKey && key === 'a') {
-        event.preventDefault();
-        selectAll();
-    }
-    else if (ctrlKey && key === 'x') {
-        event.preventDefault();
-        selectNone();
-    }
-    else if (ctrlKey && key === 'r') {
-        event.preventDefault();
-        selectFlip();
+    var {ctrlKey, key} = event;
+    if (ctrlKey) {
+        if (key === 'Enter') {
+            event.preventDefault();
+            imagesSubmit();
+        }
+        if (key === 's') {
+            event.preventDefault();
+            imagesOptions();
+        }
+        else if (key === 'a') {
+            event.preventDefault();
+            selectAll();
+        }
+        else if (key === 'x') {
+            event.preventDefault();
+            selectNone();
+        }
+        else if (key === 'r') {
+            event.preventDefault();
+            selectFlip();
+        }
     }
 });
 
