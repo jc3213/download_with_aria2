@@ -62,6 +62,15 @@
     "common_save": {
         "message": "Save"
     },
+    "select_all": {
+        "message": "Select All"
+    },
+    "select_none": {
+        "message": "Select None"
+    },
+    "select_Flip": {
+        "message": "Flip Selection"
+    },
     "option_undo": {
         "message": "Undo"
     },

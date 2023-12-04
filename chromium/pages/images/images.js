@@ -1,4 +1,5 @@
 var viewer = document.querySelector('#viewer');
+var images = [];
 var aria2Options;
 var aria2Proxy;
 
@@ -24,6 +25,15 @@ document.addEventListener('click', ({target}) => {
     }
     else if (id === 'proxy_btn') {
         imagesProxy(target);
+    }
+    else if (id === 'select_all') {
+        images.forEach(image => image.classList.add('checked'));
+    }
+    else if (id === 'select_none') {
+        images.forEach(image => image.classList.remove('checked'));
+    }
+    else if (id === 'select_flip') {
+        images.forEach(image => image.classList.toggle('checked'));
     }
 });
 
@@ -88,4 +98,5 @@ function getPreview({src, alt, title}) {
         img.alt = `${alt}${ext}`;
     }
     viewer.append(img);
+    images.push(img);
 }

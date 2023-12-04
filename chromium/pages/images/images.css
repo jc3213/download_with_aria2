@@ -34,6 +34,6 @@ body:not(.extra) #options {
     margin-top: 0px;
 }
 
-#menu {
-    text-align: center;
+#menu > :nth-child(4) {
+    margin-left: auto;
 }

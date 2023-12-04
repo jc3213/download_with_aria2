@@ -62,6 +62,15 @@
     "common_save": {
         "message": "保存"
     },
+    "select_all": {
+        "message": "选择全部"
+    },
+    "select_none": {
+        "message": "取消全部"
+    },
+    "select_Flip": {
+        "message": "反转选择"
+    },
     "option_undo": {
         "message": "撤销"
     },
