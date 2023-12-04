@@ -2,8 +2,7 @@ var viewer = document.querySelector('#viewer');
 var images = [];
 var aria2Options = {};
 
-document.addEventListener('keydown', (event) => {
-    var {ctrlKey, key} = event;
+document.addEventListener('keydown', ({ctrlKey, key}) => {
     if (ctrlKey) {
         if (key === 'Enter') {
             event.preventDefault();

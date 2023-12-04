@@ -3,7 +3,7 @@ var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('[data-rid]');
 var manifest = chrome.runtime.getManifest();
 var appver = manifest.version;
-var platver = manifest.manifest_version;
+var maniver = manifest.manifest_version;
 var changes = {};
 var redoes = [];
 var undoes = [];
@@ -53,12 +53,11 @@ if (typeof browser !== 'undefined') {
         }
     });
 }
-else if (platver === 3) {
+else if (maniver === 3) {
     extension.classList.add('manifest_v3');
 }
 
-document.addEventListener('keydown', (event) => {
-    var {ctrlKey, key} = event;
+document.addEventListener('keydown', ({ctrlKey, key}) => {
     if (ctrlKey) {
         if (key === 's') {
             event.preventDefault();
