@@ -173,8 +173,11 @@
     "option_download_prompt_title": {
         "message": "开始下载前弹出窗口确认下载信息"
     },
+    "option_headers": {
+        "message": "请求头"
+    },    
     "option_headers_enabled": {
-        "message": "转发请求头"
+        "message": "启用转发请求头"
     },
     "option_headers_enabled_title": {
         "message": "为新建下载转发来自浏览器的请求头"
@@ -222,7 +225,7 @@
         "message": "启用抓取功能"
     },
     "option_capture_enabled_title": {
-        "message": "允许抓取来自浏览器的下载"
+        "message": "启用抓取来自浏览器的下载"
     },
     "option_capture_webrequest": {
         "message": "启用抓取网络请求"
