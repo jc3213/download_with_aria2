@@ -72,15 +72,15 @@ function imagesProxy(proxy) {
 }
 
 function selectAll() {
-    images.forEach(image => image.classList.add('checked'));
+    images.forEach((image) => image.classList.add('checked'));
 }
 
 function selectNone() {
-    images.forEach(image => image.classList.remove('checked'));
+    images.forEach((image) => image.classList.remove('checked'));
 }
 
 function selectFlip() {
-    images.forEach(image => image.classList.toggle('checked'));
+    images.forEach((image) => image.classList.toggle('checked'));
 }
 
 document.addEventListener('change', (event) => {
