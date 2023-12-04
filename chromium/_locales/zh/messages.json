@@ -116,7 +116,7 @@
     "option_manager_interval_title": {
         "message": "设置任务管理器刷新间隔"
     },
-    "option_context_menu": {
+    "option_context": {
         "message": "右键菜单"
     },
     "option_context_enabled": {

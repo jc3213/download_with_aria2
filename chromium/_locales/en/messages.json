@@ -116,7 +116,7 @@
     "option_manager_interval_title": {
         "message": "Set the refresh interval of task manager"
     },
-    "option_context_menu": {
+    "option_context": {
         "message": "Context Menus"
     },
     "option_context_enabled": {
