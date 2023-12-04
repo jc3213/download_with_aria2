@@ -68,7 +68,7 @@
     "select_none": {
         "message": "取消全部"
     },
-    "select_Flip": {
+    "select_flip": {
         "message": "反转选择"
     },
     "option_undo": {

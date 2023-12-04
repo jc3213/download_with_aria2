@@ -68,7 +68,7 @@
     "select_none": {
         "message": "Select None"
     },
-    "select_Flip": {
+    "select_flip": {
         "message": "Flip Selection"
     },
     "option_undo": {
