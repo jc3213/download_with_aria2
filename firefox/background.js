@@ -4,14 +4,16 @@ aria2Changes.push({
 });
 
 browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
-    if (menuItemId === 'aria2c_this_url') {
-        aria2Download(linkUrl, url, getHostname(url), cookieStoreId);
-    }
-    else if (menuItemId === 'aria2c_this_image') {
-        aria2Download(srcUrl, url, getHostname(url), cookieStoreId);
-    }
-    else if (menuItemId === 'aria2c_all_images') {
-        browser.tabs.sendMessage(id, menuItemId);
+    switch (menuItemId) {
+        case 'aria2c_this_url':
+            aria2Download(linkUrl, url, getHostname(url), cookieStoreId);
+            break;
+        case 'aria2c_this_image':
+            aria2Download(srcUrl, url, getHostname(url), cookieStoreId);
+            break;
+        case 'aria2c_all_images':
+            browser.tabs.sendMessage(id, menuItemId);
+            break;
     }
 });
 
@@ -35,16 +37,14 @@ function aria2CaptureSwitch() {
         if (aria2Storage['capture_webrequest']) {
             browser.downloads.onCreated.removeListener(downloadCapture);
             browser.webRequest.onHeadersReceived.addListener(webRequestCapture, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
+            return;
         }
-        else {
-            browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
-            browser.downloads.onCreated.addListener(downloadCapture);
-        }
-    }
-    else {
-        browser.downloads.onCreated.removeListener(downloadCapture);
         browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
+        browser.downloads.onCreated.addListener(downloadCapture);
+        return;
     }
+    browser.downloads.onCreated.removeListener(downloadCapture);
+    browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
 }
 
 async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
@@ -97,7 +97,7 @@ async function getFirefoxOptions(filename) {
         if (aria2Storage['folder_firefox']) {
             return {out, dir: filename.slice(0, idx + 1)};
         }
-        else if (aria2Storage['folder_defined'] !== '') {
+        if (aria2Storage['folder_defined'] !== '') {
             return {out, dir: aria2Storage['folder_defined']};
         }
     }
@@ -154,7 +154,7 @@ function decodeRFC2047(text) {
         if (b) {
             var decode = [...atob(data)].map(s => s.charCodeAt(0));
         }
-        else if (q) {
+        if (q) {
             decode = data.match(/=[0-9a-fA-F]{2}|./g)?.map(v => {
                 if (v === '_') {
                     return 0x20;

@@ -8,16 +8,18 @@ chrome.runtime.onInstalled.addListener(async ({reason}) => {
 });
 
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url}) => {
-    if (menuItemId === 'aria2c_this_url') {
-        await aria2Initial();
-        aria2Download(linkUrl, url, getHostname(url));
-    }
-    else if (menuItemId === 'aria2c_this_image') {
-        await aria2Initial();
-        aria2Download(srcUrl, url, getHostname(url));
-    }
-    else if (menuItemId === 'aria2c_all_images') {
-        chrome.tabs.sendMessage(id, menuItemId);
+    switch (menuItemId) {
+        case 'aria2c_this_url':
+            await aria2Initial();
+            aria2Download(linkUrl, url, getHostname(url));
+            break;
+        case 'aria2c_this_image':
+            await aria2Initial();
+            aria2Download(srcUrl, url, getHostname(url));
+            break;
+        case 'aria2c_all_images':
+            chrome.tabs.sendMessage(id, menuItemId);
+            break;
     }
 });
 

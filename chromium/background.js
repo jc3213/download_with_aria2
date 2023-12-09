@@ -4,14 +4,16 @@ aria2Changes.push({
 });
 
 chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url}) => {
-    if (menuItemId === 'aria2c_this_url') {
-        aria2Download(linkUrl, url, getHostname(url));
-    }
-    else if (menuItemId === 'aria2c_this_image') {
-        aria2Download(srcUrl, url, getHostname(url));
-    }
-    else if (menuItemId === 'aria2c_all_images') {
-        chrome.tabs.sendMessage(id, menuItemId);
+    switch (menuItemId) {
+        case 'aria2c_this_url':
+            aria2Download(linkUrl, url, getHostname(url));
+            break;
+        case 'aria2c_this_image':
+            aria2Download(srcUrl, url, getHostname(url));
+            break;
+        case 'aria2c_all_images':
+            chrome.tabs.sendMessage(id, menuItemId);
+            break;
     }
 });
 
@@ -27,12 +29,7 @@ async function captureOnCreated({id, finalUrl, referrer}) {
     var url = finalUrl;
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
-    if (url.startsWith('blob') || url.startsWith('data')) {
-        var priority = -1;
-    }
-    else {
-        priority = getCaptureHostname(hostname);
-    }
+    var priority = url.startsWith('blob') || url.startsWith('data') ? -1 : getCaptureHostname(hostname);
     aria2Monitor[id] = {url, referer, hostname, priority};
 }
 
@@ -53,9 +50,8 @@ function aria2CaptureSwitch() {
     if (aria2Storage['capture_enabled']) {
         chrome.downloads.onCreated.addListener(captureOnCreated);
         chrome.downloads.onDeterminingFilename.addListener(captureOnFilename);
+        return;
     }
-    else {
-        chrome.downloads.onCreated.removeListener(captureOnCreated);
-        chrome.downloads.onDeterminingFilename.removeListener(captureOnFilename);
-    }
+    chrome.downloads.onCreated.removeListener(captureOnCreated);
+    chrome.downloads.onDeterminingFilename.removeListener(captureOnFilename);
 }

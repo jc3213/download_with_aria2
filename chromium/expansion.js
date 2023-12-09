@@ -6,11 +6,9 @@ chrome.browserAction.onClicked.addListener((tab) => {
     chrome.tabs.query({currentWindow: true}, (tabs) => {
         var popup = tabs.find(tab => tab.url.includes(aria2InTab));
         if (popup) {
-            chrome.tabs.update(popup.id, {active: true});
+            return chrome.tabs.update(popup.id, {active: true});
         }
-        else {
-            chrome.tabs.create({active: true, url: aria2Popup + '?open_in_tab'});
-        }
+        chrome.tabs.create({active: true, url: `${aria2Popup}?open_in_tab`});
     });
 });
 
@@ -24,19 +22,15 @@ async function aria2DownloadPrompt(aria2c) {
         if (json) {
             aria2DownloadJSON(json, options);
         }
-        else if (url) {
+        if (url) {
             aria2DownloadUrls(url, options);
         }
     }
 }
 
 function aria2TaskManager() {
-    if (aria2Storage['manager_newtab']) {
-        chrome.browserAction.setPopup({popup: ''});
-    }
-    else {
-        chrome.browserAction.setPopup({popup: aria2Popup});
-    }
+    var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup;
+    chrome.browserAction.setPopup({popup});
 }
 
 function aria2ClientSetUp() {
@@ -56,17 +50,20 @@ function aria2ClientSetUp() {
         aria2Socket.onmessage = async (event) => {
             var {method, params: [{gid}]} = JSON.parse(event.data);
             var adx = aria2Active.indexOf(gid);
-            if (method === 'aria2.onDownloadStart' && adx === -1) {
-                aria2Active.push(gid);
-            }
-            else if (method === 'aria2.onDownloadComplete') {
-                var {bittorrent, files} = await aria2RPC.call('aria2.tellStatus', gid);
-                var name = getDownloadName(gid, bittorrent, files);
-                aria2Active.splice(adx, 1);
-                aria2WhenComplete(name);
-            }
-            else if (method !== 'aria2.onBtDownloadComplete') {
-                aria2Active.splice(adx, 1);
+            switch (method) {
+                case 'aria2.onDownloadStart':
+                    if (adx === -1) {
+                        aria2Active.push(gid);
+                    }
+                    break;
+                case 'aria2.onBtDownloadComplete':
+                    break;
+                case 'aria2.onDownloadComplete':
+                    var {bittorrent, files} = await aria2RPC.call('aria2.tellStatus', gid);
+                    var name = getDownloadName(gid, bittorrent, files);
+                    aria2WhenComplete(name);
+                default:
+                    aria2Active.splice(adx, 1);
             }
             aria2ToolbarBadge(aria2Active.length);
         };
