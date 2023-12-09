@@ -17,8 +17,6 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, u
     }
 });
 
-chrome.browserAction.onClicked.addListener(getTaskManager);
-
 chrome.storage.sync.get(null, json => {
     aria2Storage = {...aria2Default, ...json};
     aria2ClientSetUp();

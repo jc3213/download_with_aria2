@@ -14,11 +14,6 @@ async function aria2DownloadPrompt(aria2c) {
     }
 }
 
-function aria2TaskManager() {
-    var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup;
-    chrome.action.setPopup({popup});
-}
-
 function aria2ClientSetUp() {
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
 }

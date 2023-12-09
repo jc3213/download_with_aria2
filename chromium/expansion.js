@@ -17,11 +17,6 @@ async function aria2DownloadPrompt(aria2c) {
     }
 }
 
-function aria2TaskManager() {
-    var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup;
-    chrome.browserAction.setPopup({popup});
-}
-
 function aria2ClientSetUp() {
     if (aria2Retry) {
         clearTimeout(aria2Retry);

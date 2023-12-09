@@ -100,6 +100,9 @@ chrome.commands.onCommand.addListener((command) => {
     }
 });
 
+chrome.action = chrome.action ?? chrome.browserAction;
+chrome.action.onClicked.addListener(getTaskManager);
+
 async function aria2Download(url, referer, hostname, options = {}, storeId) {
     options['user-agent'] = aria2Storage['user_agent'];
     if (aria2Storage['proxy_enabled'] || aria2Storage['proxy_include'].some(host => hostname.includes(host))) {
@@ -217,4 +220,9 @@ function getTaskManager() {
         }
         chrome.tabs.create({active: true, url: `${aria2Popup}?open_in_tab`});
     });
+}
+
+function aria2TaskManager() {
+    var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup;
+    chrome.action.setPopup({popup});
 }
