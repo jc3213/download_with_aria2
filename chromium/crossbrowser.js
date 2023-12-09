@@ -208,3 +208,13 @@ function getRequestHeaders(url) {
         });
     });
 }
+
+function getTaskManager() {
+    chrome.tabs.query({currentWindow: true}, (tabs) => {
+        var popup = tabs.find(tab => tab.url.includes(aria2InTab));
+        if (popup) {
+            return chrome.tabs.update(popup.id, {active: true});
+        }
+        chrome.tabs.create({active: true, url: `${aria2Popup}?open_in_tab`});
+    });
+}

@@ -23,6 +23,8 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
     }
 });
 
+chrome.browserAction.onClicked.addListener(getTaskManager);
+
 chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
     var url = finalUrl;
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;

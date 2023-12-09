@@ -2,16 +2,6 @@ var aria2Socket;
 var aria2Retry;
 var aria2Active;
 
-chrome.browserAction.onClicked.addListener((tab) => {
-    chrome.tabs.query({currentWindow: true}, (tabs) => {
-        var popup = tabs.find(tab => tab.url.includes(aria2InTab));
-        if (popup) {
-            return chrome.tabs.update(popup.id, {active: true});
-        }
-        chrome.tabs.create({active: true, url: `${aria2Popup}?open_in_tab`});
-    });
-});
-
 async function aria2DownloadPrompt(aria2c) {
     if (aria2Storage['download_prompt']) {
         var id = await aria2NewDownload(true);
