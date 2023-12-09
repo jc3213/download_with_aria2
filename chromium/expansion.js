@@ -16,15 +16,14 @@ async function aria2DownloadPrompt(aria2c) {
     if (aria2Storage['download_prompt']) {
         var id = await aria2NewDownload(true);
         aria2Prompt[id] = aria2c;
+        return;
     }
-    else {
-        var {url, json, options} = aria2c;
-        if (json) {
-            aria2DownloadJSON(json, options);
-        }
-        if (url) {
-            aria2DownloadUrls(url, options);
-        }
+    var {url, json, options} = aria2c;
+    if (json) {
+        aria2DownloadJSON(json, options);
+    }
+    if (url) {
+        aria2DownloadUrls(url, options);
     }
 }
 
