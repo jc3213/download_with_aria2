@@ -78,7 +78,7 @@ async function downloadFiles(files) {
     var file = files[0];
     var b64encode = await getFileData(file);
     var call = file.name.endsWith('torrent') ? ['aria2.addTorrent', b64encode] : ['aria2.addMetalink', b64encode, aria2Global];
-    await aria2RPC.call(call);
+    await aria2RPC.call(...call);
     await aria2WhenStart(file.name);
     close();
 }
