@@ -51,7 +51,5 @@ function getFileSize(bytes) {
     if (bytes < 1099511627776) {
         return `${(bytes / 10737418.24 | 0) / 100}G`;
     }
-    {
-        return `${(bytes / 10995116277.76 | 0) / 100}T`;
-    }
+    return `${(bytes / 10995116277.76 | 0) / 100}T`;
 }
