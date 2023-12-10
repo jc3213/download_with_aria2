@@ -261,6 +261,6 @@ function aria2TaskManager() {
 async function aria2MV3SetUp() {
     if (!aria2RPC) {
         aria2Storage = await chrome.storage.sync.get(null);
-        aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
+        aria2ClientSetUp();
     }
 }

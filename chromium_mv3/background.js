@@ -32,6 +32,10 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
 async function aria2Activate() {
     var json = await chrome.storage.sync.get(null);
     aria2Storage = {...aria2Default, ...json};
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
+    aria2ClientSetUp();
     aria2TaskManager();
+}
+
+function aria2ClientSetUp() {
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
 }
