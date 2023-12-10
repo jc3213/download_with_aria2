@@ -104,6 +104,7 @@ chrome.action = chrome.action ?? chrome.browserAction;
 chrome.action.onClicked.addListener(getTaskManager);
 
 async function aria2Download(url, referer, hostname, options = {}, storeId) {
+    await aria2MV3SetUp();
     options['user-agent'] = aria2Storage['user_agent'];
     if (aria2Storage['proxy_enabled'] || aria2Storage['proxy_include'].some(host => hostname.includes(host))) {
         options['all-proxy'] = aria2Storage['proxy_server'];
@@ -116,6 +117,22 @@ async function aria2Download(url, referer, hostname, options = {}, storeId) {
         options['header'] = storeId ? await getRequestHeadersFirefox(url, storeId) : await getRequestHeaders(url);
     }
     aria2DownloadPrompt({url, options});
+}
+
+async function aria2DownloadPrompt(aria2c) {
+    await aria2MV3SetUp();
+    if (aria2Storage['download_prompt']) {
+        var id = await aria2NewDownload(true);
+        aria2Prompt[id] = aria2c;
+        return;
+    }
+    var {url, json, options} = aria2c;
+    if (json) {
+        aria2DownloadJSON(json, options);
+    }
+    if (url) {
+        aria2DownloadUrls(url, options);
+    }
 }
 
 async function aria2ImagesPrompt(result) {
@@ -225,4 +242,11 @@ function getTaskManager() {
 function aria2TaskManager() {
     var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup;
     chrome.action.setPopup({popup});
+}
+
+async function aria2MV3SetUp() {
+    if (!aria2RPC) {
+        aria2Storage = await chrome.storage.sync.get(null);
+        aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
+    }
 }

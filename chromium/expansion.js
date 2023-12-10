@@ -2,21 +2,6 @@ var aria2Socket;
 var aria2Retry;
 var aria2Active;
 
-async function aria2DownloadPrompt(aria2c) {
-    if (aria2Storage['download_prompt']) {
-        var id = await aria2NewDownload(true);
-        aria2Prompt[id] = aria2c;
-        return;
-    }
-    var {url, json, options} = aria2c;
-    if (json) {
-        aria2DownloadJSON(json, options);
-    }
-    if (url) {
-        aria2DownloadUrls(url, options);
-    }
-}
-
 function aria2ClientSetUp() {
     if (aria2Retry) {
         clearTimeout(aria2Retry);
