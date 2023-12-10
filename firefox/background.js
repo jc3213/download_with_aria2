@@ -3,21 +3,9 @@ aria2Changes.push({
     action: aria2CaptureSwitch
 });
 
-browser.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
-    switch (menuItemId) {
-        case 'aria2c_this_url':
-            aria2Download(linkUrl, url, getHostname(url), cookieStoreId);
-            break;
-        case 'aria2c_this_image':
-            aria2Download(srcUrl, url, getHostname(url), cookieStoreId);
-            break;
-        case 'aria2c_all_images':
-            browser.tabs.sendMessage(id, menuItemId);
-            break;
-    }
-});
+chrome.storage.sync = browser.storage.local;
 
-browser.storage.sync.get(null, json => {
+browser.storage.local.get(null, json => {
     aria2Storage = {...aria2Default, ...json};
     aria2ClientSetUp();
     aria2CaptureSwitch();

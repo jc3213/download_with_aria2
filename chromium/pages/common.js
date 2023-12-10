@@ -6,6 +6,10 @@ document.querySelectorAll('[title]').forEach(item => {
     item.title = chrome.i18n.getMessage(item.title);
 });
 
+if (browser !== undefined) {
+    chrome.storage.sync = browser.storage.local;
+}
+
 var filesize = {
     'min-split-size': true,
     'disk-cache': true,

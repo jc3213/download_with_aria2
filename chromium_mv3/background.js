@@ -7,20 +7,6 @@ chrome.runtime.onInstalled.addListener(async ({reason}) => {
     aria2ContextMenus();
 });
 
-chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url}) => {
-    switch (menuItemId) {
-        case 'aria2c_this_url':
-            aria2Download(linkUrl, url, getHostname(url));
-            break;
-        case 'aria2c_this_image':
-            aria2Download(srcUrl, url, getHostname(url));
-            break;
-        case 'aria2c_all_images':
-            chrome.tabs.sendMessage(id, menuItemId);
-            break;
-    }
-});
-
 chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
     var url = finalUrl;
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;

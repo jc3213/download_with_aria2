@@ -3,20 +3,6 @@ aria2Changes.push({
     action: aria2CaptureSwitch
 });
 
-chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url}) => {
-    switch (menuItemId) {
-        case 'aria2c_this_url':
-            aria2Download(linkUrl, url, getHostname(url));
-            break;
-        case 'aria2c_this_image':
-            aria2Download(srcUrl, url, getHostname(url));
-            break;
-        case 'aria2c_all_images':
-            chrome.tabs.sendMessage(id, menuItemId);
-            break;
-    }
-});
-
 chrome.storage.sync.get(null, json => {
     aria2Storage = {...aria2Default, ...json};
     aria2ClientSetUp();

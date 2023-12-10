@@ -72,6 +72,20 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }
 });
 
+chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
+    switch (menuItemId) {
+        case 'aria2c_this_url':
+            aria2Download(linkUrl, url, getHostname(url), cookieStoreId);
+            break;
+        case 'aria2c_this_image':
+            aria2Download(srcUrl, url, getHostname(url), cookieStoreId);
+            break;
+        case 'aria2c_all_images':
+            chrome.tabs.sendMessage(id, menuItemId);
+            break;
+    }
+});
+
 chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     switch (action) {
         case 'internal_prompt':
