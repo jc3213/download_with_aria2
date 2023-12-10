@@ -16,9 +16,9 @@ var aria2Changes = [
         action: aria2UpdateProxy
     }
 ];
-var open_in_tab = location.search === '?open_in_tab';
+var aria2InTab = location.search === '?open_in_tab';
 
-if (open_in_tab) {
+if (aria2InTab) {
     document.body.classList.add('full');
 }
 else {
@@ -56,14 +56,14 @@ else {
 
 async function managerDownload() {
     await aria2NewDownload();
-    if (!open_in_tab) {
+    if (!aria2InTab) {
         close();
     }
 }
 
 function managerOptions() {
     chrome.runtime.openOptionsPage();
-    if (!open_in_tab) {
+    if (!aria2InTab) {
         close();
     }
 }
