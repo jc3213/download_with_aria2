@@ -75,10 +75,10 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
     switch (menuItemId) {
         case 'aria2c_this_url':
-            aria2Download(linkUrl, url, getHostname(url), cookieStoreId);
+            aria2Download(linkUrl, url, getHostname(url), {}, cookieStoreId);
             break;
         case 'aria2c_this_image':
-            aria2Download(srcUrl, url, getHostname(url), cookieStoreId);
+            aria2Download(srcUrl, url, getHostname(url), {}, cookieStoreId);
             break;
         case 'aria2c_all_images':
             chrome.tabs.sendMessage(id, menuItemId);

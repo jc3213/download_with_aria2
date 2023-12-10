@@ -6,7 +6,7 @@ document.querySelectorAll('[title]').forEach(item => {
     item.title = chrome.i18n.getMessage(item.title);
 });
 
-if (browser !== undefined) {
+if (typeof browser !== 'undefined') {
     chrome.storage.sync = browser.storage.local;
 }
 
