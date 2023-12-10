@@ -12,22 +12,23 @@ document.addEventListener('keydown', ({ctrlKey, key}) => {
     }
 });
 
-document.addEventListener('click', ({target}) => {
-    var id = target.dataset.bid;
-    if (id === 'submit_btn') {
-        downloadSubmit();
-    }
-    else if (id === 'upload_btn') {
-        uploader.click();
-    }
-    else if (id === 'extra_btn') {
-        downloadExpand();
-    }
-    else if (id === 'referer_btn') {
-        downloadReferer(target);
-    }
-    else if (id === 'proxy_btn') {
-        downloadProxy(target);
+document.addEventListener('click', (event) => {
+    switch (event.target.dataset.bid) {
+        case 'submit_btn':
+            downloadSubmit();
+            break;
+        case 'upload_btn':
+            uploader.click();
+            break;
+        case 'extra_btn':
+            downloadExpand();
+            break;
+        case 'referer_btn':
+            downloadReferer(event.target);
+            break;
+        case 'proxy_btn':
+            downloadProxy(event.target);
+            break;
     }
 });
 
@@ -36,7 +37,7 @@ async function downloadSubmit() {
     if (json) {
         await aria2DownloadJSON(json, aria2Global);
     }
-    else if (urls) {
+    if (urls) {
         await aria2DownloadUrls(urls, aria2Global);
     }
     close();
@@ -65,10 +66,10 @@ document.addEventListener('change', ({target}) => {
     if (files) {
         downloadFiles(files);
     }
-    else if (id === 'entries') {
+    if (id === 'entries') {
         changedEntries(value);
     }
-    else if (rid) {
+    if (rid) {
         aria2Global[rid] = value;
     }
 });
@@ -76,12 +77,8 @@ document.addEventListener('change', ({target}) => {
 async function downloadFiles(files) {
     var file = files[0];
     var b64encode = await getFileData(file);
-    if (file.name.endsWith('torrent')){
-        await aria2RPC.call('aria2.addTorrent', b64encode);
-    }
-    else {
-        await aria2RPC.call('aria2.addMetalink', b64encode, aria2Global);
-    }
+    var call = file.name.endsWith('torrent') ? ['aria2.addTorrent', b64encode] : ['aria2.addMetalink', b64encode, aria2Global];
+    await aria2RPC.call(call);
     await aria2WhenStart(file.name);
     close();
 }
@@ -99,12 +96,11 @@ function changedEntries(value) {
     }
     if (noname) {
         filename.disabled = true;
-        delete aria2Global['out'];            
+        delete aria2Global['out'];
+        return;
     }
-    else {
-        filename.disabled = false;
-        aria2Global['out'] = filename.value;
-    }
+    filename.disabled = false;
+    aria2Global['out'] = filename.value;
 }
 
 function slimModeInit() {

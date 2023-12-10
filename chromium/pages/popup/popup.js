@@ -20,31 +20,34 @@ chooseQueue.addEventListener('click', (event) => {
 
 document.addEventListener('keydown', ({ctrlKey, key}) => {
     if (ctrlKey) {
-        if (key === 'r') {
-            event.preventDefault();
-            managerPurge();
-        }
-        else if (key === 'd') {
-            event.preventDefault();
-            managerDownload();
-        }
-        else if (key === 's') {
-            event.preventDefault();
-            managerOptions();
+        switch (key) {
+            case 'r':
+                event.preventDefault();
+                managerPurge();
+                break;
+            case 'd':
+                event.preventDefault();
+                managerDownload();
+                break;
+            case 's':
+                event.preventDefault();
+                managerOptions();
+                break;
         }
     }
 });
 
 document.querySelector('#menu').addEventListener('click', (event) => {
-    var {id} = event.target;
-    if (id === 'purge_btn') {
-        managerPurge();
-    }
-    else if (id === 'download_btn') {
-        managerDownload();
-    }
-    else if (id === 'options_btn') {
-        managerOptions();
+    switch (event.target.id) {
+        case 'purge_btn':
+            managerPurge();
+            break;
+        case 'download_btn':
+            managerDownload();
+            break;
+        case 'options_btn':
+            managerOptions();
+            break;
     }
 });
 
@@ -81,14 +84,20 @@ function aria2ClientSetUp() {
     aria2Socket = new WebSocket(aria2Server.replace('http', 'ws'));
     aria2Socket.onmessage = async ({data}) => {
         var {method, params: [{gid}]} = JSON.parse(data);
-        if (method !== 'aria2.onBtDownloadComplete') {
-            sessionCreated(gid);
-            if (method === 'aria2.onDownloadStart' && waitingTask[gid]) {
-                sessionRemoved('waiting', gid);
-            }
-            else if (method !== 'aria2.onDownloadStart' && activeTask[gid]) {
-                sessionRemoved('active', gid);
-            }
+        switch (method) {
+            case 'aria2.onBtDownloadComplete':
+                break;
+            case 'aria2.onDownloadStart':
+                sessionCreated(gid);
+                if (waitingTask[gid]) {
+                    sessionRemoved('waiting', gid);
+                }
+                break;
+            default:
+                sessionCreated(gid);
+                if (activeTask[gid]) {
+                    sessionRemoved('active', gid);
+                }
         }
     };
 }
@@ -164,39 +173,40 @@ function createSession(gid, status, bittorrent) {
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', async ({target, ctrlKey}) => {
         var status = task.parentNode.id;
-        var id = target.dataset.bid;
-        if (id === 'remove_btn') {
-            taskRemove(task, gid, status);
-        }
-        else if (id === 'detail_btn') {
-            taskDetail(task, gid);
-        }
-        else if (id === 'retry_btn') {
-            taskRetry(task, gid);
-        }
-        else if (id === 'pause_btn') {
-            taskPause(task, gid, status);
-        }
-        else if (id === 'proxy_btn') {
-            taskProxy(target, gid);
-        }
-        else if (id === 'save_btn') {
-            taskFiles(files, save, gid);
-        }
-        else if (id === 'file_btn') {
-            taskSelectFile(save, task.cate, target);
-        }
-        else if (id === 'adduri_btn') {
-            taskAddUri(target, gid);
-        }
-        else if (id === 'uri_btn') {
-            taskRemoveUri(target.textContent, gid, ctrlKey);
+        switch (target.dataset.bid) {
+            case 'remove_btn':
+                taskRemove(task, gid, status);
+                break;
+            case 'detail_btn':
+                taskDetail(task, gid);
+                break;
+            case 'retry_btn':
+                taskRetry(task, gid);
+                break;
+            case 'pause_btn':
+                taskPause(task, gid, status);
+                break;
+            case 'proxy_btn':
+                taskProxy(target, gid);
+                break;
+            case 'save_btn':
+                taskFiles(files, save, gid);
+                break;
+            case 'file_btn':
+                taskSelectFile(save, task.cate, target);
+                break;
+            case 'adduri_btn':
+                taskAddUri(target, gid);
+                break;
+            case 'uri_btn':
+                taskRemoveUri(target.textContent, gid, ctrlKey);
+                break;
         }
     });
     task.addEventListener('change', (event) => {
         var {dataset: {rid}, value} = event.target;
-        var {options} = task;
         if (rid) {
+            var {options} = task;
             options[rid] = value;
             aria2RPC.call('aria2.changeOption', gid, options);
         }
@@ -207,15 +217,16 @@ function createSession(gid, status, bittorrent) {
 }
 
 async function taskRemove(task, gid, status) {
-    if ('active,waiting,paused'.includes(status)) {
-        await aria2RPC.call('aria2.forceRemove', gid);
-        if (status !== 'active') {
+    switch (status) {
+        case 'waiting':
+        case 'paused':
             sessionRemoved('waiting', gid, task);
-        }
-    }
-    else {
-        await aria2RPC.call('aria2.removeDownloadResult', gid);
-        sessionRemoved('stopped', gid, task);
+        case 'active':
+            await aria2RPC.call('aria2.forceRemove', gid);
+            break;
+        default:
+            await aria2RPC.call('aria2.removeDownloadResult', gid);
+            sessionRemoved('stopped', gid, task);
     }
 }
 
@@ -227,14 +238,13 @@ async function taskDetail(task, gid) {
     }
     if (detailed === task) {
         detailed = null;
+        return;
     }
-    else {
-        var [files, options] = await getTaskDetail(gid);
-        detailed = task;
-        detailed.options = detailed.settings.disposition(options);
-        detailed.classList.add('extra');
-        printTaskFileList(files);
-    }
+    var [files, options] = await getTaskDetail(gid);
+    detailed = task;
+    detailed.options = detailed.settings.disposition(options);
+    detailed.classList.add('extra');
+    printTaskFileList(files);
 }
 
 async function taskRetry(task, gid) {
@@ -254,13 +264,16 @@ async function taskRetry(task, gid) {
 }
 
 async function taskPause(task, gid, status) {
-    if ('active,waiting'.includes(status)) {
-        await aria2RPC.call('aria2.forcePause', gid);
-        pausedQueue.appendChild(task);
-    }
-    else if (status === 'paused') {
-        await aria2RPC.call('aria2.unpause', gid);
-        waitingQueue.appendChild(task);
+    switch (status) {
+        case 'active':
+        case 'waiting':
+            await aria2RPC.call('aria2.forcePause', gid);
+            pausedQueue.appendChild(task);
+            break;
+        case 'paused':
+            await aria2RPC.call('aria2.unpause', gid);
+            waitingQueue.appendChild(task);
+            break;
     }
 }
 

@@ -59,55 +59,57 @@ else if (maniver === 3) {
 
 document.addEventListener('keydown', ({ctrlKey, key}) => {
     if (ctrlKey) {
-        if (key === 's') {
-            event.preventDefault();
-            saveBtn.click();
-        }
-        else if (key === 'z') {
-            event.preventDefault();
-            undoBtn.click();
-        }
-        else if (key === 'y') {
-            event.preventDefault();
-            redoBtn.click();
+        switch (key) {
+            case 's':
+                event.preventDefault();
+                saveBtn.click();
+                break;
+            case 'z':
+                event.preventDefault();
+                undoBtn.click();
+                break;
+            case 'y':
+                event.preventDefault();
+                redoBtn.click();
+                break;
         }
     }
 });
 
-document.addEventListener('click', ({target}) => {
-    var id = target.dataset.bid;
-    if (id === 'save_btn') {
-        optionsSave();
-    }
-    else if (id === 'undo_btn') {
-        optionsUndo();
-    }
-    else if (id === 'redo_btn') {
-        optionsRedo();
-    }
-    else if (id === 'export_btn') {
-        optionsExport();
-    }
-    else if (id === 'import_btn') {
-        optionsUpload();
-    }
-    else if (id === 'aria2_btn') {
-        optionsJsonrpc();
-    }
-    else if (id === 'back_btn') {
-        optionsExtension();
+document.addEventListener('click', (event) => {
+    switch (event.target.dataset.bid) {
+        case 'save_btn':
+            optionsSave();
+            break;
+        case 'undo_btn':
+            optionsUndo();
+            break;
+        case 'redo_btn':
+            optionsRedo();
+            break;
+        case 'export_btn':
+            optionsExport();
+            break;
+        case 'import_btn':
+            optionsUpload();
+            break;
+        case 'aria2_btn':
+            optionsJsonrpc();
+            break;
+        case 'back_btn':
+            optionsExtension();
+            break;
     }
 });
 
 function optionsSave() {
+    saveBtn.disabled = true;
     if (global) {
         aria2Storage = {...changes};
         chrome.storage.sync.set(changes);
+        return;
     }
-    else {
-        aria2RPC.call('aria2.changeGlobalOption', changes);
-    }
-    saveBtn.disabled = true;
+    aria2RPC.call('aria2.changeGlobalOption', changes);
 }
 
 function optionsUndo() {
@@ -178,10 +180,10 @@ document.addEventListener('change', ({target}) => {
     if (eid) {
         setChange(eid, eid in switches ? checked : eid in multiply ? value * multiply[eid] : value);
     }
-    else if (rid) {
+    if (rid) {
         setChange(rid, value);
     }
-    else if (files) {
+    if (files) {
         optionsImport(files[0]);
         target.value = '';
     }
@@ -196,17 +198,16 @@ function optionsImport(file) {
             chrome.storage.sync.set(json);
             aria2Storage = json;
             aria2StartUp();
+            return;
         }
-        else {
-            var conf = {};
-            reader.result.split('').forEach((entry) => {
-                var [key, value] = entry.split('=');
-                conf[key] = value;
-            });
-            await aria2RPC.call('aria2.changeGlobalOption', conf);
-            aria2Global = jsonrpc.disposition(conf);
-            changes = {...aria2Global};
-        }
+        var conf = {};
+        reader.result.split('').forEach((entry) => {
+            var [key, value] = entry.split('=');
+            conf[key] = value;
+        });
+        await aria2RPC.call('aria2.changeGlobalOption', conf);
+        aria2Global = jsonrpc.disposition(conf);
+        changes = {...aria2Global};
     };
     reader.readAsText(file);
 }
@@ -219,16 +220,17 @@ mapped.forEach(menu => {
             newRule(id, entry, list);
         }
     });
-    menu.addEventListener('click', ({target}) => {
-        var {bid, mid} = target.dataset;
-        if (bid === 'add') {
-            newRule(id, entry, list);
-        }
-        else if (bid === 'remove') {
-            var new_value = [...changes[id]];
-            new_value.splice(mid, 1);
-            setChange(id, new_value);
-            target.parentNode.remove();
+    menu.addEventListener('click', (event) => {
+        switch (event.target.dataset.bid) {
+            case 'add':
+                newRule(id, entry, list);
+                break;
+            case 'remove':
+                var new_value = [...changes[id]];
+                new_value.splice(event.target.dataset.mid, 1);
+                setChange(id, new_value);
+                event.target.parentNode.remove();
+                break;
         }
     });
     listed[id] = list;
@@ -286,10 +288,9 @@ function aria2StartUp() {
             if (switches[eid]) {
                 value ? extension.classList.add(eid) : extension.classList.remove(eid);
             }
+            return;
         }
-        else {
-            entry.value = eid in multiply ? value / multiply[eid] : value;
-        }
+        entry.value = eid in multiply ? value / multiply[eid] : value;
     });
     mapped.forEach((menu) => {
         var id = menu.dataset.map;
@@ -309,16 +310,16 @@ function getChange(id, value) {
     var entry = entries[id];
     if (id in listed) {
         updateRule(id, value);
+        return;
     }
-    else if (id in switches) {
+    if (id in switches) {
         entry.checked = value;
         if (switches[eid]) {
             extension.classList.toggle(eid);
         }
+        return;
     }
-    else {
-        entry.value = id in multiply ? value / multiply[id] : value;
-    }
+    entry.value = id in multiply ? value / multiply[id] : value;
 }
 
 function setChange(id, new_value) {
