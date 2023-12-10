@@ -18,9 +18,9 @@ chooseQueue.addEventListener('click', (event) => {
     localStorage['queues'] = aria2Queue.join(', ');
 });
 
-document.addEventListener('keydown', ({ctrlKey, key}) => {
-    if (ctrlKey) {
-        switch (key) {
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey) {
+        switch (event.key) {
             case 'r':
                 event.preventDefault();
                 managerPurge();

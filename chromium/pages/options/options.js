@@ -57,9 +57,9 @@ else if (maniver === 3) {
     extension.classList.add('manifest_v3');
 }
 
-document.addEventListener('keydown', ({ctrlKey, key}) => {
-    if (ctrlKey) {
-        switch (key) {
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey) {
+        switch (event.key) {
             case 's':
                 event.preventDefault();
                 saveBtn.click();

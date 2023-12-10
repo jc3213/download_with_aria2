@@ -5,8 +5,8 @@ var slim_mode = location.search === '?slim_mode';
 
 downloader.className = slim_mode ? 'slim' : 'full';
 
-document.addEventListener('keydown', ({ctrlKey, key}) => {
-    if (ctrlKey && key === 'Enter') {
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && event.key === 'Enter') {
         event.preventDefault();
         downloadSubmit();
     }

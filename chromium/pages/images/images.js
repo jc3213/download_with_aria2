@@ -2,9 +2,9 @@ var viewer = document.querySelector('#viewer');
 var images = [];
 var aria2Options = {};
 
-document.addEventListener('keydown', ({ctrlKey, key}) => {
-    if (ctrlKey) {
-        switch (key) {
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey) {
+        switch (event.key) {
             case 'Enter':
                 event.preventDefault();
                 imagesSubmit();
