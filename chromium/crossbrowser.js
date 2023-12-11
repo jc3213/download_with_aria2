@@ -186,22 +186,14 @@ function getFileExtension(filename) {
 }
 
 function getCaptureGeneral(hostname, fileext, size) {
-    if (aria2Storage['capture_exclude'].some(host => hostname.includes(host))) {
+    if (aria2Storage['capture_exclude'].some(host => hostname.includes(host)) ||
+        aria2Storage['capture_reject'].includes(fileext)) {
         return false;
     }
-    if (aria2Storage['capture_reject'].includes(fileext)) {
-        return false;
-    }
-    if (aria2Storage['capture_always']) {
-        return true;
-    }
-    if (aria2Storage['capture_include'].some(host => hostname.includes(host))) {
-        return true;
-    }
-    if (aria2Storage['capture_resolve'].includes(fileext)) {
-        return true;
-    }
-    if (aria2Storage['capture_size'] > 0 && size >= aria2Storage['capture_size']) {
+    if (aria2Storage['capture_always'] ||
+        aria2Storage['capture_include'].some(host => hostname.includes(host)) ||
+        aria2Storage['capture_resolve'].includes(fileext) ||
+        aria2Storage['capture_size'] > 0 && size >= aria2Storage['capture_size']) {
         return true;
     }
     return false;
@@ -211,10 +203,8 @@ function getCaptureHostname(hostname) {
     if (aria2Storage['capture_exclude'].some(host => hostname.includes(host))) {
         return -1;
     }
-    if (aria2Storage['capture_always']) {
-        return 1;
-    }
-    if (aria2Storage['capture_include'].some(host => hostname.includes(host))) {
+    if (aria2Storage['capture_always'] ||
+        aria2Storage['capture_include'].some(host => hostname.includes(host))) {
         return 1;
     }
     return 0;
@@ -224,10 +214,8 @@ function getCaptureFileData(size, fileext) {
     if (aria2Storage['capture_reject'].includes(fileext)) {
         return -1;
     }
-    if (aria2Storage['capture_resolve'].includes(fileext)) {
-        return 1;
-    }
-    if (aria2Storage['capture_filesize'] > 0 && size >= aria2Storage['capture_filesize']) {
+    if (aria2Storage['capture_resolve'].includes(fileext) ||
+        aria2Storage['capture_filesize'] > 0 && size >= aria2Storage['capture_filesize']) {
         return 1;
     }
     return 0;
