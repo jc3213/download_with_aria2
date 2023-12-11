@@ -75,10 +75,10 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
     switch (menuItemId) {
         case 'aria2c_this_url':
-            aria2Download(linkUrl, url, getHostname(url), cookieStoreId);
+            aria2Download(linkUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_this_image':
-            aria2Download(srcUrl, url, getHostname(url), cookieStoreId);
+            aria2Download(srcUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_all_images':
             chrome.tabs.sendMessage(id, menuItemId);
@@ -117,7 +117,7 @@ chrome.commands.onCommand.addListener((command) => {
 chrome.action = chrome.action ?? chrome.browserAction;
 chrome.action.onClicked.addListener(getTaskManager);
 
-async function aria2Download(url, referer, hostname, storeId, options = {}) {
+async function aria2Download(url, options, referer, hostname, storeId) {
     await aria2MV3SetUp();
     options['user-agent'] = aria2Storage['user_agent'];
     if (aria2Storage['proxy_enabled'] || aria2Storage['proxy_include'].some(host => hostname.includes(host))) {

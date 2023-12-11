@@ -43,7 +43,7 @@ async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
     if (getCaptureGeneral(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
-            aria2Download(url, referrer, hostname, cookieStoreId, await getFirefoxOptions(filename));
+            aria2Download(url, await getFirefoxOptions(filename), referrer, hostname, cookieStoreId);
         }).catch(error => aria2WhenComplete(url));
     }
 }
@@ -71,7 +71,7 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
         var hostname = getHostname(originUrl);
         if (getCaptureGeneral(hostname, ext, length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
-            aria2Download(url, originUrl, hostname, cookieStoreId, {out});
+            aria2Download(url, {out}, originUrl, hostname, cookieStoreId);
             return {cancel: true};
         }
     }

@@ -24,7 +24,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
     var captured = getCaptureGeneral(hostname, getFileExtension(filename), fileSize);
     if (captured) {
         chrome.downloads.erase({id});
-        aria2Download(url, referer, hostname, {out: filename});
+        aria2Download(url, {out: filename}, referer, hostname);
     }
     aria2Monitor[id].captured = captured;
 });

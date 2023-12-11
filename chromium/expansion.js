@@ -21,9 +21,7 @@ function aria2ClientSetUp() {
             var adx = aria2Active.indexOf(gid);
             switch (method) {
                 case 'aria2.onDownloadStart':
-                    if (adx === -1) {
-                        aria2Active.push(gid);
-                    }
+                    adx === -1 && aria2Active.push(gid);
                     break;
                 case 'aria2.onBtDownloadComplete':
                     break;
@@ -43,9 +41,6 @@ function aria2ClientSetUp() {
     });
 }
 
-function aria2ToolbarBadge(text) {
-    if (!isNaN(text)) {
-        text = text === 0 ? '' : text + '';
-    }
-    chrome.browserAction.setBadgeText({text});
+function aria2ToolbarBadge(number) {
+    chrome.browserAction.setBadgeText({text: number === 0 ? '' : `${number}`});
 }

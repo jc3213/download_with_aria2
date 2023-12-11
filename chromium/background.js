@@ -28,7 +28,7 @@ async function captureOnFilename({id, filename, fileSize}) {
     if (priority > 0) {
         chrome.downloads.erase({id});
         aria2Monitor[id].priority = priority;
-        aria2Download(url, referer, hostname, {out: filename});
+        aria2Download(url, {out: filename}, referer, hostname);
     }
 }
 
