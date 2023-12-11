@@ -21,7 +21,9 @@ function aria2ClientSetUp() {
             var adx = aria2Active.indexOf(gid);
             switch (method) {
                 case 'aria2.onDownloadStart':
-                    adx === -1 && aria2Active.push(gid);
+                    if (adx === -1) {
+                        aria2Active.push(gid);
+                    }
                     break;
                 case 'aria2.onBtDownloadComplete':
                     break;
