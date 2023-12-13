@@ -49,7 +49,6 @@ var aria2Popup = '/pages/popup/popup.html';
 var aria2InTab = `${chrome.runtime.id}/pages/popup/popup.html`;
 var aria2Images = '/pages/images/images.html';
 var aria2Monitor = {};
-var aria2Prompt = {};
 var aria2Message = {};
 
 chrome.storage.onChanged.addListener((changes) => {
@@ -89,7 +88,7 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, u
 chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     switch (action) {
         case 'internal_prompt':
-            response(aria2Prompt[tab.id]);
+            response(aria2Message[tab.id]);
             break;
         case 'internal_images':
             response(aria2Message[tab.id]);
@@ -137,7 +136,7 @@ async function aria2DownloadPrompt(aria2c) {
     await aria2MV3SetUp();
     if (aria2Storage['download_prompt']) {
         var id = await aria2NewDownload(true);
-        aria2Prompt[id] = aria2c;
+        aria2Message[id] = aria2c;
         return;
     }
     var {url, json, options} = aria2c;
