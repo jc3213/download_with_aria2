@@ -1,6 +1,6 @@
 class Aria2 {
     constructor (url, secret) {
-        const [protocol, http, socket] = url.match(/(^http)s?|^(ws)s?|^([^:]+)/);
+        const [protocol, http, socket] = url.match(/(https?)|(wss?)|([^:]+)/);
         this.post = http ? this.fetch : socket ? this.websocket : this.handle({error: new Error(`Invalid protocol: "${protocol}" is not supported.`)});
         this.jsonrpc = url;
         this.secret = `token:${secret}`;
