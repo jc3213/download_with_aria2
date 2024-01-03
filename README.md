@@ -12,7 +12,7 @@
     - Capture downloads via [webRequest](https://developer.chrome.com/docs/extensions/reference/webRequest) API
         - *Firefox only*
     - Forward downloads request headers
-- Backup/Restore options for this extension and Aria2 JSON-RPC
+- Backup/Restore options for this extension and aria2 json-rpc
 - Prompt a new window before sending downloads to Aria2
 - Notification when downloads start/complete
 
