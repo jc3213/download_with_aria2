@@ -192,6 +192,65 @@
             <div class="menu">
                 <button data-bid="back_btn" i18n>option_back</button>
             </div>
+            <h1 i18n>aria2_options</h1>
+            <div class="menu" title="aria2_com_dir_title">
+                <div class="title" i18n>aria2_com_dir</div>
+                <div>
+                    <input data-rid="dir" type="text">
+                </div>
+                <div class="flex">
+                    <span>Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;</span>
+                    <span>Linux: <u><i>home/aria2/download</i></u></span>
+                </div>
+            </div>
+            <div class="menu" title="aria2_com_cache_title">
+                <div class="title" i18n>aria2_com_cache</div>
+                <div>
+                    <input data-rid="disk-cache" type="text">
+                    <span>B</span>
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>16M</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_max_concurrent_title">
+                <div class="title" i18n>aria2_max_concurrent</div>
+                <div>
+                    <input data-rid="max-concurrent-downloads" type="number">
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>5</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_max_connection_title">
+                <div class="title" i18n>aria2_max_connection</div>
+                <div>
+                    <input data-rid="max-connection-per-server" type="number">
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <u><i>1</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_max_download_title">
+                <div class="title" i18n>aria2_max_download</div>
+                <div>
+                    <input data-rid="max-overall-download-limit" type="text">
+                    <span>B/s</span>
+                </div>
+                <div>
+                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                </div>
+            </div>
+            <div class="menu" title="aria2_max_upload_title">
+                <div class="title" i18n>aria2_max_upload</div>
+                <div>
+                    <input data-rid="max-overall-upload-limit" type="text">
+                    <span>B/s</span>
+                </div>
+                <div>
+                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                </div>
+            </div>
             <h1>HTTP/FTP</h1>
             <div class="menu" title="aria2_http_retry_title">
                 <div class="title" i18n>aria2_http_retry</div>
@@ -300,65 +359,6 @@
                 </div>
                 <div>
                     <span i18n>common_default</span>: <u><i>30</i></u>
-                </div>
-            </div>
-            <h1 i18n>option_advanced</h1>
-            <div class="menu" title="aria2_adv_dir_title">
-                <div class="title" i18n>aria2_adv_dir</div>
-                <div>
-                    <input data-rid="dir" type="text">
-                </div>
-                <div class="flex">
-                    <span>Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;</span>
-                    <span>Linux: <u><i>home/aria2/download</i></u></span>
-                </div>
-            </div>
-            <div class="menu" title="aria2_adv_cache_title">
-                <div class="title" i18n>aria2_adv_cache</div>
-                <div>
-                    <input data-rid="disk-cache" type="text">
-                    <span>B</span>
-                </div>
-                <div>
-                    <span i18n>common_default</span>: <u><i>16M</i></u>
-                </div>
-            </div>
-            <div class="menu" title="aria2_max_concurrent_title">
-                <div class="title" i18n>aria2_max_concurrent</div>
-                <div>
-                    <input data-rid="max-concurrent-downloads" type="number">
-                </div>
-                <div>
-                    <span i18n>common_default</span>: <u><i>5</i></u>
-                </div>
-            </div>
-            <div class="menu" title="aria2_max_connection_title">
-                <div class="title" i18n>aria2_max_connection</div>
-                <div>
-                    <input data-rid="max-connection-per-server" type="number">
-                </div>
-                <div>
-                    <span i18n>common_default</span>: <u><i>1</i></u>
-                </div>
-            </div>
-            <div class="menu" title="aria2_max_download_title">
-                <div class="title" i18n>aria2_max_download</div>
-                <div>
-                    <input data-rid="max-overall-download-limit" type="text">
-                    <span>B/s</span>
-                </div>
-                <div>
-                    <span i18n>common_disabled</span>: <u><i>0</i></u>
-                </div>
-            </div>
-            <div class="menu" title="aria2_max_upload_title">
-                <div class="title" i18n>aria2_max_upload</div>
-                <div>
-                    <input data-rid="max-overall-upload-limit" type="text">
-                    <span>B/s</span>
-                </div>
-                <div>
-                    <span i18n>common_disabled</span>: <u><i>0</i></u>
                 </div>
             </div>
         </div>

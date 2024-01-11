@@ -374,6 +374,45 @@
     "aria2_false": {
         "message": "False"
     },
+    "aria2_options": {
+        "message": "Common Settings"
+    },    
+    "aria2_com_dir": {
+        "message": "Download Directory"
+    },
+    "aria2_com_dir_title": {
+        "message": "Set the directory to store the downloaded files"
+    },
+    "aria2_com_cache": {
+        "message": "Disk Cache"
+    },
+    "aria2_com_cache_title": {
+        "message": "Set disk cache to reduce disk I/O"
+    },
+    "aria2_max_concurrent": {
+        "message": "Max Concurrent Downloads"
+    },
+    "aria2_max_concurrent_title": {
+        "message": "Set the maximum number of parallel downloads for every queue item"
+    },
+    "aria2_max_connection": {
+        "message": "Max Connections per Server"
+    },
+    "aria2_max_connection_title": {
+        "message": "Set the maximum number of connections to one server for each download."
+    },
+    "aria2_max_download": {
+        "message": "Global Download Speed"
+    },
+    "aria2_max_download_title": {
+        "message": "Set the maximum download speed for all concurrent tasks"
+    },
+    "aria2_max_upload": {
+        "message": "Global Upload Speed"
+    },
+    "aria2_max_upload_title": {
+        "message": "Set the maximum upload speed for all concurrent tasks"
+    },
     "aria2_http_retry": {
         "message": "Max Retries"
     },
@@ -439,41 +478,5 @@
     },
     "aria2_bt_seed_title": {
         "message": "Set the share time of each torrent (MIN)"
-    },
-    "aria2_adv_dir": {
-        "message": "Download Directory"
-    },
-    "aria2_adv_dir_title": {
-        "message": "Set the directory to store the downloaded files"
-    },
-    "aria2_adv_cache": {
-        "message": "Disk Cache"
-    },
-    "aria2_adv_cache_title": {
-        "message": "Set disk cache to reduce disk I/O"
-    },
-    "aria2_max_concurrent": {
-        "message": "Max Concurrent Downloads"
-    },
-    "aria2_max_concurrent_title": {
-        "message": "Set the maximum number of parallel downloads for every queue item"
-    },
-    "aria2_max_connection": {
-        "message": "Max Connections per Server"
-    },
-    "aria2_max_connection_title": {
-        "message": "Set the maximum number of connections to one server for each download."
-    },
-    "aria2_max_download": {
-        "message": "Global Download Speed"
-    },
-    "aria2_max_download_title": {
-        "message": "Set the maximum download speed for all concurrent tasks"
-    },
-    "aria2_max_upload": {
-        "message": "Global Upload Speed"
-    },
-    "aria2_max_upload_title": {
-        "message": "Set the maximum upload speed for all concurrent tasks"
     }
 }

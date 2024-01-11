@@ -374,6 +374,45 @@
     "aria2_false": {
         "message": "否"
     },
+    "aria2_options": {
+        "message": "通用设置"
+    },    
+    "aria2_com_dir": {
+        "message": "下载文件夹"
+    },
+    "aria2_com_dir_title": {
+        "message": "设置用于保存下载文件的文件夹"
+    },
+    "aria2_com_cache": {
+        "message": "磁盘缓存"
+    },
+    "aria2_com_cache_title": {
+        "message": "设置磁盘缓存以减少对磁盘的读写"
+    },
+    "aria2_max_concurrent": {
+        "message": "最大并行任务数"
+    },
+    "aria2_max_concurrent_title": {
+        "message": "设置可同时进行下载的最大任务数"
+    },
+    "aria2_max_connection": {
+        "message": "每服务器最大连接数"
+    },
+    "aria2_max_connection_title": {
+        "message": "设置每个服务器允许的最大连接数"
+    },
+    "aria2_max_download": {
+        "message": "全局下载速度"
+    },
+    "aria2_max_download_title": {
+        "message": "设置所有进行中的任务所能达到的最大下载速度"
+    },
+    "aria2_max_upload": {
+        "message": "全局上传速度"
+    },
+    "aria2_max_upload_title": {
+        "message": "设置所有进行中的任务所能达到的最大上传速度"
+    },
     "aria2_http_retry": {
         "message": "重试次数"
     },
@@ -439,41 +478,5 @@
     },
     "aria2_bt_seed_title": {
         "message": "设置每个 BT 任务的分享时间 (分)"
-    },
-    "aria2_adv_dir": {
-        "message": "下载文件夹"
-    },
-    "aria2_adv_dir_title": {
-        "message": "设置用于保存下载文件的文件夹"
-    },
-    "aria2_adv_cache": {
-        "message": "磁盘缓存"
-    },
-    "aria2_adv_cache_title": {
-        "message": "设置磁盘缓存以减少对磁盘的读写"
-    },
-    "aria2_max_concurrent": {
-        "message": "最大并行任务数"
-    },
-    "aria2_max_concurrent_title": {
-        "message": "设置可同时进行下载的最大任务数"
-    },
-    "aria2_max_connection": {
-        "message": "每服务器最大连接数"
-    },
-    "aria2_max_connection_title": {
-        "message": "设置每个服务器允许的最大连接数"
-    },
-    "aria2_max_download": {
-        "message": "全局下载速度"
-    },
-    "aria2_max_download_title": {
-        "message": "设置所有进行中的任务所能达到的最大下载速度"
-    },
-    "aria2_max_upload": {
-        "message": "全局上传速度"
-    },
-    "aria2_max_upload_title": {
-        "message": "设置所有进行中的任务所能达到的最大上传速度"
     }
 }
