@@ -7,8 +7,17 @@
         <link rel="stylesheet" href="images.css">
     </head>
     <body>
-        <div id="viewer"></div>
+        <div id="viewer"><img></img></div>
         <hr>
+        <div id="gallery"></div>
+        <hr>
+        <div id="menu" class="flex">
+            <button data-bid="select_all" i18n>select_all</button>
+            <button data-bid="select_none" i18n>select_none</button>
+            <button data-bid="select_flip" i18n>select_flip</button>
+            <button data-bid="submit_btn" i18n>common_submit</button>
+            <button data-bid="extra_btn" i18n>popup_options</button>
+        </div>
         <div id="options" class="options">
             <div title="task_referer_title" i18n>
                 <div class="title" i18n>task_referer</div>
@@ -41,13 +50,6 @@
                     <input data-rid="max-connection-per-server" type="number">
                 </div>
             </div>
-        </div>
-        <div id="menu" class="flex">
-            <button data-bid="select_all" i18n>select_all</button>
-            <button data-bid="select_none" i18n>select_none</button>
-            <button data-bid="select_flip" i18n>select_flip</button>
-            <button data-bid="submit_btn" i18n>common_submit</button>
-            <button data-bid="extra_btn" i18n>popup_options</button>
         </div>
         <script src="/libs/aria2.js"></script>
         <script src="/libs/core.js"></script>

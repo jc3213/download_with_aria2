@@ -1,5 +1,4 @@
 img {
-    margin: 3px;
     border-width: 1px;
     border-style: solid;
 }
@@ -17,8 +16,21 @@ body:not(.extra) #options {
 }
 
 #viewer {
-    height: calc(100vh - 64px);
-    overflow-y: auto;
+    height: calc(100vh - 236px);
+    width: calc(100vh + 18px);
+}
+
+#viewer > img {
+    max-height: 100%;
+    max-width: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#menu > :nth-child(4) {
+    margin-left: auto;
 }
 
 #options {
@@ -34,6 +46,15 @@ body:not(.extra) #options {
     margin-top: 0px;
 }
 
-#menu > :nth-child(4) {
-    margin-left: auto;
+#gallery {
+    height: 155px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 88px);
+    gap: 5px;
+    overflow: auto;
+}
+
+#gallery > img {
+    width: 86px;
+    height: 86px;
 }
