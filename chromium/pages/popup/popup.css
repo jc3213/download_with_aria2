@@ -145,7 +145,7 @@ body {
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
-    grid-gap: 3px;
+    gap: 3px;
     grid-template-columns: repeat(3, 1fr) 22.5px;
 }
 

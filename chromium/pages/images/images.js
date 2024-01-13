@@ -1,4 +1,4 @@
-var [viewer, gallery] = document.querySelectorAll('#gallery, #viewer > img');
+var [preview, gallery] = document.querySelectorAll('#gallery, #preview > img');
 var images = [];
 var aria2Options = {};
 
@@ -102,7 +102,7 @@ gallery.addEventListener('click', ({target}) => {
 
 gallery.addEventListener('mouseenter', ({target}) => {
     if (target.tagName === 'IMG') {
-        viewer.src = target.src;
+        preview.src = target.src;
     }
 }, true);
 

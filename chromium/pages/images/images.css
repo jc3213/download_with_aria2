@@ -15,18 +15,31 @@ body:not(.extra) #options {
     border-style: inset;
 }
 
-#viewer {
+#preview {
     height: calc(100vh - 236px);
     width: calc(100vh + 18px);
 }
 
-#viewer > img {
+#preview > img {
     max-height: 100%;
     max-width: 100%;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+}
+
+#gallery {
+    height: 155px;
+    display: grid;
+    gap: 5px;
+    grid-template-columns: repeat(auto-fill, 88px);
+    overflow: auto;
+}
+
+#gallery > img {
+    width: 86px;
+    height: 86px;
 }
 
 #menu > :nth-child(4) {
@@ -44,17 +57,4 @@ body:not(.extra) #options {
 
 #options > :first-child {
     margin-top: 0px;
-}
-
-#gallery {
-    height: 155px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 88px);
-    gap: 5px;
-    overflow: auto;
-}
-
-#gallery > img {
-    width: 86px;
-    height: 86px;
 }

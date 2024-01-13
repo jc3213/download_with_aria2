@@ -64,6 +64,16 @@ body:not(.full) #status > :nth-child(n+3) {
     content: "__MSG_popup_active__";
 }
 
+.full > #queue > * {
+    display: grid;
+    grid-template-columns: repeat(2, calc(50% - 5px));
+    grid-gap: 10px;
+}
+
+.full .session {
+    align-self: start;
+}
+
 #status > :nth-child(4)::before {
     content: "__MSG_popup_waiting__";
 }
