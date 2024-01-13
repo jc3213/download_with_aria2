@@ -20,13 +20,13 @@
         </div>
         <div id="options" class="options">
             <h1>JSON-RPC</h1>
-            <div class="menu" title="option_jsonrpc_uri_title">
+            <div class="menu" title="option_jsonrpc_uri_title" i18n>
                 <div class="title" i18n>option_jsonrpc_uri</div>
                 <div class="flex">
                     <input data-eid="jsonrpc_uri" type="url">
                 </div>
             </div>
-            <div class="menu" title="option_jsonrpc_token_title">
+            <div class="menu" title="option_jsonrpc_token_title" i18n>
                 <div class="title" i18n>option_jsonrpc_token</div>
                 <div class="flex">
                     <input data-eid="jsonrpc_token" type="text" placeholder="$$secret$$">
@@ -36,11 +36,11 @@
                 <button data-bid="aria2_btn" i18n>option_aria2</button>
             </div>
             <h1 i18n>option_task_manager</h1>
-            <div class="menu" title="option_manager_newtab_title">
+            <div class="menu" title="option_manager_newtab_title" i18n>
                 <input id="manager_newtab" data-eid="manager_newtab" type="checkbox">
                 <label for="manager_newtab" i18n>option_manager_newtab</label>
             </div>
-            <div class="menu flex" title="option_manager_interval_title">
+            <div class="menu flex" title="option_manager_interval_title" i18n>
                 <div class="title" i18n>option_manager_interval</div>
                 <div>
                     <input data-eid="manager_interval" type="number" min="5" max="30" step="1">
@@ -48,50 +48,50 @@
                 </div>
             </div>
             <h1 i18n>option_context</h1>
-            <div class="menu" title="option_context_enabled_title">
+            <div class="menu" title="option_context_enabled_title" i18n>
                 <input id="context_enabled" data-eid="context_enabled" type="checkbox">
                 <label for="context_enabled" i18n>option_context_enabled</label>
             </div>
-            <div class="menu" title="option_context_cascade_title" data-rel="context_enabled">
+            <div class="menu" title="option_context_cascade_title" data-rel="context_enabled" i18n>
                 <input id="context_cascade" data-eid="context_cascade" type="checkbox">
                 <label for="context_cascade" i18n>option_context_cascade</label>
             </div>
-            <div class="menu" title="option_context_thisurl_title" data-rel="context_enabled">
+            <div class="menu" title="option_context_thisurl_title" data-rel="context_enabled" i18n>
                 <input id="context_thisurl" data-eid="context_thisurl" type="checkbox">
                 <label for="context_thisurl" i18n>contextmenu_thisurl</label>
             </div>
-            <div class="menu" title="option_context_thisimage_title" data-rel="context_enabled">
+            <div class="menu" title="option_context_thisimage_title" data-rel="context_enabled" i18n>
                 <input id="context_thisimage" data-eid="context_thisimage" type="checkbox">
                 <label for="context_thisimage" i18n>contextmenu_thisimage</label>
             </div>
-            <div class="menu" title="option_context_allimages_title" data-rel="context_enabled">
+            <div class="menu" title="option_context_allimages_title" data-rel="context_enabled" i18n>
                 <input id="context_allimages" data-eid="context_allimages" type="checkbox">
                 <label for="context_allimages" i18n>contextmenu_allimages</label>
             </div>
             <h1 i18n>option_notification</h1>
-            <div class="menu" title="option_notify_start_title">
+            <div class="menu" title="option_notify_start_title" i18n>
                 <input id="notify_start" data-eid="notify_start" type="checkbox">
                 <label for="notify_start" i18n>option_notify_start</label>
             </div>
-            <div class="menu" title="option_notify_complete_title" data-app="manifest_v3">
+            <div class="menu" title="option_notify_complete_title" data-app="manifest_v3" i18n>
                 <input id="notify_complete" data-eid="notify_complete" type="checkbox">
                 <label for="notify_complete" i18n>option_notify_complete</label>
             </div>
             <h1 i18n>option_advanced</h1>
-            <div title="option_user_agent_title">
+            <div title="option_user_agent_title" i18n>
                 <div class="title" i18n>option_user_agent</div>
                 <input data-eid="user_agent" type="text">
             </div>
-            <div class="menu" title="option_download_prompt_title">
+            <div class="menu" title="option_download_prompt_title" i18n>
                 <input id="download_prompt" data-eid="download_prompt" type="checkbox">
                 <label for="download_prompt" i18n>option_download_prompt</label>
             </div>
             <h1 i18n>option_headers</h1>
-            <div class="menu" title="option_headers_enabled_title">
+            <div class="menu" title="option_headers_enabled_title" i18n>
                 <input id="headers_enabled" data-eid="headers_enabled" type="checkbox">
                 <label for="headers_enabled" i18n>option_headers_enabled</label>
             </div>
-            <div title="option_headers_exclude_title" data-map="headers_exclude" data-rel="headers_enabled">
+            <div title="option_headers_exclude_title" data-map="headers_exclude" data-rel="headers_enabled" i18n>
                 <div class="title" i18n>option_match_exclude</div>
                 <div class="flex">
                     <input type="text">
@@ -100,26 +100,26 @@
                 <div class="rule"></div>
             </div>
             <h1 i18n>option_folder</h1>
-            <div class="menu" title="option_folder_enabled_title">
+            <div class="menu" title="option_folder_enabled_title" i18n>
                 <input id="folder_enabled" data-eid="folder_enabled" type="checkbox">
                 <label for="folder_enabled" i18n>option_folder_enabled</label>
             </div>
-            <div class="menu" title="option_folder_firefox_title" data-app="firefox" data-rel="folder_enabled" data-exc="capture_enabled, capture_webrequest">
+            <div class="menu" title="option_folder_firefox_title" data-app="firefox" data-rel="folder_enabled" data-exc="capture_enabled, capture_webrequest" i18n>
                 <input id="folder_firefox" data-eid="folder_firefox" type="checkbox">
                 <label for="folder_firefox" i18n>option_folder_firefox</label>
             </div>
-            <div class="menu" title="option_folder_title" data-rel="folder_enabled">
+            <div class="menu" title="option_folder_title" data-rel="folder_enabled" i18n>
                 <input data-eid="folder_defined" type="text">
             </div>
             <h1 i18n>option_proxy</h1>
-            <div class="menu" title="option_proxy_enabled_title">
+            <div class="menu" title="option_proxy_enabled_title" i18n>
                 <input id="proxy_enabled" data-eid="proxy_enabled" type="checkbox">
                 <label for="proxy_enabled" i18n>option_proxy_enabled</label>
             </div>
-            <div class="menu" title="option_proxy_title">
+            <div class="menu" title="option_proxy_title" i18n>
                 <input data-eid="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
             </div>
-            <div title="option_proxy_include_title" data-map="proxy_include" data-exc="proxy_enabled">
+            <div title="option_proxy_include_title" data-map="proxy_include" data-exc="proxy_enabled" i18n>
                 <div class="title" i18n>option_match_include</div>
                 <div class="flex">
                     <input type="text">
@@ -128,29 +128,29 @@
                 <div class="rule"></div>
             </div>
             <h1 i18n>option_capture</h1>
-            <div class="menu" title="option_capture_enabled_title">
+            <div class="menu" title="option_capture_enabled_title" i18n>
                 <input id="capture_enabled" data-eid="capture_enabled" type="checkbox">
                 <label for="capture_enabled" i18n>option_capture_enabled</label>
             </div>
-            <div class="menu" title="option_capture_webrequest_title" data-app="firefox" data-rel="capture_enabled">
+            <div class="menu" title="option_capture_webrequest_title" data-app="firefox" data-rel="capture_enabled" i18n>
                 <input id="capture_webrequest" data-eid="capture_webrequest" type="checkbox">
                 <label for="capture_webrequest" i18n>option_capture_webrequest</label>
             </div>
-            <div class="menu" title="option_capture_always_title" data-rel="capture_enabled">
+            <div class="menu" title="option_capture_always_title" data-rel="capture_enabled" i18n>
                 <input id="capture_always" data-eid="capture_always" type="checkbox">
                 <label for="capture_always" i18n>option_capture_always</label>
             </div>
-            <div title="option_capture_filesize_title"  data-rel="capture_enabled" data-exc="capture_always">
+            <div title="option_capture_filesize_title"  data-rel="capture_enabled" data-exc="capture_always" i18n>
                 <div class="title" i18n>option_capture_filesize</div>
                 <div>
                     <input data-eid="capture_filesize" type="number" min="0">
                     <span>MB</span>
                 </div>
                 <div>
-                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                    <span i18n>common_disabled</span>: <i>0</i>
                 </div>
             </div>
-            <div title="option_capture_resolve_title" data-map="capture_resolve" data-rel="capture_enabled" data-exc="capture_always">
+            <div title="option_capture_resolve_title" data-map="capture_resolve" data-rel="capture_enabled" data-exc="capture_always" i18n>
                 <div class="title" i18n>option_capture_resolve</div>
                 <div class="flex">
                     <input type="text">
@@ -158,7 +158,7 @@
                 </div>
                 <div class="rule"></div>
             </div>
-            <div title="option_capture_include_title" data-map="capture_include" data-rel="capture_enabled" data-exc="capture_always">
+            <div title="option_capture_include_title" data-map="capture_include" data-rel="capture_enabled" data-exc="capture_always" i18n>
                 <div class="title" i18n>option_match_include</div>
                 <div class="flex">
                     <input type="text">
@@ -166,7 +166,7 @@
                 </div>
                 <div class="rule"></div>
             </div>
-            <div title="option_capture_reject_title" data-map="capture_reject" data-rel="capture_enabled">
+            <div title="option_capture_reject_title" data-map="capture_reject" data-rel="capture_enabled" i18n>
                 <div class="title" i18n>option_capture_reject</div>
                 <div class="flex">
                     <input type="text">
@@ -174,7 +174,7 @@
                 </div>
                 <div class="rule"></div>
             </div>
-            <div title="option_capture_exclude_title" data-map="capture_exclude" data-rel="capture_enabled">
+            <div title="option_capture_exclude_title" data-map="capture_exclude" data-rel="capture_enabled" i18n>
                 <div class="title" i18n>option_match_exclude</div>
                 <div class="flex">
                     <input type="text">
@@ -189,136 +189,135 @@
             </div>
         </div>
         <div id="jsonrpc" class="options">
-            <div class="menu">
+            <h1 i18n>aria2_options</h1>
+            <div class="menu even">
                 <button data-bid="back_btn" i18n>option_back</button>
             </div>
-            <h1 i18n>aria2_options</h1>
-            <div class="menu" title="aria2_com_dir_title">
+            <div class="menu" title="aria2_com_dir_title" i18n>
                 <div class="title" i18n>aria2_com_dir</div>
                 <div>
                     <input data-rid="dir" type="text">
                 </div>
-                <div class="flex">
-                    <span>Windows: <u><i>C:\Aria2\Download</i></u>&emsp;&emsp;&emsp;</span>
-                    <span>Linux: <u><i>home/aria2/download</i></u></span>
+                <div title="Windows: &quot;C:\Aria2\Download&quot;&#10;Linux: &quot;home/aria2/download&quot;">
+                    <u i18n>option_sample</u>
                 </div>
             </div>
-            <div class="menu" title="aria2_com_cache_title">
+            <div class="menu" title="aria2_com_cache_title" i18n>
                 <div class="title" i18n>aria2_com_cache</div>
                 <div>
                     <input data-rid="disk-cache" type="text">
                     <span>B</span>
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i>16M</i></u>
+                    <span i18n>common_default</span>: <i>16M</i>
                 </div>
             </div>
-            <div class="menu" title="aria2_max_concurrent_title">
+            <div class="menu" title="aria2_max_concurrent_title" i18n>
                 <div class="title" i18n>aria2_max_concurrent</div>
                 <div>
                     <input data-rid="max-concurrent-downloads" type="number">
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i>5</i></u>
+                    <span i18n>common_default</span>: <i>5</i>
                 </div>
             </div>
-            <div class="menu" title="aria2_max_connection_title">
-                <div class="title" i18n>aria2_max_connection</div>
-                <div>
-                    <input data-rid="max-connection-per-server" type="number">
-                </div>
-                <div>
-                    <span i18n>common_default</span>: <u><i>1</i></u>
-                </div>
-            </div>
-            <div class="menu" title="aria2_max_download_title">
+            <div class="menu" title="aria2_max_download_title" i18n>
                 <div class="title" i18n>aria2_max_download</div>
                 <div>
                     <input data-rid="max-overall-download-limit" type="text">
                     <span>B/s</span>
                 </div>
                 <div>
-                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                    <span i18n>common_disabled</span>: <i>0</i>
                 </div>
             </div>
-            <div class="menu" title="aria2_max_upload_title">
+            <div class="menu" title="aria2_max_upload_title" i18n>
                 <div class="title" i18n>aria2_max_upload</div>
                 <div>
                     <input data-rid="max-overall-upload-limit" type="text">
                     <span>B/s</span>
                 </div>
                 <div>
-                    <span i18n>common_disabled</span>: <u><i>0</i></u>
+                    <span i18n>common_disabled</span>: <i>0</i>
                 </div>
             </div>
             <h1>HTTP/FTP</h1>
-            <div class="menu" title="aria2_http_retry_title">
+            <div class="menu" title="aria2_http_retry_title" i18n>
                 <div class="title" i18n>aria2_http_retry</div>
                 <div>
                     <input data-rid="max-tries" type="number">
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i>5</i></u>
+                    <span i18n>common_default</span>: <i>5</i>
                 </div>
             </div>
-            <div class="menu" title="aria2_http_wait_title">
+            <div class="menu" title="aria2_http_wait_title" i18n>
                 <div class="title" i18n>aria2_http_wait</div>
                 <div>
                     <input data-rid="retry-wait" type="number">
                     <span i18n>time_second_full</span>
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i>0</i></u>
+                    <span i18n>common_default</span>: <i>0</i>
                 </div>
             </div>
-            <div class="menu" title="aria2_http_split_title">
+            <div class="menu" title="aria2_http_split_title" i18n>
                 <div class="title" i18n>aria2_http_split</div>
                 <div>
                     <input data-rid="split" type="number">
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i>5</i></u>
+                    <span i18n>common_default</span>: <i>5</i>
                 </div>
             </div>
-            <div class="menu" title="aria2_http_size_title">
+            <div class="menu" title="aria2_http_size_title" i18n>
                 <div class="title" i18n>aria2_http_size</div>
                 <div>
                     <input data-rid="min-split-size" type="text">
                     <span>B</span>
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i>20M</i></u>
+                    <span i18n>common_default</span>: <i>20M</i>
                 </div>
             </div>
-            <div title="aria2_http_ua_title">
+            <div class="menu" title="aria2_max_connection_title" i18n>
+                <div class="title" i18n>aria2_max_connection</div>
+                <div>
+                    <input data-rid="max-connection-per-server" type="number">
+                </div>
+                <div>
+                    <span i18n>common_default</span>: <i>1</i>
+                </div>
+            </div>
+            <div class="menu" title="aria2_http_ua_title" i18n>
                 <div class="title" i18n>aria2_http_ua</div>
                 <div>
                     <input data-rid="user-agent" type="text">
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i id="aria2ua"></i></u>
+                    <span i18n>common_default</span>: <i id="aria2ua"></i>
                 </div>
             </div>
             <h1>BitTorrent</h1>
-            <div class="menu" title="aria2_bt_port_title">
+            <div class="menu" title="aria2_bt_port_title" i18n>
                 <div class="title" i18n>aria2_bt_port</div>
                 <div>
                     <input data-rid="listen-port" type="text">
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i>6881-6999</i></u>
+                    <span i18n>common_default</span>: <i>6881-6999</i>
                 </div>
             </div>
-            <div class="menu" title="aria2_bt_peers_title">
+            <div class="menu" title="aria2_bt_peers_title" i18n>
                 <div class="title" i18n>aria2_bt_peers</div>
                 <div>
                     <input data-rid="bt-max-peers" type="number">
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i>55</i></u>
+                    <span i18n>common_default</span>: <i>55</i>
                 </div>
             </div>
-            <div class="menu" title="aria2_bt_follow_title">
+            <div class="menu" title="aria2_bt_follow_title" i18n>
                 <div class="title" i18n>aria2_bt_follow</div>
                 <div>
                     <select data-rid="follow-torrent">
@@ -327,10 +326,10 @@
                     </select>
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i i18n>aria2_true</i></u>
+                    <span i18n>common_default</span>: <i i18n>aria2_true</i>
                 </div>
             </div>
-            <div class="menu" title="aria2_bt_remove_title">
+            <div class="menu" title="aria2_bt_remove_title" i18n>
                 <div class="title" i18n>aria2_bt_remove</div>
                 <div>
                     <select data-rid="bt-remove-unselected-file">
@@ -339,26 +338,26 @@
                     </select>
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i i18n>aria2_false</i></u>
+                    <span i18n>common_default</span>: <i i18n>aria2_false</i>
                 </div>
             </div>
-            <div class="menu" title="aria2_bt_ratio_title">
+            <div class="menu" title="aria2_bt_ratio_title" i18n>
                 <div class="title" i18n>aria2_bt_ratio</div>
                 <div>
                     <input data-rid="seed-ratio" type="number" min="0" step="0.1">
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i>1.0</i></u>
+                    <span i18n>common_default</span>: <i>1.0</i>
                 </div>
             </div>
-            <div class="menu" title="aria2_bt_seed_title">
+            <div class="menu" title="aria2_bt_seed_title" i18n>
                 <div class="title" i18n>aria2_bt_seed</div>
                 <div>
                     <input data-rid="seed-time" type="number">
                     <span i18n>time_minute_full</span>
                 </div>
                 <div>
-                    <span i18n>common_default</span>: <u><i>30</i></u>
+                    <span i18n>common_default</span>: <i>30</i>
                 </div>
             </div>
         </div>

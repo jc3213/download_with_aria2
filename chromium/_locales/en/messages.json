@@ -89,6 +89,9 @@
     "option_back": {
         "message": "Back to Extension Options"
     },
+    "option_sample": {
+        "message": "Sample"
+    },
     "option_jsonrpc_uri": {
         "message": "URI Address"
     },

@@ -73,6 +73,10 @@ input[type="checkbox"] {
     font-weight: bold;
 }
 
+[data-bid="back_btn"] {
+    margin-top: 20px;
+}
+
 .map {
     display: inline-block;
     margin: 10px 10px 0px 0px;
