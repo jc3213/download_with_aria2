@@ -2,50 +2,53 @@ var [viewer, gallery] = document.querySelectorAll('#gallery, #viewer > img');
 var images = [];
 var aria2Options = {};
 
-document.addEventListener('keydown', ({ctrlKey, key}) => {
-    if (ctrlKey) {
-        if (key === 'Enter') {
-            event.preventDefault();
-            imagesSubmit();
-        }
-        if (key === 's') {
-            event.preventDefault();
-            imagesOptions();
-        }
-        else if (key === 'a') {
-            event.preventDefault();
-            selectAll();
-        }
-        else if (key === 'x') {
-            event.preventDefault();
-            selectNone();
-        }
-        else if (key === 'r') {
-            event.preventDefault();
-            selectFlip();
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey) {
+        switch (event.key) {
+            case 'Enter':
+                event.preventDefault();
+                imagesSubmit();
+                break;
+            case 's':
+                event.preventDefault();
+                imagesOptions();
+                break;
+            case 'a':
+                event.preventDefault();
+                selectAll();
+                break;
+            case 'x':
+                event.preventDefault();
+                selectNone();
+                break;
+            case 'r':
+                event.preventDefault();
+                selectFlip();
+                break;
         }
     }
 });
 
 document.addEventListener('click', (event) => {
-    var id = event.target.dataset.bid;
-    if (id === 'submit_btn') {
-        imagesSubmit();
-    }
-    else if (id === 'extra_btn') {
-        imagesOptions();
-    }
-    else if (id === 'proxy_btn') {
-        imagesProxy(target);
-    }
-    else if (id === 'select_all') {
-        selectAll();
-    }
-    else if (id === 'select_none') {
-        selectNone();
-    }
-    else if (id === 'select_flip') {
-        selectFlip();
+    switch (event.target.dataset.bid) {
+        case 'submit_btn':
+            imagesSubmit();
+            break;
+        case 'extra_btn':
+            imagesOptions();
+            break;
+        case 'proxy_btn':
+            imagesProxy(target);
+            break;
+        case 'select_all':
+            selectAll();
+            break;
+        case 'select_none':
+            selectNone();
+            break;
+        case 'select_flip':
+            selectFlip();
+            break;
     }
 });
 
@@ -93,7 +96,7 @@ document.addEventListener('change', (event) => {
 
 gallery.addEventListener('click', ({target}) => {
     if (target.tagName === 'IMG') {
-        target.className = target.className === '' ? 'checked' : '';
+        target.classList.toggle('checked');
     }
 });
 
