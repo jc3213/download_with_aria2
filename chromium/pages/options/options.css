@@ -77,13 +77,31 @@ input[type="checkbox"] {
     margin-top: 20px;
 }
 
+[data-map] > .title, [data-map] > .flex {
+    width: 40%;
+}
+
+.rule {
+    border-width: 1px;
+    border-style: inset;
+    width: 55%;
+    height: 58px;
+    top: 0px;
+    right: 0px;
+    position: absolute;
+    overflow-y: scroll;
+}
+
 .map {
-    display: inline-block;
-    margin: 10px 10px 0px 0px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    width: 100%;
 }
 
 .map > * {
     padding: 3px;
+    border-style: outset;
+    border-width: 1px;
 }
 
 .map > span {

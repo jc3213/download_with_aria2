@@ -243,15 +243,18 @@ function newRule(id, entry, list) {
         var new_value = [...old_value, value];
         setChange(id, new_value);
         entry.value = '';
-        addRule(list, old_value.length, value);
+        addRule(list, old_value.length, value, true);
     }
 }
 
-function addRule(list, mid, rule) {
+function addRule(list, mid, rule, scrollTo) {
     var item = listLET.cloneNode(true);
     item.querySelector('span').textContent = rule;
     item.querySelector('button').dataset.mid = mid;
     list.append(item);
+    if (scrollTo) {
+        item.scrollIntoView();
+    }
 }
 
 function updateRule(id, rules) {
