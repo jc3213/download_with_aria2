@@ -170,20 +170,17 @@
     "option_match_exclude": {
         "message": "Exclude Domains"
     },
-    "option_advanced": {
-        "message": "Advanced"
+    "option_download_prompt": {
+        "message": "Display Download Prompt"
+    },
+    "option_download_prompt_title": {
+        "message": "Prompt a new window to confirm the download before it starts"
     },
     "option_user_agent": {
         "message": "User Agent"
     },
     "option_user_agent_title": {
         "message": "Set user agent for new downloads"
-    },
-    "option_download_prompt": {
-        "message": "Display Download Prompt"
-    },
-    "option_download_prompt_title": {
-        "message": "Prompt a new window to confirm the download before it starts"
     },
     "option_headers": {
         "message": "Request Headers"

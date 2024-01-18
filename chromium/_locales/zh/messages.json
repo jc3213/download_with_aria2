@@ -170,20 +170,17 @@
     "option_match_exclude": {
         "message": "例外域名"
     },
-    "option_advanced": {
-        "message": "进阶"
+    "option_download_prompt": {
+        "message": "确认下载信息"
+    },
+    "option_download_prompt_title": {
+        "message": "开始下载前弹出窗口确认下载信息"
     },
     "option_user_agent": {
         "message": "用户代理"
     },
     "option_user_agent_title": {
         "message": "设置新建下载时的用户代理"
-    },
-    "option_download_prompt": {
-        "message": "确认下载信息"
-    },
-    "option_download_prompt_title": {
-        "message": "开始下载前弹出窗口确认下载信息"
     },
     "option_headers": {
         "message": "请求头"
