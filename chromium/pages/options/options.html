@@ -78,16 +78,16 @@
                 <label for="notify_complete" i18n>option_notify_complete</label>
             </div>
             <h1 i18n>option_advanced</h1>
-            <div title="option_user_agent_title" i18n>
-                <div class="title" i18n>option_user_agent</div>
-                <input data-eid="user_agent" type="text">
-            </div>
             <div class="menu" title="option_download_prompt_title" i18n>
                 <input id="download_prompt" data-eid="download_prompt" type="checkbox">
                 <label for="download_prompt" i18n>option_download_prompt</label>
             </div>
             <h1 i18n>option_headers</h1>
-            <div class="menu" title="option_headers_enabled_title" i18n>
+            <div class="menu" title="option_user_agent_title" i18n>
+                <div class="title" i18n>option_user_agent</div>
+                <input data-eid="user_agent" type="text">
+            </div>
+            <div class="menu even" title="option_headers_enabled_title" i18n>
                 <input id="headers_enabled" data-eid="headers_enabled" type="checkbox">
                 <label for="headers_enabled" i18n>option_headers_enabled</label>
             </div>
@@ -140,7 +140,7 @@
                 <input id="capture_always" data-eid="capture_always" type="checkbox">
                 <label for="capture_always" i18n>option_capture_always</label>
             </div>
-            <div title="option_capture_filesize_title"  data-rel="capture_enabled" data-exc="capture_always" i18n>
+            <div class="menu" title="option_capture_filesize_title"  data-rel="capture_enabled" data-exc="capture_always" i18n>
                 <div class="title" i18n>option_capture_filesize</div>
                 <div>
                     <input data-eid="capture_filesize" type="number" min="0">
