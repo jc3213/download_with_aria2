@@ -37,7 +37,7 @@ function getNewWindow(url, offsetHeight) {
 
 function aria2NewDownload(slim) {
     if (slim) {
-        return getNewWindow(aria2NewDL + '?slim_mode', 308);
+        return getNewWindow(aria2NewDL + '?slim_mode', 307);
     }
-    return getNewWindow(aria2NewDL, 518);
+    return getNewWindow(aria2NewDL, 502);
 }
