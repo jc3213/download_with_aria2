@@ -78,11 +78,11 @@ input[type="checkbox"] {
 }
 
 [data-map] > .title, [data-map] > .flex {
-    width: 40%;
+    width: 45%;
 }
 
 .rule {
-    width: 55%;
+    width: calc(50% - 4px);
     height: 58px;
     top: 0px;
     right: 0px;

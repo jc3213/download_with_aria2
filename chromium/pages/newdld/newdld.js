@@ -45,7 +45,7 @@ async function downloadSubmit() {
 
 async function downloadExpand() {
     var {id, top, height} = await getCurrentWindow();
-    chrome.windows.update(id, {top: top - 105, height: height + 210});
+    chrome.windows.update(id, {top: top - 100, height: height + 195});
     downloader.className = 'extra';
     countdown.textContent = countdown.textContent * 1 + 90;
 }

@@ -38,7 +38,7 @@ document.addEventListener('click', (event) => {
             imagesOptions();
             break;
         case 'proxy_btn':
-            imagesProxy(target);
+            imagesProxy(event.target);
             break;
         case 'select_all':
             selectAll();
