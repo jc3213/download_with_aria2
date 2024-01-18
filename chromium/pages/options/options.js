@@ -247,13 +247,13 @@ function newRule(id, entry, list) {
     }
 }
 
-function addRule(list, mid, rule, scrollTo) {
+function addRule(list, mid, rule, roll) {
     var item = listLET.cloneNode(true);
-    item.querySelector('span').textContent = rule;
+    item.querySelector('div').textContent = item.title = rule;
     item.querySelector('button').dataset.mid = mid;
     list.append(item);
-    if (scrollTo) {
-        item.scrollIntoView();
+    if (roll) {
+        list.scrollTop = list.scrollHeight;
     }
 }
 

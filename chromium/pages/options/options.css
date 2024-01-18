@@ -79,6 +79,9 @@ input[type="checkbox"] {
 
 .rule {
     max-height: 58px;
+    display: grid;
+    grid-template-columns: 49% 49%;
+    grid-column-gap: 3px;
 }
 
 .rule:not(:empty) {
@@ -90,7 +93,7 @@ input[type="checkbox"] {
 
 .map {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr 22px;
     width: 100%;
 }
 
@@ -98,4 +101,8 @@ input[type="checkbox"] {
     padding: 3px;
     border-style: outset;
     border-width: 1px;
+}
+
+.rule button {
+    font-size: 12px;
 }

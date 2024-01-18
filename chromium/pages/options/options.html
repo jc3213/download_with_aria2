@@ -99,6 +99,9 @@
                 <div class="rule"></div>
             </div>
             <h1 i18n>option_folder</h1>
+            <div title="option_folder_title" i18n>
+                <input data-eid="folder_defined" type="text">
+            </div>
             <div class="menu" title="option_folder_enabled_title" i18n>
                 <input id="folder_enabled" data-eid="folder_enabled" type="checkbox">
                 <label for="folder_enabled" i18n>option_folder_enabled</label>
@@ -106,9 +109,6 @@
             <div class="menu" title="option_folder_firefox_title" data-app="firefox" data-rel="folder_enabled" data-exc="capture_enabled, capture_webrequest" i18n>
                 <input id="folder_firefox" data-eid="folder_firefox" type="checkbox">
                 <label for="folder_firefox" i18n>option_folder_firefox</label>
-            </div>
-            <div class="menu" title="option_folder_title" data-rel="folder_enabled" i18n>
-                <input data-eid="folder_defined" type="text">
             </div>
             <h1 i18n>option_proxy</h1>
             <div title="option_proxy_title" i18n>
@@ -157,16 +157,16 @@
                 </div>
                 <div class="rule"></div>
             </div>
-            <div class="menu" title="option_capture_include_title" data-map="capture_include" data-rel="capture_enabled" data-exc="capture_always" i18n>
-                <div class="title" i18n>option_match_include</div>
+            <div class="menu" title="option_capture_reject_title" data-map="capture_reject" data-rel="capture_enabled" i18n>
+                <div class="title" i18n>option_capture_reject</div>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add">➕</button>
                 </div>
                 <div class="rule"></div>
             </div>
-            <div class="menu" title="option_capture_reject_title" data-map="capture_reject" data-rel="capture_enabled" i18n>
-                <div class="title" i18n>option_capture_reject</div>
+            <div class="menu" title="option_capture_include_title" data-map="capture_include" data-rel="capture_enabled" data-exc="capture_always" i18n>
+                <div class="title" i18n>option_match_include</div>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add">➕</button>
@@ -184,7 +184,7 @@
         </div>
         <div class="template">
             <div class="map">
-                <span></span><button data-bid="remove">❌</button>
+                <div></div><button data-bid="remove">❌</button>
             </div>
         </div>
         <div id="jsonrpc" class="options">
