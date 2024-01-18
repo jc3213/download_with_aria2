@@ -87,12 +87,12 @@ input[type="checkbox"] {
     top: 0px;
     right: 0px;
     position: absolute;
-    overflow: auto;
 }
 
 .rule:not(:empty) {
     border-style: inset;
     border-width: 1px;
+    overflow-y: scroll;
 }
 
 .map {
