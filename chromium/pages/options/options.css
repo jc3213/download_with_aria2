@@ -73,26 +73,19 @@ input[type="checkbox"] {
     font-weight: bold;
 }
 
-.even > * {
-    margin-top: 20px;
-}
-
-[data-map] > .title, [data-map] > .flex {
-    width: 49%;
+.even {
+    padding-top: 20px;
 }
 
 .rule {
-    width: 49%;
-    height: 58px;
-    top: 0px;
-    right: 0px;
-    position: absolute;
+    max-height: 58px;
 }
 
 .rule:not(:empty) {
     border-style: inset;
     border-width: 1px;
     overflow-y: scroll;
+    margin-top: 5px;
 }
 
 .map {
