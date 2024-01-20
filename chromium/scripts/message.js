@@ -16,7 +16,7 @@ window.addEventListener('message', (event) => {
 });
 
 chrome.runtime.onMessage.addListener((message) => {
-    switch(message) {
+    switch (message) {
         case 'aria2c_all_images':
             getAllImages();
             break;
