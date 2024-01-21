@@ -114,7 +114,15 @@ chrome.commands.onCommand.addListener((command) => {
 });
 
 chrome.action = chrome.action ?? chrome.browserAction;
-chrome.action.onClicked.addListener(getTaskManager);
+chrome.action.onClicked.addListener((tab) => {
+    chrome.tabs.query({currentWindow: true}, (tabs) => {
+        var popup = tabs.find((tab) => tab.url.includes(aria2InTab));
+        if (popup) {
+            return chrome.tabs.update(popup.id, {active: true});
+        }
+        chrome.tabs.create({active: true, url: `${aria2Popup}?open_in_tab`});
+    });
+});
 
 async function aria2Download(url, options, referer, hostname, storeId) {
     await aria2MV3SetUp();
@@ -173,6 +181,18 @@ function aria2ContextMenus() {
     }
 }
 
+function aria2TaskManager() {
+    var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup;
+    chrome.action.setPopup({popup});
+}
+
+async function aria2MV3SetUp() {
+    if (!aria2RPC) {
+        aria2Storage = await chrome.storage.sync.get(null);
+        aria2ClientSetUp();
+    }
+}
+
 function getCurrentTabUrl() {
     return new Promise((resolve) => {
         chrome.tabs.query({active: true, currentWindow: true}, (tabs) => resolve(tabs[0].url));
@@ -228,26 +248,4 @@ function getRequestHeaders(url) {
             resolve([header]);
         });
     });
-}
-
-function getTaskManager() {
-    chrome.tabs.query({currentWindow: true}, (tabs) => {
-        var popup = tabs.find(tab => tab.url.includes(aria2InTab));
-        if (popup) {
-            return chrome.tabs.update(popup.id, {active: true});
-        }
-        chrome.tabs.create({active: true, url: `${aria2Popup}?open_in_tab`});
-    });
-}
-
-function aria2TaskManager() {
-    var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup;
-    chrome.action.setPopup({popup});
-}
-
-async function aria2MV3SetUp() {
-    if (!aria2RPC) {
-        aria2Storage = await chrome.storage.sync.get(null);
-        aria2ClientSetUp();
-    }
 }
