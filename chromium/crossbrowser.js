@@ -67,7 +67,7 @@ chrome.storage.onChanged.addListener((changes) => {
     Object.keys(changes).forEach((key) => {
         var {newValue} = changes[key];
         if (newValue !== undefined) {
-            aria2Storage[key] = key in aria2Match ? aria2RegExp(newValue) : newValue;
+            aria2Storage[key] = key in aria2Match ? getRegexpRule(newValue) : newValue;
         }
     });
     aria2Changes.forEach(({keys, action}) => {
