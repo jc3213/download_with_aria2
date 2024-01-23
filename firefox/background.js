@@ -3,16 +3,6 @@ aria2Changes.push({
     action: aria2CaptureSwitch
 });
 
-chrome.storage.sync = browser.storage.local;
-
-browser.storage.local.get(null, json => {
-    aria2Storage = {...aria2Default, ...json};
-    aria2ClientSetUp();
-    aria2CaptureSwitch();
-    aria2TaskManager();
-    aria2ContextMenus();
-});
-
 async function getRequestHeadersFirefox(url, storeId) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
     var header = 'Cookie:';
@@ -147,7 +137,7 @@ function decodeRFC2047(text) {
                 if (v === '_') {
                     return 0x20;
                 }
-                else if (v.length === 3) {
+                if (v.length === 3) {
                     return parseInt(v.slice(1), 16)
                 }
                 return v.charCodeAt(0);

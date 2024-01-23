@@ -2,6 +2,18 @@ var aria2Socket;
 var aria2Retry;
 var aria2Active;
 
+if (typeof browser !== 'undefined') {
+    chrome.storage.sync = browser.storage.local;
+}
+
+chrome.storage.sync.get(null, json => {
+    aria2StorageInit(json};
+    aria2ClientSetUp();
+    aria2CaptureSwitch();
+    aria2TaskManager();
+    aria2ContextMenus();
+});
+
 function aria2ClientSetUp() {
     if (aria2Retry) {
         clearTimeout(aria2Retry);
@@ -10,7 +22,6 @@ function aria2ClientSetUp() {
         aria2Socket.close();
     }
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
-    aria2MatchKeys.forEach((key) => aria2Storage[key] = getRegexpRule(aria2Storage[key]));
     aria2RPC.call('aria2.tellActive').then((result) => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
         aria2Retry = null;

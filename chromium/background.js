@@ -3,14 +3,6 @@ aria2Changes.push({
     action: aria2CaptureSwitch
 });
 
-chrome.storage.sync.get(null, json => {
-    aria2Storage = {...aria2Default, ...json};
-    aria2ClientSetUp();
-    aria2CaptureSwitch();
-    aria2TaskManager();
-    aria2ContextMenus();
-});
-
 async function captureOnCreated({id, finalUrl, referrer}) {
     var url = finalUrl;
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;

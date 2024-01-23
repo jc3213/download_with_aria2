@@ -30,17 +30,12 @@ var aria2Default = {
     'capture_exclude': []
 };
 var aria2Match = {
+    keys: ['headers_exclude', 'proxy_include', 'capture_include', 'capture_exclude'],
     'headers_exclude': true,
     'proxy_include': true,
     'capture_include': true,
     'capture_exclude': true
 };
-var aria2MatchKeys = [
-    'headers_exclude',
-    'proxy_include',
-    'capture_include',
-    'capture_exclude'
-];
 var aria2Storage = {};
 var aria2Changes = [
     {
@@ -135,6 +130,11 @@ chrome.action.onClicked.addListener((tab) => {
         chrome.tabs.create({active: true, url: `${aria2Popup}?open_in_tab`});
     });
 });
+
+function aria2StorageInit(json) {
+    aria2Storage = {...aria2Default, ...json};
+    aria2Match.keys.forEach((key) => aria2Storage[key] = getRegexpRule(aria2Storage[key]));
+}
 
 async function aria2Download(url, options, referer, hostname, storeId) {
     await aria2MV3SetUp();
