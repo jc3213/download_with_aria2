@@ -131,11 +131,6 @@ chrome.action.onClicked.addListener((tab) => {
     });
 });
 
-function aria2StorageInit(json) {
-    aria2Storage = {...aria2Default, ...json};
-    aria2Match.keys.forEach((key) => aria2Storage[key] = getRegexpRule(aria2Storage[key]));
-}
-
 async function aria2Download(url, options, referer, hostname, storeId) {
     await aria2MV3SetUp();
     options['user-agent'] = aria2Storage['user_agent'];
