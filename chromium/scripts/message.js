@@ -25,7 +25,7 @@ chrome.runtime.onMessage.addListener((message) => {
 
 function getAllImages() {
     if (getImage) {
-        document.images.forEach((img) => {
+        [...document.images].forEach((img) => {
             var {src, alt} = img;
             if (src === referer || src.startsWith('data') || history[src]) {
                 return;
