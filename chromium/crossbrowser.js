@@ -217,8 +217,11 @@ function getFileExtension(filename) {
 }
 
 function getRegexpRule(array) {
-    var regexp = array.length === 0 ? '(?!:):' : array.join('|');
-    return new RegExp(regexp);
+    if (array.length === 0) {
+        return /!/;
+    }
+    var result = array.map((rule) => rule.replace(/[.*]/g, (s) => `${s === '.' ? '\\' : '.'}${s}`)).join('|');
+    return new RegExp(result);
 }
 
 function getCaptureGeneral(hostname, fileext, size) {
