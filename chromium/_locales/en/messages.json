@@ -171,7 +171,7 @@
         "message": "Exclude Domains"
     },
     "option_download_prompt": {
-        "message": "Display Download Prompt"
+        "message": "Enable Download Prompt"
     },
     "option_download_prompt_title": {
         "message": "Prompt a new window to confirm the download before it starts"

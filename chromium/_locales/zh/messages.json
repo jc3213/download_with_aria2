@@ -171,7 +171,7 @@
         "message": "例外域名"
     },
     "option_download_prompt": {
-        "message": "确认下载信息"
+        "message": "启用下载弹窗"
     },
     "option_download_prompt_title": {
         "message": "开始下载前弹出窗口确认下载信息"
