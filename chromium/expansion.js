@@ -10,6 +10,7 @@ function aria2ClientSetUp() {
         aria2Socket.close();
     }
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
+    aria2MatchKeys.forEach((key) => aria2Storage[key] = getRegexpRule(aria2Storage[key]));
     aria2RPC.call('aria2.tellActive').then((result) => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
         aria2Retry = null;

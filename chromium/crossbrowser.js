@@ -29,6 +29,18 @@ var aria2Default = {
     'capture_reject': [],
     'capture_exclude': []
 };
+var aria2Match = {
+    'headers_exclude': true,
+    'proxy_include': true,
+    'capture_include': true,
+    'capture_exclude': true
+};
+var aria2MatchKeys = [
+    'headers_exclude',
+    'proxy_include',
+    'capture_include',
+    'capture_exclude'
+];
 var aria2Storage = {};
 var aria2Changes = [
     {
@@ -55,7 +67,7 @@ chrome.storage.onChanged.addListener((changes) => {
     Object.keys(changes).forEach((key) => {
         var {newValue} = changes[key];
         if (newValue !== undefined) {
-            aria2Storage[key] = newValue;
+            aria2Storage[key] = key in aria2Match ? aria2RegExp(newValue) : newValue;
         }
     });
     aria2Changes.forEach(({keys, action}) => {
@@ -127,13 +139,13 @@ chrome.action.onClicked.addListener((tab) => {
 async function aria2Download(url, options, referer, hostname, storeId) {
     await aria2MV3SetUp();
     options['user-agent'] = aria2Storage['user_agent'];
-    if (aria2Storage['proxy_enabled'] || aria2Storage['proxy_include'].some(host => hostname.includes(host))) {
+    if (aria2Storage['proxy_enabled'] || aria2Storage['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (options['dir'] === undefined && aria2Storage['folder_enabled'] && aria2Storage['folder_defined'] !== '') {
         options['dir'] = aria2Storage['folder_defined'];
     }
-    if (aria2Storage['headers_enabled'] && !aria2Storage['headers_exclude'].some(host => hostname.includes(host))) {
+    if (aria2Storage['headers_enabled'] && !aria2Storage['headers_exclude'].test(hostname)) {
         options['referer'] = referer;
         options['header'] = storeId ? await getRequestHeadersFirefox(url, storeId) : await getRequestHeaders(url);
     }
@@ -204,13 +216,18 @@ function getFileExtension(filename) {
     return fileext.toLowerCase();
 }
 
+function getRegexpRule(array) {
+    var regexp = array.length === 0 ? '(?!:):' : array.join('|');
+    return new RegExp(regexp);
+}
+
 function getCaptureGeneral(hostname, fileext, size) {
-    if (aria2Storage['capture_exclude'].some(host => hostname.includes(host)) ||
+    if (aria2Storage['capture_exclude'].test(hostname) ||
         aria2Storage['capture_reject'].includes(fileext)) {
         return false;
     }
     if (aria2Storage['capture_always'] ||
-        aria2Storage['capture_include'].some(host => hostname.includes(host)) ||
+        aria2Storage['capture_include'].test(hostname) ||
         aria2Storage['capture_resolve'].includes(fileext) ||
         aria2Storage['capture_size'] > 0 && size >= aria2Storage['capture_size']) {
         return true;
@@ -219,11 +236,11 @@ function getCaptureGeneral(hostname, fileext, size) {
 }
 
 function getCaptureHostname(hostname) {
-    if (aria2Storage['capture_exclude'].some(host => hostname.includes(host))) {
+    if (aria2Storage['capture_exclude'].test(hostname)) {
         return -1;
     }
     if (aria2Storage['capture_always'] ||
-        aria2Storage['capture_include'].some(host => hostname.includes(host))) {
+        aria2Storage['capture_include'].test(hostname)) {
         return 1;
     }
     return 0;
