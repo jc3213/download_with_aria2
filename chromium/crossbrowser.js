@@ -220,7 +220,7 @@ function getRegexpRule(array) {
     if (array.length === 0) {
         return /!/;
     }
-    var result = array.map((rule) => rule.replace(/[.*]/g, (s) => `${s === '.' ? '\\' : '.'}${s}`)).join('|');
+    var result = array.map((rule) => rule.replace(/\./g, '\\.').replace('*', '.*')).join('|');
     return new RegExp(result);
 }
 
