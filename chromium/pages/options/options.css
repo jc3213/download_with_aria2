@@ -69,27 +69,27 @@ input[type="checkbox"] {
     padding-top: 21px;
 }
 
-.rule {
-    max-height: 58px;
+.list {
     display: grid;
     grid-template-columns: 49% 49%;
     grid-column-gap: 3px;
 }
 
-.rule:not(:empty) {
+.list:not(:empty) {
+    max-height: 58px;
     border-style: inset;
     border-width: 1px;
     overflow-y: scroll;
     margin-top: 5px;
 }
 
-.map {
+.rule {
     display: grid;
     grid-template-columns: 1fr 22px;
     width: 100%;
 }
 
-.map > * {
+.rule > * {
     padding: 3px;
     border-style: outset;
     border-width: 1px;

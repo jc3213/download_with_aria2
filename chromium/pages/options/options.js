@@ -36,7 +36,7 @@ var switches = {
 };
 var mapped = document.querySelectorAll('[data-map]');
 var listed = {};
-var listLET = document.querySelector('.template > .map');
+var ruleLet = document.querySelector('.template > .rule');
 
 if (typeof browser !== 'undefined') {
     extension.classList.add('firefox');
@@ -214,7 +214,7 @@ function optionsImport(file) {
 
 mapped.forEach(menu => {
     var id = menu.dataset.map;
-    var [entry, list] = menu.querySelectorAll('input, .rule');
+    var [entry, list] = menu.querySelectorAll('input, .list');
     menu.addEventListener('keydown', ({key}) => {
         if (key === 'Enter') {
             newRule(id, entry, list);
@@ -248,7 +248,7 @@ function newRule(id, entry, list) {
 }
 
 function addRule(list, mid, rule, roll) {
-    var item = listLET.cloneNode(true);
+    var item = ruleLet.cloneNode(true);
     item.querySelector('div').textContent = item.title = rule;
     item.querySelector('button').dataset.mid = mid;
     list.append(item);
