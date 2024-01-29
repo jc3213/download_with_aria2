@@ -32,7 +32,7 @@
                     <input data-eid="jsonrpc_token" type="text" placeholder="$$secret$$">
                 </div>
             </div>
-            <div class="menu">
+            <div class="menu even">
                 <button data-bid="aria2_btn" i18n>option_aria2</button>
             </div>
             <h1 i18n>option_task_manager</h1>
@@ -68,7 +68,7 @@
                 <input id="context_allimages" data-eid="context_allimages" type="checkbox">
                 <label for="context_allimages" i18n>contextmenu_allimages</label>
             </div>
-            <div title="option_download_prompt_title" i18n>
+            <div class="even" title="option_download_prompt_title" i18n>
                 <input id="download_prompt" data-eid="download_prompt" type="checkbox">
                 <label for="download_prompt" i18n>option_download_prompt</label>
             </div>
@@ -102,11 +102,11 @@
             <div title="option_folder_title" i18n>
                 <input data-eid="folder_defined" type="text">
             </div>
-            <div class="menu" title="option_folder_enabled_title" i18n>
+            <div class="menu even" title="option_folder_enabled_title" i18n>
                 <input id="folder_enabled" data-eid="folder_enabled" type="checkbox">
                 <label for="folder_enabled" i18n>option_folder_enabled</label>
             </div>
-            <div class="menu" title="option_folder_firefox_title" data-app="firefox" data-rel="folder_enabled" data-exc="capture_enabled, capture_webrequest" i18n>
+            <div class="menu even" title="option_folder_firefox_title" data-app="firefox" data-rel="folder_enabled" data-exc="capture_enabled, capture_webrequest" i18n>
                 <input id="folder_firefox" data-eid="folder_firefox" type="checkbox">
                 <label for="folder_firefox" i18n>option_folder_firefox</label>
             </div>
@@ -131,13 +131,13 @@
                 <input id="capture_enabled" data-eid="capture_enabled" type="checkbox">
                 <label for="capture_enabled" i18n>option_capture_enabled</label>
             </div>
-            <div class="menu" title="option_capture_webrequest_title" data-app="firefox" data-rel="capture_enabled" i18n>
-                <input id="capture_webrequest" data-eid="capture_webrequest" type="checkbox">
-                <label for="capture_webrequest" i18n>option_capture_webrequest</label>
-            </div>
             <div class="menu" title="option_capture_always_title" data-rel="capture_enabled" i18n>
                 <input id="capture_always" data-eid="capture_always" type="checkbox">
                 <label for="capture_always" i18n>option_capture_always</label>
+            </div>
+            <div class="menu" title="option_capture_webrequest_title" data-app="firefox" data-rel="capture_enabled" i18n>
+                <input id="capture_webrequest" data-eid="capture_webrequest" type="checkbox">
+                <label for="capture_webrequest" i18n>option_capture_webrequest</label>
             </div>
             <div class="menu" title="option_capture_filesize_title"  data-rel="capture_enabled" data-exc="capture_always" i18n>
                 <div class="title" i18n>option_capture_filesize</div>
