@@ -123,25 +123,25 @@
         "message": "右键菜单"
     },
     "option_context_enabled": {
-        "message": "启用右键菜单"
+        "message": "启用上下文菜单"
     },
     "option_context_enabled_title": {
-        "message": "启用右键菜单"
+        "message": "启用此扩展的右键菜单"
     },
     "option_context_cascade": {
         "message": "层叠式菜单"
     },
     "option_context_cascade_title": {
-        "message": "切换为层叠式右键菜单"
+        "message": "启用层叠式上下文菜单"
     },
     "option_context_thisurl_title": {
-        "message": "启用「下载此链接」菜单"
+        "message": "启用上下文菜单「下载此链接」"
     },
     "option_context_thisimage_title": {
-        "message": "启用「下载此图像」菜单"
+        "message": "启用上下文菜单「下载此图像」"
     },
     "option_context_allimages_title": {
-        "message": "启用「下载此页面的所有图像」菜单"
+        "message": "启用上下文菜单「下载此页面的所有图像」"
     },
     "option_notification": {
         "message": "通知"

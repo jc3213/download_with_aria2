@@ -16,6 +16,11 @@ h1 {
     margin: 50px 0px 10px !important;
 }
 
+label {
+    padding: 3px 0px;
+    font-weight: bold;
+}
+
 input[type="checkbox"] {
     width: auto;
     transform: scale(1.5);
@@ -60,21 +65,8 @@ input[type="checkbox"] {
     margin: 0px;
 }
 
-.menu.flex > :first-child {
-    margin: 3px 3px 0px 0px;
-}
-
-.menu.flex > :last-child {
-    flex-grow: 1;
-}
-
-label {
-    padding: 3px 0px;
-    font-weight: bold;
-}
-
 .even {
-    padding-top: 20px;
+    padding-top: 21px;
 }
 
 .rule {

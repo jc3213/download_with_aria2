@@ -129,19 +129,19 @@
         "message": "Enable context menus for this extension"
     },
     "option_context_cascade": {
-        "message": "Cascaded Context Menu"
+        "message": "Cascaded Context Menus"
     },
     "option_context_cascade_title": {
-        "message": "Use cascaded context menu instead of default behavior"
+        "message": "Enable cascaded context menus"
     },
     "option_context_thisurl_title": {
-        "message": "Enable 「Download this link」"
+        "message": "Enable context menu 「Download this link」"
     },
     "option_context_thisimage_title": {
-        "message": "Enable 「Download this image」"
+        "message": "Enable context menu 「Download this image」"
     },
     "option_context_allimages_title": {
-        "message": "Enable 「Download all images on this page」"
+        "message": "Enable context menu 「Download all images on this page」"
     },
     "option_notification": {
         "message": "Notifications"
