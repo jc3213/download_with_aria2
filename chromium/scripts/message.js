@@ -10,7 +10,7 @@ window.addEventListener('load', (event) => {
 
 window.addEventListener('message', (event) => {
     var {aria2c, params} = event.data;
-    if (aria2c === 'aria2c-jsonrpc-call') {
+    if (aria2c === 'aria2c-jsonrpc-call' && params !== undefined) {
         chrome.runtime.sendMessage({action: 'external_download', params});
     }
 });
