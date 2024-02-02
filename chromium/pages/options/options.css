@@ -71,8 +71,7 @@ input[type="checkbox"] {
 
 .list {
     display: grid;
-    grid-template-columns: 49% 49%;
-    grid-column-gap: 3px;
+    grid-template-columns: 1fr 1fr;
 }
 
 .list:not(:empty) {
@@ -85,14 +84,14 @@ input[type="checkbox"] {
 
 .rule {
     display: grid;
-    grid-template-columns: 1fr 22px;
-    width: 100%;
+    grid-template-columns: 135px 22px;
 }
 
 .rule > * {
     padding: 3px;
     border-style: outset;
     border-width: 1px;
+    overflow: hidden;
 }
 
 .rule button {
