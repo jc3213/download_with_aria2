@@ -215,7 +215,7 @@ function getRegexpRule(array) {
     if (array.length === 0) {
         return /!/;
     }
-    var result = array.map((rule) => rule.replace(/\./g, '\\.').replace('*', '.*')).join('|');
+    var result = array.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*'));
     return new RegExp(result);
 }
 
