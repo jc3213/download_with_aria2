@@ -64,10 +64,10 @@ function downloadProxy(proxyBtn) {
 document.addEventListener('change', ({target}) => {
     var {id, value, files, dataset: {rid}} = target;
     if (files) {
-        downloadFiles(files);
+        return downloadFiles(files);
     }
     if (id === 'entries') {
-        changedEntries(value);
+        return changedEntries(value);
     }
     if (rid) {
         aria2Global[rid] = value;

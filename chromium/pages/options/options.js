@@ -178,10 +178,10 @@ function optionsExtension() {
 document.addEventListener('change', ({target}) => {
     var {dataset: {eid, rid}, value, checked, files} = target;
     if (eid) {
-        setChange(eid, eid in switches ? checked : eid in multiply ? value * multiply[eid] : value);
+        return setChange(eid, eid in switches ? checked : eid in multiply ? value * multiply[eid] : value);
     }
     if (rid) {
-        setChange(rid, value);
+        return setChange(rid, value);
     }
     if (files) {
         optionsImport(files[0]);
