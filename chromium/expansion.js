@@ -8,7 +8,7 @@ if (typeof browser !== 'undefined') {
 
 chrome.storage.sync.get(null, json => {
     aria2Storage = {...aria2Default, ...json};
-    aria2Match.keys.forEach((key) => aria2Storage[key] = getRegexpRule(aria2Storage[key]));
+    aria2MatchUpdate();
     aria2ClientSetUp();
     aria2CaptureSwitch();
     aria2TaskManager();

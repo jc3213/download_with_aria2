@@ -30,11 +30,12 @@ var aria2Default = {
     'capture_exclude': []
 };
 var aria2Match = {
-    keys: ['headers_exclude', 'proxy_include', 'capture_include', 'capture_exclude'],
-    'headers_exclude': true,
-    'proxy_include': true,
-    'capture_include': true,
-    'capture_exclude': true
+    keys: [
+        'headers_exclude',
+        'proxy_include',
+        'capture_include',
+        'capture_exclude'
+    ]
 };
 var aria2Storage = {};
 var aria2Changes = [
@@ -62,7 +63,7 @@ chrome.storage.onChanged.addListener((changes) => {
     Object.keys(changes).forEach((key) => {
         var {newValue} = changes[key];
         if (newValue !== undefined) {
-            aria2Storage[key] = key in aria2Match ? getRegexpRule(newValue) : newValue;
+            aria2Storage[key] = newValue;
         }
     });
     aria2Changes.forEach(({keys, action}) => {
@@ -70,6 +71,7 @@ chrome.storage.onChanged.addListener((changes) => {
             action();
         }
     });
+    aria2MatchUpdate();
 });
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
@@ -134,13 +136,13 @@ chrome.action.onClicked.addListener((tab) => {
 async function aria2Download(url, options, referer, hostname, storeId) {
     await aria2MV3SetUp();
     options['user-agent'] = aria2Storage['user_agent'];
-    if (aria2Storage['proxy_enabled'] || aria2Storage['proxy_include'].test(hostname)) {
+    if (aria2Storage['proxy_enabled'] || aria2Match['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (options['dir'] === undefined && aria2Storage['folder_enabled'] && aria2Storage['folder_defined'] !== '') {
         options['dir'] = aria2Storage['folder_defined'];
     }
-    if (aria2Storage['headers_enabled'] && !aria2Storage['headers_exclude'].test(hostname)) {
+    if (aria2Storage['headers_enabled'] && !aria2Match['headers_exclude'].test(hostname)) {
         options['referer'] = referer;
         options['header'] = storeId ? await getRequestHeadersFirefox(url, storeId) : await getRequestHeaders(url);
     }
@@ -156,10 +158,10 @@ async function aria2DownloadPrompt(aria2c) {
     }
     var {url, json, options} = aria2c;
     if (json) {
-        aria2DownloadJSON(json, options);
+        return aria2DownloadJSON(json, options);
     }
     if (url) {
-        aria2DownloadUrls(url, options);
+        return aria2DownloadUrls(url, options);
     }
 }
 
@@ -193,6 +195,13 @@ function aria2TaskManager() {
     chrome.action.setPopup({popup});
 }
 
+function aria2MatchUpdate(array) {
+    aria2Match.keys.forEach((key) => {
+        var array = aria2Storage[key];
+        aria2Match[key] = array.length === 0 ? /!/ : new RegExp(`^(${array.join('|').replace(/\./g, '\\.').replace(/\*(\\\.)?/g, '.*')})$`);
+    });
+}
+
 async function aria2MV3SetUp() {
     if (!aria2RPC) {
         aria2Storage = await chrome.storage.sync.get(null);
@@ -211,21 +220,13 @@ function getFileExtension(filename) {
     return fileext.toLowerCase();
 }
 
-function getRegexpRule(array) {
-    if (array.length === 0) {
-        return /!/;
-    }
-    var result = array.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*');
-    return new RegExp(result);
-}
-
 function getCaptureGeneral(hostname, fileext, size) {
-    if (aria2Storage['capture_exclude'].test(hostname) ||
+    if (aria2Match['capture_exclude'].test(hostname) ||
         aria2Storage['capture_reject'].includes(fileext)) {
         return false;
     }
     if (aria2Storage['capture_always'] ||
-        aria2Storage['capture_include'].test(hostname) ||
+        aria2Match['capture_include'].test(hostname) ||
         aria2Storage['capture_resolve'].includes(fileext) ||
         aria2Storage['capture_size'] > 0 && size >= aria2Storage['capture_size']) {
         return true;
@@ -234,11 +235,11 @@ function getCaptureGeneral(hostname, fileext, size) {
 }
 
 function getCaptureHostname(hostname) {
-    if (aria2Storage['capture_exclude'].test(hostname)) {
+    if (aria2Match['capture_exclude'].test(hostname)) {
         return -1;
     }
     if (aria2Storage['capture_always'] ||
-        aria2Storage['capture_include'].test(hostname)) {
+        aria2Match['capture_include'].test(hostname)) {
         return 1;
     }
     return 0;
