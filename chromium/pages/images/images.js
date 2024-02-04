@@ -106,12 +106,12 @@ gallery.addEventListener('mouseenter', ({target}) => {
     }
 }, true);
 
-chrome.storage.sync.get(null, (json) => {
+chrome.runtime.sendMessage({action: 'options_onstartup'}, (json) => {
     aria2Storage = json;
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
 });
 
-chrome.runtime.sendMessage({action: 'internal_images'}, async ({result, options}) => {
+chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({result, options}) => {
     result.forEach(getPreview);
     var global = await aria2RPC.call('aria2.getGlobalOption');
     aria2Options = document.querySelectorAll('#options input').disposition({...global, ...options});

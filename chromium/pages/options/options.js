@@ -102,11 +102,12 @@ document.addEventListener('click', (event) => {
     }
 });
 
-function optionsSave() {
+async function optionsSave() {
     saveBtn.disabled = true;
     if (global) {
         aria2Storage = {...changes};
-        chrome.storage.sync.set(changes);
+        await chrome.runtime.sendMessage({action: 'options_onchange', params: changes});
+        await chrome.storage.sync.set(changes);
         return;
     }
     aria2RPC.call('aria2.changeGlobalOption', changes);
@@ -195,7 +196,8 @@ function optionsImport(file) {
     reader.onload = async (event) => {
         if (global) {
             var json = JSON.parse(reader.result);
-            chrome.storage.sync.set(json);
+            await chrome.runtime.sendMessage({action: 'options_onchange', params: json});
+            await chrome.storage.sync.set(json);
             aria2Storage = json;
             aria2StartUp();
             return;
@@ -274,7 +276,7 @@ chrome.storage.onChanged.addListener((changes) => {
     }
 });
 
-chrome.storage.sync.get(null, (json) => {
+chrome.runtime.sendMessage({action: 'options_onstartup'}, (json) => {
     aria2Storage = json;
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
     aria2StartUp();

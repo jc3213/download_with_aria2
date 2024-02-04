@@ -11,7 +11,7 @@ window.addEventListener('load', (event) => {
 window.addEventListener('message', (event) => {
     var {aria2c, params} = event.data;
     if (aria2c === 'aria2c-jsonrpc-call' && params !== undefined) {
-        chrome.runtime.sendMessage({action: 'external_download', params});
+        chrome.runtime.sendMessage({action: 'message_download', params});
     }
 });
 
@@ -36,5 +36,5 @@ function getAllImages() {
         getImage = false;
     }
     var params = {result, options: {referer, header}};
-    chrome.runtime.sendMessage({action: 'external_images', params});
+    chrome.runtime.sendMessage({action: 'message_allimage', params});
 }

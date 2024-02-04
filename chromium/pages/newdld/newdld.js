@@ -104,7 +104,7 @@ function changedEntries(value) {
 }
 
 function slimModeInit() {
-    chrome.runtime.sendMessage({action: 'internal_prompt'}, ({url, json, options}) => {
+    chrome.runtime.sendMessage({action: 'download_prompt'}, ({url, json, options}) => {
         if (json) {
             entry.value = JSON.stringify(json);
             entry.json = json;
@@ -127,7 +127,7 @@ function slimModeInit() {
     });
 }
 
-chrome.storage.sync.get(null, async (json) => {
+chrome.runtime.sendMessage({action: 'options_onstartup'}, async (json) => {
     aria2Storage = json;
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
     var global = await aria2RPC.call('aria2.getGlobalOption');

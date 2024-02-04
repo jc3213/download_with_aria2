@@ -59,24 +59,43 @@ var aria2Images = '/pages/images/images.html';
 var aria2Monitor = {};
 var aria2Message = {};
 
-chrome.storage.onChanged.addListener((changes) => {
-    Object.keys(changes).forEach((key) => {
-        var {newValue} = changes[key];
-        if (newValue !== undefined) {
-            aria2Storage[key] = newValue;
-        }
-    });
-    aria2Changes.forEach(({keys, action}) => {
-        if (keys.some((key) => key in changes)) {
-            action();
-        }
-    });
-    aria2MatchUpdate();
-});
-
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
+    }
+});
+
+chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
+    switch (action) {
+        case 'download_prompt':
+            response(aria2Message[tab.id]);
+            break;
+        case 'allimage_prompt':
+            response(aria2Message[tab.id]);
+            break;
+        case 'message_download':
+            aria2DownloadPrompt(params);
+            break;
+        case 'message_allimage':
+            aria2ImagesPrompt(params);
+            break;
+        case 'options_onchange':
+            aria2Storage = params;
+            break;
+        case 'options_onstartup':
+            response(aria2Storage);
+            break;
+    }
+});
+
+chrome.commands.onCommand.addListener((command) => {
+    switch (command) {
+        case 'open_options':
+            chrome.runtime.openOptionsPage();
+            break;
+        case 'open_new_download':
+            aria2NewDownload();
+            break;
     }
 });
 
@@ -94,32 +113,14 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, u
     }
 });
 
-chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
-    switch (action) {
-        case 'internal_prompt':
-            response(aria2Message[tab.id]);
-            break;
-        case 'internal_images':
-            response(aria2Message[tab.id]);
-            break;
-        case 'external_download':
-            aria2DownloadPrompt(params);
-            break;
-        case 'external_images':
-            aria2ImagesPrompt(params);
-            break;
-    }
-});
 
-chrome.commands.onCommand.addListener((command) => {
-    switch (command) {
-        case 'open_options':
-            chrome.runtime.openOptionsPage();
-            break;
-        case 'open_new_download':
-            aria2NewDownload();
-            break;
-    }
+chrome.storage.onChanged.addListener((changes) => {
+    aria2Changes.forEach(({keys, action}) => {
+        if (keys.some((key) => key in changes)) {
+            action();
+        }
+    });
+    aria2MatchUpdate();
 });
 
 chrome.action = chrome.action ?? chrome.browserAction;
