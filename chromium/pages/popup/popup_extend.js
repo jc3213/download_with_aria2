@@ -100,7 +100,7 @@ function aria2UpdateProxy(changes) {
     aria2Proxy = changes['proxy_server'].newValue;
 }
 
-chrome.runtime.sendMessage({action: 'options_onstartup'}, (json) => {
+chrome.storage.sync.get(null, (json) => {
     aria2Server = json['jsonrpc_uri'];
     aria2Token = json['jsonrpc_token'];
     aria2Interval = json['manager_interval'];

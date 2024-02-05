@@ -127,7 +127,7 @@ function slimModeInit() {
     });
 }
 
-chrome.runtime.sendMessage({action: 'options_onstartup'}, async (json) => {
+chrome.storage.sync.get(null, async (json) => {
     aria2Storage = json;
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
     var global = await aria2RPC.call('aria2.getGlobalOption');

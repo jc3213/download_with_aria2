@@ -82,9 +82,6 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
         case 'options_onchange':
             aria2Storage = params;
             break;
-        case 'options_onstartup':
-            response(aria2Storage);
-            break;
     }
 });
 

@@ -106,7 +106,7 @@ gallery.addEventListener('mouseenter', ({target}) => {
     }
 }, true);
 
-chrome.runtime.sendMessage({action: 'options_onstartup'}, (json) => {
+chrome.storage.sync.get(null, (json) => {
     aria2Storage = json;
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
 });
