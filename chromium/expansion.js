@@ -8,7 +8,7 @@ if (typeof browser !== 'undefined') {
 
 chrome.storage.sync.get(null, json => {
     aria2Storage = {...aria2Default, ...json};
-    aria2MatchUpdate();
+    aria2MatchPattern();
     aria2ClientSetUp();
     aria2CaptureSwitch();
     aria2TaskManager();

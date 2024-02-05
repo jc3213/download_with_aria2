@@ -29,27 +29,22 @@ var aria2Default = {
     'capture_reject': [],
     'capture_exclude': []
 };
-var aria2Match = {
-    keys: [
-        'headers_exclude',
-        'proxy_include',
-        'capture_include',
-        'capture_exclude'
-    ]
-};
+var aria2Match = {};
+var aria2MatchKeys = ['headers_exclude', 'proxy_include', 'capture_include', 'capture_exclude'];
 var aria2Storage = {};
 var aria2Changes = [
     {
         keys: ['jsonrpc_uri', 'jsonrpc_token'],
         action: aria2ClientSetUp
-    },
-    {
+    }, {
         keys: ['context_enabled', 'context_cascade', 'context_thisurl', 'context_thisimage', 'context_allimages'],
         action: aria2ContextMenus
-    },
-    {
+    }, {
         keys: ['manager_newtab'],
         action: aria2TaskManager
+    }, {
+        keys: aria2MatchKeys,
+        action: aria2MatchPattern
     }
 ];
 var aria2RPC;
@@ -80,7 +75,7 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
             aria2ImagesPrompt(params);
             break;
         case 'options_onchange':
-            aria2Storage = params;
+            aria2OptionsChanged(params);
             break;
     }
 });
@@ -110,16 +105,6 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, u
     }
 });
 
-
-chrome.storage.onChanged.addListener((changes) => {
-    aria2Changes.forEach(({keys, action}) => {
-        if (keys.some((key) => key in changes)) {
-            action();
-        }
-    });
-    aria2MatchUpdate();
-});
-
 chrome.action = chrome.action ?? chrome.browserAction;
 chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.query({currentWindow: true}, (tabs) => {
@@ -130,6 +115,23 @@ chrome.action.onClicked.addListener((tab) => {
         chrome.tabs.create({active: true, url: `${aria2Popup}?open_in_tab`});
     });
 });
+
+function aria2MatchPattern(keys = aria2MatchKeys) {
+    keys.forEach((key) => {
+        var array = aria2Storage[key];
+        aria2Match[key] = array.length === 0 ? /!/ : new RegExp(`^(${array.join('|').replace(/\./g, '\\.').replace(/\*(\\\.)?/g, '.*')})$`);
+    });
+}
+
+function aria2OptionsChanged({storage, changes}) {
+    aria2Storage = storage;
+    aria2Changes.forEach(({keys, action}) => {
+        var same = keys.filter(key => changes.includes(key));
+        if (same.length !== 0) {
+            action(same);
+        }
+    });
+}
 
 async function aria2Download(url, options, referer, hostname, storeId) {
     await aria2MV3SetUp();
@@ -191,13 +193,6 @@ function aria2ContextMenus() {
 function aria2TaskManager() {
     var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup;
     chrome.action.setPopup({popup});
-}
-
-function aria2MatchUpdate(array) {
-    aria2Match.keys.forEach((key) => {
-        var array = aria2Storage[key];
-        aria2Match[key] = array.length === 0 ? /!/ : new RegExp(`^(${array.join('|').replace(/\./g, '\\.').replace(/\*(\\\.)?/g, '.*')})$`);
-    });
 }
 
 async function aria2MV3SetUp() {

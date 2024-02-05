@@ -4,10 +4,11 @@ var jsonrpc = document.querySelectorAll('[data-rid]');
 var manifest = chrome.runtime.getManifest();
 var appver = manifest.version;
 var maniver = manifest.manifest_version;
-var changes = {};
-var redoes = [];
+var updated = {};
 var undoes = [];
+var changes = [];
 var undone = false;
+var redoes = [];
 var global = true;
 var extension = document.body;
 var entries = {};
@@ -44,12 +45,12 @@ if (typeof browser !== 'undefined') {
     folderff.parentNode.nextElementSibling.removeAttribute('class');
     captureen.addEventListener('change', (event) => {
         if (!captureen.checked) {
-            folderff.checked = changes['folder_firefox'] = false;
+            folderff.checked = updated['folder_firefox'] = false;
         }
     });
     captureff.addEventListener('change', (event) => {
         if (captureff.checked) {
-            folderff.checked = changes['folder_firefox'] = false;
+            folderff.checked = updated['folder_firefox'] = false;
         }
     });
 }
@@ -105,12 +106,9 @@ document.addEventListener('click', (event) => {
 async function optionsSave() {
     saveBtn.disabled = true;
     if (global) {
-        aria2Storage = {...changes};
-        await chrome.runtime.sendMessage({action: 'options_onchange', params: changes});
-        await chrome.storage.sync.set(changes);
-        return;
+        return aria2SaveStorage(updated);
     }
-    aria2RPC.call('aria2.changeGlobalOption', changes);
+    aria2RPC.call('aria2.changeGlobalOption', updated);
 }
 
 function optionsUndo() {
@@ -164,7 +162,7 @@ async function optionsJsonrpc() {
     global = false;
     aria2Global = jsonrpc.disposition(options);
     aria2Conf = {'enable-rpc': true, ...options};
-    changes = {...aria2Global};
+    updated = {...aria2Global};
     aria2ver.textContent = aria2ua.textContent = version.version;
     extension.classList.add('jsonrpc');
 }
@@ -195,12 +193,8 @@ function optionsImport(file) {
     var reader = new FileReader();
     reader.onload = async (event) => {
         if (global) {
-            var json = JSON.parse(reader.result);
-            await chrome.runtime.sendMessage({action: 'options_onchange', params: json});
-            await chrome.storage.sync.set(json);
-            aria2Storage = json;
-            aria2StartUp();
-            return;
+            await aria2SaveStorage(JSON.parse(reader.result));
+            return aria2StartUp();
         }
         var conf = {};
         reader.result.split('').forEach((entry) => {
@@ -209,7 +203,7 @@ function optionsImport(file) {
         });
         await aria2RPC.call('aria2.changeGlobalOption', conf);
         aria2Global = jsonrpc.disposition(conf);
-        changes = {...aria2Global};
+        updated = {...aria2Global};
     };
     reader.readAsText(file);
 }
@@ -228,7 +222,7 @@ mapped.forEach(menu => {
                 newRule(id, entry, list);
                 break;
             case 'remove':
-                var new_value = [...changes[id]];
+                var new_value = [...updated[id]];
                 new_value.splice(event.target.dataset.mid, 1);
                 setChange(id, new_value);
                 event.target.parentNode.remove();
@@ -240,7 +234,7 @@ mapped.forEach(menu => {
 
 function newRule(id, entry, list) {
     var {value} = entry;
-    var old_value = changes[id];
+    var old_value = updated[id];
     if (value !== '' && !old_value.includes(value)) {
         var new_value = [...old_value, value];
         setChange(id, new_value);
@@ -267,11 +261,11 @@ function updateRule(id, rules) {
 
 function optionsRelated(menu) {
     var {id, rel} = menu.rel;
-    menu.style.display = changes[id] === rel ? '' : 'none';
+    menu.style.display = updated[id] === rel ? '' : 'none';
 }
 
-chrome.storage.onChanged.addListener((changes) => {
-    if ('jsonrpc_uri' in changes || 'jsonrpc_token' in changes) {
+chrome.storage.onChanged.addListener((updated) => {
+    if ('jsonrpc_uri' in updated || 'jsonrpc_token' in updated) {
         aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
     }
 });
@@ -283,11 +277,11 @@ chrome.storage.sync.get(null, (json) => {
 });
 
 function aria2StartUp() {
-    changes = {...aria2Storage};
+    updated = {...aria2Storage};
     aria2ver.textContent = appver;
     options.forEach((entry) => {
         var eid = entry.dataset.eid;
-        var value = changes[eid];
+        var value = updated[eid];
         if (eid in switches) {
             entry.checked = value;
             if (switches[eid]) {
@@ -299,8 +293,15 @@ function aria2StartUp() {
     });
     mapped.forEach((menu) => {
         var id = menu.dataset.map;
-        updateRule(id, changes[id]);
+        updateRule(id, updated[id]);
     });
+}
+
+async function aria2SaveStorage(json) {
+    await chrome.storage.sync.set(json);
+    await chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
+    aria2Storage = {...json};
+    changes = [];
 }
 
 function clearChanges() {
@@ -310,12 +311,14 @@ function clearChanges() {
 }
 
 function getChange(id, value) {
-    changes[id] = value;
+    updated[id] = value;
     saveBtn.disabled = false;
     var entry = entries[id];
+    if (!changes.includes(id)) {
+        changes.push(id);
+    }
     if (id in listed) {
-        updateRule(id, value);
-        return;
+        return updateRule(id, value);
     }
     if (id in switches) {
         entry.checked = value;
@@ -328,10 +331,10 @@ function getChange(id, value) {
 }
 
 function setChange(id, new_value) {
-    var old_value = changes[id];
+    var old_value = updated[id];
     undoes.push({id, old_value, new_value});
     saveBtn.disabled = undoBtn.disabled = false;
-    changes[id] = new_value;
+    updated[id] = new_value;
     if (switches[id]) {
         extension.classList.toggle(id);
     }
@@ -339,5 +342,8 @@ function setChange(id, new_value) {
         redoes = [];
         undone = false;
         redoBtn.disabled = true;
+    }
+    if (!changes.includes(id)) {
+        changes.push(id);
     }
 }
