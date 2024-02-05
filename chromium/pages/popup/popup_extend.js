@@ -63,22 +63,16 @@ function managerOptions() {
 }
 
 chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
-    switch (action) {
-        case 'options_onchange':
-            aria2OptionsChanged(params);
-            break;
+    if (action !== 'options_onchange') {
+        return;
     }
-});
-
-function aria2OptionsChanged({storage, changes}) {
-    aria2Storage = storage;
+    aria2Storage = params.storage;
     aria2Changes.forEach(({keys, action}) => {
-        var same = keys.filter(key => changes.includes(key));
-        if (same.length !== 0) {
-            action(same);
+        if (keys.filter(key => params.changes.includes(key))) {
+            action();
         }
     });
-}
+});
 
 function aria2UpdateRPC() {
     aria2Server = aria2Storage['jsonrpc_uri'];
