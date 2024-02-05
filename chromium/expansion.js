@@ -2,6 +2,8 @@ var aria2Socket;
 var aria2Retry;
 var aria2Active;
 
+chrome.action = chrome.browserAction;
+
 if (typeof browser !== 'undefined') {
     chrome.storage.sync = browser.storage.local;
 }

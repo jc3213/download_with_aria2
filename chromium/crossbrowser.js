@@ -105,7 +105,6 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, u
     }
 });
 
-chrome.action = chrome.action ?? chrome.browserAction;
 chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.query({currentWindow: true}, (tabs) => {
         var popup = tabs.find((tab) => tab.url === aria2InTab);
