@@ -6,7 +6,7 @@ if (typeof browser !== 'undefined') {
     chrome.storage.sync = browser.storage.local;
 }
 
-chrome.storage.sync.get(null, json => {
+chrome.storage.sync.get(null, (json) => {
     aria2Storage = {...aria2Default, ...json};
     aria2MatchPattern();
     aria2ClientSetUp();
