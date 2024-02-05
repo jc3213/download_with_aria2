@@ -2,18 +2,12 @@ var aria2Changes = [
     {
         keys: ['jsonrpc_uri', 'jsonrpc_token'],
         action: aria2UpdateRPC
-    },
-    {
+    }, {
         keys: ['manager_newtab'],
         action: aria2UpdateManager
-    },
-    {
+    }, {
         keys: ['manager_interval'],
         action: aria2UpdateInterval
-    },
-    {
-        keys: ['proxy_server'],
-        action: aria2UpdateProxy
     }
 ];
 var aria2InTab = location.search === '?open_in_tab';
@@ -68,36 +62,46 @@ function managerOptions() {
     }
 }
 
-chrome.storage.onChanged.addListener((changes) => {
-    aria2Changes.forEach(({keys, action}) => {
-        if (keys.some((key) => key in changes)) {
-            action(changes);
-        }
-    });
+chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
+    switch (action) {
+        case 'options_onchange':
+            aria2OptionsChanged(params);
+            break;
+    }
 });
 
-function aria2UpdateRPC(changes) {
-    aria2Server = changes['jsonrpc_uri']?.newValue ?? aria2Server;
-    aria2Token = changes['jsonrpc_token']?.newValue ?? aria2Token;
+function aria2OptionsChanged({storage, changes}) {
+    aria2Storage = storage;
+    aria2Changes.forEach(({keys, action}) => {
+        var same = keys.filter(key => changes.includes(key));
+        if (same.length !== 0) {
+            action(same);
+        }
+    });
+}
+
+function aria2UpdateRPC() {
+    aria2Server = aria2Storage['jsonrpc_uri'];
+    aria2Token = aria2Storage['jsonrpc_token'];
     clearInterval(aria2Alive);
     aria2Socket?.close();
     aria2StartUp();
 }
 
-function aria2UpdateManager(changes) {
-    if (changes['manager_newtab'].newValue === false) {
+function aria2UpdateManager() {
+    if (!aria2Storage['manager_newtab']) {
         close();
     }
 }
 
-function aria2UpdateInterval(changes) {
-    aria2Interval = changes['manager_interval'].newValue;
+function aria2UpdateInterval() {
+    aria2Interval = aria2Storage['manager_interval'];
     clearInterval(aria2Alive);
     aria2Alive = setInterval(updateManager, aria2Interval);
 }
 
-function aria2UpdateProxy(changes) {
-    aria2Proxy = changes['proxy_server'].newValue;
+function aria2UpdateProxy() {
+    aria2Proxy = aria2Storage['proxy_server'];
 }
 
 chrome.storage.sync.get(null, (json) => {

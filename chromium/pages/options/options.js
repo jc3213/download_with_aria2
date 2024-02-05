@@ -259,17 +259,6 @@ function updateRule(id, rules) {
     rules.forEach((rule, mid) => addRule(list, mid, rule));
 }
 
-function optionsRelated(menu) {
-    var {id, rel} = menu.rel;
-    menu.style.display = updated[id] === rel ? '' : 'none';
-}
-
-chrome.storage.onChanged.addListener((updated) => {
-    if ('jsonrpc_uri' in updated || 'jsonrpc_token' in updated) {
-        aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
-    }
-});
-
 chrome.storage.sync.get(null, (json) => {
     aria2Storage = json;
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
@@ -300,6 +289,9 @@ function aria2StartUp() {
 async function aria2SaveStorage(json) {
     await chrome.storage.sync.set(json);
     await chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
+    if (['jsonrpc_uri', 'jsonrpc_token'].some(key => changes.includes(key))) {
+        aria2RPC = new Aria2(json['jsonrpc_uri'], json['jsonrpc_token']);
+    }
     aria2Storage = {...json};
     changes = [];
 }
