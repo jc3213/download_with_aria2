@@ -126,7 +126,7 @@ function aria2MatchPattern(keys = aria2MatchKeys) {
 function aria2OptionsChanged({storage, changes}) {
     aria2Storage = storage;
     aria2Changes.forEach(({keys, action}) => {
-        var same = keys.filter(key => changes.includes(key));
+        var same = keys.filter((key) => changes.includes(key));
         if (same.length !== 0) {
             action(same);
         }
