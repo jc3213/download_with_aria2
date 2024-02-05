@@ -49,7 +49,7 @@ var aria2Changes = [
 ];
 var aria2RPC;
 var aria2Popup = '/pages/popup/popup.html';
-var aria2InTab = `${chrome.runtime.id}/pages/popup/popup.html`;
+var aria2InTab = chrome.runtime.getURL('/pages/popup/popup.html?open_in_tab');
 var aria2Images = '/pages/images/images.html';
 var aria2Monitor = {};
 var aria2Message = {};
@@ -108,11 +108,11 @@ chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, u
 chrome.action = chrome.action ?? chrome.browserAction;
 chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.query({currentWindow: true}, (tabs) => {
-        var popup = tabs.find((tab) => tab.url.includes(aria2InTab));
+        var popup = tabs.find((tab) => tab.url === aria2InTab);
         if (popup) {
             return chrome.tabs.update(popup.id, {active: true});
         }
-        chrome.tabs.create({active: true, url: `${aria2Popup}?open_in_tab`});
+        chrome.tabs.create({active: true, url: aria2InTab});
     });
 });
 

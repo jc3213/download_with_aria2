@@ -1,16 +1,14 @@
-var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, importJson, importConf, exporter, aria2ua] = document.querySelectorAll('#menu > *, #aria2ua');
-var options = document.querySelectorAll('[data-eid]');
-var jsonrpc = document.querySelectorAll('[data-rid]');
-var manifest = chrome.runtime.getManifest();
-var appver = manifest.version;
-var maniver = manifest.manifest_version;
 var updated = {};
-var undoes = [];
 var changes = [];
+var undoes = [];
 var undone = false;
 var redoes = [];
 var global = true;
 var extension = document.body;
+var {version, manifest_version} = chrome.runtime.getManifest();
+var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, importJson, importConf, exporter, aria2ua] = document.querySelectorAll('#menu > *, #aria2ua');
+var options = document.querySelectorAll('[data-eid]');
+var jsonrpc = document.querySelectorAll('[data-rid]');
 var entries = {};
 options.forEach((entry) => entries[entry.dataset.eid] = entry);
 var multiply = {
@@ -54,7 +52,7 @@ if (typeof browser !== 'undefined') {
         }
     });
 }
-else if (maniver === 3) {
+else if (manifest_version === 3) {
     extension.classList.add('manifest_v3');
 }
 
@@ -267,7 +265,7 @@ chrome.storage.sync.get(null, (json) => {
 
 function aria2StartUp() {
     updated = {...aria2Storage};
-    aria2ver.textContent = appver;
+    aria2ver.textContent = version;
     options.forEach((entry) => {
         var eid = entry.dataset.eid;
         var value = updated[eid];
