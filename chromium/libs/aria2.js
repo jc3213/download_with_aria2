@@ -27,7 +27,7 @@ class Aria2 {
         return this.post(JSON.stringify(json)).then(this.handler);
     }
     batch (messages) {
-        const json = messages.map(message => this.message(...message));
+        const json = messages.map((message) => this.message(...message));
         return this.post(JSON.stringify(json)).then((response) => response.map(this.handler));
     }
     fetch (body) {
