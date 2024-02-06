@@ -20,7 +20,7 @@ class Aria2 {
         this.websocket.then((websocket) => websocket.addEventListener('message', (event) => callback(JSON.parse(event.data))));
     }
     send (message) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             this.websocket.then((websocket) => {
                 websocket.onmessage = (event) => resolve(JSON.parse(event.data));
                 websocket.onerror = (error) => reject(error);
