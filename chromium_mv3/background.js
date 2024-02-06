@@ -16,7 +16,7 @@ chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
 });
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSize}) => {
-    await aria2MV3SetUp();
+    await aria2MV3Migration();
     var {url, referer, hostname, skipped} = aria2Monitor[id];
     if (!aria2Storage['capture_enabled'] || skipped) {
         return;

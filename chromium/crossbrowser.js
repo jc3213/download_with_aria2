@@ -15,7 +15,7 @@ var aria2Default = {
     'headers_enabled': false,
     'headers_exclude': [],
     'notify_start': false,
-    'notify_complete': false,
+    'notify_complete': true,
     'user_agent': 'Transmission/4.0.0',
     'proxy_enabled': false,
     'proxy_server': '',
@@ -60,7 +60,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }
 });
 
-chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
+chrome.runtime.onMessage.addListener(async ({action, params}, {tab}, response) => {
     switch (action) {
         case 'download_prompt':
             response(aria2Message[tab.id]);
@@ -69,6 +69,7 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
             response(aria2Message[tab.id]);
             break;
         case 'message_download':
+            await aria2MV3Migration();
             aria2DownloadPrompt(params);
             break;
         case 'message_allimage':
@@ -91,12 +92,14 @@ chrome.commands.onCommand.addListener((command) => {
     }
 });
 
-chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
+chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
     switch (menuItemId) {
         case 'aria2c_this_url':
+            await aria2MV3Migration();
             aria2Download(linkUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_this_image':
+            await aria2MV3Migration();
             aria2Download(srcUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_all_images':
@@ -133,7 +136,6 @@ function aria2OptionsChanged({storage, changes}) {
 }
 
 async function aria2Download(url, options, referer, hostname, storeId) {
-    await aria2MV3SetUp();
     options['user-agent'] = aria2Storage['user_agent'];
     if (aria2Storage['proxy_enabled'] || aria2Match['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
@@ -149,7 +151,6 @@ async function aria2Download(url, options, referer, hostname, storeId) {
 }
 
 async function aria2DownloadPrompt(aria2c) {
-    await aria2MV3SetUp();
     if (aria2Storage['download_prompt']) {
         var id = await aria2NewDownload(true);
         aria2Message[id] = aria2c;
@@ -194,7 +195,7 @@ function aria2TaskManager() {
     chrome.action.setPopup({popup});
 }
 
-async function aria2MV3SetUp() {
+async function aria2MV3Migration() {
     if (!aria2RPC) {
         aria2Storage = await chrome.storage.sync.get(null);
         aria2ClientSetUp();
