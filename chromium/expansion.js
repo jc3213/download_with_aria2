@@ -20,9 +20,7 @@ async function aria2ClientSetUp() {
     if (aria2Retry) {
         clearTimeout(aria2Retry);
     }
-    if (aria2RPC?.websocket) {
-        aria2RPC.disconnect();
-    }
+    aria2RPC?.disconnect();
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
     aria2RPC.call('aria2.tellActive').then((result) => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
