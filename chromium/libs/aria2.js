@@ -19,10 +19,23 @@ class Aria2 {
     set onmessage (callback) {
         this.websocket.then((websocket) => websocket.addEventListener('message', (event) => callback(JSON.parse(event.data))));
     }
+    send (message) {
+        return new Promise(async (resolve, reject) => {
+            this.websocket.then((websocket) => {
+                websocket.onmessage = (event) => resolve(JSON.parse(event.data));
+                websocket.onerror = (error) => reject(error);
+                websocket.send(message);
+            });
+        });
+    }
+    fetch (body) {
+        return fetch(this.jsonrpc, {method: 'POST', body}).then((response) => {
+            if (response.ok) { return response.json(); }
+            throw new Error(response.statusText);
+        });
+    }
     handler ({result, error}) {
-        if (result) {
-            return result;
-        }
+        if (result) { return result; }
         throw error;
     }
     message (method, ...options) {
@@ -35,19 +48,5 @@ class Aria2 {
     batch (messages) {
         const json = messages.map((message) => this.message(...message));
         return this.post(JSON.stringify(json)).then((response) => response.map(this.handler));
-    }
-    fetch (body) {
-        return fetch(this.jsonrpc, {method: 'POST', body}).then((response) => {
-            if (response.ok) { return response.json(); }
-            throw new Error(response.statusText);
-        });
-    }
-    send (message) {
-        return new Promise(async (resolve, reject) => {
-            const websocket = await this.websocket;
-            websocket.onmessage = (event) => resolve(JSON.parse(event.data));
-            websocket.onerror = (error) => reject(error);
-            websocket.send(message);
-        });
     }
 }
