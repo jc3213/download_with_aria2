@@ -59,7 +59,7 @@ async function managerPurge() {
     globalTask = {...activeTask, ...waitingTask};
 }
 
-function aria2StartUp() {
+function aria2ClientSetUp() {
     activeTask = {};
     waitingTask = {};
     stoppedTask = {};
@@ -72,32 +72,30 @@ function aria2StartUp() {
         [...active, ...waiting, ...stopped].forEach(sessionUpdated);
         downloadStat.textContent = getFileSize(downloadSpeed);
         uploadStat.textContent = getFileSize(uploadSpeed);
-        aria2ClientSetUp();
+        aria2RPC.onmessage = aria2WebSocket;
+        aria2Alive = setInterval(updateManager, aria2Interval);
     }).catch((error) => {
         activeStat.textContent = waitingStat.textContent = stoppedStat.textContent = downloadStat.textContent = uploadStat.textContent = '0';
         activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     });
 }
 
-function aria2ClientSetUp() {
-    aria2Alive = setInterval(updateManager, aria2Interval);
-    aria2RPC.onmessage = async ({method, params: [{gid}]}) => {
-        switch (method) {
-            case 'aria2.onBtDownloadComplete':
-                break;
-            case 'aria2.onDownloadStart':
-                sessionCreated(gid);
-                if (waitingTask[gid]) {
-                    sessionRemoved('waiting', gid);
-                }
-                break;
-            default:
-                sessionCreated(gid);
-                if (activeTask[gid]) {
-                    sessionRemoved('active', gid);
-                }
-        }
-    };
+function aria2WebSocket({method, params: [{gid}]}) {
+    switch (method) {
+        case 'aria2.onBtDownloadComplete':
+            break;
+        case 'aria2.onDownloadStart':
+            sessionCreated(gid);
+            if (gid in waitingTask) {
+                sessionRemoved('waiting', gid);
+            }
+            break;
+        default:
+            sessionCreated(gid);
+            if (gid in activeTask) {
+                sessionRemoved('active', gid);
+            }
+    }
 }
 
 async function updateManager() {

@@ -79,7 +79,7 @@ function aria2UpdateRPC() {
     aria2Token = aria2Storage['jsonrpc_token'];
     clearInterval(aria2Alive);
     aria2RPC.disconnect();
-    aria2StartUp();
+    aria2ClientSetUp();
 }
 
 function aria2UpdateManager() {
@@ -103,5 +103,5 @@ chrome.storage.sync.get(null, (json) => {
     aria2Token = json['jsonrpc_token'];
     aria2Interval = json['manager_interval'];
     aria2Proxy = json['proxy_server'];
-    aria2StartUp();
+    aria2ClientSetUp();
 });
