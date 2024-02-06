@@ -81,8 +81,7 @@ function aria2StartUp() {
 
 function aria2ClientSetUp() {
     aria2Alive = setInterval(updateManager, aria2Interval);
-    aria2RPC.onmessage = async ({method, params}) => {
-        var {gid} = params[0];
+    aria2RPC.onmessage = async ({method, params: [{gid}]}) => {
         switch (method) {
             case 'aria2.onBtDownloadComplete':
                 break;
