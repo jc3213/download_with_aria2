@@ -1,10 +1,10 @@
 var aria2Changes = [
     {
-        keys: ['jsonrpc_uri', 'jsonrpc_token'],
-        action: aria2UpdateRPC
-    }, {
         keys: ['manager_newtab'],
         action: aria2UpdateManager
+    }, {
+        keys: ['jsonrpc_uri', 'jsonrpc_token'],
+        action: aria2UpdateRPC
     }, {
         keys: ['manager_interval'],
         action: aria2UpdateInterval
@@ -92,10 +92,6 @@ function aria2UpdateInterval() {
     aria2Interval = aria2Storage['manager_interval'];
     clearInterval(aria2Alive);
     aria2Alive = setInterval(updateManager, aria2Interval);
-}
-
-function aria2UpdateProxy() {
-    aria2Proxy = aria2Storage['proxy_server'];
 }
 
 chrome.storage.sync.get(null, (json) => {
