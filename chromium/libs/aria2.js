@@ -13,6 +13,12 @@ class Aria2 {
             websocket.onerror = (error) => reject(error);
         });
     }
+    disconnect () {
+        this.websocket.then((websocket) => websocket.close());
+    }
+    set onmessage (callback) {
+        this.websocket.then((websocket) => websocket.addEventListener('message', (event) => callback(JSON.parse(event.data))));
+    }
     handler ({result, error}) {
         if (result) {
             return result;
