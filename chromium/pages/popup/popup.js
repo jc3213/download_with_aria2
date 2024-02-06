@@ -81,9 +81,8 @@ function aria2StartUp() {
 
 function aria2ClientSetUp() {
     aria2Alive = setInterval(updateManager, aria2Interval);
-    aria2Socket = new WebSocket(aria2Server.replace('http', 'ws'));
-    aria2Socket.onmessage = async ({data}) => {
-        var {method, params: [{gid}]} = JSON.parse(data);
+    aria2RPC.onmessage = async ({method, params}) => {
+        var {gid} = params[0];
         switch (method) {
             case 'aria2.onBtDownloadComplete':
                 break;

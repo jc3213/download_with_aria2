@@ -78,7 +78,7 @@ function aria2UpdateRPC() {
     aria2Server = aria2Storage['jsonrpc_uri'];
     aria2Token = aria2Storage['jsonrpc_token'];
     clearInterval(aria2Alive);
-    aria2Socket?.close();
+    aria2RPC.disconnect();
     aria2StartUp();
 }
 
