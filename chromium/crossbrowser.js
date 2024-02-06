@@ -15,7 +15,7 @@ var aria2Default = {
     'headers_enabled': false,
     'headers_exclude': [],
     'notify_start': false,
-    'notify_complete': true,
+    'notify_complete': false,
     'user_agent': 'Transmission/4.0.0',
     'proxy_enabled': false,
     'proxy_server': '',
