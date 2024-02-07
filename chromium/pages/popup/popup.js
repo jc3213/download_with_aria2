@@ -96,6 +96,7 @@ function aria2WebSocket({method, params: [{gid}]}) {
             if (gid in activeTask) {
                 sessionRemoved('active', gid);
             }
+            break;
     }
 }
 
@@ -224,6 +225,7 @@ async function taskRemove(task, gid, status) {
         default:
             await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
             sessionRemoved('stopped', gid, task);
+            break;
     }
 }
 
