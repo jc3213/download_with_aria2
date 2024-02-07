@@ -287,10 +287,10 @@ function aria2StartUp() {
 async function aria2SaveStorage(json) {
     await chrome.storage.sync.set(json);
     await chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
-    if (['jsonrpc_scheme', 'jsonrpc_host', 'jsonrpc_token'].some(key => changes.includes(key))) {
-        aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
-    }
     aria2Storage = {...json};
+    if (['jsonrpc_scheme', 'jsonrpc_host', 'jsonrpc_token'].some(key => changes.includes(key))) {
+        aria2RPC = new Aria2(json['jsonrpc_scheme'], json['jsonrpc_host'], json['jsonrpc_secret']);
+    }
     changes = [];
 }
 
