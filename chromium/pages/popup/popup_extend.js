@@ -3,8 +3,11 @@ var aria2Changes = [
         keys: ['manager_newtab'],
         action: aria2UpdateManager
     }, {
-        keys: ['jsonrpc_uri', 'jsonrpc_token'],
-        action: aria2UpdateRPC
+        keys: ['jsonrpc_scheme'],
+        action: aria2UpdateMethod
+    }, {
+        keys: ['jsonrpc_host', 'jsonrpc_secret'],
+        action: aria2UpdateJsonRPC
     }, {
         keys: ['manager_interval'],
         action: aria2UpdateInterval
@@ -74,9 +77,14 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     });
 });
 
-function aria2UpdateRPC() {
-    aria2Server = aria2Storage['jsonrpc_uri'];
-    aria2Token = aria2Storage['jsonrpc_token'];
+function aria2UpdateMethod() {
+    aria2Scheme = aria2Storage['jsonrpc_scheme'];
+    aria2RPC.method = aria2Scheme;
+}
+
+function aria2UpdateJsonRPC() {
+    aria2Host = aria2Storage['jsonrpc_host'];
+    aria2Secret = aria2Storage['jsonrpc_secret'];
     clearInterval(aria2Alive);
     aria2RPC.disconnect();
     aria2ClientSetUp();
@@ -95,8 +103,9 @@ function aria2UpdateInterval() {
 }
 
 chrome.storage.sync.get(null, (json) => {
-    aria2Server = json['jsonrpc_uri'];
-    aria2Token = json['jsonrpc_token'];
+    aria2Scheme = json['jsonrpc_scheme']
+    aria2Host = json['jsonrpc_host'];
+    aria2Secret = json['jsonrpc_secret'];
     aria2Interval = json['manager_interval'];
     aria2Proxy = json['proxy_server'];
     aria2ClientSetUp();

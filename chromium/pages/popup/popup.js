@@ -64,7 +64,7 @@ function aria2ClientSetUp() {
     waitingTask = {};
     stoppedTask = {};
     globalTask = {};
-    aria2RPC = new Aria2(aria2Server, aria2Token);
+    aria2RPC = new Aria2(aria2Scheme, aria2Host, aria2Secret);
     aria2RPC.call(
         {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
         {method: 'aria2.tellWaiting', params: [0, 999]},

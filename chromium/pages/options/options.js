@@ -199,7 +199,7 @@ function optionsImport(file) {
             var [key, value] = entry.split('=');
             conf[key] = value;
         });
-        await aria2RPC.call(method: 'aria2.changeGlobalOption', params: [conf]);
+        await aria2RPC.call({method: 'aria2.changeGlobalOption', params: [conf]});
         aria2Global = jsonrpc.disposition(conf);
         updated = {...aria2Global};
     };
@@ -259,7 +259,7 @@ function updateRule(id, rules) {
 
 chrome.storage.sync.get(null, (json) => {
     aria2Storage = json;
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
     aria2StartUp();
 });
 
@@ -287,8 +287,8 @@ function aria2StartUp() {
 async function aria2SaveStorage(json) {
     await chrome.storage.sync.set(json);
     await chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
-    if (['jsonrpc_uri', 'jsonrpc_token'].some(key => changes.includes(key))) {
-        aria2RPC = new Aria2(json['jsonrpc_uri'], json['jsonrpc_token']);
+    if (['jsonrpc_scheme', 'jsonrpc_host', 'jsonrpc_token'].some(key => changes.includes(key))) {
+        aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
     }
     aria2Storage = {...json};
     changes = [];

@@ -37,6 +37,6 @@ async function aria2Activate() {
 }
 
 function aria2ClientSetUp() {
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
     aria2MatchPattern();
 }

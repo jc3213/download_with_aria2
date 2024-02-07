@@ -1,6 +1,7 @@
 var aria2Default = {
-    'jsonrpc_uri': 'http://localhost:6800/jsonrpc',
-    'jsonrpc_token': '',
+    'jsonrpc_scheme': 'http',
+    'jsonrpc_host': 'http://localhost:6800/jsonrpc',
+    'jsonrpc_secret': '',
     'context_enabled': true,
     'context_cascade': true,
     'context_thisurl': true,
@@ -57,6 +58,21 @@ var aria2Message = {};
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
+    }
+    else if (reason === 'update') {
+        var uri = aria2Storage['jsonrpc_uri'];
+        var secret = aria2Storage['jsonrpc_token'];
+        if (uri !== undefined && secret !== undefined) {
+            var {protocol, host} = new URL(uri);
+            var scheme = protocol.slice(0, -1);
+            aria2Storage['jsonrpc_scheme'] = scheme;
+            aria2Storage['jsonrpc_host'] = host;
+            delete aria2Storage['jsonrpc_uri'];
+            aria2Storage['jsonrpc_secret'] = secret;
+            delete aria2Storage['jsonrpc_token'];
+            chrome.storage.sync.set(aria2Storage);
+            aria2RPC = new Aria2(scheme, host, secret);
+        }
     }
 });
 

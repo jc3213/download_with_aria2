@@ -92,17 +92,11 @@
     "option_sample": {
         "message": "样例"
     },
-    "option_jsonrpc_uri": {
-        "message": "主机地址"
+    "option_jsonrpc": {
+        "message": "JSON-RPC 服务器"
     },
-    "option_jsonrpc_uri_title": {
-        "message": "设置 JSON-RPC 的网络地址"
-    },
-    "option_jsonrpc_token": {
-        "message": "授权密钥"
-    },
-    "option_jsonrpc_token_title": {
-        "message": "设置 JSON-RPC 的安全密钥"
+    "option_jsonrpc_title": {
+        "message": "设置 JSON-RPC 的 协议、主机及密钥"
     },
     "option_task_manager": {
         "message": "任务管理器"
