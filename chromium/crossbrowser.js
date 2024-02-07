@@ -62,21 +62,6 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
     }
-    else if (reason === 'update') {
-        var uri = aria2Storage['jsonrpc_uri'];
-        var secret = aria2Storage['jsonrpc_token'];
-        if (uri !== undefined && secret !== undefined) {
-            var {protocol, host} = new URL(uri);
-            var scheme = protocol.slice(0, -1);
-            aria2Storage['jsonrpc_scheme'] = scheme;
-            aria2Storage['jsonrpc_host'] = host;
-            delete aria2Storage['jsonrpc_uri'];
-            aria2Storage['jsonrpc_secret'] = secret;
-            delete aria2Storage['jsonrpc_token'];
-            chrome.storage.sync.set(aria2Storage);
-            aria2RPC = new Aria2(scheme, host, secret);
-        }
-    }
 });
 
 chrome.runtime.onMessage.addListener(async ({action, params}, {tab}, response) => {
