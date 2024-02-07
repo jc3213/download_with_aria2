@@ -77,8 +77,8 @@ document.addEventListener('change', ({target}) => {
 async function downloadFiles(files) {
     var file = files[0];
     var b64encode = await getFileData(file);
-    var call = file.name.endsWith('torrent') ? ['aria2.addTorrent', b64encode] : ['aria2.addMetalink', b64encode, aria2Global];
-    await aria2RPC.call(...call);
+    var session = file.name.endsWith('torrent') ? {method: 'aria2.addTorrent', params: [b64encode]} : {method: 'aria2.addMetalink', params: [b64encode, aria2Global]};
+    await aria2RPC.call(...session);
     await aria2WhenStart(file.name);
     close();
 }
@@ -130,7 +130,7 @@ function slimModeInit() {
 chrome.storage.sync.get(null, async (json) => {
     aria2Storage = json;
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
-    var global = await aria2RPC.call('aria2.getGlobalOption');
+    var [global] = await aria2RPC.call({method: 'aria2.getGlobalOption'});
     global['user-agent'] = aria2Storage['user_agent']
     aria2Global = settings.disposition(global);
     if (slim_mode) {

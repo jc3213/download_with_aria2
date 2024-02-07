@@ -113,7 +113,7 @@ chrome.storage.sync.get(null, (json) => {
 
 chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({result, options}) => {
     result.forEach(getPreview);
-    var global = await aria2RPC.call('aria2.getGlobalOption');
+    var [global] = await aria2RPC.call({method: 'aria2.getGlobalOption'});
     aria2Options = document.querySelectorAll('#options input').disposition({...global, ...options});
 });
 

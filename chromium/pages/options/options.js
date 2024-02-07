@@ -106,7 +106,7 @@ async function optionsSave() {
     if (global) {
         return aria2SaveStorage(updated);
     }
-    aria2RPC.call('aria2.changeGlobalOption', updated);
+    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [updated]});
 }
 
 function optionsUndo() {
@@ -153,9 +153,9 @@ function optionsUpload() {
 }
 
 async function optionsJsonrpc() {
-    var [options, version] = await aria2RPC.batch([
-        ['aria2.getGlobalOption'], ['aria2.getVersion']
-    ]);
+    var [options, version] = await aria2RPC.call(
+        {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}
+    );
     clearChanges();
     global = false;
     aria2Global = jsonrpc.disposition(options);
@@ -195,11 +195,11 @@ function optionsImport(file) {
             return aria2StartUp();
         }
         var conf = {};
-        reader.result.split('').forEach((entry) => {
+        reader.result.split('\n').forEach((entry) => {
             var [key, value] = entry.split('=');
             conf[key] = value;
         });
-        await aria2RPC.call('aria2.changeGlobalOption', conf);
+        await aria2RPC.call(method: 'aria2.changeGlobalOption', params: [conf]);
         aria2Global = jsonrpc.disposition(conf);
         updated = {...aria2Global};
     };

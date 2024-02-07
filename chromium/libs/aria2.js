@@ -38,15 +38,8 @@ class Aria2 {
         if (result) { return result; }
         throw error;
     }
-    message (method, ...options) {
-        return {id: '', jsonrpc: '2.0', method, params: [this.secret, ...options]};
-    }
-    call (...message) {
-        const json = this.message(...message);
-        return this.post(JSON.stringify(json)).then(this.handler);
-    }
-    batch (messages) {
-        const json = messages.map((message) => this.message(...message));
+    call (...messages) {
+        const json = messages.map(({method, params = []}) => ({id: '', jsonrpc: '2.0', method, params: [this.secret, ...params]}));
         return this.post(JSON.stringify(json)).then((response) => response.map(this.handler));
     }
 }

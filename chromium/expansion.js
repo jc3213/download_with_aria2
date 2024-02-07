@@ -22,10 +22,10 @@ async function aria2ClientSetUp() {
     }
     aria2RPC?.disconnect();
     aria2RPC = new Aria2(aria2Storage['jsonrpc_uri'], aria2Storage['jsonrpc_token']);
-    aria2RPC.call('aria2.tellActive').then((result) => {
+    aria2RPC.call({method: 'aria2.tellActive'}).then(([active]) => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
         aria2Retry = null;
-        aria2Active = result.map(({gid}) => gid);
+        aria2Active = active.map(({gid}) => gid);
         aria2ToolbarBadge(aria2Active.length);
         aria2RPC.onmessage = aria2WebSocket;
     }).catch((error) => {
@@ -46,7 +46,7 @@ async function aria2WebSocket({method, params: [{gid}]}) {
         case 'aria2.onBtDownloadComplete':
             break;
         case 'aria2.onDownloadComplete':
-            var {bittorrent, files} = await aria2RPC.call('aria2.tellStatus', gid);
+            var [{bittorrent, files}] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
             var name = getDownloadName(gid, bittorrent, files);
             aria2WhenComplete(name);
         default:
