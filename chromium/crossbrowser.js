@@ -1,6 +1,6 @@
 var aria2Default = {
     'jsonrpc_scheme': 'http',
-    'jsonrpc_host': 'http://localhost:6800/jsonrpc',
+    'jsonrpc_host': 'localhost:6800',
     'jsonrpc_secret': '',
     'context_enabled': true,
     'context_cascade': true,
@@ -35,6 +35,9 @@ var aria2MatchKeys = ['headers_exclude', 'proxy_include', 'capture_include', 'ca
 var aria2Storage = {};
 var aria2Changes = [
     {
+        keys: ['jsonrpc_scheme'],
+        action: aria2UpdateMethod
+    }, {
         keys: ['jsonrpc_uri', 'jsonrpc_token'],
         action: aria2ClientSetUp
     }, {
@@ -184,6 +187,10 @@ async function aria2DownloadPrompt(aria2c) {
 async function aria2ImagesPrompt(result) {
     var id = await getNewWindow(aria2Images, 680);
     aria2Message[id] = result;
+}
+
+function aria2UpdateMethod() {
+    aria2RPC.method = aria2Storage['jsonrpc_scheme'];
 }
 
 function aria2ContextMenus() {
