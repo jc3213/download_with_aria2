@@ -18,10 +18,10 @@ class Aria2 {
         });
     }
     disconnect () {
-        this.websocket.then((websocket) => websocket.close());
+        this.websocket.then( (websocket) => websocket.close() );
     }
     set onmessage (callback) {
-        this.websocket.then((websocket) => websocket.addEventListener('message', (event) => callback(JSON.parse(event.data))));
+        this.websocket.then( (websocket) => websocket.addEventListener('message', (event) => callback(JSON.parse(event.data))) );
     }
     send (message) {
         return new Promise((resolve, reject) => {
@@ -40,6 +40,6 @@ class Aria2 {
     }
     call (...messages) {
         const json = messages.map(({method, params = []}) => ({ id: '', jsonrpc: '2.0', method, params: [this.secret, ...params] }));
-        return this.post(JSON.stringify(json)).then((response) => response.map(({result, error}) => { if (result) { return result; } throw error; }));
+        return this.post(JSON.stringify(json)).then( (response) => response.map(({result, error}) => { if (result) { return result; } throw error; }) );
     }
 }
