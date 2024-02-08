@@ -40,6 +40,6 @@ class Aria2 {
     }
     call (...messages) {
         const json = messages.map(({method, params = []}) => ({ id: '', jsonrpc: '2.0', method, params: [this.secret, ...params] }));
-        return this.post(JSON.stringify(json)).then((response) => response.map(({result, error}) => { if (result) { return result; } throw error }));
+        return this.post(JSON.stringify(json)).then((response) => response.map(({result, error}) => { if (result) { return result; } throw error; }));
     }
 }
