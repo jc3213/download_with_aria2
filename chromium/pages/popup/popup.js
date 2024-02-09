@@ -81,7 +81,11 @@ function aria2ClientSetUp() {
     });
 }
 
-function aria2WebSocket({method, params: [{gid}]}) {
+function aria2WebSocket({method, params}) {
+    if (!method) {
+        return;
+    }
+    var [{gid}] = params;
     switch (method) {
         case 'aria2.onBtDownloadComplete':
             break;

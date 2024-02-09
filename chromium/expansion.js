@@ -35,7 +35,11 @@ async function aria2ClientSetUp() {
     });
 }
 
-async function aria2WebSocket({method, params: [{gid}]}) {
+async function aria2WebSocket({method, params}) {
+    if (!method) {
+        return;
+    }
+    var [{gid}] = params;
     var adx = aria2Active.indexOf(gid);
     switch (method) {
         case 'aria2.onDownloadStart':
