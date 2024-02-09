@@ -1,12 +1,13 @@
 class Aria2 {
     constructor (scheme, host, secret) {
-        this.method = scheme;
-        this.jsonrpc = `${scheme}://${host}/jsonrpc`;
+        this.host = host;
         this.secret = `token:${secret}`;
+        this.method = scheme;
         this.websocket = this.connect(this.jsonrpc.replace('http', 'ws'));
     }
     set method (scheme) {
         const methods = { 'http': this.fetch, 'https': this.fetch, 'ws': this.send, 'wss': this.send };
+        this.jsonrpc = `${scheme}://${this.host}/jsonrpc`;
         this.post = methods[scheme];
         if (!this.post) { throw new Error(`Invalid protocol: "${scheme}" is not supported.`); }
     }
