@@ -71,7 +71,7 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     }
     aria2Storage = params.storage;
     aria2Changes.forEach(({keys, action}) => {
-        if (keys.some((key) => params.changes.includes(key))) {
+        if (keys.some((key) => key in params.changes)) {
             action();
         }
     });

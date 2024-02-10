@@ -1,5 +1,5 @@
 var updated = {};
-var changes = [];
+var changes = {};
 var undoes = [];
 var undone = false;
 var redoes = [];
@@ -288,10 +288,13 @@ async function aria2SaveStorage(json) {
     await chrome.storage.sync.set(json);
     await chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
     aria2Storage = {...json};
-    if (['jsonrpc_scheme', 'jsonrpc_host', 'jsonrpc_token'].some(key => changes.includes(key))) {
+    if ('jsonrpc_scheme' in changes) {
+        aria2RPC.method = json['jsonrpc_scheme'];
+    }
+    if (['jsonrpc_host', 'jsonrpc_token'].some(key => key in changes)) {
         aria2RPC = new Aria2(json['jsonrpc_scheme'], json['jsonrpc_host'], json['jsonrpc_secret']);
     }
-    changes = [];
+    changes = {};
 }
 
 function clearChanges() {
@@ -301,12 +304,9 @@ function clearChanges() {
 }
 
 function getChange(id, value) {
-    updated[id] = value;
+    updated[id] = changes[id] = value;
     saveBtn.disabled = false;
     var entry = entries[id];
-    if (!changes.includes(id)) {
-        changes.push(id);
-    }
     if (id in listed) {
         return updateRule(id, value);
     }
@@ -324,7 +324,7 @@ function setChange(id, new_value) {
     var old_value = updated[id];
     undoes.push({id, old_value, new_value});
     saveBtn.disabled = undoBtn.disabled = false;
-    updated[id] = new_value;
+    updated[id] = changes[id] = new_value;
     if (switches[id]) {
         extension.classList.toggle(id);
     }
@@ -332,8 +332,5 @@ function setChange(id, new_value) {
         redoes = [];
         undone = false;
         redoBtn.disabled = true;
-    }
-    if (!changes.includes(id)) {
-        changes.push(id);
     }
 }
