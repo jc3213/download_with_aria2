@@ -38,7 +38,7 @@ var aria2Changes = [
         keys: ['jsonrpc_scheme'],
         action: aria2UpdateMethod
     }, {
-        keys: ['jsonrpc_uri', 'jsonrpc_token'],
+        keys: ['jsonrpc_uri', 'jsonrpc_secret'],
         action: aria2ClientSetUp
     }, {
         keys: ['context_enabled', 'context_cascade', 'context_thisurl', 'context_thisimage', 'context_allimages'],
