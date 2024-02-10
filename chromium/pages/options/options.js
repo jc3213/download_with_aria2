@@ -291,7 +291,7 @@ async function aria2SaveStorage(json) {
     if ('jsonrpc_scheme' in changes) {
         aria2RPC.method = json['jsonrpc_scheme'];
     }
-    if (['jsonrpc_host', 'jsonrpc_token'].some(key => key in changes)) {
+    if (['jsonrpc_host', 'jsonrpc_secret'].some(key => key in changes)) {
         aria2RPC = new Aria2(json['jsonrpc_scheme'], json['jsonrpc_host'], json['jsonrpc_secret']);
     }
     changes = {};
