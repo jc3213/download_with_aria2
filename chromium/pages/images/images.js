@@ -131,7 +131,7 @@ function getPreview({src, alt, title}) {
         if (ax !== -1) {
             ext = ext.slice(0, ax);
         }
-        img.alt = `${alt}${ext}`;
+        img.alt = alt + ext;
     }
     gallery.append(img);
     images.push(img);

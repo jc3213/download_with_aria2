@@ -43,13 +43,13 @@ function getFileSize(bytes) {
         return bytes;
     }
     if (bytes < 1048576) {
-        return `${(bytes / 10.24 | 0) / 100}K`;
+        return (bytes / 10.24 | 0) / 100 + 'K';
     }
     if (bytes < 1073741824) {
-        return `${(bytes / 10485.76 | 0) / 100}M`;
+        return (bytes / 10485.76 | 0) / 100 + 'M';
     }
     if (bytes < 1099511627776) {
-        return `${(bytes / 10737418.24 | 0) / 100}G`;
+        return (bytes / 10737418.24 | 0) / 100 + 'G';
     }
-    return `${(bytes / 10995116277.76 | 0) / 100}T`;
+    return (bytes / 10995116277.76 | 0) / 100 + 'T';
 }

@@ -136,11 +136,11 @@ function optionsExport() {
     var time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
     if (global) {
         var output = [JSON.stringify(aria2Storage, null, 4)];
-        var name = `downwitharia2_options-${time}.json`;
+        var name = 'downwitharia2_options-' + time + '.json';
     }
     else {
-        output = Object.keys(aria2Conf).map((key) => `${key}=${aria2Conf[key]}\n`);
-        name = `aria2c_jsonrpc-${time}.conf`;
+        output = Object.keys(aria2Conf).map((key) => key + '=' + aria2Conf[key] + '\n');
+        name = 'aria2c_jsonrpc-' + time + '.conf';
     }
     var blob = new Blob(output, {type: 'application/json; charset=utf-8'});
     exporter.href = URL.createObjectURL(blob);

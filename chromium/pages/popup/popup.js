@@ -114,12 +114,12 @@ async function updateManager() {
 }
 
 function sessionStatusChange(task, gid, status) {
-    var cate = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
-    if (self[`${cate}Task`][gid] === undefined) {
-        self[`${cate}Task`][gid] = task;
-        self[`${cate}Stat`].textContent ++;
+    var queue = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
+    if (self[queue + 'Task'][gid] === undefined) {
+        self[queue + 'Task'][gid] = task;
+        self[queue + 'Stat'].textContent ++;
     }
-    self[`${status}Queue`].appendChild(task);
+    self[queue + 'Queue'].appendChild(task);
     task.cate = cate;
 }
 
@@ -130,9 +130,9 @@ async function sessionCreated(gid) {
     sessionStatusChange(task, gid, status);
 }
 
-function sessionRemoved(cate, gid, task) {
-    self[`${cate}Stat`].textContent --;
-    delete self[`${cate}Task`][gid];
+function sessionRemoved(queue, gid, task) {
+    self[queue + 'Stat'].textContent --;
+    delete self[queue + 'Task'][gid];
     if (task) {
         task.remove();
         delete globalTask[gid];
@@ -155,11 +155,11 @@ function sessionUpdated({gid, status, files, bittorrent, completedLength, totalL
     hour.textContent = hours > 0 ? hours : '';
     minute.textContent = minutes > 0 ? minutes : '';
     second.textContent = seconds > 0 ? seconds : '';
-    connect.textContent = bittorrent ? `${numSeeders} (${connections})` : connections;
+    connect.textContent = bittorrent ? numSeeders + '(' + connections + ')' : connections;
     download.textContent = getFileSize(downloadSpeed);
     upload.textContent = getFileSize(uploadSpeed);
     ratio.textContent = percent;
-    ratio.style.width = `${percent}%`;
+    ratio.style.width = percent + '%';
     if (detailed === task) {
         printTaskFileList(files);
     }

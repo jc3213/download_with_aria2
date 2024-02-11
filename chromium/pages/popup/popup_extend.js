@@ -28,22 +28,22 @@ else {
         event.preventDefault();
         var {clientX, clientY} = event;
         if (clientX > positionLeft) {
-            var left = 'auto';
-            var right = '0px';
+            var left = 'auto;';
+            var right = '0px;';
         }
         else {
-            left = `${clientX}px`;
-            right = 'auto';
+            left = clientX + 'px;';
+            right = 'auto;';
         }
         if (clientY > positionTop) {
-            var top = 'auto';
-            var bottom = `${positionHeight - clientY}px`;
+            var top = 'auto;';
+            var bottom = (positionHeight - clientY) + 'px;';
         }
         else {
-            top = `${clientY}px`;
-            bottom = 'auto';
+            top = clientY + 'px;';
+            bottom = 'auto;';
         }
-        chooseQueue.style.cssText = `display: block; left: ${left}; right: ${right}; top: ${top}; bottom: ${bottom};`;
+        chooseQueue.style.cssText = 'display: block; left: ' + left + ' right: ' + right + ' top: ' + top + ' bottom: ' + bottom;
     });
 
     allQueues.addEventListener('click', (event) => {
