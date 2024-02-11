@@ -146,7 +146,7 @@ chrome.action.onClicked.addListener((tab) => {
 function aria2MatchPattern(keys = aria2MatchKeys) {
     keys.forEach((key) => {
         var array = aria2Storage[key];
-        aria2Match[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*(\\\.)?/g, '.*') + ')$');
+        aria2Match[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*') + ')$');
     });
 }
 
