@@ -6,7 +6,7 @@ aria2Changes.push({
 async function getRequestHeadersFirefox(url, storeId) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
     var header = 'Cookie:';
-    cookies.forEach(({name, value}) => header += ` ${name}=${value};`);
+    cookies.forEach(({name, value}) => header += ' ' + name + '=' + value + ';');
     return [header];
 }
 

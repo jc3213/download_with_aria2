@@ -60,5 +60,5 @@ async function aria2WebSocket({method, params}) {
 }
 
 function aria2ToolbarBadge(number) {
-    chrome.browserAction.setBadgeText({text: number === 0 ? '' : `${number}`});
+    chrome.browserAction.setBadgeText({text: number === 0 ? '' : number + ''});
 }

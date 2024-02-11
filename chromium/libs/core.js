@@ -5,7 +5,7 @@ async function aria2DownloadUrls(url, options = {}) {
     var urls = Array.isArray(url) ? url : [url];
     var message = '';
     var session = urls.map((url) => {
-        message += `${url}\n`;
+        message += url + '\n';
         return {method: 'aria2.addUri', params: [[url], options]};
     });
     await aria2RPC.call(...session);
@@ -17,11 +17,11 @@ async function aria2DownloadJSON(json, origin) {
     var message = '';
     var session = jsons.map(({url, options}) => {
         if (Array.isArray(url)) {
-            message += `${url.join('+')}\n`;
+            message += url.join('+') + '\n';
         }
         else {
             url = [url];
-            message += `${url}\n`;
+            message += url + '\n';
         }
         options = options && origin ? {...origin, ...options} : options ? options : origin ? origin : {};
         return {method: 'aria2.addUri', params: [url, options]};
