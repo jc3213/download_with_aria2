@@ -3,7 +3,7 @@ class Aria2 {
         this.host = host;
         this.secret = `token:${secret}`;
         this.method = scheme;
-        this.websocket = this.connect(this.jsonrpc.replace('http', 'ws'));
+        this.connect();
     }
     set method (scheme) {
         const methods = { 'http': this.fetch, 'https': this.fetch, 'ws': this.send, 'wss': this.send };
@@ -11,9 +11,9 @@ class Aria2 {
         this.post = methods[scheme];
         if (!this.post) { throw new Error(`Invalid protocol: "${scheme}" is not supported.`); }
     }
-    connect (url) {
-        return new Promise((resolve, reject) => {
-            const websocket = new WebSocket(url);
+    connect () {
+        this.websocket = new Promise((resolve, reject) => {
+            const websocket = new WebSocket(this.jsonrpc.replace('http', 'ws'));
             websocket.onopen = (event) => resolve(websocket);
             websocket.onerror = (error) => reject(error);
         });
