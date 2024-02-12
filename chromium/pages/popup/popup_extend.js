@@ -56,17 +56,14 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     }
     var {storage, changes} = params;
     aria2Storage = storage;
+    aria2Variables(storage);
     if (!aria2Storage['manager_newtab']) {
         close();
     }
     if ('manager_interval' in changes) {
-        aria2Interval = aria2Storage['manager_interval'];
         clearInterval(aria2Alive);
         aria2Alive = setInterval(updateManager, aria2Interval);
     }
-    aria2Scheme = aria2Storage['jsonrpc_scheme'];
-    aria2Host = aria2Storage['jsonrpc_host'];
-    aria2Secret = 'token:' + aria2Storage['jsonrpc_secret'];
     if ('jsonrpc_host' in changes) {
         clearInterval(aria2Alive);
         aria2RPC.disconnect();
@@ -80,11 +77,15 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     }
 });
 
-chrome.storage.sync.get(null, (json) => {
+function aria2Variables(json) {
     aria2Scheme = json['jsonrpc_scheme']
     aria2Host = json['jsonrpc_host'];
     aria2Secret = json['jsonrpc_secret'];
     aria2Interval = json['manager_interval'];
     aria2Proxy = json['proxy_server'];
+}
+
+chrome.storage.sync.get(null, (json) => {
+    aria2Variables(json);
     aria2ClientSetUp();
 });
