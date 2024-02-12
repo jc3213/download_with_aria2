@@ -1,18 +1,3 @@
-var aria2Changes = [
-    {
-        keys: ['manager_newtab'],
-        action: aria2UpdateManager
-    }, {
-        keys: ['jsonrpc_scheme'],
-        action: aria2UpdateMethod
-    }, {
-        keys: ['jsonrpc_host', 'jsonrpc_secret'],
-        action: aria2UpdateJsonRPC
-    }, {
-        keys: ['manager_interval'],
-        action: aria2UpdateInterval
-    }
-];
 var aria2InTab = location.search === '?open_in_tab';
 
 if (aria2InTab) {
@@ -69,38 +54,31 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     if (action !== 'options_onchange') {
         return;
     }
-    aria2Storage = params.storage;
-    aria2Changes.forEach(({keys, action}) => {
-        if (keys.some((key) => key in params.changes)) {
-            action();
-        }
-    });
-});
-
-function aria2UpdateMethod() {
-    aria2Scheme = aria2Storage['jsonrpc_scheme'];
-    aria2RPC.method = aria2Scheme;
-}
-
-function aria2UpdateJsonRPC() {
-    aria2Host = aria2Storage['jsonrpc_host'];
-    aria2Secret = aria2Storage['jsonrpc_secret'];
-    clearInterval(aria2Alive);
-    aria2RPC.disconnect();
-    aria2ClientSetUp();
-}
-
-function aria2UpdateManager() {
+    var {storage, changes} = params;
+    aria2Storage = storage;
     if (!aria2Storage['manager_newtab']) {
         close();
     }
-}
-
-function aria2UpdateInterval() {
-    aria2Interval = aria2Storage['manager_interval'];
-    clearInterval(aria2Alive);
-    aria2Alive = setInterval(updateManager, aria2Interval);
-}
+    if ('manager_interval' in changes) {
+        aria2Interval = aria2Storage['manager_interval'];
+        clearInterval(aria2Alive);
+        aria2Alive = setInterval(updateManager, aria2Interval);
+    }
+    aria2Scheme = aria2Storage['jsonrpc_scheme'];
+    aria2Host = aria2Storage['jsonrpc_host'];
+    aria2Secret = 'token:' + aria2Storage['jsonrpc_secret'];
+    if ('jsonrpc_host' in changes) {
+        clearInterval(aria2Alive);
+        aria2RPC.disconnect();
+        return aria2ClientSetUp();
+    }
+    if ('jsonrpc_scheme' in changes) {
+        aria2RPC.method = aria2Scheme;
+    }
+    if ('jsonrpc_secret' in changes) {
+        aria2RPC.secret = aria2Secret;
+    }
+});
 
 chrome.storage.sync.get(null, (json) => {
     aria2Scheme = json['jsonrpc_scheme']
