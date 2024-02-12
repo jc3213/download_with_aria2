@@ -254,11 +254,10 @@ async function taskRetry(task, gid) {
     var url = [...new Set(uris.map(({uri}) => uri))];
     if (path) {
         var ni = path.lastIndexOf('/');
-        options.result['dir'] = path.slice(0, ni);
-        options.result['out'] = path.slice(ni + 1);
+        var name = {'dir': path.slice(0, ni), 'out': path.slice(ni + 1)};
      }
      var [added, removed] = await aria2RPC.call(
-        {method: 'aria2.addUri', params: [url, options.result]},
+        {method: 'aria2.addUri', params: [url, {...options.result, ...name}]},
         {method: 'aria2.removeDownloadResult', params: [gid]}
      );
      sessionCreated(added.result);
