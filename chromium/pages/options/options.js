@@ -189,7 +189,7 @@ function optionsImport(file) {
     var reader = new FileReader();
     reader.onload = async (event) => {
         if (global) {
-            await aria2SaveStorage(JSON.parse(reader.result));
+            aria2SaveStorage(JSON.parse(reader.result));
             return aria2StartUp();
         }
         var conf = {};
@@ -282,17 +282,25 @@ function aria2StartUp() {
     });
 }
 
-async function aria2SaveStorage(json) {
-    await chrome.storage.sync.set(json);
-    await chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
-    aria2Storage = {...json};
-    if ('jsonrpc_scheme' in changes) {
-        aria2RPC.method = json['jsonrpc_scheme'];
-    }
-    if (['jsonrpc_host', 'jsonrpc_secret'].some(key => key in changes)) {
-        aria2RPC = new Aria2(json['jsonrpc_scheme'], json['jsonrpc_host'], json['jsonrpc_secret']);
-    }
+function aria2SaveStorage(json) {
+    chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
+    aria2Storage = json;
+    aria2WhenSaved();
     changes = {};
+}
+
+function aria2WhenSaved() {
+    if ('jsonrpc_host' in changes) {
+        aria2RPC.disconnect();
+        aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
+        return;
+    }
+    if ('jsonrpc_scheme' in changes) {
+        aria2RPC.method = aria2Storage['jsonrpc_scheme'];
+    }
+    if ('jsonrpc_secret' in changes) {
+        aria2RPC.secret = 'token:' + aria2Storage['jsonrpc_secret'];
+    }
 }
 
 function clearChanges() {

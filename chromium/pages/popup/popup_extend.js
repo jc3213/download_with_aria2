@@ -73,7 +73,7 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
         aria2RPC.method = aria2Scheme;
     }
     if ('jsonrpc_secret' in changes) {
-        aria2RPC.secret = aria2Secret;
+        aria2RPC.secret = 'token:' + aria2Secret;
     }
 });
 

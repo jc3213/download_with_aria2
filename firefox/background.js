@@ -1,8 +1,3 @@
-aria2Changes.push({
-    keys: ['capture_enabled', 'capture_webrequest'],
-    action: aria2CaptureSwitch
-});
-
 async function getRequestHeadersFirefox(url, storeId) {
     var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
     var header = 'Cookie:';

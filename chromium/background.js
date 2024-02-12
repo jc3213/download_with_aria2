@@ -1,8 +1,3 @@
-aria2Changes.push({
-    keys: ['capture_enabled'],
-    action: aria2CaptureSwitch
-});
-
 async function captureOnCreated({id, finalUrl, referrer}) {
     var url = finalUrl;
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;

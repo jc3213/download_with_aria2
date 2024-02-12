@@ -161,11 +161,13 @@ async function aria2ImagesPrompt(result) {
 }
 
 function aria2OptionsChanged({storage, changes}) {
+    chrome.storage.sync.set(storage);
     aria2Storage = storage;
     aria2UpdateJSONRPC(changes);
     aria2ContextMenus();
     aria2TaskManager();
     aria2MatchPattern();
+    aria2CaptureSwitch();
 }
 
 function aria2UpdateJSONRPC(changes) {
