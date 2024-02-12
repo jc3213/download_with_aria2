@@ -17,10 +17,7 @@ chrome.storage.sync.get(null, (json) => {
 });
 
 async function aria2ClientSetUp() {
-    if (aria2Retry) {
-        clearTimeout(aria2Retry);
-    }
-    aria2RPC?.disconnect();
+    clearTimeout(aria2Retry);
     aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
     aria2RPC.call({method: 'aria2.tellActive'}).then(([active]) => {
         chrome.browserAction.setBadgeBackgroundColor({color: '#3cc'});
