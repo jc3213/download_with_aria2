@@ -171,7 +171,7 @@ function aria2OptionsChanged({storage, changes}) {
 function aria2UpdateJSONRPC(changes) {
     if ('jsonrpc_host' in changes) {
         aria2RPC.disconnect();
-        aria2RPC = new Aria2(
+        aria2ClientSetUp();
         return;
     }
     if ('jsonrpc_scheme' in changes) {
@@ -218,6 +218,7 @@ async function aria2MV3Migration() {
     if (!aria2RPC) {
         aria2Storage = await chrome.storage.sync.get(null);
         aria2ClientSetUp();
+        aria2MatchPattern();
     }
 }
 
