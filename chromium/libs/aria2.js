@@ -6,10 +6,9 @@ class Aria2 {
         this.connect();
     }
     set method (scheme) {
-        const methods = { 'http': this.fetch, 'https': this.fetch, 'ws': this.send, 'wss': this.send };
+        const methods = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send };
         this.jsonrpc = scheme + '://' + this.host + '/jsonrpc';
-        this.post = methods[scheme];
-        if (!this.post) { throw new Error('Invalid method: ' + scheme + ' is not supported!'); }
+        if (!(this.call = methods[scheme])) { throw new Error('Invalid method: ' + scheme + ' is not supported!'); }
     }
     connect () {
         this.websocket = new Promise((resolve, reject) => {
@@ -24,23 +23,23 @@ class Aria2 {
     set onmessage (callback) {
         this.websocket.then( (websocket) => websocket.addEventListener('message', (event) => callback(JSON.parse(event.data))) );
     }
-    send (message) {
+    json (array) {
+        const json = array.map( ({method, params = []}) => ({ id: '', jsonrpc: '2.0', method, params: [this.secret, ...params] }) );
+        return JSON.stringify(json);
+    }
+    send (...messages) {
         return new Promise((resolve, reject) => {
             this.websocket.then((websocket) => {
                 websocket.onmessage = (event) => resolve(JSON.parse(event.data));
                 websocket.onerror = (error) => reject(error);
-                websocket.send(message);
+                websocket.send(this.json(messages));
             });
         });
     }
-    fetch (body) {
-        return fetch(this.jsonrpc, {method: 'POST', body}).then((response) => {
+    post (...messages) {
+        return fetch(this.jsonrpc, {method: 'POST', body: this.json(messages)}).then((response) => {
             if (response.ok) { return response.json(); }
             throw new Error(response.statusText);
         });
-    }
-    call (...messages) {
-        const json = messages.map( ({method, params = []}) => ({ id: '', jsonrpc: '2.0', method, params: [this.secret, ...params] }) );
-        return this.post(JSON.stringify(json)).then( (response) => response.map(({result, error}) => { if (result) { return result; } throw error; }) );
     }
 }

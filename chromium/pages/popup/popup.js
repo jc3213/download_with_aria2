@@ -69,13 +69,14 @@ function aria2ClientSetUp() {
         {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
         {method: 'aria2.tellWaiting', params: [0, 999]},
         {method: 'aria2.tellStopped', params: [0, 999]}
-    ).then(([{downloadSpeed, uploadSpeed}, active, waiting, stopped]) => {
-        [...active, ...waiting, ...stopped].forEach(sessionUpdated);
-        downloadStat.textContent = getFileSize(downloadSpeed);
-        uploadStat.textContent = getFileSize(uploadSpeed);
+    ).then(([global, active, waiting, stopped]) => {
+        [...active.result, ...waiting.result, ...stopped.result].forEach(sessionUpdated);
+        downloadStat.textContent = getFileSize(global.result.downloadSpeed);
+        uploadStat.textContent = getFileSize(global.result.uploadSpeed);
         aria2RPC.onmessage = aria2WebSocket;
         aria2Alive = setInterval(updateManager, aria2Interval);
     }).catch((error) => {
+        console.log(error);
         activeStat.textContent = waitingStat.textContent = stoppedStat.textContent = downloadStat.textContent = uploadStat.textContent = '0';
         activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     });
@@ -105,12 +106,10 @@ function aria2WebSocket({method, params}) {
 }
 
 async function updateManager() {
-    var [{downloadSpeed, uploadSpeed}, active] = await aria2RPC.call(
-        {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'}
-    );
-    active.forEach(sessionUpdated);
-    downloadStat.textContent = getFileSize(downloadSpeed);
-    uploadStat.textContent = getFileSize(uploadSpeed);
+    var [global, active] = await aria2RPC.call({method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'});
+    active.result.forEach(sessionUpdated);
+    downloadStat.textContent = getFileSize(global.result.downloadSpeed);
+    uploadStat.textContent = getFileSize(global.result.uploadSpeed);
 }
 
 function sessionStatusChange(task, gid, status) {
@@ -119,15 +118,14 @@ function sessionStatusChange(task, gid, status) {
         self[queue + 'Task'][gid] = task;
         self[queue + 'Stat'].textContent ++;
     }
-    self[queue + 'Queue'].appendChild(task);
-    task.cate = cate;
+    self[status + 'Queue'].appendChild(task);
+    task.queue = queue;
 }
 
 async function sessionCreated(gid) {
-    var [result] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
+    var [{result}] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
     var task = sessionUpdated(result);
-    var {status} = result;
-    sessionStatusChange(task, gid, status);
+    sessionStatusChange(task, gid, result.status);
 }
 
 function sessionRemoved(queue, gid, task) {
@@ -195,7 +193,7 @@ function createSession(gid, status, bittorrent) {
                 taskFiles(files, save, gid);
                 break;
             case 'file_btn':
-                taskSelectFile(save, task.cate, target);
+                taskSelectFile(save, task.queue, target);
                 break;
             case 'adduri_btn':
                 taskAddUri(target, gid);

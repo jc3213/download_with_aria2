@@ -137,6 +137,7 @@ function optionsExport() {
     if (global) {
         var output = [JSON.stringify(aria2Storage, null, 4)];
         var name = 'downwitharia2_options-' + time + '.json';
+        var type = 'application/json; charset=utf-8';
     }
     else {
         output = Object.keys(aria2Conf).map((key) => key + '=' + aria2Conf[key] + '\n');
@@ -153,15 +154,13 @@ function optionsUpload() {
 }
 
 async function optionsJsonrpc() {
-    var [options, version] = await aria2RPC.call(
-        {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}
-    );
+    var [options, version] = await aria2RPC.call({method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'});
     clearChanges();
     global = false;
-    aria2Global = jsonrpc.disposition(options);
+    aria2Global = jsonrpc.disposition(options.result);
     aria2Conf = {'enable-rpc': true, ...options};
     updated = {...aria2Global};
-    aria2ver.textContent = aria2ua.textContent = version.version;
+    aria2ver.textContent = aria2ua.textContent = version.result.version;
     extension.classList.add('jsonrpc');
 }
 
