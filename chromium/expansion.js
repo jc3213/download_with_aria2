@@ -50,8 +50,8 @@ async function aria2WebSocket({method, params}) {
         case 'aria2.onBtDownloadComplete':
             break;
         case 'aria2.onDownloadComplete':
-            var [{result: {bittorrent, files}}] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-            var name = getDownloadName(gid, bittorrent, files);
+            var [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
+            var name = getDownloadName(gid, session.result.bittorrent, session.result.files);
             aria2WhenComplete(name);
         default:
             aria2Active.splice(adx, 1);

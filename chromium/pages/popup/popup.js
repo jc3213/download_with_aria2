@@ -123,9 +123,9 @@ function sessionStatusChange(task, gid, status) {
 }
 
 async function sessionCreated(gid) {
-    var [{result}] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-    var task = sessionUpdated(result);
-    sessionStatusChange(task, gid, result.status);
+    var [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
+    var task = sessionUpdated(session.result);
+    sessionStatusChange(task, gid, session.result.status);
 }
 
 function sessionRemoved(queue, gid, task) {
@@ -243,25 +243,25 @@ async function taskDetail(task, gid) {
     }
     var [files, options] = await getTaskDetail(gid);
     detailed = task;
-    detailed.options = detailed.settings.disposition(options);
+    detailed.options = detailed.settings.disposition(options.result);
     detailed.classList.add('extra');
-    printTaskFileList(files);
+    printTaskFileList(files.result);
 }
 
 async function taskRetry(task, gid) {
     var [files, options] = await getTaskDetail(gid);
-    var {uris, path} = files[0];
+    var {uris, path} = files.result[0];
     var url = [...new Set(uris.map(({uri}) => uri))];
     if (path) {
         var ni = path.lastIndexOf('/');
-        options['dir'] = path.slice(0, ni);
-        options['out'] = path.slice(ni + 1);
+        options.result['dir'] = path.slice(0, ni);
+        options.result['out'] = path.slice(ni + 1);
      }
-     var [id] = await aria2RPC.call(
-        {method: 'aria2.addUri', params: [url, options]},
+     var [added, removed] = await aria2RPC.call(
+        {method: 'aria2.addUri', params: [url, options.result]},
         {method: 'aria2.removeDownloadResult', params: [gid]}
      );
-     sessionCreated(id);
+     sessionCreated(added.result);
      sessionRemoved('stopped', gid, task);
 }
 
