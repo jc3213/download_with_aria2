@@ -33,24 +33,6 @@ var aria2Default = {
 var aria2Match = {};
 var aria2MatchKeys = ['headers_exclude', 'proxy_include', 'capture_include', 'capture_exclude'];
 var aria2Storage = {};
-var aria2Changes = [
-    {
-        keys: ['jsonrpc_scheme'],
-        action: aria2UpdateMethod
-    }, {
-        keys: ['jsonrpc_uri', 'jsonrpc_secret'],
-        action: aria2ClientSetUp
-    }, {
-        keys: ['context_enabled', 'context_cascade', 'context_thisurl', 'context_thisimage', 'context_allimages'],
-        action: aria2ContextMenus
-    }, {
-        keys: ['manager_newtab'],
-        action: aria2TaskManager
-    }, {
-        keys: aria2MatchKeys,
-        action: aria2MatchPattern
-    }
-];
 var aria2RPC;
 var aria2Popup = '/pages/popup/popup.html';
 var aria2InTab = chrome.runtime.getURL('/pages/popup/popup.html?open_in_tab');
@@ -143,23 +125,6 @@ chrome.action.onClicked.addListener((tab) => {
     });
 });
 
-function aria2MatchPattern(keys = aria2MatchKeys) {
-    keys.forEach((key) => {
-        var array = aria2Storage[key];
-        aria2Match[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*') + ')$');
-    });
-}
-
-function aria2OptionsChanged({storage, changes}) {
-    aria2Storage = storage;
-    aria2Changes.forEach(({keys, action}) => {
-        var same = keys.filter((key) => key in changes);
-        if (same.length !== 0) {
-            action(same);
-        }
-    });
-}
-
 async function aria2Download(url, options, referer, hostname, storeId) {
     options['user-agent'] = aria2Storage['user_agent'];
     if (aria2Storage['proxy_enabled'] || aria2Match['proxy_include'].test(hostname)) {
@@ -195,8 +160,26 @@ async function aria2ImagesPrompt(result) {
     aria2Message[id] = result;
 }
 
-function aria2UpdateMethod() {
-    aria2RPC.method = aria2Storage['jsonrpc_scheme'];
+function aria2OptionsChanged({storage, changes}) {
+    aria2Storage = storage;
+    aria2UpdateJSONRPC(changes);
+    aria2ContextMenus();
+    aria2TaskManager();
+    aria2MatchPattern();
+}
+
+function aria2UpdateJSONRPC(changes) {
+    if ('jsonrpc_host' in changes) {
+        aria2RPC.disconnect();
+        aria2RPC = new Aria2(
+        return;
+    }
+    if ('jsonrpc_scheme' in changes) {
+        aria2RPC.method = aria2Storage['jsonrpc_scheme'];
+    }
+    if ('jsonrpc_secret' in changes) {
+        aria2RPC.secret = 'token:' + aria2Storage['jsonrpc_secret'];
+    }
 }
 
 function aria2ContextMenus() {
@@ -222,6 +205,13 @@ function aria2ContextMenus() {
 function aria2TaskManager() {
     var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup;
     chrome.action.setPopup({popup});
+}
+
+function aria2MatchPattern() {
+    aria2MatchKeys.forEach((key) => {
+        var array = aria2Storage[key];
+        aria2Match[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*') + ')$');
+    });
 }
 
 async function aria2MV3Migration() {
