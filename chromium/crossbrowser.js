@@ -171,8 +171,7 @@ function aria2OptionsChanged({storage, changes}) {
 function aria2UpdateJSONRPC(changes) {
     if ('jsonrpc_host' in changes) {
         aria2RPC.disconnect();
-        aria2ClientSetUp();
-        return;
+        return aria2ClientSetUp();
     }
     if ('jsonrpc_scheme' in changes) {
         aria2RPC.method = aria2Storage['jsonrpc_scheme'];
