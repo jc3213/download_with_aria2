@@ -1,4 +1,4 @@
-importScripts('libs/aria2.js', 'libs/tools.js', 'libs/core.js', 'crossbrowser.js');
+importScripts('libs/aria2.js', 'libs/core.js', 'libs/tools.js', 'crossbrowser.js');
 
 chrome.runtime.onStartup.addListener(aria2Activate);
 
