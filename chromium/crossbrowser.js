@@ -1,6 +1,6 @@
 var aria2Default = {
     'jsonrpc_scheme': 'http',
-    'jsonrpc_host': 'localhost:6800',
+    'jsonrpc_host': 'localhost:6800/jsonrpc',
     'jsonrpc_secret': '',
     'context_enabled': true,
     'context_cascade': true,
