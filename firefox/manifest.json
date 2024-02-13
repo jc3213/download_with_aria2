@@ -27,8 +27,8 @@
             "libs/aria2.js",
             "libs/tools.js",
             "libs/core.js",
-            "crossbrowser.js",
-            "background.js"
+            "background.js",
+            "crossbrowser.js"
         ]
     },
     "browser_action": {
