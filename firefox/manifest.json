@@ -27,7 +27,6 @@
             "libs/aria2.js",
             "libs/tools.js",
             "libs/core.js",
-            "expansion.js",
             "crossbrowser.js",
             "background.js"
         ]
