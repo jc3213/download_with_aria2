@@ -21,4 +21,4 @@ chrome.storage.sync.get(null).then((json) => {
     aria2ContextMenus();
 });
 
-aria2KeepAlive = setInterval(chrome.runtime.getPlatformInfo, 25e3);
+aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 25e3);
