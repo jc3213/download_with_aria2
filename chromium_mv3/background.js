@@ -1,7 +1,7 @@
 importScripts('libs/aria2.js', 'libs/core.js', 'libs/tools.js', 'crossbrowser.js');
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
-    if (finalUrl.startsWith('blob') || finalUrl.startsWith('data') || !aria2Storage['capture_enabled']) {
+    if (!aria2Storage['capture_enabled'] || testUrlScheme(finalUrl)) {
         return;
     }
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;

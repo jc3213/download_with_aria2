@@ -21,7 +21,7 @@ function aria2CaptureSwitch() {
 }
 
 async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
-    if (url.startsWith('blob') || url.startsWith('data')) {
+    if (testUrlScheme(url)) {
         return;
     }
     var hostname = getHostname(referrer);

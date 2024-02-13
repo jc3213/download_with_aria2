@@ -40,7 +40,6 @@ var aria2Match = {};
 var aria2Popup = '/pages/popup/popup.html';
 var aria2InTab = chrome.runtime.getURL('/pages/popup/popup.html?open_in_tab');
 var aria2Images = '/pages/images/images.html';
-var aria2Monitor = {};
 var aria2Message = {};
 var {manifest_version} = chrome.runtime.getManifest();
 
@@ -254,6 +253,11 @@ function aria2CaptureResult(hostname, fileext, size) {
         return true;
     }
     return false;
+}
+
+function testUrlScheme(url) {
+    var scheme = url.slice(0, url.indexOf(':'));
+    return scheme === 'blob' || scheme === 'data';
 }
 
 function getCurrentTabUrl() {
