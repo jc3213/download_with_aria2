@@ -1,12 +1,5 @@
 importScripts('libs/aria2.js', 'libs/core.js', 'libs/tools.js', 'crossbrowser.js');
 
-chrome.runtime.onStartup.addListener(aria2Activate);
-
-chrome.runtime.onInstalled.addListener(async ({reason}) => {
-    await aria2Activate();
-    aria2ContextMenus();
-});
-
 chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
     var url = finalUrl;
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
@@ -16,7 +9,6 @@ chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
 });
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSize}) => {
-    await aria2MV3Migration();
     var {url, referer, hostname, skipped} = aria2Monitor[id];
     if (skipped || !aria2Storage['capture_enabled']) {
         return;
@@ -29,14 +21,12 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSiz
     aria2Monitor[id].captured = captured;
 });
 
-async function aria2Activate() {
-    var json = await chrome.storage.sync.get(null);
+chrome.storage.sync.get(null).then((json) => {
     aria2Storage = {...aria2Default, ...json};
     aria2ClientSetUp();
     aria2MatchPattern();
     aria2TaskManager();
-}
+    aria2ContextMenus();
+});
 
-function aria2ClientSetUp() {
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
-}
+aria2KeepAlive = setInterval(chrome.runtime.getPlatformInfo, 25e3);

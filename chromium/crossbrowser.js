@@ -30,15 +30,19 @@ var aria2Default = {
     'capture_reject': [],
     'capture_exclude': []
 };
-var aria2Match = {};
-var aria2MatchKeys = ['headers_exclude', 'proxy_include', 'capture_include', 'capture_exclude'];
 var aria2Storage = {};
 var aria2RPC;
+var aria2Retry;
+var aria2Active = 0;
+var aria2Queue = {};
+var aria2MatchKeys = ['headers_exclude', 'proxy_include', 'capture_include', 'capture_exclude'];
+var aria2Match = {};
 var aria2Popup = '/pages/popup/popup.html';
 var aria2InTab = chrome.runtime.getURL('/pages/popup/popup.html?open_in_tab');
 var aria2Images = '/pages/images/images.html';
 var aria2Monitor = {};
 var aria2Message = {};
+var {manifest_version} = chrome.runtime.getManifest();
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
@@ -55,7 +59,6 @@ chrome.runtime.onMessage.addListener(async ({action, params}, {tab}, response) =
             response(aria2Message[tab.id]);
             break;
         case 'message_download':
-            await aria2MV3Migration();
             aria2DownloadPrompt(params);
             break;
         case 'message_allimage':
@@ -81,11 +84,9 @@ chrome.commands.onCommand.addListener((command) => {
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
     switch (menuItemId) {
         case 'aria2c_this_url':
-            await aria2MV3Migration();
             aria2Download(linkUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_this_image':
-            await aria2MV3Migration();
             aria2Download(srcUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_all_images':
@@ -146,7 +147,9 @@ function aria2OptionsChanged({storage, changes}) {
     aria2ContextMenus();
     aria2TaskManager();
     aria2MatchPattern();
-    aria2CaptureSwitch();
+    if (manifest_version === 2) {
+        aria2CaptureSwitch();
+    }
 }
 
 function aria2UpdateJSONRPC(changes) {
@@ -194,12 +197,49 @@ function aria2MatchPattern() {
     });
 }
 
-async function aria2MV3Migration() {
-    if (!aria2RPC) {
-        aria2Storage = await chrome.storage.sync.get(null);
-        aria2ClientSetUp();
-        aria2MatchPattern();
+async function aria2ClientSetUp() {
+    clearTimeout(aria2Retry);
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
+    aria2RPC.call({method: 'aria2.tellActive'}).then(([active]) => {
+        chrome.action.setBadgeBackgroundColor({color: '#3cc'});
+        aria2Active = active.result.length;
+        active.result.forEach(({gid}) => aria2Queue[gid] = gid);
+        aria2ToolbarBadge(aria2Active);
+        aria2RPC.onmessage = aria2WebSocket;
+    }).catch((error) => {
+        chrome.action.setBadgeBackgroundColor({color: '#c33'});
+        aria2ToolbarBadge('E');
+        aria2Retry = setTimeout(aria2ClientSetUp, aria2Storage['manager_interval'])
+    });
+}
+
+async function aria2WebSocket({method, params}) {
+    if (!method) {
+        return;
     }
+    var [{gid}] = params;
+    switch (method) {
+        case 'aria2.onDownloadStart':
+            if (!aria2Queue[gid]) {
+                aria2Active ++;
+                aria2Queue[gid] = gid;
+            }
+            break;
+        case 'aria2.onBtDownloadComplete':
+            break;
+        case 'aria2.onDownloadComplete':
+            var [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
+            var name = getDownloadName(gid, session.result.bittorrent, session.result.files);
+            aria2WhenComplete(name);
+        default:
+            aria2Active --;
+            delete aria2Queue[gid];
+    }
+    aria2ToolbarBadge(aria2Active);
+}
+
+function aria2ToolbarBadge(number) {
+    chrome.action.setBadgeText({text: number === 0 ? '' : number + ''});
 }
 
 function getCurrentTabUrl() {

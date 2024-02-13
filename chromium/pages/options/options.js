@@ -52,9 +52,6 @@ if (typeof browser !== 'undefined') {
         }
     });
 }
-else if (manifest_version === 3) {
-    extension.classList.add('manifest_v3');
-}
 
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey) {
