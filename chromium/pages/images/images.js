@@ -108,7 +108,7 @@ gallery.addEventListener('mouseenter', ({target}) => {
 
 chrome.storage.sync.get(null, (json) => {
     aria2Storage = json;
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
 });
 
 chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({result, options}) => {

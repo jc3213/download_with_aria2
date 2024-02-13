@@ -129,7 +129,7 @@ function slimModeInit() {
 
 chrome.storage.sync.get(null, async (json) => {
     aria2Storage = json;
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
     var [global] = await aria2RPC.call({method: 'aria2.getGlobalOption'});
     global['user-agent'] = aria2Storage['user_agent']
     aria2Global = settings.disposition(global.result);

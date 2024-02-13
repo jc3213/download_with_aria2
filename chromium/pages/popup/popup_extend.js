@@ -64,7 +64,7 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
         clearInterval(aria2Alive);
         aria2Alive = setInterval(updateManager, aria2Interval);
     }
-    if ('jsonrpc_host' in changes) {
+    if ('jsonrpc_url' in changes) {
         clearInterval(aria2Alive);
         aria2RPC.disconnect();
         return aria2ClientSetUp();
@@ -79,7 +79,7 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
 
 function aria2Variables(json) {
     aria2Scheme = json['jsonrpc_scheme']
-    aria2Host = json['jsonrpc_host'];
+    aria2Url = json['jsonrpc_url'];
     aria2Secret = json['jsonrpc_secret'];
     aria2Interval = json['manager_interval'];
     aria2Proxy = json['proxy_server'];

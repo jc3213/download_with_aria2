@@ -1,13 +1,13 @@
 class Aria2 {
-    constructor (scheme, host, secret) {
-        this.host = host;
+    constructor (scheme, url, secret) {
+        this.url = url;
         this.secret = 'token:' + secret;
         this.method = scheme;
         this.connect();
     }
     set method (scheme) {
         const methods = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send };
-        this.jsonrpc = scheme + '://' + this.host;
+        this.jsonrpc = scheme + '://' + this.url;
         if (!(this.call = methods[scheme])) { throw new Error('Invalid method: ' + scheme + ' is not supported!'); }
     }
     connect () {

@@ -254,7 +254,7 @@ function updateRule(id, rules) {
 
 chrome.storage.sync.get(null, (json) => {
     aria2Storage = json;
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
     aria2StartUp();
 });
 
@@ -287,9 +287,9 @@ function aria2SaveStorage(json) {
 }
 
 function aria2WhenSaved() {
-    if ('jsonrpc_host' in changes) {
+    if ('jsonrpc_url' in changes) {
         aria2RPC.disconnect();
-        aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
+        aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
         return;
     }
     if ('jsonrpc_scheme' in changes) {

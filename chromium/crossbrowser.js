@@ -1,6 +1,6 @@
 var aria2Default = {
     'jsonrpc_scheme': 'http',
-    'jsonrpc_host': 'localhost:6800/jsonrpc',
+    'jsonrpc_url': 'localhost:6800/jsonrpc',
     'jsonrpc_secret': '',
     'context_enabled': true,
     'context_cascade': true,
@@ -46,6 +46,19 @@ var {manifest_version} = chrome.runtime.getManifest();
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
+    }
+    if (previousVersion <= '4.7.0.2410') {
+        chrome.storage.sync.get(null, (json) => {
+            var host = json['jsonrpc_host'];
+            var url = host + '/jsonrpc';
+            delete json['jsonrpc_host'];
+            json['jsonrpc_url'] = url;
+            chrome.storage.sync.set(json);
+            chrome.storage.sync.remove('jsonrpc_host');
+            aria2Storage = json;
+            aria2RPC.disconnect();
+            aria2ClientSetUp();
+        });
     }
 });
 
@@ -152,7 +165,7 @@ function aria2OptionsChanged({storage, changes}) {
 }
 
 function aria2UpdateJSONRPC(changes) {
-    if ('jsonrpc_host' in changes) {
+    if ('jsonrpc_url' in changes) {
         aria2RPC.disconnect();
         return aria2ClientSetUp();
     }
@@ -198,7 +211,7 @@ function aria2MatchPattern() {
 
 async function aria2ClientSetUp() {
     clearTimeout(aria2Retry);
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_host'], aria2Storage['jsonrpc_secret']);
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
     aria2RPC.call({method: 'aria2.tellActive'}).then(([active]) => {
         chrome.action.setBadgeBackgroundColor({color: '#3cc'});
         aria2Active = active.result.length;
