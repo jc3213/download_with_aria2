@@ -1,24 +1,16 @@
 importScripts('libs/aria2.js', 'libs/core.js', 'libs/tools.js', 'crossbrowser.js');
 
-chrome.downloads.onCreated.addListener(async ({id, finalUrl, referrer}) => {
-    var url = finalUrl;
-    var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
-    var hostname = getHostname(referer);
-    var skipped = url.startsWith('blob') || url.startsWith('data');
-    aria2Monitor[id] = {url, referer, hostname, skipped};
-});
-
-chrome.downloads.onDeterminingFilename.addListener(async ({id, filename, fileSize}) => {
-    var {url, referer, hostname, skipped} = aria2Monitor[id];
-    if (skipped || !aria2Storage['capture_enabled']) {
+chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
+    if (finalUrl.startsWith('blob') || finalUrl.startsWith('data') || !aria2Storage['capture_enabled']) {
         return;
     }
-    var captured = getCaptureGeneral(hostname, getFileExtension(filename), fileSize);
+    var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
+    var hostname = getHostname(referer);
+    var captured = aria2CaptureResult(hostname, getFileExtension(filename), fileSize);
     if (captured) {
         chrome.downloads.erase({id});
-        aria2Download(url, {out: filename}, referer, hostname);
+        aria2Download(finalUrl, {out: filename}, referer, hostname);
     }
-    aria2Monitor[id].captured = captured;
 });
 
 chrome.storage.sync.get(null).then((json) => {

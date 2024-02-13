@@ -120,13 +120,13 @@ async function aria2Download(url, options, referer, hostname, storeId) {
     aria2DownloadPrompt({url, options});
 }
 
-async function aria2DownloadPrompt(aria2c) {
+async function aria2DownloadPrompt(params) {
     if (aria2Storage['download_prompt']) {
         var id = await aria2NewDownload(true);
-        aria2Message[id] = aria2c;
+        aria2Message[id] = params;
         return;
     }
-    var {url, json, options} = aria2c;
+    var {url, json, options} = params;
     if (json) {
         return aria2DownloadJSON(json, options);
     }
@@ -242,18 +242,7 @@ function aria2ToolbarBadge(number) {
     chrome.action.setBadgeText({text: number === 0 ? '' : number + ''});
 }
 
-function getCurrentTabUrl() {
-    return new Promise((resolve) => {
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => resolve(tabs[0].url));
-    });
-}
-
-function getFileExtension(filename) {
-    var fileext = filename.slice(filename.lastIndexOf('.') + 1);
-    return fileext.toLowerCase();
-}
-
-function getCaptureGeneral(hostname, fileext, size) {
+function aria2CaptureResult(hostname, fileext, size) {
     if (aria2Match['capture_exclude'].test(hostname) ||
         aria2Storage['capture_reject'].includes(fileext)) {
         return false;
@@ -267,26 +256,15 @@ function getCaptureGeneral(hostname, fileext, size) {
     return false;
 }
 
-function getCaptureHostname(hostname) {
-    if (aria2Match['capture_exclude'].test(hostname)) {
-        return -1;
-    }
-    if (aria2Storage['capture_always'] ||
-        aria2Match['capture_include'].test(hostname)) {
-        return 1;
-    }
-    return 0;
+function getCurrentTabUrl() {
+    return new Promise((resolve) => {
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => resolve(tabs[0].url));
+    });
 }
 
-function getCaptureFileData(size, fileext) {
-    if (aria2Storage['capture_reject'].includes(fileext)) {
-        return -1;
-    }
-    if (aria2Storage['capture_resolve'].includes(fileext) ||
-        aria2Storage['capture_filesize'] > 0 && size >= aria2Storage['capture_filesize']) {
-        return 1;
-    }
-    return 0;
+function getFileExtension(filename) {
+    var fileext = filename.slice(filename.lastIndexOf('.') + 1);
+    return fileext.toLowerCase();
 }
 
 function getRequestHeaders(url) {

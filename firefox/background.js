@@ -25,7 +25,7 @@ async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
         return;
     }
     var hostname = getHostname(referrer);
-    if (getCaptureGeneral(hostname, getFileExtension(filename))) {
+    if (aria2CaptureResult(hostname, getFileExtension(filename))) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
             aria2Download(url, await getFirefoxOptions(filename), referrer, hostname, cookieStoreId);
@@ -54,7 +54,7 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
             out = ext = null;
         }
         var hostname = getHostname(originUrl);
-        if (getCaptureGeneral(hostname, ext, length)) {
+        if (aria2CaptureResult(hostname, ext, length)) {
             var {cookieStoreId} = await browser.tabs.get(tabId);
             aria2Download(url, {out}, originUrl, hostname, cookieStoreId);
             return {cancel: true};
