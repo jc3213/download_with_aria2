@@ -37,7 +37,7 @@ else {
 }
 
 async function managerDownload() {
-    await aria2NewDownload();
+    chrome.runtime.sendMessage({action: 'open_new_download'});
     if (!aria2InTab) {
         close();
     }

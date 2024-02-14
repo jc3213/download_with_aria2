@@ -137,6 +137,10 @@ function sessionRemoved(queue, gid, task) {
     }
 }
 
+function getSessionName(gid, bittorrent, [{path, uris}]) {
+    return bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
+}
+
 function sessionUpdated({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
     var task = globalTask[gid] ?? createSession(gid, status, bittorrent);
     var time = (totalLength - completedLength) / downloadSpeed;
@@ -146,7 +150,7 @@ function sessionUpdated({gid, status, files, bittorrent, completedLength, totalL
     var seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
     var percent = (completedLength / totalLength * 10000 | 0) / 100;
     var {name, completed, total, day, hour, minute, second, connect, download, upload, ratio} = task;
-    name.textContent = getDownloadName(gid, bittorrent, files);
+    name.textContent = getSessionName(gid, bittorrent, files);
     completed.textContent = getFileSize(completedLength);
     total.textContent = getFileSize(totalLength);
     day.textContent = days > 0 ? days : '';

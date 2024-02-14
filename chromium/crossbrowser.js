@@ -38,6 +38,7 @@ var aria2Queue = {};
 var aria2MatchKeys = ['headers_exclude', 'proxy_include', 'capture_include', 'capture_exclude'];
 var aria2Match = {};
 var aria2Monitor = {};
+var aria2NewDL = '/pages/newdld/newdld.html';
 var aria2Popup = '/pages/popup/popup.html';
 var aria2InTab = chrome.runtime.getURL('/pages/popup/popup.html?open_in_tab');
 var aria2Images = '/pages/images/images.html';
@@ -79,6 +80,9 @@ chrome.runtime.onMessage.addListener(async ({action, params}, {tab}, response) =
             break;
         case 'options_onchange':
             aria2OptionsChanged(params);
+            break;
+        case 'open_new_download':
+            aria2NewDownload();
             break;
     }
 });
@@ -152,6 +156,13 @@ async function aria2DownloadPrompt(params) {
     if (url) {
         return aria2DownloadUrls(url, options);
     }
+}
+
+function aria2NewDownload(slim) {
+    if (slim) {
+        return getNewWindow(aria2NewDL + '?slim_mode', 307);
+    }
+    return getNewWindow(aria2NewDL, 502);
 }
 
 async function aria2ImagesPrompt(result) {
@@ -248,7 +259,7 @@ async function aria2WebSocket({method, params}) {
             break;
         case 'aria2.onDownloadComplete':
             var [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-            var name = getDownloadName(gid, session.result.bittorrent, session.result.files);
+            var name = getSessionName(gid, session.result.bittorrent, session.result.files);
             aria2WhenComplete(name);
         default:
             aria2Active --;
@@ -287,7 +298,37 @@ function getRequestCookies(url, storeId) {
     return new Promise((resolve) => chrome.cookies.getAll({url}, resolve));
 }
 
+function getSessionName(gid, bittorrent, [{path, uris}]) {
+    return bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
+}
+
+function getHostname(url) {
+    var temp = url.slice(url.indexOf('://') + 3);
+    var host = temp.slice(0, temp.indexOf('/'));
+    return host.slice(host.indexOf('@') + 1);
+}
+
 function getFileExtension(filename) {
     var fileext = filename.slice(filename.lastIndexOf('.') + 1);
     return fileext.toLowerCase();
+}
+
+function getNewWindow(url, offsetHeight) {
+    return new Promise(async resolve => {
+        chrome.windows.getCurrent(({width, height, left, top}) => {
+            top += (height - offsetHeight) / 2 | 0;
+            left += (width - 710) / 2 | 0;
+            chrome.windows.create({
+                type: 'popup',
+                url,
+                width: 698,
+                height: offsetHeight,
+                left,
+                top
+            }, popup => {
+                var {id} = popup.tabs[0];
+                resolve(id);
+            });
+        });
+    });
 }

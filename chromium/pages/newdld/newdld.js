@@ -43,11 +43,16 @@ async function downloadSubmit() {
     close();
 }
 
+function getCurrentWindow() {
+    return new Promise(chrome.windows.getCurrent);
+}
+
 async function downloadExpand() {
-    var {id, top, height} = await getCurrentWindow();
-    chrome.windows.update(id, {top: top - 100, height: height + 195});
-    downloader.className = 'extra';
-    countdown.textContent = countdown.textContent * 1 + 90;
+    chrome.windows.getCurrent(({id, top, height}) => {
+        chrome.windows.update(id, {top: top - 100, height: height + 195});
+        downloader.className = 'extra';
+        countdown.textContent = countdown.textContent * 1 + 90;
+    });
 }
 
 function downloadReferer(refererBtn) {
