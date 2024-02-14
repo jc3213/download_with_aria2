@@ -37,7 +37,6 @@ var aria2Active = 0;
 var aria2Queue = {};
 var aria2MatchKeys = ['headers_exclude', 'proxy_include', 'capture_include', 'capture_exclude'];
 var aria2Match = {};
-var aria2Monitor = {};
 var aria2NewDL = '/pages/newdld/newdld.html';
 var aria2Popup = '/pages/popup/popup.html';
 var aria2InTab = chrome.runtime.getURL('/pages/popup/popup.html?open_in_tab');
