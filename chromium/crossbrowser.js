@@ -319,16 +319,11 @@ function getNewWindow(url, offsetHeight) {
             top += (height - offsetHeight) / 2 | 0;
             left += (width - 710) / 2 | 0;
             chrome.windows.create({
+                url, left, top,
                 type: 'popup',
-                url,
                 width: 698,
-                height: offsetHeight,
-                left,
-                top
-            }, popup => {
-                var {id} = popup.tabs[0];
-                resolve(id);
-            });
+                height: offsetHeight
+            }, (popup) => resolve(popup.tabs[0].id));
         });
     });
 }
