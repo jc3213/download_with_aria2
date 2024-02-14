@@ -1,6 +1,3 @@
-var aria2History = {};
-var aria2Monitor = {};
-
 function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
     if (aria2History[finalUrl]) {
         delete aria2History[finalUrl];

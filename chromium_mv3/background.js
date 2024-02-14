@@ -1,8 +1,5 @@
 importScripts('libs/aria2.js', 'libs/core.js', 'libs/tools.js', 'crossbrowser.js');
 
-var aria2History = {};
-var aria2Monitor = {};
-
 chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
     if (!aria2Storage['capture_enabled') {
         return;
@@ -51,4 +48,4 @@ chrome.storage.sync.get(null).then((json) => {
     aria2ContextMenus();
 });
 
-aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 25e3);
+var aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 25e3);
