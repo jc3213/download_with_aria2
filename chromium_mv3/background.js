@@ -1,7 +1,7 @@
 importScripts('libs/aria2.js', 'libs/core.js', 'libs/tools.js', 'crossbrowser.js');
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
-    if (!aria2Storage['capture_enabled') {
+    if (!aria2Storage['capture_enabled']) {
         return;
     }
     if (aria2Monitor[finalUrl]) {
