@@ -8,47 +8,27 @@ function aria2CaptureSwitch() {
     if (aria2Storage['capture_enabled']) {
         if (aria2Storage['capture_webrequest']) {
             browser.webRequest.onHeadersReceived.addListener(webRequestCapture, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
-            browser.downloads.onCreated.removeListener(captureOnCreated);
-            return browser.downloads.onErased.removeListener(captureOnErased);
+            return browser.downloads.onCreated.removeListener(downloadCapture);
         }
         browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
-        browser.downloads.onCreated.addListener(captureOnCreated);
-        return browser.downloads.onErased.addListener(captureOnErased);
+        return browser.downloads.onCreated.addListener(downloadCapture);
     }
-    browser.downloads.onCreated.removeListener(captureOnCreated);
-    browser.downloads.onErased.removeListener(captureOnErased);
+    browser.downloads.onCreated.removeListener(downloadCapture);
     browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
 }
 
-function captureOnCreated({id, finalUrl, referrer, filename, cookieStoreId}) {
-    if (aria2History[finalUrl]) {
-        delete aria2History[finalUrl];
-        return;
-    }
-    browser.downloads.cancel(id).then((id) => {
-        browser.downloads.erase({id});
-        aria2Monitor[id] = {url: finalUrl, referrer, filename, cookieStoreId};
-        aria2History[finalUrl] = id;
-    }).catch((error) => aria2WhenComplete(url));
-}
-
-async function captureOnErased(id) {
-    if (aria2Monitor[id] === undefined) {
-        return;
-    }
-    var {url, referrer, filename, cookieStoreId} = aria2Monitor[id];
+async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
     if (testUrlScheme(url)) {
-        return aria2NativeDownload(url, referrer, filename, cookieStoreId);
+        return;
     }
-    var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
-    var hostname = getHostname(referer);
-    var captured = aria2CaptureResult(hostname, getFileExtension(filename), -1);
+    var hostname = getHostname(referrer);
+    var captured = aria2CaptureResult(hostname, getFileExtension(filename));
     if (captured) {
-        delete aria2History[url];
-        delete aria2Monitor[id];
-        return aria2Download(url, await getFirefoxOptions(filename), referer, hostname, cookieStoreId);
+        browser.downloads.cancel(id).then(async () => {
+            browser.downloads.erase({id});
+            aria2Download(url, await getFirefoxOptions(filename), referrer, hostname, cookieStoreId);
+        }).catch(error => aria2WhenComplete(url));
     }
-    aria2NativeDownload(url, referrer, filename, cookieStoreId);
 }
 
 async function webRequestCapture({statusCode, tabId, url, originUrl, responseHeaders}) {
@@ -62,11 +42,11 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
         }
     });
     var disposition = result['content-disposition'];
-    if (!result['content-type'].startsWith('application') || !disposition?.startsWith('attachment')) {
+    if (!result['content-type'].startsWith('application')) {
         return;
     }
     var out = null, ext = null;
-    if (disposition) {
+    if (disposition?.startsWith('attachment')) {
         out = getFileName(disposition);
         ext = getFileExtension(out);
     }
@@ -169,10 +149,9 @@ function decodeFileName(text) {
     }
 }
 
-if (typeof browser !== 'undefined') {
-    chrome.storage.sync = browser.storage.local;
-}
+chrome.storage.sync = browser.storage.local;
 chrome.action = browser.browserAction;
+
 browser.storage.local.get(null).then((json) => {
     aria2Storage = {...aria2Default, ...json};
     aria2MatchPattern();
