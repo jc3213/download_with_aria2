@@ -152,7 +152,6 @@ function decodeFileName(text) {
 
 chrome.storage.sync = browser.storage.local;
 chrome.action = browser.browserAction;
-
 browser.storage.local.get(null).then((json) => {
     aria2Storage = {...aria2Default, ...json};
     aria2MatchPattern();
