@@ -4,7 +4,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     if (!aria2Storage['capture_enabled'] || testUrlScheme(finalUrl)) {
         return;
     }
-    var hostname = referrer === '' ? getHostname(finalUrl) : getHostname(referer);
+    var hostname = referrer === '' ? getHostname(finalUrl) : getHostname(referrer);
     var captured = aria2CaptureResult(hostname, getFileExtension(filename), fileSize);
     if (captured) {
         chrome.downloads.erase({id});
