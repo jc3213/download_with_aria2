@@ -61,7 +61,7 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
             result[name] = value;
         }
     });
-    var disposition = result'content-disposition'];
+    var disposition = result['content-disposition'];
     if (!result['content-type'].startsWith('application') || !disposition?.startsWith('attachment')) {
         return;
     }
