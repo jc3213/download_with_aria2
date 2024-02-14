@@ -106,17 +106,6 @@ gallery.addEventListener('mouseenter', ({target}) => {
     }
 }, true);
 
-chrome.storage.sync.get(null, (json) => {
-    aria2Storage = json;
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
-});
-
-chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({result, options}) => {
-    result.forEach(getPreview);
-    var [global] = await aria2RPC.call({method: 'aria2.getGlobalOption'});
-    aria2Options = document.querySelectorAll('#options input').disposition({...global.result, ...options});
-});
-
 function getPreview({src, alt, title}) {
     if (!src) {
         return;
@@ -136,3 +125,11 @@ function getPreview({src, alt, title}) {
     gallery.append(img);
     images.push(img);
 }
+
+chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, params}) => {
+    params.result.forEach(getPreview);
+    aria2Storage = storage;
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
+    var [global] = await aria2RPC.call({method: 'aria2.getGlobalOption'});
+    aria2Options = document.querySelectorAll('#options input').disposition({...global.result, ...params.options});
+});

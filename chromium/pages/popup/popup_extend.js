@@ -55,9 +55,8 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
         return;
     }
     var {storage, changes} = params;
-    aria2Storage = storage;
     aria2Variables(storage);
-    if (!aria2Storage['manager_newtab']) {
+    if (!changes['manager_newtab']) {
         close();
     }
     if ('manager_interval' in changes) {
@@ -85,7 +84,7 @@ function aria2Variables(json) {
     aria2Proxy = json['proxy_server'];
 }
 
-chrome.storage.sync.get(null, (json) => {
-    aria2Variables(json);
+chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
+    aria2Variables(storage);
     aria2ClientSetUp();
 });

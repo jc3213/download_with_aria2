@@ -163,7 +163,7 @@ async function optionsJsonrpc() {
 function optionsExtension() {
     clearChanges();
     global = true;
-    aria2StartUp();
+    aria2OptionsSetUp();
     extension.classList.remove('jsonrpc');
 }
 
@@ -187,7 +187,7 @@ function optionsImport(file) {
     reader.onload = async (event) => {
         if (global) {
             aria2SaveStorage(JSON.parse(reader.result));
-            return aria2StartUp();
+            return aria2OptionsSetUp();
         }
         var conf = {};
         reader.result.split('\n').forEach((entry) => {
@@ -252,13 +252,13 @@ function updateRule(id, rules) {
     rules.forEach((rule, mid) => addRule(list, mid, rule));
 }
 
-chrome.storage.sync.get(null, (json) => {
-    aria2Storage = json;
+chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
+    aria2Storage = storage;
     aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
-    aria2StartUp();
+    aria2OptionsSetUp();
 });
 
-function aria2StartUp() {
+function aria2OptionsSetUp() {
     updated = {...aria2Storage};
     aria2ver.textContent = version;
     options.forEach((entry) => {

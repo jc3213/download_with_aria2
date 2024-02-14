@@ -103,40 +103,35 @@ function changedEntries(value) {
     aria2Global['out'] = filename.value;
 }
 
-function slimModeInit() {
-    chrome.runtime.sendMessage({action: 'download_prompt'}, ({url, json, options}) => {
-        if (json) {
-            entry.value = JSON.stringify(json);
-            entry.json = json;
-            filename.disabled = true;
-        }
-        else {
-            entry.value = Array.isArray(url) ? url.join('\n') : url;
-            entry.urls = url;
-        }
-        if (options) {
-            var extra = settings.disposition(options);
-            aria2Global = {...aria2Global, ...extra};
-        }
-        setInterval(() => {
-            countdown.textContent --;
-            if (countdown.textContent === '0') {
-                downloadSubmit();
-            }
-        }, 1000);
-    });
-}
-
-chrome.storage.sync.get(null, async (json) => {
+async function aria2DowwnloadSetUp(json) {
     aria2Storage = json;
     aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
     var [global] = await aria2RPC.call({method: 'aria2.getGlobalOption'});
     global['user-agent'] = aria2Storage['user_agent']
     aria2Global = settings.disposition(global.result);
-    if (slim_mode) {
-        slimModeInit();
+}
+
+function aria2DownloadSlimmed({url, json, options}) {
+    if (json) {
+        entry.value = JSON.stringify(json);
+        entry.json = json;
+        filename.disabled = true;
     }
-});
+    else {
+        entry.value = Array.isArray(url) ? url.join('\n') : url;
+        entry.urls = url;
+    }
+    if (options) {
+        var extra = settings.disposition(options);
+        aria2Global = {...aria2Global, ...extra};
+    }
+    setInterval(() => {
+        countdown.textContent --;
+        if (countdown.textContent === '0') {
+            downloadSubmit();
+        }
+    }, 1000);
+}
 
 function getFileData(file) {
     return new Promise((resolve) => {
@@ -146,5 +141,17 @@ function getFileData(file) {
             resolve(base64);
         };
         reader.readAsDataURL(file);
+    });
+}
+
+if (slim_mode) {
+    chrome.runtime.sendMessage({action: 'download_prompt'}, async ({storage, params}) => {
+        await aria2DowwnloadSetUp(storage);
+        aria2DownloadSlimmed(params);
+    });
+}
+else {
+    chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
+        aria2DowwnloadSetUp(storage);
     });
 }
