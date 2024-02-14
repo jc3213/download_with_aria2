@@ -1,4 +1,4 @@
-function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
+async function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
     if (aria2Monitor[finalUrl]) {
         delete aria2Monitor[finalUrl];
         return;
