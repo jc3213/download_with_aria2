@@ -8,29 +8,48 @@ async function getRequestHeadersFirefox(url, storeId) {
 function aria2CaptureSwitch() {
     if (aria2Storage['capture_enabled']) {
         if (aria2Storage['capture_webrequest']) {
-            browser.downloads.onCreated.removeListener(downloadCapture);
             browser.webRequest.onHeadersReceived.addListener(webRequestCapture, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
-            return;
+            browser.downloads.onCreated.removeListener(captureOnCreated);
+            return browser.downloads.onErased.removeListener(captureOnErased);
         }
         browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
-        browser.downloads.onCreated.addListener(downloadCapture);
-        return;
+        browser.downloads.onCreated.addListener(captureOnCreated);
+        return browser.downloads.onErased.addListener(captureOnErased);
     }
-    browser.downloads.onCreated.removeListener(downloadCapture);
+    browser.downloads.onCreated.removeListener(captureOnCreated);
+    browser.downloads.onErased.removeListener(captureOnErased);
     browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
 }
 
-async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
-    if (testUrlScheme(url)) {
+function captureOnCreated({id, finalUrl, referrer, filename, cookieStoreId}) {
+    if (aria2History[finalUrl]) {
+        delete aria2History[finalUrl];
         return;
     }
-    var hostname = getHostname(referrer);
-    if (aria2CaptureResult(hostname, getFileExtension(filename))) {
-        browser.downloads.cancel(id).then(async () => {
-            browser.downloads.erase({id});
-            aria2Download(url, await getFirefoxOptions(filename), referrer, hostname, cookieStoreId);
-        }).catch(error => aria2WhenComplete(url));
+    browser.downloads.cancel(id).then((id) => {
+        browser.downloads.erase({id});
+        aria2Monitor[id] = {url: finalUrl, referrer, filename, cookieStoreId};
+        aria2History[finalUrl] = id;
+    }).catch((error) => aria2WhenComplete(url));
+}
+
+async function captureOnErased(id) {
+    if (aria2Monitor[id] === undefined) {
+        return;
     }
+    var {url, referrer, filename, cookieStoreId} = aria2Monitor[id];
+    if (testUrlScheme(url)) {
+        return aria2NativeDownload(url, referrer, filename, cookieStoreId);
+    }
+    var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
+    var hostname = getHostname(referer);
+    var captured = aria2CaptureResult(hostname, getFileExtension(filename), -1);
+    if (captured) {
+        delete aria2History[url];
+        delete aria2Monitor[id];
+        return aria2Download(url, await getFirefoxOptions(filename), referer, hostname, cookieStoreId);
+    }
+    aria2NativeDownload(url, referrer, filename, cookieStoreId);
 }
 
 async function webRequestCapture({statusCode, tabId, url, originUrl, responseHeaders}) {

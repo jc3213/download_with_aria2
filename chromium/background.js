@@ -24,13 +24,6 @@ async function captureOnErased(id) {
     aria2NativeDownload(url, referrer, filename);
 }
 
-function aria2NativeDownload(url, referrer, filename) {
-    chrome.cookies.getAll({url}, (cookies) => {
-        var headers = cookies.map(({name, value}) => ({name, value}));
-        chrome.downloads.download({url, filename, headers: [{name: 'Referrer', value: referrer}, ...headers]});
-    });
-}
-
 function aria2CaptureSwitch() {
     if (aria2Storage['capture_enabled']) {
         chrome.downloads.onDeterminingFilename.addListener(captureOnFilename);

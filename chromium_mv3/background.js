@@ -33,13 +33,6 @@ chrome.downloads.onErased.addListener(async (id) => {
     aria2NativeDownload(url, referrer, filename);
 });
 
-function aria2NativeDownload(url, referrer, filename) {
-    chrome.cookies.getAll({url}, (cookies) => {
-        var headers = cookies.map(({name, value}) => ({name, value}));
-        chrome.downloads.download({url, filename, headers: [{name: 'Referrer', value: referrer}, ...headers]});
-    });
-}
-
 chrome.storage.sync.get(null).then((json) => {
     aria2Storage = {...aria2Default, ...json};
     aria2ClientSetUp();
