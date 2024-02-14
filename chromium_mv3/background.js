@@ -15,7 +15,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
 });
 
 chrome.downloads.onErased.addListener(async (id) => {
-    if (!aria2Monitor[id]) {
+    if (aria2Monitor[id] === undefined) {
         return;
     }
     var {url, referrer, filename, fileSize} = aria2Monitor[id];
