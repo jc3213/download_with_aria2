@@ -21,6 +21,7 @@ async function captureOnErased(id) {
     var captured = aria2CaptureResult(hostname, getFileExtension(filename), fileSize);
     if (captured) {
         delete aria2History[url];
+        delete aria2Monitor[id];
         return aria2Download(url, {out: filename}, referer, hostname);
     }
     aria2NativeDownload(url, referrer, filename);

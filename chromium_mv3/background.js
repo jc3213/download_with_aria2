@@ -2,7 +2,6 @@ importScripts('libs/aria2.js', 'libs/core.js', 'libs/tools.js', 'crossbrowser.js
 
 var aria2History = {};
 var aria2Monitor = {};
-var aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 25e3);
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
     if (!aria2Storage['capture_enabled') {
@@ -31,6 +30,7 @@ chrome.downloads.onErased.addListener(async (id) => {
     var captured = aria2CaptureResult(hostname, getFileExtension(filename), fileSize);
     if (captured) {
         delete aria2History[url];
+        delete aria2Monitor[id];
         return aria2Download(url, {out: filename}, referer, hostname);
     }
     aria2NativeDownload(url, referrer, filename);
@@ -50,3 +50,5 @@ chrome.storage.sync.get(null).then((json) => {
     aria2TaskManager();
     aria2ContextMenus();
 });
+
+aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 25e3);
