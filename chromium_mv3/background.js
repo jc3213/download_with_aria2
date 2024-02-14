@@ -4,33 +4,23 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     if (!aria2Storage['capture_enabled') {
         return;
     }
-    if (aria2History[finalUrl]) {
-        delete aria2History[finalUrl];
+    if (aria2Monitor[finalUrl]) {
+        delete aria2Monitor[finalUrl];
         return;
     }
     chrome.downloads.erase({id});
-    aria2Monitor[id] = {url: finalUrl, referrer, filename, fileSize};
-    aria2History[finalUrl] = id;
-
-});
-
-chrome.downloads.onErased.addListener(async (id) => {
-    if (aria2Monitor[id] === undefined) {
-        return;
-    }
-    var {url, referrer, filename, fileSize} = aria2Monitor[id];
-    if (testUrlScheme(url)) {
-        return aria2NativeDownload(url, referrer, filename);
+    aria2Monitor[finalUrl] = id;
+    if (testUrlScheme(finalUrl)) {
+        return aria2NativeDownload(finalUrl, referrer, filename);
     }
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
     var captured = aria2CaptureResult(hostname, getFileExtension(filename), fileSize);
     if (captured) {
-        delete aria2History[url];
-        delete aria2Monitor[id];
-        return aria2Download(url, {out: filename}, referer, hostname);
+        delete aria2Monitor[finalUrl];
+        return aria2Download(finalUrl, {out: filename}, referer, hostname);
     }
-    aria2NativeDownload(url, referrer, filename);
+    aria2NativeDownload(finalUrl, referrer, filename);
 });
 
 chrome.storage.sync.get(null).then((json) => {

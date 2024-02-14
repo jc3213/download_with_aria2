@@ -1,36 +1,28 @@
 function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
-    if (aria2History[finalUrl]) {
-        delete aria2History[finalUrl];
+    if (aria2Monitor[finalUrl]) {
+        delete aria2Monitor[finalUrl];
         return;
     }
     chrome.downloads.erase({id});
-    aria2Monitor[id] = {url: finalUrl, referrer, filename, fileSize};
-    aria2History[finalUrl] = id;
-}
-
-async function captureOnErased(id) {
-    var {url, referrer, filename, fileSize} = aria2Monitor[id];
-    if (testUrlScheme(url)) {
-        return aria2NativeDownload(url, referrer, filename);
+    aria2Monitor[finalUrl] = id;
+    if (testUrlScheme(finalUrl)) {
+        return aria2NativeDownload(finalUrl, referrer, filename);
     }
     var referer = referrer === '' ? await getCurrentTabUrl() : referrer;
     var hostname = getHostname(referer);
     var captured = aria2CaptureResult(hostname, getFileExtension(filename), fileSize);
     if (captured) {
-        delete aria2History[url];
-        delete aria2Monitor[id];
-        return aria2Download(url, {out: filename}, referer, hostname);
+        delete aria2Monitor[finalUrl];
+        return aria2Download(finalUrl, {out: filename}, referer, hostname);
     }
-    aria2NativeDownload(url, referrer, filename);
+    aria2NativeDownload(finalUrl, referrer, filename);
 }
 
 function aria2CaptureSwitch() {
     if (aria2Storage['capture_enabled']) {
-        chrome.downloads.onDeterminingFilename.addListener(captureOnFilename);
-        return chrome.downloads.onErased.addListener(captureOnErased);
+        return chrome.downloads.onDeterminingFilename.addListener(captureOnFilename);
     }
     chrome.downloads.onDeterminingFilename.removeListener(captureOnFilename);
-    chrome.downloads.onErased.removeListener(captureOnErased);
 }
 
 chrome.action = chrome.browserAction;
