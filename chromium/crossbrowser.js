@@ -82,7 +82,7 @@ chrome.runtime.onMessage.addListener(async ({action, params}, {tab}, response) =
             aria2OptionsChanged(params);
             break;
         case 'open_new_download':
-            aria2NewDownload();
+            aria2PopupWindow(aria2NewDL, 502);
             break;
     }
 });
@@ -93,7 +93,7 @@ chrome.commands.onCommand.addListener((command) => {
             chrome.runtime.openOptionsPage();
             break;
         case 'open_new_download':
-            aria2NewDownload();
+            aria2PopupWindow(aria2NewDL, 502);
             break;
     }
 });
@@ -145,7 +145,7 @@ async function aria2SetCookies(url, storeId, result = 'Cookie:') {
 
 async function aria2DownloadPrompt(params) {
     if (aria2Storage['download_prompt']) {
-        var id = await aria2NewDownload(true);
+        var id = await aria2PopupWindow(aria2NewDL + '?slim_mode', 307);
         aria2Message[id] = params;
         return;
     }
@@ -158,15 +158,8 @@ async function aria2DownloadPrompt(params) {
     }
 }
 
-function aria2NewDownload(slim) {
-    if (slim) {
-        return getNewWindow(aria2NewDL + '?slim_mode', 307);
-    }
-    return getNewWindow(aria2NewDL, 502);
-}
-
 async function aria2ImagesPrompt(result) {
-    var id = await getNewWindow(aria2Images, 680);
+    var id = await aria2PopupWindow(aria2Images, 680);
     aria2Message[id] = result;
 }
 
@@ -286,6 +279,21 @@ function aria2CaptureResult(hostname, fileext, size) {
     return false;
 }
 
+function aria2PopupWindow(url, offsetHeight) {
+    return new Promise(async resolve => {
+        chrome.windows.getCurrent(({width, height, left, top}) => {
+            top += (height - offsetHeight) / 2 | 0;
+            left += (width - 710) / 2 | 0;
+            chrome.windows.create({
+                url, left, top,
+                type: 'popup',
+                width: 698,
+                height: offsetHeight
+            }, (popup) => resolve(popup.tabs[0].id));
+        });
+    });
+}
+
 function testUrlScheme(url) {
     var scheme = url.slice(0, url.indexOf(':'));
     return scheme === 'blob' || scheme === 'data';
@@ -311,19 +319,4 @@ function getHostname(url) {
 function getFileExtension(filename) {
     var fileext = filename.slice(filename.lastIndexOf('.') + 1);
     return fileext.toLowerCase();
-}
-
-function getNewWindow(url, offsetHeight) {
-    return new Promise(async resolve => {
-        chrome.windows.getCurrent(({width, height, left, top}) => {
-            top += (height - offsetHeight) / 2 | 0;
-            left += (width - 710) / 2 | 0;
-            chrome.windows.create({
-                url, left, top,
-                type: 'popup',
-                width: 698,
-                height: offsetHeight
-            }, (popup) => resolve(popup.tabs[0].id));
-        });
-    });
 }
