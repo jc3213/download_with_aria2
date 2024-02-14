@@ -1,9 +1,8 @@
-async function getRequestHeadersFirefox(url, storeId) {
-    var cookies = await browser.cookies.getAll({url, storeId, firstPartyDomain: null});
-    var header = 'Cookie:';
-    cookies.forEach(({name, value}) => header += ' ' + name + '=' + value + ';');
-    return [header];
-}
+var aria2WebRequest = {
+    'content-disposition': true,
+    'content-type': true,
+    'content-length': true
+};
 
 function aria2CaptureSwitch() {
     if (aria2Storage['capture_enabled']) {
@@ -58,26 +57,23 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
     }
     var result = {};
     responseHeaders.forEach(({name, value}) => {
-        name = name.toLowerCase();
-        if ('content-disposition,content-type,content-length'.includes(name)) {
-            result[name.slice(name.indexOf('-') + 1)] = value;
+        if (name.toLowerCase() in aria2WebRequest) {
+            result[name] = value;
         }
     });
-    var {disposition, type, length} = result;
-    if (type.startsWith('application') || disposition && disposition.startsWith('attachment')) {
-        if (disposition) {
-            var out = getFileName(disposition);
-            var ext = getFileExtension(out);
-        }
-        else {
-            out = ext = null;
-        }
-        var hostname = getHostname(originUrl);
-        if (aria2CaptureResult(hostname, ext, length)) {
-            var {cookieStoreId} = await browser.tabs.get(tabId);
-            aria2Download(url, {out}, originUrl, hostname, cookieStoreId);
-            return {cancel: true};
-        }
+    var disposition = result'content-disposition'];
+    if (!result['content-type'].startsWith('application') || !disposition?.startsWith('attachment')) {
+        return;
+    }
+    var out = null, ext = null;
+    if (disposition) {
+        out = getFileName(disposition);
+        ext = getFileExtension(out);
+    }
+    var hostname = getHostname(originUrl);
+    if (aria2CaptureResult(hostname, ext, result['content-length'])) {
+        browser.tabs.get(tabId).then(({cookieStoreId}) => aria2Download(url, {out}, originUrl, hostname, cookieStoreId));
+        return {cancel: true};
     }
 }
 
