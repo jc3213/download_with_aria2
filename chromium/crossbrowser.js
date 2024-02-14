@@ -128,21 +128,15 @@ async function aria2Download(url, options, referer, hostname, storeId) {
     }
     if (aria2Storage['headers_enabled'] && !aria2Match['headers_exclude'].test(hostname)) {
         options['referer'] = referer;
-        options['header'] = await aria2RawCookies(url, storeId);
+        options['header'] = await aria2SetCookies(url, storeId);
     }
     aria2DownloadPrompt({url, options});
 }
 
-async function aria2RawCookies(url, storeId, result = 'Cookie:') {
+async function aria2SetCookies(url, storeId, result = 'Cookie:') {
     var cookies = await getRequestCookies(url, storeId);
     cookies.forEach(({name, value}) => result += ' ' + name + '=' + value + ';');
     return [result];
-}
-
-async function aria2NativeDownload(url, referrer, filename, storeId) {
-    var cookies = await getRequestCookies(url, storeId);
-    var headers = cookies.map(({name, value}) => ({name, value}));
-    chrome.downloads.download({url, filename, headers: [{name: 'Referrer', value: referrer}, ...headers]});
 }
 
 async function aria2DownloadPrompt(params) {
@@ -286,20 +280,14 @@ function testUrlScheme(url) {
     return scheme === 'blob' || scheme === 'data';
 }
 
-function getCurrentTabUrl() {
-    return new Promise((resolve) => {
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => resolve(tabs[0].url));
-    });
-}
-
-function getFileExtension(filename) {
-    var fileext = filename.slice(filename.lastIndexOf('.') + 1);
-    return fileext.toLowerCase();
-}
-
 function getRequestCookies(url, storeId) {
     if (storeId) {
         return browser.cookies.getAll({url, storeId, firstPartyDomain: null});
     }
     return new Promise((resolve) => chrome.cookies.getAll({url}, resolve));
+}
+
+function getFileExtension(filename) {
+    var fileext = filename.slice(filename.lastIndexOf('.') + 1);
+    return fileext.toLowerCase();
 }
