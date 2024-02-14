@@ -43,10 +43,6 @@ async function downloadSubmit() {
     close();
 }
 
-function getCurrentWindow() {
-    return new Promise(chrome.windows.getCurrent);
-}
-
 async function downloadExpand() {
     chrome.windows.getCurrent(({id, top, height}) => {
         chrome.windows.update(id, {top: top - 100, height: height + 195});
@@ -57,8 +53,7 @@ async function downloadExpand() {
 
 function downloadReferer(refererBtn) {
     chrome.tabs.query({active: true, currentWindow: false}, tabs => {
-        var {url} = tabs[0];
-        refererBtn.previousElementSibling.value = aria2Global['referer'] = url;
+        refererBtn.previousElementSibling.value = aria2Global['referer'] = tabs[0].url;
     });
 }
 
