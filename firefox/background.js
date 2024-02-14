@@ -41,11 +41,12 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
             result[name] = value;
         }
     });
-    var disposition = result['content-disposition'];
     if (!result['content-type'].startsWith('application')) {
         return;
     }
-    var out = null, ext = null;
+    var disposition = result['content-disposition'];
+    var out = null;
+    var ext = null;
     if (disposition?.startsWith('attachment')) {
         out = getFileName(disposition);
         ext = getFileExtension(out);
