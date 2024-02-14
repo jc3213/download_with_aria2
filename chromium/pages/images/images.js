@@ -127,7 +127,7 @@ function getPreview({src, alt, title}) {
 }
 
 chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, params}) => {
-    params.result.forEach(getPreview);
+    params.images.forEach(getPreview);
     aria2Storage = storage;
     aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
     var [global] = await aria2RPC.call({method: 'aria2.getGlobalOption'});

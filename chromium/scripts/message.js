@@ -35,6 +35,6 @@ function getAllImages() {
         });
         getImage = false;
     }
-    var params = {result, options: {referer, header}};
+    var params = {images: result, options: {referer, header}};
     chrome.runtime.sendMessage({action: 'message_allimage', params});
 }
