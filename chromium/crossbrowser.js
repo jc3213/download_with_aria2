@@ -63,15 +63,13 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }
 });
 
-chrome.runtime.onMessage.addListener(async ({action, params}, {tab}, response) => {
+chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     switch (action) {
         case 'download_prompt':
             response({storage: aria2Storage, params: aria2Message[tab.id]});
-            return {storage: aria2Storage, params: aria2Message[tab.id]};
             break;
         case 'allimage_prompt':
             response({storage: aria2Storage, params: aria2Message[tab.id]});
-            return {storage: aria2Storage, params: aria2Message[tab.id]};
             break;
         case 'options_plugins':
             response({storage: aria2Storage});
