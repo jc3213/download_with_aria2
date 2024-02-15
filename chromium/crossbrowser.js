@@ -67,12 +67,15 @@ chrome.runtime.onMessage.addListener(async ({action, params}, {tab}, response) =
     switch (action) {
         case 'download_prompt':
             response({storage: aria2Storage, params: aria2Message[tab.id]});
+            return {storage: aria2Storage, params: aria2Message[tab.id]};
             break;
         case 'allimage_prompt':
             response({storage: aria2Storage, params: aria2Message[tab.id]});
+            return {storage: aria2Storage, params: aria2Message[tab.id]};
             break;
         case 'options_plugins':
             response({storage: aria2Storage});
+            return {storage: aria2Storage};
             break;
         case 'options_onchange':
             aria2OptionsChanged(params);
