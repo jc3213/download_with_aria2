@@ -296,11 +296,6 @@ function aria2PopupWindow(url, offsetHeight) {
     });
 }
 
-function testUrlScheme(url) {
-    var scheme = url.slice(0, url.indexOf(':'));
-    return scheme === 'blob' || scheme === 'data';
-}
-
 function getRequestCookies(url, storeId) {
     if (storeId) {
         return browser.cookies.getAll({url, storeId, firstPartyDomain: null});

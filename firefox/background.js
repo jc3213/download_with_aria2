@@ -151,7 +151,7 @@ function decodeFileName(text) {
 }
 
 chrome.action = browser.browserAction;
-browser.storage.sync.get(null).then(async (json) => {
+browser.storage.sync.get(null).then((json) => {
     aria2Storage = {...aria2Default, ...json};
     aria2MatchPattern();
     aria2ClientSetUp();
@@ -161,9 +161,6 @@ browser.storage.sync.get(null).then(async (json) => {
 });
 
 browser.runtime.onInstalled.addListener(async ({reason, previousVersion}) => {
-    if (reason === 'install') {
-        chrome.storage.sync.set(aria2Default);
-    }
     if (previousVersion <= '4.7.0.2446') {
         aria2Storage = await browser.storage.local.get(null);
         browser.storage.sync.set(aria2Storage);
