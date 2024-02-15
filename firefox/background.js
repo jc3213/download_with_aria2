@@ -18,7 +18,7 @@ function aria2CaptureSwitch() {
 }
 
 async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
-    if (testUrlScheme(url)) {
+    if (url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
     var hostname = getHostname(referrer);
@@ -150,13 +150,23 @@ function decodeFileName(text) {
     }
 }
 
-chrome.storage.sync = browser.storage.local;
 chrome.action = browser.browserAction;
-browser.storage.local.get(null).then((json) => {
+browser.storage.sync.get(null).then(async (json) => {
     aria2Storage = {...aria2Default, ...json};
     aria2MatchPattern();
     aria2ClientSetUp();
     aria2CaptureSwitch();
     aria2TaskManager();
     aria2ContextMenus();
+});
+
+browser.runtime.onInstalled.addListener(async ({reason, previousVersion}) => {
+    if (reason === 'install') {
+        chrome.storage.sync.set(aria2Default);
+    }
+    if (previousVersion <= '4.7.0.2446') {
+        aria2Storage = await browser.storage.local.get(null);
+        browser.storage.sync.set(aria2Storage);
+        browser.storage.local.clear();
+    }
 });

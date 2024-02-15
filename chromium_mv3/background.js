@@ -1,7 +1,7 @@
 importScripts('libs/aria2.js', 'libs/core.js', 'crossbrowser.js');
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
-    if (!aria2Storage['capture_enabled'] || testUrlScheme(finalUrl)) {
+    if (!aria2Storage['capture_enabled'] || finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
         return;
     }
     var hostname = referrer === '' ? getHostname(finalUrl) : getHostname(referrer);

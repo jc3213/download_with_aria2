@@ -73,7 +73,6 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
             break;
         case 'options_plugins':
             response({storage: aria2Storage});
-            return {storage: aria2Storage};
             break;
         case 'options_onchange':
             aria2OptionsChanged(params);

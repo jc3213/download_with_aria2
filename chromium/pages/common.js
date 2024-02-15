@@ -6,10 +6,6 @@ document.querySelectorAll('[i18n]').forEach(item => {
     item.textContent = chrome.i18n.getMessage(item.textContent);
 });
 
-if (typeof browser !== 'undefined') {
-    chrome.storage.sync = browser.storage.local;
-}
-
 var filesize = {
     'min-split-size': true,
     'disk-cache': true,

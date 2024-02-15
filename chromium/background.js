@@ -1,5 +1,5 @@
 async function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
-    if (testUrlScheme(finalUrl)) {
+    if (finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
         return;
     }
     var hostname = referrer === '' ? getHostname(finalUrl) : getHostname(referrer);
