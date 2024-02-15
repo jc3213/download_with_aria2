@@ -28,13 +28,11 @@ class Aria2 {
         return JSON.stringify(json);
     }
     send (...messages) {
-        return new Promise((resolve, reject) => {
-            this.websocket.then((websocket) => {
-                websocket.onmessage = (event) => resolve(JSON.parse(event.data));
-                websocket.onerror = (error) => reject(error);
-                websocket.send(this.json(messages));
-            });
-        });
+        return this.websocket.then((websocket) => new Promise((resolve, reject) => {
+            websocket.onmessage = (event) => resolve(JSON.parse(event.data));
+            websocket.onerror = (error) => reject(error);
+            websocket.send(this.json(messages));
+        }));
     }
     post (...messages) {
         return fetch(this.jsonrpc, {method: 'POST', body: this.json(messages)}).then((response) => {
