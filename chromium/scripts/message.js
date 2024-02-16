@@ -24,17 +24,18 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 function getAllImages() {
-    if (getImage) {
-        [...document.images].forEach((img) => {
-            var {src, alt} = img;
-            if (src === referer || src.startsWith('data') || history[src]) {
-                return;
-            }
-            result.push({src, alt});
-            history[src] = alt;
-        });
-        getImage = false;
+    if (!getImage) {
+        return;
     }
+    [...document.images].forEach((img) => {
+        var {src, alt} = img;
+        if (src === referer || src.startsWith('data') || history[src]) {
+            return;
+        }
+        result.push({src, alt});
+        history[src] = alt;
+    });
+    getImage = false;
     var params = {images: result, options: {referer, header}};
     chrome.runtime.sendMessage({action: 'message_allimage', params});
 }
