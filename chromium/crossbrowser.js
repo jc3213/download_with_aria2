@@ -96,7 +96,7 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
             aria2Download(srcUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_all_images':
-            chrome.tabs.sendMessage(id, menuItemId);
+            chrome.tabs.sendMessage(id, {query: menuItemId});
             break;
     }
 });
