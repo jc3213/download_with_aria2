@@ -48,19 +48,6 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
     }
-    if (previousVersion <= '4.7.0.2410') {
-        chrome.storage.sync.get(null, (json) => {
-            var host = json['jsonrpc_host'];
-            var url = host + '/jsonrpc';
-            delete json['jsonrpc_host'];
-            json['jsonrpc_url'] = url;
-            chrome.storage.sync.set(json);
-            chrome.storage.sync.remove('jsonrpc_host');
-            aria2Storage = json;
-            aria2RPC.disconnect();
-            aria2ClientSetUp();
-        });
-    }
 });
 
 chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {

@@ -159,11 +159,3 @@ browser.storage.sync.get(null).then((json) => {
     aria2TaskManager();
     aria2ContextMenus();
 });
-
-browser.runtime.onInstalled.addListener(async ({reason, previousVersion}) => {
-    if (previousVersion <= '4.7.0.2446') {
-        aria2Storage = await browser.storage.local.get(null);
-        browser.storage.sync.set(aria2Storage);
-        browser.storage.local.clear();
-    }
-});
