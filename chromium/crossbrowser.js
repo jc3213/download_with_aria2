@@ -67,9 +67,6 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
         case 'message_download':
             aria2DownloadPrompt(params);
             break;
-        case 'message_allimage':
-            aria2ImagesPrompt(params);
-            break;
         case 'open_new_download':
             aria2PopupWindow(aria2NewDL, 502);
             break;
@@ -96,7 +93,7 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
             aria2Download(srcUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_all_images':
-            chrome.tabs.sendMessage(id, {query: menuItemId});
+            aria2ImagesPrompt(id, menuItemId);
             break;
     }
 });
@@ -147,9 +144,11 @@ async function aria2DownloadPrompt(params) {
     }
 }
 
-async function aria2ImagesPrompt(result) {
-    var id = await aria2PopupWindow(aria2Images, 680);
-    aria2Message[id] = result;
+async function aria2ImagesPrompt(id, query) {
+    chrome.tabs.sendMessage(id, {query}, async (params) => {
+        var tabId = await aria2PopupWindow(aria2Images, 680);
+        aria2Message[tabId] = params;
+    });
 }
 
 function aria2OptionsChanged({storage, changes}) {
