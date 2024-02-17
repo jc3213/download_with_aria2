@@ -1,6 +1,7 @@
+var aria2Storage = {};
+var aria2Global = {};
+var result = [];
 var [preview, gallery] = document.querySelectorAll('#gallery, #preview > img');
-var images = [];
-var aria2Options = {};
 
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey) {
@@ -52,20 +53,14 @@ document.addEventListener('click', (event) => {
     }
 });
 
-async function imagesSubmit() {
-    var json = [];
-    images.forEach(({src, alt, classList}) => {
+async function imagesSubmit(json = []) {
+    result.forEach(({src, alt, classList}) => {
         if (classList.contains('checked')) {
-            var options = {...aria2Options};
-                if (alt) {
-                options['out'] = alt;
-            }
+            var options = {'out':  alt};
             json.push({url: src, options});
         }
     });
-    if (json.length !== 0) {
-        await aria2DownloadJSON(json);
-    }
+    await messageSender('message_download', {json, options: aria2Global});
     close();
 }
 
@@ -74,24 +69,24 @@ function imagesOptions() {
 }
 
 function imagesProxy(proxy) {
-    proxy.previousElementSibling.value = aria2Options['all-proxy'] = aria2Storage['proxy_server'];
+    proxy.previousElementSibling.value = aria2Global['all-proxy'] = aria2Storage['proxy_server'];
 }
 
 function selectAll() {
-    images.forEach((image) => image.classList.add('checked'));
+    result.forEach((img) => img.classList.add('checked'));
 }
 
 function selectNone() {
-    images.forEach((image) => image.classList.remove('checked'));
+    result.forEach((img) => img.classList.remove('checked'));
 }
 
 function selectFlip() {
-    images.forEach((image) => image.classList.toggle('checked'));
+    result.forEach((img) => img.classList.toggle('checked'));
 }
 
 document.addEventListener('change', (event) => {
     var {dataset: {rid}, value} = event.target;
-    aria2Options[rid] = value;
+    aria2Global[rid] = value;
 });
 
 gallery.addEventListener('click', ({target}) => {
@@ -106,30 +101,29 @@ gallery.addEventListener('mouseenter', ({target}) => {
     }
 }, true);
 
-function getPreview({src, alt, title}) {
+function getDataFromUrl(src, alt) {
+    var [full, name, ext = '.jpg'] = src.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
+    if (alt) {
+        name += '_' + alt;
+    }
+    return name + ext;
+}
+
+function getImagePreview({src, alt}) {
     if (!src) {
         return;
     }
+    var filename = getDataFromUrl(src, alt);
     var img = document.createElement('img');
     img.src = src;
-    if (alt) {
-        var path = src.slice(src.lastIndexOf('/'));
-        var ix = path.lastIndexOf('.');
-        var ext = ix === -1 ? '.jpg' : path.slice(ix);
-        var ax = ext.indexOf('@');
-        if (ax !== -1) {
-            ext = ext.slice(0, ax);
-        }
-        img.alt = alt + ext;
-    }
+    img.alt = filename;
     gallery.append(img);
-    images.push(img);
+    result.push(img);
 }
 
-chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, params}) => {
-    params.images.forEach(getPreview);
+chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc, params}) => {
     aria2Storage = storage;
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
-    var [global] = await aria2RPC.call({method: 'aria2.getGlobalOption'});
-    aria2Options = document.querySelectorAll('#options input').disposition({...global.result, ...params.options});
+    jsonrpc['user-agent'] = aria2Storage['user_agent'];
+    aria2Global = document.querySelectorAll('#options input').disposition({...jsonrpc, ...params.options});
+    params.images.forEach(getImagePreview);
 });

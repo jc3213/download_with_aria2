@@ -1,8 +1,5 @@
 var referer = location.href;
 var header = ['Cookie: ' + document.cookie];
-var history = {};
-var result = [];
-var getImage = true;
 
 window.addEventListener('load', (event) => {
     window.postMessage({extension_name: 'Download With Aria2'});
@@ -18,23 +15,19 @@ window.addEventListener('message', (event) => {
 chrome.runtime.onMessage.addListener(({query}, sender, response) => {
     switch (query) {
         case 'aria2c_all_images':
-            getAllImages();
-            response({images: result, options: {referer, header}});
+            response({images: getAllImages(), options: {referer, header}});
             break;
     }
 });
 
-function getAllImages() {
-    if (!getImage) {
-        return;
-    }
-    getImage = false;
+function getAllImages(archive = {}, result = []) {
     [...document.images].forEach((img) => {
         var {src, alt} = img;
-        if (src === referer || src.startsWith('data') || history[src]) {
+        if (src === referer || src.startsWith('data') || src in archive) {
             return;
         }
         result.push({src, alt});
-        history[src] = alt;
+        archive[src] = alt;
     });
+    return result;
 }

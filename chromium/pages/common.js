@@ -49,3 +49,9 @@ function getFileSize(bytes) {
     }
     return (bytes / 10995116277.76 | 0) / 100 + 'T';
 }
+
+function messageSender(action, params) {
+    return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({action, params}, resolve);
+    });
+}

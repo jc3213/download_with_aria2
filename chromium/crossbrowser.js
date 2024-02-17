@@ -30,9 +30,11 @@ var aria2Default = {
     'capture_reject': [],
     'capture_exclude': []
 };
-var aria2Storage = {};
 var aria2RPC;
 var aria2Retry;
+var aria2Storage = {};
+var aria2Global = {};
+var aria2Version;
 var aria2Active = 0;
 var aria2Queue = {};
 var aria2MatchKeys = ['headers_exclude', 'proxy_include', 'capture_include', 'capture_exclude'];
@@ -53,7 +55,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     switch (action) {
         case 'options_plugins':
-            response({storage: aria2Storage});
+            response({storage: aria2Storage, jsonrpc: aria2Global, version: aria2Version});
             break;
         case 'options_onchange':
             aria2OptionsChanged(params);
@@ -62,10 +64,10 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
             aria2DownloadPrompt(params);
             break;
         case 'download_prompt':
-            response({storage: aria2Storage, params: aria2Message[tab.id]});
+            response({storage: aria2Storage, jsonrpc: aria2Global, version: aria2Version, params: aria2Message[tab.id]});
             break;
         case 'allimage_prompt':
-            response({storage: aria2Storage, params: aria2Message[tab.id]});
+            response({storage: aria2Storage, jsonrpc: aria2Global, version: aria2Version, params: aria2Message[tab.id]});
             break;
         case 'open_new_download':
             aria2PopupWindow(aria2NewDL, 502);
@@ -211,8 +213,14 @@ function aria2MatchPattern() {
 async function aria2ClientSetUp() {
     clearTimeout(aria2Retry);
     aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
-    aria2RPC.call({method: 'aria2.tellActive'}).then(([active]) => {
+    aria2RPC.call(
+        {method: 'aria2.getGlobalOption'},
+        {method: 'aria2.getVersion'},
+        {method: 'aria2.tellActive'}
+    ).then(([global, version, active]) => {
         chrome.action.setBadgeBackgroundColor({color: '#3cc'});
+        aria2Global = global.result;
+        aria2Version = version.result.version;
         aria2Active = active.result.length;
         active.result.forEach(({gid}) => aria2Queue[gid] = gid);
         aria2ToolbarBadge(aria2Active);

@@ -1,3 +1,6 @@
+var aria2Storage = {};
+var aria2Global = {};
+var result = {};
 var downloader = document.body;
 var [entry, filename, countdown, uploader] = document.querySelectorAll('textarea, [data-rid="out"], .countdown, input[type="file"]');
 var settings = document.querySelectorAll('input[data-rid]');
@@ -33,13 +36,19 @@ document.addEventListener('click', (event) => {
 });
 
 async function downloadSubmit() {
-    var {json, urls} = entry;
-    if (json) {
-        await aria2DownloadJSON(json, aria2Global);
+    try {
+        result.json = JSON.parse(entry.value);
+        result.url = null;
+        delete aria2Global['out'];
     }
-    if (urls) {
-        await aria2DownloadUrls(urls, aria2Global);
+    catch (error) {
+        result.json = null;
+        result.url = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
+        if (result.url.length !== 1) {
+            delete aria2Global['out'];
+        }
     }
+    await messageSender('message_download', result);
     close();
 }
 
@@ -66,9 +75,6 @@ document.addEventListener('change', ({target}) => {
     if (files) {
         return downloadFiles(files);
     }
-    if (id === 'entries') {
-        return changedEntries(value);
-    }
     if (rid) {
         aria2Global[rid] = value;
     }
@@ -83,43 +89,26 @@ async function downloadFiles(files) {
     close();
 }
 
-function changedEntries(value) {
-    try {
-        entry.json = JSON.parse(value);
-        entry.urls = null;
-        var noname = true;
-    }
-    catch (error) {
-        entry.json = null;
-        entry.urls = value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
-        noname = entry.urls.length < 2 ? false : true;
-    }
-    if (noname) {
-        filename.disabled = true;
-        delete aria2Global['out'];
-        return;
-    }
-    filename.disabled = false;
-    aria2Global['out'] = filename.value;
-}
-
-async function aria2DowwnloadSetUp(json) {
-    aria2Storage = json;
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
-    var [global] = await aria2RPC.call({method: 'aria2.getGlobalOption'});
-    global['user-agent'] = aria2Storage['user_agent']
-    aria2Global = settings.disposition(global.result);
+function getFileData(file) {
+    return new Promise((resolve) => {
+        var reader = new FileReader();
+        reader.onload = (event) => {
+            var base64 = reader.result.slice(reader.result.indexOf(',') + 1);
+            resolve(base64);
+        };
+        reader.readAsDataURL(file);
+    });
 }
 
 function aria2DownloadSlimmed({url, json, options}) {
     if (json) {
         entry.value = JSON.stringify(json);
-        entry.json = json;
+        result.json = json;
         filename.disabled = true;
     }
     else {
         entry.value = Array.isArray(url) ? url.join('\n') : url;
-        entry.urls = url;
+        result.url = url;
     }
     if (options) {
         var extra = settings.disposition(options);
@@ -133,25 +122,20 @@ function aria2DownloadSlimmed({url, json, options}) {
     }, 1000);
 }
 
-function getFileData(file) {
-    return new Promise((resolve) => {
-        var reader = new FileReader();
-        reader.onload = (event) => {
-            var base64 = reader.result.slice(reader.result.indexOf(',') + 1);
-            resolve(base64);
-        };
-        reader.readAsDataURL(file);
-    });
+async function aria2DowwnloadSetUp(storage, jsonrpc) {
+    aria2Storage = storage;
+    jsonrpc['user-agent'] = aria2Storage['user_agent'];
+    aria2Global = result.options = settings.disposition(jsonrpc);
 }
 
 if (slim_mode) {
-    chrome.runtime.sendMessage({action: 'download_prompt'}, async ({storage, params}) => {
-        await aria2DowwnloadSetUp(storage);
+    chrome.runtime.sendMessage({action: 'download_prompt'}, async ({storage, jsonrpc, params}) => {
+        await aria2DowwnloadSetUp(storage, jsonrpc);
         aria2DownloadSlimmed(params);
     });
 }
 else {
-    chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
-        aria2DowwnloadSetUp(storage);
+    chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc}) => {
+        aria2DowwnloadSetUp(storage, jsonrpc);
     });
 }
