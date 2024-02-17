@@ -79,7 +79,7 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
             aria2RPCOptionsChanged(params);
             break;
         case 'message_download':
-            aria2DownloadHandler(params, response);
+            aria2DownloadHandler(params);
             break;
         case 'download_prompt':
             response(aria2SendResponse(aria2Message[tab.id]));
@@ -91,7 +91,6 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
             aria2PopupWindow(aria2NewDL, 502);
             break;
     }
-    return true;
 });
 
 chrome.commands.onCommand.addListener((command) => {
@@ -172,8 +171,7 @@ function aria2SendResponse(params) {
     };
 }
 
-async function aria2DownloadHandler({urls, file}, response) {
-    var message = '';
+async function aria2DownloadHandler({urls, file}, message = '') {
     if (urls) {
         var session = urls.map(({url, options}) => {
             message += url + '\n';
@@ -184,7 +182,6 @@ async function aria2DownloadHandler({urls, file}, response) {
         message = file.name;
         session = [file.download];
     }
-    response(message);
     await aria2RPC.call(...session);
     await aria2WhenStart(message);
 }

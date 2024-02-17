@@ -8,7 +8,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     var captured = aria2CaptureResult(hostname, getFileExtension(filename), fileSize);
     if (captured) {
         chrome.downloads.erase({id});
-        aria2Download(finalUrl, {out: filename}, referrer, hostname);
+        aria2DownloadPrompt(finalUrl, {out: filename}, referrer, hostname);
     }
 });
 

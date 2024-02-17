@@ -6,7 +6,7 @@ async function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
     var captured = aria2CaptureResult(hostname, getFileExtension(filename), fileSize);
     if (captured) {
         chrome.downloads.erase({id});
-        aria2Download(finalUrl, {out: filename}, referrer, hostname);
+        aria2DownloadPrompt(finalUrl, {out: filename}, referrer, hostname);
     }
 }
 
