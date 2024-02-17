@@ -171,16 +171,24 @@ function aria2SendResponse(params) {
     };
 }
 
-async function aria2DownloadHandler({urls, file}, message = '') {
+async function aria2DownloadHandler({urls, files}, message = '') {
     if (urls) {
-        var session = urls.map(({url, options = {}}) => {
+        var session = urls.map(({url, options}) => {
             message += url + '\n';
             return {method: 'aria2.addUri', params: [[url], options]};
         });
     }
-    if (file) {
-        message = file.name;
-        session = [file.download];
+    if (files?.torrents) {
+        session = file.torrents.map(({torrent, name}) => {
+            message += name + '\n';
+            return {method: 'aria2.addMetalink', params: [torrent]};
+        });
+    }
+    if (files?.metalinks) {
+        session = file.metalinks.map(({metalink, name, options = {}}) => {
+            message += name + '\n';
+            return {method: 'aria2.addMetalink', params: [metalink, options]};
+        });
     }
     await aria2RPC.call(...session);
     await aria2WhenStart(message);
