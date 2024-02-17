@@ -288,22 +288,7 @@ function aria2OptionsSetUp() {
 function aria2SaveStorage(json) {
     chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
     aria2Storage = json;
-    aria2WhenSaved();
     changes = {};
-}
-
-function aria2WhenSaved() {
-    if ('jsonrpc_url' in changes) {
-        aria2RPC.disconnect();
-        aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
-        return;
-    }
-    if ('jsonrpc_scheme' in changes) {
-        aria2RPC.method = aria2Storage['jsonrpc_scheme'];
-    }
-    if ('jsonrpc_secret' in changes) {
-        aria2RPC.secret = 'token:' + aria2Storage['jsonrpc_secret'];
-    }
 }
 
 function clearChanges() {
