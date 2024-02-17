@@ -137,6 +137,25 @@ function sessionRemoved(queue, gid, task) {
     }
 }
 
+function getFileSize(bytes) {
+    if (isNaN(bytes)) {
+        return '??';
+    }
+    if (bytes < 1024) {
+        return bytes;
+    }
+    if (bytes < 1048576) {
+        return (bytes / 10.24 | 0) / 100 + 'K';
+    }
+    if (bytes < 1073741824) {
+        return (bytes / 10485.76 | 0) / 100 + 'M';
+    }
+    if (bytes < 1099511627776) {
+        return (bytes / 10737418.24 | 0) / 100 + 'G';
+    }
+    return (bytes / 10995116277.76 | 0) / 100 + 'T';
+}
+
 function getSessionName(gid, bittorrent, [{path, uris}]) {
     return bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
 }
