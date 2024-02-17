@@ -10,7 +10,10 @@ NodeList.prototype.disposition = function (json) {
     var result = {};
     this.forEach((node) => {
         var id = node.dataset.rid;
-        node.value = result[id] = json[id] ?? '';
+        var value = json[id];
+        if (value) {
+            node.value = result[id] = value;
+        }
     });
     return result;
 }

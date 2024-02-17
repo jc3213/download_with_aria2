@@ -1,6 +1,5 @@
 var aria2Storage = {};
 var aria2Global = {};
-var result = {};
 var downloader = document.body;
 var [entry, filename, countdown, uploader] = document.querySelectorAll('textarea, [data-rid="out"], .countdown, input[type="file"]');
 var settings = document.querySelectorAll('input[data-rid]');
@@ -36,20 +35,12 @@ document.addEventListener('click', (event) => {
 });
 
 async function downloadSubmit() {
-    try {
-        result.json = JSON.parse(entry.value);
-        result.url = null;
+    var urls = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
+    if (urls.length !== 1) {
         delete aria2Global['out'];
     }
-    catch (error) {
-        result.json = null;
-        result.url = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
-        if (result.url.length !== 1) {
-            delete aria2Global['out'];
-        }
-    }
-    result.options = aria2Global;
-    await messageSender('message_download', result);
+    urls = urls.map((url) => ({url, options: aria2Global}));
+    await messageSender('message_download', {urls});
     close();
 }
 
@@ -71,8 +62,8 @@ function downloadProxy(proxyBtn) {
     proxyBtn.previousElementSibling.value = aria2Global['all-proxy'] = aria2Storage['proxy_server'];
 }
 
-document.addEventListener('change', ({target}) => {
-    var {id, value, files, dataset: {rid}} = target;
+document.addEventListener('change', (event) => {
+    var {files, dataset: {rid}, value} = event.target;
     if (files) {
         return downloadFiles(files);
     }
@@ -84,9 +75,8 @@ document.addEventListener('change', ({target}) => {
 async function downloadFiles(files) {
     var file = files[0];
     var b64encode = await getFileData(file);
-    var session = file.name.endsWith('torrent') ? {method: 'aria2.addTorrent', params: [b64encode]} : {method: 'aria2.addMetalink', params: [b64encode, aria2Global]};
-    await aria2RPC.call(...session);
-    await aria2WhenStart(file.name);
+    var download = file.name.endsWith('torrent') ? {method: 'aria2.addTorrent', params: [b64encode]} : {method: 'aria2.addMetalink', params: [b64encode, aria2Global]};
+    await messageSender('message_download', {file: {name: file.name, download}});
     close();
 }
 
@@ -94,27 +84,16 @@ function getFileData(file) {
     return new Promise((resolve) => {
         var reader = new FileReader();
         reader.onload = (event) => {
-            var base64 = reader.result.slice(reader.result.indexOf(',') + 1);
-            resolve(base64);
+            var b64encode = reader.result.slice(reader.result.indexOf(',') + 1);
+            resolve(b64encode);
         };
         reader.readAsDataURL(file);
     });
 }
 
-function aria2DownloadSlimmed({url, json, options}) {
-    if (json) {
-        entry.value = JSON.stringify(json);
-        result.json = json;
-        filename.disabled = true;
-    }
-    else {
-        entry.value = Array.isArray(url) ? url.join('\n') : url;
-        result.url = url;
-    }
-    if (options) {
-        result.options = {...aria2Global, ...options};
-        aria2Global = settings.disposition(result.options);
-    }
+function aria2DownloadSlimmed({url, options = {}}, jsonrpc) {
+    entry.value = Array.isArray(url) ? url.join('\n') : url;
+    aria2Global = settings.disposition({...jsonrpc, ...options});
     setInterval(() => {
         countdown.textContent --;
         if (countdown.textContent === '0') {
@@ -127,7 +106,7 @@ if (slim_mode) {
     chrome.runtime.sendMessage({action: 'download_prompt'},  ({storage, jsonrpc, params}) => {
         aria2Storage = storage;
         jsonrpc['user-agent'] = aria2Storage['user_agent'];
-        aria2DownloadSlimmed(params);
+        aria2DownloadSlimmed(params, jsonrpc);
     });
 }
 else {

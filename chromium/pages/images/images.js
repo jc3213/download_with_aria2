@@ -53,14 +53,14 @@ document.addEventListener('click', (event) => {
     }
 });
 
-async function imagesSubmit(json = []) {
+async function imagesSubmit(urls = []) {
     result.forEach(({src, alt, classList}) => {
         if (classList.contains('checked')) {
-            var options = {'out':  alt};
-            json.push({url: src, options});
+            var options = {'out':  alt, ...aria2Global};
+            urls.push({url: src, options});
         }
     });
-    await messageSender('message_download', {json, options: aria2Global});
+    await messageSender('message_download', {urls});
     close();
 }
 

@@ -70,7 +70,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     switch (action) {
         case 'options_plugins':
-            response(aria2Response());
+            response(aria2SendResponse());
             break;
         case 'options_onchange':
             aria2OptionsChanged(params);
@@ -79,13 +79,13 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
             aria2RPCOptionsChanged(params);
             break;
         case 'message_download':
-            aria2DownloadPrompt(params);
+            aria2DownloadHandler(params, response);
             break;
         case 'download_prompt':
-            response(aria2Response(aria2Message[tab.id]));
+            response(aria2SendResponse(aria2Message[tab.id]));
             break;
         case 'allimage_prompt':
-            response(aria2Response(aria2Message[tab.id]));
+            response(aria2SendResponse(aria2Message[tab.id]));
             break;
         case 'open_new_download':
             aria2PopupWindow(aria2NewDL, 502);
@@ -108,10 +108,10 @@ chrome.commands.onCommand.addListener((command) => {
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
     switch (menuItemId) {
         case 'aria2c_this_url':
-            aria2Download(linkUrl, {}, url, getHostname(url), cookieStoreId);
+            aria2DownloadPrompt(linkUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_this_image':
-            aria2Download(srcUrl, {}, url, getHostname(url), cookieStoreId);
+            aria2DownloadPrompt(srcUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_all_images':
             aria2ImagesPrompt(id, menuItemId);
@@ -129,16 +129,7 @@ chrome.action.onClicked.addListener((tab) => {
     });
 });
 
-function aria2Response(params) {
-    return {
-        storage: aria2Storage,
-        jsonrpc: aria2Global,
-        version: aria2Version,
-        params
-    };
-}
-
-async function aria2Download(url, options, referer, hostname, storeId) {
+async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
     options['user-agent'] = aria2Storage['user_agent'];
     if (aria2Storage['proxy_enabled'] || aria2Match['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
@@ -150,36 +141,13 @@ async function aria2Download(url, options, referer, hostname, storeId) {
         options['referer'] = referer;
         options['header'] = await aria2SetCookies(url, storeId);
     }
-    aria2DownloadPrompt({url, options});
-}
-
-async function aria2DownloadUrls(url, options = {}) {
-    var urls = Array.isArray(url) ? url : [url];
-    var message = '';
-    var session = urls.map((url) => {
-        message += url + '\n';
-        return {method: 'aria2.addUri', params: [[url], options]};
-    });
-    await aria2RPC.call(...session);
-    await aria2WhenStart(message);
-}
-
-async function aria2DownloadJSON(json, origin) {
-    var jsons = Array.isArray(json) ? json : [json];
-    var message = '';
-    var session = jsons.map(({url, options}) => {
-        if (Array.isArray(url)) {
-            message += url.join('+') + '\n';
-        }
-        else {
-            url = [url];
-            message += url + '\n';
-        }
-        options = options && origin ? {...origin, ...options} : options ? options : origin ? origin : {};
-        return {method: 'aria2.addUri', params: [url, options]};
-    });
-    await aria2RPC.call(...session);
-    await aria2WhenStart(message);
+    if (aria2Storage['download_prompt']) {
+        var id = await aria2PopupWindow(aria2NewDL + '?slim_mode', 307);
+        aria2Message[id] = {url, options};
+        return;
+    }
+    await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
+    await aria2WhenStart(url);
 }
 
 async function aria2SetCookies(url, storeId, result = 'Cookie:') {
@@ -188,26 +156,37 @@ async function aria2SetCookies(url, storeId, result = 'Cookie:') {
     return [result];
 }
 
-async function aria2DownloadPrompt(params) {
-    if (aria2Storage['download_prompt']) {
-        var id = await aria2PopupWindow(aria2NewDL + '?slim_mode', 307);
-        aria2Message[id] = params;
-        return;
-    }
-    var {url, json, options} = params;
-    if (json) {
-        return aria2DownloadJSON(json, options);
-    }
-    if (url) {
-        return aria2DownloadUrls(url, options);
-    }
-}
-
 async function aria2ImagesPrompt(id, query) {
     chrome.tabs.sendMessage(id, {query}, async (params) => {
         var tabId = await aria2PopupWindow(aria2Images, 680);
         aria2Message[tabId] = params;
     });
+}
+
+function aria2SendResponse(params) {
+    return {
+        storage: aria2Storage,
+        jsonrpc: aria2Global,
+        version: aria2Version,
+        params
+    };
+}
+
+async function aria2DownloadHandler({urls, file}, response) {
+    var message = '';
+    if (urls) {
+        var session = urls.map(({url, options}) => {
+            message += url + '\n';
+            return {method: 'aria2.addUri', params: [[url], options]};
+        });
+    }
+    if (file) {
+        message = file.name;
+        session = [file.download];
+    }
+    response(message);
+    await aria2RPC.call(...session);
+    await aria2WhenStart(message);
 }
 
 function aria2OptionsChanged({storage, changes}) {
@@ -222,7 +201,7 @@ function aria2OptionsChanged({storage, changes}) {
     }
 }
 
-function aria2RPCOptionsInit(jsonrpc) {
+function aria2RPCOptionsSetUp(jsonrpc) {
     aria2SizeKeys.forEach((key) => {
         jsonrpc[key] = getFileSize(jsonrpc[key]);
     });
@@ -288,7 +267,7 @@ async function aria2ClientSetUp() {
         {method: 'aria2.tellActive'}
     ).then(([global, version, active]) => {
         chrome.action.setBadgeBackgroundColor({color: '#3cc'});
-        aria2Global = aria2RPCOptionsInit(global.result);
+        aria2Global = aria2RPCOptionsSetUp(global.result);
         aria2Version = version.result.version;
         aria2Active = active.result.length;
         active.result.forEach(({gid}) => aria2Queue[gid] = gid);
