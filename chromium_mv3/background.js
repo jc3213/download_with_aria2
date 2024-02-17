@@ -1,4 +1,4 @@
-importScripts('libs/aria2.js', 'libs/core.js', 'crossbrowser.js');
+importScripts('libs/aria2.js', 'crossbrowser.js');
 
 chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
     if (!aria2Storage['capture_enabled'] || finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
