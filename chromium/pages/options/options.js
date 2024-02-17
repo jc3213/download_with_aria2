@@ -1,3 +1,7 @@
+var aria2Storage = {};
+var aria2Global = {};
+var aria2Conf = {};
+var aria2Version;
 var updated = {};
 var changes = {};
 var undoes = [];
@@ -103,7 +107,7 @@ async function optionsSave() {
     if (global) {
         return aria2SaveStorage(updated);
     }
-    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [updated]});
+    messageSender('jsonrpc_onchange', {jsonrpc: changes});
 }
 
 function optionsUndo() {
@@ -150,13 +154,14 @@ function optionsUpload() {
 }
 
 async function optionsJsonrpc() {
-    var [options, version] = await aria2RPC.call({method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'});
+    if (!aria2Version) {
+        return;
+    }
     clearChanges();
     global = false;
-    aria2Global = jsonrpc.disposition(options.result);
-    aria2Conf = {'enable-rpc': true, ...options.result};
+    aria2Global = jsonrpc.disposition(aria2Conf);
     updated = {...aria2Global};
-    aria2ver.textContent = aria2ua.textContent = version.result.version;
+    aria2ver.textContent = aria2ua.textContent = aria2Version;
     extension.classList.add('jsonrpc');
 }
 
@@ -194,7 +199,7 @@ function optionsImport(file) {
             var [key, value] = entry.split('=');
             conf[key] = value;
         });
-        await aria2RPC.call({method: 'aria2.changeGlobalOption', params: [conf]});
+        await messageSender('jsonrpc_onchange', {jsonrpc: conf});
         aria2Global = jsonrpc.disposition(conf);
         updated = {...aria2Global};
     };
@@ -252,9 +257,10 @@ function updateRule(id, rules) {
     rules.forEach((rule, mid) => addRule(list, mid, rule));
 }
 
-chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
+chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc, version}) => {
     aria2Storage = storage;
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
+    aria2Conf = {'enable-rpc': true, ...jsonrpc};
+    aria2Version = version;
     aria2OptionsSetUp();
 });
 

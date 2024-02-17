@@ -37,7 +37,6 @@ var aria2Global = {};
 var aria2Version;
 var aria2Active = 0;
 var aria2Queue = {};
-var aria2MatchKeys = ['headers_exclude', 'proxy_include', 'capture_include', 'capture_exclude'];
 var aria2Match = {};
 var aria2NewDL = '/pages/newdld/newdld.html';
 var aria2Popup = '/pages/popup/popup.html';
@@ -60,6 +59,9 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
         case 'options_onchange':
             aria2OptionsChanged(params);
             break;
+        case 'jsonrpc_onchange':
+            aria2RPCOptionsChanged(params);
+            break;
         case 'message_download':
             aria2DownloadPrompt(params);
             break;
@@ -73,6 +75,7 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
             aria2PopupWindow(aria2NewDL, 502);
             break;
     }
+    return true;
 });
 
 chrome.commands.onCommand.addListener((command) => {
@@ -165,6 +168,18 @@ function aria2OptionsChanged({storage, changes}) {
     }
 }
 
+function aria2RPCOptionsInit(jsonrpc) {
+    aria2SizeKeys.forEach((key) => {
+        jsonrpc[key] = getFileSize(jsonrpc[key]);
+    });
+    return jsonrpc;
+}
+
+function aria2RPCOptionsChanged({jsonrpc}) {
+    aria2Global = {...aria2Global, ...jsonrpc};
+    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [jsonrpc]});
+}
+
 function aria2UpdateJSONRPC(changes) {
     if ('jsonrpc_url' in changes) {
         aria2RPC.disconnect();
@@ -219,7 +234,7 @@ async function aria2ClientSetUp() {
         {method: 'aria2.tellActive'}
     ).then(([global, version, active]) => {
         chrome.action.setBadgeBackgroundColor({color: '#3cc'});
-        aria2Global = global.result;
+        aria2Global = aria2RPCOptionsInit(global.result);
         aria2Version = version.result.version;
         aria2Active = active.result.length;
         active.result.forEach(({gid}) => aria2Queue[gid] = gid);
@@ -290,24 +305,14 @@ function aria2PopupWindow(url, offsetHeight) {
     });
 }
 
-function getRequestCookies(url, storeId) {
-    if (storeId) {
-        return browser.cookies.getAll({url, storeId, firstPartyDomain: null});
+function aria2WhenStart(message) {
+    if (aria2Storage['notify_start']) {
+        return getNotification(aria2Start, message);
     }
-    return new Promise((resolve) => chrome.cookies.getAll({url}, resolve));
 }
 
-function getSessionName(gid, bittorrent, [{path, uris}]) {
-    return bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
-}
-
-function getHostname(url) {
-    var temp = url.slice(url.indexOf('://') + 3);
-    var host = temp.slice(0, temp.indexOf('/'));
-    return host.slice(host.indexOf('@') + 1);
-}
-
-function getFileExtension(filename) {
-    var fileext = filename.slice(filename.lastIndexOf('.') + 1);
-    return fileext.toLowerCase();
+function aria2WhenComplete(message) {
+    if (aria2Storage['notify_complete']) {
+        return getNotification(aria2Complete, message);
+    }
 }
