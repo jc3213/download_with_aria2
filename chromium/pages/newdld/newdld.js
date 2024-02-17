@@ -73,10 +73,9 @@ document.addEventListener('change', (event) => {
 });
 
 async function downloadFiles(files) {
-    var file = files[0];
-    var b64encode = await getFileData(file);
-    var download = file.name.endsWith('torrent') ? {method: 'aria2.addTorrent', params: [b64encode]} : {method: 'aria2.addMetalink', params: [b64encode, aria2Global]};
-    await messageSender('message_download', {file: {name: file.name, download}});
+    var file = await getFileData(file[0]);
+    var data = file.name.endsWith('torrent') ? {torrents: [file]} : {metalinks: [file]};
+    await messageSender('message_download', {files: data});
     close();
 }
 
@@ -84,8 +83,8 @@ function getFileData(file) {
     return new Promise((resolve) => {
         var reader = new FileReader();
         reader.onload = (event) => {
-            var b64encode = reader.result.slice(reader.result.indexOf(',') + 1);
-            resolve(b64encode);
+            var body = reader.result.slice(reader.result.indexOf(',') + 1);
+            resolve({name: file.name, body, options: aria2Global});
         };
         reader.readAsDataURL(file);
     });

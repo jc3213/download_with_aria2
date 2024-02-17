@@ -179,15 +179,15 @@ async function aria2DownloadHandler({urls, files}, message = '') {
         });
     }
     if (files?.torrents) {
-        session = file.torrents.map(({torrent, name}) => {
+        session = file.torrents.map(({name, body}) => {
             message += name + '\n';
-            return {method: 'aria2.addMetalink', params: [torrent]};
+            return {method: 'aria2.addMetalink', params: [body]};
         });
     }
     if (files?.metalinks) {
-        session = file.metalinks.map(({metalink, name, options = {}}) => {
+        session = file.metalinks.map(({name, body, options = {}}) => {
             message += name + '\n';
-            return {method: 'aria2.addMetalink', params: [metalink, options]};
+            return {method: 'aria2.addMetalink', params: [body, options]};
         });
     }
     await aria2RPC.call(...session);
