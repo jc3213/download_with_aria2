@@ -173,7 +173,7 @@ function aria2SendResponse(params) {
 
 async function aria2DownloadHandler({urls, file}, message = '') {
     if (urls) {
-        var session = urls.map(({url, options}) => {
+        var session = urls.map(({url, options = {}}) => {
             message += url + '\n';
             return {method: 'aria2.addUri', params: [[url], options]};
         });
