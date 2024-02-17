@@ -70,7 +70,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
     switch (action) {
         case 'options_plugins':
-            response({storage: aria2Storage, jsonrpc: aria2Global, version: aria2Version});
+            response(aria2Response());
             break;
         case 'options_onchange':
             aria2OptionsChanged(params);
@@ -82,10 +82,10 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
             aria2DownloadPrompt(params);
             break;
         case 'download_prompt':
-            response({storage: aria2Storage, jsonrpc: aria2Global, version: aria2Version, params: aria2Message[tab.id]});
+            response(aria2Response(aria2Message[tab.id]));
             break;
         case 'allimage_prompt':
-            response({storage: aria2Storage, jsonrpc: aria2Global, version: aria2Version, params: aria2Message[tab.id]});
+            response(aria2Response(aria2Message[tab.id]));
             break;
         case 'open_new_download':
             aria2PopupWindow(aria2NewDL, 502);
@@ -128,6 +128,15 @@ chrome.action.onClicked.addListener((tab) => {
         chrome.tabs.create({active: true, url: aria2InTab});
     });
 });
+
+function aria2Response(params) {
+    return {
+        storage: aria2Storage,
+        jsonrpc: aria2Global,
+        version: aria2Version,
+        params
+    };
+}
 
 async function aria2Download(url, options, referer, hostname, storeId) {
     options['user-agent'] = aria2Storage['user_agent'];
