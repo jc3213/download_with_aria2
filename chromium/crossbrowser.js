@@ -181,7 +181,7 @@ async function aria2DownloadHandler({urls, files}, message = '') {
     if (files?.torrents) {
         session = file.torrents.map(({name, body}) => {
             message += name + '\n';
-            return {method: 'aria2.addMetalink', params: [body]};
+            return {method: 'aria2.addTorrent', params: [body]};
         });
     }
     if (files?.metalinks) {
