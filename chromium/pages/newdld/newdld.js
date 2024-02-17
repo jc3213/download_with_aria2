@@ -48,6 +48,7 @@ async function downloadSubmit() {
             delete aria2Global['out'];
         }
     }
+    result.options = aria2Global;
     await messageSender('message_download', result);
     close();
 }
@@ -111,8 +112,8 @@ function aria2DownloadSlimmed({url, json, options}) {
         result.url = url;
     }
     if (options) {
-        var extra = settings.disposition(options);
-        aria2Global = {...aria2Global, ...extra};
+        result.options = {...aria2Global, ...options};
+        aria2Global = settings.disposition(result.options);
     }
     setInterval(() => {
         countdown.textContent --;
@@ -122,20 +123,17 @@ function aria2DownloadSlimmed({url, json, options}) {
     }, 1000);
 }
 
-async function aria2DowwnloadSetUp(storage, jsonrpc) {
-    aria2Storage = storage;
-    jsonrpc['user-agent'] = aria2Storage['user_agent'];
-    aria2Global = result.options = settings.disposition(jsonrpc);
-}
-
 if (slim_mode) {
-    chrome.runtime.sendMessage({action: 'download_prompt'}, async ({storage, jsonrpc, params}) => {
-        await aria2DowwnloadSetUp(storage, jsonrpc);
+    chrome.runtime.sendMessage({action: 'download_prompt'},  ({storage, jsonrpc, params}) => {
+        aria2Storage = storage;
+        jsonrpc['user-agent'] = aria2Storage['user_agent'];
         aria2DownloadSlimmed(params);
     });
 }
 else {
     chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc}) => {
-        aria2DowwnloadSetUp(storage, jsonrpc);
+        aria2Storage = storage;
+        jsonrpc['user-agent'] = aria2Storage['user_agent'];
+        aria2Global = settings.disposition(jsonrpc);
     });
 }
