@@ -257,7 +257,7 @@ function updateRule(id, rules) {
     rules.forEach((rule, mid) => addRule(list, mid, rule));
 }
 
-chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc, version}) => {
+messageSender('options_plugins').then(({storage, jsonrpc, version}) => {
     aria2Storage = storage;
     aria2Conf = {'enable-rpc': true, ...jsonrpc};
     aria2Version = version;
@@ -286,7 +286,7 @@ function aria2OptionsSetUp() {
 }
 
 function aria2SaveStorage(json) {
-    chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
+    messageSender('options_onchange', {storage: json, changes});
     aria2Storage = json;
     changes = {};
 }
