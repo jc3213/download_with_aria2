@@ -4,10 +4,10 @@ var header = ['Cookie: ' + document.cookie];
 window.addEventListener('message', (event) => {
     switch(event.data.aria2c) {
         case 'aria2c-jsonrpc-test':
-            window.postMessage({extension_name: 'Download With Aria2'});
+            window.postMessage({extension_name: 'Download With Aria2', source: 'aria2c'});
             break;
         case 'aria2c-jsonrpc-call':
-            aria2SendRPCCall(event.target.params);
+            aria2SendRPCCall(event.data.params);
             break;
     }
 });
