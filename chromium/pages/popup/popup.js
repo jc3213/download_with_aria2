@@ -1,9 +1,8 @@
 var manager = document.body;
 var detailed;
 var aria2Alive;
-var aria2Socket;
+var aria2SizeKeys = ['min-split-size','max-download-limit','max-upload-limit'];
 var aria2Queue = localStorage['queues']?.match(/[^\s,]+/g) ?? [];
-var optionsbtn = document.querySelector('#options_btn');
 var chooseQueue = document.querySelector('#choose');
 var [downloadStat, uploadStat, activeStat, waitingStat, stoppedStat] = document.querySelectorAll('#status > *');
 var [allQueues, activeQueue, waitingQueue, pausedQueue, completeQueue, removedQueue, errorQueue] = document.querySelectorAll('#queue, #queue > *');
@@ -254,6 +253,13 @@ async function taskRemove(task, gid, status) {
     }
 }
 
+function taskOptionsSetUp(options) {
+    aria2SizeKeys.forEach((key) => {
+        options[key] = getFileSize(options[key]);
+    });
+    return options;
+}
+
 async function taskDetail(task, gid) {
     if (detailed) {
         detailed.classList.remove('extra');
@@ -266,7 +272,7 @@ async function taskDetail(task, gid) {
     }
     var [files, options] = await getTaskDetail(gid);
     detailed = task;
-    detailed.options = detailed.settings.disposition(options.result);
+    detailed.options = detailed.settings.disposition(taskOptionsSetUp(options.result));
     detailed.classList.add('extra');
     printTaskFileList(files.result);
 }

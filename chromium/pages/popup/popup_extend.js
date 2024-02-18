@@ -84,7 +84,7 @@ function aria2Variables(json) {
     aria2Proxy = json['proxy_server'];
 }
 
-chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
+messageSender('options_plugins').then(({storage}) => {
     aria2Variables(storage);
     aria2ClientSetUp();
 });
