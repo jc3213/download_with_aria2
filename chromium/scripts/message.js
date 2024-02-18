@@ -21,10 +21,9 @@ chrome.runtime.onMessage.addListener(({query}, sender, response) => {
 });
 
 function aria2SendRPCCall(params) {
-    if (!params?.urls && !params?.files?.torrents && !params?.files?.metalinks) {
-        return;
+    if (params?.urls || params?.files?.torrents || params?.files?.metalinks) {
+        chrome.runtime.sendMessage({action: 'message_download', params});
     }
-    chrome.runtime.sendMessage({action: 'message_download', params});
 }
 
 function getAllImages(archive = {}, result = []) {
