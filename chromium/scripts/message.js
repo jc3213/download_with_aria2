@@ -1,14 +1,14 @@
 var referer = location.href;
 var header = ['Cookie: ' + document.cookie];
 
-window.addEventListener('load', (event) => {
-    window.postMessage({extension_name: 'Download With Aria2'});
-});
-
 window.addEventListener('message', (event) => {
-    var {aria2c, params} = event.data;
-    if (aria2c === 'aria2c-jsonrpc-call' && params !== undefined) {
-        chrome.runtime.sendMessage({action: 'message_download', params});
+    switch(event.data.aria2c) {
+        case 'aria2c-jsonrpc-test':
+            window.postMessage({extension_name: 'Download With Aria2'});
+            break;
+        case 'aria2c-jsonrpc-call':
+            aria2SendRPCCall(event.target.params);
+            break;
     }
 });
 
@@ -19,6 +19,13 @@ chrome.runtime.onMessage.addListener(({query}, sender, response) => {
             break;
     }
 });
+
+function aria2SendRPCCall(params) {
+    if (!params?.urls && !params?.files?.torrents && !params?.files?.metalinks) {
+        return;
+    }
+    chrome.runtime.sendMessage({action: 'message_download', params});
+}
 
 function getAllImages(archive = {}, result = []) {
     [...document.images].forEach((img) => {
