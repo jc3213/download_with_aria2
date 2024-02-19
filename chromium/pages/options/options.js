@@ -220,7 +220,7 @@ matches.forEach(menu => {
                 addRule(list, id, entry);
                 break;
             case 'remove_rule':
-                removeRule(list, id);
+                removeRule(list, id, event.target.dataset.mid);
                 break;
         }
     });
@@ -238,8 +238,7 @@ function addRule(list, id, entry) {
     }
 }
 
-function removeRule(list, id) {
-    var rule = event.target.dataset.mid;
+function removeRule(list, id, rule) {
     var new_value = [...updated[id]];
     new_value.splice(new_value.indexOf(rule), 1);
     setChange(id, new_value);
