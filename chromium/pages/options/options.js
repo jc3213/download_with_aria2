@@ -13,7 +13,10 @@ var {version, manifest_version} = chrome.runtime.getManifest();
 var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, importJson, importConf, exporter, aria2ua] = document.querySelectorAll('#menu > *, #aria2ua');
 var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('[data-rid]');
+var matches = document.querySelectorAll('[data-map]');
+var ruleLet = document.querySelector('.template > .rule');
 var entries = {};
+var records = {};
 options.forEach((entry) => entries[entry.dataset.eid] = entry);
 var multiply = {
     'manager_interval': 1000,
@@ -37,9 +40,6 @@ var switches = {
     'capture_webrequest': true,
     'capture_always': true
 };
-var mapped = document.querySelectorAll('[data-map]');
-var listed = {};
-var ruleLet = document.querySelector('.template > .rule');
 
 if (typeof browser !== 'undefined') {
     extension.classList.add('firefox');
@@ -206,45 +206,51 @@ function optionsImport(file) {
     reader.readAsText(file);
 }
 
-mapped.forEach(menu => {
+matches.forEach(menu => {
     var id = menu.dataset.map;
     var [entry, list] = menu.querySelectorAll('input, .list');
     menu.addEventListener('keydown', ({key}) => {
         if (key === 'Enter') {
-            newRule(id, entry, list);
+            addRule(list, id, entry);
         }
     });
     menu.addEventListener('click', (event) => {
         switch (event.target.dataset.bid) {
-            case 'add':
-                newRule(id, entry, list);
+            case 'add_rule':
+                addRule(list, id, entry);
                 break;
-            case 'remove':
-                var new_value = [...updated[id]];
-                new_value.splice(event.target.dataset.mid, 1);
-                setChange(id, new_value);
-                event.target.parentNode.remove();
+            case 'remove_rule':
+                removeRule(list, id);
                 break;
         }
     });
-    listed[id] = list;
+    records[id] = list;
 });
 
-function newRule(id, entry, list) {
+function addRule(list, id, entry) {
     var {value} = entry;
     var old_value = updated[id];
     if (value !== '' && !old_value.includes(value)) {
         var new_value = [...old_value, value];
         setChange(id, new_value);
         entry.value = '';
-        addRule(list, old_value.length, value, true);
+        printRule(list, value, true);
     }
 }
 
-function addRule(list, mid, rule, roll) {
+function removeRule(list, id) {
+    var rule = event.target.dataset.mid;
+    var new_value = [...updated[id]];
+    new_value.splice(new_value.indexOf(rule), 1);
+    setChange(id, new_value);
+    list[rule].remove();
+}
+
+function printRule(list, rule, roll) {
     var item = ruleLet.cloneNode(true);
-    item.querySelector('div').textContent = item.title = rule;
-    item.querySelector('button').dataset.mid = mid;
+    var [div, btn] = item.querySelectorAll('div, button');
+    item.title = div.textContent = btn.dataset.mid = rule;
+    list[rule] = item;
     list.append(item);
     if (roll) {
         list.scrollTop = list.scrollHeight;
@@ -252,9 +258,9 @@ function addRule(list, mid, rule, roll) {
 }
 
 function updateRule(id, rules) {
-    var list = listed[id];
+    var list = records[id];
     list.innerHTML = '';
-    rules.forEach((rule, mid) => addRule(list, mid, rule));
+    rules.forEach((rule) => printRule(list, rule));
 }
 
 messageSender('options_plugins').then(({storage, jsonrpc, version}) => {
@@ -279,7 +285,7 @@ function aria2OptionsSetUp() {
         }
         entry.value = eid in multiply ? value / multiply[eid] : value;
     });
-    mapped.forEach((menu) => {
+    matches.forEach((menu) => {
         var id = menu.dataset.map;
         updateRule(id, updated[id]);
     });
@@ -301,7 +307,7 @@ function getChange(id, value) {
     updated[id] = changes[id] = value;
     saveBtn.disabled = false;
     var entry = entries[id];
-    if (id in listed) {
+    if (id in records) {
         return updateRule(id, value);
     }
     if (id in switches) {
