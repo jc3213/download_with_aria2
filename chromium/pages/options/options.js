@@ -107,7 +107,7 @@ async function optionsSave() {
     if (global) {
         return aria2SaveStorage(updated);
     }
-    messageSender('jsonrpc_onchange', {jsonrpc: changes});
+    chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: changes}});
 }
 
 function optionsUndo() {
@@ -199,7 +199,7 @@ function optionsImport(file) {
             var [key, value] = entry.split('=');
             conf[key] = value;
         });
-        await messageSender('jsonrpc_onchange', {jsonrpc: conf});
+        chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: conf}});
         aria2Global = jsonrpc.disposition(conf);
         updated = {...aria2Global};
     };
@@ -262,7 +262,7 @@ function updateRule(id, rules) {
     rules.forEach((rule) => printRule(list, rule));
 }
 
-messageSender('options_plugins').then(({storage, jsonrpc, version}) => {
+chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc, version}) => {
     aria2Storage = storage;
     aria2Conf = {'enable-rpc': true, ...jsonrpc};
     aria2Version = version;
@@ -291,7 +291,7 @@ function aria2OptionsSetUp() {
 }
 
 function aria2SaveStorage(json) {
-    messageSender('options_onchange', {storage: json, changes});
+    chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
     aria2Storage = json;
     changes = {};
 }

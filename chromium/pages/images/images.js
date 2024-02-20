@@ -60,7 +60,7 @@ async function imagesSubmit(urls = []) {
             urls.push({url: src, options});
         }
     });
-    await messageSender('message_download', {urls});
+    chrome.runtime.sendMessage({action: 'message_download', params: {urls}});
     close();
 }
 
@@ -121,7 +121,7 @@ function getImagePreview({src, alt}) {
     result.push(img);
 }
 
-messageSender('allimage_prompt').then(async ({storage, jsonrpc, params}) => {
+chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc, params}) => {
     aria2Storage = storage;
     jsonrpc['user-agent'] = aria2Storage['user_agent'];
     aria2Global = document.querySelectorAll('#options input').disposition({...jsonrpc, ...params.options});

@@ -40,7 +40,7 @@ async function downloadSubmit() {
         delete aria2Global['out'];
     }
     urls = urls.map((url) => ({url, options: aria2Global}));
-    await messageSender('message_download', {urls});
+    chrome.runtime.sendMessage({action: 'message_download', params: {urls}});
     close();
 }
 
@@ -75,7 +75,7 @@ document.addEventListener('change', (event) => {
 async function downloadFiles(files) {
     var file = await getFileData(file[0]);
     var data = file.name.endsWith('torrent') ? {torrents: [file]} : {metalinks: [file]};
-    await messageSender('message_download', {files: data});
+    chrome.runtime.sendMessage({action: 'message_download', params: {files: data}});
     close();
 }
 
@@ -102,14 +102,14 @@ function aria2DownloadSlimmed({url, options = {}}, jsonrpc) {
 }
 
 if (slim_mode) {
-    messageSender('download_prompt').then(({storage, jsonrpc, params}) => {
+    chrome.runtime.sendMessage({action: 'download_prompt'}, ({storage, jsonrpc, params}) => {
         aria2Storage = storage;
         jsonrpc['user-agent'] = aria2Storage['user_agent'];
         aria2DownloadSlimmed(params, jsonrpc);
     });
 }
 else {
-    messageSender('options_plugins').then(({storage, jsonrpc}) => {
+    chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc}) => {
         aria2Storage = storage;
         jsonrpc['user-agent'] = aria2Storage['user_agent'];
         aria2Global = settings.disposition(jsonrpc);
