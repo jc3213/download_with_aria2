@@ -8,7 +8,7 @@ var undoes = [];
 var undone = false;
 var redoes = [];
 var global = true;
-var extension = document.body;
+var extension = document.body.classList;
 var {version, manifest_version} = chrome.runtime.getManifest();
 var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, importJson, importConf, exporter, aria2ua] = document.querySelectorAll('#menu > *, #aria2ua');
 var options = document.querySelectorAll('[data-eid]');
@@ -17,11 +17,6 @@ var matches = document.querySelectorAll('[data-map]');
 var ruleLet = document.querySelector('.template > .rule');
 var entries = {};
 var records = {};
-options.forEach((entry) => entries[entry.dataset.eid] = entry);
-var multiply = {
-    'manager_interval': 1000,
-    'capture_filesize': 1048576
-};
 var switches = {
     'context_enabled': true,
     'context_cascade': false,
@@ -41,10 +36,34 @@ var switches = {
     'capture_always': true
 };
 
+options.forEach((entry) => {
+    entries[entry.dataset.eid] = entry;
+});
+
+matches.forEach(menu => {
+    var id = menu.dataset.map;
+    var [entry, list] = menu.querySelectorAll('input, .list');
+    menu.addEventListener('keydown', ({key}) => {
+        if (key === 'Enter') {
+            addRule(list, id, entry);
+        }
+    });
+    menu.addEventListener('click', (event) => {
+        switch (event.target.dataset.bid) {
+            case 'add_rule':
+                addRule(list, id, entry);
+                break;
+            case 'remove_rule':
+                removeRule(list, id, event.target.dataset.mid);
+                break;
+        }
+    });
+    records[id] = list;
+});
+
 if (typeof browser !== 'undefined') {
-    extension.classList.add('firefox');
+    extension.add('firefox');
     var [folderff, captureen, captureff] = document.querySelectorAll('#folder_firefox, #capture_enabled, #capture_webrequest');
-    folderff.parentNode.nextElementSibling.removeAttribute('class');
     captureen.addEventListener('change', (event) => {
         if (!captureen.checked) {
             folderff.checked = updated['folder_firefox'] = false;
@@ -116,7 +135,7 @@ function optionsUndo() {
     redoes.push(undo);
     redoBtn.disabled = false;
     undone = true;
-    getChange(id, old_value);
+    optionSetValue(id, old_value);
     if (undoes.length === 0) {
         undoBtn.disabled = true;
     }
@@ -127,10 +146,27 @@ function optionsRedo() {
     var {id, new_value} = redo;
     undoes.push(redo);
     undoBtn.disabled = false;
-    getChange(id, new_value);
+    optionSetValue(id, new_value);
     if (redoes.length === 0) {
         redoBtn.disabled = true;
     }
+}
+
+function optionSetValue(id, value) {
+    updated[id] = changes[id] = value;
+    saveBtn.disabled = false;
+    var entry = entries[id];
+    if (id in records) {
+        return updateRule(id, value);
+    }
+    if (id in switches) {
+        entry.checked = value;
+        if (switches[eid]) {
+            extension.toggle(eid);
+        }
+        return;
+    }
+    entry.value = value;
 }
 
 function optionsExport() {
@@ -157,28 +193,34 @@ async function optionsJsonrpc() {
     if (!aria2Version) {
         return;
     }
-    clearChanges();
+    optionEmptyChanges();
     global = false;
     aria2Global = jsonrpc.disposition(aria2Conf);
     updated = {...aria2Global};
     aria2ver.textContent = aria2ua.textContent = aria2Version;
-    extension.classList.add('jsonrpc');
+    extension.add('jsonrpc');
 }
 
 function optionsExtension() {
-    clearChanges();
+    optionEmptyChanges();
     global = true;
     aria2OptionsSetUp();
-    extension.classList.remove('jsonrpc');
+    extension.remove('jsonrpc');
+}
+
+function optionEmptyChanges() {
+    undoes = [];
+    redoes = [];
+    saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
 }
 
 document.addEventListener('change', ({target}) => {
     var {dataset: {eid, rid}, value, checked, files} = target;
     if (eid) {
-        return setChange(eid, eid in switches ? checked : eid in multiply ? value * multiply[eid] : value);
+        return optionChange(eid, eid in switches ? checked : value);
     }
     if (rid) {
-        return setChange(rid, value);
+        return optionChange(rid, value);
     }
     if (files) {
         optionsImport(files[0]);
@@ -186,8 +228,23 @@ document.addEventListener('change', ({target}) => {
     }
 });
 
+function optionChange(id, new_value) {
+    var old_value = updated[id];
+    undoes.push({id, old_value, new_value});
+    saveBtn.disabled = undoBtn.disabled = false;
+    updated[id] = changes[id] = new_value;
+    if (switches[id]) {
+        extension.toggle(id);
+    }
+    if (undone) {
+        redoes = [];
+        undone = false;
+        redoBtn.disabled = true;
+    }
+}
+
 function optionsImport(file) {
-    clearChanges();
+    optionEmptyChanges();
     var reader = new FileReader();
     reader.onload = async (event) => {
         if (global) {
@@ -206,33 +263,12 @@ function optionsImport(file) {
     reader.readAsText(file);
 }
 
-matches.forEach(menu => {
-    var id = menu.dataset.map;
-    var [entry, list] = menu.querySelectorAll('input, .list');
-    menu.addEventListener('keydown', ({key}) => {
-        if (key === 'Enter') {
-            addRule(list, id, entry);
-        }
-    });
-    menu.addEventListener('click', (event) => {
-        switch (event.target.dataset.bid) {
-            case 'add_rule':
-                addRule(list, id, entry);
-                break;
-            case 'remove_rule':
-                removeRule(list, id, event.target.dataset.mid);
-                break;
-        }
-    });
-    records[id] = list;
-});
-
 function addRule(list, id, entry) {
     var {value} = entry;
     var old_value = updated[id];
     if (value !== '' && !old_value.includes(value)) {
         var new_value = [...old_value, value];
-        setChange(id, new_value);
+        optionChange(id, new_value);
         entry.value = '';
         printRule(list, value, true);
     }
@@ -241,7 +277,7 @@ function addRule(list, id, entry) {
 function removeRule(list, id, rule) {
     var new_value = [...updated[id]];
     new_value.splice(new_value.indexOf(rule), 1);
-    setChange(id, new_value);
+    optionChange(id, new_value);
     list[rule].remove();
 }
 
@@ -262,13 +298,6 @@ function updateRule(id, rules) {
     rules.forEach((rule) => printRule(list, rule));
 }
 
-chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc, version}) => {
-    aria2Storage = storage;
-    aria2Conf = {'enable-rpc': true, ...jsonrpc};
-    aria2Version = version;
-    aria2OptionsSetUp();
-});
-
 function aria2OptionsSetUp() {
     updated = {...aria2Storage};
     aria2ver.textContent = version;
@@ -278,11 +307,11 @@ function aria2OptionsSetUp() {
         if (eid in switches) {
             entry.checked = value;
             if (switches[eid]) {
-                value ? extension.classList.add(eid) : extension.classList.remove(eid);
+                value ? extension.add(eid) : extension.remove(eid);
             }
             return;
         }
-        entry.value = eid in multiply ? value / multiply[eid] : value;
+        entry.value = value;
     });
     matches.forEach((menu) => {
         var id = menu.dataset.map;
@@ -296,40 +325,9 @@ function aria2SaveStorage(json) {
     changes = {};
 }
 
-function clearChanges() {
-    undoes = [];
-    redoes = [];
-    saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
-}
-
-function getChange(id, value) {
-    updated[id] = changes[id] = value;
-    saveBtn.disabled = false;
-    var entry = entries[id];
-    if (id in records) {
-        return updateRule(id, value);
-    }
-    if (id in switches) {
-        entry.checked = value;
-        if (switches[eid]) {
-            extension.classList.toggle(eid);
-        }
-        return;
-    }
-    entry.value = id in multiply ? value / multiply[id] : value;
-}
-
-function setChange(id, new_value) {
-    var old_value = updated[id];
-    undoes.push({id, old_value, new_value});
-    saveBtn.disabled = undoBtn.disabled = false;
-    updated[id] = changes[id] = new_value;
-    if (switches[id]) {
-        extension.classList.toggle(id);
-    }
-    if (undone) {
-        redoes = [];
-        undone = false;
-        redoBtn.disabled = true;
-    }
-}
+chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc, version}) => {
+    aria2Storage = storage;
+    aria2Conf = {'enable-rpc': true, ...jsonrpc};
+    aria2Version = version;
+    aria2OptionsSetUp();
+});

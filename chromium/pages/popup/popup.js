@@ -1,20 +1,21 @@
-var manager = document.body;
+var manager = document.body.classList;
 var detailed;
 var aria2Alive;
 var aria2SizeKeys = ['min-split-size','max-download-limit','max-upload-limit'];
-var aria2Queue = localStorage['queues']?.match(/[^\s,]+/g) ?? [];
+var aria2Queue = localStorage['queues'].split(';');
 var chooseQueue = document.querySelector('#choose');
 var [downloadStat, uploadStat, activeStat, waitingStat, stoppedStat] = document.querySelectorAll('#status > *');
 var [allQueues, activeQueue, waitingQueue, pausedQueue, completeQueue, removedQueue, errorQueue] = document.querySelectorAll('#queue, #queue > *');
 var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
 
-manager.classList.add(...aria2Queue);
+manager.add(...aria2Queue);
+
 chooseQueue.addEventListener('click', (event) => {
     var {qid} = event.target.dataset;
     var qpo = aria2Queue.indexOf(qid);
     qpo === -1 ? aria2Queue.push(qid) : aria2Queue.splice(qpo, 1);
-    manager.classList.toggle(qid);
-    localStorage['queues'] = aria2Queue.join(', ');
+    manager.toggle(qid);
+    localStorage['queues'] = aria2Queue.join(';');
 });
 
 document.addEventListener('keydown', (event) => {
