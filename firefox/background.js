@@ -153,9 +153,9 @@ function decodeFileName(text) {
 chrome.action = browser.browserAction;
 browser.storage.sync.get(null).then((json) => {
     aria2Storage = {...aria2Default, ...json};
-    aria2MatchPattern();
+    aria2UpdateMatch();
     aria2ClientSetUp();
     aria2CaptureSwitch();
-    aria2TaskManager();
     aria2ContextMenus();
+    aria2TaskManager();
 });

@@ -14,8 +14,8 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
 
 chrome.storage.sync.get(null).then((json) => {
     aria2Storage = {...aria2Default, ...json};
+    aria2UpdateMatch();
     aria2ClientSetUp();
-    aria2MatchPattern();
     aria2TaskManager();
     aria2ContextMenus();
 });

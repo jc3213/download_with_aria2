@@ -8,7 +8,7 @@ var aria2Default = {
     'context_thisimage': true,
     'context_allimages': true,
     'manager_newtab': false,
-    'manager_interval': 10000,
+    'manager_interval': 10,
     'folder_enabled': false,
     'folder_defined': '',
     'folder_firefox': false,
@@ -37,12 +37,20 @@ var aria2Global = {};
 var aria2Version;
 var aria2Active = 0;
 var aria2Queue = {};
-var aria2Match = {};
-var aria2MatchKeys = [
+var aria2Updated = {};
+var aria2Matches = [
     'headers_exclude',
     'proxy_include',
     'capture_include',
     'capture_exclude'
+];
+var aria2Multiply = {
+    'manager_interval': 1000,
+    'capture_filesize': 1048576
+};
+var aria2MultiKeys = [
+    'manager_interval',
+    'capture_filesize'
 ];
 var aria2SizeKeys = [
     'min-split-size',
@@ -64,6 +72,14 @@ var {manifest_version} = chrome.runtime.getManifest();
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
+    }
+    if (previousVersion <= '4.8.0.2485') {
+        chrome.storage.sync.get(null, (json) => {
+            json['manager_interval'] = json['manager_interval'] / 1000;
+            json['capture_filesize'] = json['capture_filesize'] / 1048576;
+            aria2Storage = json;
+            chrome.storage.sync.set(json);
+        });
     }
 });
 
@@ -130,13 +146,13 @@ chrome.action.onClicked.addListener((tab) => {
 
 async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
     options['user-agent'] = aria2Storage['user_agent'];
-    if (aria2Storage['proxy_enabled'] || aria2Match['proxy_include'].test(hostname)) {
+    if (aria2Storage['proxy_enabled'] || aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (options['dir'] === undefined && aria2Storage['folder_enabled'] && aria2Storage['folder_defined'] !== '') {
         options['dir'] = aria2Storage['folder_defined'];
     }
-    if (aria2Storage['headers_enabled'] && !aria2Match['headers_exclude'].test(hostname)) {
+    if (aria2Storage['headers_enabled'] && !aria2Updated['headers_exclude'].test(hostname)) {
         options['referer'] = referer;
         options['header'] = await aria2SetCookies(url, storeId);
     }
@@ -198,9 +214,9 @@ function aria2OptionsChanged({storage, changes}) {
     chrome.storage.sync.set(storage);
     aria2Storage = storage;
     aria2UpdateJSONRPC(changes);
+    aria2UpdateMatch();
     aria2ContextMenus();
     aria2TaskManager();
-    aria2MatchPattern();
     if (manifest_version === 2) {
         aria2CaptureSwitch();
     }
@@ -256,10 +272,13 @@ function aria2TaskManager() {
     chrome.action.setPopup({popup});
 }
 
-function aria2MatchPattern() {
-    aria2MatchKeys.forEach((key) => {
+function aria2UpdateMatch() {
+    aria2Matches.forEach((key) => {
         var array = aria2Storage[key];
-        aria2Match[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*') + ')$');
+        aria2Updated[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*') + ')$');
+    });
+    aria2MultiKeys.forEach((key) => {
+        aria2Updated[key] = aria2Storage[key] * aria2Multiply[key];
     });
 }
 
@@ -281,7 +300,7 @@ async function aria2ClientSetUp() {
     }).catch((error) => {
         chrome.action.setBadgeBackgroundColor({color: '#c33'});
         aria2ToolbarBadge('E');
-        aria2Retry = setTimeout(aria2ClientSetUp, aria2Storage['manager_interval'])
+        aria2Retry = setTimeout(aria2ClientSetUp, aria2Updated['manager_interval'])
     });
 }
 
@@ -315,14 +334,14 @@ function aria2ToolbarBadge(number) {
 }
 
 function aria2CaptureResult(hostname, fileext, size) {
-    if (aria2Match['capture_exclude'].test(hostname) ||
+    if (aria2Updated['capture_exclude'].test(hostname) ||
         aria2Storage['capture_reject'].includes(fileext)) {
         return false;
     }
     if (aria2Storage['capture_always'] ||
-        aria2Match['capture_include'].test(hostname) ||
+        aria2Updated['capture_include'].test(hostname) ||
         aria2Storage['capture_resolve'].includes(fileext) ||
-        aria2Storage['capture_size'] > 0 && size >= aria2Storage['capture_size']) {
+        aria2Updated['capture_filesize'] > 0 && size >= aria2Updated['capture_filesize']) {
         return true;
     }
     return false;
