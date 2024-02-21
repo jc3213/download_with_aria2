@@ -12,23 +12,9 @@ else {
     allQueues.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         var {clientX, clientY} = event;
-        if (clientX > positionLeft) {
-            var left = 'auto;';
-            var right = '0px;';
-        }
-        else {
-            left = clientX + 'px;';
-            right = 'auto;';
-        }
-        if (clientY > positionTop) {
-            var top = 'auto;';
-            var bottom = (positionHeight - clientY) + 'px;';
-        }
-        else {
-            top = clientY + 'px;';
-            bottom = 'auto;';
-        }
-        chooseQueue.style.cssText = 'display: block; left: ' + left + ' right: ' + right + ' top: ' + top + ' bottom: ' + bottom;
+        var css = clientX > positionLeft ? 'right: 0px;' : 'left: ' + clientX + 'px;';
+        css += clientY > positionTop ? 'top: auto; bottom: 0px;' : 'top: ' + clientY + 'px;';
+        chooseQueue.style.cssText = css;
     });
 
     allQueues.addEventListener('click', (event) => {
