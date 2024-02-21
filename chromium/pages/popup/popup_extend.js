@@ -5,8 +5,7 @@ if (aria2InTab) {
 }
 else {
     var positionLeft = allQueues.offsetWidth - choose.offsetWidth;
-    var positionTop = allQueues.offsetHeight - choose.offsetHeight;
-    var positionHeight = manager.offsetHeight + 15;
+    var positionTop = allQueues.offsetHeight - choose.offsetHeight + 58;
     choose.style.display = 'none';
 
     allQueues.addEventListener('contextmenu', (event) => {
