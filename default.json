@@ -21,7 +21,7 @@
     "jsonrpc_host": "localhost:6800",
     "jsonrpc_scheme": "http",
     "jsonrpc_secret": "",
-    "manager_interval": 10000,
+    "manager_interval": 10,
     "manager_newtab": false,
     "notify_complete": true,
     "notify_start": false,

@@ -214,24 +214,12 @@ function aria2OptionsChanged({storage, changes}) {
     chrome.storage.sync.set(storage);
     aria2Storage = storage;
     aria2UpdateJSONRPC(changes);
-    aria2UpdateMatch();
+    aria2UpdateStorage();
     aria2ContextMenus();
     aria2TaskManager();
     if (manifest_version === 2) {
         aria2CaptureSwitch();
     }
-}
-
-function aria2RPCOptionsSetUp(jsonrpc) {
-    aria2SizeKeys.forEach((key) => {
-        jsonrpc[key] = getFileSize(jsonrpc[key]);
-    });
-    return jsonrpc;
-}
-
-function aria2RPCOptionsChanged({jsonrpc}) {
-    aria2Global = {...aria2Global, ...jsonrpc};
-    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [jsonrpc]});
 }
 
 function aria2UpdateJSONRPC(changes) {
@@ -245,6 +233,16 @@ function aria2UpdateJSONRPC(changes) {
     if ('jsonrpc_secret' in changes) {
         aria2RPC.secret = 'token:' + aria2Storage['jsonrpc_secret'];
     }
+}
+
+function aria2UpdateStorage() {
+    aria2Matches.forEach((key) => {
+        var array = aria2Storage[key];
+        aria2Updated[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*') + ')$');
+    });
+    aria2MultiKeys.forEach((key) => {
+        aria2Updated[key] = aria2Storage[key] * aria2Multiply[key];
+    });
 }
 
 function aria2ContextMenus() {
@@ -272,14 +270,16 @@ function aria2TaskManager() {
     chrome.action.setPopup({popup});
 }
 
-function aria2UpdateMatch() {
-    aria2Matches.forEach((key) => {
-        var array = aria2Storage[key];
-        aria2Updated[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*') + ')$');
+function aria2RPCOptionsSetUp(jsonrpc) {
+    aria2SizeKeys.forEach((key) => {
+        jsonrpc[key] = getFileSize(jsonrpc[key]);
     });
-    aria2MultiKeys.forEach((key) => {
-        aria2Updated[key] = aria2Storage[key] * aria2Multiply[key];
-    });
+    return jsonrpc;
+}
+
+function aria2RPCOptionsChanged({jsonrpc}) {
+    aria2Global = {...aria2Global, ...jsonrpc};
+    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [jsonrpc]});
 }
 
 async function aria2ClientSetUp() {
