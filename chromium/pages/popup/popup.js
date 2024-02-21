@@ -1,8 +1,8 @@
-var manager = document.body.classList;
-var detailed;
+var aria2Detail;
 var aria2Alive;
 var aria2SizeKeys = ['min-split-size','max-download-limit','max-upload-limit'];
-var aria2Queue = localStorage['queues'].split(';');
+var aria2Queue = localStorage['queues']?.split(';') ?? [];
+var manager = document.body.classList;
 var chooseQueue = document.querySelector('#choose');
 var [downloadStat, uploadStat, activeStat, waitingStat, stoppedStat] = document.querySelectorAll('#status > *');
 var [allQueues, activeQueue, waitingQueue, pausedQueue, completeQueue, removedQueue, errorQueue] = document.querySelectorAll('#queue, #queue > *');
@@ -181,7 +181,7 @@ function sessionUpdated({gid, status, files, bittorrent, completedLength, totalL
     upload.textContent = getFileSize(uploadSpeed);
     ratio.textContent = percent;
     ratio.style.width = percent + '%';
-    if (detailed === task) {
+    if (aria2Detail === task) {
         printTaskFileList(files);
     }
     return task;
@@ -262,19 +262,19 @@ function taskOptionsSetUp(options) {
 }
 
 async function taskDetail(task, gid) {
-    if (detailed) {
-        detailed.classList.remove('extra');
-        detailed.files.innerHTML = detailed.urls.innerHTML = '';
-        detailed.save.style.display = 'none';
+    if (aria2Detail) {
+        aria2Detail.classList.remove('extra');
+        aria2Detail.files.innerHTML = aria2Detail.urls.innerHTML = '';
+        aria2Detail.save.style.display = 'none';
     }
-    if (detailed === task) {
-        detailed = null;
+    if (aria2Detail === task) {
+        aria2Detail = null;
         return;
     }
     var [files, options] = await getTaskDetail(gid);
-    detailed = task;
-    detailed.options = detailed.settings.disposition(taskOptionsSetUp(options.result));
-    detailed.classList.add('extra');
+    aria2Detail = task;
+    aria2Detail.options = aria2Detail.settings.disposition(taskOptionsSetUp(options.result));
+    aria2Detail.classList.add('extra');
     printTaskFileList(files.result);
 }
 
@@ -358,7 +358,7 @@ function printFileItem(list, index, path, length, selected, uris) {
 }
 
 function printTaskFileList(files) {
-    var fileList = detailed.files;
+    var fileList = aria2Detail.files;
     var items = [...fileList.childNodes];
     files.forEach(({index, path, length, selected, completedLength, uris}, step) => {
         var item = items[step] ?? printFileItem(fileList, index, path, length, selected, uris);
@@ -378,7 +378,7 @@ function printUriItem(list, uri) {
 }
 
 function printTaskUriList(uris) {
-    var uriList = detailed.urls;
+    var uriList = aria2Detail.urls;
     var items = [...uriList.childNodes];
     var result = {};
     var urls = [];
