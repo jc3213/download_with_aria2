@@ -33,11 +33,11 @@ var aria2Default = {
 var aria2RPC;
 var aria2Retry;
 var aria2Storage = {};
+var aria2Updated = {};
 var aria2Global = {};
 var aria2Version;
 var aria2Active = 0;
 var aria2Queue = {};
-var aria2Updated = {};
 var aria2Matches = [
     'headers_exclude',
     'proxy_include',

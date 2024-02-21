@@ -80,7 +80,7 @@ function aria2Variables(json) {
     aria2Scheme = json['jsonrpc_scheme']
     aria2Url = json['jsonrpc_url'];
     aria2Secret = json['jsonrpc_secret'];
-    aria2Interval = json['manager_interval'];
+    aria2Interval = json['manager_interval'] * 1000;
     aria2Proxy = json['proxy_server'];
 }
 
