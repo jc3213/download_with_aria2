@@ -12,7 +12,8 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     }
 });
 
-chrome.storage.sync.get(null).then((json) => {
+chrome.runtime.onStartup.addListener(async () => {
+    var json = await chrome.storage.sync.get(null);
     aria2Storage = {...aria2Default, ...json};
     aria2UpdateStorage();
     aria2ClientSetUp();
