@@ -25,19 +25,18 @@ function aria2RPCCall(params) {
 chrome.runtime.onMessage.addListener(({query}, sender, response) => {
     switch (query) {
         case 'aria2c_all_images':
-            response({images: queryAllImages(), options: {referer, header}});
+            response(queryAllImages());
             break;
     }
 });
 
 function queryAllImages(archive = {}, result = []) {
-    [...document.images].forEach((img) => {
-        var {src, alt} = img;
+    document.querySelectorAll('img').forEach(({src, alt}) => {
         if (src === referer || src.startsWith('data') || src in archive) {
             return;
         }
         result.push({src, alt});
         archive[src] = alt;
     });
-    return result;
+    return {images: result, options: {referer, header}};
 }
