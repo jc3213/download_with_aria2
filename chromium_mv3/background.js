@@ -1,6 +1,6 @@
 importScripts('libs/aria2.js', 'crossbrowser.js');
 
-chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referrer, filename, fileSize}) => {
+chrome.downloads.onDeterminingFilename.addListener(({id, finalUrl, referrer, filename, fileSize}) => {
     if (!aria2Storage['capture_enabled'] || finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
         return;
     }
@@ -12,9 +12,7 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
     }
 });
 
-chrome.runtime.onStartup.addListener(async () => {
-    aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 20000);
-});
+chrome.runtime.onStartup.addListener(chrome.runtime.getPlatformInfo);
 
 chrome.storage.sync.get(null).then((json) => {
     aria2Storage = {...aria2Default, ...json};
@@ -23,3 +21,5 @@ chrome.storage.sync.get(null).then((json) => {
     aria2TaskManager();
     aria2ContextMenus();
 });
+
+var aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 20000);
