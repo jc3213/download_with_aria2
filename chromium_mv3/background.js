@@ -13,12 +13,13 @@ chrome.downloads.onDeterminingFilename.addListener(async ({id, finalUrl, referre
 });
 
 chrome.runtime.onStartup.addListener(async () => {
-    var json = await chrome.storage.sync.get(null);
+    aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 20000);
+});
+
+chrome.storage.sync.get(null).then((json) => {
     aria2Storage = {...aria2Default, ...json};
     aria2UpdateStorage();
     aria2ClientSetUp();
     aria2TaskManager();
     aria2ContextMenus();
 });
-
-var aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 25e3);
