@@ -18,14 +18,19 @@ class Aria2 {
         });
     }
     disconnect () {
-        this.websocket.then( (websocket) => websocket.close() );
+        this.websocket.then((websocket) => new Promise((resolve, reject) => {
+            websocket.onclose = (event) => resolve(event);
+            websocket.onerror = (error) => reject(error);
+            websocket.close();
+        }));
     }
     set onmessage (callback) {
-        this.websocket.then( (websocket) => websocket.addEventListener('message', (event) => callback(JSON.parse(event.data))) );
+        if (typeof callback !== 'function') { return; }
+        if (this.messager === undefined) { this.websocket.then( (websocket) => websocket.addEventListener('message', (event) => this.messager(JSON.parse(event.data))) ); }
+        this.messager = callback;
     }
-    json (array) {
-        const json = array.map( ({method, params = []}) => ({ id: '', jsonrpc: '2.0', method, params: [this.secret, ...params] }) );
-        return JSON.stringify(json);
+    get onmessage () {
+        return this.messager;
     }
     send (...messages) {
         return this.websocket.then((websocket) => new Promise((resolve, reject) => {
@@ -39,5 +44,9 @@ class Aria2 {
             if (response.ok) { return response.json(); }
             throw new Error(response.statusText);
         });
+    }
+    json (array) {
+        const json = array.map( ({method, params = []}) => ({ id: '', jsonrpc: '2.0', method, params: [this.secret, ...params] }) );
+        return JSON.stringify(json);
     }
 }

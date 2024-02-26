@@ -222,9 +222,9 @@ function aria2OptionsChanged({storage, changes}) {
     }
 }
 
-function aria2UpdateJSONRPC(changes) {
+async function aria2UpdateJSONRPC(changes) {
     if ('jsonrpc_url' in changes) {
-        aria2RPC.disconnect();
+        await aria2RPC.disconnect();
         return aria2ClientSetUp();
     }
     if ('jsonrpc_scheme' in changes) {
