@@ -73,14 +73,6 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
     }
-    if (previousVersion <= '4.8.0.2485') {
-        chrome.storage.sync.get(null, (json) => {
-            json['manager_interval'] = json['manager_interval'] / 1000;
-            json['capture_filesize'] = json['capture_filesize'] / 1048576;
-            aria2Storage = json;
-            chrome.storage.sync.set(json);
-        });
-    }
 });
 
 chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
@@ -224,7 +216,7 @@ function aria2OptionsChanged({storage, changes}) {
 
 async function aria2UpdateJSONRPC(changes) {
     if ('jsonrpc_url' in changes) {
-        aria2RPC.url = aria2Storage['jsonrpc_url'];
+        await aria2RPC.disconnect();
         return aria2ClientSetUp();
     }
     if ('jsonrpc_scheme' in changes) {
@@ -284,6 +276,7 @@ function aria2RPCOptionsChanged({jsonrpc}) {
 
 async function aria2ClientSetUp() {
     clearTimeout(aria2Retry);
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
     aria2RPC.call(
         {method: 'aria2.getGlobalOption'},
         {method: 'aria2.getVersion'},
@@ -322,8 +315,8 @@ async function aria2WebSocket({method, params}) {
             var name = getSessionName(gid, session.result.bittorrent, session.result.files);
             aria2WhenComplete(name);
         default:
-            aria2Active --;
             delete aria2Queue[gid];
+            aria2Active --;
     }
     aria2ToolbarBadge(aria2Active);
 }
