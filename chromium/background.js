@@ -1,4 +1,4 @@
-async function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
+function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
     if (finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
         return;
     }
