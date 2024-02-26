@@ -20,9 +20,10 @@ function aria2CaptureSwitch() {
 chrome.action = chrome.browserAction;
 chrome.storage.sync.get(null, (json) => {
     aria2Storage = {...aria2Default, ...json};
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
     aria2UpdateStorage();
     aria2ClientSetUp();
-    aria2CaptureSwitch();
     aria2ContextMenus();
     aria2TaskManager();
+    aria2CaptureSwitch();
 });

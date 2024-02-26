@@ -224,14 +224,14 @@ function aria2OptionsChanged({storage, changes}) {
 
 async function aria2UpdateJSONRPC(changes) {
     if ('jsonrpc_url' in changes) {
-        await aria2RPC.disconnect();
+        aria2RPC.url = aria2Storage['jsonrpc_url'];
         return aria2ClientSetUp();
     }
     if ('jsonrpc_scheme' in changes) {
-        aria2RPC.method = aria2Storage['jsonrpc_scheme'];
+        aria2RPC.scheme = aria2Storage['jsonrpc_scheme'];
     }
     if ('jsonrpc_secret' in changes) {
-        aria2RPC.secret = 'token:' + aria2Storage['jsonrpc_secret'];
+        aria2RPC.secret = aria2Storage['jsonrpc_secret'];
     }
 }
 
@@ -284,7 +284,6 @@ function aria2RPCOptionsChanged({jsonrpc}) {
 
 async function aria2ClientSetUp() {
     clearTimeout(aria2Retry);
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
     aria2RPC.call(
         {method: 'aria2.getGlobalOption'},
         {method: 'aria2.getVersion'},
