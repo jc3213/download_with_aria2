@@ -304,7 +304,7 @@ async function aria2ClientSetUp() {
 }
 
 async function aria2WebSocket({method, params}) {
-    if (!method) {
+    if (method === undefined) {
         return;
     }
     var [{gid}] = params;

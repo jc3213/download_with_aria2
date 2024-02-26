@@ -76,14 +76,13 @@ function aria2ClientSetUp() {
         aria2RPC.onmessage = aria2WebSocket;
         aria2Alive = setInterval(updateManager, aria2Interval);
     }).catch((error) => {
-        console.log(error);
         activeStat.textContent = waitingStat.textContent = stoppedStat.textContent = downloadStat.textContent = uploadStat.textContent = '0';
         activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
     });
 }
 
 function aria2WebSocket({method, params}) {
-    if (!method) {
+    if (method === undefined) {
         return;
     }
     var [{gid}] = params;
