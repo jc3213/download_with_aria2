@@ -194,10 +194,9 @@ function createSession(gid, status, bittorrent) {
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', async ({target, ctrlKey}) => {
-        var status = task.parentNode.id;
         switch (target.dataset.bid) {
             case 'remove_btn':
-                taskRemove(task, gid, status);
+                taskRemove(task, gid, task.parentNode.id);
                 break;
             case 'detail_btn':
                 taskDetail(task, gid);
@@ -206,7 +205,7 @@ function createSession(gid, status, bittorrent) {
                 taskRetry(task, gid);
                 break;
             case 'pause_btn':
-                taskPause(task, gid, status);
+                taskPause(task, gid, task.parentNode.id);
                 break;
             case 'proxy_btn':
                 taskProxy(target, gid);
