@@ -44,7 +44,7 @@ var aria2Matches = [
     'capture_include',
     'capture_exclude'
 ];
-var aria2Multiply = {
+var aria2Multiplier = {
     'manager_interval': 1000,
     'capture_filesize': 1048576
 };
@@ -232,7 +232,7 @@ function aria2UpdateStorage() {
         aria2Updated[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*') + ')$');
     });
     aria2MultiKeys.forEach((key) => {
-        aria2Updated[key] = aria2Storage[key] * aria2Multiply[key];
+        aria2Updated[key] = aria2Storage[key] * aria2Multiplier[key];
     });
 }
 
