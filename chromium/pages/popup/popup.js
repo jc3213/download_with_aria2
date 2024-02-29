@@ -194,7 +194,7 @@ function createSession(gid, status, bittorrent) {
     task.id = gid;
     task.links = [];
     task.classList.add(bittorrent ? 'p2p' : 'http');
-    task.addEventListener('click', async (event) => {
+    task.addEventListener('click', (event) => {
         switch (event.target.dataset.bid) {
             case 'remove_btn':
                 taskRemove(task, gid);
@@ -228,9 +228,8 @@ function createSession(gid, status, bittorrent) {
     task.addEventListener('change', (event) => {
         var {dataset: {rid}, value} = event.target;
         if (rid) {
-            var {options} = task;
-            options[rid] = value;
-            aria2RPC.call({method: 'aria2.changeOption', params: [gid, options]});
+            task.options[rid] = value;
+            aria2RPC.call({method: 'aria2.changeOption', params: [gid, task.options]});
         }
     });
     globalTask[gid] = task;
@@ -254,9 +253,7 @@ async function taskRemove(task, gid) {
 }
 
 function taskOptionsSetUp(options) {
-    aria2SizeKeys.forEach((key) => {
-        options[key] = getFileSize(options[key]);
-    });
+    aria2SizeKeys.forEach((key) => options[key] = getFileSize(options[key]));
     return options;
 }
 
