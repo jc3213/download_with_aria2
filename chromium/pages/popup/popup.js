@@ -168,19 +168,18 @@ function sessionUpdated({gid, status, files, bittorrent, completedLength, totalL
     var minutes = time / 60 - days * 1440 - hours * 60 | 0;
     var seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
     var percent = (completedLength / totalLength * 10000 | 0) / 100;
-    var {name, completed, total, day, hour, minute, second, connect, download, upload, ratio} = task;
-    name.textContent = getSessionName(gid, bittorrent, files);
-    completed.textContent = getFileSize(completedLength);
-    total.textContent = getFileSize(totalLength);
-    day.textContent = days > 0 ? days : '';
-    hour.textContent = hours > 0 ? hours : '';
-    minute.textContent = minutes > 0 ? minutes : '';
-    second.textContent = seconds > 0 ? seconds : '';
-    connect.textContent = bittorrent ? numSeeders + '(' + connections + ')' : connections;
-    download.textContent = getFileSize(downloadSpeed);
-    upload.textContent = getFileSize(uploadSpeed);
-    ratio.textContent = percent;
-    ratio.style.width = percent + '%';
+    task.name.textContent = getSessionName(gid, bittorrent, files);
+    task.completed.textContent = getFileSize(completedLength);
+    task.total.textContent = getFileSize(totalLength);
+    task.day.textContent = days || '';
+    task.hour.textContent = hours || '';
+    task.minute.textContent = minutes || '';
+    task.second.textContent = seconds || '';
+    task.connect.textContent = bittorrent ? numSeeders + '(' + connections + ')' : connections;
+    task.download.textContent = getFileSize(downloadSpeed);
+    task.upload.textContent = getFileSize(uploadSpeed);
+    task.ratio.textContent = percent;
+    task.ratio.style.width = percent + '%';
     if (aria2Detail === task) {
         printTaskFileList(files);
     }
