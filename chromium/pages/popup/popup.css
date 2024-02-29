@@ -64,7 +64,7 @@ body {
     filter: contrast(25%);
 }
 
-.session[data-done="true"] label {
+.session.http label, .session[data-done="true"] label {
     pointer-events: none;
 }
 
@@ -218,11 +218,7 @@ body {
 
 .file {
     display: grid;
-    grid-template-columns: 40px auto 80px 60px;
-}
-
-.file > input {
-    display: none;
+    grid-template-columns: 0px 40px auto 80px 60px;
 }
 
 .uri {
