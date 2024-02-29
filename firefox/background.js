@@ -37,7 +37,8 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
     }
     var result = {};
     responseHeaders.forEach(({name, value}) => {
-        if (name.toLowerCase() in aria2WebRequest) {
+        name = name.toLowerCase();
+        if (aria2WebRequest[name]) {
             result[name] = value;
         }
     });
