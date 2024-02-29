@@ -168,6 +168,7 @@ function sessionUpdated({gid, status, files, bittorrent, completedLength, totalL
     var minutes = time / 60 - days * 1440 - hours * 60 | 0;
     var seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
     var percent = (completedLength / totalLength * 10000 | 0) / 100;
+    task.dataset.done = completedLength === totalLength;
     task.name.textContent = getSessionName(gid, bittorrent, files);
     task.completed.textContent = getFileSize(completedLength);
     task.total.textContent = getFileSize(totalLength);

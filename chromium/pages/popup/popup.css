@@ -59,7 +59,7 @@ body {
 }
 
 #queue > :nth-child(n+4) input, #queue > :nth-child(n+4) select,
-.session.http [name="max-upload-limit"] {
+.session[data-done="true"] label, .session.http [name="max-upload-limit"] {
     pointer-events: none;
     filter: contrast(25%);
 }
