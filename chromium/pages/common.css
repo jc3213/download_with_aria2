@@ -127,11 +127,6 @@ h4 {
     grid-column: span 2;
 }
 
-.menu > div:first-child {
-    font-weight: bold;
-    word-break: break-word;
-}
-
 .flex {
     display: flex;
     gap: 3px;
