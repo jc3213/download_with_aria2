@@ -188,15 +188,16 @@ function sessionUpdated({gid, status, files, bittorrent, completedLength, totalL
 
 function createSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
-    var [name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, urls] = task.querySelectorAll('.name, .completed, .day, .hour, .minute, .second, .total, .connect, .download, .upload, .ratio, .files, .files + button, .uris');
+    var [name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, uris] = task.querySelectorAll('.name, .completed, .day, .hour, .minute, .second, .total, .connect, .download, .upload, .ratio, .files, .files + button, .uris');
     var settings = task.querySelectorAll('input, select');
-    Object.assign(task, {name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, urls, settings});
+    Object.assign(task, {name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, uris, settings});
     task.id = gid;
+    task.uris = [];
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', async ({target, ctrlKey}) => {
         switch (target.dataset.bid) {
             case 'remove_btn':
-                taskRemove(task, gid, task.parentNode.id);
+                taskRemove(task, gid);
                 break;
             case 'detail_btn':
                 taskDetail(task, gid);
@@ -205,7 +206,7 @@ function createSession(gid, status, bittorrent) {
                 taskRetry(task, gid);
                 break;
             case 'pause_btn':
-                taskPause(task, gid, task.parentNode.id);
+                taskPause(task, gid);
                 break;
             case 'proxy_btn':
                 taskProxy(target, gid);
@@ -237,8 +238,8 @@ function createSession(gid, status, bittorrent) {
     return task;
 }
 
-async function taskRemove(task, gid, status) {
-    switch (status) {
+async function taskRemove(task, gid) {
+    switch (task.parentNode.id) {
         case 'waiting':
         case 'paused':
             sessionRemoved('waiting', gid, task);
@@ -262,7 +263,7 @@ function taskOptionsSetUp(options) {
 async function taskDetail(task, gid) {
     if (aria2Detail) {
         aria2Detail.classList.remove('extra');
-        aria2Detail.files.innerHTML = aria2Detail.urls.innerHTML = '';
+        aria2Detail.files.innerHTML = aria2Detail.uris.innerHTML = '';
         aria2Detail.save.style.display = 'none';
     }
     if (aria2Detail === task) {
@@ -292,8 +293,8 @@ async function taskRetry(task, gid) {
      sessionRemoved('stopped', gid, task);
 }
 
-async function taskPause(task, gid, status) {
-    switch (status) {
+async function taskPause(task, gid) {
+    switch (task.parentNode.id) {
         case 'active':
         case 'waiting':
             await aria2RPC.call({method: 'aria2.forcePause', params: [gid]});
@@ -352,14 +353,14 @@ function printFileItem(list, index, path, length, selected, uris) {
     name.title = path;
     size.textContent = getFileSize(length);
     list.appendChild(item);
+    list[index] = item;
     return item;
 }
 
 function printTaskFileList(files) {
     var fileList = aria2Detail.files;
-    var items = [...fileList.childNodes];
-    files.forEach(({index, path, length, selected, completedLength, uris}, step) => {
-        var item = items[step] ?? printFileItem(fileList, index, path, length, selected, uris);
+    files.forEach(({index, path, length, selected, completedLength, uris}) => {
+        var item = fileList[index] ?? printFileItem(fileList, index, path, length, selected, uris);
         item.ratio.textContent = (completedLength / length * 10000 | 0) / 100;
         if (uris.length !== 0) {
             printTaskUriList(uris);
@@ -369,32 +370,31 @@ function printTaskFileList(files) {
 
 function printUriItem(list, uri) {
     var item = uriLET.cloneNode(true);
-    var [url, used, wait] = item.querySelectorAll('div');
-    Object.assign(item, {url, used, wait});
+    var [uri, used, wait] = item.querySelectorAll('div');
+    Object.assign(item, {uri, used, wait});
     list.appendChild(item);
+    list[uri] = item;
+    list.uris.push(uri);
     return item;
 }
 
 function printTaskUriList(uris) {
-    var uriList = aria2Detail.urls;
-    var items = [...uriList.childNodes];
+    var uriList = aria2Detail.uris;
     var result = {};
-    var urls = [];
     uris.forEach(({uri, status}) => {
-        var {yes, no} = result[uri] ?? {yes: 0, no: 0};
-        if (yes === 0 && no === 0) {
-            urls.push(uri);
+        var item = uriList[uri] ?? printUriItem(uriList, uri);
+        item.uri.textContent = uri;
+        var {used, wait} = result[uri] ?? {used: 0, wait: 0};
+        status === 'used' ? used ++ : wait ++;
+        result[uri] = {used, wait};
+    });
+    uriList.uris.forEach((uri) => {
+        if (result[uri] !== undefined) {
+            uriList[uri].remove();
+            delete uriList[uri];
+            return uriList.uris.splice(uriList.uris.indexOf(uri), 1);
         }
-        status === 'used' ? yes ++ : no ++;
-        result[uri] = {yes, no};
+        uriList[uri].used.textContent = result[uri].used;
+        uriList[uri].wait.textContent = result[uri].wait;
     });
-    urls.forEach((uri, step) => {
-        var item = items[step] ?? printUriItem(uriList, uri);
-        var {yes, no} = result[uri];
-        var {url, used, wait} = item;
-        url.textContent = uri;
-        used.textContent = yes;
-        wait.textContent = no;
-    });
-    items.slice(urls.length).forEach((item) => item.remove());
 }
