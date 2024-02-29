@@ -63,8 +63,7 @@ var aria2SizeKeys = [
 var aria2Start = chrome.i18n.getMessage('download_start');
 var aria2Complete = chrome.i18n.getMessage('download_complete');
 var aria2NewDL = '/pages/newdld/newdld.html';
-var aria2Popup = '/pages/popup/popup.html';
-var aria2InTab = chrome.runtime.getURL('/pages/popup/popup.html?open_in_tab');
+var aria2Popup = chrome.runtime.getURL('/pages/popup/popup.html');
 var aria2Images = '/pages/images/images.html';
 var aria2Message = {};
 var {manifest_version} = chrome.runtime.getManifest();
@@ -128,11 +127,11 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
 
 chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.query({currentWindow: true}, (tabs) => {
-        var popup = tabs.find((tab) => tab.url === aria2InTab);
+        var popup = tabs.find((tab) => tab.url === aria2Popup);
         if (popup) {
             return chrome.tabs.update(popup.id, {active: true});
         }
-        chrome.tabs.create({active: true, url: aria2InTab});
+        chrome.tabs.create({active: true, url: aria2Popup});
     });
 });
 
@@ -258,7 +257,7 @@ function aria2ContextMenus() {
 }
 
 function aria2TaskManager() {
-    var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup;
+    var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup + '?as_popup';
     chrome.action.setPopup({popup});
 }
 

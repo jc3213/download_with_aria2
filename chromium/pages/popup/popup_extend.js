@@ -1,4 +1,4 @@
-var aria2InTab = location.search === '?open_in_tab';
+var aria2InTab = location.search !== '?as_popup';
 
 if (aria2InTab) {
     document.body.classList.add('full');
