@@ -211,7 +211,7 @@ function createSession(gid, status, bittorrent) {
                 taskProxy(event.target, gid);
                 break;
             case 'save_btn':
-                taskFiles(files, save, gid);
+                taskChangeFiles(task, gid);
                 break;
             case 'file_btn':
                 taskSelectFile(task, event.target);
@@ -310,10 +310,10 @@ async function taskProxy(proxy, gid) {
     proxy.previousElementSibling.value = aria2Proxy;
 }
 
-async function taskFiles(files, save, gid) {
-    var selected = [...files.querySelectorAll('.inuse')].map((index) => index.textContent);
+async function taskChangeFiles(task, gid) {
+    var selected = [...task.files.querySelectorAll(':checked + label')].map((index) => index.textContent);
     await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'select-file': selected.join()}]});
-    save.style.display = 'none';
+    task.save.style.display = 'none';
 }
 
 function taskSelectFile(task, file) {
