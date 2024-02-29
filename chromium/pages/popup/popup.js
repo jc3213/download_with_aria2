@@ -338,7 +338,7 @@ function getTaskDetail(gid) {
     );
 }
 
-function printFileItem(list, index, path, length, selected, uris) {
+function printFileItem(list, index, selected, path, length) {
     var file = fileLET.cloneNode(true);
     file.querySelectorAll('div, label, input').forEach((item) => file[item.className] = item);
     file.check.checked = selected === 'true';
@@ -356,7 +356,7 @@ function printFileItem(list, index, path, length, selected, uris) {
 function printTaskFileList(files) {
     var fileList = aria2Detail.files;
     files.forEach(({index, path, length, selected, completedLength, uris}) => {
-        var item = fileList[index] ?? printFileItem(fileList, index, path, length, selected, uris);
+        var item = fileList[index] ?? printFileItem(fileList, index, selected, path, length);
         item.ratio.textContent = (completedLength / length * 10000 | 0) / 100;
         printTaskUriList(uris);
     });
