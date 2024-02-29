@@ -11,10 +11,6 @@ body:not(.capture_enabled) [data-exc*="capture_enabled"], body.capture_webreques
     display: none;
 }
 
-h1 {
-    margin: 50px 0px 10px !important;
-}
-
 label {
     padding: 3px 0px;
     font-weight: bold;

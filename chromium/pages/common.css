@@ -97,6 +97,14 @@ button.checked {
     border-style: inset;
 }
 
+h1 {
+    margin: 50px 0px 10px;
+}
+
+h4 {
+    margin: 0px;
+}
+
 :disabled {
     filter: contrast(25%);
 }
@@ -119,12 +127,12 @@ button.checked {
     grid-column: span 2;
 }
 
+.menu > div:first-child {
+    font-weight: bold;
+    word-break: break-word;
+}
+
 .flex {
     display: flex;
     gap: 3px;
-}
-
-.title {
-    font-weight: bold;
-    word-break: break-word;
 }

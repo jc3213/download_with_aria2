@@ -21,7 +21,7 @@
         <div id="options" class="options">
             <h1>JSON-RPC</h1>
             <div title="option_jsonrpc_title" i18n>
-                <div class="title" i18n>option_jsonrpc</div>
+                <h4 i18n>option_jsonrpc</h4>
                 <div class="flex">
                     <select data-eid="jsonrpc_scheme">
                         <option value="http">HTTP</option>
@@ -42,7 +42,7 @@
                 <label for="manager_newtab" i18n>option_manager_newtab</label>
             </div>
             <div class="menu" title="option_manager_interval_title" i18n>
-                <div class="title" i18n>option_manager_interval</div>
+                <h4 i18n>option_manager_interval</h4>
                 <div>
                     <input data-eid="manager_interval" type="number" min="5" max="30" step="1">
                     <span i18n>time_second_full</span>
@@ -84,7 +84,7 @@
             </div>
             <h1 i18n>option_headers</h1>
             <div title="option_user_agent_title" i18n>
-                <div class="title" i18n>option_user_agent</div>
+                <h4 i18n>option_user_agent</h4>
                 <input data-eid="user_agent" type="text">
             </div>
             <div class="menu even" title="option_headers_enabled_title" i18n>
@@ -92,7 +92,7 @@
                 <label for="headers_enabled" i18n>option_headers_enabled</label>
             </div>
             <div class="menu" title="option_headers_exclude_title" data-map="headers_exclude" data-rel="headers_enabled" i18n>
-                <div class="title" i18n>option_match_exclude</div>
+                <h4 i18n>option_match_exclude</h4>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add_rule">➕</button>
@@ -120,7 +120,7 @@
                 <label for="proxy_enabled" i18n>option_proxy_enabled</label>
             </div>
             <div class="menu" title="option_proxy_include_title" data-map="proxy_include" data-exc="proxy_enabled" i18n>
-                <div class="title" i18n>option_match_include</div>
+                <h4 i18n>option_match_include</h4>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add_rule">➕</button>
@@ -141,7 +141,7 @@
                 <label for="capture_webrequest" i18n>option_capture_webrequest</label>
             </div>
             <div class="menu" title="option_capture_filesize_title"  data-rel="capture_enabled" data-exc="capture_always" i18n>
-                <div class="title" i18n>option_capture_filesize</div>
+                <h4 i18n>option_capture_filesize</h4>
                 <div>
                     <input data-eid="capture_filesize" type="number" min="0">
                     <span>MB</span>
@@ -151,7 +151,7 @@
                 </div>
             </div>
             <div class="menu" title="option_capture_resolve_title" data-map="capture_resolve" data-rel="capture_enabled" data-exc="capture_always" i18n>
-                <div class="title" i18n>option_capture_resolve</div>
+                <h4 i18n>option_capture_resolve</h4>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add_rule">➕</button>
@@ -159,7 +159,7 @@
                 <div class="list"></div>
             </div>
             <div class="menu" title="option_capture_reject_title" data-map="capture_reject" data-rel="capture_enabled" i18n>
-                <div class="title" i18n>option_capture_reject</div>
+                <h4 i18n>option_capture_reject</h4>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add_rule">➕</button>
@@ -167,7 +167,7 @@
                 <div class="list"></div>
             </div>
             <div class="menu" title="option_capture_include_title" data-map="capture_include" data-rel="capture_enabled" data-exc="capture_always" i18n>
-                <div class="title" i18n>option_match_include</div>
+                <h4 i18n>option_match_include</h4>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add_rule">➕</button>
@@ -175,7 +175,7 @@
                 <div class="list"></div>
             </div>
             <div class="menu" title="option_capture_exclude_title" data-map="capture_exclude" data-rel="capture_enabled" i18n>
-                <div class="title" i18n>option_match_exclude</div>
+                <h4 i18n>option_match_exclude</h4>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add_rule">➕</button>
@@ -194,7 +194,7 @@
                 <button data-bid="back_btn" i18n>option_back</button>
             </div>
             <div class="menu" title="aria2_com_dir_title" i18n>
-                <div class="title" i18n>aria2_com_dir</div>
+                <h4 i18n>aria2_com_dir</h4>
                 <div>
                     <input data-rid="dir" type="text">
                 </div>
@@ -203,7 +203,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_com_cache_title" i18n>
-                <div class="title" i18n>aria2_com_cache</div>
+                <h4 i18n>aria2_com_cache</h4>
                 <div>
                     <input data-rid="disk-cache" type="text">
                     <span>B</span>
@@ -213,7 +213,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_max_concurrent_title" i18n>
-                <div class="title" i18n>aria2_max_concurrent</div>
+                <h4 i18n>aria2_max_concurrent</h4>
                 <div>
                     <input data-rid="max-concurrent-downloads" type="number">
                 </div>
@@ -222,7 +222,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_max_download_title" i18n>
-                <div class="title" i18n>aria2_max_download</div>
+                <h4 i18n>aria2_max_download</h4>
                 <div>
                     <input data-rid="max-overall-download-limit" type="text">
                     <span>B/s</span>
@@ -232,7 +232,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_max_upload_title" i18n>
-                <div class="title" i18n>aria2_max_upload</div>
+                <h4 i18n>aria2_max_upload</h4>
                 <div>
                     <input data-rid="max-overall-upload-limit" type="text">
                     <span>B/s</span>
@@ -243,7 +243,7 @@
             </div>
             <h1>HTTP/FTP</h1>
             <div class="menu" title="aria2_http_retry_title" i18n>
-                <div class="title" i18n>aria2_http_retry</div>
+                <h4 i18n>aria2_http_retry</h4>
                 <div>
                     <input data-rid="max-tries" type="number">
                 </div>
@@ -252,7 +252,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_http_wait_title" i18n>
-                <div class="title" i18n>aria2_http_wait</div>
+                <h4 i18n>aria2_http_wait</h4>
                 <div>
                     <input data-rid="retry-wait" type="number">
                     <span i18n>time_second_full</span>
@@ -262,7 +262,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_http_split_title" i18n>
-                <div class="title" i18n>aria2_http_split</div>
+                <h4 i18n>aria2_http_split</h4>
                 <div>
                     <input data-rid="split" type="number">
                 </div>
@@ -271,7 +271,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_http_size_title" i18n>
-                <div class="title" i18n>aria2_http_size</div>
+                <h4 i18n>aria2_http_size</h4>
                 <div>
                     <input data-rid="min-split-size" type="text">
                     <span>B</span>
@@ -281,7 +281,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_max_connection_title" i18n>
-                <div class="title" i18n>aria2_max_connection</div>
+                <h4 i18n>aria2_max_connection</h4>
                 <div>
                     <input data-rid="max-connection-per-server" type="number">
                 </div>
@@ -290,7 +290,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_http_ua_title" i18n>
-                <div class="title" i18n>aria2_http_ua</div>
+                <h4 i18n>aria2_http_ua</h4>
                 <div>
                     <input data-rid="user-agent" type="text">
                 </div>
@@ -300,7 +300,7 @@
             </div>
             <h1>BitTorrent</h1>
             <div class="menu" title="aria2_bt_port_title" i18n>
-                <div class="title" i18n>aria2_bt_port</div>
+                <h4 i18n>aria2_bt_port</h4>
                 <div>
                     <input data-rid="listen-port" type="text">
                 </div>
@@ -309,7 +309,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_bt_peers_title" i18n>
-                <div class="title" i18n>aria2_bt_peers</div>
+                <h4 i18n>aria2_bt_peers</h4>
                 <div>
                     <input data-rid="bt-max-peers" type="number">
                 </div>
@@ -318,7 +318,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_bt_follow_title" i18n>
-                <div class="title" i18n>aria2_bt_follow</div>
+                <h4 i18n>aria2_bt_follow</h4>
                 <div>
                     <select data-rid="follow-torrent">
                         <option value="true" i18n>aria2_true</option>
@@ -330,7 +330,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_bt_remove_title" i18n>
-                <div class="title" i18n>aria2_bt_remove</div>
+                <h4 i18n>aria2_bt_remove</h4>
                 <div>
                     <select data-rid="bt-remove-unselected-file">
                         <option value="true" i18n>aria2_true</option>
@@ -342,7 +342,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_bt_ratio_title" i18n>
-                <div class="title" i18n>aria2_bt_ratio</div>
+                <h4 i18n>aria2_bt_ratio</h4>
                 <div>
                     <input data-rid="seed-ratio" type="number" min="0" step="0.1">
                 </div>
@@ -351,7 +351,7 @@
                 </div>
             </div>
             <div class="menu" title="aria2_bt_seed_title" i18n>
-                <div class="title" i18n>aria2_bt_seed</div>
+                <h4 i18n>aria2_bt_seed</h4>
                 <div>
                     <input data-rid="seed-time" type="number">
                     <span i18n>time_minute_full</span>

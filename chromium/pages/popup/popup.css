@@ -69,11 +69,11 @@ body {
 #queue > #error .options button,
 .session.http [data-p2p],
 .session.p2p [data-http],
-[data-bid="retry_btn"], [data-bid="save_btn"] {
+.retry, .save {
     display: none;
 }
 
-#queue > :nth-child(n+4) > .http [data-bid="retry_btn"] {
+#queue > :nth-child(n+4) > .http .retry {
     display: inline-block;
 }
 
@@ -81,26 +81,26 @@ body {
     background-color: #4a4a4a;
 }
 
-#queue .meter > .ratio, .session .ready {
+#queue .meter > .ratio, .file > :checked + label, .uri > .used {
     background-color: #0e4d7b;
     color: #ffffff;
 }
 
-#queue > :nth-child(1) .title::before {
+#queue > :nth-child(1) .name::before {
     background-color: #0e4d7b;
 }
 
-#queue > :nth-child(n+2):nth-child(-n+3) .title::before,
+#queue > :nth-child(n+2):nth-child(-n+3) .name::before,
 #queue > :nth-child(3) .meter > .ratio {
     background-color: #d7ad51;
 }
 
-#queue > :nth-child(4) .title::before,
+#queue > :nth-child(4) .name::before,
 #queue > :nth-child(4) .meter > .ratio {
     background-color: #146032;
 }
 
-#queue > :nth-child(n+5) .title::before,
+#queue > :nth-child(n+5) .name::before,
 #queue > :nth-child(6) .meter > .ratio {
     background-color: #a81524;
 }
@@ -149,11 +149,11 @@ body {
     grid-template-columns: repeat(3, 1fr) 22.5px;
 }
 
-.session > .title {
+.session > .name {
     grid-area: 1 / 1 / 1 / 4;
 }
 
-.session > .title::before {
+.session > .name::before {
     content: "";
     border-radius: 50%;
     display: inline-block;
@@ -191,7 +191,7 @@ body {
     margin-top: 5px;
 }
 
-.session [data-bid="save_btn"] {
+.session .save {
     position: absolute;
     top: -10px;
     right: 0px;
@@ -207,7 +207,7 @@ body {
     white-space: nowrap;
 }
 
-.file > :not(:nth-child(2)), .uri > :nth-child(n+2) {
+.file > :not(:nth-child(3)), .uri > :nth-child(n+2) {
     text-align: center;
     padding: 3px 0px;
 }
@@ -215,6 +215,10 @@ body {
 .file {
     display: grid;
     grid-template-columns: 40px auto 80px 60px;
+}
+
+.file > input {
+    display: none;
 }
 
 .uri {
@@ -226,6 +230,6 @@ body {
     display: none;
 }
 
-.session.extra [data-bid="detail_btn"] {
+.session.extra .detail {
     border-style: inset;
 }

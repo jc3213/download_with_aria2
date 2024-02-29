@@ -189,14 +189,13 @@ function sessionUpdated({gid, status, files, bittorrent, completedLength, totalL
 
 function createSession(gid, status, bittorrent) {
     var task = sessionLET.cloneNode(true);
-    var [name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, uris] = task.querySelectorAll('.name, .completed, .day, .hour, .minute, .second, .total, .connect, .download, .upload, .ratio, .files, .files + button, .uris');
-    var settings = task.querySelectorAll('input, select');
-    Object.assign(task, {name, completed, day, hour, minute, second, total, connect, download, upload, ratio, files, save, uris, settings});
+    task.querySelectorAll('[class]').forEach((item) => task[item.className] = item);
+    task.settings = task.querySelectorAll('input, select');
     task.id = gid;
-    task.uris = [];
+    task.links = [];
     task.classList.add(bittorrent ? 'p2p' : 'http');
-    task.addEventListener('click', async ({target, ctrlKey}) => {
-        switch (target.dataset.bid) {
+    task.addEventListener('click', async (event) => {
+        switch (event.target.dataset.bid) {
             case 'remove_btn':
                 taskRemove(task, gid);
                 break;
@@ -210,19 +209,19 @@ function createSession(gid, status, bittorrent) {
                 taskPause(task, gid);
                 break;
             case 'proxy_btn':
-                taskProxy(target, gid);
+                taskProxy(event.target, gid);
                 break;
             case 'save_btn':
                 taskFiles(files, save, gid);
                 break;
             case 'file_btn':
-                taskSelectFile(task, target);
+                taskSelectFile(task, event.target);
                 break;
             case 'adduri_btn':
-                taskAddUri(target, gid);
+                taskAddUri(event.target, gid);
                 break;
             case 'uri_btn':
-                taskRemoveUri(target.textContent, gid, ctrlKey);
+                taskRemoveUri(event.target.textContent, gid, event.ctrlKey);
                 break;
         }
     });
@@ -313,14 +312,13 @@ async function taskProxy(proxy, gid) {
 }
 
 async function taskFiles(files, save, gid) {
-    var selected = [...files.querySelectorAll('.ready')].map(index => index.textContent);
+    var selected = [...files.querySelectorAll('.inuse')].map((index) => index.textContent);
     await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'select-file': selected.join()}]});
     save.style.display = 'none';
 }
 
 function taskSelectFile(task, file) {
-    if (task.queue !== 'stopped' && file.checkbox) {
-        file.className = file.className === 'ready' ? '' : 'ready';
+    if (task.queue !== 'stopped' && !file.previousElementSibling.disabled) {
         task.save.style.display = 'block';
     }
 }
@@ -343,18 +341,19 @@ function getTaskDetail(gid) {
 }
 
 function printFileItem(list, index, path, length, selected, uris) {
-    var item = fileLET.cloneNode(true);
-    var [file, name, size, ratio] = item.querySelectorAll('div');
-    Object.assign(item, {file, name, size, ratio});
-    file.checkbox = uris.length === 0; 
-    file.textContent = index;
-    file.className = selected === 'true' ? 'ready' : '';
-    name.textContent = path.slice(path.lastIndexOf('/') + 1);
-    name.title = path;
-    size.textContent = getFileSize(length);
-    list.appendChild(item);
-    list[index] = item;
-    return item;
+    var file = fileLET.cloneNode(true);
+    file.querySelectorAll('div, label, input').forEach((item) => file[item.className] = item);
+    file.check.disabled = uris.length !== 0;
+    file.check.checked = selected === 'true';
+    file.check.id = aria2Detail.id + '_' + index;
+    file.index.textContent = index;
+    file.index.setAttribute('for', file.check.id);
+    file.name.textContent = path.slice(path.lastIndexOf('/') + 1);
+    file.name.title = path;
+    file.size.textContent = getFileSize(length);
+    list.append(file);
+    list[index] = file;
+    return file;
 }
 
 function printTaskFileList(files) {
@@ -368,31 +367,31 @@ function printTaskFileList(files) {
     });
 }
 
-function printUriItem(list, uri) {
+function printUriItem(list, links, uri) {
     var item = uriLET.cloneNode(true);
-    var [uri, used, wait] = item.querySelectorAll('div');
-    Object.assign(item, {uri, used, wait});
-    list.appendChild(item);
+    item.querySelectorAll('div').forEach((div) => item[div.className] = div);
+    item.link.textContent = uri;
     list[uri] = item;
-    list.uris.push(uri);
+    list.append(item);
+    links.push(uri);
     return item;
 }
 
 function printTaskUriList(uris) {
     var uriList = aria2Detail.uris;
+    var links = aria2Detail.links;
     var result = {};
     uris.forEach(({uri, status}) => {
-        var item = uriList[uri] ?? printUriItem(uriList, uri);
-        item.uri.textContent = uri;
+        var item = uriList[uri] ?? printUriItem(uriList, links, uri);
         var {used, wait} = result[uri] ?? {used: 0, wait: 0};
         status === 'used' ? used ++ : wait ++;
         result[uri] = {used, wait};
     });
-    uriList.uris.forEach((uri) => {
-        if (result[uri] !== undefined) {
+    links.forEach((uri) => {
+        if (result[uri] === undefined) {
             uriList[uri].remove();
             delete uriList[uri];
-            return uriList.uris.splice(uriList.uris.indexOf(uri), 1);
+            return links.splice(links.indexOf(uri), 1);
         }
         uriList[uri].used.textContent = result[uri].used;
         uriList[uri].wait.textContent = result[uri].wait;
