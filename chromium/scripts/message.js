@@ -1,6 +1,3 @@
-var referer = location.href;
-var header = ['Cookie: ' + document.cookie];
-
 window.addEventListener('message', (event) => {
     switch(event.data.aria2c) {
         case 'aria2c-jsonrpc-echo':
@@ -38,5 +35,5 @@ function queryAllImages(archive = {}, result = []) {
         result.push({src, alt});
         archive[src] = alt;
     });
-    return {images: result, options: {referer, header}};
+    return {images: result, options: {referer: location.href, header: ['Cookie: ' + document.cookie]}};
 }
