@@ -263,7 +263,6 @@ function taskOptionsSetUp(options) {
 async function taskDetail(task, gid) {
     if (aria2Detail) {
         aria2Detail.classList.remove('extra');
-        aria2Detail.files.innerHTML = aria2Detail.uris.innerHTML = '';
         aria2Detail.save.style.display = 'none';
     }
     if (aria2Detail === task) {
