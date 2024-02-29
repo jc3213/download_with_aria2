@@ -215,7 +215,7 @@ function createSession(gid, status, bittorrent) {
                 taskChangeFiles(task, gid);
                 break;
             case 'file_btn':
-                taskSelectFile(task, event.target);
+                taskSelectFile(task);
                 break;
             case 'adduri_btn':
                 taskAddUri(event.target, gid);
@@ -317,10 +317,8 @@ async function taskChangeFiles(task, gid) {
     task.save.style.display = 'none';
 }
 
-function taskSelectFile(task, file) {
-    if (task.queue !== 'stopped' && !file.previousElementSibling.disabled) {
-        task.save.style.display = 'block';
-    }
+function taskSelectFile(task) {
+    task.save.style.display = 'block';
 }
 
 async function taskAddUri(adduri, gid) {

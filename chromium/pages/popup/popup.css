@@ -59,9 +59,13 @@ body {
 }
 
 #queue > :nth-child(n+4) input, #queue > :nth-child(n+4) select,
-.session[data-done="true"] label, .session.http [name="max-upload-limit"] {
+.session.http [name="max-upload-limit"] {
     pointer-events: none;
     filter: contrast(25%);
+}
+
+.session[data-done="true"] label {
+    pointer-events: none;
 }
 
 #queue > #complete .options button,
