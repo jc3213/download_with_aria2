@@ -119,6 +119,7 @@ function sessionStatusChange(task, gid, status) {
     }
     self[status + 'Queue'].appendChild(task);
     task.queue = queue;
+    task.status = status;
 }
 
 async function sessionCreated(gid) {
@@ -239,7 +240,7 @@ function createSession(gid, status, bittorrent) {
 }
 
 async function taskRemove(task, gid) {
-    switch (task.parentNode.id) {
+    switch (task.status) {
         case 'waiting':
         case 'paused':
             sessionRemoved('waiting', gid, task);
@@ -293,7 +294,7 @@ async function taskRetry(task, gid) {
 }
 
 async function taskPause(task, gid) {
-    switch (task.parentNode.id) {
+    switch (task.status) {
         case 'active':
         case 'waiting':
             await aria2RPC.call({method: 'aria2.forcePause', params: [gid]});
