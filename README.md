@@ -1,6 +1,6 @@
 ## About
 - This is a browser extension for [Google Chrome](https://www.google.com/intl/en-US/chrome/), [Microsoft Edge](https://www.microsoft.com/edge), [Mozilla Firefox](https://www.mozilla.org/firefox/), and so like browsers
-- Download links or images, capture browser downloads, and manage downloads with aria2c via json-rpc protocol
+- Download links or images, capture browser downloads, and manage downloads with aria2c via the JSON-RPC protocol
 
 ## Install the extension
 - Google Web Store
