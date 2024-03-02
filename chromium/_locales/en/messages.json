@@ -101,7 +101,7 @@
     "option_jsonrpc": {
         "message": "JSON-RPC Server"
     },
-    "option_jsonrpc_uri_title": {
+    "option_jsonrpc_title": {
         "message": "Set scheme, host, and secret of the JSON-RPC"
     },
     "option_task_manager": {
@@ -110,7 +110,7 @@
     "option_manager_newtab": {
         "message": "Open in New Tab"
     },
-    "option_manager_newtab_itle": {
+    "option_manager_newtab_title": {
         "message": "Set whether to open task manager in a new tab"
     },
     "option_manager_interval": {
