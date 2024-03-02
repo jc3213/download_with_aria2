@@ -5,17 +5,17 @@
     "extension_description": {
         "message": "Download links or images, capture browser downloads, and manage downloads with aria2c via the JSON-RPC protocol"
     },
-    "extension_options": {
-        "message": "Options - Download with Aria2"
+    "shortcut_options": {
+        "message": "Open options"
     },
-    "extension_manager": {
-        "message": "Task Manager - Download with Aria2"
+    "shortcut_newdld": {
+        "message": "Open new download"
     },
-    "extension_newdld": {
-        "message": "New Download - Download with Aria2"
+    "download_start": {
+        "message": "Download has started..."
     },
-    "extension_allimages": {
-        "message": "Detected Images - Download with Aria2"
+    "download_complete": {
+        "message": "Download has completed!"
     },
     "contextmenu_thisurl": {
         "message": "Download this link"
@@ -26,11 +26,17 @@
     "contextmenu_allimages": {
         "message": "Download all images on this page"
     },
-    "shortcut_options": {
-        "message": "Open options"
+    "plugins_options": {
+        "message": "Options - Download with Aria2"
     },
-    "shortcut_newdld": {
-        "message": "Open new download"
+    "plugins_manager": {
+        "message": "Task Manager - Download with Aria2"
+    },
+    "plugins_newdld": {
+        "message": "New Download - Download with Aria2"
+    },
+    "plugins_allimages": {
+        "message": "Detected Images - Download with Aria2"
     },
     "time_day": {
         "message": "d"
@@ -151,12 +157,6 @@
     },
     "option_notify_complete_title": {
         "message": "Show notification when a download is completed"
-    },
-    "download_start": {
-        "message": "Download has started..."
-    },
-    "download_complete": {
-        "message": "Download has completed!"
     },
     "option_match_include": {
         "message": "Include Domains"
