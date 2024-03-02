@@ -3,7 +3,7 @@
         "message": "通过 Aria2 下载"
     },
     "extension_description": {
-        "message": "基于 json-rpc 协议，实现通过 aria2c 下载链接或图像，抓取浏览器下载，管理下载任务等"
+        "message": "基于JSON-RPC协议，实现通过 aria2c 下载链接或图像，捕获浏览器下载并管理下载任务"
     },
     "extension_options": {
         "message": "设置 - 通过 Aria2 下载"
@@ -222,34 +222,34 @@
         "message": "为所设置域名的下载添加代理服务器"
     },
     "option_capture": {
-        "message": "抓取浏览器下载"
+        "message": "捕获浏览器下载"
     },
     "option_capture_enabled": {
-        "message": "启用抓取功能"
+        "message": "启用捕获功能"
     },
     "option_capture_enabled_title": {
-        "message": "启用抓取来自浏览器的下载"
+        "message": "启用捕获来自浏览器的下载"
     },
     "option_capture_webrequest": {
-        "message": "启用抓取网络请求"
+        "message": "启用捕获网络请求"
     },
     "option_capture_webrequest_title": {
-        "message": "抓取网络请求而非下载请求，可能存在问题"
+        "message": "捕获网络请求而非下载请求，可能存在问题"
     },
     "option_capture_always": {
-        "message": "总是抓取下载"
+        "message": "总是捕获下载"
     },
     "option_capture_always_title": {
-        "message": "总是抓取来自除了例外以外的浏览器的下载"
+        "message": "总是捕获来自除了例外以外的浏览器的下载"
     },
     "option_capture_filesize": {
         "message": "文件大小"
     },
     "option_capture_filesize_title": {
-        "message": "抓取文件大小超过设置的下载"
+        "message": "捕获文件大小超过设置的下载"
     },
     "option_capture_include_title": {
-        "message": "抓取来自所设置域名的下载"
+        "message": "捕获来自所设置域名的下载"
     },
     "option_capture_exclude_title": {
         "message": "忽略来自所设置域名的下载"
@@ -258,7 +258,7 @@
         "message": "监视文件后缀"
     },
     "option_capture_resolve_title": {
-        "message": "抓取拥有所设置文件后缀的下载"
+        "message": "捕获拥有所设置文件后缀的下载"
     },
     "option_capture_reject": {
         "message": "忽略文件后缀"
