@@ -16,8 +16,13 @@
     "default_locale": "en",
     "content_scripts": [
         {
-            "matches": ["http://*/*", "https://*/*"],
-            "js": ["scripts/message.js"],
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "js": [
+                "scripts/message.js"
+            ],
             "run_at": "document_idle"
         }
     ],
@@ -34,9 +39,9 @@
         }
     },
     "icons": {
-        "128": "icons/128.png",
         "16": "icons/16.png",
-        "48": "icons/48.png"
+        "48": "icons/48.png",
+        "128": "icons/128.png"
     },
     "options_ui": {
         "page": "pages/options/options.html",
