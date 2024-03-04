@@ -35,7 +35,7 @@ function managerOptions() {
     }
 }
 
-chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
+chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     if (action !== 'options_onchange') {
         return;
     }

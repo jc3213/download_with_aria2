@@ -74,10 +74,12 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }
 });
 
-chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
+chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     switch (action) {
+        case 'download_prompt':
+        case 'allimage_prompt':
         case 'options_plugins':
-            response(aria2SendResponse());
+            aria2SendResponse(sender?.tab?.id, response);
             break;
         case 'options_onchange':
             aria2OptionsChanged(params);
@@ -87,12 +89,6 @@ chrome.runtime.onMessage.addListener(({action, params}, {tab}, response) => {
             break;
         case 'message_download':
             aria2DownloadHandler(params);
-            break;
-        case 'download_prompt':
-            response(aria2SendResponse(aria2Message[tab.id]));
-            break;
-        case 'allimage_prompt':
-            response(aria2SendResponse(aria2Message[tab.id]));
             break;
         case 'open_new_download':
             aria2PopupWindow(aria2NewDL, 502);
@@ -169,13 +165,13 @@ async function aria2ImagesPrompt(id, query) {
     });
 }
 
-function aria2SendResponse(params) {
-    return {
+function aria2SendResponse(tabId, response) {
+    response({
         storage: aria2Storage,
         jsonrpc: aria2Global,
         version: aria2Version,
-        params
-    };
+        params: aria2Message[tabId]
+    });
 }
 
 async function aria2DownloadHandler({urls, files}, message = '') {
