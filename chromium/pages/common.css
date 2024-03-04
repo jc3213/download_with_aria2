@@ -93,10 +93,6 @@ button:enabled:active {
     border-style: inset;
 }
 
-button.checked {
-    border-style: inset;
-}
-
 h1 {
     margin: 50px 0px 20px;
 }
