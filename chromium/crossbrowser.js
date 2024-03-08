@@ -287,7 +287,7 @@ async function aria2ClientSetUp() {
     }).catch((error) => {
         chrome.action.setBadgeBackgroundColor({color: '#c33'});
         aria2ToolbarBadge('E');
-        aria2Retry = setTimeout(aria2ClientSetUp, aria2Updated['manager_interval'])
+        aria2Retry = setTimeout(aria2ClientSetUp, aria2Updated['manager_interval']);
     });
 }
 
@@ -403,7 +403,7 @@ function getFileExtension(filename) {
 }
 
 function getNotification(title, message) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         chrome.notifications.create({
             title, message,
             type: 'basic',
