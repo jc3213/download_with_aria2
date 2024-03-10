@@ -225,7 +225,7 @@ async function aria2UpdateJSONRPC(changes) {
 function aria2UpdateStorage() {
     aria2Matches.forEach((key) => {
         var array = aria2Storage[key];
-        aria2Updated[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/, '.*') + ')$');
+        aria2Updated[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/g, '.*') + ')$');
     });
     aria2MultiKeys.forEach((key) => {
         aria2Updated[key] = aria2Storage[key] * aria2Multiplier[key];
