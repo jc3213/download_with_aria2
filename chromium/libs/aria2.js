@@ -18,6 +18,7 @@ class Aria2 {
         if (this._url === url) { return; }
         this._url = url;
         this._jsonrpc = this._scheme + '://' + url;
+        this._onmessage = null;
         if (this.websocket === undefined) { return this.connect(); }
         this.disconnect().then( (event) => this.connect() );
     }
@@ -49,7 +50,7 @@ class Aria2 {
     }
     set onmessage (callback) {
         if (typeof callback !== 'function') { return; }
-        if (this._onmessage === undefined) { this.websocket.then( (websocket) => websocket.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))) ); }
+        if (this._onmessage === null) { this.websocket.then( (websocket) => websocket.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))) ); }
         this._onmessage = callback;
     }
     get onmessage () {
