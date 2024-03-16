@@ -1,9 +1,9 @@
-document.querySelectorAll('[i18n]').forEach(item => {
-    if (item.title !== '') {
-        item.title = chrome.i18n.getMessage(item.title);
-        return;
-    }
-    item.textContent = chrome.i18n.getMessage(item.textContent);
+document.querySelectorAll('[i18n]').forEach((node) => {
+    node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
+});
+
+document.querySelectorAll('[i18n_title]').forEach((node) => {
+    node.title = chrome.i18n.getMessage(node.getAttribute('i18n_title'));
 });
 
 NodeList.prototype.disposition = function (json) {

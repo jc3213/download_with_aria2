@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.8.3.2543",
+    "version": "4.8.4.2544",
     "manifest_version": 2,
     "permissions": [
         "contextMenus",
@@ -14,6 +14,13 @@
         "https://*/*"
     ],
     "default_locale": "en",
+    "background": {
+        "scripts": [
+            "libs/aria2.js",
+            "background.js",
+            "crossbrowser.js"
+        ]
+    },
     "content_scripts": [
         {
             "matches": [
@@ -26,13 +33,6 @@
             "run_at": "document_start"
         }
     ],
-    "background": {
-        "scripts": [
-            "libs/aria2.js",
-            "background.js",
-            "crossbrowser.js"
-        ]
-    },
     "browser_action": {
         "default_icon": {
             "24": "icons/24.png"

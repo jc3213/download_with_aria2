@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.8.3.2543",
+    "version": "4.8.4.2544",
     "manifest_version": 3,
     "permissions": [
         "contextMenus",
@@ -16,6 +16,9 @@
         "https://*/*"
     ],
     "default_locale": "en",
+    "background": {
+        "service_worker": "background.js"
+    },
     "content_scripts": [
         {
             "matches": [
@@ -28,9 +31,6 @@
             "run_at": "document_start"
         }
     ],
-    "background": {
-        "service_worker": "background.js"
-    },
     "action": {
         "default_icon": {
             "24": "icons/24.png"

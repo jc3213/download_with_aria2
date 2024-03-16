@@ -20,6 +20,7 @@
 
 * {
     border-color: #aab0b6;
+    border-radius: 3px;
 }
 
 body, button, input, textarea, select {
