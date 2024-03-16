@@ -1,7 +1,7 @@
 class Aria2 {
     constructor (scheme, url, secret) {
         this.scheme = scheme;
-        this.url = url;
+        this.jsonrpc = scheme + '://' + url;
         this.secret = secret;
     }
     set scheme (scheme) {
@@ -14,15 +14,8 @@ class Aria2 {
     get scheme () {
         return this._scheme;
     }
-    set url (url) {
-        if (this._url === url) { return; }
-        this._url = url;
-        this.jsonrpc = this._scheme + '://' + url;
-    }
-    get url () {
-        return this._url;
-    }
     set jsonrpc (jsonrpc) {
+        if (this.post === undefined) { this.scheme = jsonrpc.slice(0, jsonrpc.indexOf(':')); }
         this._jsonrpc = jsonrpc;
         this._onmessage = null;
         if (this.websocket === undefined) { return this.connect(); }
