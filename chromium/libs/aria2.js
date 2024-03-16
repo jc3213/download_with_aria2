@@ -6,10 +6,10 @@ class Aria2 {
     }
     set scheme (scheme) {
         const methods = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send };
-        if (methods[scheme] === undefined) { throw new Error('Invalid method: ' + scheme + ' is not supported!'); }
+        this.call = this.methods[scheme];
+        if (this.call === undefined) { throw new Error('Invalid method: ' + scheme + ' is not supported!'); }
         this._scheme = scheme;
         this._jsonrpc = scheme + '://' + this._url;
-        this.call = methods[scheme];
     }
     get scheme () {
         return this._scheme;
@@ -17,13 +17,16 @@ class Aria2 {
     set url (url) {
         if (this._url === url) { return; }
         this._url = url;
-        this._jsonrpc = this._scheme + '://' + url;
-        this._onmessage = null;
-        if (this.websocket === undefined) { return this.connect(); }
-        this.disconnect().then( (event) => this.connect() );
+        this.jsonrpc = this._scheme + '://' + url;
     }
     get url () {
         return this._url;
+    }
+    set jsonrpc (jsonrpc) {
+        this._jsonrpc = jsonrpc;
+        this._onmessage = null;
+        if (this.websocket === undefined) { return this.connect(); }
+        this.disconnect().then( (event) => this.connect() );
     }
     get jsonrpc () {
         return this._jsonrpc;
