@@ -1,7 +1,7 @@
 class Aria2 {
     constructor (...entries) {
         const jsonrpc = entries.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
-        if (jsonrpc === null) { throw new Error('Invalid JSON-RPC entry: "' + entries.join('", "') + '"'); }
+        if (!jsonrpc) { throw new Error('Invalid JSON-RPC entry: "' + entries.join('", "') + '"'); }
         this.scheme = jsonrpc[1];
         this.url = jsonrpc[2];
         this.secret = jsonrpc[3];
@@ -9,7 +9,7 @@ class Aria2 {
     set scheme (scheme) {
         const methods = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send };
         this.call = methods[scheme];
-        if (this.call === undefined) { throw new Error('Invalid scheme: ' + scheme + ' is not supported!'); }
+        if (!this.call) { throw new Error('Invalid JSON-RPC scheme: "' + scheme + '" is not supported!'); }
         this._scheme = scheme;
         this._jsonrpc = scheme + '://' + this._url;
     }
@@ -21,7 +21,7 @@ class Aria2 {
         this._url = url;
         this._jsonrpc = this._scheme + '://' + url;
         this._onmessage = null;
-        if (this.websocket === undefined) { return this.connect(); }
+        if (!this.websocket) { return this.connect(); }
         this.disconnect().then( (event) => this.connect() );
     }
     get url () {
@@ -49,7 +49,7 @@ class Aria2 {
     }
     set onmessage (callback) {
         if (typeof callback !== 'function') { return; }
-        if (this._onmessage === null) { this.websocket.then( (websocket) => websocket.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))) ); }
+        if (!this._onmessage) { this.websocket.then( (websocket) => websocket.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))) ); }
         this._onmessage = callback;
     }
     get onmessage () {
