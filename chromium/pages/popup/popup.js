@@ -12,8 +12,8 @@ manager.add(...aria2Queue);
 
 chooseQueue.addEventListener('click', (event) => {
     var {qid} = event.target.dataset;
-    var qpo = aria2Queue.indexOf(qid);
-    qpo === -1 ? aria2Queue.push(qid) : aria2Queue.splice(qpo, 1);
+    var index = aria2Queue.indexOf(qid);
+    index === -1 ? aria2Queue.push(qid) : aria2Queue.splice(index, 1);
     manager.toggle(qid);
     localStorage['queues'] = aria2Queue.join(';');
 });
@@ -82,7 +82,7 @@ function aria2ClientSetUp() {
 }
 
 function aria2WebSocket({method, params}) {
-    if (method === undefined) {
+    if (!method) {
         return;
     }
     var [{gid}] = params;
@@ -113,7 +113,7 @@ async function updateManager() {
 
 function sessionStatusChange(task, gid, status) {
     var queue = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
-    if (self[queue + 'Task'][gid] === undefined) {
+    if (!self[queue + 'Task'][gid]) {
         self[queue + 'Task'][gid] = task;
         self[queue + 'Stat'].textContent ++;
     }
