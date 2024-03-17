@@ -1,6 +1,6 @@
 class Aria2 {
     constructor (...entries) {
-        const [result, scheme, url, secret] = entries.join('#').match(/^(https?|wss?)#?(?::\/\/)?([^#]+)#?(.*)/);
+        const [result, scheme, url, secret] = entries.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)/);
         this.scheme = scheme;
         this.url = url;
         this.secret = secret;
