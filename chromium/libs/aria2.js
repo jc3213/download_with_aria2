@@ -1,7 +1,8 @@
 class Aria2 {
-    constructor (scheme, url, secret) {
+    constructor (...entries) {
+        const [result, scheme, url, secret] = entries.join('#').match(/^(https?|wss?)#?(?::\/\/)?([^#]+)#?(.*)/);
         this.scheme = scheme;
-        this.jsonrpc = scheme + '://' + url;
+        this.url = url;
         this.secret = secret;
     }
     set scheme (scheme) {
@@ -14,15 +15,16 @@ class Aria2 {
     get scheme () {
         return this._scheme;
     }
-    set jsonrpc (jsonrpc) {
-        if (this.post === undefined) { this.scheme = jsonrpc.slice(0, jsonrpc.indexOf(':')); }
-        this._jsonrpc = jsonrpc;
+    set url (url) {
+        if (this._url === url) { return; }
+        this._url = url;
+        this._jsonrpc = this._scheme + '://' + url;
         this._onmessage = null;
         if (this.websocket === undefined) { return this.connect(); }
         this.disconnect().then( (event) => this.connect() );
     }
-    get jsonrpc () {
-        return this._jsonrpc;
+    get url () {
+        return this._url;
     }
     set secret (secret) {
         this._secret = 'token:' + secret;
