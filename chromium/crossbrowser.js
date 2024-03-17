@@ -136,7 +136,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
     if (aria2Storage['proxy_enabled'] || aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
-    if (options['dir'] === undefined && aria2Storage['folder_enabled'] && aria2Storage['folder_defined'] !== '') {
+    if (!options['dir'] && aria2Storage['folder_enabled'] && !aria2Storage['folder_defined']) {
         options['dir'] = aria2Storage['folder_defined'];
     }
     if (aria2Storage['headers_enabled'] && !aria2Updated['headers_exclude'].test(hostname)) {
@@ -292,13 +292,13 @@ async function aria2ClientSetUp() {
 }
 
 async function aria2WebSocket({method, params}) {
-    if (method === undefined) {
+    if (!method) {
         return;
     }
     var [{gid}] = params;
     switch (method) {
         case 'aria2.onDownloadStart':
-            if (aria2Queue[gid] === undefined) {
+            if (!aria2Queue[gid]) {
                 aria2Active ++;
                 aria2Queue[gid] = gid;
             }
@@ -317,7 +317,7 @@ async function aria2WebSocket({method, params}) {
 }
 
 function aria2ToolbarBadge(number) {
-    chrome.action.setBadgeText({text: number === 0 ? '' : number + ''});
+    chrome.action.setBadgeText({text: !number ? '' : number + ''});
 }
 
 function aria2CaptureResult(hostname, fileext, size) {
