@@ -266,7 +266,7 @@ function optionsImport(file) {
 function addRule(list, id, entry) {
     var {value} = entry;
     var old_value = updated[id];
-    if (value !== '' && !old_value.includes(value)) {
+    if (value && !old_value.includes(value)) {
         var new_value = [...old_value, value];
         optionChange(id, new_value);
         entry.value = '';
