@@ -41,7 +41,7 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     }
     var {storage, changes} = params;
     aria2Variables(storage);
-    if (!changes['manager_newtab']) {
+    if ('manager_newtab' in changes && !changes['manager_newtab']) {
         close();
     }
     if ('manager_interval' in changes) {
