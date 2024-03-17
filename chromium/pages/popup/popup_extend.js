@@ -1,9 +1,13 @@
 var aria2InTab = location.search !== '?as_popup';
 
 if (aria2InTab) {
-    document.body.classList.add('full');
+    manager.add('full');
 }
 else {
+    aria2Popup();
+}
+
+function aria2Popup() {
     var positionLeft = allQueues.offsetWidth - choose.offsetWidth;
     var positionTop = allQueues.offsetHeight - choose.offsetHeight + 58;
     choose.style.display = 'none';
