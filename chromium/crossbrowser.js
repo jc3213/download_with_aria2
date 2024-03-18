@@ -136,7 +136,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
     if (aria2Storage['proxy_enabled'] || aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
-    if (!options['dir'] && aria2Storage['folder_enabled'] && !aria2Storage['folder_defined']) {
+    if (!options['dir'] && aria2Storage['folder_enabled'] && aria2Storage['folder_defined']) {
         options['dir'] = aria2Storage['folder_defined'];
     }
     if (aria2Storage['headers_enabled'] && !aria2Updated['headers_exclude'].test(hostname)) {
