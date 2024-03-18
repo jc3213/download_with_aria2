@@ -72,7 +72,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
     }
-    aria2WhenInstall();
+    aria2WhenInstall(reason);
 });
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
@@ -350,11 +350,11 @@ function aria2PopupWindow(url, offsetHeight) {
     });
 }
 
-function aria2WhenInstall() {
+function aria2WhenInstall(reason) {
     if (aria2Storage['notify_install']) {
-        var name = chrome.i18n.getMessage('extension_name');
-        var install = chrome.i18n.getMessage('extension_install').replace('{ver}', chrome.runtime.getManifest().version);
-        return getNotification(name, install);
+        var title = 'Extension ' + reason.charAt(0).toUpperCase() + reason.slice(1);
+        var message = chrome.i18n.getMessage('extension_install').replace('{ver}', chrome.runtime.getManifest().version);
+        return getNotification(title, message);
     }
 }
 
