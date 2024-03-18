@@ -2,7 +2,7 @@ function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
     if (finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
         return;
     }
-    var hostname = referrer === '' ? getHostname(finalUrl) : getHostname(referrer);
+    var hostname = referrer ? getHostname(referrer) : getHostname(finalUrl);
     var captured = aria2CaptureResult(hostname, getFileExtension(filename), fileSize);
     if (captured) {
         chrome.downloads.erase({id});
