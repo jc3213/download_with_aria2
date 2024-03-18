@@ -7,8 +7,7 @@ class Aria2 {
         this.secret = jsonrpc[3];
     }
     set scheme (scheme) {
-        const methods = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send };
-        this.call = methods[scheme];
+        this.call = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send }[ scheme ];
         if (!this.call) { throw new Error('Invalid JSON-RPC scheme: "' + scheme + '" is not supported!'); }
         this._scheme = scheme;
         this._jsonrpc = scheme + '://' + this._url;
