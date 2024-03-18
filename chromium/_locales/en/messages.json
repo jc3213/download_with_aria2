@@ -5,6 +5,9 @@
     "extension_description": {
         "message": "Download links or images, capture browser downloads, and manage downloads with aria2c via the JSON-RPC protocol"
     },
+    "extension_install": {
+        "message": "v{ver} has been installed!" 
+    },
     "shortcut_options": {
         "message": "Open options"
     },
@@ -29,8 +32,11 @@
     "plugins_options": {
         "message": "Options - Download with Aria2"
     },
-    "plugins_manager": {
+    "plugins_popup": {
         "message": "Task Manager - Download with Aria2"
+    },
+    "plugins_monitor": {
+        "message": "Host Monitor - Download with Aria2"
     },
     "plugins_newdld": {
         "message": "New Download - Download with Aria2"
@@ -159,10 +165,10 @@
         "message": "Show notification when a download is completed"
     },
     "option_match_include": {
-        "message": "Include Domains"
+        "message": "Include Hosts"
     },
     "option_match_exclude": {
-        "message": "Exclude Domains"
+        "message": "Exclude Hosts"
     },
     "option_download_prompt": {
         "message": "Enable Download Prompt"
@@ -186,7 +192,7 @@
         "message": "Forward request headers from browser for new downloads"
     },
     "option_headers_exclude_title": {
-        "message": "Don't forward request headers for downloads from these domains"
+        "message": "Don't forward request headers for downloads from these hosts"
     },
     "option_folder": {
         "message": "Download Directory"
@@ -213,7 +219,7 @@
         "message": "Set your preferred proxy server"
     },
     "option_proxy_include_title": {
-        "message": "Add proxy server for new downloads from these domains"
+        "message": "Add proxy server for new downloads from these hosts"
     },
     "option_proxy_enabled": {
         "message": "Always Use Proxy Server"
@@ -249,10 +255,10 @@
         "message": "Capture browser downloads larger than this value"
     },
     "option_capture_include_title": {
-        "message": "Capture browser downloads from these domains"
+        "message": "Capture browser downloads from these hosts"
     },
     "option_capture_exclude_title": {
-        "message": "Ignore browser downloads from these domains"
+        "message": "Ignore browser downloads from these hosts"
     },
     "option_capture_resolve": {
         "message": "Includes File Extensions"

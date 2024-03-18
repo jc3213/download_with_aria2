@@ -17,6 +17,7 @@ var aria2Default = {
     'headers_exclude': [],
     'notify_start': false,
     'notify_complete': false,
+    'notify_install': true,
     'user_agent': 'Transmission/4.0.0',
     'proxy_enabled': false,
     'proxy_server': '',
@@ -66,12 +67,12 @@ var aria2NewDL = '/pages/newdld/newdld.html';
 var aria2Popup = chrome.runtime.getURL('/pages/popup/popup.html');
 var aria2Images = '/pages/images/images.html';
 var aria2Message = {};
-var {manifest_version} = chrome.runtime.getManifest();
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
     }
+    aria2WhenInstall();
 });
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
@@ -204,7 +205,7 @@ function aria2OptionsChanged({storage, changes}) {
     aria2UpdateStorage();
     aria2ContextMenus();
     aria2TaskManager();
-    if (manifest_version === 2) {
+    if (typeof aria2CaptureSwitch === 'function') {
         aria2CaptureSwitch();
     }
 }
@@ -347,6 +348,12 @@ function aria2PopupWindow(url, offsetHeight) {
             }, (popup) => resolve(popup.tabs[0].id));
         });
     });
+}
+
+function aria2WhenInstall() {
+    var name = chrome.i18n.getMessage('extension_name');
+    var install = chrome.i18n.getMessage('extension_install').replace('{ver}', chrome.runtime.getManifest().version);
+    return getNotification(name, install);
 }
 
 function aria2WhenStart(message) {
