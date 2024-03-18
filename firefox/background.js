@@ -67,7 +67,7 @@ async function getFirefoxOptions(filename) {
         if (aria2Storage['folder_firefox']) {
             return {out, dir: filename.slice(0, idx + 1)};
         }
-        if (aria2Storage['folder_defined'] !== '') {
+        if (aria2Storage['folder_defined']) {
             return {out, dir: aria2Storage['folder_defined']};
         }
     }
