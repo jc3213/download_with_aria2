@@ -149,6 +149,12 @@
     "option_notification": {
         "message": "通知"
     },
+    "option_notify_install": {
+        "message": "扩展安装／更新时"
+    },
+    "option_notify_install_title": {
+        "message": "当安装／更新扩展时弹出通知"
+    },
     "option_notify_start": {
         "message": "下载开始时"
     },

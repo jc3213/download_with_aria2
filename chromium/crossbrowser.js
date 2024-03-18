@@ -15,6 +15,7 @@ var aria2Default = {
     'download_prompt': false,
     'headers_enabled': false,
     'headers_exclude': [],
+    'notify_install': true,
     'notify_start': false,
     'notify_complete': false,
     'user_agent': 'Transmission/4.0.0',
@@ -350,9 +351,11 @@ function aria2PopupWindow(url, offsetHeight) {
 }
 
 function aria2WhenInstall() {
-    var name = chrome.i18n.getMessage('extension_name');
-    var install = chrome.i18n.getMessage('extension_install').replace('{ver}', chrome.runtime.getManifest().version);
-    return getNotification(name, install);
+    if (aria2Storage['notify_install']) {
+        var name = chrome.i18n.getMessage('extension_name');
+        var install = chrome.i18n.getMessage('extension_install').replace('{ver}', chrome.runtime.getManifest().version);
+        return getNotification(name, install);
+    }
 }
 
 function aria2WhenStart(message) {
