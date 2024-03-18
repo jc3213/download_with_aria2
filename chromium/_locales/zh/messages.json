@@ -35,9 +35,6 @@
     "plugins_popup": {
         "message": "任务管理器 - 通过 Aria2 下载"
     },
-    "plugins_monitor": {
-        "message": "域名监视器 - 通过 Aria2 下载"
-    },
     "plugins_newdld": {
         "message": "新下载 - 通过 Aria2 下载"
     },

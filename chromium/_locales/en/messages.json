@@ -35,9 +35,6 @@
     "plugins_popup": {
         "message": "Task Manager - Download with Aria2"
     },
-    "plugins_monitor": {
-        "message": "Host Monitor - Download with Aria2"
-    },
     "plugins_newdld": {
         "message": "New Download - Download with Aria2"
     },
