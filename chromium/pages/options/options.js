@@ -24,6 +24,7 @@ var switches = {
     'context_thisimage': false,
     'context_allimages': false,
     'manager_newtab': false,
+    'notify_install': false,
     'notify_start': false,
     'notify_complete': false,
     'download_prompt': false,

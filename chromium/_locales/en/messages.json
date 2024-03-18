@@ -150,10 +150,10 @@
         "message": "Notifications"
     },
     "option_notify_install": {
-        "message": "When Extension Install/Update"
+        "message": "When Installed or Updated"
     },
     "option_notify_install_title": {
-        "message": "Show notification when extension is installed or updated"
+        "message": "Show notification when extension has been installed or updated"
     },
     "option_notify_start": {
         "message": "When Download Start"
