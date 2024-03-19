@@ -352,8 +352,8 @@ function aria2PopupWindow(url, offsetHeight) {
 
 function aria2WhenInstall(reason) {
     if (aria2Storage['notify_install']) {
-        var title = reason === "install" ? "Extension Install" : "Extension Update";;
-        var message = chrome.i18n.getMessage('extension_install').replace('{ver}', chrome.runtime.getManifest().version);
+        var title = chrome.i18n.getMessage('extension_' + reason);
+        var message = chrome.i18n.getMessage('extension_version').replace('{ver}', chrome.runtime.getManifest().version);
         return getNotification(title, message);
     }
 }

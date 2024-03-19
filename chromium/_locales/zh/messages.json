@@ -6,7 +6,13 @@
         "message": "基于JSON-RPC协议，实现通过 aria2c 下载链接或图像，捕获浏览器下载并管理下载任务"
     },
     "extension_install": {
-        "message": "已安装版本{ver}！" 
+        "message": "扩展已安装"
+    },
+    "extension_update": {
+        "message": "扩展已升级"
+    },
+    "extension_version": {
+        "message": "已安装版本v{ver}！"
     },
     "shortcut_options": {
         "message": "打开设置"

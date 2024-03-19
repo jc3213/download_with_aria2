@@ -6,7 +6,13 @@
         "message": "Download links or images, capture browser downloads, and manage downloads with aria2c via the JSON-RPC protocol"
     },
     "extension_install": {
-        "message": "v{ver} has been installed!" 
+        "message": "Extension Installed"
+    },
+    "extension_update": {
+        "message": "Extension Updated"
+    },
+    "extension_version": {
+        "message": "v{ver} has been installed!"
     },
     "shortcut_options": {
         "message": "Open options"
