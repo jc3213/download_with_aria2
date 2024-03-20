@@ -1,7 +1,7 @@
 class Aria2 {
-    constructor (...entries) {
-        const jsonrpc = entries.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
-        if (!jsonrpc) { throw new Error('Invalid JSON-RPC entry: "' + entries.join('", "') + '"'); }
+    constructor (...args) {
+        const jsonrpc = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
+        if (!jsonrpc) { throw new Error('Invalid JSON-RPC entry: "' + args.join('", "') + '"'); }
         this.scheme = jsonrpc[1];
         this.url = jsonrpc[2];
         this.secret = jsonrpc[3];
