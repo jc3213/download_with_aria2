@@ -1,7 +1,7 @@
 var aria2Detail;
 var aria2Alive;
 var aria2SizeKeys = ['min-split-size','max-download-limit','max-upload-limit'];
-var aria2Queue = localStorage['queues']?.split(';') ?? [];
+var aria2Queue = localStorage['queues']?.match(/[^;]+/g) ?? [];
 var manager = document.body.classList;
 var chooseQueue = document.querySelector('#choose');
 var [downloadStat, uploadStat, activeStat, waitingStat, stoppedStat] = document.querySelectorAll('#status > *');
