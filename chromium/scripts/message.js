@@ -1,9 +1,9 @@
 window.addEventListener('message', (event) => {
     switch(event.data.aria2c) {
-        case 'aria2c-jsonrpc-echo':
+        case 'aria2c_jsonrpc_echo':
             aria2RPCEcho();
             break;
-        case 'aria2c-jsonrpc-call':
+        case 'aria2c_jsonrpc_call':
             aria2RPCCall(event.data.params);
             break;
     }
@@ -27,7 +27,10 @@ chrome.runtime.onMessage.addListener(({query}, sender, response) => {
     }
 });
 
-function queryAllImages(archive = {}, result = []) {
+function queryAllImages() {
+    var archive = {};
+    var result = [];
+    var referer = location.href;
     document.querySelectorAll('img').forEach(({src, alt}) => {
         if (src === referer || src.startsWith('data') || src in archive) {
             return;
@@ -35,5 +38,5 @@ function queryAllImages(archive = {}, result = []) {
         result.push({src, alt});
         archive[src] = alt;
     });
-    return {images: result, options: {referer: location.href, header: ['Cookie: ' + document.cookie]}};
+    return {images: result, options: {referer, header: ['Cookie: ' + document.cookie]}};
 }

@@ -98,8 +98,8 @@ h1 {
     margin: 50px 0px 20px;
 }
 
-h4 {
-    margin: 0px;
+h4, h4 + div + div {
+    margin: 3px 0px;
 }
 
 :disabled {

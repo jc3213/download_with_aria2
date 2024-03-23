@@ -92,7 +92,7 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
             aria2DownloadHandler(params);
             break;
         case 'open_new_download':
-            aria2PopupWindow(aria2NewDL, 502);
+            aria2PopupWindow(aria2NewDL, 532);
             break;
     }
 });
@@ -103,7 +103,7 @@ chrome.commands.onCommand.addListener((command) => {
             chrome.runtime.openOptionsPage();
             break;
         case 'open_new_download':
-            aria2PopupWindow(aria2NewDL, 502);
+            aria2PopupWindow(aria2NewDL, 532);
             break;
     }
 });
@@ -145,7 +145,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
         options['header'] = await aria2SetCookies(url, storeId);
     }
     if (aria2Storage['download_prompt']) {
-        var id = await aria2PopupWindow(aria2NewDL + '?slim_mode', 307);
+        var id = await aria2PopupWindow(aria2NewDL + '?slim_mode', 319);
         aria2Message[id] = {url, options};
         return;
     }
