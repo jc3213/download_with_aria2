@@ -270,6 +270,7 @@ async function taskDetail(task, gid) {
     aria2Detail = task;
     aria2Detail.options = aria2Detail.settings.disposition(taskOptionsSetUp(options.result));
     aria2Detail.classList.add('extra');
+    aria2Detail.scrollIntoView();
     printTaskFileList(files.result);
 }
 
