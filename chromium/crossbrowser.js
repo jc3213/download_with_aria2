@@ -2,26 +2,26 @@ var aria2Default = {
     'jsonrpc_scheme': 'http',
     'jsonrpc_url': 'localhost:6800/jsonrpc',
     'jsonrpc_secret': '',
+    'manager_newtab': false,
+    'manager_interval': 10,
     'context_enabled': true,
     'context_cascade': true,
     'context_thisurl': true,
     'context_thisimage': true,
     'context_allimages': true,
-    'manager_newtab': false,
-    'manager_interval': 10,
-    'folder_enabled': false,
-    'folder_defined': '',
-    'folder_firefox': false,
     'download_prompt': false,
-    'headers_enabled': false,
-    'headers_exclude': [],
     'notify_install': true,
     'notify_start': false,
     'notify_complete': false,
     'user_agent': 'Transmission/4.0.0',
-    'proxy_enabled': false,
+    'headers_enabled': false,
+    'headers_exclude': [],
+    'folder_enabled': false,
+    'folder_defined': '',
+    'folder_firefox': false,
     'proxy_server': '',
     'proxy_include': [],
+    'proxy_enabled': false,
     'capture_enabled': false,
     'capture_always': false,
     'capture_webrequest': false,
@@ -112,7 +112,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
 }
 
 async function aria2ImagesPrompt(tabId, referer, storeId) {
-    var result = await aria2ScriptExecutor(tabId, getAllImages);
+    var result = await aria2ScriptExecutor(tabId, getImagesOnThisPage);
     var header = await aria2SetCookies(referer, storeId);
     var popId = await aria2PopupWindow(aria2Images, 680);
     aria2Message[popId] = {result, options: {referer, header}};
@@ -221,14 +221,14 @@ function aria2OptionsChanged({storage, changes}) {
 }
 
 async function aria2UpdateJSONRPC(changes) {
-    if ('jsonrpc_url' in changes) {
+    if (changes['jsonrpc_url']) {
         await aria2RPC.disconnect();
         return aria2ClientSetUp();
     }
-    if ('jsonrpc_scheme' in changes) {
+    if (changes['jsonrpc_scheme']) {
         aria2RPC.scheme = aria2Storage['jsonrpc_scheme'];
     }
-    if ('jsonrpc_secret' in changes) {
+    if (changes['jsonrpc_secret']) {
         aria2RPC.secret = aria2Storage['jsonrpc_secret'];
     }
 }
@@ -431,15 +431,15 @@ function getNotification(title, message) {
     });
 }
 
-function getAllImages() {
-    var archive = {};
+function getImagesOnThisPage() {
     var result = [];
+    var logs = {};
     document.querySelectorAll('img').forEach(({src, alt}) => {
-        if (!src || src.startsWith('data') || src in archive) {
+        if (!src || src.startsWith('data') || logs[src]) {
             return;
         }
         result.push({src, alt});
-        archive[src] = alt;
+        logs[src] = alt;
     });
     return result;
 }
