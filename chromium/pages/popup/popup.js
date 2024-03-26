@@ -91,13 +91,13 @@ function aria2WebSocket({method, params}) {
             break;
         case 'aria2.onDownloadStart':
             sessionCreated(gid);
-            if (gid in waitingTask) {
+            if (waitingTask[gid]) {
                 sessionRemoved('waiting', gid);
             }
             break;
         default:
             sessionCreated(gid);
-            if (gid in activeTask) {
+            if (activeTask[gid]) {
                 sessionRemoved('active', gid);
             }
             break;

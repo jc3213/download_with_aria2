@@ -48,19 +48,19 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     if ('manager_newtab' in changes && !changes['manager_newtab']) {
         close();
     }
-    if ('manager_interval' in changes) {
+    if (changes['manager_interval']) {
         clearInterval(aria2Alive);
         aria2Alive = setInterval(updateManager, aria2Interval);
     }
-    if ('jsonrpc_url' in changes) {
+    if (changes['jsonrpc_url']) {
         clearInterval(aria2Alive);
         aria2RPC.disconnect();
         return aria2ClientSetUp();
     }
-    if ('jsonrpc_scheme' in changes) {
+    if (changes['jsonrpc_scheme']) {
         aria2RPC.scheme = aria2Scheme;
     }
-    if ('jsonrpc_secret' in changes) {
+    if (changes['jsonrpc_secret']) {
         aria2RPC.secret = aria2Secret;
     }
 });
