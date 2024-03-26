@@ -157,7 +157,7 @@ function optionSetValue(id, value) {
     updated[id] = changes[id] = value;
     saveBtn.disabled = false;
     var entry = entries[id];
-    if (id in records) {
+    if (records[id]) {
         return updateRule(id, value);
     }
     if (id in switches) {
