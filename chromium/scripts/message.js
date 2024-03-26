@@ -18,25 +18,3 @@ function aria2RPCCall(params) {
         chrome.runtime.sendMessage({action: 'message_download', params});
     }
 }
-
-chrome.runtime.onMessage.addListener(({query}, sender, response) => {
-    switch (query) {
-        case 'aria2c_all_images':
-            response(queryAllImages());
-            break;
-    }
-});
-
-function queryAllImages() {
-    var archive = {};
-    var result = [];
-    var referer = location.href;
-    document.querySelectorAll('img').forEach(({src, alt}) => {
-        if (src === referer || src.startsWith('data') || src in archive) {
-            return;
-        }
-        result.push({src, alt});
-        archive[src] = alt;
-    });
-    return {images: result, options: {referer, header: ['Cookie: ' + document.cookie]}};
-}

@@ -125,5 +125,5 @@ chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc
     aria2Storage = storage;
     jsonrpc['user-agent'] = aria2Storage['user_agent'];
     aria2Global = document.querySelectorAll('#options input').disposition({...jsonrpc, ...params.options});
-    params.images.forEach(getImagePreview);
+    params.result.forEach(getImagePreview);
 });

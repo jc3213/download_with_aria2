@@ -9,7 +9,8 @@
         "tabs",
         "cookies",
         "notifications",
-        "storage"
+        "storage",
+        "scripting"
     ],
     "host_permissions": [
         "http://*/*",

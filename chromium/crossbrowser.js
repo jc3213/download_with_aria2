@@ -37,6 +37,7 @@ var aria2Storage = {};
 var aria2Updated = {};
 var aria2Global = {};
 var aria2Version;
+var aria2Manifest = chrome.runtime.getManifest();
 var aria2Active = 0;
 var aria2Queue = {};
 var aria2Matches = [
@@ -75,6 +76,82 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     aria2WhenInstall(reason);
 });
 
+chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
+    switch (menuItemId) {
+        case 'aria2c_this_url':
+            aria2DownloadPrompt(linkUrl, {}, url, getHostname(url), cookieStoreId);
+            break;
+        case 'aria2c_this_image':
+            aria2DownloadPrompt(srcUrl, {}, url, getHostname(url), cookieStoreId);
+            break;
+        case 'aria2c_all_images':
+            aria2ImagesPrompt(id, url);
+            break;
+    }
+});
+
+async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
+    options['user-agent'] = aria2Storage['user_agent'];
+    if (aria2Storage['proxy_enabled'] || aria2Updated['proxy_include'].test(hostname)) {
+        options['all-proxy'] = aria2Storage['proxy_server'];
+    }
+    if (!options['dir'] && aria2Storage['folder_enabled'] && aria2Storage['folder_defined']) {
+        options['dir'] = aria2Storage['folder_defined'];
+    }
+    if (aria2Storage['headers_enabled'] && !aria2Updated['headers_exclude'].test(hostname)) {
+        options['referer'] = referer;
+        options['header'] = await aria2SetCookies(url, storeId);
+    }
+    if (aria2Storage['download_prompt']) {
+        var popid = await aria2PopupWindow(aria2NewDL + '?slim_mode', 319);
+        aria2Message[popid] = {url, options};
+        return;
+    }
+    await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
+    await aria2WhenStart(url);
+}
+
+async function aria2ImagesPrompt(tabId, referer) {
+    var result = await aria2ScriptExecutor(tabId, getAllImages);
+    var header = await aria2SetCookies(referer);
+    var popId = await aria2PopupWindow(aria2Images, 680);
+    aria2Message[popId] = {result, options: {referer, header}};
+}
+
+async function aria2SetCookies(url, storeId, result = 'Cookie:') {
+    var cookies = await getRequestCookies(url, storeId);
+    cookies.forEach(({name, value}) => result += ' ' + name + '=' + value + ';');
+    return [result];
+}
+
+function aria2ScriptExecutor(tabId, func) {
+    if (aria2Manifest.manifest_version === 2) {
+        return new Promise((resolve) => chrome.tabs.executeScript(tabId, {code: '(' + func.toString() + ')();'}, (results) => resolve(results[0])));
+    }
+    return chrome.scripting.executeScript({target : {tabId}, func}).then((injectionResults) => injectionResults[0].result);
+}
+
+chrome.commands.onCommand.addListener((command) => {
+    switch (command) {
+        case 'open_options':
+            chrome.runtime.openOptionsPage();
+            break;
+        case 'open_new_download':
+            aria2PopupWindow(aria2NewDL, 532);
+            break;
+    }
+});
+
+chrome.action.onClicked.addListener((tab) => {
+    chrome.tabs.query({currentWindow: true}, (tabs) => {
+        var popup = tabs.find((tab) => tab.url === aria2Popup);
+        if (popup) {
+            return chrome.tabs.update(popup.id, {active: true});
+        }
+        chrome.tabs.create({active: true, url: aria2Popup});
+    });
+});
+
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     switch (action) {
         case 'download_prompt':
@@ -96,75 +173,6 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
             break;
     }
 });
-
-chrome.commands.onCommand.addListener((command) => {
-    switch (command) {
-        case 'open_options':
-            chrome.runtime.openOptionsPage();
-            break;
-        case 'open_new_download':
-            aria2PopupWindow(aria2NewDL, 532);
-            break;
-    }
-});
-
-chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
-    switch (menuItemId) {
-        case 'aria2c_this_url':
-            aria2DownloadPrompt(linkUrl, {}, url, getHostname(url), cookieStoreId);
-            break;
-        case 'aria2c_this_image':
-            aria2DownloadPrompt(srcUrl, {}, url, getHostname(url), cookieStoreId);
-            break;
-        case 'aria2c_all_images':
-            aria2ImagesPrompt(id, menuItemId);
-            break;
-    }
-});
-
-chrome.action.onClicked.addListener((tab) => {
-    chrome.tabs.query({currentWindow: true}, (tabs) => {
-        var popup = tabs.find((tab) => tab.url === aria2Popup);
-        if (popup) {
-            return chrome.tabs.update(popup.id, {active: true});
-        }
-        chrome.tabs.create({active: true, url: aria2Popup});
-    });
-});
-
-async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
-    options['user-agent'] = aria2Storage['user_agent'];
-    if (aria2Storage['proxy_enabled'] || aria2Updated['proxy_include'].test(hostname)) {
-        options['all-proxy'] = aria2Storage['proxy_server'];
-    }
-    if (!options['dir'] && aria2Storage['folder_enabled'] && aria2Storage['folder_defined']) {
-        options['dir'] = aria2Storage['folder_defined'];
-    }
-    if (aria2Storage['headers_enabled'] && !aria2Updated['headers_exclude'].test(hostname)) {
-        options['referer'] = referer;
-        options['header'] = await aria2SetCookies(url, storeId);
-    }
-    if (aria2Storage['download_prompt']) {
-        var id = await aria2PopupWindow(aria2NewDL + '?slim_mode', 319);
-        aria2Message[id] = {url, options};
-        return;
-    }
-    await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
-    await aria2WhenStart(url);
-}
-
-async function aria2SetCookies(url, storeId, result = 'Cookie:') {
-    var cookies = await getRequestCookies(url, storeId);
-    cookies.forEach(({name, value}) => result += ' ' + name + '=' + value + ';');
-    return [result];
-}
-
-async function aria2ImagesPrompt(id, query) {
-    chrome.tabs.sendMessage(id, {query}, async (params) => {
-        var tabId = await aria2PopupWindow(aria2Images, 680);
-        aria2Message[tabId] = params;
-    });
-}
 
 function aria2SendResponse(tabId, response) {
     response({
@@ -353,7 +361,7 @@ function aria2PopupWindow(url, offsetHeight) {
 function aria2WhenInstall(reason) {
     if (aria2Storage['notify_install']) {
         var title = chrome.i18n.getMessage('extension_' + reason);
-        var message = chrome.i18n.getMessage('extension_version').replace('{ver}', chrome.runtime.getManifest().version);
+        var message = chrome.i18n.getMessage('extension_version').replace('{ver}', aria2Manifest.version);
         return getNotification(title, message);
     }
 }
@@ -419,4 +427,17 @@ function getNotification(title, message) {
             iconUrl: '/icons/48.png'
         }, resolve);
     });
+}
+
+function getAllImages() {
+    var archive = {};
+    var result = [];
+    document.querySelectorAll('img').forEach(({src, alt}) => {
+        if (!src || src.startsWith('data') || src in archive) {
+            return;
+        }
+        result.push({src, alt});
+        archive[src] = alt;
+    });
+    return result;
 }
