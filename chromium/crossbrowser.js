@@ -85,7 +85,7 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
             aria2DownloadPrompt(srcUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_all_images':
-            aria2ImagesPrompt(id, url);
+            aria2ImagesPrompt(id, url, cookieStoreId);
             break;
     }
 });
@@ -103,22 +103,23 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
         options['header'] = await aria2SetCookies(url, storeId);
     }
     if (aria2Storage['download_prompt']) {
-        var popid = await aria2PopupWindow(aria2NewDL + '?slim_mode', 319);
-        aria2Message[popid] = {url, options};
+        var popId = await aria2PopupWindow(aria2NewDL + '?slim_mode', 319);
+        aria2Message[popId] = {url, options};
         return;
     }
     await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
     await aria2WhenStart(url);
 }
 
-async function aria2ImagesPrompt(tabId, referer) {
+async function aria2ImagesPrompt(tabId, referer, storeId) {
     var result = await aria2ScriptExecutor(tabId, getAllImages);
-    var header = await aria2SetCookies(referer);
+    var header = await aria2SetCookies(referer, storeId);
     var popId = await aria2PopupWindow(aria2Images, 680);
     aria2Message[popId] = {result, options: {referer, header}};
 }
 
-async function aria2SetCookies(url, storeId, result = 'Cookie:') {
+async function aria2SetCookies(url, storeId) {
+    var result = 'Cookie:';
     var cookies = await getRequestCookies(url, storeId);
     cookies.forEach(({name, value}) => result += ' ' + name + '=' + value + ';');
     return [result];
@@ -183,7 +184,8 @@ function aria2SendResponse(tabId, response) {
     });
 }
 
-async function aria2DownloadHandler({urls, files}, message = '') {
+async function aria2DownloadHandler({urls, files}) {
+    var message = '';
     if (urls) {
         var session = urls.map(({url, options = {}}) => {
             message += url + '\n';
@@ -213,7 +215,7 @@ function aria2OptionsChanged({storage, changes}) {
     aria2UpdateStorage();
     aria2ContextMenus();
     aria2TaskManager();
-    if (typeof aria2CaptureSwitch === 'function') {
+    if (aria2Manifest.manifest_version === 2) {
         aria2CaptureSwitch();
     }
 }
