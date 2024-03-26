@@ -125,10 +125,10 @@ async function aria2SetCookies(url, storeId, result = 'Cookie:') {
 }
 
 function aria2ScriptExecutor(tabId, func) {
-    if (aria2Manifest.manifest_version === 2) {
-        return new Promise((resolve) => chrome.tabs.executeScript(tabId, {code: '(' + func.toString() + ')();'}, (results) => resolve(results[0])));
+    if (aria2Manifest.manifest_version === 3) {
+        return chrome.scripting.executeScript({target : {tabId}, func}).then((injectionResults) => injectionResults[0].result);
     }
-    return chrome.scripting.executeScript({target : {tabId}, func}).then((injectionResults) => injectionResults[0].result);
+    return new Promise((resolve, reject) => chrome.tabs.executeScript(tabId, {code: '(' + func.toString() + ')();'}, (results) => results ? resolve(results[0]) : reject(chrome.runtime.lastError)));
 }
 
 chrome.commands.onCommand.addListener((command) => {
