@@ -1,15 +1,23 @@
 ## About
 - This is a browser extension for [Google Chrome](https://www.google.com/intl/en-US/chrome/), [Microsoft Edge](https://www.microsoft.com/edge), [Mozilla Firefox](https://www.mozilla.org/firefox/), and so like browsers
-- Download links, or images via contextmenu
-- Download all images of current tab via contextmenu
-- Capture browser downloads via match patterns
-- Forward download request headers when enabled
-- Built-in light-weight Download Manager
-- Filter task queues in Download manager
-- Change JSON-RPC options and task options
-- Manage download files for bit-torrents
-- Notifications when download start, or complete
-- Support proxy server and auto-proxy via match patterns
+- Context menus
+    - Download this link
+    - Download this image
+    - Download all images on this page
+- Capture browser downloads
+    - Capture downloads via [downloads](https://developer.chrome.com/docs/extensions/reference/downloads) API
+    - Capture downloads via [webRequest](https://developer.chrome.com/docs/extensions/reference/webRequest) API
+        - *Firefox only*
+    - Capture downloads via file size
+    - Capture downloads via hostname match patterns
+    - Capture downloads via file name extensions
+- Forward downloads request headers when enabled
+- Support proxy server
+    - Auto-Proxy via hostname match patterns
+- Change options for JSON-RPC and Tasks
+- Backup/Restore options for this extension and JSON-RPC
+- Prompt new download window when enabled before download starts
+- Notification when downloads start, or complete
 
 ## Install the extension
 - Google Web Store
@@ -25,17 +33,3 @@
 - [How to use](//github.com/jc3213/download_with_aria2/wiki)
 - [How to build](//github.com/jc3213/download_with_aria2/wiki/HowToBuild)
 - [Feed back](//github.com/jc3213/download_with_aria2/issues/new/)
-
-## Main Functions
-- Context menus
-    - Download this link
-    - Download this image
-    - Download all images on this page
-- Capture browser downloads
-    - Capture downloads via [downloads](https://developer.chrome.com/docs/extensions/reference/downloads) API
-    - Capture downloads via [webRequest](https://developer.chrome.com/docs/extensions/reference/webRequest) API
-        - *Firefox only*
-    - Forward downloads request headers
-- Backup/Restore options for this extension and aria2 json-rpc
-- Prompt a new window before sending downloads to Aria2
-- Notification when downloads start/complete
