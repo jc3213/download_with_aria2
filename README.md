@@ -6,7 +6,7 @@
     - Download all images on this page
 - Capture browser downloads
     - Capture downloads via [downloads](https://developer.chrome.com/docs/extensions/reference/downloads) API
-    - Capture downloads via [webRequest](https://developer.chrome.com/docs/extensions/reference/webRequest) API
+    - Capture downloads via [webRequest](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/webRequest) API
         - *Firefox only*
     - Capture downloads via file size
     - Capture downloads via hostname match patterns
