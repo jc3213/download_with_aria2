@@ -29,7 +29,18 @@
     - [https://addons.mozilla.org/firefox/addon/download-with-aria2/](https://addons.mozilla.org/firefox/addon/download-with-aria2/) Provider: [@ivysrono](https://github.com/ivysrono)
 
 ## User Manual
-- [Screenshot](//github.com/jc3213/download_with_aria2/wiki/Screenshot)
 - [How to use](//github.com/jc3213/download_with_aria2/wiki)
 - [How to build](//github.com/jc3213/download_with_aria2/wiki/HowToBuild)
 - [Feed back](//github.com/jc3213/download_with_aria2/issues/new/)
+
+## Screenshot
+- Options Manifest V3
+![Options](https://github.com/jc3213/download_with_aria2/assets/8744936/0da3a3ef-3b43-4fbd-ad06-4daa57e3753f)
+- Options JSON-RPC
+![Options (JSON-RPC)](https://github.com/jc3213/download_with_aria2/assets/8744936/3152302d-ef1f-410a-8ea1-534380c13e1b)
+- Task Manager
+![Task Manager](https://github.com/jc3213/download_with_aria2/assets/8744936/2e007b6b-bce2-4da0-ba6d-6efa6df57746)
+- New Download
+![New Download](https://github.com/jc3213/download_with_aria2/assets/8744936/965f1be8-99e6-4485-985a-96f47a13267b)
+- Detected Images
+![Detected Images](https://github.com/jc3213/download_with_aria2/assets/8744936/5626cb60-0dd8-42ff-88c4-0b9e16e80a1c)
