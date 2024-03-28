@@ -434,12 +434,17 @@ function getNotification(title, message) {
 function getImagesOnThisPage() {
     var result = [];
     var logs = {};
-    document.querySelectorAll('img').forEach(({src, alt}) => {
-        if (!src || src.startsWith('data') || logs[src]) {
-            return;
-        }
-        result.push({src, alt});
-        logs[src] = alt;
-    });
+    getImagesInFrame(document);
+    document.querySelectorAll('iframe').forEach((iframe) => getImagesInFrame(iframe.contentDocument ?? iframe.contentWindow.document));
     return result;
+
+    function getImagesInFrame(doc) {
+        doc?.querySelectorAll('img').forEach(({src, alt}) => {
+            if (!src || src.startsWith('data') || logs[src]) {
+                return;
+            }
+            logs[src] = true;
+            result.push({src, alt});
+        });
+    }
 }
