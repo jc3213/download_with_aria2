@@ -250,16 +250,16 @@ function aria2ContextMenus() {
     }
     if (aria2Storage['context_cascade']) {
         var parentId = 'aria2c_contextmenu';
-        chrome.contextMenus.create({id: 'aria2c_contextmenu', title: chrome.i18n.getMessage('extension_name'), contexts: ['link', 'image', 'page']});
+        getContextMenu('aria2c_contextmenu', 'extension_name', ['link', 'image', 'page']);
     }
     if (aria2Storage['context_thisurl']) {
-        chrome.contextMenus.create({id: 'aria2c_this_url', title: chrome.i18n.getMessage('contextmenu_thisurl'), contexts: ['link'], parentId});
+        getContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], parentId);
     }
     if (aria2Storage['context_thisimage']) {
-        chrome.contextMenus.create({id: 'aria2c_this_image', title: chrome.i18n.getMessage('contextmenu_thisimage'), contexts: ['image'], parentId});
+        getContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], parentId);
     }
     if (aria2Storage['context_allimages']) {
-        chrome.contextMenus.create({ id: 'aria2c_all_images', title: chrome.i18n.getMessage('contextmenu_allimages'), contexts: ['page'], parentId});
+        getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], parentId);
     }
 }
 
@@ -397,6 +397,10 @@ function getFileSize(bytes) {
         return (bytes / 10737418.24 | 0) / 100 + 'G';
     }
     return (bytes / 10995116277.76 | 0) / 100 + 'T';
+}
+
+function getContextMenu(id, i18n, contexts, parentId) {
+    chrome.contextMenus.create({id, title: chrome.i18n.getMessage(i18n), contexts, documentUrlPatterns: ['http://*/*', 'https://*/*'], parentId});
 }
 
 function getRequestCookies(url, storeId) {
