@@ -435,7 +435,13 @@ function getImagesOnThisPage() {
     var result = [];
     var logs = {};
     getImagesInFrame(document);
-    document.querySelectorAll('iframe').forEach((iframe) => getImagesInFrame(iframe.contentDocument ?? iframe.contentWindow.document));
+    document.querySelectorAll('iframe').forEach((iframe) => {
+        try {
+            getImagesInFrame(iframe.contentDocument ?? iframe.contentWindow.document);
+        } catch (error) {
+            return;
+        }
+    });
     return result;
 
     function getImagesInFrame(doc) {
