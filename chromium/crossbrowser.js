@@ -67,7 +67,6 @@ var aria2Complete = chrome.i18n.getMessage('download_complete');
 var aria2NewDL = '/pages/newdld/newdld.html';
 var aria2Popup = chrome.runtime.getURL('/pages/popup/popup.html');
 var aria2Images = '/pages/images/images.html';
-var aria2Inspect = {};
 var aria2Message = {};
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
@@ -89,21 +88,6 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
             aria2ImagesPrompt(id, url, cookieStoreId);
             break;
     }
-});
-
-chrome.webNavigation.onBeforeNavigate.addListener(({frameId, tabId}) => {
-    if (frameId === 0) {
-        aria2Inspect[tabId] = [];
-    }
-}, {urlMatches: /https?:\/\//});
-
-chrome.webRequest.onBeforeRequest.addListener(({url, tabId}) => {
-    aria2Inspect[tabId]?.push(url);
-}, {urls: ['http://*/*', 'https://*/*'], types: ['image']});
-
-chrome.tabs.onRemoved.addListener((tabId) => {
-    delete aria2Inspect[tabId];
-    delete aria2Message[tabId];
 });
 
 async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
@@ -128,7 +112,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
 }
 
 async function aria2ImagesPrompt(tabId, referer, storeId) {
-    var result = aria2Inspect[tabId];
+    var result = await aria2ScriptExecutor(tabId, getImagesOnThisPage);
     var header = await aria2SetCookies(referer, storeId);
     var popId = await aria2PopupWindow(aria2Images, 680);
     aria2Message[popId] = {result, options: {referer, header}};
@@ -139,6 +123,13 @@ async function aria2SetCookies(url, storeId) {
     var cookies = await getRequestCookies(url, storeId);
     cookies.forEach(({name, value}) => result += ' ' + name + '=' + value + ';');
     return [result];
+}
+
+function aria2ScriptExecutor(tabId, func) {
+    if (aria2Manifest.manifest_version === 3) {
+        return chrome.scripting.executeScript({target : {tabId}, func}).then((injectionResults) => injectionResults[0].result);
+    }
+    return new Promise((resolve, reject) => chrome.tabs.executeScript(tabId, {code: '(' + func.toString() + ')();'}, (results) => results ? resolve(results[0]) : reject(chrome.runtime.lastError)));
 }
 
 chrome.commands.onCommand.addListener((command) => {
@@ -442,4 +433,28 @@ function getNotification(title, message) {
             iconUrl: '/icons/48.png'
         }, resolve);
     });
+}
+
+function getImagesOnThisPage() {
+    var result = [];
+    var logs = {};
+    getImagesInFrame(document);
+    document.querySelectorAll('iframe').forEach((iframe) => {
+        try {
+            getImagesInFrame(iframe.contentDocument ?? iframe.contentWindow.document);
+        } catch (error) {
+            return;
+        }
+    });
+    return result;
+
+    function getImagesInFrame(doc) {
+        doc?.querySelectorAll('img').forEach(({src, alt}) => {
+            if (!src || src.startsWith('data') || logs[src]) {
+                return;
+            }
+            logs[src] = true;
+            result.push({src, alt});
+        });
+    }
 }

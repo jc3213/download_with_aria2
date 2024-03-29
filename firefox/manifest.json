@@ -10,7 +10,6 @@
         "cookies",
         "notifications",
         "storage",
-        "webNavigation",
         "webRequest",
         "webRequestBlocking",
         "http://*/*",
