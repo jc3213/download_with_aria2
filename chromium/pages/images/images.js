@@ -1,6 +1,7 @@
 var aria2Storage = {};
 var aria2Global = {};
 var result = [];
+var logs = {};
 var [preview, gallery] = document.querySelectorAll('#gallery, #preview > img');
 
 document.addEventListener('keydown', (event) => {
@@ -53,11 +54,11 @@ document.addEventListener('click', (event) => {
     }
 });
 
-async function imagesSubmit(urls = []) {
-    result.forEach(({src, alt, classList}) => {
-        if (classList.contains('checked')) {
-            var options = {'out':  alt, ...aria2Global};
-            urls.push({url: src, options});
+async function imagesSubmit() {
+    var urls = [];
+    result.forEach(({src, alt, className}) => {
+        if (className === 'checked') {
+            urls.push({url: src, options: aria2Global});
         }
     });
     chrome.runtime.sendMessage({action: 'message_download', params: {urls}});
@@ -101,24 +102,22 @@ gallery.addEventListener('mouseenter', ({target}) => {
     }
 }, true);
 
-function getDataFromUrl(src, alt) {
-    var [full, name, ext = '.jpg'] = src.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
-    if (alt) {
-        name += '_' + alt;
-    }
-    return name + ext;
-}
-
-function getImagePreview({src, alt}) {
-    if (!src) {
+function getImagePreview(url) {
+    var fixed = url.match(/^[^?#@!]+/);
+    if (logs[fixed]) {
         return;
     }
-    var filename = getDataFromUrl(src, alt);
     var img = document.createElement('img');
-    img.src = src;
-    img.alt = filename;
-    gallery.append(img);
-    result.push(img);
+    img.src = url;
+    img.addEventListener('load', (event) => {
+        img.alt = img.naturalWidth + 'x' + img.naturalHeight;
+        result.push(img);
+        gallery.append(img);
+    });
+    img.addEventListener('error', (event) => {
+        img.remove();
+    });
+    logs[fixed] = true;
 }
 
 chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc, params}) => {

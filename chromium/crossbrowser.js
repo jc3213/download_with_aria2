@@ -90,6 +90,20 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
     }
 });
 
+chrome.webNavigation.onBeforeNavigate.addListener(({frameId, tabId}) => {
+    if (frameId === 0) {
+        aria2Message[tabId] = [];
+    }
+}, {urlMatches: /https?:\/\/.*/});
+
+chrome.webRequest.onBeforeRequest.addListener(({url, tabId}) => {
+    aria2Message[tabId].push(url);
+}, {urls: ['http://*/*', 'https://*/*'], types: ['image']});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+    delete aria2Message[tabId];
+});
+
 async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
     options['user-agent'] = aria2Storage['user_agent'];
     if (aria2Storage['proxy_enabled'] || aria2Updated['proxy_include'].test(hostname)) {
@@ -112,7 +126,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
 }
 
 async function aria2ImagesPrompt(tabId, referer, storeId) {
-    var result = await aria2ScriptExecutor(tabId, getImagesOnThisPage);
+    var result = aria2Message[tabId];
     var header = await aria2SetCookies(referer, storeId);
     var popId = await aria2PopupWindow(aria2Images, 680);
     aria2Message[popId] = {result, options: {referer, header}};
@@ -123,13 +137,6 @@ async function aria2SetCookies(url, storeId) {
     var cookies = await getRequestCookies(url, storeId);
     cookies.forEach(({name, value}) => result += ' ' + name + '=' + value + ';');
     return [result];
-}
-
-function aria2ScriptExecutor(tabId, func) {
-    if (aria2Manifest.manifest_version === 3) {
-        return chrome.scripting.executeScript({target : {tabId}, func}).then((injectionResults) => injectionResults[0].result);
-    }
-    return new Promise((resolve, reject) => chrome.tabs.executeScript(tabId, {code: '(' + func.toString() + ')();'}, (results) => results ? resolve(results[0]) : reject(chrome.runtime.lastError)));
 }
 
 chrome.commands.onCommand.addListener((command) => {
@@ -433,28 +440,4 @@ function getNotification(title, message) {
             iconUrl: '/icons/48.png'
         }, resolve);
     });
-}
-
-function getImagesOnThisPage() {
-    var result = [];
-    var logs = {};
-    getImagesInFrame(document);
-    document.querySelectorAll('iframe').forEach((iframe) => {
-        try {
-            getImagesInFrame(iframe.contentDocument ?? iframe.contentWindow.document);
-        } catch (error) {
-            return;
-        }
-    });
-    return result;
-
-    function getImagesInFrame(doc) {
-        doc?.querySelectorAll('img').forEach(({src, alt}) => {
-            if (!src || src.startsWith('data') || logs[src]) {
-                return;
-            }
-            logs[src] = true;
-            result.push({src, alt});
-        });
-    }
 }

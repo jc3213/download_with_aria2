@@ -10,6 +10,8 @@
         "cookies",
         "notifications",
         "storage",
+        "webNavigation",
+        "webRequest",
         "http://*/*",
         "https://*/*"
     ],
