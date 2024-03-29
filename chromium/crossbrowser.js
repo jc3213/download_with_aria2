@@ -94,7 +94,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(({frameId, tabId}) => {
     if (frameId === 0) {
         aria2Message[tabId] = [];
     }
-}, {urlMatches: /https?:\/\/.*/});
+}, {urlMatches: /https?:\/\//});
 
 chrome.webRequest.onBeforeRequest.addListener(({url, tabId}) => {
     aria2Message[tabId].push(url);
