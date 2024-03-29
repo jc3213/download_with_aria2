@@ -102,22 +102,20 @@ gallery.addEventListener('mouseenter', ({target}) => {
     }
 }, true);
 
+gallery.addEventListener('load', ({target}) => {
+    target.alt = target.naturalWidth + 'x' + target.naturalHeight;
+});
+
 function getImagePreview(url) {
-    var fixed = url.match(/^[^?#@!]+/);
-    if (logs[fixed]) {
+    var fixed = url.match(/^[^?#@!]+\.(jpe?g|gif|png|webp|svg|ico|avif|bmp)/);
+    if (!fixed || logs[fixed[0]]) {
         return;
     }
     var img = document.createElement('img');
     img.src = url;
-    img.addEventListener('load', (event) => {
-        img.alt = img.naturalWidth + 'x' + img.naturalHeight;
-        result.push(img);
-        gallery.append(img);
-    });
-    img.addEventListener('error', (event) => {
-        img.remove();
-    });
-    logs[fixed] = true;
+    result.push(img);
+    gallery.append(img);
+    logs[fixed[0]] = true;
 }
 
 chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc, params}) => {
