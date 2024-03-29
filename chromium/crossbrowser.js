@@ -67,6 +67,7 @@ var aria2Complete = chrome.i18n.getMessage('download_complete');
 var aria2NewDL = '/pages/newdld/newdld.html';
 var aria2Popup = chrome.runtime.getURL('/pages/popup/popup.html');
 var aria2Images = '/pages/images/images.html';
+var aria2Inspect = {};
 var aria2Message = {};
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
@@ -92,15 +93,16 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
 
 chrome.webNavigation.onBeforeNavigate.addListener(({frameId, tabId}) => {
     if (frameId === 0) {
-        aria2Message[tabId] = { inspect: [] };
+        aria2Inspect[tabId] = [];
     }
 }, {urlMatches: /https?:\/\//});
 
 chrome.webRequest.onBeforeRequest.addListener(({url, tabId}) => {
-    aria2Message[tabId]?.inspect?.push(url);
+    aria2Inspect[tabId]?.push(url);
 }, {urls: ['http://*/*', 'https://*/*'], types: ['image']});
 
 chrome.tabs.onRemoved.addListener((tabId) => {
+    delete aria2Inspect[tabId]
     delete aria2Message[tabId];
 });
 
@@ -126,7 +128,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
 }
 
 async function aria2ImagesPrompt(tabId, referer, storeId) {
-    var result = aria2Message[tabId].inspect;
+    var result = aria2Inspect[tabId];
     var header = await aria2SetCookies(referer, storeId);
     var popId = await aria2PopupWindow(aria2Images, 680);
     aria2Message[popId] = {result, options: {referer, header}};
