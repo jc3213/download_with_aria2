@@ -102,7 +102,7 @@ chrome.webRequest.onBeforeRequest.addListener(({url, tabId}) => {
 }, {urls: ['http://*/*', 'https://*/*'], types: ['image']});
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-    delete aria2Inspect[tabId]
+    delete aria2Inspect[tabId];
     delete aria2Message[tabId];
 });
 
