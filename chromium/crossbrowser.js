@@ -92,12 +92,12 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
 
 chrome.webNavigation.onBeforeNavigate.addListener(({frameId, tabId}) => {
     if (frameId === 0) {
-        aria2Message[tabId] = [];
+        aria2Message[tabId] = { inspect: [] };
     }
 }, {urlMatches: /https?:\/\//});
 
 chrome.webRequest.onBeforeRequest.addListener(({url, tabId}) => {
-    aria2Message[tabId].push(url);
+    aria2Message[tabId].inspect?.push(url);
 }, {urls: ['http://*/*', 'https://*/*'], types: ['image']});
 
 chrome.tabs.onRemoved.addListener((tabId) => {
@@ -126,7 +126,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
 }
 
 async function aria2ImagesPrompt(tabId, referer, storeId) {
-    var result = aria2Message[tabId];
+    var result = aria2Message[tabId].inspect;
     var header = await aria2SetCookies(referer, storeId);
     var popId = await aria2PopupWindow(aria2Images, 680);
     aria2Message[popId] = {result, options: {referer, header}};
