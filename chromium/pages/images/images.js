@@ -107,15 +107,15 @@ gallery.addEventListener('load', ({target}) => {
 });
 
 function getImagePreview(url) {
-    var fixed = url.match(/^[^?#@!]+\.(jpe?g|gif|png|webp|svg|ico|avif|bmp)/);
-    if (!fixed || logs[fixed[0]]) {
+    var fixed = url.match(/[^?#@!]+/)[0];
+    if (logs[fixed]) {
         return;
     }
     var img = document.createElement('img');
     img.src = url;
     result.push(img);
     gallery.append(img);
-    logs[fixed[0]] = true;
+    logs[fixed] = true;
 }
 
 chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc, params}) => {
