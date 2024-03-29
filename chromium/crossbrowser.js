@@ -97,7 +97,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(({frameId, tabId}) => {
 }, {urlMatches: /https?:\/\//});
 
 chrome.webRequest.onBeforeRequest.addListener(({url, tabId}) => {
-    aria2Message[tabId].inspect?.push(url);
+    aria2Message[tabId]?.inspect?.push(url);
 }, {urls: ['http://*/*', 'https://*/*'], types: ['image']});
 
 chrome.tabs.onRemoved.addListener((tabId) => {
