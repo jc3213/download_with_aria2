@@ -191,10 +191,6 @@ body {
     grid-area: 5 / 1 / 5 / 5;
 }
 
-.session > .options > * {
-    margin-top: 5px;
-}
-
 .session .save {
     position: absolute;
     top: -10px;
