@@ -1,6 +1,6 @@
 ## About
 - This is a browser extension for [aria2 - ultra fast download utility](https://github.com/aria2/aria2) via JSON-RPC
-    - It supports Google Chrome](https://www.google.com/intl/en-US/chrome/), [Microsoft Edge](https://www.microsoft.com/edge), [Mozilla Firefox](https://www.mozilla.org/firefox/), and so like browsers
+    - It supports [Google Chrome](https://www.google.com/intl/en-US/chrome/), [Microsoft Edge](https://www.microsoft.com/edge), [Mozilla Firefox](https://www.mozilla.org/firefox/), and so like browsers
 - Context menus
     - Download this link
     - Download this image
