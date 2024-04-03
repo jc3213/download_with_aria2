@@ -3,7 +3,7 @@
         "message": "Download with Aria2"
     },
     "extension_description": {
-        "message": "Download links or images, capture browser downloads, and manage downloads with aria2c via the JSON-RPC protocol"
+        "message": "The browser extenson for aria2 download utility via JSON-RPC"
     },
     "extension_install": {
         "message": "Extension Install"

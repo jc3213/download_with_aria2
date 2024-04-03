@@ -3,7 +3,7 @@
         "message": "通过 Aria2 下载"
     },
     "extension_description": {
-        "message": "基于JSON-RPC协议，实现通过 aria2c 下载链接或图像，捕获浏览器下载并管理下载任务"
+        "message": "基于 JSON-RPC 的 aria2 下载器专用浏览器扩展"
     },
     "extension_install": {
         "message": "扩展安装"
