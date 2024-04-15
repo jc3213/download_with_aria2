@@ -61,7 +61,7 @@ input[type="checkbox"] {
 }
 
 .even {
-    padding-top: 27px;
+    margin-top: 32px !important;
 }
 
 .list {
