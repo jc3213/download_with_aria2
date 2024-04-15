@@ -134,11 +134,12 @@ chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
     }
 }, {schemes: ['http', 'https']});
 
-chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) => {
-    if (aria2Tabs[tabId] !== url) {
+chrome.tabs.onUpdated.addListener((tabId, {url}) => {
+    if (url && aria2Tabs[tabId] !== url) {
+        aria2Tabs[tabId] = url;
         aria2Inspect[tabId] = [];
     }
-}, {schemes: ['http', 'https']});
+});
 
 chrome.webRequest.onBeforeRequest.addListener(({url, tabId}) => {
     aria2Inspect[tabId]?.push(url);
