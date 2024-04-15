@@ -10,7 +10,8 @@
         "cookies",
         "notifications",
         "storage",
-        "scripting"
+        "webNavigation",
+        "webRequest"
     ],
     "host_permissions": [
         "http://*/*",

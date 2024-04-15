@@ -67,6 +67,8 @@ var aria2Complete = chrome.i18n.getMessage('download_complete');
 var aria2NewDL = '/pages/newdld/newdld.html';
 var aria2Popup = chrome.runtime.getURL('/pages/popup/popup.html');
 var aria2Images = '/pages/images/images.html';
+var aria2Tabs = {};
+var aria2Inspect = {};
 var aria2Message = {};
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
@@ -112,7 +114,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
 }
 
 async function aria2ImagesPrompt(tabId, referer, storeId) {
-    var result = await aria2ScriptExecutor(tabId, getImagesOnThisPage);
+    var result = aria2Inspect[tabId];
     var header = await aria2SetCookies(referer, storeId);
     var popId = await aria2PopupWindow(aria2Images, 680);
     aria2Message[popId] = {result, options: {referer, header}};
@@ -125,12 +127,28 @@ async function aria2SetCookies(url, storeId) {
     return [result];
 }
 
-function aria2ScriptExecutor(tabId, func) {
-    if (aria2Manifest.manifest_version === 3) {
-        return chrome.scripting.executeScript({target : {tabId}, func}).then((injectionResults) => injectionResults[0].result);
+chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
+    if (frameId === 0) {
+        aria2Tabs[tabId] = url;
+        aria2Inspect[tabId] = [];
     }
-    return new Promise((resolve, reject) => chrome.tabs.executeScript(tabId, {code: '(' + func.toString() + ')();'}, (results) => results ? resolve(results[0]) : reject(chrome.runtime.lastError)));
-}
+}, {schemes: ['http', 'https']});
+
+chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) => {
+    if (aria2Tabs[tabId] !== url) {
+        aria2Inspect[tabId] = [];
+    }
+}, {schemes: ['http', 'https']});
+
+chrome.webRequest.onBeforeRequest.addListener(({url, tabId}) => {
+    aria2Inspect[tabId]?.push(url);
+}, {urls: ['http://*/*', 'https://*/*'], types: ['image']});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+    delete aria2Tabs[tabId];
+    delete aria2Inspect[tabId];
+    delete aria2Message[tabId];
+});
 
 chrome.commands.onCommand.addListener((command) => {
     switch (command) {
@@ -433,28 +451,4 @@ function getNotification(title, message) {
             iconUrl: '/icons/48.png'
         }, resolve);
     });
-}
-
-function getImagesOnThisPage() {
-    var result = [];
-    var logs = {};
-    getImagesInFrame(document);
-    document.querySelectorAll('iframe').forEach((iframe) => {
-        try {
-            getImagesInFrame(iframe.contentDocument ?? iframe.contentWindow.document);
-        } catch (error) {
-            return;
-        }
-    });
-    return result;
-
-    function getImagesInFrame(doc) {
-        doc?.querySelectorAll('img').forEach(({src, alt}) => {
-            if (!src || src.startsWith('data') || logs[src]) {
-                return;
-            }
-            logs[src] = true;
-            result.push({src, alt});
-        });
-    }
 }

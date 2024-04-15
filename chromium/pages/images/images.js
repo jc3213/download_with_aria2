@@ -54,9 +54,9 @@ document.addEventListener('click', (event) => {
 });
 
 async function imagesSubmit(urls = []) {
-    result.forEach(({src, title, classList}) => {
+    result.forEach(({src, alt, classList}) => {
         if (classList.contains('checked')) {
-            var options = {'out': title, ...aria2Global};
+            var options = {'out': alt, ...aria2Global};
             urls.push({url: src, options});
         }
     });
@@ -103,16 +103,15 @@ gallery.addEventListener('mouseenter', ({target}) => {
 
 gallery.addEventListener('load', ({target}) => {
     var [full, name, ext = '.jpg'] = target.src.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
-    target.title = name  + '_' + target.alt + '_' + target.naturalWidth + 'x' + target.naturalHeight + ext;
+    target.alt = name  + '_' + target.alt + '_' + target.naturalWidth + 'x' + target.naturalHeight + ext;
 }, true);
 
-function getImagePreview({src, alt}) {
+function getImagePreview(src) {
     if (!src) {
         return;
     }
     var img = document.createElement('img');
-    img.src = src;
-    img.alt = alt;
+    img.src = img.title = src;
     gallery.append(img);
     result.push(img);
 }
