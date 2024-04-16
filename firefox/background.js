@@ -7,7 +7,7 @@ var aria2WebRequest = {
 function aria2CaptureSwitch() {
     if (aria2Storage['capture_enabled']) {
         if (aria2Storage['capture_webrequest']) {
-            browser.webRequest.onHeadersReceived.addListener(webRequestCapture, {urls: ["<all_urls>"], types: ["main_frame", "sub_frame"]}, ["blocking", "responseHeaders"]);
+            browser.webRequest.onHeadersReceived.addListener(webRequestCapture, {urls: ['<all_urls>'], types: ['main_frame', 'sub_frame']}, ['blocking', 'responseHeaders']);
             return browser.downloads.onCreated.removeListener(downloadCapture);
         }
         browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
