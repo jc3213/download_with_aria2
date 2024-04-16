@@ -54,7 +54,8 @@ document.addEventListener('click', (event) => {
     }
 });
 
-async function imagesSubmit(urls = []) {
+async function imagesSubmit() {
+    var urls = [];
     aria2Images.forEach(({src, alt, header, classList}) => {
         if (classList.contains('checked')) {
             var options = {'out': alt, header, ...aria2Global};
