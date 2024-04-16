@@ -1,7 +1,7 @@
 var aria2Storage = {};
 var aria2Global = {};
-var aria2Manifest = chrome.runtime.getManifest().manifest_version;
 var aria2Images = [];
+var aria2Manifest = chrome.runtime.getManifest().manifest_version;
 var [preview, gallery] = document.querySelectorAll('#gallery, #preview > img');
 
 document.addEventListener('keydown', (event) => {
