@@ -1,5 +1,6 @@
 var aria2Storage = {};
 var aria2Global = {};
+var headers = {};
 var result = [];
 var [preview, gallery] = document.querySelectorAll('#gallery, #preview > img');
 
@@ -54,9 +55,9 @@ document.addEventListener('click', (event) => {
 });
 
 async function imagesSubmit(urls = []) {
-    result.forEach(({src, alt, classList}) => {
+    result.forEach(({src, alt, header, classList}) => {
         if (classList.contains('checked')) {
-            var options = {'out': alt, ...aria2Global};
+            var options = {'out': alt, header, ...aria2Global};
             urls.push({url: src, options});
         }
     });
@@ -106,19 +107,22 @@ gallery.addEventListener('load', ({target}) => {
     target.alt = name  + '_' + target.alt + '_' + target.naturalWidth + 'x' + target.naturalHeight + ext;
 }, true);
 
-function getImagePreview(src) {
-    if (!src) {
-        return;
-    }
+function getImagePreview({url, requestHeaders}) {
     var img = document.createElement('img');
-    img.src = img.title = src;
-    gallery.append(img);
+    img.src = img.title = url;
+    img.header = requestHeaders.map(({name, value}) => name + ': ' + value);
+    headers[url] = requestHeaders;
     result.push(img);
 }
 
 chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc, params}) => {
     aria2Storage = storage;
     jsonrpc['user-agent'] = aria2Storage['user_agent'];
-    aria2Global = document.querySelectorAll('#options input').disposition({...jsonrpc, ...params.options});
-    params.result.forEach(getImagePreview);
+    aria2Global = document.querySelectorAll('#options input').disposition(jsonrpc);
+    params.forEach(getImagePreview);
+    result.forEach((img) => gallery.append(img));
 });
+
+chrome.webRequest.onBeforeSendHeaders.addListener(({url}) => {
+    return {requestHeaders: headers[url]};
+}, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['requestHeaders', 'extraHeaders', 'blocking']);

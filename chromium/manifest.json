@@ -12,6 +12,7 @@
         "storage",
         "webNavigation",
         "webRequest",
+        "webRequestBlocking",
         "http://*/*",
         "https://*/*"
     ],

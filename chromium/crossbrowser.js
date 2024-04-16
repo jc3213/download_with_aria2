@@ -112,11 +112,9 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
     await aria2WhenStart(url);
 }
 
-async function aria2ImagesPrompt(tabId, referer, storeId) {
-    var result = aria2Inspect[tabId].images;
-    var header = await aria2SetCookies(referer, storeId);
+async function aria2ImagesPrompt(tabId) {
     var popId = await aria2PopupWindow(aria2Images, 680);
-    aria2Message[popId] = {result, options: {referer, header}};
+    aria2Message[popId] = aria2Inspect[tabId].images;
 }
 
 async function aria2SetCookies(url, storeId) {
@@ -138,11 +136,11 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) =
     }
 }, {schemes: ['http', 'https']});
 
-chrome.webRequest.onBeforeRequest.addListener(({url, tabId}) => {
+chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, requestHeaders}) => {
     if (aria2Inspect[tabId]) {
-        aria2Inspect[tabId].images.push(url);
+        aria2Inspect[tabId].images.push({url, requestHeaders});
     }
-}, {urls: ['http://*/*', 'https://*/*'], types: ['image']});
+}, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['requestHeaders', 'extraHeaders']);
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
