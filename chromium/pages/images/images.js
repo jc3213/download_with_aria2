@@ -1,7 +1,7 @@
 var aria2Storage = {};
 var aria2Global = {};
-var headers = {};
-var result = [];
+var aria2Manifest = chrome.runtime.getManifest().manifest_version;
+var aria2Images = [];
 var [preview, gallery] = document.querySelectorAll('#gallery, #preview > img');
 
 document.addEventListener('keydown', (event) => {
@@ -55,7 +55,7 @@ document.addEventListener('click', (event) => {
 });
 
 async function imagesSubmit(urls = []) {
-    result.forEach(({src, alt, header, classList}) => {
+    aria2Images.forEach(({src, alt, header, classList}) => {
         if (classList.contains('checked')) {
             var options = {'out': alt, header, ...aria2Global};
             urls.push({url: src, options});
@@ -74,15 +74,15 @@ function imagesProxy(proxy) {
 }
 
 function selectAll() {
-    result.forEach((img) => img.classList.add('checked'));
+    aria2Images.forEach((img) => img.classList.add('checked'));
 }
 
 function selectNone() {
-    result.forEach((img) => img.classList.remove('checked'));
+    aria2Images.forEach((img) => img.classList.remove('checked'));
 }
 
 function selectFlip() {
-    result.forEach((img) => img.classList.toggle('checked'));
+    aria2Images.forEach((img) => img.classList.toggle('checked'));
 }
 
 document.addEventListener('change', (event) => {
@@ -107,22 +107,48 @@ gallery.addEventListener('load', ({target}) => {
     target.alt = name  + '_' + target.alt + '_' + target.naturalWidth + 'x' + target.naturalHeight + ext;
 }, true);
 
-function getImagePreview({url, requestHeaders}) {
-    var img = document.createElement('img');
-    img.src = img.title = url;
-    img.header = requestHeaders.map(({name, value}) => name + ': ' + value);
-    headers[url] = requestHeaders;
-    result.push(img);
-}
-
 chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc, params}) => {
     aria2Storage = storage;
     jsonrpc['user-agent'] = aria2Storage['user_agent'];
     aria2Global = document.querySelectorAll('#options input').disposition(jsonrpc);
-    params.forEach(getImagePreview);
-    result.forEach((img) => gallery.append(img));
+    aria2Manifest === 2 ? aria2ManifestV2(params) : aria2ManifestV3(params);
+    aria2Images.forEach((img) => gallery.append(img));
 });
 
-chrome.webRequest.onBeforeSendHeaders.addListener(({url}) => {
-    return {requestHeaders: headers[url]};
-}, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['requestHeaders', 'extraHeaders', 'blocking']);
+function getImagePreview(url, headers) {
+    var img = document.createElement('img');
+    img.src = img.title = url;
+    img.header = headers.map(({name, value}) => name + ': ' + value);
+    aria2Images.push(img);
+}
+
+function aria2ManifestV2(images) {
+    var headers = {};
+    images.forEach(({url, requestHeaders}) => {
+        getImagePreview(url, requestHeaders);
+        headers[url] = requestHeaders;
+    });
+    chrome.webRequest.onBeforeSendHeaders.addListener(({url}) => {
+        return {requestHeaders: headers[url]};
+    }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['blocking', 'requestHeaders', 'extraHeaders']);
+}
+
+function aria2ManifestV3(images) {
+    var addRules = [];
+    images.forEach(({url, requestHeaders}, index) => {
+        getImagePreview(url, requestHeaders);
+        addRules.push({
+            id: index + 1,
+            priority: 1,
+            action: {
+                type:'modifyHeaders',
+                requestHeaders: requestHeaders.map(({name, value}) => ({header: name, operation: 'set', value}))
+            },
+            condition: {
+                urlFilter: url,
+                resourceTypes: ['image']
+            }
+        });
+    });
+    chrome.declarativeNetRequest.updateDynamicRules({addRules});
+}
