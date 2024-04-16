@@ -54,7 +54,3 @@ body:not(.extra) #options {
     bottom: 38px;
     padding: 5px;
 }
-
-#options > :first-child {
-    margin-top: 0px;
-}
