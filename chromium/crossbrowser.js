@@ -64,9 +64,7 @@ var aria2SizeKeys = [
 ];
 var aria2Start = chrome.i18n.getMessage('download_start');
 var aria2Complete = chrome.i18n.getMessage('download_complete');
-var aria2NewDL = '/pages/newdld/newdld.html';
 var aria2Popup = chrome.runtime.getURL('/pages/popup/popup.html');
-var aria2Images = '/pages/images/images.html';
 var aria2Inspect = {};
 var aria2Message = {};
 
@@ -104,7 +102,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
         options['header'] = await aria2SetCookies(url, storeId);
     }
     if (aria2Storage['download_prompt']) {
-        var popId = await aria2PopupWindow(aria2NewDL + '?slim_mode', 299);
+        var popId = await aria2DownloadWindow(true);
         aria2Message[popId] = {url, options};
         return;
     }
@@ -112,8 +110,12 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
     await aria2WhenStart(url);
 }
 
+async function aria2DownloadWindow(slim) {
+    return slim ? getPopupWindow('/pages/newdld/newdld.html?slim_mode', 299) : getPopupWindow('/pages/newdld/newdld.html', 482);
+}
+
 async function aria2ImagesPrompt(tabId) {
-    var popId = await aria2PopupWindow(aria2Images, 680);
+    var popId = await getPopupWindow('/pages/images/images.html', 680);
     aria2Message[popId] = aria2Inspect[tabId].images;
 }
 
@@ -153,7 +155,7 @@ chrome.commands.onCommand.addListener((command) => {
             chrome.runtime.openOptionsPage();
             break;
         case 'open_new_download':
-            aria2PopupWindow(aria2NewDL, 482);
+            aria2DownloadWindow();
             break;
     }
 });
@@ -182,10 +184,10 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
             aria2RPCOptionsChanged(params);
             break;
         case 'message_download':
-            aria2DownloadHandler(params);
+            aria2MessageHandler(params);
             break;
         case 'open_new_download':
-            aria2PopupWindow(aria2NewDL, 482);
+            aria2DownloadWindow();
             break;
     }
 });
@@ -199,7 +201,7 @@ function aria2SendResponse(tabId, response) {
     });
 }
 
-async function aria2DownloadHandler({urls, files}) {
+async function aria2MessageHandler({urls, files}) {
     var message = '';
     if (urls) {
         var session = urls.map(({url, options = {}}) => {
@@ -265,7 +267,7 @@ function aria2ContextMenus() {
     }
     if (aria2Storage['context_cascade']) {
         var parentId = 'aria2c_contextmenu';
-        getContextMenu('aria2c_contextmenu', 'extension_name', ['link', 'image', 'page']);
+        getContextMenu(parentId, 'extension_name', ['link', 'image', 'page']);
     }
     if (aria2Storage['context_thisurl']) {
         getContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], parentId);
@@ -360,21 +362,6 @@ function aria2CaptureResult(hostname, fileext, size) {
     return false;
 }
 
-function aria2PopupWindow(url, offsetHeight) {
-    return new Promise(async resolve => {
-        chrome.windows.getCurrent(({width, height, left, top}) => {
-            top += (height - offsetHeight) / 2 | 0;
-            left += (width - 710) / 2 | 0;
-            chrome.windows.create({
-                url, left, top,
-                type: 'popup',
-                width: 698,
-                height: offsetHeight
-            }, (popup) => resolve(popup.tabs[0].id));
-        });
-    });
-}
-
 function aria2WhenInstall(reason) {
     if (aria2Storage['notify_install']) {
         var title = chrome.i18n.getMessage('extension_' + reason);
@@ -447,5 +434,20 @@ function getNotification(title, message) {
             type: 'basic',
             iconUrl: '/icons/48.png'
         }, resolve);
+    });
+}
+
+function getPopupWindow(url, offsetHeight) {
+    return new Promise(async resolve => {
+        chrome.windows.getCurrent(({width, height, left, top}) => {
+            top += (height - offsetHeight) / 2 | 0;
+            left += (width - 710) / 2 | 0;
+            chrome.windows.create({
+                url, left, top,
+                type: 'popup',
+                width: 698,
+                height: offsetHeight
+            }, (popup) => resolve(popup.tabs[0].id));
+        });
     });
 }
