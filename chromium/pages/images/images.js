@@ -131,7 +131,7 @@ function aria2ManifestV2({result, filter}) {
     });
     chrome.webRequest.onBeforeSendHeaders.addListener(({url}) => {
         return {requestHeaders: headers[url]};
-    }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, filter);
+    }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['blocking', ...filter]);
 }
 
 function aria2ManifestV3(result) {
