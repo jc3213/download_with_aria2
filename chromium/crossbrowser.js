@@ -67,6 +67,7 @@ var aria2Complete = chrome.i18n.getMessage('download_complete');
 var aria2Popup = chrome.runtime.getURL('/pages/popup/popup.html');
 var aria2Inspect = {};
 var aria2Message = {};
+var aria2HeaderFilter = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
@@ -130,19 +131,19 @@ chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
     if (frameId === 0) {
         aria2Inspect[tabId] = {images: [], url};
     }
-}, {schemes: ['http', 'https']});
+});
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) => {
     if (aria2Inspect[tabId].url !== url) {
         aria2Inspect[tabId] = {images: [], url};
     }
-}, {schemes: ['http', 'https']});
+});
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, requestHeaders}) => {
     if (aria2Inspect[tabId]) {
         aria2Inspect[tabId].images.push({url, requestHeaders});
     }
-}, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['requestHeaders', 'extraHeaders']);
+}, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, aria2HeaderFilter);
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];

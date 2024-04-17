@@ -2,6 +2,7 @@ var aria2Storage = {};
 var aria2Global = {};
 var aria2Images = [];
 var aria2Manifest = chrome.runtime.getManifest().manifest_version;
+var aria2HeaderFilter = typeof browser !== 'undefined' ? ['blocking', 'requestHeaders'] : ['blocking', 'requestHeaders', 'extraHeaders'];
 var [preview, gallery] = document.querySelectorAll('#gallery, #preview > img');
 
 document.addEventListener('keydown', (event) => {
@@ -131,7 +132,7 @@ function aria2ManifestV2(images) {
     });
     chrome.webRequest.onBeforeSendHeaders.addListener(({url}) => {
         return {requestHeaders: headers[url]};
-    }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['blocking', 'requestHeaders', 'extraHeaders']);
+    }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, aria2HeaderFilter);
 }
 
 function aria2ManifestV3(images) {

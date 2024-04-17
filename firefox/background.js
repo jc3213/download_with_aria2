@@ -31,7 +31,7 @@ async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
     }
 }
 
-async function webRequestCapture({statusCode, tabId, url, originUrl, responseHeaders}) {
+async function webRequestCapture({statusCode, cookieStoreId, url, originUrl, responseHeaders}) {
     if (statusCode !== 200) {
         return;
     }
@@ -46,15 +46,13 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
         return;
     }
     var disposition = result['content-disposition'];
-    var out = null;
-    var ext = null;
     if (disposition?.startsWith('attachment')) {
-        out = getFileName(disposition);
-        ext = getFileExtension(out);
+        var out = getFileName(disposition);
+        var ext = getFileExtension(out);
     }
     var hostname = getHostname(originUrl);
     if (aria2CaptureResult(hostname, ext, result['content-length'])) {
-        browser.tabs.get(tabId).then(({cookieStoreId}) => aria2DownloadHandler(url, {out}, originUrl, hostname, cookieStoreId));
+        aria2DownloadHandler(url, {out}, originUrl, hostname, cookieStoreId);
         return {cancel: true};
     }
 }
