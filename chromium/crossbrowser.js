@@ -134,7 +134,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
 });
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) => {
-    if (aria2Inspect[tabId].url !== url) {
+    if (aria2Inspect[tabId] && aria2Inspect[tabId].url !== url) {
         aria2Inspect[tabId] = {images: [], url};
     }
 });
