@@ -26,7 +26,7 @@ async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
     if (captured) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
-            aria2DownloadPrompt(url, await getFirefoxOptions(filename), referrer, hostname, cookieStoreId);
+            aria2DownloadHandler(url, await getFirefoxOptions(filename), referrer, hostname, cookieStoreId);
         }).catch(error => aria2WhenComplete(url));
     }
 }
@@ -54,7 +54,7 @@ async function webRequestCapture({statusCode, tabId, url, originUrl, responseHea
     }
     var hostname = getHostname(originUrl);
     if (aria2CaptureResult(hostname, ext, result['content-length'])) {
-        browser.tabs.get(tabId).then(({cookieStoreId}) => aria2DownloadPrompt(url, {out}, originUrl, hostname, cookieStoreId));
+        browser.tabs.get(tabId).then(({cookieStoreId}) => aria2DownloadHandler(url, {out}, originUrl, hostname, cookieStoreId));
         return {cancel: true};
     }
 }

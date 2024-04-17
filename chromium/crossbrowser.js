@@ -78,10 +78,10 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
     switch (menuItemId) {
         case 'aria2c_this_url':
-            aria2DownloadPrompt(linkUrl, {}, url, getHostname(url), cookieStoreId);
+            aria2DownloadHandler(linkUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_this_image':
-            aria2DownloadPrompt(srcUrl, {}, url, getHostname(url), cookieStoreId);
+            aria2DownloadHandler(srcUrl, {}, url, getHostname(url), cookieStoreId);
             break;
         case 'aria2c_all_images':
             aria2ImagesPrompt(id, url, cookieStoreId);
@@ -89,7 +89,7 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
     }
 });
 
-async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
+async function aria2DownloadHandler(url, options, referer, hostname, storeId) {
     options['user-agent'] = aria2Storage['user_agent'];
     if (aria2Storage['proxy_enabled'] || aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
@@ -102,7 +102,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
         options['header'] = await aria2SetCookies(url, storeId);
     }
     if (aria2Storage['download_prompt']) {
-        var popId = await aria2DownloadWindow(true);
+        var popId = await aria2DownloadPrompt(true);
         aria2Message[popId] = {url, options};
         return;
     }
@@ -110,7 +110,7 @@ async function aria2DownloadPrompt(url, options, referer, hostname, storeId) {
     await aria2WhenStart(url);
 }
 
-async function aria2DownloadWindow(slim) {
+async function aria2DownloadPrompt(slim) {
     return slim ? getPopupWindow('/pages/newdld/newdld.html?slim_mode', 299) : getPopupWindow('/pages/newdld/newdld.html', 482);
 }
 
@@ -155,7 +155,7 @@ chrome.commands.onCommand.addListener((command) => {
             chrome.runtime.openOptionsPage();
             break;
         case 'open_new_download':
-            aria2DownloadWindow();
+            aria2DownloadPrompt();
             break;
     }
 });
@@ -187,7 +187,7 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
             aria2MessageHandler(params);
             break;
         case 'open_new_download':
-            aria2DownloadWindow();
+            aria2DownloadPrompt();
             break;
     }
 });
