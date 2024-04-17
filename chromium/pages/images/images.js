@@ -2,7 +2,6 @@ var aria2Storage = {};
 var aria2Global = {};
 var aria2Images = [];
 var aria2Manifest = chrome.runtime.getManifest().manifest_version;
-var aria2HeaderFilter = typeof browser !== 'undefined' ? ['blocking', 'requestHeaders'] : ['blocking', 'requestHeaders', 'extraHeaders'];
 var [preview, gallery] = document.querySelectorAll('#gallery, #preview > img');
 
 document.addEventListener('keydown', (event) => {
@@ -113,7 +112,7 @@ chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc
     aria2Storage = storage;
     jsonrpc['user-agent'] = aria2Storage['user_agent'];
     aria2Global = document.querySelectorAll('#options input').disposition(jsonrpc);
-    aria2Manifest === 2 ? aria2ManifestV2(params) : aria2ManifestV3(params);
+    aria2Manifest === 2 ? aria2ManifestV2(params) : aria2ManifestV3(params.result);
     aria2Images.forEach((img) => gallery.append(img));
 });
 
@@ -124,20 +123,20 @@ function getImagePreview(url, headers) {
     aria2Images.push(img);
 }
 
-function aria2ManifestV2(images) {
+function aria2ManifestV2({result, filter}) {
     var headers = {};
-    images.forEach(({url, requestHeaders}) => {
+    result.forEach(({url, requestHeaders}) => {
         getImagePreview(url, requestHeaders);
         headers[url] = requestHeaders;
     });
     chrome.webRequest.onBeforeSendHeaders.addListener(({url}) => {
         return {requestHeaders: headers[url]};
-    }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, aria2HeaderFilter);
+    }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, filter);
 }
 
-function aria2ManifestV3(images) {
+function aria2ManifestV3(result) {
     var addRules = [];
-    images.forEach(({url, requestHeaders}, index) => {
+    result.forEach(({url, requestHeaders}, index) => {
         getImagePreview(url, requestHeaders);
         addRules.push({
             id: index + 1,

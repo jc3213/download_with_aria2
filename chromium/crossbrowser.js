@@ -117,7 +117,7 @@ async function aria2DownloadPrompt(slim) {
 
 async function aria2ImagesPrompt(tabId) {
     var popId = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Message[popId] = aria2Inspect[tabId].images;
+    aria2Message[popId] = {result: aria2Inspect[tabId].images, filter: aria2HeaderFilter};
 }
 
 async function aria2SetCookies(url, storeId) {
