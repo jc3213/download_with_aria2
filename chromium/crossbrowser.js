@@ -41,30 +41,6 @@ var aria2Version;
 var aria2Manifest = chrome.runtime.getManifest();
 var aria2Active = 0;
 var aria2Queue = {};
-var aria2Matches = [
-    'headers_exclude',
-    'proxy_include',
-    'capture_include',
-    'capture_exclude'
-];
-var aria2Multiplier = {
-    'manager_interval': 1000,
-    'capture_size_include': 1048576,
-    'capture_size_exclude': 1048576
-};
-var aria2MultiKeys = [
-    'manager_interval',
-    'capture_size_include',
-    'capture_size_exclude'
-];
-var aria2SizeKeys = [
-    'min-split-size',
-    'disk-cache',
-    'max-download-limit',
-    'max-overall-download-limit',
-    'max-upload-limit',
-    'max-overall-upload-limit',
-];
 var aria2Start = chrome.i18n.getMessage('download_start');
 var aria2Complete = chrome.i18n.getMessage('download_complete');
 var aria2Popup = chrome.runtime.getURL('/pages/popup/popup.html');
@@ -272,15 +248,14 @@ async function aria2UpdateJSONRPC(changes) {
 }
 
 function aria2UpdateStorage(json) {
-    aria2Matches.forEach((key) => {
-        var array = json[key];
-        aria2Updated[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/g, '.*') + ')$');
-    });
-    aria2MultiKeys.forEach((key) => {
-        json[key] = json[key] | 0;
-        aria2Updated[key] = json[key] * aria2Multiplier[key];
-    });
     aria2Storage = json;
+    aria2Updated['headers_exclude'] = getMatchPattern(json['headers_exclude']);
+    aria2Updated['proxy_include'] = getMatchPattern(json['proxy_include']);
+    aria2Updated['capture_include'] = getMatchPattern(json['capture_include']);
+    aria2Updated['capture_exclude'] = getMatchPattern(json['capture_exclude']);
+    aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
+    aria2Updated['capture_size_include'] = json['capture_size_include'] * 1048576;
+    aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
 }
 
 function aria2ContextMenus() {
@@ -308,11 +283,15 @@ function aria2TaskManager() {
     chrome.action.setPopup({popup});
 }
 
-function aria2RPCOptionsSetUp(jsonrpc) {
-    aria2SizeKeys.forEach((key) => {
-        jsonrpc[key] = getFileSize(jsonrpc[key]);
-    });
-    return jsonrpc;
+function aria2RPCOptionsSetUp(jsonrpc, version) {
+    jsonrpc['disk-cache'] = getFileSize(jsonrpc['disk-cache']);
+    jsonrpc['min-split-size'] = getFileSize(jsonrpc['min-split-size']);
+    jsonrpc['max-download-limit'] = getFileSize(jsonrpc['max-download-limit']);
+    jsonrpc['max-upload-limit'] = getFileSize(jsonrpc['max-upload-limit']);
+    jsonrpc['max-overall-download-limit'] = getFileSize(jsonrpc['max-overall-download-limit']);
+    jsonrpc['max-overall-upload-limit'] = getFileSize(jsonrpc['max-overall-upload-limit']);
+    aria2Global = jsonrpc;
+    aria2Version = version.version;
 }
 
 function aria2RPCOptionsChanged({jsonrpc}) {
@@ -329,8 +308,8 @@ async function aria2ClientSetUp() {
         {method: 'aria2.tellActive'}
     ).then(([global, version, active]) => {
         chrome.action.setBadgeBackgroundColor({color: '#3cc'});
-        aria2Global = aria2RPCOptionsSetUp(global.result);
-        aria2Version = version.result.version;
+        aria2Global = aria2RPCOptionsSetUp(global.result, version.result);
+        
         aria2Active = active.result.length;
         active.result.forEach(({gid}) => aria2Queue[gid] = gid);
         aria2ToolbarBadge(aria2Active);
@@ -434,6 +413,10 @@ function getRequestCookies(url, storeId) {
         return browser.cookies.getAll({url, storeId, firstPartyDomain: null});
     }
     return new Promise((resolve) => chrome.cookies.getAll({url}, resolve));
+}
+
+function getMatchPattern(array) {
+    return array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/g, '.*') + ')$');
 }
 
 function getSessionName(gid, bittorrent, [{path, uris}]) {
