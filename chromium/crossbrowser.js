@@ -41,9 +41,6 @@ var aria2Version;
 var aria2Manifest = chrome.runtime.getManifest();
 var aria2Active = 0;
 var aria2Queue = {};
-var aria2Start = chrome.i18n.getMessage('download_start');
-var aria2Complete = chrome.i18n.getMessage('download_complete');
-var aria2Popup = chrome.runtime.getURL('/pages/popup/popup.html');
 var aria2Inspect = {};
 var aria2Message = {};
 var aria2HeaderFilter = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
@@ -159,12 +156,13 @@ chrome.commands.onCommand.addListener((command) => {
 });
 
 chrome.action.onClicked.addListener((tab) => {
+    var url = chrome.runtime.getURL('/pages/popup/popup.html');
     chrome.tabs.query({currentWindow: true}, (tabs) => {
-        var popup = tabs.find((tab) => tab.url === aria2Popup);
+        var popup = tabs.find((tab) => tab.url === url);
         if (popup) {
             return chrome.tabs.update(popup.id, {active: true});
         }
-        chrome.tabs.create({active: true, url: aria2Popup});
+        chrome.tabs.create({url, active: true});
     });
 });
 
@@ -279,18 +277,18 @@ function aria2ContextMenus() {
 }
 
 function aria2TaskManager() {
-    var popup = aria2Storage['manager_newtab'] ? '' : aria2Popup + '?as_popup';
+    var popup = aria2Storage['manager_newtab'] ? '' : '/pages/popup/popup.html?as_popup';
     chrome.action.setPopup({popup});
 }
 
-function aria2RPCOptionsSetUp(jsonrpc, version) {
-    jsonrpc['disk-cache'] = getFileSize(jsonrpc['disk-cache']);
-    jsonrpc['min-split-size'] = getFileSize(jsonrpc['min-split-size']);
-    jsonrpc['max-download-limit'] = getFileSize(jsonrpc['max-download-limit']);
-    jsonrpc['max-upload-limit'] = getFileSize(jsonrpc['max-upload-limit']);
-    jsonrpc['max-overall-download-limit'] = getFileSize(jsonrpc['max-overall-download-limit']);
-    jsonrpc['max-overall-upload-limit'] = getFileSize(jsonrpc['max-overall-upload-limit']);
-    aria2Global = jsonrpc;
+function aria2RPCOptionsSetUp(json, version) {
+    json['disk-cache'] = getFileSize(json['disk-cache']);
+    json['min-split-size'] = getFileSize(json['min-split-size']);
+    json['max-download-limit'] = getFileSize(json['max-download-limit']);
+    json['max-upload-limit'] = getFileSize(json['max-upload-limit']);
+    json['max-overall-download-limit'] = getFileSize(json['max-overall-download-limit']);
+    json['max-overall-upload-limit'] = getFileSize(json['max-overall-upload-limit']);
+    aria2Global = json;
     aria2Version = version.version;
 }
 
@@ -308,8 +306,7 @@ async function aria2ClientSetUp() {
         {method: 'aria2.tellActive'}
     ).then(([global, version, active]) => {
         chrome.action.setBadgeBackgroundColor({color: '#3cc'});
-        aria2Global = aria2RPCOptionsSetUp(global.result, version.result);
-        
+        aria2RPCOptionsSetUp(global.result, version.result);
         aria2Active = active.result.length;
         active.result.forEach(({gid}) => aria2Queue[gid] = gid);
         aria2ToolbarBadge(aria2Active);
@@ -375,12 +372,14 @@ function aria2WhenInstall(reason) {
 
 function aria2WhenStart(message) {
     if (aria2Storage['notify_start']) {
-        return getNotification(aria2Start, message);
+        var title = chrome.i18n.getMessage('download_start');
+        return getNotification(title, message);
     }
 }
 
 function aria2WhenComplete(message) {
     if (aria2Storage['notify_complete']) {
+        var title = chrome.i18n.getMessage('download_complete');
         return getNotification(aria2Complete, message);
     }
 }
