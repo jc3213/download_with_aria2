@@ -1,0 +1,94 @@
+body {
+    margin: auto;
+    width: 680px;
+}
+
+body:not(.jsonrpc) #jsonrpc, body.jsonrpc #options, body:not(.firefox) [data-app="firefox"],
+body:not(.context_enabled) [data-rel="context_enabled"], body:not(.headers_enabled) [data-rel="headers_enabled"],
+body:not(.folder_enabled) [data-rel="folder_enabled"], body:not(.capture_enabled) [data-rel="capture_enabled"],
+body.proxy_enabled [data-exc="proxy_enabled"], body.capture_always [data-exc="capture_always"],
+body:not(.capture_enabled) [data-exc*="capture_enabled"], body.capture_webrequest [data-exc*="capture_webrequest"] {
+    display: none;
+}
+
+label {
+    padding: 3px 0px;
+    font-weight: bold;
+}
+
+input[type="checkbox"] {
+    width: auto;
+    transform: scale(1.5);
+    accent-color: #006cbe;
+}
+
+#menu {
+    border-width: 0px 1px 1px;
+    border-style: solid;
+    padding: 8px;
+    position: fixed;
+    top: 0px;
+    z-index: 999999;
+    width: 662px;
+}
+
+#menu > div {
+    margin-left: auto;
+}
+
+#version {
+    padding: 4px;
+}
+
+#version::before {
+    content: "v";
+}
+
+#aria2ua::before {
+    content: "aria2/";
+}
+
+#options, #jsonrpc {
+    margin-top: 30px;
+}
+
+.options {
+    margin-bottom: 30px;
+}
+
+.options > .options {
+    margin: 0px;
+}
+
+.even {
+    margin-top: 32px !important;
+}
+
+.list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.list:not(:empty) {
+    max-height: 58px;
+    border-style: inset;
+    border-width: 1px;
+    overflow-y: scroll;
+    margin-top: 5px;
+}
+
+.rule {
+    display: grid;
+    grid-template-columns: 135px 22px;
+}
+
+.rule > * {
+    padding: 3px;
+    border-style: outset;
+    border-width: 1px;
+    overflow: hidden;
+}
+
+.rule button {
+    font-size: 12px;
+}

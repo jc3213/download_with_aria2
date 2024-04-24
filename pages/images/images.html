@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title i18n="plugins_images"></title>
+        <link rel="stylesheet" href="/pages/common.css">
+        <link rel="stylesheet" href="images.css">
+    </head>
+    <body>
+        <div id="preview"><img></img></div>
+        <hr>
+        <div id="gallery"></div>
+        <hr>
+        <div id="menu" class="flex">
+            <button data-bid="select_all" i18n="select_all"></button>
+            <button data-bid="select_none" i18n="select_none"></button>
+            <button data-bid="select_flip" i18n="select_flip"></button>
+            <button data-bid="submit_btn" i18n="common_submit"></button>
+            <button data-bid="extra_btn" i18n="popup_options"></button>
+        </div>
+        <div id="options" class="options">
+            <div class="menu" i18n_title="aria2_http_ua_title">
+                <h4 i18n="aria2_http_ua"></h4>
+                <div>
+                    <input data-rid="user-agent" type="text">
+                </div>
+            </div>
+            <div class="menu" i18n_title="task_proxy_title">
+                <h4 i18n="task_proxy"></h4>
+                <div class="flex">
+                    <input data-rid="all-proxy" type="url">
+                    <button data-bid="proxy_btn">💾</button>
+                </div>
+            </div>
+            <div class="menu" i18n_title="aria2_com_dir_title">
+                <h4 i18n="aria2_com_dir"></h4>
+                <div>
+                    <input data-rid="dir" type="text">
+                </div>
+            </div>
+            <div class="menu" i18n_title="aria2_max_connection_title">
+                <h4 i18n="aria2_max_connection"></h4>
+                <div>
+                    <input data-rid="max-connection-per-server" type="number">
+                </div>
+            </div>
+        </div>
+        <script src="/pages/common.js"></script>
+        <script src="images.js"></script>
+    </body>
+</html>

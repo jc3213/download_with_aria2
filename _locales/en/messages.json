@@ -1,0 +1,491 @@
+{
+    "extension_name": {
+        "message": "Download with Aria2"
+    },
+    "extension_description": {
+        "message": "The browser extenson for aria2 download utility via JSON-RPC"
+    },
+    "extension_install": {
+        "message": "Extension Install"
+    },
+    "extension_update": {
+        "message": "Extension Update"
+    },
+    "extension_version": {
+        "message": "The v{ver} has been installed!"
+    },
+    "shortcut_options": {
+        "message": "Open options"
+    },
+    "shortcut_newdld": {
+        "message": "Open new download"
+    },
+    "download_start": {
+        "message": "Download Start"
+    },
+    "download_complete": {
+        "message": "Download Complete"
+    },
+    "contextmenu_thisurl": {
+        "message": "Download this link"
+    },
+    "contextmenu_thisimage": {
+        "message": "Download this image"
+    },
+    "contextmenu_allimages": {
+        "message": "Download all images on this page"
+    },
+    "plugins_options": {
+        "message": "Options - Download with Aria2"
+    },
+    "plugins_popup": {
+        "message": "Task Manager - Download with Aria2"
+    },
+    "plugins_newdld": {
+        "message": "New Download - Download with Aria2"
+    },
+    "plugins_allimages": {
+        "message": "Detected Images - Download with Aria2"
+    },
+    "time_day": {
+        "message": "d"
+    },
+    "time_hour": {
+        "message": "h"
+    },
+    "time_minute": {
+        "message": "m"
+    },
+    "time_second": {
+        "message": "s"
+    },
+    "time_minute_full": {
+        "message": "Minute(s)"
+    },
+    "time_second_full": {
+        "message": "Second(s)"
+    },
+    "common_default": {
+        "message": "Default"
+    },
+    "common_disabled": {
+        "message": "Disabled"
+    },
+    "common_submit": {
+        "message": "Submit"
+    },
+    "common_save": {
+        "message": "Save"
+    },
+    "select_all": {
+        "message": "Select All"
+    },
+    "select_none": {
+        "message": "Select None"
+    },
+    "select_flip": {
+        "message": "Flip Selection"
+    },
+    "option_undo": {
+        "message": "Undo"
+    },
+    "option_redo": {
+        "message": "Redo"
+    },
+    "option_export": {
+        "message": "Export"
+    },
+    "option_import": {
+        "message": "Import"
+    },
+    "option_aria2": {
+        "message": "Open JSON-RPC Options"
+    },
+    "option_back": {
+        "message": "Back to Extension Options"
+    },
+    "option_sample": {
+        "message": "Sample"
+    },
+    "option_jsonrpc": {
+        "message": "JSON-RPC Server"
+    },
+    "option_jsonrpc_title": {
+        "message": "Set scheme, host, and secret of the JSON-RPC"
+    },
+    "option_task_manager": {
+        "message": "Task Manager"
+    },
+    "option_manager_newtab": {
+        "message": "Open in New Tab"
+    },
+    "option_manager_newtab_title": {
+        "message": "Set whether to open task manager in a new tab"
+    },
+    "option_manager_interval": {
+        "message": "Refresh Interval"
+    },
+    "option_manager_interval_title": {
+        "message": "Set the refresh interval of task manager"
+    },
+    "option_context": {
+        "message": "Context Menus"
+    },
+    "option_context_enabled": {
+        "message": "Enable Context Menus"
+    },
+    "option_context_enabled_title": {
+        "message": "Enable context menus for this extension"
+    },
+    "option_context_cascade": {
+        "message": "Cascaded Context Menus"
+    },
+    "option_context_cascade_title": {
+        "message": "Enable cascaded context menus"
+    },
+    "option_context_thisurl_title": {
+        "message": "Enable context menu 「Download this link」"
+    },
+    "option_context_thisimage_title": {
+        "message": "Enable context menu 「Download this image」"
+    },
+    "option_context_allimages_title": {
+        "message": "Enable context menu 「Download all images on this page」"
+    },
+    "option_notification": {
+        "message": "Notifications"
+    },
+    "option_notify_install": {
+        "message": "When Installed or Updated"
+    },
+    "option_notify_install_title": {
+        "message": "Show notification when extension has been installed or updated"
+    },
+    "option_notify_start": {
+        "message": "When Download Start"
+    },
+    "option_notify_start_title": {
+        "message": "Show notification when a new download starts"
+    },
+    "option_notify_complete": {
+        "message": "When Download Complete"
+    },
+    "option_notify_complete_title": {
+        "message": "Show notification when a download is completed"
+    },
+    "option_match_include": {
+        "message": "Include Hosts"
+    },
+    "option_match_exclude": {
+        "message": "Exclude Hosts"
+    },
+    "option_download_prompt": {
+        "message": "Enable Download Prompt"
+    },
+    "option_download_prompt_title": {
+        "message": "Prompt a new window to confirm the download before it starts"
+    },
+    "option_headers_useragent": {
+        "message": "User Agent"
+    },
+    "option_headers_useragent_title": {
+        "message": "Set user agent for new downloads"
+    },
+    "option_headers": {
+        "message": "Request Headers"
+    },
+    "option_headers_enabled": {
+        "message": "Enable Forward Request Headers"
+    },
+    "option_headers_enabled_title": {
+        "message": "Forward request headers from browser for new downloads"
+    },
+    "option_headers_exclude_title": {
+        "message": "Don't forward request headers for downloads from these hosts"
+    },
+    "option_folder": {
+        "message": "Download Directory"
+    },
+    "option_folder_title": {
+        "message": "Set your preferred download directory"
+    },
+    "option_folder_enabled": {
+        "message": "Use Download Directory"
+    },
+    "option_folder_enabled_title": {
+        "message": "Save new downloads into preferred download directory"
+    },
+    "option_folder_firefox": {
+        "message": "Follow Browser Behavior"
+    },
+    "option_folder_firefox_title": {
+        "message": "Save downloads into the directory follow browser dialog window"
+    },
+    "option_proxy": {
+        "message": "Proxy Server"
+    },
+    "option_proxy_title": {
+        "message": "Set your preferred proxy server"
+    },
+    "option_proxy_include_title": {
+        "message": "Add proxy server for new downloads from these hosts"
+    },
+    "option_proxy_enabled": {
+        "message": "Always Use Proxy Server"
+    },
+    "option_proxy_enabled_title": {
+        "message": "Always use proxy server for new downloads"
+    },
+    "option_capture": {
+        "message": "Capture Browser Downloads"
+    },
+    "option_capture_enabled": {
+        "message": "Enable Capture Downloads"
+    },
+    "option_capture_enabled_title": {
+        "message": "Enable capture downloads from browser"
+    },
+    "option_capture_webrequest": {
+        "message": "Enable Capture Web Requests"
+    },
+    "option_capture_webrequest_title": {
+        "message": "Enable capture web requests instead of downloads, may be buggy"
+    },
+    "option_capture_always": {
+        "message": "Always Capture Downloads"
+    },
+    "option_capture_always_title": {
+        "message": "Always capture downloads from browser with exceptions"
+    },
+    "option_capture_size_include": {
+        "message": "File Size"
+    },
+    "option_capture_size_include_title": {
+        "message": "Capture browser downloads larger than this value"
+    },
+    "option_capture_include_title": {
+        "message": "Capture browser downloads from these hosts"
+    },
+    "option_capture_exclude_title": {
+        "message": "Ignore browser downloads from these hosts"
+    },
+    "option_capture_type_include": {
+        "message": "Includes File Extensions"
+    },
+    "option_capture_type_include_title": {
+        "message": "Capture browser downloads with these file extensions"
+    },
+    "option_capture_type_exclude": {
+        "message": "Exclude File Extensions"
+    },
+    "option_capture_type_exclude_title": {
+        "message": "Ignore browser downloads with these file extensions"
+    },
+    "popup_download": {
+        "message": "DL Speed"
+    },
+    "popup_upload": {
+        "message": "UL Speed"
+    },
+    "popup_active": {
+        "message": "Active"
+    },
+    "popup_waiting": {
+        "message": "Waiting"
+    },
+    "popup_stopped": {
+        "message": "Stopped"
+    },
+    "popup_newdld": {
+        "message": "New DL"
+    },
+    "popup_purge": {
+        "message": "Purge"
+    },
+    "popup_options": {
+        "message": "Options"
+    },
+    "popup_queue": {
+        "message": "Task Queue"
+    },
+    "popup_active_queue": {
+        "message": "Downloading"
+    },
+    "popup_waiting_queue": {
+        "message": "Wait in Queue"
+    },
+    "popup_paused_queue": {
+        "message": "Download Paused"
+    },
+    "popup_complete_queue": {
+        "message": "Completed"
+    },
+    "popup_removed_queue": {
+        "message": "Download Stopped"
+    },
+    "popup_error_queue": {
+        "message": "Error Occured"
+    },
+    "task_referer": {
+        "message": "Referer"
+    },
+    "task_referer_title": {
+        "message": "Set \"Referer\" header for this download"
+    },
+    "task_batch": {
+        "message": "Download Urls"
+    },
+    "task_batch_title": {
+        "message": "Support multi-line \"URLs\" or \"JSON\" strings"
+    },
+    "task_name": {
+        "message": "File Name"
+    },
+    "task_name_title": {
+        "message": "Set the file name of this download"
+    },
+    "task_proxy": {
+        "message": "Proxy Server"
+    },
+    "task_proxy_title": {
+        "message": "Set the proxy server for this download"
+    },
+    "task_metaurl": {
+        "message": "Upload"
+    },
+    "task_download": {
+        "message": "Max Download Speed"
+    },
+    "task_download_title": {
+        "message": "Set maximum download speed for this download"
+    },
+    "task_upload": {
+        "message": "Max Upload Speed"
+    },
+    "task_upload_title": {
+        "message": "Set maximum upload speed for this download"
+    },
+    "task_urls": {
+        "message": "Download URLs"
+    },
+    "task_urls_title": {
+        "message": "Urls that are used for this download"
+    },
+    "task_files": {
+        "message": "Download Files"
+    },
+    "task_files_title": {
+        "message": "Files that are selected for this download"
+    },
+    "aria2_true": {
+        "message": "True"
+    },
+    "aria2_false": {
+        "message": "False"
+    },
+    "aria2_options": {
+        "message": "Common Settings"
+    },    
+    "aria2_com_dir": {
+        "message": "Download Directory"
+    },
+    "aria2_com_dir_title": {
+        "message": "Set the directory to store the downloaded files"
+    },
+    "aria2_com_cache": {
+        "message": "Disk Cache"
+    },
+    "aria2_com_cache_title": {
+        "message": "Set disk cache to reduce disk I/O"
+    },
+    "aria2_max_concurrent": {
+        "message": "Max Concurrent Downloads"
+    },
+    "aria2_max_concurrent_title": {
+        "message": "Set the maximum number of parallel downloads for every queue item"
+    },
+    "aria2_max_connection": {
+        "message": "Max Connections per Server"
+    },
+    "aria2_max_connection_title": {
+        "message": "Set the maximum number of connections to one server for each download."
+    },
+    "aria2_max_download": {
+        "message": "Global Download Speed"
+    },
+    "aria2_max_download_title": {
+        "message": "Set the maximum download speed for all concurrent tasks"
+    },
+    "aria2_max_upload": {
+        "message": "Global Upload Speed"
+    },
+    "aria2_max_upload_title": {
+        "message": "Set the maximum upload speed for all concurrent tasks"
+    },
+    "aria2_http_retry": {
+        "message": "Max Retries"
+    },
+    "aria2_http_retry_title": {
+        "message": "Set maximum number of retries"
+    },
+    "aria2_http_wait": {
+        "message": "Retry Interval"
+    },
+    "aria2_http_wait_title": {
+        "message": "Set the interval time between retries (SEC)"
+    },
+    "aria2_http_split": {
+        "message": "Download Sections"
+    },
+    "aria2_http_split_title": {
+        "message": "Set the maximum download sections of each download"
+    },
+    "aria2_http_size": {
+        "message": "Section Size"
+    },
+    "aria2_http_size_title": {
+        "message": "Set the minimum size of each download section"
+    },
+    "aria2_http_ua": {
+        "message": "User Agent"
+    },
+    "aria2_http_ua_title": {
+        "message": "Set user agent for HTTP(S) downloads"
+    },
+    "aria2_bt_port": {
+        "message": "Listening Port"
+    },
+    "aria2_bt_port_title": {
+        "message": "Set the listening port for DHT and UDP tracker"
+    },
+    "aria2_bt_peers": {
+        "message": "Max Peers"
+    },
+    "aria2_bt_peers_title": {
+        "message": "Set the maximum peers of each torrent"
+    },
+    "aria2_bt_follow": {
+        "message": "Auto Process Torrent"
+    },
+    "aria2_bt_follow_title": {
+        "message": "When complete download a .torrent file, auto start bittorrent download"
+    },
+    "aria2_bt_remove": {
+        "message": "Remove Unselected Files"
+    },
+    "aria2_bt_remove_title": {
+        "message": "Remove the unselected files when bittorrent is completed"
+    },
+    "aria2_bt_ratio": {
+        "message": "Seeding Ratio"
+    },
+    "aria2_bt_ratio_title": {
+        "message": "Set the share ratio of each torrent"
+    },
+    "aria2_bt_seed": {
+        "message": "Seeding Time"
+    },
+    "aria2_bt_seed_title": {
+        "message": "Set the share time of each torrent (MIN)"
+    }
+}

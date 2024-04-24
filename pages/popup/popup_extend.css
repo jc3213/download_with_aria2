@@ -1,0 +1,89 @@
+.full {
+    width: 1280px;
+    margin: 8px auto;
+}
+
+.full > #menu {
+    border-width: 0px 1px 1px;
+    border-style: solid;
+    padding: 8px;
+    position: fixed;
+    top: 0px;
+    z-index: 999999;
+    width: 1262px;
+}
+
+.full > hr {
+    display: none;
+}
+
+.full > #choose {
+    top: 56px;
+    left: calc(50% + 642px);
+}
+
+.full > #choose::before {
+    content: "__MSG_popup_queue__";
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.full > #queue {
+    margin-top: 56px;
+}
+
+body:not(.full) > #queue {
+    height: 537px;
+}
+
+body:not(.full) #status {
+    margin-right: 50px;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+body:not(.full) #status > :nth-child(n+3) {
+    display: none;
+}
+
+.full #status {
+    margin-right: 150px;
+    grid-template-columns: repeat(2, 1fr) repeat(3, 15%);
+}
+
+#status > :nth-child(1)::before {
+    content: "__MSG_popup_download__";
+}
+
+#status > :nth-child(2)::before {
+    content: "__MSG_popup_upload__";
+}
+
+#status > :nth-child(3)::before {
+    content: "__MSG_popup_active__";
+}
+
+#status > :nth-child(4)::before {
+    content: "__MSG_popup_waiting__";
+}
+
+#status > :nth-child(5)::before {
+    content: "__MSG_popup_stopped__";
+}
+
+.day:not(:empty)::after {
+    content: "__MSG_time_day__";
+}
+
+.hour:not(:empty)::after {
+    content: "__MSG_time_hour__";
+}
+
+.minute:not(:empty)::after {
+    content: "__MSG_time_minute__";
+}
+
+.second:not(:empty)::after {
+    content: "__MSG_time_second__";
+}
