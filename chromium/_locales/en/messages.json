@@ -230,10 +230,10 @@
     "option_proxy_include_title": {
         "message": "Add proxy server for new downloads from these hosts"
     },
-    "option_proxy_enabled": {
+    "option_proxy_always": {
         "message": "Always Use Proxy Server"
     },
-    "option_proxy_enabled_title": {
+    "option_proxy_always_title": {
         "message": "Always use proxy server for new downloads"
     },
     "option_capture": {
@@ -264,7 +264,7 @@
         "message": "Capture browser downloads those are above the size"
     },
     "option_capture_size_exclude": {
-        "message": "Exclude File Size Under"
+        "message": "Exclude File Size Below"
     },
     "option_capture_size_exclude_title": {
         "message": "Ignore browser downloads those are below the size"

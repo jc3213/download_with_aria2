@@ -31,7 +31,7 @@ var switches = {
     'headers_enabled': true,
     'folder_enabled': true,
     'folder_firefox': false,
-    'proxy_enabled': true,
+    'proxy_always': true,
     'capture_enabled': true,
     'capture_always': true,
     'capture_webrequest': true

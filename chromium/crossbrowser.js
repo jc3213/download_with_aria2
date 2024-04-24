@@ -21,7 +21,7 @@ var aria2Default = {
     'folder_firefox': false,
     'proxy_server': '',
     'proxy_include': [],
-    'proxy_enabled': false,
+    'proxy_always': false,
     'capture_enabled': false,
     'capture_always': false,
     'capture_webrequest': false,
@@ -78,17 +78,19 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }
     else if (reason === 'update' && previousVersion === '4.9.0.2629') {
         chrome.storage.sync.get(null, (json) => {
-            json['capture_type_include'] = json['capture_resolve'] ?? [];
-            json['capture_type_exclude'] = json['capture_reject'] ?? [];
-            json['capture_size_include'] = json['capture_filesize'] ?? 0;
+            json['capture_type_include'] = json['capture_resolve'];
+            json['capture_type_exclude'] = json['capture_reject'];
+            json['capture_size_include'] = json['capture_filesize']0;
             json['capture_size_exclude'] = 0;
             json['headers_useragent'] = json['user_agent'] ?? 'Transmission/4.0.0';
+            json['proxy_always'] = !!json['proxy_enabled'];
             delete json['capture_resolve'];
             delete json['capture_reject'];
             delete json['capture_filesize'];
             delete json['user_agent'];
+            delete json['proxy_enabled'];
             chrome.storage.sync.set(json);
-            chrome.storage.sync.remove(['user_agent', 'capture_resolve', 'capture_reject', 'capture_filesize']);
+            chrome.storage.sync.remove(['user_agent', 'proxy_enabled', 'capture_resolve', 'capture_reject', 'capture_filesize']);
             aria2UpdateStorage(json);
         });
     }
@@ -111,7 +113,7 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
 
 async function aria2DownloadHandler(url, options, referer, hostname, storeId) {
     options['user-agent'] = aria2Storage['headers_useragent'];
-    if (aria2Storage['proxy_enabled'] || aria2Updated['proxy_include'].test(hostname)) {
+    if (aria2Storage['proxy_always'] || aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (!options['dir'] && aria2Storage['folder_enabled'] && aria2Storage['folder_defined']) {

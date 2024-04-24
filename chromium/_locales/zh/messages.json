@@ -227,10 +227,10 @@
     "option_proxy_title": {
         "message": "设置首选的代理服务器"
     },
-    "option_proxy_enabled": {
+    "option_proxy_always": {
         "message": "总是使用代理服务器"
     },
-    "option_proxy_enabled_title": {
+    "option_proxy_always_title": {
         "message": "总是在新建下载时的使用代理服务器"
     },
     "option_proxy_include_title": {
