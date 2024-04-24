@@ -55,7 +55,7 @@ var aria2Multiplier = {
 var aria2MultiKeys = [
     'manager_interval',
     'capture_size_include',
-    'capture_size_include'
+    'capture_size_exclude'
 ];
 var aria2SizeKeys = [
     'min-split-size',
@@ -89,8 +89,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
             delete json['user_agent'];
             chrome.storage.sync.set(json);
             chrome.storage.sync.remove(['user_agent', 'capture_resolve', 'capture_reject', 'capture_filesize']);
-            aria2Storage = json;
-            aria2UpdateStorage();
+            aria2UpdateStorage(json);
         });
     }
     aria2WhenInstall(reason);
@@ -247,10 +246,9 @@ async function aria2MessageHandler({urls, files}) {
 }
 
 function aria2OptionsChanged({storage, changes}) {
-    chrome.storage.sync.set(storage);
-    aria2Storage = storage;
+    aria2UpdateStorage(storage);
+    chrome.storage.sync.set(aria2Storage);
     aria2UpdateJSONRPC(changes);
-    aria2UpdateStorage();
     aria2ContextMenus();
     aria2TaskManager();
     if (aria2Manifest.manifest_version === 2) {
@@ -271,14 +269,16 @@ async function aria2UpdateJSONRPC(changes) {
     }
 }
 
-function aria2UpdateStorage() {
+function aria2UpdateStorage(json) {
     aria2Matches.forEach((key) => {
-        var array = aria2Storage[key];
+        var array = json[key];
         aria2Updated[key] = array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/g, '.*') + ')$');
     });
     aria2MultiKeys.forEach((key) => {
-        aria2Updated[key] = aria2Storage[key] * aria2Multiplier[key];
+        json[key] = json[key] | 0;
+        aria2Updated[key] = json[key] * aria2Multiplier[key];
     });
+    aria2Storage = json;
 }
 
 function aria2ContextMenus() {
