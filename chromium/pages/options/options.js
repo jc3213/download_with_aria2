@@ -33,8 +33,8 @@ var switches = {
     'folder_firefox': false,
     'proxy_enabled': true,
     'capture_enabled': true,
-    'capture_webrequest': true,
-    'capture_always': true
+    'capture_always': true,
+    'capture_webrequest': true
 };
 
 options.forEach((entry) => {

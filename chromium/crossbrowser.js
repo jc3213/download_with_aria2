@@ -76,13 +76,13 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
     }
-    else if (reason === 'update' && previousVersion <= '4.9.0.2629') {
+    else if (reason === 'update' && previousVersion === '4.9.0.2629') {
         chrome.storage.sync.get(null, (json) => {
-            json['capture_type_include'] = json['capture_resolve'];
-            json['capture_type_exclude'] = json['capture_reject'];
-            json['capture_size_include'] = json['capture_filesize'];
+            json['capture_type_include'] = json['capture_resolve'] ?? [];
+            json['capture_type_exclude'] = json['capture_reject'] ?? [];
+            json['capture_size_include'] = json['capture_filesize'] ?? 0;
             json['capture_size_exclude'] = 0;
-            json['headers_useragent'] = json['user_agent'];
+            json['headers_useragent'] = json['user_agent'] ?? 'Transmission/4.0.0';
             delete json['capture_resolve'];
             delete json['capture_reject'];
             delete json['capture_filesize'];
@@ -369,14 +369,15 @@ function aria2ToolbarBadge(number) {
     chrome.action.setBadgeText({text: !number ? '' : number + ''});
 }
 
-function aria2CaptureResult(hostname, fileext, size) {
+function aria2CaptureResult(hostname, type, size) {
     if (aria2Updated['capture_exclude'].test(hostname) ||
-        aria2Storage['capture_type_exclude'].includes(fileext)) {
+        aria2Storage['capture_type_exclude'].includes(type) ||
+        aria2Updated['capture_size_exclude'] > 0 && size <= aria2Updated['capture_size_exclude']) {
         return false;
     }
     if (aria2Storage['capture_always'] ||
         aria2Updated['capture_include'].test(hostname) ||
-        aria2Storage['capture_type_include'].includes(fileext) ||
+        aria2Storage['capture_type_include'].includes(type) ||
         aria2Updated['capture_size_include'] > 0 && size >= aria2Updated['capture_size_include']) {
         return true;
     }

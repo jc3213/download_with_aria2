@@ -258,10 +258,16 @@
         "message": "Always capture downloads from browser with exceptions"
     },
     "option_capture_size_include": {
-        "message": "File Size"
+        "message": "Include File Size Above"
     },
     "option_capture_size_include_title": {
-        "message": "Capture browser downloads larger than this value"
+        "message": "Capture browser downloads those are above the size"
+    },
+    "option_capture_size_exclude": {
+        "message": "Exclude File Size Under"
+    },
+    "option_capture_size_exclude_title": {
+        "message": "Ignore browser downloads those are below the size"
     },
     "option_capture_include_title": {
         "message": "Capture browser downloads from these hosts"

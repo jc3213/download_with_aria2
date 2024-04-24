@@ -258,10 +258,16 @@
         "message": "总是捕获来自除了例外以外的浏览器的下载"
     },
     "option_capture_size_include": {
-        "message": "文件大小"
+        "message": "捕获文件超过"
     },
     "option_capture_size_include_title": {
-        "message": "捕获文件大小超过设置的下载"
+        "message": "捕获文件大小超过所设置容量的下载"
+    },
+    "option_capture_size_exclude": {
+        "message": "忽略文件低于"
+    },
+    "option_capture_size_exclude_title": {
+        "message": "忽略文件大小低于锁设置容量的下载"
     },
     "option_capture_include_title": {
         "message": "捕获来自所设置域名的下载"
