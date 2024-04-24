@@ -321,6 +321,9 @@ function aria2OptionsSetUp() {
 }
 
 function aria2SaveStorage(json) {
+    json['manager_interval'] = json['manager_interval'] | 0;
+    json['capture_size_include'] = json['capture_size_include'] | 0;
+    json['capture_size_exclude'] = json['capture_size_exclude'] | 0;
     chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
     aria2Storage = json;
     changes = {};
