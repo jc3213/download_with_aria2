@@ -13,7 +13,7 @@ var aria2Default = {
     'notify_install': true,
     'notify_start': false,
     'notify_complete': false,
-    'user_agent': 'Transmission/4.0.0',
+    'headers_useragent': 'Transmission/4.0.0',
     'headers_enabled': false,
     'headers_exclude': [],
     'folder_enabled': false,
@@ -25,11 +25,12 @@ var aria2Default = {
     'capture_enabled': false,
     'capture_always': false,
     'capture_webrequest': false,
-    'capture_filesize': 0,
-    'capture_resolve': [],
     'capture_include': [],
-    'capture_reject': [],
-    'capture_exclude': []
+    'capture_exclude': [],
+    'capture_type_include': [],
+    'capture_type_exclude': [],
+    'capture_size_include': 0,
+    'capture_size_exclude': 0
 };
 var aria2RPC;
 var aria2Retry;
@@ -48,11 +49,13 @@ var aria2Matches = [
 ];
 var aria2Multiplier = {
     'manager_interval': 1000,
-    'capture_filesize': 1048576
+    'capture_size_include': 1048576,
+    'capture_size_exclude': 1048576
 };
 var aria2MultiKeys = [
     'manager_interval',
-    'capture_filesize'
+    'capture_size_include',
+    'capture_size_include'
 ];
 var aria2SizeKeys = [
     'min-split-size',
@@ -73,6 +76,23 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
     }
+    else if (reason === 'update' && previousVersion <= '4.9.0.2629') {
+        chrome.storage.sync.get(null, (json) => {
+            json['capture_type_include'] = json['capture_resolve'];
+            json['capture_type_exclude'] = json['capture_reject'];
+            json['capture_size_include'] = json['capture_filesize'];
+            json['capture_size_exclude'] = 0;
+            json['headers_useragent'] = json['user_agent'];
+            delete json['capture_resolve'];
+            delete json['capture_reject'];
+            delete json['capture_filesize'];
+            delete json['user_agent'];
+            chrome.storage.sync.set(json);
+            chrome.storage.sync.remove(['user_agent', 'capture_resolve', 'capture_reject', 'capture_filesize']);
+            aria2Storage = json;
+            aria2UpdateStorage();
+        });
+    }
     aria2WhenInstall(reason);
 });
 
@@ -91,7 +111,7 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
 });
 
 async function aria2DownloadHandler(url, options, referer, hostname, storeId) {
-    options['user-agent'] = aria2Storage['user_agent'];
+    options['user-agent'] = aria2Storage['headers_useragent'];
     if (aria2Storage['proxy_enabled'] || aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
@@ -351,13 +371,13 @@ function aria2ToolbarBadge(number) {
 
 function aria2CaptureResult(hostname, fileext, size) {
     if (aria2Updated['capture_exclude'].test(hostname) ||
-        aria2Storage['capture_reject'].includes(fileext)) {
+        aria2Storage['capture_type_exclude'].includes(fileext)) {
         return false;
     }
     if (aria2Storage['capture_always'] ||
         aria2Updated['capture_include'].test(hostname) ||
-        aria2Storage['capture_resolve'].includes(fileext) ||
-        aria2Updated['capture_filesize'] > 0 && size >= aria2Updated['capture_filesize']) {
+        aria2Storage['capture_type_include'].includes(fileext) ||
+        aria2Updated['capture_size_include'] > 0 && size >= aria2Updated['capture_size_include']) {
         return true;
     }
     return false;

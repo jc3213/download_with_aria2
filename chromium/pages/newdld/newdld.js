@@ -104,14 +104,14 @@ function aria2DownloadSlimmed({url, options = {}}, jsonrpc) {
 if (slim_mode) {
     chrome.runtime.sendMessage({action: 'download_prompt'}, ({storage, jsonrpc, params}) => {
         aria2Storage = storage;
-        jsonrpc['user-agent'] = aria2Storage['user_agent'];
+        jsonrpc['user-agent'] = aria2Storage['headers_useragent'];
         aria2DownloadSlimmed(params, jsonrpc);
     });
 }
 else {
     chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc}) => {
         aria2Storage = storage;
-        jsonrpc['user-agent'] = aria2Storage['user_agent'];
+        jsonrpc['user-agent'] = aria2Storage['headers_useragent'];
         aria2Global = settings.disposition(jsonrpc);
     });
 }

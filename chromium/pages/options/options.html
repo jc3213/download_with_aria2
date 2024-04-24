@@ -87,9 +87,9 @@
                 <label for="notify_complete" i18n="option_notify_complete"></label>
             </div>
             <h1 i18n="option_headers"></h1>
-            <div i18n_title="option_user_agent_title">
-                <h4 i18n="option_user_agent"></h4>
-                <input data-eid="user_agent" type="text">
+            <div i18n_title="option_headers_useragent_title">
+                <h4 i18n="option_headers_useragent"></h4>
+                <input data-eid="headers_useragent" type="text">
             </div>
             <div class="menu even" i18n_title="option_headers_enabled_title">
                 <input id="headers_enabled" data-eid="headers_enabled" type="checkbox">
@@ -144,26 +144,26 @@
                 <input id="capture_webrequest" data-eid="capture_webrequest" type="checkbox">
                 <label for="capture_webrequest" i18n="option_capture_webrequest"></label>
             </div>
-            <div class="menu" i18n_title="option_capture_filesize_title" data-rel="capture_enabled" data-exc="capture_always">
-                <h4 i18n="option_capture_filesize"></h4>
+            <div class="menu" i18n_title="option_capture_size_include_title" data-rel="capture_enabled" data-exc="capture_always">
+                <h4 i18n="option_capture_size_include"></h4>
                 <div>
-                    <input data-eid="capture_filesize" type="number" min="0">
+                    <input data-eid="capture_size_include" type="number" min="0">
                     <span>MB</span>
                 </div>
                 <div>
                     <span i18n="common_disabled"></span>: <i>0</i>
                 </div>
             </div>
-            <div class="menu" i18n_title="option_capture_resolve_title" data-map="capture_resolve" data-rel="capture_enabled" data-exc="capture_always">
-                <h4 i18n="option_capture_resolve"></h4>
+            <div class="menu" i18n_title="option_capture_type_include_title" data-map="capture_type_include" data-rel="capture_enabled" data-exc="capture_always">
+                <h4 i18n="option_capture_type_include"></h4>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add_rule">➕</button>
                 </div>
                 <div class="list"></div>
             </div>
-            <div class="menu" i18n_title="option_capture_reject_title" data-map="capture_reject" data-rel="capture_enabled">
-                <h4 i18n="option_capture_reject"></h4>
+            <div class="menu" i18n_title="option_capture_type_exclude_title" data-map="capture_type_exclude" data-rel="capture_enabled">
+                <h4 i18n="option_capture_type_exclude"></h4>
                 <div class="flex">
                     <input type="text">
                     <button data-bid="add_rule">➕</button>

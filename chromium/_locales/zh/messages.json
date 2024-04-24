@@ -185,10 +185,10 @@
     "option_download_prompt_title": {
         "message": "开始下载前弹出窗口确认下载信息"
     },
-    "option_user_agent": {
+    "option_headers_useragent": {
         "message": "用户代理"
     },
-    "option_user_agent_title": {
+    "option_headers_useragent_title": {
         "message": "设置新建下载时的用户代理"
     },
     "option_headers": {
@@ -257,10 +257,10 @@
     "option_capture_always_title": {
         "message": "总是捕获来自除了例外以外的浏览器的下载"
     },
-    "option_capture_filesize": {
+    "option_capture_size_include": {
         "message": "文件大小"
     },
-    "option_capture_filesize_title": {
+    "option_capture_size_include_title": {
         "message": "捕获文件大小超过设置的下载"
     },
     "option_capture_include_title": {
@@ -269,16 +269,16 @@
     "option_capture_exclude_title": {
         "message": "忽略来自所设置域名的下载"
     },
-    "option_capture_resolve": {
+    "option_capture_type_include": {
         "message": "监视文件后缀"
     },
-    "option_capture_resolve_title": {
+    "option_capture_type_include_title": {
         "message": "捕获拥有所设置文件后缀的下载"
     },
-    "option_capture_reject": {
+    "option_capture_type_exclude": {
         "message": "忽略文件后缀"
     },
-    "option_capture_reject_title": {
+    "option_capture_type_exclude_title": {
         "message": "忽略拥有所设置文件后缀的下载"
     },
     "popup_download": {

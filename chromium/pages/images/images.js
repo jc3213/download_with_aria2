@@ -110,7 +110,7 @@ gallery.addEventListener('load', ({target}) => {
 
 chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc, params}) => {
     aria2Storage = storage;
-    jsonrpc['user-agent'] = aria2Storage['user_agent'];
+    jsonrpc['user-agent'] = aria2Storage['headers_useragent'];
     aria2Global = document.querySelectorAll('#options input').disposition(jsonrpc);
     aria2Manifest === 2 ? aria2ManifestV2(params) : aria2ManifestV3(params.result);
     aria2Images.forEach((img) => gallery.append(img));
