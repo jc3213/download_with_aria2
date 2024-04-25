@@ -124,10 +124,7 @@ document.addEventListener('click', (event) => {
 
 async function optionsSave() {
     saveBtn.disabled = true;
-    if (global) {
-        return aria2SaveStorage(updated);
-    }
-    chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: changes}});
+    global ? aria2SaveStorage(updated) : chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: changes}});
 }
 
 function optionsUndo() {
