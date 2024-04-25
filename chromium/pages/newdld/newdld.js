@@ -1,11 +1,18 @@
 var aria2Storage = {};
 var aria2Global = {};
+var activity;
 var downloader = document.body;
 var [entry, filename, countdown, uploader] = document.querySelectorAll('textarea, [data-rid="out"], .countdown, input[type="file"]');
 var settings = document.querySelectorAll('input[data-rid]');
-var slim_mode = location.search === '?slim_mode';
 
-downloader.className = slim_mode ? 'slim' : 'full';
+if (location.search === '?slim_mode') {
+    downloader.className = 'slim';
+    activity = 'download_prompt';
+}
+else {
+    downloader.className = 'full';
+    activity = 'options_plugins';
+}
 
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey && event.key === 'Enter') {
@@ -101,17 +108,11 @@ function aria2DownloadSlimmed({url, options = {}}, jsonrpc) {
     }, 1000);
 }
 
-if (slim_mode) {
-    chrome.runtime.sendMessage({action: 'download_prompt'}, ({storage, jsonrpc, params}) => {
-        aria2Storage = storage;
-        jsonrpc['user-agent'] = aria2Storage['headers_useragent'];
-        aria2DownloadSlimmed(params, jsonrpc);
-    });
-}
-else {
-    chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc}) => {
-        aria2Storage = storage;
-        jsonrpc['user-agent'] = aria2Storage['headers_useragent'];
-        aria2Global = settings.disposition(jsonrpc);
-    });
-}
+chrome.runtime.sendMessage({action: activity}, ({storage, jsonrpc, params}) => {
+    aria2Storage = storage;
+    jsonrpc['user-agent'] = aria2Storage['headers_useragent'];
+    if (params) {
+        return aria2DownloadSlimmed(params, jsonrpc);
+    }
+    aria2Global = settings.disposition(jsonrpc);
+});
