@@ -4,25 +4,19 @@ if (aria2InTab) {
     manager.add('full');
 }
 else {
-    aria2Popup();
-}
-
-function aria2Popup() {
     var positionLeft = allQueues.offsetWidth - choose.offsetWidth;
     var positionTop = allQueues.offsetHeight - choose.offsetHeight + 58;
-    choose.style.display = 'none';
-
     allQueues.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         var {clientX, clientY} = event;
-        var css = clientX > positionLeft ? 'right: 0px;' : 'left: ' + clientX + 'px;';
+       var css = clientX > positionLeft ? 'right: 0px;' : 'left: ' + clientX + 'px;';
         css += clientY > positionTop ? 'top: auto; bottom: 0px;' : 'top: ' + clientY + 'px;';
         chooseQueue.style.cssText = css;
     });
-
     allQueues.addEventListener('click', (event) => {
         chooseQueue.style.display = 'none';
     });
+    choose.style.display = 'none';
 }
 
 async function managerDownload() {
