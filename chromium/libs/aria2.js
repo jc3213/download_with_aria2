@@ -21,7 +21,7 @@ class Aria2 {
         this._jsonrpc = this._scheme + '://' + url;
         this._onmessage = null;
         if (!this.websocket) { return this.connect(); }
-        this.disconnect().then( (event) => this.connect() );
+        this.websocket.then( (websocket) => websocket.close() );
     }
     get url () {
         return this._url;
@@ -39,12 +39,13 @@ class Aria2 {
             websocket.onerror = (error) => reject(error);
         });
     }
-    disconnect () {
-        return this.websocket.then((websocket) => new Promise((resolve, reject) => {
-            websocket.onclose = (event) => resolve(event);
-            websocket.onerror = (error) => reject(error);
-            websocket.close();
-        }));
+    set onclose (callback) {
+        if (typeof callback !== 'function') { return; }
+        if (!this._onclose) { this.websocket.then( (websocket) => websocket.addEventListener('close', (event) => this._onclose(event)) ); }
+        this._onclose = callback;
+    }
+    get onclose () {
+        return this._onclose;
     }
     set onmessage (callback) {
         if (typeof callback !== 'function') { return; }

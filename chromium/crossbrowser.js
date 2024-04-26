@@ -233,15 +233,14 @@ function aria2OptionsChanged({storage, changes}) {
 }
 
 async function aria2UpdateJSONRPC(changes) {
-    if (changes['jsonrpc_url']) {
-        await aria2RPC.disconnect();
-        return aria2ClientSetUp();
-    }
     if (changes['jsonrpc_scheme']) {
         aria2RPC.scheme = aria2Storage['jsonrpc_scheme'];
     }
     if (changes['jsonrpc_secret']) {
         aria2RPC.secret = aria2Storage['jsonrpc_secret'];
+    }
+    if (changes['jsonrpc_url']) {
+        aria2RPC.url = aria2Storage['jsonrpc_url'];
     }
 }
 
@@ -311,6 +310,7 @@ async function aria2ClientSetUp() {
         active.result.forEach(({gid}) => aria2Queue[gid] = gid);
         aria2ToolbarBadge(aria2Active);
         aria2RPC.onmessage = aria2WebSocket;
+        aria2RPC.onclose = aria2ClientSetUp;
     }).catch((error) => {
         chrome.action.setBadgeBackgroundColor({color: '#c33'});
         aria2ToolbarBadge('E');
