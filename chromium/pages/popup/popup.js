@@ -1,5 +1,6 @@
 var aria2Detail;
 var aria2Alive;
+var aria2Retry;
 var aria2SizeKeys = ['min-split-size','max-download-limit','max-upload-limit'];
 var aria2Queue = localStorage['queues']?.match(/[^;]+/g) ?? [];
 var manager = document.body.classList;
@@ -60,6 +61,8 @@ async function managerPurge() {
 }
 
 function aria2ClientSetUp() {
+    clearTimeout(aria2Retry);
+    clearInterval(aria2Alive);
     activeTask = {};
     waitingTask = {};
     stoppedTask = {};
@@ -74,10 +77,12 @@ function aria2ClientSetUp() {
         downloadStat.textContent = getFileSize(global.result.downloadSpeed);
         uploadStat.textContent = getFileSize(global.result.uploadSpeed);
         aria2RPC.onmessage = aria2WebSocket;
+        aria2RPC.onclose = aria2ClientSetUp;
         aria2Alive = setInterval(updateManager, aria2Interval);
     }).catch((error) => {
         activeStat.textContent = waitingStat.textContent = stoppedStat.textContent = downloadStat.textContent = uploadStat.textContent = '0';
         activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
+        aria2Retry = setTimeout(aria2ClientSetUp, aria2Interval);
     });
 }
 

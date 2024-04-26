@@ -9,7 +9,7 @@ else {
     allQueues.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         var {clientX, clientY} = event;
-       var css = clientX > positionLeft ? 'right: 0px;' : 'left: ' + clientX + 'px;';
+        var css = clientX > positionLeft ? 'right: 0px;' : 'left: ' + clientX + 'px;';
         css += clientY > positionTop ? 'top: auto; bottom: 0px;' : 'top: ' + clientY + 'px;';
         chooseQueue.style.cssText = css;
     });
@@ -46,16 +46,14 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
         clearInterval(aria2Alive);
         aria2Alive = setInterval(updateManager, aria2Interval);
     }
-    if (changes['jsonrpc_url']) {
-        clearInterval(aria2Alive);
-        aria2RPC.disconnect();
-        return aria2ClientSetUp();
-    }
     if (changes['jsonrpc_scheme']) {
         aria2RPC.scheme = aria2Scheme;
     }
     if (changes['jsonrpc_secret']) {
         aria2RPC.secret = aria2Secret;
+    }
+    if (changes['jsonrpc_url']) {
+        aria2RPC.url = aria2Url;
     }
 });
 
