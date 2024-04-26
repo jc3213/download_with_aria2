@@ -152,7 +152,7 @@ function decodeFileName(text) {
 chrome.action = browser.browserAction;
 browser.storage.sync.get(null).then((json) => {
     aria2UpdateStorage({...aria2Default, ...json});
-    aria2ClientSetUp();
+    aria2ClientSetup();
     aria2ContextMenus();
     aria2TaskManager();
     aria2CaptureSwitch();

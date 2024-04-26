@@ -16,7 +16,7 @@ chrome.runtime.onStartup.addListener(chrome.runtime.getPlatformInfo);
 
 chrome.storage.sync.get(null).then((json) => {
     aria2UpdateStorage({...aria2Default, ...json});
-    aria2ClientSetUp();
+    aria2ClientSetup();
     aria2ContextMenus();
     aria2TaskManager();
 });

@@ -60,14 +60,19 @@ async function managerPurge() {
     globalTask = {...activeTask, ...waitingTask};
 }
 
-function aria2ClientSetUp() {
-    clearTimeout(aria2Retry);
+function aria2ClientSetup() {
+    aria2RPC = new Aria2(aria2Scheme, aria2Url, aria2Secret);
+    aria2RPC.onmessage = aria2WebSocket;
+    aria2RPC.onclose = aria2ClientWorker;
+    return aria2ClientWorker();
+}
+
+function aria2ClientWorker() {
     clearInterval(aria2Alive);
     activeTask = {};
     waitingTask = {};
     stoppedTask = {};
     globalTask = {};
-    aria2RPC = new Aria2(aria2Scheme, aria2Url, aria2Secret);
     return aria2RPC.call(
         {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
         {method: 'aria2.tellWaiting', params: [0, 999]},
@@ -76,13 +81,11 @@ function aria2ClientSetUp() {
         [...active.result, ...waiting.result, ...stopped.result].forEach(sessionUpdated);
         downloadStat.textContent = getFileSize(global.result.downloadSpeed);
         uploadStat.textContent = getFileSize(global.result.uploadSpeed);
-        aria2RPC.onmessage = aria2WebSocket;
-        aria2RPC.onclose = aria2ClientSetUp;
-        aria2Alive = setInterval(updateManager, aria2Interval);
+        aria2Alive = setInterval(aria2ClientUpdate, aria2Interval);
     }).catch((error) => {
         activeStat.textContent = waitingStat.textContent = stoppedStat.textContent = downloadStat.textContent = uploadStat.textContent = '0';
         activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
-        aria2Retry = setTimeout(aria2ClientSetUp, aria2Interval);
+        aria2Retry = setTimeout(aria2ClientWorker, aria2Interval);
     });
 }
 
@@ -109,7 +112,7 @@ function aria2WebSocket({method, params}) {
     }
 }
 
-async function updateManager() {
+async function aria2ClientUpdate() {
     var [global, active] = await aria2RPC.call({method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'});
     active.result.forEach(sessionUpdated);
     downloadStat.textContent = getFileSize(global.result.downloadSpeed);

@@ -19,9 +19,7 @@ class Aria2 {
         if (this._url === url) { return; }
         this._url = url;
         this._jsonrpc = this._scheme + '://' + url;
-        this._onmessage = null;
-        if (!this.websocket) { return this.connect(); }
-        this.websocket.then( (websocket) => websocket.close() );
+        this.connect();
     }
     get url () {
         return this._url;
@@ -33,27 +31,36 @@ class Aria2 {
         return this._secret;
     }
     connect () {
+        this.websocket?.then( (websocket) => websocket.close() );
         this.websocket = new Promise((resolve, reject) => {
             const websocket = new WebSocket(this._jsonrpc.replace('http', 'ws'));
             websocket.onopen = (event) => resolve(websocket);
             websocket.onerror = (error) => reject(error);
         });
-    }
-    set onclose (callback) {
-        if (typeof callback !== 'function') { return; }
-        if (!this._onclose) { this.websocket.then( (websocket) => websocket.addEventListener('close', (event) => this._onclose(event)) ); }
-        this._onclose = callback;
-    }
-    get onclose () {
-        return this._onclose;
+        this.onmessage = this._onmessage;
+        this.onclose = this._onclose;
     }
     set onmessage (callback) {
-        if (typeof callback !== 'function') { return; }
-        if (!this._onmessage) { this.websocket.then( (websocket) => websocket.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))) ); }
+        if (typeof callback !== 'function' || this._atmessage) { return; }
         this._onmessage = callback;
+        this.websocket?.then((websocket) => {
+            this._atmessage = true;
+            websocket.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data)));
+        });
     }
     get onmessage () {
         return this._onmessage;
+    }
+    set onclose (callback) {
+        if (typeof callback !== 'function' || this._atclose) { return; }
+        this._onclose = callback;
+        this.websocket?.then((websocket) => {
+            this._atclose = true;
+            websocket.addEventListener('close', (event) => this._onclose(event));
+        });
+    }
+    get onclose () {
+        return this._onclose;
     }
     send (...messages) {
         return this.websocket.then((websocket) => new Promise((resolve, reject) => {
