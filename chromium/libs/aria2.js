@@ -1,10 +1,10 @@
 class Aria2 {
     constructor (...args) {
-        const jsonrpc = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
-        if (!jsonrpc) { throw new Error('Invalid JSON-RPC entry: "' + args.join('", "') + '"'); }
-        this.scheme = jsonrpc[1];
-        this.url = jsonrpc[2];
-        this.secret = jsonrpc[3];
+        let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
+        if (!path) { throw new Error('Invalid JSON-RPC entry: "' + args.join('", "') + '"'); }
+        this.scheme = path[1];
+        this.url = path[2];
+        this.secret = path[3];
     }
     set scheme (scheme) {
         this.call = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send }[ scheme ];
@@ -31,20 +31,20 @@ class Aria2 {
         return this._secret;
     }
     connect () {
-        this.websocket?.then( (websocket) => websocket.close() );
-        this.websocket = new Promise((resolve, reject) => {
-            const websocket = new WebSocket(this._jsonrpc.replace('http', 'ws'));
-            websocket.onopen = (event) => {
-                if (typeof this._onmessage === 'function') { websocket.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))); }
-                if (typeof this._onclose === 'function') { websocket.addEventListener('close', this._onclose); }
-                resolve(websocket);
+        this.socket?.then( (ws) => ws.close() );
+        this.socket = new Promise((resolve, reject) => {
+            let ws = new WebSocket(this._jsonrpc.replace('http', 'ws'));
+            ws.onopen = (event) => {
+                if (typeof this._onmessage === 'function') { ws.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))); }
+                if (typeof this._onclose === 'function') { ws.addEventListener('close', this._onclose); }
+                resolve(ws);
             }
-            websocket.onerror = (error) => reject(error);
+            ws.onerror = (error) => reject(error);
         });
     }
     set onmessage (callback) {
         if (typeof callback !== 'function') { return; }
-        if (!this._onmessage) { this.websocket.then( (websocket) => websocket.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))) ); }
+        if (!this._onmessage) { this.socket.then( (ws) => ws.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))) ); }
         this._onmessage = callback;
     }
     get onmessage () {
@@ -52,17 +52,17 @@ class Aria2 {
     }
     set onclose (callback) {
         if (typeof callback !== 'function') { return; }
-        if (!this._onclose) { this.websocket.then( (websocket) => websocket.addEventListener('close', this._onclose) ); }
+        if (!this._onclose) { this.socket.then( (ws) => ws.addEventListener('close', this._onclose) ); }
         this._onclose = callback;
     }
     get onclose () {
         return this._onclose;
     }
     send (...messages) {
-        return this.websocket.then((websocket) => new Promise((resolve, reject) => {
-            websocket.onmessage = (event) => resolve(JSON.parse(event.data));
-            websocket.onerror = (error) => reject(error);
-            websocket.send(this.json(messages));
+        return this.socket.then((ws) => new Promise((resolve, reject) => {
+            ws.onmessage = (event) => resolve(JSON.parse(event.data));
+            ws.onerror = (error) => reject(error);
+            ws.send(this.json(messages));
         }));
     }
     post (...messages) {
@@ -72,7 +72,7 @@ class Aria2 {
         });
     }
     json (array) {
-        const json = array.map( ({method, params = []}) => ({ id: '', jsonrpc: '2.0', method, params: [this._secret, ...params] }) );
+        let json = array.map( ({method, params = []}) => ({ id: '', jsonrpc: '2.0', method, params: [this._secret, ...params] }) );
         return JSON.stringify(json);
     }
 }
