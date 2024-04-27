@@ -35,8 +35,8 @@ class Aria2 {
         this.websocket = new Promise((resolve, reject) => {
             const websocket = new WebSocket(this._jsonrpc.replace('http', 'ws'));
             websocket.onopen = (event) => {
-                if (this._onmessage) { websocket.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))); }
-                if (this._onclose) { websocket.addEventListener('close', (event) => this._onclose(event)); }
+                if (typeof this._onmessage === 'function') { websocket.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))); }
+                if (typeof this._onclose === 'function') { websocket.addEventListener('close', this._onclose); }
                 resolve(websocket);
             }
             websocket.onerror = (error) => reject(error);
@@ -52,7 +52,7 @@ class Aria2 {
     }
     set onclose (callback) {
         if (typeof callback !== 'function') { return; }
-        if (!this._onclose) { this.websocket.then( (websocket) => websocket.addEventListener('close', (event) => this._onclose(event)) ); }
+        if (!this._onclose) { this.websocket.then( (websocket) => websocket.addEventListener('close', this._onclose) ); }
         this._onclose = callback;
     }
     get onclose () {
