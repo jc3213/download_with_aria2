@@ -34,12 +34,10 @@ class Aria2 {
         this.socket?.then( (ws) => ws.close() );
         this.socket = new Promise((resolve, reject) => {
             let ws = new WebSocket(this._jsonrpc.replace('http', 'ws'));
-            ws.onopen = (event) => {
-                if (typeof this._onmessage === 'function') { ws.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))); }
-                if (typeof this._onclose === 'function') { ws.addEventListener('close', this._onclose); }
-                resolve(ws);
-            }
-            ws.onerror = (error) => reject(error);
+            ws.onopen = (event) => resolve(ws);
+            ws.onerror = reject;
+            if (typeof this._onmessage === 'function') { ws.addEventListener('message', (event) => this._onmessage(JSON.parse(event.data))); }
+            if (typeof this._onclose === 'function') { ws.addEventListener('close', this._onclose); }
         });
     }
     set onmessage (callback) {
@@ -61,7 +59,7 @@ class Aria2 {
     send (...messages) {
         return this.socket.then((ws) => new Promise((resolve, reject) => {
             ws.onmessage = (event) => resolve(JSON.parse(event.data));
-            ws.onerror = (error) => reject(error);
+            ws.onerror = reject;
             ws.send(this.json(messages));
         }));
     }
