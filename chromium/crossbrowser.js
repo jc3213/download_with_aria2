@@ -49,24 +49,6 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
         chrome.storage.sync.set(aria2Default);
     }
-    else if (reason === 'update' && previousVersion === '4.9.0.2629') {
-        chrome.storage.sync.get(null, (json) => {
-            json['capture_type_include'] = json['capture_resolve'];
-            json['capture_type_exclude'] = json['capture_reject'];
-            json['capture_size_include'] = json['capture_filesize'];
-            json['capture_size_exclude'] = 0;
-            json['headers_useragent'] = json['user_agent'] ?? 'Transmission/4.0.0';
-            json['proxy_always'] = !!json['proxy_enabled'];
-            delete json['capture_resolve'];
-            delete json['capture_reject'];
-            delete json['capture_filesize'];
-            delete json['user_agent'];
-            delete json['proxy_enabled'];
-            chrome.storage.sync.set(json);
-            chrome.storage.sync.remove(['user_agent', 'proxy_enabled', 'capture_resolve', 'capture_reject', 'capture_filesize']);
-            aria2UpdateStorage(json);
-        });
-    }
     aria2WhenInstall(reason);
 });
 
