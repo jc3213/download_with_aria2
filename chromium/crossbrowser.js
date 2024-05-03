@@ -303,7 +303,8 @@ function aria2ClientWorker() {
     });
 }
 
-async function aria2WebSocket({method, params}) {
+async function aria2WebSocket(event) {
+    var {method, params} = JSON.parse(event.data);
     if (!method) {
         return;
     }

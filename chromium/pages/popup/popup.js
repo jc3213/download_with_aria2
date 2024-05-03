@@ -89,7 +89,8 @@ function aria2ClientWorker() {
     });
 }
 
-function aria2WebSocket({method, params}) {
+function aria2WebSocket(event) {
+    var {method, params} = JSON.parse(event.data);
     if (!method) {
         return;
     }

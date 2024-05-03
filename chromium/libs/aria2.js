@@ -39,22 +39,32 @@ class Aria2 {
             let ws = new WebSocket(this.jsonrpc.ws);
             ws.onopen = (event) => resolve(ws);
             ws.onerror = reject;
-            if (typeof this.jsonrpc.onmessage === 'function') { ws.addEventListener('message', (event) => this.jsonrpc.onmessage(JSON.parse(event.data))); }
-            if (typeof this.jsonrpc.onclose === 'function') { ws.addEventListener('close', this.jsonrpc.onclose); }
         });
+        this.listener('message', this.jsonrpc.onmessage);
+        this.listener('close', this.jsonrpc.onclose);
+    }
+    listener (type, callback) {
+        let listener = 'on' + type;
+        if (typeof callback === 'function') {
+            this.jsonrpc[listener] = callback;
+            if (!this.jsonrpc[type]) {
+                this.socket.then( (ws) => ws.addEventListener(type, callback) );
+                this.jsonrpc[type] = true;
+            }
+        } else if (this.jsonrpc[type]) {
+            this.socket.then( (ws) => ws.removeEventListener(type, this.jsonrpc[listener]) );
+            this.jsonrpc[type] = false;
+            this.jsonrpc[listener] = null;
+        }
     }
     set onmessage (callback) {
-        if (typeof callback !== 'function') { return; }
-        if (!this.jsonrpc.onmessage) { this.socket.then( (ws) => ws.addEventListener('message', (event) => this.jsonrpc.onmessage(JSON.parse(event.data))) ); }
-        this.jsonrpc.onmessage = callback;
+        this.listener('message', callback);
     }
     get onmessage () {
         return this.jsonrpc.onmessage;
     }
     set onclose (callback) {
-        if (typeof callback !== 'function') { return; }
-        if (!this.jsonrpc.onclose) { this.socket.then( (ws) => ws.addEventListener('close', this.jsonrpc.onclose) ); }
-        this.jsonrpc.onclose = callback;
+        this.listener('close', callback);
     }
     get onclose () {
         return this.jsonrpc.onclose;
