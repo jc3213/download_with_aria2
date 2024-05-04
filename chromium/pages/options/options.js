@@ -263,14 +263,17 @@ function optionsImport(file) {
 
 function addRule(list, id, entry) {
     var new_value = [...updated[id]];
-    entry.value.match(/[^\s;,"]+/g)?.forEach((value) => {
-        if (value && !new_value.includes(value)) {
-            new_value.push(value);
-            printRule(list, value, true);
-        }
-    });
-    optionChange(id, new_value);
+    var add_value = entry.value.match(/[^\s;,"]+/g);
     entry.value = '';
+    if (add_value) {
+        add_value.forEach((value) => {
+            if (value && !new_value.includes(value)) {
+                new_value.push(value);
+                printRule(list, value, true);
+            }
+        });
+        optionChange(id, new_value);
+    }
 }
 
 function removeRule(list, id, rule) {
