@@ -263,7 +263,7 @@ function optionsImport(file) {
 
 function addRule(list, id, entry) {
     var new_value = [...updated[id]];
-    var add_value = entry.value.match(/[^\s;,"]+/g);
+    var add_value = entry.value.match(/[^\s;,"'`]+/g);
     entry.value = '';
     if (add_value) {
         add_value.forEach((value) => {
