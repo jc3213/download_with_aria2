@@ -159,8 +159,8 @@ function optionSetValue(id, value) {
     }
     if (id in switches) {
         entry.checked = value;
-        if (switches[eid]) {
-            extension.toggle(eid);
+        if (switches[id]) {
+            extension.toggle(id);
         }
         return;
     }
