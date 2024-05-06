@@ -10,7 +10,7 @@ var redoes = [];
 var global = true;
 var extension = document.body.classList;
 var {version, manifest_version} = chrome.runtime.getManifest();
-var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, importJson, importConf, exporter, aria2ua] = document.querySelectorAll('#menu > *, #aria2ua');
+var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, exporter, aria2ua] = document.querySelectorAll('#menu > :nth-child(-n+6), #aria2ua');
 var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('[data-rid]');
 var matches = document.querySelectorAll('[data-map]');
@@ -110,9 +110,6 @@ document.addEventListener('click', (event) => {
         case 'export_btn':
             optionsExport();
             break;
-        case 'import_btn':
-            optionsUpload();
-            break;
         case 'aria2_btn':
             optionsJsonrpc();
             break;
@@ -181,10 +178,6 @@ function optionsExport() {
     exporter.href = URL.createObjectURL(blob);
     exporter.download = name;
     exporter.click();
-}
-
-function optionsUpload() {
-    global ? importJson.click() : importConf.click();
 }
 
 async function optionsJsonrpc() {

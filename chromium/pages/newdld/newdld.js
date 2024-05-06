@@ -2,7 +2,7 @@ var aria2Storage = {};
 var aria2Global = {};
 var activity;
 var downloader = document.body;
-var [entry, filename, countdown, uploader] = document.querySelectorAll('textarea, [data-rid="out"], .countdown, input[type="file"]');
+var [entry, filename, countdown] = document.querySelectorAll('textarea, [data-rid="out"], .countdown');
 var settings = document.querySelectorAll('input[data-rid]');
 
 if (location.search === '?slim_mode') {
@@ -25,9 +25,6 @@ document.addEventListener('click', (event) => {
     switch (event.target.dataset.bid) {
         case 'submit_btn':
             downloadSubmit();
-            break;
-        case 'upload_btn':
-            uploader.click();
             break;
         case 'extra_btn':
             downloadExpand();
