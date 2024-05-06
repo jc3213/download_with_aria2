@@ -21,7 +21,4 @@ chrome.action = chrome.browserAction;
 chrome.storage.sync.get(null, (json) => {
     aria2UpdateStorage({...aria2Default, ...json});
     aria2ClientSetup();
-    aria2ContextMenus();
-    aria2TaskManager();
-    aria2CaptureSwitch();
 });

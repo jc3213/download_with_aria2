@@ -20,8 +20,8 @@ var aria2Default = {
     'folder_defined': '',
     'folder_firefox': false,
     'proxy_server': '',
-    'proxy_include': [],
     'proxy_always': false,
+    'proxy_include': [],
     'capture_enabled': false,
     'capture_always': false,
     'capture_webrequest': false,
@@ -141,10 +141,7 @@ chrome.action.onClicked.addListener((tab) => {
     var url = chrome.runtime.getURL('/pages/popup/popup.html');
     chrome.tabs.query({currentWindow: true}, (tabs) => {
         var popup = tabs.find((tab) => tab.url === url);
-        if (popup) {
-            return chrome.tabs.update(popup.id, {active: true});
-        }
-        chrome.tabs.create({url, active: true});
+        popup ? chrome.tabs.update(popup.id, {active: true}) : chrome.tabs.create({url, active: true});
     });
 });
 
@@ -205,16 +202,11 @@ async function aria2MessageHandler({urls, files}) {
 
 function aria2OptionsChanged({storage, changes}) {
     aria2UpdateStorage(storage);
+    aria2UpdateJsonrpc(changes);
     chrome.storage.sync.set(aria2Storage);
-    aria2UpdateJSONRPC(changes);
-    aria2ContextMenus();
-    aria2TaskManager();
-    if (aria2Manifest.manifest_version === 2) {
-        aria2CaptureSwitch();
-    }
 }
 
-async function aria2UpdateJSONRPC(changes) {
+async function aria2UpdateJsonrpc(changes) {
     if (changes['jsonrpc_scheme']) {
         aria2RPC.scheme = aria2Storage['jsonrpc_scheme'];
     }
@@ -235,9 +227,10 @@ function aria2UpdateStorage(json) {
     aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
     aria2Updated['capture_size_include'] = json['capture_size_include'] * 1048576;
     aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
-}
-
-function aria2ContextMenus() {
+    if (aria2Manifest.manifest_version === 2) {
+        aria2CaptureSwitch();
+    }
+    chrome.action.setPopup({popup: aria2Storage['manager_newtab'] ? '' : '/pages/popup/popup.html?as_popup'});
     chrome.contextMenus.removeAll();
     if (!aria2Storage['context_enabled']) {
         return;
@@ -255,11 +248,6 @@ function aria2ContextMenus() {
     if (aria2Storage['context_allimages']) {
         getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], parentId);
     }
-}
-
-function aria2TaskManager() {
-    var popup = aria2Storage['manager_newtab'] ? '' : '/pages/popup/popup.html?as_popup';
-    chrome.action.setPopup({popup});
 }
 
 function aria2RPCOptionsSetUp(json, version) {
@@ -394,10 +382,7 @@ function getContextMenu(id, i18n, contexts, parentId) {
 }
 
 function getRequestCookies(url, storeId) {
-    if (storeId) {
-        return browser.cookies.getAll({url, storeId, firstPartyDomain: null});
-    }
-    return new Promise((resolve) => chrome.cookies.getAll({url}, resolve));
+    return storeId ? browser.cookies.getAll({url, storeId, firstPartyDomain: null}) : new Promise((resolve) => chrome.cookies.getAll({url}, resolve));
 }
 
 function getMatchPattern(array) {
