@@ -274,6 +274,7 @@ function aria2ClientSetup() {
 }
 
 function aria2ClientWorker() {
+    clearTimeout(aria2Retry);
     aria2RPC.call(
         {method: 'aria2.getGlobalOption'},
         {method: 'aria2.getVersion'},

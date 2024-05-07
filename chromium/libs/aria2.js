@@ -44,7 +44,7 @@ class Aria2 {
                 response.method ? this.jsonrpc.onmessage(response) : ws.resolve(response);
             };
             ws.onclose = (event) => {
-                if (!event.wasClean) { setTimeout(this.connect.bind(this), 5000); }
+                if (!event.wasClean) { setTimeout(() => this.connect(), 5000); }
                 this.jsonrpc.onclose(ws);
             };
         });

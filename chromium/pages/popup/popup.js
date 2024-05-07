@@ -68,6 +68,7 @@ function aria2ClientSetup() {
 }
 
 function aria2ClientWorker() {
+    clearTimeout(aria2Retry);
     clearInterval(aria2Alive);
     activeTask = {};
     waitingTask = {};
