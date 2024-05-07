@@ -250,7 +250,7 @@ function aria2UpdateStorage(json) {
     }
 }
 
-function aria2RPCOptionsSetUp(json, version) {
+function aria2RPCOptionsSetup(json, version) {
     json['disk-cache'] = getFileSize(json['disk-cache']);
     json['min-split-size'] = getFileSize(json['min-split-size']);
     json['max-download-limit'] = getFileSize(json['max-download-limit']);
@@ -280,7 +280,7 @@ function aria2ClientWorker() {
         {method: 'aria2.tellActive'}
     ).then(([global, version, active]) => {
         chrome.action.setBadgeBackgroundColor({color: '#3cc'});
-        aria2RPCOptionsSetUp(global.result, version.result);
+        aria2RPCOptionsSetup(global.result, version.result);
         aria2Active = active.result.length;
         active.result.forEach(({gid}) => aria2Queue[gid] = gid);
         aria2ToolbarBadge(aria2Active);
@@ -291,8 +291,7 @@ function aria2ClientWorker() {
     });
 }
 
-async function aria2WebSocket(event) {
-    var {method, params} = JSON.parse(event.data);
+async function aria2WebSocket({method, params}) {
     if (!method) {
         return;
     }
