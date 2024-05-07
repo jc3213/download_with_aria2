@@ -3,6 +3,7 @@ class Aria2 {
         let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
         if (!path) { throw new Error('Invalid JSON-RPC entry: "' + args.join('", "') + '"'); }
         this.jsonrpc = {};
+        this.onmessage = this.onclose = null;
         this.scheme = path[1];
         this.url = path[2];
         this.secret = path[3];
@@ -38,46 +39,31 @@ class Aria2 {
         this.socket = new Promise((resolve, reject) => {
             let ws = new WebSocket(this.jsonrpc.ws);
             ws.onopen = (event) => resolve(ws);
-            ws.onclose = (event) => { if (!event.wasClean) { setTimeout(this.connect.bind(this), 5000); } };
+            ws.onmessage = (event) => {
+                let response = JSON.parse(event.data);
+                response.method ? this.jsonrpc.onmessage(response) : ws.resolve(response);
+            };
+            ws.onclose = (event) => {
+                if (!event.wasClean) { setTimeout(this.connect.bind(this), 5000); }
+                this.jsonrpc.onclose(ws);
+            };
         });
-        this.listener('message', this.jsonrpc.onmessage);
-        this.listener('close', this.jsonrpc.onclose);
-    }
-    listener (type, callback) {
-        let listener = 'on' + type;
-        if (typeof callback === 'function') {
-            this.socket.then((ws) => {
-                if (!ws[type]) {
-                    ws.addEventListener(type, callback);
-                    ws[type] = true;
-                }
-            });
-            this.jsonrpc[listener] = callback;
-        } else {
-            this.socket.then((ws) => {
-                if (ws[type]) {
-                    ws.removeEventListener(type, this.jsonrpc[listener]);
-                    ws[type] = false;
-                }
-            });
-            this.jsonrpc[listener] = null;
-        }
     }
     set onmessage (callback) {
-        this.listener('message', callback);
+        this.jsonrpc.onmessage = typeof callback === 'function' ? callback : () => null;
     }
     get onmessage () {
         return this.jsonrpc.onmessage;
     }
     set onclose (callback) {
-        this.listener('close', callback);
+        this.jsonrpc.onclose = typeof callback === 'function' ? callback : () => null;
     }
     get onclose () {
         return this.jsonrpc.onclose;
     }
     send (...messages) {
         return this.socket.then((ws) => new Promise((resolve, reject) => {
-            ws.onmessage = (event) => resolve(JSON.parse(event.data));
+            ws.resolve = resolve;
             ws.onerror = reject;
             ws.send(this.json(messages));
         }));
