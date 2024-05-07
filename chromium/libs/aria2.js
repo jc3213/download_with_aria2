@@ -3,10 +3,10 @@ class Aria2 {
         let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
         if (!path) { throw new Error('Invalid JSON-RPC entry: "' + args.join('", "') + '"'); }
         this.jsonrpc = {};
-        this.onmessage = this.onclose = null;
         this.scheme = path[1];
         this.url = path[2];
         this.secret = path[3];
+        this.onmessage = this.onclose = null;
     }
     set scheme (scheme) {
         this.call = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send }[ scheme ];
