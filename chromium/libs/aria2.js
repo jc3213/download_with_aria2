@@ -45,7 +45,7 @@ class Aria2 {
             };
             ws.onclose = (event) => {
                 if (!event.wasClean) { setTimeout(() => this.connect(), 5000); }
-                this.jsonrpc.onclose(ws);
+                this.jsonrpc.onclose(event);
             };
         });
     }
