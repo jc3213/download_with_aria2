@@ -354,7 +354,7 @@ function aria2WhenStart(message) {
 function aria2WhenComplete(message) {
     if (aria2Storage['notify_complete']) {
         var title = chrome.i18n.getMessage('download_complete');
-        return getNotification(aria2Complete, message);
+        return getNotification(title, message);
     }
 }
 
