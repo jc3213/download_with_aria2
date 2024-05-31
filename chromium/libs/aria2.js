@@ -22,6 +22,7 @@ class Aria2 {
         this.jsonrpc.url = url;
         this.jsonrpc.path = this.jsonrpc.scheme + '://' + url;
         this.jsonrpc.ws = this.jsonrpc.path.replace('http', 'ws');
+        this.disconnect();
         this.connect();
     }
     get url () {
@@ -35,7 +36,6 @@ class Aria2 {
         return this.jsonrpc.secret;
     }
     connect () {
-        this.socket?.then( (ws) => ws.close() );
         this.socket = new Promise((resolve, reject) => {
             let ws = new WebSocket(this.jsonrpc.ws);
             ws.onopen = (event) => resolve(ws);
@@ -49,33 +49,36 @@ class Aria2 {
             };
         });
     }
+    disconnect () {
+        this.socket?.then( (ws) => ws.close() );
+    }
     set onmessage (callback) {
         this.jsonrpc.onmessage = typeof callback === 'function' ? callback : () => null;
     }
     get onmessage () {
-        return this.jsonrpc.onmessage;
+        return this.jsonrpc.onmessage.toString() === '() => null' ? null : this.jsonrpc.onmessage;
     }
     set onclose (callback) {
         this.jsonrpc.onclose = typeof callback === 'function' ? callback : () => null;
     }
     get onclose () {
-        return this.jsonrpc.onclose;
+        return this.jsonrpc.onclose.toString() === '() => null' ? null : this.jsonrpc.onclose;
     }
-    send (...messages) {
+    send (...args) {
         return this.socket.then((ws) => new Promise((resolve, reject) => {
             ws.resolve = resolve;
             ws.onerror = reject;
-            ws.send(this.json(messages));
+            ws.send(this.json(args));
         }));
     }
-    post (...messages) {
-        return fetch(this.jsonrpc.path, {method: 'POST', body: this.json(messages)}).then((response) => {
+    post (...args) {
+        return fetch(this.jsonrpc.path, {method: 'POST', body: this.json(args)}).then((response) => {
             if (response.ok) { return response.json(); }
             throw new Error(response.statusText);
         });
     }
-    json (array) {
-        let json = array.map( ({method, params = []}) => ({ id: '', jsonrpc: '2.0', method, params: [...this.jsonrpc.params, ...params] }) );
+    json (args) {
+        let json = args.map( ({method, params = []}) => ({ id: '', jsonrpc: '2.0', method, params: [...this.jsonrpc.params, ...params] }) );
         return JSON.stringify(json);
     }
 }

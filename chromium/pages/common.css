@@ -116,7 +116,7 @@ h4, h4 + div + div {
     grid-column-gap: 5px;
 }
 
-.menu:not(:nth-child(1)), .options > .menu:not(:nth-child(2)) {
+.menu {
     margin-top: 5px;
 }
 
