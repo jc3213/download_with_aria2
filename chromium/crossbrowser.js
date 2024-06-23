@@ -307,9 +307,7 @@ async function aria2WebSocket({method, params}) {
         case 'aria2.onBtDownloadComplete':
             break;
         case 'aria2.onDownloadComplete':
-            var [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-            var name = getSessionName(gid, session.result.bittorrent, session.result.files);
-            aria2WhenComplete(name);
+            aria2WhenComplete(gid);
         default:
             delete aria2Queue[gid];
             aria2Active --;
@@ -351,10 +349,13 @@ function aria2WhenStart(message) {
     }
 }
 
-function aria2WhenComplete(message) {
+async function aria2WhenComplete(gid) {
     if (aria2Storage['notify_complete']) {
+        var response = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
+        var {bittorrent, files: [{path, uris}]} = response[0].result;
+        var name = bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
         var title = chrome.i18n.getMessage('download_complete');
-        return getNotification(title, message);
+        return getNotification(title, name);
     }
 }
 
@@ -387,10 +388,6 @@ function getRequestCookies(url, storeId) {
 
 function getMatchPattern(array) {
     return array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/g, '.*') + ')$');
-}
-
-function getSessionName(gid, bittorrent, [{path, uris}]) {
-    return bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
 }
 
 function getHostname(url) {
