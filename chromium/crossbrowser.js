@@ -68,9 +68,11 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
 
 async function aria2DownloadHandler(url, options, referer, hostname, storeId) {
     options['user-agent'] = aria2Storage['headers_useragent'];
+    console.log(options);
     if (aria2Storage['proxy_always'] || aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
+    console.log(options, hostname, aria2Updated['proxy_include'].test(hostname));
     if (!options['dir'] && aria2Storage['folder_enabled'] && aria2Storage['folder_defined']) {
         options['dir'] = aria2Storage['folder_defined'];
     }
@@ -220,32 +222,34 @@ async function aria2UpdateJsonrpc(changes) {
 
 function aria2UpdateStorage(json) {
     aria2Storage = json;
+    aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
     aria2Updated['headers_exclude'] = getMatchPattern(json['headers_exclude']);
     aria2Updated['proxy_include'] = getMatchPattern(json['proxy_include']);
     aria2Updated['capture_include'] = getMatchPattern(json['capture_include']);
     aria2Updated['capture_exclude'] = getMatchPattern(json['capture_exclude']);
-    aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
+    aria2Updated['capture_type_include'] = getMatchPattern(json['capture_type_include']);
+    aria2Updated['capture_type_exclude'] = getMatchPattern(json['capture_type_exclude']);
     aria2Updated['capture_size_include'] = json['capture_size_include'] * 1048576;
     aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
     if (aria2Manifest.manifest_version === 2) {
         aria2CaptureSwitch();
     }
-    chrome.action.setPopup({popup: aria2Storage['manager_newtab'] ? '' : '/pages/popup/popup.html?as_popup'});
+    chrome.action.setPopup({popup: json['manager_newtab'] ? '' : '/pages/popup/popup.html?as_popup'});
     chrome.contextMenus.removeAll();
-    if (!aria2Storage['context_enabled']) {
+    if (!json['context_enabled']) {
         return;
     }
-    if (aria2Storage['context_cascade']) {
+    if (json['context_cascade']) {
         var parentId = 'aria2c_contextmenu';
         getContextMenu(parentId, 'extension_name', ['link', 'image', 'page']);
     }
-    if (aria2Storage['context_thisurl']) {
+    if (json['context_thisurl']) {
         getContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], parentId);
     }
-    if (aria2Storage['context_thisimage']) {
+    if (json['context_thisimage']) {
         getContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], parentId);
     }
-    if (aria2Storage['context_allimages']) {
+    if (json['context_allimages']) {
         getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], parentId);
     }
 }
@@ -319,16 +323,16 @@ function aria2ToolbarBadge(number) {
     chrome.action.setBadgeText({text: !number ? '' : number + ''});
 }
 
-function aria2CaptureResult(hostname, type, size) {
+function aria2CaptureResult(hostname, filename, filesize) {
     if (aria2Updated['capture_exclude'].test(hostname) ||
-        aria2Storage['capture_type_exclude'].includes(type) ||
-        aria2Updated['capture_size_exclude'] > 0 && size <= aria2Updated['capture_size_exclude']) {
+        aria2Updated['capture_type_exclude'].test(filename) ||
+        aria2Updated['capture_size_exclude'] > 0 && filesize <= aria2Updated['capture_size_exclude']) {
         return false;
     }
     if (aria2Storage['capture_always'] ||
         aria2Updated['capture_include'].test(hostname) ||
-        aria2Storage['capture_type_include'].includes(type) ||
-        aria2Updated['capture_size_include'] > 0 && size >= aria2Updated['capture_size_include']) {
+        aria2Updated['capture_type_include'].test(filename) ||
+        aria2Updated['capture_size_include'] > 0 && filesize >= aria2Updated['capture_size_include']) {
         return true;
     }
     return false;
@@ -387,18 +391,13 @@ function getRequestCookies(url, storeId) {
 }
 
 function getMatchPattern(array) {
-    return array.length === 0 ? /!/ : new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/g, '.*') + ')$');
+    return array.length === 0 ? /!/ : new RegExp('(' + array.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/g, '.*') + ')$');
 }
 
 function getHostname(url) {
-    var temp = url.slice(url.indexOf('://') + 3);
+    var temp = url.slice(url.indexOf(':') + 3);
     var host = temp.slice(0, temp.indexOf('/'));
     return host.slice(host.indexOf('@') + 1);
-}
-
-function getFileExtension(filename) {
-    var fileext = filename.slice(filename.lastIndexOf('.') + 1);
-    return fileext.toLowerCase();
 }
 
 function getNotification(title, message) {

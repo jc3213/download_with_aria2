@@ -3,7 +3,7 @@ function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
         return;
     }
     var hostname = referrer ? getHostname(referrer) : getHostname(finalUrl);
-    var captured = aria2CaptureResult(hostname, getFileExtension(filename), fileSize);
+    var captured = aria2CaptureResult(hostname, filename, fileSize);
     if (captured) {
         chrome.downloads.erase({id});
         aria2DownloadHandler(finalUrl, {out: filename}, referrer, hostname);

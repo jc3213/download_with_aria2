@@ -17,12 +17,12 @@ function aria2CaptureSwitch() {
     browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
 }
 
-async function downloadCapture({id, url, referrer, filename, cookieStoreId}) {
+async function downloadCapture({id, url, referrer, filename, fileSize, cookieStoreId}) {
     if (url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
     var hostname = getHostname(referrer);
-    var captured = aria2CaptureResult(hostname, getFileExtension(filename));
+    var captured = aria2CaptureResult(hostname, filename, fileSize);
     if (captured) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
@@ -48,10 +48,9 @@ async function webRequestCapture({statusCode, cookieStoreId, url, originUrl, res
     var disposition = result['content-disposition'];
     if (disposition?.startsWith('attachment')) {
         var out = getFileName(disposition);
-        var ext = getFileExtension(out);
     }
     var hostname = getHostname(originUrl);
-    if (aria2CaptureResult(hostname, ext, result['content-length'])) {
+    if (aria2CaptureResult(hostname, out, result['content-length'] | 0)) {
         aria2DownloadHandler(url, {out}, originUrl, hostname, cookieStoreId);
         return {cancel: true};
     }
