@@ -68,11 +68,9 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
 
 async function aria2DownloadHandler(url, options, referer, hostname, storeId) {
     options['user-agent'] = aria2Storage['headers_useragent'];
-    console.log(options);
     if (aria2Storage['proxy_always'] || aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
-    console.log(options, hostname, aria2Updated['proxy_include'].test(hostname));
     if (!options['dir'] && aria2Storage['folder_enabled'] && aria2Storage['folder_defined']) {
         options['dir'] = aria2Storage['folder_defined'];
     }
