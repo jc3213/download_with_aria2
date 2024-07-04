@@ -225,8 +225,8 @@ function aria2UpdateStorage(json) {
     aria2Updated['proxy_include'] = getMatchPattern(json['proxy_include']);
     aria2Updated['capture_include'] = getMatchPattern(json['capture_include']);
     aria2Updated['capture_exclude'] = getMatchPattern(json['capture_exclude']);
-    aria2Updated['capture_type_include'] = getMatchPattern(json['capture_type_include']);
-    aria2Updated['capture_type_exclude'] = getMatchPattern(json['capture_type_exclude']);
+    aria2Updated['capture_type_include'] = getMatchPattern(json['capture_type_include'], true);
+    aria2Updated['capture_type_exclude'] = getMatchPattern(json['capture_type_exclude'], true);
     aria2Updated['capture_size_include'] = json['capture_size_include'] * 1048576;
     aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
     if (aria2Manifest.manifest_version === 2) {
@@ -388,8 +388,9 @@ function getRequestCookies(url, storeId) {
     return storeId ? browser.cookies.getAll({url, storeId, firstPartyDomain: null}) : new Promise((resolve) => chrome.cookies.getAll({url}, resolve));
 }
 
-function getMatchPattern(array) {
-    return array.length === 0 ? /!/ : new RegExp('(' + array.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/g, '.*') + ')$');
+function getMatchPattern(pattern, filetype) {
+    var regfix = filetype ? : '\.' : '^';
+    return pattern.length === 0 ? /!/ : new RegExp(regfix + '(' + pattern.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/g, '.*') + ')$');
 }
 
 function getHostname(url) {
