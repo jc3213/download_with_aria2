@@ -389,7 +389,7 @@ function getRequestCookies(url, storeId) {
 }
 
 function getMatchPattern(pattern, filetype) {
-    var regfix = filetype ? : '\.' : '^';
+    var regfix = filetype ? '\\.' : '^';
     return pattern.length === 0 ? /!/ : new RegExp(regfix + '(' + pattern.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/g, '.*') + ')$');
 }
 
