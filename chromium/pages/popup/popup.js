@@ -1,7 +1,6 @@
 var aria2Detail;
 var aria2Alive;
 var aria2Retry;
-var aria2SizeKeys = ['min-split-size','max-download-limit','max-upload-limit'];
 var aria2Queue = localStorage['queues']?.match(/[^;]+/g) ?? [];
 var manager = document.body.classList;
 var chooseQueue = document.querySelector('#choose');
@@ -235,9 +234,8 @@ function createSession(gid, status, bittorrent) {
         }
     });
     task.addEventListener('change', (event) => {
-        var {dataset: {rid}, value} = event.target;
-        if (rid) {
-            task.options[rid] = value;
+        if (event.target.dataset.rid) {
+            task.options[event.target.dataset.rid] = event.target.value;
             aria2RPC.call({method: 'aria2.changeOption', params: [gid, task.options]});
         }
     });
@@ -262,7 +260,9 @@ async function taskRemove(task, gid) {
 }
 
 function taskOptionsSetUp(options) {
-    aria2SizeKeys.forEach((key) => options[key] = getFileSize(options[key]));
+    options['min-split-size'] = getFileSize(options['min-split-size']);
+    options['max-download-limit'] = getFileSize(options['max-download-limit']);
+    options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
     return options;
 }
 
