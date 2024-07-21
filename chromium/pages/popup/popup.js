@@ -347,7 +347,7 @@ function getTaskDetail(gid) {
 
 function printFileItem(list, index, selected, path, length) {
     var file = fileLET.cloneNode(true);
-    file.querySelectorAll('div, label, input').forEach((item) => file[item.className] = item);
+    file.querySelectorAll('*').forEach((item) => file[item.className] = item);
     file.check.checked = selected === 'true';
     file.check.id = aria2Detail.id + '_' + index;
     file.index.textContent = index;
@@ -370,13 +370,13 @@ function printTaskFileList(files) {
 }
 
 function printUriItem(list, links, uri) {
-    var item = uriLET.cloneNode(true);
-    item.querySelectorAll('div').forEach((div) => item[div.className] = div);
-    item.link.textContent = uri;
-    list[uri] = item;
-    list.append(item);
+    var url = uriLET.cloneNode(true);
+    url.querySelectorAll('*').forEach((div) => url[div.className] = div);
+    url.link.textContent = uri;
+    list[uri] = url;
+    list.append(url);
     links.push(uri);
-    return item;
+    return url;
 }
 
 function printTaskUriList(uris) {
