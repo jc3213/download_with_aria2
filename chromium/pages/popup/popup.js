@@ -78,7 +78,7 @@ function aria2ClientWorker() {
         {method: 'aria2.tellWaiting', params: [0, 999]},
         {method: 'aria2.tellStopped', params: [0, 999]}
     ).then(([global, active, waiting, stopped]) => {
-        [...active.result, ...waiting.result, ...stopped.result].forEach(sessionUpdated);
+        [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementUpdate);
         downloadStat.textContent = getFileSize(global.result.downloadSpeed);
         uploadStat.textContent = getFileSize(global.result.uploadSpeed);
         aria2Alive = setInterval(aria2ClientUpdate, aria2Interval);
@@ -114,12 +114,12 @@ function aria2WebSocket({method, params}) {
 
 async function aria2ClientUpdate() {
     var [global, active] = await aria2RPC.call({method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'});
-    active.result.forEach(sessionUpdated);
+    active.result.forEach(taskElementUpdate);
     downloadStat.textContent = getFileSize(global.result.downloadSpeed);
     uploadStat.textContent = getFileSize(global.result.uploadSpeed);
 }
 
-function sessionStatusChange(task, gid, status) {
+function taskStatusChange(task, gid, status) {
     var queue = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
     if (!self[queue + 'Task'][gid]) {
         self[queue + 'Task'][gid] = task;
@@ -132,8 +132,8 @@ function sessionStatusChange(task, gid, status) {
 
 async function sessionCreated(gid) {
     var [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-    var task = sessionUpdated(session.result);
-    sessionStatusChange(task, gid, session.result.status);
+    var task = taskElementUpdate(session.result);
+    taskStatusChange(task, gid, session.result.status);
 }
 
 function sessionRemoved(queue, gid, task) {
@@ -168,8 +168,8 @@ function getSessionName(gid, bittorrent, [{path, uris}]) {
     return bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
 }
 
-function sessionUpdated({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    var task = globalTask[gid] ?? createSession(gid, status, bittorrent);
+function taskElementUpdate({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
+    var task = globalTask[gid] ?? taskElementCreate(gid, status, bittorrent, files);
     var time = (totalLength - completedLength) / downloadSpeed;
     var days = time / 86400 | 0;
     var hours = time / 3600 - days * 24 | 0;
@@ -189,13 +189,13 @@ function sessionUpdated({gid, status, files, bittorrent, completedLength, totalL
     task.upload.textContent = getFileSize(uploadSpeed);
     task.ratio.textContent = percent;
     task.ratio.style.width = percent + '%';
-    if (aria2Detail === task) {
-        printTaskFileList(files);
+    if (aria2Detail === gid) {
+        taskDetailSync(task, files);
     }
     return task;
 }
 
-function createSession(gid, status, bittorrent) {
+function taskElementCreate(gid, status, bittorrent, files) {
     var task = sessionLET.cloneNode(true);
     task.querySelectorAll('[class]').forEach((item) => task[item.className] = item);
     task.settings = task.querySelectorAll('input, select');
@@ -222,14 +222,17 @@ function createSession(gid, status, bittorrent) {
             case 'save_btn':
                 taskChangeFiles(task, gid);
                 break;
-            case 'file_btn':
+            case 'file_alt_btn':
                 taskSelectFile(task);
                 break;
-            case 'adduri_btn':
+            case 'uri_add_btn':
                 taskAddUri(event.target, gid);
                 break;
-            case 'uri_btn':
-                taskRemoveUri(event.target.textContent, gid, event.ctrlKey);
+            case 'uri_copy_btn':
+                navigator.clipboard.writeText(event.target.textContent);
+                break;
+            case 'uri_del_btn':
+                taskRemoveUri(gid, event.target.textContent);
                 break;
         }
     });
@@ -240,8 +243,60 @@ function createSession(gid, status, bittorrent) {
         }
     });
     globalTask[gid] = task;
-    sessionStatusChange(task, gid, status);
+    files.forEach((file) => taskFileElementCreate(task, gid, task.files, file));
+    taskStatusChange(task, gid, status);
     return task;
+}
+
+function taskFileElementSync(file, length, completedLength) {
+    file.ratio.textContent = (completedLength / length * 10000 | 0) / 100;
+}
+
+function taskFileElementCreate(task, gid, files, {index, selected, path, length, uris}) {
+    var file = fileLET.cloneNode(true);
+    file.querySelectorAll('*').forEach((item) => file[item.className] = item);
+    file.check.id = gid + '_' + index;
+    file.index.textContent = index;
+    file.index.setAttribute('for', file.check.id);
+    files.append(file);
+    files[index] = file;
+    uris.forEach((uri) => taskUriElementCreate(task.uris, task.links, uri.uri));
+}
+
+function taskUriElementSync(task, uris) {
+    if (uris.length === 0) {
+        return;
+    }
+    var uriList = task.uris;
+    var links = task.links;
+    var result = {};
+    uris.forEach(({uri, status}) => {
+        if (!uriList[uri]) {
+            taskUriElementCreate(uriList, links, uri);
+        }
+        var {used, wait} = result[uri] ?? {used: 0, wait: 0};
+        status === 'used' ? used ++ : wait ++;
+        result[uri] = {used, wait};
+    });
+    links.forEach((uri) => {
+        if (!result[uri]) {
+            return uriList[uri].remove();
+        }
+        uriList[uri].used.textContent = result[uri].used;
+        uriList[uri].wait.textContent = result[uri].wait;
+    });
+}
+
+function taskUriElementCreate(uris, links, uri) {
+    if (uris[uri]) {
+        return;
+    }
+    var url = uriLET.cloneNode(true);
+    url.querySelectorAll('*').forEach((div) => url[div.className] = div);
+    url.link.textContent = uri;
+    uris[uri] = url;
+    uris.append(url);
+    links.push(uri);
 }
 
 async function taskRemove(task, gid) {
@@ -259,28 +314,44 @@ async function taskRemove(task, gid) {
     }
 }
 
-function taskOptionsSetUp(options) {
-    options['min-split-size'] = getFileSize(options['min-split-size']);
-    options['max-download-limit'] = getFileSize(options['max-download-limit']);
-    options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
-    return options;
-}
-
 async function taskDetail(task, gid) {
-    if (aria2Detail) {
-        aria2Detail.classList.remove('extra');
-        aria2Detail.save.style.display = 'none';
+    if (globalTask[gid]) {
+        globalTask[gid].classList.remove('extra');
+        globalTask[gid].save.style.display = 'none';
     }
-    if (aria2Detail === task) {
+    if (aria2Detail === gid) {
         aria2Detail = null;
         return;
     }
     var [files, options] = await getTaskDetail(gid);
-    aria2Detail = task;
-    aria2Detail.options = aria2Detail.settings.disposition(taskOptionsSetUp(options.result));
-    aria2Detail.classList.add('extra');
-    aria2Detail.scrollIntoView();
-    printTaskFileList(files.result);
+    task.classList.add('extra');
+    task.scrollIntoView();
+    aria2Detail = gid;
+    taskDetailOpened(task, files.result, options.result);
+}
+
+function taskDetailOpened(task, files, options) {
+    options['min-split-size'] = getFileSize(options['min-split-size']);
+    options['max-download-limit'] = getFileSize(options['max-download-limit']);
+    options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
+    task.options = task.settings.disposition(options);
+    files.forEach(({index, length, completedLength, path, selected, uris}) => {
+        var file = task.files[index];
+        file.check.checked = selected === 'true';
+        file.name.textContent = path.slice(path.lastIndexOf('/') + 1);
+        file.name.title = path;
+        file.size.textContent = getFileSize(length);
+        taskFileElementSync(file, length, completedLength);
+        taskUriElementSync(task, uris);
+    });
+}
+
+function taskDetailSync(task, files) {
+    files.forEach(({index, selected, length, completedLength, uris}) => {
+        var file = task.files[index];
+        taskFileElementSync(file, selected, length, completedLength);
+        taskUriElementSync(task, uris);
+    });
 }
 
 async function taskRetry(task, gid) {
@@ -334,8 +405,8 @@ async function taskAddUri(adduri, gid) {
     uri.value = '';
 }
 
-async function taskRemoveUri(uri, gid, ctrl) {
-    ctrl ? aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [uri], []]}) : navigator.clipboard.writeText(uri);
+async function taskRemoveUri(gid, uri) {
+    aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [uri], []]});
 }
 
 function getTaskDetail(gid) {
@@ -343,62 +414,4 @@ function getTaskDetail(gid) {
         {method: 'aria2.getFiles', params: [gid]},
         {method: 'aria2.getOption', params: [gid]}
     );
-}
-
-function printFileItem(list, index, selected, path, length) {
-    var file = fileLET.cloneNode(true);
-    file.querySelectorAll('*').forEach((item) => file[item.className] = item);
-    file.check.checked = selected === 'true';
-    file.check.id = aria2Detail.id + '_' + index;
-    file.index.textContent = index;
-    file.index.setAttribute('for', file.check.id);
-    file.name.textContent = path.slice(path.lastIndexOf('/') + 1);
-    file.name.title = path;
-    file.size.textContent = getFileSize(length);
-    list.append(file);
-    list[index] = file;
-    return file;
-}
-
-function printTaskFileList(files) {
-    var fileList = aria2Detail.files;
-    files.forEach(({index, path, length, selected, completedLength, uris}) => {
-        var item = fileList[index] ?? printFileItem(fileList, index, selected, path, length);
-        item.ratio.textContent = (completedLength / length * 10000 | 0) / 100;
-        printTaskUriList(uris);
-    });
-}
-
-function printUriItem(list, links, uri) {
-    var url = uriLET.cloneNode(true);
-    url.querySelectorAll('*').forEach((div) => url[div.className] = div);
-    url.link.textContent = uri;
-    list[uri] = url;
-    list.append(url);
-    links.push(uri);
-    return url;
-}
-
-function printTaskUriList(uris) {
-    if (uris.length === 0) {
-        return;
-    }
-    var uriList = aria2Detail.uris;
-    var links = aria2Detail.links;
-    var result = {};
-    uris.forEach(({uri, status}) => {
-        var item = uriList[uri] ?? printUriItem(uriList, links, uri);
-        var {used, wait} = result[uri] ?? {used: 0, wait: 0};
-        status === 'used' ? used ++ : wait ++;
-        result[uri] = {used, wait};
-    });
-    links.forEach((uri) => {
-        if (result[uri] === undefined) {
-            uriList[uri].remove();
-            delete uriList[uri];
-            return links.splice(links.indexOf(uri), 1);
-        }
-        uriList[uri].used.textContent = result[uri].used;
-        uriList[uri].wait.textContent = result[uri].wait;
-    });
 }
