@@ -228,11 +228,8 @@ function taskElementCreate(gid, status, bittorrent, files) {
             case 'uri_add_btn':
                 taskAddUri(event.target, gid);
                 break;
-            case 'uri_copy_btn':
-                navigator.clipboard.writeText(event.target.textContent);
-                break;
-            case 'uri_del_btn':
-                taskRemoveUri(gid, event.target.textContent);
+            case 'uri_alt_btn':
+                taskRemoveUri(gid, event.target.textContent, event.ctrlKey);
                 break;
         }
     });
@@ -405,8 +402,8 @@ async function taskAddUri(adduri, gid) {
     uri.value = '';
 }
 
-async function taskRemoveUri(gid, uri) {
-    aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [uri], []]});
+async function taskRemoveUri(gid, uri, ctrl) {
+    ctrl ? aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [uri], []]}) : navigator.clipboard.writeText(uri);
 }
 
 function getTaskDetail(gid) {
