@@ -190,7 +190,7 @@ function taskElementUpdate({gid, status, files, bittorrent, completedLength, tot
     task.ratio.textContent = percent;
     task.ratio.style.width = percent + '%';
     if (aria2Detail === gid) {
-        taskDetailSync(task, files);
+        files.forEach(({index, length, completedLength, uris}) => taskFileAndUriSync(task.files[index], length, completedLength, task.uris, task.links, uris));
     }
     return task;
 }
@@ -245,10 +245,6 @@ function taskElementCreate(gid, status, bittorrent, files) {
     return task;
 }
 
-function taskFileElementSync(file, length, completedLength) {
-    file.ratio.textContent = (completedLength / length * 10000 | 0) / 100;
-}
-
 function taskFileElementCreate(task, gid, files, {index, selected, path, length, uris}) {
     var file = fileLET.cloneNode(true);
     file.querySelectorAll('*').forEach((item) => file[item.className] = item);
@@ -260,12 +256,23 @@ function taskFileElementCreate(task, gid, files, {index, selected, path, length,
     uris.forEach((uri) => taskUriElementCreate(task.uris, task.links, uri.uri));
 }
 
-function taskUriElementSync(task, uris) {
+function taskUriElementCreate(uris, links, uri) {
+    if (uris[uri]) {
+        return;
+    }
+    var url = uriLET.cloneNode(true);
+    url.querySelectorAll('*').forEach((div) => url[div.className] = div);
+    url.link.textContent = uri;
+    uris[uri] = url;
+    uris.append(url);
+    links.push(uri);
+}
+
+function taskFileAndUriSync(file, length, completedLength, uriList, links, uris) {
+    file.ratio.textContent = (completedLength / length * 10000 | 0) / 100;
     if (uris.length === 0) {
         return;
     }
-    var uriList = task.uris;
-    var links = task.links;
     var result = {};
     uris.forEach(({uri, status}) => {
         if (!uriList[uri]) {
@@ -282,18 +289,6 @@ function taskUriElementSync(task, uris) {
         uriList[uri].used.textContent = result[uri].used;
         uriList[uri].wait.textContent = result[uri].wait;
     });
-}
-
-function taskUriElementCreate(uris, links, uri) {
-    if (uris[uri]) {
-        return;
-    }
-    var url = uriLET.cloneNode(true);
-    url.querySelectorAll('*').forEach((div) => url[div.className] = div);
-    url.link.textContent = uri;
-    uris[uri] = url;
-    uris.append(url);
-    links.push(uri);
 }
 
 async function taskRemove(task, gid) {
@@ -322,7 +317,7 @@ async function taskDetail(task, gid) {
     }
     var [files, options] = await getTaskDetail(gid);
     task.classList.add('extra');
-    task.scrollIntoView();
+    task.scrollIntoView(false);
     aria2Detail = gid;
     taskDetailOpened(task, files.result, options.result);
 }
@@ -338,16 +333,7 @@ function taskDetailOpened(task, files, options) {
         file.name.textContent = path.slice(path.lastIndexOf('/') + 1);
         file.name.title = path;
         file.size.textContent = getFileSize(length);
-        taskFileElementSync(file, length, completedLength);
-        taskUriElementSync(task, uris);
-    });
-}
-
-function taskDetailSync(task, files) {
-    files.forEach(({index, selected, length, completedLength, uris}) => {
-        var file = task.files[index];
-        taskFileElementSync(file, selected, length, completedLength);
-        taskUriElementSync(task, uris);
+        taskFileAndUriSync(file, length, completedLength, task.uris, task.links, uris);
     });
 }
 
