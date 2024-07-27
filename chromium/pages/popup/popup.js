@@ -262,7 +262,7 @@ function taskUriElementCreate(uris, links, uri) {
     }
     var url = uriLET.cloneNode(true);
     url.querySelectorAll('*').forEach((div) => url[div.className] = div);
-    url.link.textContent = uri;
+    url.link.title = url.link.textContent = uri;
     uris[uri] = url;
     uris.append(url);
     links.push(uri);
@@ -275,16 +275,15 @@ function taskFileAndUriSync(file, length, completedLength, uriList, links, uris)
     }
     var result = {};
     uris.forEach(({uri, status}) => {
-        if (!uriList[uri]) {
-            taskUriElementCreate(uriList, links, uri);
-        }
-        var {used, wait} = result[uri] ?? {used: 0, wait: 0};
-        status === 'used' ? used ++ : wait ++;
-        result[uri] = {used, wait};
+        taskUriElementCreate(uriList, links, uri);
+        var url = result[uri] ?? {used: 0, wait: 0};
+        status === 'used' ? url.used ++ : url.wait ++;
+        result[uri] = url;
     });
     links = links.filter((uri) => {
         if (!result[uri]) {
-            uriList[uri].remove()
+            uriList[uri].remove();
+            delete uriList[uri];
             return false;
         }
         uriList[uri].used.textContent = result[uri].used;
