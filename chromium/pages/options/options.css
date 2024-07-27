@@ -62,24 +62,17 @@ input[type="checkbox"] + label {
     margin: 30px 0px;
 }
 
-.options > .options {
-    margin: 0px;
+.even {
+    margin-top: 31px;
 }
 
 .match {
     margin: 20px 0px;
 }
 
-.even {
-    margin-top: 31px;
-}
-
 .list {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-}
-
-.list {
+    grid-template-columns: repeat(4, 1fr);
     min-height: 59px;
     max-height: 118px;
     border-style: inset;
