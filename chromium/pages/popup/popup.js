@@ -282,12 +282,14 @@ function taskFileAndUriSync(file, length, completedLength, uriList, links, uris)
         status === 'used' ? used ++ : wait ++;
         result[uri] = {used, wait};
     });
-    links.forEach((uri) => {
-        if (!result[uri]) {
-            return uriList[uri].remove();
+    links = links.filter((uri) => {
+        if (result[uri]) {
+            uriList[uri].remove()
+            return false;
         }
         uriList[uri].used.textContent = result[uri].used;
         uriList[uri].wait.textContent = result[uri].wait;
+        return true;
     });
 }
 
