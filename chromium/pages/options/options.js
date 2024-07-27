@@ -116,9 +116,6 @@ document.addEventListener('click', (event) => {
         case 'back_btn':
             optionsExtension();
             break;
-        case 'manage_btn':
-            optionsManage(event.target.dataset.mid);
-            break;
     }
 });
 
@@ -206,10 +203,6 @@ function optionEmptyChanges() {
     undoes = [];
     redoes = [];
     saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
-}
-
-function optionsManage(id) {
-    extension.toggle(id);
 }
 
 document.addEventListener('change', ({target}) => {

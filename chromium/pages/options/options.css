@@ -11,14 +11,6 @@ body:not(.capture_enabled) [data-exc*="capture_enabled"], body.capture_webreques
     display: none;
 }
 
-body:not(.headers_manage) #headers, body:not(.proxy_manage) #proxy, body:not(.capture_manage) #capture {
-    display: none;
-}
-
-body.headers_manage [data-mid="headers_manage"], body.proxy_manage [data-mid="proxy_manage"], body.capture_manage [data-mid="capture_manage"] {
-    border-style: inset;
-}
-
 input[type="checkbox"] {
     width: auto;
     transform: scale(1.5);
@@ -74,20 +66,12 @@ input[type="checkbox"] + label {
     margin: 0px;
 }
 
-.menu + .menu2 {
-    grid-column: span 1;
-}
-
-.menu2 {
-    margin-bottom: 20px;
+.match {
+    margin: 20px 0px;
 }
 
 .even {
     margin-top: 31px;
-}
-
-.even2 {
-    margin-top: 3px;
 }
 
 .list {
