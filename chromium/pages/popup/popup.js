@@ -283,7 +283,7 @@ function taskFileAndUriSync(file, length, completedLength, uriList, links, uris)
         result[uri] = {used, wait};
     });
     links = links.filter((uri) => {
-        if (result[uri]) {
+        if (!result[uri]) {
             uriList[uri].remove()
             return false;
         }
