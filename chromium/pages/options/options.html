@@ -88,21 +88,26 @@
                 <label for="notify_complete" i18n="option_notify_complete"></label>
             </div>
             <h1 i18n="option_headers"></h1>
-            <div i18n_title="option_headers_useragent_title">
+            <div class="menu2" i18n_title="option_headers_useragent_title">
                 <h4 i18n="option_headers_useragent"></h4>
                 <input data-eid="headers_useragent" type="text">
             </div>
-            <div class="menu even" i18n_title="option_headers_enabled_title">
+            <div class="menu" i18n_title="option_headers_enabled_title">
                 <input id="headers_enabled" data-eid="headers_enabled" type="checkbox">
                 <label for="headers_enabled" i18n="option_headers_enabled"></label>
             </div>
-            <div class="menu" i18n_title="option_headers_exclude_title" data-map="headers_exclude" data-rel="headers_enabled">
-                <h4 i18n="option_match_exclude"></h4>
-                <div class="flex">
-                    <input type="text">
-                    <button data-bid="add_rule">➕</button>
+            <div class="menu2 even2" i18n_title="option_headers_exclude_title" data-map="headers_exclude" data-rel="headers_enabled">
+                <button data-bid="manage_btn" data-mid="headers_manage">Manage Matching Rules</button>
+            </div>
+            <div id="headers" class="match">
+                <div i18n_title="option_headers_exclude_title" data-map="headers_exclude">
+                    <h4 i18n="option_match_exclude"></h4>
+                    <div class="flex">
+                        <input type="text">
+                        <button data-bid="add_rule">➕</button>
+                    </div>
+                    <div class="list"></div>
                 </div>
-                <div class="list"></div>
             </div>
             <h1 i18n="option_folder"></h1>
             <div i18n_title="option_folder_title">
@@ -117,85 +122,95 @@
                 <label for="folder_firefox" i18n="option_folder_firefox"></label>
             </div>
             <h1 i18n="option_proxy"></h1>
-            <div i18n_title="option_proxy_title">
+            <div class="menu2" i18n_title="option_proxy_title">
                 <input data-eid="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
             </div>
-            <div class="menu even" i18n_title="option_proxy_always_title">
+            <div class="menu" i18n_title="option_proxy_always_title">
                 <input id="proxy_always" data-eid="proxy_always" type="checkbox">
                 <label for="proxy_always" i18n="option_proxy_always"></label>
             </div>
-            <div class="menu" i18n_title="option_proxy_include_title" data-map="proxy_include" data-exc="proxy_always">
-                <h4 i18n="option_match_include"></h4>
-                <div class="flex">
-                    <input type="text">
-                    <button data-bid="add_rule">➕</button>
+            <div class="menu2 even2" data-exc="proxy_always">
+                <button data-bid="manage_btn" data-mid="proxy_manage">Manage Matching Rules</button>
+            </div>
+            <div id="proxy" class="match">
+                <div i18n_title="option_proxy_include_title" data-map="proxy_include">
+                    <h4 i18n="option_match_include"></h4>
+                    <div class="flex">
+                        <input type="text">
+                        <button data-bid="add_rule">➕</button>
+                    </div>
+                    <div class="list"></div>
                 </div>
-                <div class="list"></div>
             </div>
             <h1 i18n="option_capture"></h1>
             <div class="menu" i18n_title="option_capture_enabled_title">
                 <input id="capture_enabled" data-eid="capture_enabled" type="checkbox">
                 <label for="capture_enabled" i18n="option_capture_enabled"></label>
             </div>
-            <div class="menu" i18n_title="option_capture_always_title" data-rel="capture_enabled">
+            <div class="menu2" i18n_title="option_capture_always_title" data-rel="capture_enabled">
                 <input id="capture_always" data-eid="capture_always" type="checkbox">
                 <label for="capture_always" i18n="option_capture_always"></label>
             </div>
-            <div i18n_title="option_capture_webrequest_title" data-app="firefox" data-rel="capture_enabled">
+            <div class="menu" i18n_title="option_capture_webrequest_title" data-app="firefox" data-rel="capture_enabled">
                 <input id="capture_webrequest" data-eid="capture_webrequest" type="checkbox">
                 <label for="capture_webrequest" i18n="option_capture_webrequest"></label>
             </div>
-            <div class="menu" i18n_title="option_capture_size_include_title" data-rel="capture_enabled" data-exc="capture_always">
-                <h4 i18n="option_capture_size_include"></h4>
-                <div>
-                    <input data-eid="capture_size_include" type="number" min="0">
-                    <span>MB</span>
-                </div>
-                <div>
-                    <span i18n="common_disabled"></span>: <i>0</i>
-                </div>
+            <div class="menu2 even2" data-rel="capture_enabled">
+                <button data-bid="manage_btn" data-mid="capture_manage">Manage Matching Rules</button>
             </div>
-            <div class="menu" i18n_title="option_capture_size_exclude_title" data-rel="capture_enabled">
-                <h4 i18n="option_capture_size_exclude"></h4>
-                <div>
-                    <input data-eid="capture_size_exclude" type="number" min="0">
-                    <span>MB</span>
+            <div id="capture" class="match">
+                <div i18n_title="option_capture_size_include_title" data-exc="capture_always">
+                    <h4 i18n="option_capture_size_include"></h4>
+                    <div>
+                        <input data-eid="capture_size_include" type="number" min="0">
+                        <span>MB</span>
+                    </div>
+                    <div>
+                        <span i18n="common_disabled"></span>: <i>0</i>
+                    </div>
                 </div>
-                <div>
-                    <span i18n="common_disabled"></span>: <i>0</i>
+                <div i18n_title="option_capture_size_exclude_title" data-rel="capture_enabled">
+                    <h4 i18n="option_capture_size_exclude"></h4>
+                    <div>
+                        <input data-eid="capture_size_exclude" type="number" min="0">
+                        <span>MB</span>
+                    </div>
+                    <div>
+                        <span i18n="common_disabled"></span>: <i>0</i>
+                    </div>
                 </div>
-            </div>
-            <div class="menu" i18n_title="option_capture_type_include_title" data-map="capture_type_include" data-rel="capture_enabled" data-exc="capture_always">
-                <h4 i18n="option_capture_type_include"></h4>
-                <div class="flex">
-                    <input type="text">
-                    <button data-bid="add_rule">➕</button>
+                <div i18n_title="option_capture_type_include_title" data-map="capture_type_include" data-exc="capture_always">
+                    <h4 i18n="option_capture_type_include"></h4>
+                    <div class="flex">
+                        <input type="text">
+                        <button data-bid="add_rule">➕</button>
+                    </div>
+                    <div class="list"></div>
                 </div>
-                <div class="list"></div>
-            </div>
-            <div class="menu" i18n_title="option_capture_type_exclude_title" data-map="capture_type_exclude" data-rel="capture_enabled">
-                <h4 i18n="option_capture_type_exclude"></h4>
-                <div class="flex">
-                    <input type="text">
-                    <button data-bid="add_rule">➕</button>
+                <div i18n_title="option_capture_type_exclude_title" data-map="capture_type_exclude">
+                    <h4 i18n="option_capture_type_exclude"></h4>
+                    <div class="flex">
+                        <input type="text">
+                        <button data-bid="add_rule">➕</button>
+                    </div>
+                    <div class="list"></div>
                 </div>
-                <div class="list"></div>
-            </div>
-            <div class="menu" i18n_title="option_capture_include_title" data-map="capture_include" data-rel="capture_enabled" data-exc="capture_always">
-                <h4 i18n="option_match_include"></h4>
-                <div class="flex">
-                    <input type="text">
-                    <button data-bid="add_rule">➕</button>
+                <div i18n_title="option_capture_include_title" data-map="capture_include" data-exc="capture_always">
+                    <h4 i18n="option_match_include"></h4>
+                    <div class="flex">
+                        <input type="text">
+                        <button data-bid="add_rule">➕</button>
+                    </div>
+                    <div class="list"></div>
                 </div>
-                <div class="list"></div>
-            </div>
-            <div class="menu" i18n_title="option_capture_exclude_title" data-map="capture_exclude" data-rel="capture_enabled">
-                <h4 i18n="option_match_exclude"></h4>
-                <div class="flex">
-                    <input type="text">
-                    <button data-bid="add_rule">➕</button>
+                <div i18n_title="option_capture_exclude_title" data-map="capture_exclude">
+                    <h4 i18n="option_match_exclude"></h4>
+                    <div class="flex">
+                        <input type="text">
+                        <button data-bid="add_rule">➕</button>
+                    </div>
+                    <div class="list"></div>
                 </div>
-                <div class="list"></div>
             </div>
         </div>
         <div class="template">
