@@ -295,15 +295,14 @@ function taskFileAndUriSync(file, length, completedLength, uriList, links, uris)
 
 async function taskRemove(task, gid) {
     switch (task.status) {
+        case 'waiting':
+        case 'paused':
+            sessionRemoved('waiting', gid, task);
         case 'active':
             await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
             break;
-        case 'complete':
-        case 'removed':
-        case 'error':
+        default:
             await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
-        case 'waiting':
-        case 'paused':
             sessionRemoved('stopped', gid, task);
             break;
     }
