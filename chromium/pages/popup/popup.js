@@ -1,21 +1,24 @@
 var aria2Detail;
 var aria2Alive;
 var aria2Retry;
-var aria2Queue = localStorage['queues']?.match(/[^;]+/g) ?? [];
+var aria2Tasks;
+var aria2Queue = {};
+var aria2Stats = {};
+var aria2Filter = localStorage['queues']?.match(/[^;]+/g) ?? [];
 var manager = document.body.classList;
 var chooseQueue = document.querySelector('#choose');
-var [downloadStat, uploadStat, activeStat, waitingStat, stoppedStat] = document.querySelectorAll('#status > *');
-var [allQueues, activeQueue, waitingQueue, pausedQueue, completeQueue, removedQueue, errorQueue] = document.querySelectorAll('#queue, #queue > *');
+document.querySelectorAll('#queue > *').forEach((queue) => aria2Queue[queue.id] = queue);
+document.querySelectorAll('#stats > *').forEach((stat) => aria2Stats[stat.dataset.sid] = stat);
 var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
 
-manager.add(...aria2Queue);
+manager.add(...aria2Filter);
 
 chooseQueue.addEventListener('click', (event) => {
     var {qid} = event.target.dataset;
-    var index = aria2Queue.indexOf(qid);
-    index === -1 ? aria2Queue.push(qid) : aria2Queue.splice(index, 1);
+    var index = aria2Filter.indexOf(qid);
+    index === -1 ? aria2Filter.push(qid) : aria2Filter.splice(index, 1);
     manager.toggle(qid);
-    localStorage['queues'] = aria2Queue.join(';');
+    localStorage['queues'] = aria2Filter.join(';');
 });
 
 document.addEventListener('keydown', (event) => {
@@ -53,10 +56,10 @@ document.querySelector('#menu').addEventListener('click', (event) => {
 
 async function managerPurge() {
     await aria2RPC.call({method: 'aria2.purgeDownloadResult'});
-    completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
-    stoppedStat.textContent = '0';
-    stoppedTask = {};
-    globalTask = {...activeTask, ...waitingTask};
+    aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
+    aria2Stats.stopped.textContent = '0';
+    aria2Tasks.stopped = {};
+    aria2Tasks.total = {...aria2Tasks.active, ...aria2Tasks.waiting};
 }
 
 function aria2ClientSetup() {
@@ -69,22 +72,20 @@ function aria2ClientSetup() {
 function aria2ClientWorker() {
     clearTimeout(aria2Retry);
     clearInterval(aria2Alive);
-    activeTask = {};
-    waitingTask = {};
-    stoppedTask = {};
-    globalTask = {};
+    aria2Tasks = {active: {}, waiting: {}, stopped: {}, total: {}};
     return aria2RPC.call(
         {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
         {method: 'aria2.tellWaiting', params: [0, 999]},
         {method: 'aria2.tellStopped', params: [0, 999]}
     ).then(([global, active, waiting, stopped]) => {
         [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementUpdate);
-        downloadStat.textContent = getFileSize(global.result.downloadSpeed);
-        uploadStat.textContent = getFileSize(global.result.uploadSpeed);
+        aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
+        aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
         aria2Alive = setInterval(aria2ClientUpdate, aria2Interval);
     }).catch((error) => {
-        activeStat.textContent = waitingStat.textContent = stoppedStat.textContent = downloadStat.textContent = uploadStat.textContent = '0';
-        activeQueue.innerHTML = waitingQueue.innerHTML = pausedQueue.innerHTML = completeQueue.innerHTML = removedQueue.innerHTML = errorQueue.innerHTML = '';
+        console.log(error);
+        aria2Stats.active.textContent = aria2Stats.waiting.textContent = aria2Stats.stopped.textContent = aria2Stats.download.textContent = aria2Stats.upload.textContent = '0';
+        aria2Queue.active.innerHTML = aria2Queue.waiting.innerHTML = aria2Queue.paused.innerHTML = aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
         aria2Retry = setTimeout(aria2ClientWorker, aria2Interval);
     });
 }
@@ -99,13 +100,13 @@ function aria2WebSocket({method, params}) {
             break;
         case 'aria2.onDownloadStart':
             sessionCreated(gid);
-            if (waitingTask[gid]) {
+            if (aria2Tasks.waiting[gid]) {
                 sessionRemoved('waiting', gid);
             }
             break;
         default:
             sessionCreated(gid);
-            if (activeTask[gid]) {
+            if (aria2Tasks.active[gid]) {
                 sessionRemoved('active', gid);
             }
             break;
@@ -115,18 +116,18 @@ function aria2WebSocket({method, params}) {
 async function aria2ClientUpdate() {
     var [global, active] = await aria2RPC.call({method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'});
     active.result.forEach(taskElementUpdate);
-    downloadStat.textContent = getFileSize(global.result.downloadSpeed);
-    uploadStat.textContent = getFileSize(global.result.uploadSpeed);
+    aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
+    aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
 }
 
 function taskStatusChange(task, gid, status) {
-    var queue = status === 'active' ? 'active' : 'waiting,paused'.includes(status) ? 'waiting' : 'stopped';
-    if (!self[queue + 'Task'][gid]) {
-        self[queue + 'Task'][gid] = task;
-        self[queue + 'Stat'].textContent ++;
+    var queue = aria2Queue[status];
+    var type = queue.dataset.tid;
+    if (!aria2Tasks[type][gid]) {
+        aria2Tasks[type][gid] = task;
+        aria2Stats[type].textContent ++;
     }
-    self[status + 'Queue'].appendChild(task);
-    task.queue = queue;
+    queue.appendChild(task);
     task.status = status;
 }
 
@@ -137,11 +138,11 @@ async function sessionCreated(gid) {
 }
 
 function sessionRemoved(queue, gid, task) {
-    self[queue + 'Stat'].textContent --;
-    delete self[queue + 'Task'][gid];
+    aria2Stats[queue].textContent --;
     if (task) {
         task.remove();
-        delete globalTask[gid];
+        delete aria2Tasks[queue][gid];
+        delete aria2Tasks.total[gid];
     }
 }
 
@@ -169,7 +170,7 @@ function getSessionName(gid, bittorrent, [{path, uris}]) {
 }
 
 function taskElementUpdate({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    var task = globalTask[gid] ?? taskElementCreate(gid, status, bittorrent, files);
+    var task = aria2Tasks.total[gid] ?? taskElementCreate(gid, status, bittorrent, files);
     var time = (totalLength - completedLength) / downloadSpeed;
     var days = time / 86400 | 0;
     var hours = time / 3600 - days * 24 | 0;
@@ -239,7 +240,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
             aria2RPC.call({method: 'aria2.changeOption', params: [gid, task.options]});
         }
     });
-    globalTask[gid] = task;
+    aria2Tasks.total[gid] = task;
     files.forEach((file) => taskFileElementCreate(task, gid, task.files, file));
     taskStatusChange(task, gid, status);
     return task;
@@ -251,7 +252,7 @@ function taskFileElementCreate(task, gid, files, {index, selected, path, length,
     file.check.id = gid + '_' + index;
     file.index.textContent = index;
     file.index.setAttribute('for', file.check.id);
-    files.append(file);
+    files.appendChild(file);
     files[index] = file;
     uris.forEach((uri) => taskUriElementCreate(task.uris, task.links, uri.uri));
 }
@@ -264,7 +265,7 @@ function taskUriElementCreate(uris, links, uri) {
     url.querySelectorAll('*').forEach((div) => url[div.className] = div);
     url.link.title = url.link.textContent = uri;
     uris[uri] = url;
-    uris.append(url);
+    uris.appendChild(url);
     links.push(uri);
 }
 
@@ -294,23 +295,24 @@ function taskFileAndUriSync(file, length, completedLength, uriList, links, uris)
 
 async function taskRemove(task, gid) {
     switch (task.status) {
-        case 'waiting':
-        case 'paused':
-            sessionRemoved('waiting', gid, task);
         case 'active':
             await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
             break;
-        default:
+        case 'complete':
+        case 'removed':
+        case 'error':
             await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
+        case 'waiting':
+        case 'paused':
             sessionRemoved('stopped', gid, task);
             break;
     }
 }
 
 async function taskDetail(task, gid) {
-    if (globalTask[gid]) {
-        globalTask[gid].classList.remove('extra');
-        globalTask[gid].save.style.display = 'none';
+    if (aria2Tasks.total[gid]) {
+        aria2Tasks.total[gid].classList.remove('extra');
+        aria2Tasks.total[gid].save.style.display = 'none';
     }
     if (aria2Detail === gid) {
         aria2Detail = null;
@@ -359,11 +361,11 @@ async function taskPause(task, gid) {
         case 'active':
         case 'waiting':
             await aria2RPC.call({method: 'aria2.forcePause', params: [gid]});
-            pausedQueue.appendChild(task);
+            aria2Queue.paused.appendChild(task);
             break;
         case 'paused':
             await aria2RPC.call({method: 'aria2.unpause', params: [gid]});
-            waitingQueue.appendChild(task);
+            aria2Queue.waiting.appendChild(task);
             break;
     }
 }

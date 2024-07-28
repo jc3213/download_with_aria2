@@ -38,37 +38,37 @@ body:not(.full) > #queue {
     height: 537px;
 }
 
-body:not(.full) #status {
+body:not(.full) #stats {
     margin-right: 50px;
     grid-template-columns: repeat(2, 1fr);
 }
 
-body:not(.full) #status > :nth-child(n+3) {
+body:not(.full) #stats > :nth-child(n+3) {
     display: none;
 }
 
-.full #status {
+.full #stats {
     margin-right: 150px;
     grid-template-columns: repeat(2, 1fr) repeat(3, 15%);
 }
 
-#status > :nth-child(1)::before {
+#stats > :nth-child(1)::before {
     content: "__MSG_popup_download__";
 }
 
-#status > :nth-child(2)::before {
+#stats > :nth-child(2)::before {
     content: "__MSG_popup_upload__";
 }
 
-#status > :nth-child(3)::before {
+#stats > :nth-child(3)::before {
     content: "__MSG_popup_active__";
 }
 
-#status > :nth-child(4)::before {
+#stats > :nth-child(4)::before {
     content: "__MSG_popup_waiting__";
 }
 
-#status > :nth-child(5)::before {
+#stats > :nth-child(5)::before {
     content: "__MSG_popup_stopped__";
 }
 

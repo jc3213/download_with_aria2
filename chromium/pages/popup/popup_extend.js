@@ -1,19 +1,24 @@
-var aria2InTab = location.search !== '?as_popup';
+var aria2InTab = location.search !== '?toolbar';
 
 if (aria2InTab) {
     manager.add('full');
 }
 else {
-    var positionLeft = allQueues.offsetWidth - choose.offsetWidth;
-    var positionTop = allQueues.offsetHeight - choose.offsetHeight + 58;
-    allQueues.addEventListener('contextmenu', (event) => {
+    aria2Toolbar();
+}
+
+function aria2Toolbar() {
+    var queue = document.querySelector('#queue');
+    var left = queue.offsetWidth - choose.offsetWidth;
+    var top = queue.offsetHeight - choose.offsetHeight + 58;
+    queue.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         var {clientX, clientY} = event;
-        var css = clientX > positionLeft ? 'right: 0px;' : 'left: ' + clientX + 'px;';
-        css += clientY > positionTop ? 'top: auto; bottom: 0px;' : 'top: ' + clientY + 'px;';
+        var css = clientX > left ? 'right: 0px;' : 'left: ' + clientX + 'px;';
+        css += clientY > top ? 'top: auto; bottom: 0px;' : 'top: ' + clientY + 'px;';
         chooseQueue.style.cssText = css;
     });
-    allQueues.addEventListener('click', (event) => {
+    queue.addEventListener('click', (event) => {
         chooseQueue.style.display = 'none';
     });
     choose.style.display = 'none';

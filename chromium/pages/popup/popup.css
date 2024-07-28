@@ -45,12 +45,12 @@ body {
     margin-right: 5px;
 }
 
-#status {
+#stats {
     flex: 1;
     display: grid;
 }
 
-#status > *, #status > ::before {
+#stats > *, #stats > ::before {
     padding: 4px 8px 4px 0px;
 }
 

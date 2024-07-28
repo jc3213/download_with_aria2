@@ -9,12 +9,12 @@
     </head>
     <body>
         <div id="menu" class="flex">
-            <div id="status">
-                <div class="download"></div>
-                <div class="upload"></div>
-                <div>0</div>
-                <div>0</div>
-                <div>0</div>
+            <div id="stats">
+                <div class="download" data-sid="download"></div>
+                <div class="upload" data-sid="upload"></div>
+                <div data-sid="active">0</div>
+                <div data-sid="waiting">0</div>
+                <div data-sid="stopped">0</div>
             </div>
             <button id="download_btn" i18n="popup_newdld"></button>
             <button id="purge_btn" i18n="popup_purge"></button>
@@ -30,12 +30,12 @@
         </div>
         <hr>
         <div id="queue">
-            <div id="active"></div>
-            <div id="waiting"></div>
-            <div id="paused"></div>
-            <div id="complete"></div>
-            <div id="removed"></div>
-            <div id="error"></div>
+            <div id="active" data-tid="active"></div>
+            <div id="waiting" data-tid="waiting"></div>
+            <div id="paused" data-tid="waiting"></div>
+            <div id="complete" data-tid="stopped"></div>
+            <div id="removed" data-tid="stopped"></div>
+            <div id="error" data-tid="stopped"></div>
         </div>
         <div class="template">
             <div class="session">

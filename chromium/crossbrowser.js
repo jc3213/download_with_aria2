@@ -232,7 +232,7 @@ function aria2UpdateStorage(json) {
     if (aria2Manifest.manifest_version === 2) {
         aria2CaptureSwitch();
     }
-    chrome.action.setPopup({popup: json['manager_newtab'] ? '' : '/pages/popup/popup.html?as_popup'});
+    chrome.action.setPopup({popup: json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar'});
     chrome.contextMenus.removeAll();
     if (!json['context_enabled']) {
         return;
