@@ -78,7 +78,7 @@ function aria2ClientWorker() {
         {method: 'aria2.tellWaiting', params: [0, 999]},
         {method: 'aria2.tellStopped', params: [0, 999]}
     ).then(([global, active, waiting, stopped]) => {
-        [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementUpdate);
+        [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementSync);
         aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
         aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
         aria2Alive = setInterval(aria2ClientUpdate, aria2Interval);
@@ -99,15 +99,15 @@ function aria2WebSocket({method, params}) {
         case 'aria2.onBtDownloadComplete':
             break;
         case 'aria2.onDownloadStart':
-            sessionCreated(gid);
+            taskElementUpdate(gid);
             if (aria2Tasks.waiting[gid]) {
-                sessionRemoved('waiting', gid);
+                taskElementRemove('waiting', gid);
             }
             break;
         default:
-            sessionCreated(gid);
+            taskElementUpdate(gid);
             if (aria2Tasks.active[gid]) {
-                sessionRemoved('active', gid);
+                taskElementRemove('active', gid);
             }
             break;
     }
@@ -115,7 +115,7 @@ function aria2WebSocket({method, params}) {
 
 async function aria2ClientUpdate() {
     var [global, active] = await aria2RPC.call({method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'});
-    active.result.forEach(taskElementUpdate);
+    active.result.forEach(taskElementSync);
     aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
     aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
 }
@@ -131,13 +131,13 @@ function taskStatusChange(task, gid, status) {
     task.status = status;
 }
 
-async function sessionCreated(gid) {
+async function taskElementUpdate(gid) {
     var [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-    var task = taskElementUpdate(session.result);
+    var task = taskElementSync(session.result);
     taskStatusChange(task, gid, session.result.status);
 }
 
-function sessionRemoved(queue, gid, task) {
+function taskElementRemove(queue, gid, task) {
     aria2Stats[queue].textContent --;
     if (task) {
         task.remove();
@@ -146,30 +146,7 @@ function sessionRemoved(queue, gid, task) {
     }
 }
 
-function getFileSize(bytes) {
-    if (isNaN(bytes)) {
-        return '??';
-    }
-    if (bytes < 1024) {
-        return bytes;
-    }
-    if (bytes < 1048576) {
-        return (bytes / 10.24 | 0) / 100 + 'K';
-    }
-    if (bytes < 1073741824) {
-        return (bytes / 10485.76 | 0) / 100 + 'M';
-    }
-    if (bytes < 1099511627776) {
-        return (bytes / 10737418.24 | 0) / 100 + 'G';
-    }
-    return (bytes / 10995116277.76 | 0) / 100 + 'T';
-}
-
-function getSessionName(gid, bittorrent, [{path, uris}]) {
-    return bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
-}
-
-function taskElementUpdate({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
+function taskElementSync({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
     var task = aria2Tasks.total[gid] ?? taskElementCreate(gid, status, bittorrent, files);
     var time = (totalLength - completedLength) / downloadSpeed;
     var days = time / 86400 | 0;
@@ -191,7 +168,7 @@ function taskElementUpdate({gid, status, files, bittorrent, completedLength, tot
     task.ratio.textContent = percent;
     task.ratio.style.width = percent + '%';
     if (aria2Detail === gid) {
-        files.forEach(({index, length, completedLength, uris}) => taskFileAndUriSync(task.files[index], length, completedLength, task.uris, task.links, uris));
+        files.forEach(({index, length, completedLength, uris}) => taskDetailSync(task.files[index], length, completedLength, task.uris, task.links, uris));
     }
     return task;
 }
@@ -269,7 +246,57 @@ function taskUriElementCreate(uris, links, uri) {
     links.push(uri);
 }
 
-function taskFileAndUriSync(file, length, completedLength, uriList, links, uris) {
+async function taskRemove(task, gid) {
+    switch (task.status) {
+        case 'active':
+            await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
+            break;
+        case 'waiting':
+        case 'paused':
+            await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
+            taskElementRemove('waiting', gid, task);
+            break;
+        case 'complete':
+        case 'removed':
+        case 'error':
+            await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
+            taskElementRemove('stopped', gid, task);
+            break;
+    }
+}
+
+async function taskDetail(task, gid) {
+    if (aria2Tasks.total[gid]) {
+        aria2Tasks.total[gid].classList.remove('extra');
+        aria2Tasks.total[gid].save.style.display = 'none';
+    }
+    if (aria2Detail === gid) {
+        aria2Detail = null;
+        return;
+    }
+    var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
+    task.classList.add('extra');
+    task.scrollIntoView(false);
+    aria2Detail = gid;
+    taskDetailOpened(task, files.result, options.result);
+}
+
+function taskDetailOpened(task, files, options) {
+    options['min-split-size'] = getFileSize(options['min-split-size']);
+    options['max-download-limit'] = getFileSize(options['max-download-limit']);
+    options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
+    task.options = task.settings.disposition(options);
+    files.forEach(({index, length, completedLength, path, selected, uris}) => {
+        var file = task.files[index];
+        file.check.checked = selected === 'true';
+        file.name.textContent = path.slice(path.lastIndexOf('/') + 1);
+        file.name.title = path;
+        file.size.textContent = getFileSize(length);
+        taskDetailSync(file, length, completedLength, task.uris, task.links, uris);
+    });
+}
+
+function taskDetailSync(file, length, completedLength, uriList, links, uris) {
     file.ratio.textContent = (completedLength / length * 10000 | 0) / 100;
     if (uris.length === 0) {
         return;
@@ -293,54 +320,8 @@ function taskFileAndUriSync(file, length, completedLength, uriList, links, uris)
     });
 }
 
-async function taskRemove(task, gid) {
-    switch (task.status) {
-        case 'waiting':
-        case 'paused':
-            sessionRemoved('waiting', gid, task);
-        case 'active':
-            await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
-            break;
-        default:
-            await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
-            sessionRemoved('stopped', gid, task);
-            break;
-    }
-}
-
-async function taskDetail(task, gid) {
-    if (aria2Tasks.total[gid]) {
-        aria2Tasks.total[gid].classList.remove('extra');
-        aria2Tasks.total[gid].save.style.display = 'none';
-    }
-    if (aria2Detail === gid) {
-        aria2Detail = null;
-        return;
-    }
-    var [files, options] = await getTaskDetail(gid);
-    task.classList.add('extra');
-    task.scrollIntoView(false);
-    aria2Detail = gid;
-    taskDetailOpened(task, files.result, options.result);
-}
-
-function taskDetailOpened(task, files, options) {
-    options['min-split-size'] = getFileSize(options['min-split-size']);
-    options['max-download-limit'] = getFileSize(options['max-download-limit']);
-    options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
-    task.options = task.settings.disposition(options);
-    files.forEach(({index, length, completedLength, path, selected, uris}) => {
-        var file = task.files[index];
-        file.check.checked = selected === 'true';
-        file.name.textContent = path.slice(path.lastIndexOf('/') + 1);
-        file.name.title = path;
-        file.size.textContent = getFileSize(length);
-        taskFileAndUriSync(file, length, completedLength, task.uris, task.links, uris);
-    });
-}
-
 async function taskRetry(task, gid) {
-    var [files, options] = await getTaskDetail(gid);
+    var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
     var {uris, path} = files.result[0];
     var url = [...new Set(uris.map(({uri}) => uri))];
     if (path) {
@@ -351,8 +332,8 @@ async function taskRetry(task, gid) {
         {method: 'aria2.addUri', params: [url, {...options.result, ...name}]},
         {method: 'aria2.removeDownloadResult', params: [gid]}
      );
-     sessionCreated(added.result);
-     sessionRemoved('stopped', gid, task);
+     taskElementUpdate(added.result);
+     taskElementRemove('stopped', gid, task);
 }
 
 async function taskPause(task, gid) {
@@ -394,9 +375,25 @@ async function taskRemoveUri(gid, uri, ctrl) {
     ctrl ? aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [uri], []]}) : navigator.clipboard.writeText(uri);
 }
 
-function getTaskDetail(gid) {
-    return aria2RPC.call(
-        {method: 'aria2.getFiles', params: [gid]},
-        {method: 'aria2.getOption', params: [gid]}
-    );
+function getFileSize(bytes) {
+    if (isNaN(bytes)) {
+        return '??';
+    }
+    if (bytes < 1024) {
+        return bytes;
+    }
+    if (bytes < 1048576) {
+        return (bytes / 10.24 | 0) / 100 + 'K';
+    }
+    if (bytes < 1073741824) {
+        return (bytes / 10485.76 | 0) / 100 + 'M';
+    }
+    if (bytes < 1099511627776) {
+        return (bytes / 10737418.24 | 0) / 100 + 'G';
+    }
+    return (bytes / 10995116277.76 | 0) / 100 + 'T';
+}
+
+function getSessionName(gid, bittorrent, [{path, uris}]) {
+    return bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
 }
