@@ -77,9 +77,9 @@ document.addEventListener('change', (event) => {
 });
 
 async function downloadFiles(files) {
-    var file = await getFileData(file[0]);
-    var data = file.name.endsWith('torrent') ? {torrents: [file]} : {metalinks: [file]};
-    chrome.runtime.sendMessage({action: 'message_download', params: {files: data}});
+    var file = await getFileData(files[0]);
+    var files = file.name.endsWith('torrent') ? {torrents: [file]} : {metalinks: [file]};
+    chrome.runtime.sendMessage({action: 'message_download', params: files});
     close();
 }
 

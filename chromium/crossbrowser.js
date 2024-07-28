@@ -176,26 +176,21 @@ function aria2SendResponse(tabId, response) {
     });
 }
 
-async function aria2MessageHandler({urls, files}) {
+async function aria2MessageHandler({urls, torrents, metalinks}) {
     var message = '';
-    if (urls) {
-        var session = urls.map(({url, options = {}}) => {
-            message += url + '\n';
-            return {method: 'aria2.addUri', params: [[url], options]};
-        });
-    }
-    if (files?.torrents) {
-        session = file.torrents.map(({name, body}) => {
-            message += name + '\n';
-            return {method: 'aria2.addTorrent', params: [body]};
-        });
-    }
-    if (files?.metalinks) {
-        session = file.metalinks.map(({name, body, options = {}}) => {
-            message += name + '\n';
-            return {method: 'aria2.addMetalink', params: [body, options]};
-        });
-    }
+    var session = [];
+    urls?.forEach(({url, options = {}}) => {
+        message += url + '\n';
+        session.push({method: 'aria2.addUri', params: [[url], options]});
+    });
+    torrents?.forEach(({name, body, options = {}}) => {
+        message += name + '\n';
+        session.push({method: 'aria2.addTorrent', params: [body, [], options]});
+    });
+    metalinks?.map(({name, body, options = {}}) => {
+        message += name + '\n';
+        session.push({method: 'aria2.addMetalink', params: [body, options]});
+    });
     await aria2RPC.call(...session);
     await aria2WhenStart(message);
 }

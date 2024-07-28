@@ -14,7 +14,7 @@ function aria2RPCEcho() {
 }
 
 function aria2RPCCall(params) {
-    if (params?.urls || params?.files?.torrents || params?.files?.metalinks) {
+    if (params?.urls || params?.torrents || params?.metalinks) {
         chrome.runtime.sendMessage({action: 'message_download', params});
     }
 }
