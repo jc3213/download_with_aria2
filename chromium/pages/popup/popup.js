@@ -1,9 +1,9 @@
-var aria2Detail;
 var aria2Alive;
 var aria2Retry;
 var aria2Tasks;
 var aria2Queue = {};
 var aria2Stats = {};
+var aria2Detail = {};
 var aria2Filter = localStorage['queues']?.match(/[^;]+/g) ?? [];
 var manager = document.body.classList;
 var chooseQueue = document.querySelector('#choose');
@@ -83,7 +83,6 @@ function aria2ClientWorker() {
         aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
         aria2Alive = setInterval(aria2ClientUpdate, aria2Interval);
     }).catch((error) => {
-        console.log(error);
         aria2Stats.active.textContent = aria2Stats.waiting.textContent = aria2Stats.stopped.textContent = aria2Stats.download.textContent = aria2Stats.upload.textContent = '0';
         aria2Queue.active.innerHTML = aria2Queue.waiting.innerHTML = aria2Queue.paused.innerHTML = aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
         aria2Retry = setTimeout(aria2ClientWorker, aria2Interval);
@@ -167,7 +166,7 @@ function taskElementSync({gid, status, files, bittorrent, completedLength, total
     task.upload.textContent = getFileSize(uploadSpeed);
     task.ratio.textContent = percent;
     task.ratio.style.width = percent + '%';
-    if (aria2Detail === gid) {
+    if (aria2Detail[gid]) {
         files.forEach(({index, length, completedLength, uris}) => taskDetailSync(task.files[index], length, completedLength, task.uris, task.links, uris));
     }
     return task;
@@ -266,18 +265,16 @@ async function taskRemove(task, gid) {
 }
 
 async function taskDetail(task, gid) {
-    if (aria2Tasks.total[gid]) {
-        aria2Tasks.total[gid].classList.remove('extra');
-        aria2Tasks.total[gid].save.style.display = 'none';
-    }
-    if (aria2Detail === gid) {
-        aria2Detail = null;
+    if (aria2Detail[gid]) {
+        task.classList.remove('extra');
+        task.save.style.display = 'none';
+        delete aria2Detail[gid];
         return;
     }
     var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
     task.classList.add('extra');
     task.scrollIntoView(false);
-    aria2Detail = gid;
+    aria2Detail[gid] = true;
     taskDetailOpened(task, files.result, options.result);
 }
 
