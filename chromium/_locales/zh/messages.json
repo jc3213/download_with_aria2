@@ -428,6 +428,12 @@
     "aria2_max_upload_title": {
         "message": "设置所有进行中的任务所能达到的最大上传速度"
     },
+    "aria2_header": {
+        "message": "自定义请求头"
+    },
+    "aria2_header_title": {
+        "message": "增加 HTTP 请求头内容，每行放置一项，每项包含 \"请求头名: 请求头值\""
+    },
     "aria2_http_retry": {
         "message": "重试次数"
     },

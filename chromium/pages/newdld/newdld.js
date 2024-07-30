@@ -2,8 +2,8 @@ var aria2Storage = {};
 var aria2Global = {};
 var activity;
 var downloader = document.body;
-var [entry, filename, countdown] = document.querySelectorAll('textarea, [data-rid="out"], .countdown');
-var settings = document.querySelectorAll('input[data-rid]');
+var [entry, countdown] = document.querySelectorAll('textarea#entries, .countdown');
+var settings = document.querySelectorAll('[data-rid]');
 
 if (location.search === '?slim_mode') {
     downloader.className = 'slim';
@@ -50,7 +50,7 @@ async function downloadSubmit() {
 
 async function downloadExpand() {
     chrome.windows.getCurrent(({id, top, height}) => {
-        chrome.windows.update(id, {top: top - 92, height: height + 183});
+        chrome.windows.update(id, {top: top - 90, height: height + 280});
         downloader.className = 'extra';
         countdown.textContent = countdown.textContent * 1 + 90;
     });

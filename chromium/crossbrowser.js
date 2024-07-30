@@ -88,7 +88,7 @@ async function aria2DownloadHandler(url, options, referer, hostname, storeId) {
 }
 
 async function aria2DownloadPrompt(slim) {
-    return slim ? getPopupWindow('/pages/newdld/newdld.html?slim_mode', 299) : getPopupWindow('/pages/newdld/newdld.html', 482);
+    return slim ? getPopupWindow('/pages/newdld/newdld.html?slim_mode', 255) : getPopupWindow('/pages/newdld/newdld.html', 482);
 }
 
 async function aria2ImagesPrompt(tabId) {
