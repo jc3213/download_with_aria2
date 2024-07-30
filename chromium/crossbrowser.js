@@ -100,7 +100,7 @@ async function aria2SetCookies(url, storeId) {
     var result = 'Cookie:';
     var cookies = await getRequestCookies(url, storeId);
     cookies.forEach(({name, value}) => result += ' ' + name + '=' + value + ';');
-    return [result];
+    return (cookies.length !== 0) ? [result] : '';
 }
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
