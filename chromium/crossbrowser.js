@@ -67,7 +67,7 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
 });
 
 async function aria2DownloadHandler(url, options, referer, hostname, storeId) {
-    options['user-agent'] = aria2Storage['headers_useragent'];
+    options['user-agent'] = (aria2Storage['headers_useragent'].length === 0) ? navigator.userAgent : aria2Storage['headers_useragent'];
     if (aria2Storage['proxy_always'] || aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
