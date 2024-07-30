@@ -412,7 +412,7 @@ function getPopupWindow(url, offsetHeight) {
             chrome.windows.create({
                 url, left, top,
                 type: 'popup',
-                width: 698,
+                width: 710,
                 height: offsetHeight
             }, (popup) => resolve(popup.tabs[0].id));
         });
