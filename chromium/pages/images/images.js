@@ -124,26 +124,26 @@ function getImagePreview(url, headers) {
 }
 
 function aria2ManifestV2({result, filter}) {
-    var headers = {};
-    result.forEach(({url, requestHeaders}) => {
-        getImagePreview(url, requestHeaders);
-        headers[url] = requestHeaders;
+    var rules = {};
+    result.forEach(({url, headers}) => {
+        getImagePreview(url, headers);
+        rules[url] = headers;
     });
     chrome.webRequest.onBeforeSendHeaders.addListener(({url}) => {
-        return {requestHeaders: headers[url]};
+        return {requestHeaders: rules[url]};
     }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['blocking', ...filter]);
 }
 
 function aria2ManifestV3(result) {
     var addRules = [];
-    result.forEach(({url, requestHeaders}, index) => {
-        getImagePreview(url, requestHeaders);
+    result.forEach(({url, headers}, index) => {
+        getImagePreview(url, header);
         addRules.push({
             id: index + 1,
             priority: 1,
             action: {
                 type:'modifyHeaders',
-                requestHeaders: requestHeaders.map(({name, value}) => ({header: name, operation: 'set', value}))
+                requestHeaders: headers.map(({name, value}) => ({header: name, operation: 'set', value}))
             },
             condition: {
                 urlFilter: url,

@@ -9,13 +9,12 @@ var aria2Default = {
     'context_thisurl': true,
     'context_thisimage': true,
     'context_allimages': true,
-    'download_prompt': false,
     'notify_install': true,
     'notify_start': false,
     'notify_complete': false,
-    'headers_useragent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0',
-    'headers_enabled': false,
     'headers_exclude': [],
+    'headers_useragent': 'Transmission/4.0.0',
+    'headers_override': false,
     'folder_enabled': false,
     'folder_defined': '',
     'folder_firefox': false,
@@ -50,57 +49,65 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         chrome.storage.sync.set(aria2Default);
     }
     aria2WhenInstall(reason);
+    if (reason === 'update' && previousVersion <= '4.10.1.2728') {
+        chrome.storage.sync.remove(['headers_enabled', 'download_prompt']);
+    }
 });
 
-chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url, cookieStoreId}) => {
+chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url}) => {
     switch (menuItemId) {
         case 'aria2c_this_url':
-            aria2DownloadHandler(linkUrl, {}, url, getHostname(url), cookieStoreId);
+            aria2DownloadHandler(linkUrl, {}, url, getHostname(url));
             break;
         case 'aria2c_this_image':
-            aria2DownloadHandler(srcUrl, {}, url, getHostname(url), cookieStoreId);
+            aria2DownloadHandler(srcUrl, {}, url, getHostname(url));
             break;
         case 'aria2c_all_images':
-            aria2ImagesPrompt(id, url, cookieStoreId);
+            aria2ImagesPrompt(id);
             break;
     }
 });
 
-async function aria2DownloadHandler(url, options, referer, hostname, storeId) {
-    options['user-agent'] = aria2Storage['headers_useragent'];
+async function aria2DownloadHandler(url, options, referer, hostname) {
     if (aria2Storage['proxy_always'] || aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (!options['dir'] && aria2Storage['folder_enabled'] && aria2Storage['folder_defined']) {
         options['dir'] = aria2Storage['folder_defined'];
     }
-    if (aria2Storage['headers_enabled'] && !aria2Updated['headers_exclude'].test(hostname)) {
-        options['referer'] = referer;
-        options['header'] = await aria2SetCookies(url, storeId);
-    }
-    if (aria2Storage['download_prompt']) {
-        var popId = await aria2DownloadPrompt(true);
-        aria2Message[popId] = {url, options};
-        return;
+    if (!aria2Updated['headers_exclude'].test(hostname)) {
+        options['header'] = aria2SetHeaders(url);
     }
     await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
     await aria2WhenStart(url);
 }
 
-async function aria2DownloadPrompt(slim) {
-    return slim ? getPopupWindow('/pages/newdld/newdld.html?prompt', 299) : getPopupWindow('/pages/newdld/newdld.html', 482);
+function aria2DownloadPrompt() {
+    getPopupWindow('/pages/newdld/newdld.html', 482);
 }
 
 async function aria2ImagesPrompt(tabId) {
     var popId = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Message[popId] = {result: aria2Inspect[tabId].images, filter: aria2HeaderFilter};
+    var tab = aria2Inspect[tabId];
+    aria2Message[popId] = {result: tab.images.map((url) => ({url, headers: tab[url]})), filter: aria2HeaderFilter};
 }
 
-async function aria2SetCookies(url, storeId) {
-    var result = 'Cookie:';
-    var cookies = await getRequestCookies(url, storeId);
-    cookies.forEach(({name, value}) => result += ' ' + name + '=' + value + ';');
-    return [result];
+function aria2SetHeaders(url) {
+    var tabs = Object.keys(aria2Inspect);
+    for (var id of tabs) {
+        var headers = aria2Inspect[id][url];
+        if (headers) {
+            break;
+        }
+    }
+    if (aria2Storage['headers_override']) {
+        var ua = headers?.findIndex(({name}) => name.toLowerCase() === 'user-agent');
+        if (!ua || ua === -1) {
+            return ['User-Agent: ' + aria2Storage['headers_useragent']];
+        }
+        headers[ua].value = aria2Storage['headers_useragent'];
+    }
+    return headers.map((header) => header.name + ': ' + header.value);
 }
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
@@ -115,11 +122,15 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) =
     }
 });
 
-chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, requestHeaders}) => {
-    if (aria2Inspect[tabId]) {
-        aria2Inspect[tabId].images.push({url, requestHeaders});
+chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
+    var inspect = aria2Inspect[tabId];
+    if (inspect) {
+        inspect[url] = requestHeaders;
+        if (type === 'image') {
+            inspect.images.push(url);;
+        }
     }
-}, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, aria2HeaderFilter);
+}, {urls: ['http://*/*', 'https://*/*']}, aria2HeaderFilter);
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
@@ -377,10 +388,6 @@ function getFileSize(bytes) {
 
 function getContextMenu(id, i18n, contexts, parentId) {
     chrome.contextMenus.create({id, title: chrome.i18n.getMessage(i18n), contexts, documentUrlPatterns: ['http://*/*', 'https://*/*'], parentId});
-}
-
-function getRequestCookies(url, storeId) {
-    return storeId ? browser.cookies.getAll({url, storeId, firstPartyDomain: null}) : new Promise((resolve) => chrome.cookies.getAll({url}, resolve));
 }
 
 function getMatchPattern(pattern, filetype) {
