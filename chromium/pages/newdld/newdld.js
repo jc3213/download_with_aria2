@@ -2,10 +2,10 @@ var aria2Storage = {};
 var aria2Global = {};
 var activity;
 var downloader = document.body;
-var [entry, filename, countdown] = document.querySelectorAll('textarea, [data-rid="out"], .countdown');
-var settings = document.querySelectorAll('input[data-rid]');
+var [entry, countdown] = document.querySelectorAll('#entries, .countdown');
+var settings = document.querySelectorAll('[data-rid]');
 
-if (location.search === '?slim_mode') {
+if (location.search === '?prompt') {
     downloader.className = 'slim';
     activity = 'download_prompt';
 }
@@ -50,7 +50,7 @@ async function downloadSubmit() {
 
 async function downloadExpand() {
     chrome.windows.getCurrent(({id, top, height}) => {
-        chrome.windows.update(id, {top: top - 92, height: height + 183});
+        chrome.windows.update(id, {top: top - 145, height: height + 290});
         downloader.className = 'extra';
         countdown.textContent = countdown.textContent * 1 + 90;
     });
@@ -72,7 +72,7 @@ document.addEventListener('change', (event) => {
         return downloadFiles(files);
     }
     if (rid) {
-        aria2Global[rid] = value;
+        aria2Global[rid] = rid === 'header' ? value.split(/[\r\n]+/g) : value;
     }
 });
 

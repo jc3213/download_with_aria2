@@ -14,6 +14,10 @@ textarea {
     display: none;
 }
 
+.options > * {
+    margin-top: 5px;
+}
+
 #menu {
     text-align: center;
 }

@@ -13,7 +13,7 @@ var aria2Default = {
     'notify_install': true,
     'notify_start': false,
     'notify_complete': false,
-    'headers_useragent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0',
+    'headers_useragent': 'Transmission/4.0.0',
     'headers_enabled': false,
     'headers_exclude': [],
     'folder_enabled': false,
@@ -88,7 +88,7 @@ async function aria2DownloadHandler(url, options, referer, hostname, storeId) {
 }
 
 async function aria2DownloadPrompt(slim) {
-    return slim ? getPopupWindow('/pages/newdld/newdld.html?slim_mode', 299) : getPopupWindow('/pages/newdld/newdld.html', 482);
+    return slim ? getPopupWindow('/pages/newdld/newdld.html?prompt', 299) : getPopupWindow('/pages/newdld/newdld.html', 589);
 }
 
 async function aria2ImagesPrompt(tabId) {

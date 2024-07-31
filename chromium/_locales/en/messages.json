@@ -113,6 +113,9 @@
     "option_jsonrpc_title": {
         "message": "Set scheme, host, and secret of the JSON-RPC"
     },
+    "option_jsonrpc_status": {
+        "message": "Status"
+    },
     "option_task_manager": {
         "message": "Task Manager"
     },
@@ -349,6 +352,12 @@
     },
     "task_name_title": {
         "message": "Set the file name of this download"
+    },
+    "task_header": {
+        "message": "Request Headers"
+    },
+    "task_header_title": {
+        "message": "Customize request headers, each line includes \"header_name: header_value;\""
     },
     "task_proxy": {
         "message": "Proxy Server"
