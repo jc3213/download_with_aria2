@@ -50,7 +50,7 @@ async function downloadSubmit() {
 
 async function downloadExpand() {
     chrome.windows.getCurrent(({id, top, height}) => {
-        chrome.windows.update(id, {top: top - 145, height: height + 290});
+        chrome.windows.update(id, {top: top - 92, height: height + 183});
         downloader.className = 'extra';
         countdown.textContent = countdown.textContent * 1 + 90;
     });
@@ -72,7 +72,7 @@ document.addEventListener('change', (event) => {
         return downloadFiles(files);
     }
     if (rid) {
-        aria2Global[rid] = rid === 'header' ? value.split(/[\r\n]+/g) : value;
+        aria2Global[rid] = value;
     }
 });
 
@@ -95,21 +95,18 @@ function getFileData(file) {
 }
 
 function aria2DownloadSlimmed({url, options = {}}, jsonrpc) {
-    entry.value = Array.isArray(url) ? url.join('\n') : url;
-    aria2Global = settings.disposition({...jsonrpc, ...options});
     setInterval(() => {
         countdown.textContent --;
         if (countdown.textContent === '0') {
             downloadSubmit();
         }
     }, 1000);
+    entry.value = Array.isArray(url) ? url.join('\n') : url;
+    return Object.assign({header: options['header']}, settings.disposition({...jsonrpc, ...options}));
 }
 
 chrome.runtime.sendMessage({action: activity}, ({storage, jsonrpc, params}) => {
     aria2Storage = storage;
-    jsonrpc['user-agent'] = aria2Storage['headers_useragent'];
-    if (params) {
-        return aria2DownloadSlimmed(params, jsonrpc);
-    }
-    aria2Global = settings.disposition(jsonrpc);
+    jsonrpc['user-agent'] = storage['headers_useragent'];
+    aria2Global = params ? aria2DownloadSlimmed(params, jsonrpc) : settings.disposition(jsonrpc);
 });

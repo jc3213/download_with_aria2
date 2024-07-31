@@ -350,12 +350,6 @@
     "task_name_title": {
         "message": "Set the file name of this download"
     },
-    "task_header": {
-        "message": "Request Headers"
-    },
-    "task_header_title": {
-        "message": "Customize request headers, each line includes \"header_name: header_value;\""
-    },
     "task_proxy": {
         "message": "Proxy Server"
     },

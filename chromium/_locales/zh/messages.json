@@ -350,12 +350,6 @@
     "task_name_title": {
         "message": "设置本次下载的文件名"
     },
-    "task_header": {
-        "message": "请求头"
-    },
-    "task_header_title": {
-        "message": "自定义请求头， 每一行的格式为 \"请求头名: 请求头值;\""
-    },
     "task_proxy": {
         "message": "代理服务器"
     },
