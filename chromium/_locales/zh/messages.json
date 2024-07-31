@@ -179,29 +179,23 @@
     "option_match_exclude": {
         "message": "例外域名"
     },
-    "option_download_prompt": {
-        "message": "启用下载弹窗"
+    "option_headers": {
+        "message": "转发请求头"
     },
-    "option_download_prompt_title": {
-        "message": "开始下载前弹出窗口确认下载信息"
+    "option_headers_exclude_title": {
+        "message": "停止为所设置域名的下载转发请求头"
+    },
+    "option_headers_override": {
+        "message": "覆盖用户代理"
+    },
+    "option_headers_override_title": {
+        "message": "覆盖所转发请求偷中的\"User-Agent\"的值"
     },
     "option_headers_useragent": {
         "message": "用户代理"
     },
     "option_headers_useragent_title": {
-        "message": "设置新建下载时的用户代理"
-    },
-    "option_headers": {
-        "message": "请求头"
-    },    
-    "option_headers_enabled": {
-        "message": "启用转发请求头"
-    },
-    "option_headers_enabled_title": {
-        "message": "为新建下载转发来自浏览器的请求头"
-    },
-    "option_headers_exclude_title": {
-        "message": "停止为所设置域名的下载转发请求头"
+        "message": "设置首选的\"User-Agent\""
     },
     "option_folder": {
         "message": "下载文件夹"
@@ -391,7 +385,7 @@
     },
     "aria2_options": {
         "message": "通用设置"
-    },    
+    },
     "aria2_com_dir": {
         "message": "下载文件夹"
     },

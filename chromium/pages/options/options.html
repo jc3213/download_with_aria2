@@ -70,10 +70,6 @@
                 <input id="context_allimages" data-eid="context_allimages" type="checkbox">
                 <label for="context_allimages" i18n="contextmenu_allimages"></label>
             </div>
-            <div class="even" i18n_title="option_download_prompt_title">
-                <input id="download_prompt" data-eid="download_prompt" type="checkbox">
-                <label for="download_prompt" i18n="option_download_prompt"></label>
-            </div>
             <h1 i18n="option_notification"></h1>
             <div i18n_title="option_notify_install_title">
                 <input id="notify_install" data-eid="notify_install" type="checkbox">
@@ -88,15 +84,7 @@
                 <label for="notify_complete" i18n="option_notify_complete"></label>
             </div>
             <h1 i18n="option_headers"></h1>
-            <div i18n_title="option_headers_useragent_title">
-                <h4 i18n="option_headers_useragent"></h4>
-                <input data-eid="headers_useragent" type="text">
-            </div>
-            <div class="even" i18n_title="option_headers_enabled_title">
-                <input id="headers_enabled" data-eid="headers_enabled" type="checkbox">
-                <label for="headers_enabled" i18n="option_headers_enabled"></label>
-            </div>
-            <div class="match" data-rel="headers_enabled">
+            <div class="match">
                 <div i18n_title="option_headers_exclude_title" data-map="headers_exclude">
                     <h4 i18n="option_match_exclude"></h4>
                     <div class="flex">
@@ -104,6 +92,15 @@
                         <button data-bid="add_rule">➕</button>
                     </div>
                     <div class="list"></div>
+                </div>
+            </div>
+            <div class="menu" i18n_title="option_headers_override_title">
+                <input id="headers_override" data-eid="headers_override" type="checkbox">
+                <label for="headers_override" i18n="option_headers_override"></label>
+            </div>
+            <div class="menu" i18n_title="option_headers_useragent_title" data-rel="headers_override">
+                <div>
+                    <input data-eid="headers_useragent" type="text">
                 </div>
             </div>
             <h1 i18n="option_folder"></h1>
@@ -119,12 +116,14 @@
                 <label for="folder_firefox" i18n="option_folder_firefox"></label>
             </div>
             <h1 i18n="option_proxy"></h1>
-            <div i18n_title="option_proxy_title">
-                <input data-eid="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
-            </div>
-            <div class="even" i18n_title="option_proxy_always_title">
+            <div class="menu" i18n_title="option_proxy_always_title">
                 <input id="proxy_always" data-eid="proxy_always" type="checkbox">
                 <label for="proxy_always" i18n="option_proxy_always"></label>
+            </div>
+            <div class="menu" i18n_title="option_proxy_title">
+                <div>
+                    <input data-eid="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
+                </div>
             </div>
             <div class="match" data-exc="proxy_always">
                 <div i18n_title="option_proxy_include_title" data-map="proxy_include">

@@ -179,29 +179,23 @@
     "option_match_exclude": {
         "message": "Exclude Hosts"
     },
-    "option_download_prompt": {
-        "message": "Enable Download Prompt"
+    "option_headers": {
+        "message": "Request Headers"
     },
-    "option_download_prompt_title": {
-        "message": "Prompt a new window to confirm the download before it starts"
+    "option_headers_exclude_title": {
+        "message": "Don't forward request headers for downloads from these hosts"
+    },
+    "option_headers_override": {
+        "message": "Override User Agent"
+    },
+    "option_headers_override_title": {
+        "message": "Override \"User-Agent\" in request headers for new downloads"
     },
     "option_headers_useragent": {
         "message": "User Agent"
     },
     "option_headers_useragent_title": {
-        "message": "Set user agent for new downloads"
-    },
-    "option_headers": {
-        "message": "Request Headers"
-    },
-    "option_headers_enabled": {
-        "message": "Enable Forward Request Headers"
-    },
-    "option_headers_enabled_title": {
-        "message": "Forward request headers from browser for new downloads"
-    },
-    "option_headers_exclude_title": {
-        "message": "Don't forward request headers for downloads from these hosts"
+        "message": "Set your preferred \"User-Agent\""
     },
     "option_folder": {
         "message": "Download Directory"
@@ -391,7 +385,7 @@
     },
     "aria2_options": {
         "message": "Common Settings"
-    },    
+    },
     "aria2_com_dir": {
         "message": "Download Directory"
     },
