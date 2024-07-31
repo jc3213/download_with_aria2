@@ -36,7 +36,7 @@ document.addEventListener('click', (event) => {
         case 'submit_btn':
             imagesSubmit();
             break;
-        case 'extra_btn':
+        case 'options_btn':
             imagesOptions();
             break;
         case 'proxy_btn':
@@ -67,7 +67,7 @@ async function imagesSubmit() {
 }
 
 function imagesOptions() {
-    document.body.classList.toggle('extra');
+    document.body.classList.toggle('options');
 }
 
 function imagesProxy(proxy) {

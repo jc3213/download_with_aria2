@@ -7,11 +7,11 @@ img.checked {
     filter: contrast(45%);
 }
 
-body:not(.extra) #options {
+body:not(.options) #options {
     display: none;
 }
 
-.extra [data-bid="extra_btn"] {
+.options [data-bid="options_btn"] {
     border-style: inset;
 }
 
@@ -53,4 +53,5 @@ body:not(.extra) #options {
     right: 0px;
     bottom: 38px;
     padding: 5px;
+    width: 50%;
 }
