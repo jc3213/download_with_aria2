@@ -102,7 +102,7 @@ function aria2DownloadSlimmed({url, options = {}}, jsonrpc) {
         }
     }, 1000);
     entry.value = Array.isArray(url) ? url.join('\n') : url;
-    return Object.assign({header: options['header']}, settings.disposition({...jsonrpc, ...options}));
+    return {header: options['header'], ...settings.disposition({...jsonrpc, ...options})};
 }
 
 chrome.runtime.sendMessage({action: activity}, ({storage, jsonrpc, params}) => {
