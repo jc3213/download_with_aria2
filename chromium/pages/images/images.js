@@ -137,7 +137,7 @@ function aria2ManifestV2({result, filter}) {
 function aria2ManifestV3(result) {
     var addRules = [];
     result.forEach(({url, headers}, index) => {
-        getImagePreview(url, header);
+        getImagePreview(url, headers);
         addRules.push({
             id: index + 1,
             priority: 1,
