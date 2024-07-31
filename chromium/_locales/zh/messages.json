@@ -113,9 +113,6 @@
     "option_jsonrpc_title": {
         "message": "设置 JSON-RPC 的 协议、主机及密钥"
     },
-    "option_jsonrpc_status": {
-        "message": "状态"
-    },
     "option_task_manager": {
         "message": "任务管理器"
     },
