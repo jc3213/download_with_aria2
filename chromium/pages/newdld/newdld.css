@@ -8,20 +8,6 @@ textarea {
     overflow-x: hidden;
 }
 
-.slim #menu > :nth-child(2), .slim .options > :nth-child(n+3),
-.full .countdown, .full #menu > :nth-child(3),
-.extra #menu > :nth-child(n+2):nth-child(-n+3) {
-    display: none;
-}
-
 #menu {
     text-align: center;
-}
-
-.countdown::before {
-    content: "(";
-}
-
-.countdown::after {
-    content: ")";
 }

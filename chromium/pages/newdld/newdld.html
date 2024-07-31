@@ -9,9 +9,8 @@
     <body>
         <div class="menu" i18n_title="task_referer_title">
             <h4 i18n="task_referer"></h4>
-            <div class="flex">
+            <div>
                 <input data-rid="referer" type="text">
-                <button data-bid="referer_btn">🔖</button>
             </div>
         </div>
         <div class="menu" i18n_title="task_batch_title">
@@ -73,12 +72,8 @@
         </div>
         <hr>
         <div id="menu">
-            <button>
-                <span data-bid="submit_btn" i18n="common_submit"></span>
-                <span class="countdown" data-bid="submit_btn">30</span>
-            </button>
+            <button data-bid="submit_btn" i18n="common_submit"></button>
             <button><label for="uploader" i18n="task_metaurl"></label></button>
-            <button data-bid="extra_btn" i18n="popup_options"></button>
             <input id="uploader" type="file" accept=".torrent,.metalink,.meta4">
         </div>
         <script src="/pages/common.js"></script>

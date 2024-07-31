@@ -1,18 +1,7 @@
 var aria2Storage = {};
 var aria2Global = {};
-var activity;
-var downloader = document.body;
-var [entry, countdown] = document.querySelectorAll('#entries, .countdown');
+var entry = document.querySelector('#entries');
 var settings = document.querySelectorAll('[data-rid]');
-
-if (location.search === '?prompt') {
-    downloader.className = 'slim';
-    activity = 'download_prompt';
-}
-else {
-    downloader.className = 'full';
-    activity = 'options_plugins';
-}
 
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey && event.key === 'Enter') {
@@ -28,9 +17,6 @@ document.addEventListener('click', (event) => {
             break;
         case 'extra_btn':
             downloadExpand();
-            break;
-        case 'referer_btn':
-            downloadReferer(event.target);
             break;
         case 'proxy_btn':
             downloadProxy(event.target);
@@ -53,12 +39,6 @@ async function downloadExpand() {
         chrome.windows.update(id, {top: top - 92, height: height + 183});
         downloader.className = 'extra';
         countdown.textContent = countdown.textContent * 1 + 90;
-    });
-}
-
-function downloadReferer(refererBtn) {
-    chrome.tabs.query({active: true, currentWindow: false}, tabs => {
-        refererBtn.previousElementSibling.value = aria2Global['referer'] = tabs[0].url;
     });
 }
 
@@ -94,19 +74,11 @@ function getFileData(file) {
     });
 }
 
-function aria2DownloadSlimmed({url, options = {}}, jsonrpc) {
-    setInterval(() => {
-        countdown.textContent --;
-        if (countdown.textContent === '0') {
-            downloadSubmit();
-        }
-    }, 1000);
-    entry.value = Array.isArray(url) ? url.join('\n') : url;
-    return {header: options['header'], ...settings.disposition({...jsonrpc, ...options})};
-}
-
-chrome.runtime.sendMessage({action: activity}, ({storage, jsonrpc, params}) => {
-    aria2Storage = storage;
-    jsonrpc['user-agent'] = storage['headers_useragent'];
-    aria2Global = params ? aria2DownloadSlimmed(params, jsonrpc) : settings.disposition(jsonrpc);
+chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc}) => {
+    chrome.tabs.query({active: true, currentWindow: false}, (tabs) => {
+        aria2Storage = storage;
+        jsonrpc['user-agent'] = storage['headers_useragent'];
+        jsonrpc['referer'] = tabs[0].url;
+        aria2Global = settings.disposition(jsonrpc);
+    });
 });
