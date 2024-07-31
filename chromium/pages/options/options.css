@@ -52,6 +52,7 @@ input[type="checkbox"] + label {
     padding: 10px;
     border-style: inset;
     border-width: 1px;
+    margin: 20px 0px;
 }
 
 body:not(.capture_always) .match > :nth-child(n+2),
@@ -65,10 +66,6 @@ body:not(.capture_always) .match > :nth-child(n+2),
 
 .even {
     margin-top: 31px;
-}
-
-.match {
-    margin: 20px 0px;
 }
 
 .list {
