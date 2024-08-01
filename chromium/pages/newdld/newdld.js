@@ -15,11 +15,8 @@ document.addEventListener('click', (event) => {
         case 'submit_btn':
             downloadSubmit();
             break;
-        case 'extra_btn':
-            downloadExpand();
-            break;
         case 'proxy_btn':
-            downloadProxy(event.target);
+            downloadProxy(event);
             break;
     }
 });
@@ -34,16 +31,8 @@ async function downloadSubmit() {
     close();
 }
 
-async function downloadExpand() {
-    chrome.windows.getCurrent(({id, top, height}) => {
-        chrome.windows.update(id, {top: top - 92, height: height + 183});
-        downloader.className = 'extra';
-        countdown.textContent = countdown.textContent * 1 + 90;
-    });
-}
-
-function downloadProxy(proxyBtn) {
-    proxyBtn.previousElementSibling.value = aria2Global['all-proxy'] = aria2Storage['proxy_server'];
+function downloadProxy(event) {
+    event.target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Storage['proxy_server'];
 }
 
 document.addEventListener('change', (event) => {
