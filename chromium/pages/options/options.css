@@ -55,9 +55,8 @@ input[type="checkbox"] + label {
     margin: 20px 0px;
 }
 
-body:not(.capture_always) .match > :nth-child(n+2),
-.match > :nth-child(n+3) {
-    margin-top: 20px;
+.match > :nth-last-child(n+2) {
+    margin-bottom: 20px;
 }
 
 .options {
