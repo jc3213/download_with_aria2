@@ -87,9 +87,10 @@ function aria2DownloadPrompt() {
 }
 
 async function aria2ImagesPrompt(tabId) {
+    var inspect = aria2Inspect[tabId];
+    var images = [...new Set(inspect.images)].map((url) => ({url, headers: inspect[url]}));
     var popId = await getPopupWindow('/pages/images/images.html', 680);
-    var tab = aria2Inspect[tabId];
-    aria2Message[popId] = {result: tab.images.map((url) => ({url, headers: tab[url]})), filter: aria2HeaderFilter};
+    aria2Message[popId] = {images, filter: aria2HeaderFilter};
 }
 
 function aria2SetHeaders(url) {

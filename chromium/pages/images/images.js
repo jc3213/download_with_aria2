@@ -123,9 +123,9 @@ function getImagePreview(url, headers) {
     aria2Images.push(img);
 }
 
-function aria2ManifestV2({result, filter}) {
+function aria2ManifestV2({images, filter}) {
     var rules = {};
-    result.forEach(({url, headers}) => {
+    images.forEach(({url, headers}) => {
         getImagePreview(url, headers);
         rules[url] = headers;
     });
@@ -134,9 +134,9 @@ function aria2ManifestV2({result, filter}) {
     }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['blocking', ...filter]);
 }
 
-function aria2ManifestV3(result) {
+function aria2ManifestV3(images) {
     var addRules = [];
-    result.forEach(({url, headers}, index) => {
+    images.forEach(({url, headers}, index) => {
         getImagePreview(url, headers);
         addRules.push({
             id: index + 1,
