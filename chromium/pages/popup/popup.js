@@ -194,7 +194,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
                 taskPause(task, gid);
                 break;
             case 'proxy_btn':
-                taskProxy(event.target, gid);
+                taskProxy(event, gid);
                 break;
             case 'save_btn':
                 taskChangeFiles(task, gid);
@@ -203,7 +203,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
                 taskSelectFile(task);
                 break;
             case 'uri_add_btn':
-                taskAddUri(event.target, gid);
+                taskAddUri(event, gid);
                 break;
             case 'uri_alt_btn':
                 taskRemoveUri(gid, event.target.textContent, event.ctrlKey);
@@ -347,9 +347,9 @@ async function taskPause(task, gid) {
     }
 }
 
-async function taskProxy(proxy, gid) {
+async function taskProxy(event, gid) {
     await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2Proxy}]});
-    proxy.previousElementSibling.value = aria2Proxy;
+    event.target.previousElementSibling.value = aria2Proxy;
 }
 
 async function taskChangeFiles(task, gid) {
@@ -362,8 +362,8 @@ function taskSelectFile(task) {
     task.save.style.display = 'block';
 }
 
-async function taskAddUri(adduri, gid) {
-    var uri = adduri.previousElementSibling;
+async function taskAddUri(event, gid) {
+    var uri = event.target.previousElementSibling;
     await aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [], [uri.value]]});
     uri.value = '';
 }
