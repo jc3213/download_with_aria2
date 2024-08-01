@@ -76,7 +76,7 @@ async function aria2DownloadHandler(url, options, referer, hostname) {
         options['dir'] = aria2Storage['folder_defined'];
     }
     if (!aria2Updated['headers_exclude'].test(hostname)) {
-        options['header'] = aria2SetHeaders(url);
+        options['header'] = aria2SetHeaders(url, referer);
     }
     await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
     await aria2WhenStart(url);
@@ -93,19 +93,11 @@ async function aria2ImagesPrompt(tabId) {
     aria2Message[popId] = {images, filter: aria2HeaderFilter};
 }
 
-function aria2SetHeaders(url) {
-    var tabs = Object.keys(aria2Inspect);
-    for (var id of tabs) {
-        var headers = aria2Inspect[id][url];
-        if (headers) {
-            break;
-        }
-    }
+function aria2SetHeaders(url, referer) {
+    var id = Object.keys(aria2Inspect).find((id) => aria2Inspect[id][url]);
+    var headers = aria2Inspect[id] ? aria2Inspect[id][url] : [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
     if (aria2Storage['headers_override']) {
-        var ua = headers?.findIndex(({name}) => name.toLowerCase() === 'user-agent');
-        if (!ua || ua === -1) {
-            return ['User-Agent: ' + aria2Storage['headers_useragent']];
-        }
+        var ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
         headers[ua].value = aria2Storage['headers_useragent'];
     }
     return headers.map((header) => header.name + ': ' + header.value);
@@ -149,6 +141,7 @@ chrome.commands.onCommand.addListener((command) => {
     }
 });
 
+chrome.action = chrome.action ?? chrome.browserAction;
 chrome.action.onClicked.addListener((tab) => {
     var url = chrome.runtime.getURL('/pages/popup/popup.html');
     chrome.tabs.query({currentWindow: true}, (tabs) => {

@@ -17,7 +17,6 @@ function aria2CaptureSwitch() {
     chrome.downloads.onDeterminingFilename.removeListener(captureOnFilename);
 }
 
-chrome.action = chrome.browserAction;
 chrome.storage.sync.get(null, (json) => {
     aria2UpdateStorage({...aria2Default, ...json});
     aria2ClientSetup();
