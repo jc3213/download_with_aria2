@@ -113,7 +113,7 @@ chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc
     jsonrpc['user-agent'] = aria2Storage['headers_useragent'];
     aria2Global = document.querySelectorAll('#options input').disposition(jsonrpc);
     aria2Manifest === 2 ? aria2ManifestV2(params) : aria2ManifestV3(params.images);
-    aria2Images.forEach((img) => gallery.append(img));
+    gallery.append(...aria2Images);
 });
 
 function getImagePreview(url, headers) {
