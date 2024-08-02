@@ -15,10 +15,10 @@
     - Capture downloads via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
     - Capture downloads via [file extension match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#file-extension)
 - Simulating browser `Request Headers` to bypass CORS checks
-    - Only Forward `Cookies` when capture browser downloads
+    - Forwards `Cookies` only when capturing browser downloads
     - Exclude rules via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
-- Support proxy server
-    - Auto-Proxy rules via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
+- Proxy server
+    - Auto-proxy rules via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
 - Change options for JSON-RPC and Tasks
 - Backup/Restore options for this extension and JSON-RPC
 - Prompt new download window when enabled before download starts
