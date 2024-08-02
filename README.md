@@ -21,8 +21,10 @@
     - Auto-proxy rules via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
 - Change options for JSON-RPC and Tasks
 - Backup/Restore options for this extension and JSON-RPC
-- Prompt new download window when enabled before download starts
-- Notification when downloads start, or complete
+- Notification system
+    - When download started, or completed
+    - When extension installed, or updated
+- ~~Prompt new download window when enabled before download starts~~
 
 ## Install the extension
 - Google Web Store
