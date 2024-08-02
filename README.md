@@ -2,7 +2,7 @@
 - This is a browser extension for [aria2 - ultra fast download utility](https://github.com/aria2/aria2) via JSON-RPC
     - It supports [Google Chrome](https://www.google.com/chrome/), [Microsoft Edge](https://www.microsoft.com/edge), [Mozilla Firefox](https://www.mozilla.org/firefox/), and so like browsers
 - Built-in Task Manager
-    - Try it [HERE](https://jc3213.github.io/aria2.app/)
+    - [Github Repository](https://github.com/jc3213/aria2.app) | [Github Pages](https://jc3213.github.io/aria2.app/)
 - Context menus
     - Download this link
     - Download this image
@@ -12,11 +12,13 @@
     - Capture downloads via [webRequest](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/webRequest) API
         - *Firefox only*
     - Capture downloads via file size
-    - Capture downloads via hostname match patterns
-    - Capture downloads via file name extensions
-- Forward downloads request headers when enabled
+    - Capture downloads via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
+    - Capture downloads via [file extension match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#file-extension)
+- Simulating browser `Request Headers` to bypass CORS checks
+    - Only Forward `Cookies` when capture browser downloads
+    - Exclude rules via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
 - Support proxy server
-    - Auto-Proxy via hostname match patterns
+    - Auto-Proxy rules via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
 - Change options for JSON-RPC and Tasks
 - Backup/Restore options for this extension and JSON-RPC
 - Prompt new download window when enabled before download starts
