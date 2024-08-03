@@ -31,7 +31,7 @@ async function downloadCapture({id, url, referrer, filename, fileSize, cookieSto
     }
 }
 
-async function webRequestCapture({statusCode, url, originUrl, responseHeaders}) {
+async function webRequestCapture({statusCode, url, originUrl, responseHeaders, tabId}) {
     if (statusCode !== 200) {
         return;
     }
@@ -51,7 +51,7 @@ async function webRequestCapture({statusCode, url, originUrl, responseHeaders}) 
     }
     var hostname = getHostname(originUrl);
     if (aria2CaptureResult(hostname, out, result['content-length'] | 0)) {
-        aria2DownloadHandler(url, {out}, originUrl, hostname);
+        aria2DownloadHandler(url, {out}, originUrl, hostname, tabId);
         return {cancel: true};
     }
 }

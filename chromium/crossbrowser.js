@@ -57,10 +57,10 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url}) => {
     switch (menuItemId) {
         case 'aria2c_this_url':
-            aria2DownloadHandler(linkUrl, {}, url, getHostname(url));
+            aria2DownloadHandler(linkUrl, {}, url, getHostname(url), id);
             break;
         case 'aria2c_this_image':
-            aria2DownloadHandler(srcUrl, {}, url, getHostname(url));
+            aria2DownloadHandler(srcUrl, {}, url, getHostname(url), id);
             break;
         case 'aria2c_all_images':
             aria2ImagesPrompt(id);
@@ -68,7 +68,7 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
     }
 });
 
-async function aria2DownloadHandler(url, options, referer, hostname) {
+async function aria2DownloadHandler(url, options, referer, hostname, tabId) {
     if (aria2Storage['proxy_always'] || aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
@@ -76,7 +76,7 @@ async function aria2DownloadHandler(url, options, referer, hostname) {
         options['dir'] = aria2Storage['folder_defined'];
     }
     if (!aria2Updated['headers_exclude'].test(hostname)) {
-        options['header'] = aria2SetHeaders(url, referer);
+        options['header'] = aria2SetHeaders(url, referer, tabId);
     }
     await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
     await aria2WhenStart(url);
@@ -93,8 +93,8 @@ async function aria2ImagesPrompt(tabId) {
     aria2Message[popId] = {images, filter: aria2HeaderFilter};
 }
 
-function aria2SetHeaders(url, referer) {
-    var id = Object.keys(aria2Inspect).find((id) => aria2Inspect[id][url]);
+function aria2SetHeaders(url, referer, tabId) {
+    var id = tabId ?? Object.keys(aria2Inspect).find((id) => aria2Inspect[id][url]);
     var headers = aria2Inspect[id] ? aria2Inspect[id][url] : [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
     if (aria2Storage['headers_override']) {
         var ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
