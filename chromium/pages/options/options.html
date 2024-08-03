@@ -84,6 +84,15 @@
                 <label for="notify_complete" i18n="option_notify_complete"></label>
             </div>
             <h1 i18n="option_headers"></h1>
+            <div class="menu" i18n_title="option_headers_override_title">
+                <input id="headers_override" data-eid="headers_override" type="checkbox">
+                <label for="headers_override" i18n="option_headers_override"></label>
+            </div>
+            <div class="menu" i18n_title="option_headers_useragent_title" data-rel="headers_override">
+                <div>
+                    <input data-eid="headers_useragent" type="text">
+                </div>
+            </div>
             <div class="match">
                 <div i18n_title="option_headers_exclude_title" data-map="headers_exclude">
                     <h4 i18n="option_match_exclude"></h4>
@@ -92,15 +101,6 @@
                         <button data-bid="add_rule">➕</button>
                     </div>
                     <div class="list"></div>
-                </div>
-            </div>
-            <div class="menu" i18n_title="option_headers_override_title">
-                <input id="headers_override" data-eid="headers_override" type="checkbox">
-                <label for="headers_override" i18n="option_headers_override"></label>
-            </div>
-            <div class="menu" i18n_title="option_headers_useragent_title" data-rel="headers_override">
-                <div>
-                    <input data-eid="headers_useragent" type="text">
                 </div>
             </div>
             <h1 i18n="option_folder"></h1>
