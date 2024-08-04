@@ -82,8 +82,9 @@ async function aria2DownloadHandler(url, options, referer, hostname, tabId) {
 }
 
 function aria2SetHeaders(url, referer, tabId) {
-    var id = tabId ?? Object.keys(aria2Inspect).find((id) => aria2Inspect[id][url]);
-    var headers = aria2Inspect[id] ? aria2Inspect[id][url] : [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
+    tabId ??= Object.keys(aria2Inspect).find((id) => aria2Inspect[id][url]);
+    console.log(tabId);
+    var headers = aria2Inspect[tabId] ? aria2Inspect[tabId][url] : [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
     if (aria2Storage['headers_override']) {
         var ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
         headers[ua].value = aria2Storage['headers_useragent'];
@@ -138,7 +139,7 @@ chrome.commands.onCommand.addListener((command) => {
     }
 });
 
-chrome.action = chrome.action ?? chrome.browserAction;
+chrome.action ??= chrome.browserAction;
 chrome.action.onClicked.addListener((tab) => {
     var url = chrome.runtime.getURL('/pages/popup/popup.html');
     chrome.tabs.query({currentWindow: true}, (tabs) => {
