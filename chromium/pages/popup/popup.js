@@ -1,6 +1,6 @@
 var aria2Alive;
 var aria2Retry;
-var aria2Tasks;
+var aria2Tasks = {};
 var aria2Queue = {};
 var aria2Stats = {};
 var aria2Detail = {};
