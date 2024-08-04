@@ -41,7 +41,7 @@ var aria2Manifest = chrome.runtime.getManifest();
 var aria2Active = 0;
 var aria2Queue = {};
 var aria2Inspect = {};
-var aria2HeaderFilter = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
+var aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
@@ -87,7 +87,7 @@ function aria2DownloadPrompt() {
 
 async function aria2ImagesPrompt(tabId) {
     var popId = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Inspect[popId] = {images: aria2Inspect[tabId].images, filter: aria2HeaderFilter};
+    aria2Inspect[popId] = {images: aria2Inspect[tabId].images, filter: aria2Headers};
 }
 
 function aria2SetHeaders(url, referer, tabId) {
@@ -114,14 +114,14 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) =
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
     var inspect = aria2Inspect[tabId];
-    if (!inspect) {
-        aria2Inspect[tabId] = inspect = {images: []};
+    if (!inspect || inspect[url]) {
+        return;
     }
-    if (type === 'image' && !inspect[url]) {
+    if (type === 'image') {
         inspect.images.push({url, headers: requestHeaders});
     }
     inspect[url] = requestHeaders;
-}, {urls: ['http://*/*', 'https://*/*']}, aria2HeaderFilter);
+}, {urls: ['http://*/*', 'https://*/*']}, aria2Headers);
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
