@@ -301,9 +301,8 @@ function taskDetailSync(file, length, completedLength, uriList, links, uris) {
     var result = {};
     uris.forEach(({uri, status}) => {
         taskUriElementCreate(uriList, links, uri);
-        var url = result[uri] ?? {used: 0, wait: 0};
-        status === 'used' ? url.used ++ : url.wait ++;
-        result[uri] = url;
+        result[uri] ??= {used: 0, wait: 0};
+        status === 'used' ? result[uri].used ++ : result[uri].wait ++;
     });
     links = links.filter((uri) => {
         if (!result[uri]) {
