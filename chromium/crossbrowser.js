@@ -40,9 +40,7 @@ var aria2Version;
 var aria2Manifest = chrome.runtime.getManifest();
 var aria2Active = 0;
 var aria2Queue = {};
-var aria2Tabs = {};
 var aria2Inspect = {};
-var aria2Images = {};
 var aria2Message = {};
 var aria2HeaderFilter = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
@@ -89,10 +87,8 @@ function aria2DownloadPrompt() {
 }
 
 async function aria2ImagesPrompt(tabId) {
-    var inspect = aria2Inspect[tabId];
-    var images = [...new Set(inspect.images)].map((url) => ({url, headers: inspect[url]}));
     var popId = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Message[popId] = {images, filter: aria2HeaderFilter};
+    aria2Message[popId] = {images: aria2Inspect[tabId].images, filter: aria2HeaderFilter};
 }
 
 function aria2SetHeaders(url, referer, tabId) {
@@ -107,33 +103,28 @@ function aria2SetHeaders(url, referer, tabId) {
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
     if (frameId === 0) {
-        aria2Tabs[tabId] = url;
-        aria2Inspect[tabId] = {};
-        aria2Images[tabId] = [];
+        aria2Inspect[tabId] = {images: [], url};
     }
 });
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) => {
-    if (aria2Tabs[tabId] !== url) {
-        aria2Tabs[tabId] = url;
-        aria2Inspect[tabId] = {};
-        aria2Images[tabId] = [];
+    if (aria2Inspect[tabId] && aria2Inspect[tabId].url !== url) {
+        aria2Inspect[tabId] = {images: [], url};
     }
 });
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
-    if (aria2Tabs[tabId]) {
-        aria2Inspect[tabId][url] = requestHeaders;
-        if (type === 'image') {
-            aria2Images[tabId].push(url);
+    var inspect = aria2Inspect[tabId];
+    if (inspect) {
+        if (type === 'image' && !inspect[url]) {
+            inspect.images.push({url, headers: requestHeaders});
         }
+        inspect[url] = requestHeaders;
     }
 }, {urls: ['http://*/*', 'https://*/*']}, aria2HeaderFilter);
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-    delete aria2Tabs[tabId];
     delete aria2Inspect[tabId];
-    delete aria2Images[tabId];
     delete aria2Message[tabId];
 });
 
