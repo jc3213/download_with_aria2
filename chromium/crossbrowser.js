@@ -81,15 +81,6 @@ async function aria2DownloadHandler(url, options, referer, hostname, tabId) {
     await aria2WhenStart(url);
 }
 
-function aria2DownloadPrompt() {
-    getPopupWindow('/pages/newdld/newdld.html', 482);
-}
-
-async function aria2ImagesPrompt(tabId) {
-    var popId = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Inspect[popId] = {images: aria2Inspect[tabId].images, filter: aria2Headers};
-}
-
 function aria2SetHeaders(url, referer, tabId) {
     var id = tabId ?? Object.keys(aria2Inspect).find((id) => aria2Inspect[id][url]);
     var headers = aria2Inspect[id] ? aria2Inspect[id][url] : [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
@@ -98,6 +89,15 @@ function aria2SetHeaders(url, referer, tabId) {
         headers[ua].value = aria2Storage['headers_useragent'];
     }
     return headers.map((header) => header.name + ': ' + header.value);
+}
+
+function aria2DownloadPrompt() {
+    getPopupWindow('/pages/newdld/newdld.html', 482);
+}
+
+async function aria2ImagesPrompt(tabId) {
+    var popId = await getPopupWindow('/pages/images/images.html', 680);
+    aria2Inspect[popId] = {images: aria2Inspect[tabId].images, filter: aria2Headers};
 }
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
