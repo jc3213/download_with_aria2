@@ -239,12 +239,6 @@
     "option_capture_webrequest_title": {
         "message": "Enable capture web requests instead of downloads, may be buggy"
     },
-    "option_capture_always": {
-        "message": "Always Capture Downloads"
-    },
-    "option_capture_always_title": {
-        "message": "Always capture downloads from browser with exceptions"
-    },
     "option_capture_size_include": {
         "message": "Include File Size Above"
     },

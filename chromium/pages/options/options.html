@@ -140,12 +140,8 @@
                 <input id="capture_webrequest" data-eid="capture_webrequest" type="checkbox">
                 <label for="capture_webrequest" i18n="option_capture_webrequest"></label>
             </div>
-            <div class="menu" i18n_title="option_capture_always_title" data-rel="capture_enabled">
-                <input id="capture_always" data-eid="capture_always" type="checkbox">
-                <label for="capture_always" i18n="option_capture_always"></label>
-            </div>
-            <div class="match" data-rel="capture_enabled">
-                <div i18n_title="option_capture_size_include_title" data-exc="capture_always">
+            <div class="match options" data-rel="capture_enabled">
+                <div class="menu" i18n_title="option_capture_size_include_title">
                     <h4 i18n="option_capture_size_include"></h4>
                     <div>
                         <input data-eid="capture_size_include" type="number" min="0">
@@ -155,7 +151,7 @@
                         <span i18n="common_disabled"></span>: <i>0</i>
                     </div>
                 </div>
-                <div i18n_title="option_capture_size_exclude_title">
+                <div class="menu" i18n_title="option_capture_size_exclude_title">
                     <h4 i18n="option_capture_size_exclude"></h4>
                     <div>
                         <input data-eid="capture_size_exclude" type="number" min="0">
@@ -165,23 +161,7 @@
                         <span i18n="common_disabled"></span>: <i>0</i>
                     </div>
                 </div>
-                <div i18n_title="option_capture_type_include_title" data-map="capture_type_include" data-exc="capture_always">
-                    <h4 i18n="option_capture_type_include"></h4>
-                    <div class="flex">
-                        <input type="text">
-                        <button data-bid="add_rule">➕</button>
-                    </div>
-                    <div class="list"></div>
-                </div>
-                <div i18n_title="option_capture_type_exclude_title" data-map="capture_type_exclude">
-                    <h4 i18n="option_capture_type_exclude"></h4>
-                    <div class="flex">
-                        <input type="text">
-                        <button data-bid="add_rule">➕</button>
-                    </div>
-                    <div class="list"></div>
-                </div>
-                <div i18n_title="option_capture_include_title" data-map="capture_include" data-exc="capture_always">
+                <div i18n_title="option_capture_include_title" data-map="capture_include">
                     <h4 i18n="option_match_include"></h4>
                     <div class="flex">
                         <input type="text">
@@ -191,6 +171,22 @@
                 </div>
                 <div i18n_title="option_capture_exclude_title" data-map="capture_exclude">
                     <h4 i18n="option_match_exclude"></h4>
+                    <div class="flex">
+                        <input type="text">
+                        <button data-bid="add_rule">➕</button>
+                    </div>
+                    <div class="list"></div>
+                </div>
+                <div i18n_title="option_capture_type_include_title" data-map="capture_type_include">
+                    <h4 i18n="option_capture_type_include"></h4>
+                    <div class="flex">
+                        <input type="text">
+                        <button data-bid="add_rule">➕</button>
+                    </div>
+                    <div class="list"></div>
+                </div>
+                <div i18n_title="option_capture_type_exclude_title" data-map="capture_type_exclude">
+                    <h4 i18n="option_capture_type_exclude"></h4>
                     <div class="flex">
                         <input type="text">
                         <button data-bid="add_rule">➕</button>

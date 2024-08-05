@@ -21,7 +21,6 @@ var aria2Default = {
     'proxy_server': '',
     'proxy_include': [],
     'capture_enabled': false,
-    'capture_always': false,
     'capture_webrequest': false,
     'capture_include': [],
     'capture_exclude': [],
@@ -322,8 +321,7 @@ function aria2CaptureResult(hostname, filename, filesize) {
         aria2Updated['capture_size_exclude'] > 0 && filesize <= aria2Updated['capture_size_exclude']) {
         return false;
     }
-    if (aria2Storage['capture_always'] ||
-        aria2Updated['capture_include'].test(hostname) ||
+    if (aria2Updated['capture_include'].test(hostname) ||
         aria2Updated['capture_type_include'].test(filename) ||
         aria2Updated['capture_size_include'] > 0 && filesize >= aria2Updated['capture_size_include']) {
         return true;

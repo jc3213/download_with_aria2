@@ -31,7 +31,6 @@ var switches = {
     'folder_enabled': true,
     'folder_firefox': false,
     'capture_enabled': true,
-    'capture_always': true,
     'capture_webrequest': true
 };
 

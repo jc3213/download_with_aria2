@@ -239,12 +239,6 @@
     "option_capture_webrequest_title": {
         "message": "捕获网络请求而非下载请求，可能存在问题"
     },
-    "option_capture_always": {
-        "message": "总是捕获下载"
-    },
-    "option_capture_always_title": {
-        "message": "总是捕获来自除了例外以外的浏览器的下载"
-    },
     "option_capture_size_include": {
         "message": "捕获文件超过"
     },
