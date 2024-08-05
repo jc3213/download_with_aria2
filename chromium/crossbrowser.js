@@ -48,7 +48,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     }
     aria2WhenInstall(reason);
     if (reason === 'update' && previousVersion <= '4.10.1.2728') {
-        chrome.storage.sync.remove(['headers_enabled', 'download_prompt']);
+        chrome.storage.sync.remove(['headers_enabled', 'download_prompt', 'proxy_always']);
     }
 });
 
@@ -76,7 +76,6 @@ async function aria2DownloadHandler(url, options, referer, hostname, tabId) {
     if (!aria2Updated['headers_exclude'].test(hostname)) {
         options['header'] = aria2SetHeaders(url, referer, tabId);
     }
-    console.log(options);
     await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
     await aria2WhenStart(url);
 }
