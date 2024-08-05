@@ -6,8 +6,7 @@ body {
 body:not(.jsonrpc) [data-rel="jsonrpc"], body.jsonrpc [data-exc="jsonrpc"], body:not(.firefox) [data-app="firefox"],
 body:not(.context_enabled) [data-rel="context_enabled"], body:not(.headers_override) [data-rel="headers_override"],
 body:not(.folder_enabled) [data-rel="folder_enabled"], body:not(.capture_enabled) [data-rel="capture_enabled"],
-body.proxy_always [data-exc="proxy_always"], body.capture_always [data-exc="capture_always"],
-body:not(.capture_enabled) [data-exc*="capture_enabled"], body.capture_webrequest [data-exc*="capture_webrequest"] {
+body.capture_always [data-exc="capture_always"], body.capture_webrequest [data-exc*="capture_webrequest"] {
     display: none;
 }
 

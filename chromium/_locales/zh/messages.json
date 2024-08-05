@@ -221,12 +221,6 @@
     "option_proxy_title": {
         "message": "设置首选的代理服务器"
     },
-    "option_proxy_always": {
-        "message": "总是使用代理服务器"
-    },
-    "option_proxy_always_title": {
-        "message": "总是在新建下载时的使用代理服务器"
-    },
     "option_proxy_include_title": {
         "message": "为所设置域名的下载添加代理服务器"
     },

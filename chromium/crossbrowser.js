@@ -19,7 +19,6 @@ var aria2Default = {
     'folder_enabled': false,
     'folder_firefox': false,
     'proxy_server': '',
-    'proxy_always': false,
     'proxy_include': [],
     'capture_enabled': false,
     'capture_always': false,
@@ -68,7 +67,7 @@ chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, 
 });
 
 async function aria2DownloadHandler(url, options, referer, hostname, tabId) {
-    if (aria2Storage['proxy_always'] || aria2Updated['proxy_include'].test(hostname)) {
+    if (aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (!options['dir'] && aria2Storage['folder_enabled'] && aria2Storage['folder_defined']) {
@@ -77,6 +76,7 @@ async function aria2DownloadHandler(url, options, referer, hostname, tabId) {
     if (!aria2Updated['headers_exclude'].test(hostname)) {
         options['header'] = aria2SetHeaders(url, referer, tabId);
     }
+    console.log(options);
     await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
     await aria2WhenStart(url);
 }

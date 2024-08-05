@@ -224,12 +224,6 @@
     "option_proxy_include_title": {
         "message": "Add proxy server for new downloads from these hosts"
     },
-    "option_proxy_always": {
-        "message": "Always Use Proxy Server"
-    },
-    "option_proxy_always_title": {
-        "message": "Always use proxy server for new downloads"
-    },
     "option_capture": {
         "message": "Capture Browser Downloads"
     },
