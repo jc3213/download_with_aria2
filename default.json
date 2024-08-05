@@ -1,5 +1,4 @@
 {
-    "capture_always": false,
     "capture_enabled": false,
     "capture_exclude": [],
     "capture_size_include": 0,
@@ -27,7 +26,6 @@
     "notify_complete": false,
     "notify_install": true,
     "notify_start": false,
-    "proxy_always": false,
     "proxy_include": [],
     "proxy_server": ""
 }
