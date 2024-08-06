@@ -411,5 +411,4 @@ function getPopupWindow(url, offsetHeight) {
             }, (popup) => resolve(popup.tabs[0].id));
         });
     });
-  
 }
