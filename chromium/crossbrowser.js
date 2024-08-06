@@ -196,11 +196,6 @@ async function aria2MessageHandler({urls, torrents, metalinks}) {
 
 function aria2OptionsChanged({storage, changes}) {
     aria2UpdateStorage(storage);
-    aria2UpdateJsonrpc(changes);
-    chrome.storage.sync.set(aria2Storage);
-}
-
-async function aria2UpdateJsonrpc(changes) {
     if (changes['jsonrpc_scheme']) {
         aria2RPC.scheme = aria2Storage['jsonrpc_scheme'];
     }
@@ -210,15 +205,13 @@ async function aria2UpdateJsonrpc(changes) {
     if (changes['jsonrpc_url']) {
         aria2RPC.url = aria2Storage['jsonrpc_url'];
     }
+    chrome.storage.sync.set(aria2Storage);
 }
 
-chrome.storage.sync.get(null, (json) => {
-    aria2UpdateStorage({...aria2Default, ...json});
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
-    aria2RPC.onmessage = aria2WebSocket;
-    aria2RPC.onclose = aria2ClientWorker;
-    aria2ClientWorker();
-});
+function aria2RPCOptionsChanged({jsonrpc}) {
+    aria2Global = {...aria2Global, ...jsonrpc};
+    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [jsonrpc]});
+}
 
 function aria2UpdateStorage(json) {
     aria2Storage = json;
@@ -252,10 +245,13 @@ function aria2UpdateStorage(json) {
     }
 }
 
-function aria2RPCOptionsChanged({jsonrpc}) {
-    aria2Global = {...aria2Global, ...jsonrpc};
-    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [jsonrpc]});
-}
+chrome.storage.sync.get(null, (json) => {
+    aria2UpdateStorage({...aria2Default, ...json});
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
+    aria2RPC.onmessage = aria2WebSocket;
+    aria2RPC.onclose = aria2ClientWorker;
+    aria2ClientWorker();
+});
 
 async function aria2WebSocket({method, params}) {
     if (!method) {
@@ -278,10 +274,6 @@ async function aria2WebSocket({method, params}) {
             aria2Active --;
     }
     aria2ToolbarBadge(aria2Active);
-}
-
-function aria2ToolbarBadge(number) {
-    chrome.action.setBadgeText({text: !number ? '' : number + ''});
 }
 
 function aria2ClientWorker() {
@@ -312,6 +304,10 @@ function aria2RPCOptionsSetup(json, version) {
     json['max-overall-upload-limit'] = getFileSize(json['max-overall-upload-limit']);
     aria2Global = json;
     aria2Version = version.version;
+}
+
+function aria2ToolbarBadge(number) {
+    chrome.action.setBadgeText({text: !number ? '' : number + ''});
 }
 
 function aria2CaptureResult(hostname, filename, filesize) {
