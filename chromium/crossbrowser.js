@@ -212,6 +212,11 @@ async function aria2UpdateJsonrpc(changes) {
     }
 }
 
+chrome.storage.sync.get(null, (json) => {
+    aria2UpdateStorage({...aria2Default, ...json});
+    aria2ClientSetup();
+});
+
 function aria2UpdateStorage(json) {
     aria2Storage = json;
     aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
@@ -223,9 +228,7 @@ function aria2UpdateStorage(json) {
     aria2Updated['capture_type_exclude'] = getMatchPattern(json['capture_type_exclude'], true);
     aria2Updated['capture_size_include'] = json['capture_size_include'] * 1048576;
     aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
-    if (aria2Manifest.manifest_version === 2) {
-        aria2CaptureSwitch();
-    }
+    aria2CaptureSwitch();
     chrome.action.setPopup({popup: json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar'});
     chrome.contextMenus.removeAll();
     if (!json['context_enabled']) {
@@ -246,17 +249,6 @@ function aria2UpdateStorage(json) {
     }
 }
 
-function aria2RPCOptionsSetup(json, version) {
-    json['disk-cache'] = getFileSize(json['disk-cache']);
-    json['min-split-size'] = getFileSize(json['min-split-size']);
-    json['max-download-limit'] = getFileSize(json['max-download-limit']);
-    json['max-upload-limit'] = getFileSize(json['max-upload-limit']);
-    json['max-overall-download-limit'] = getFileSize(json['max-overall-download-limit']);
-    json['max-overall-upload-limit'] = getFileSize(json['max-overall-upload-limit']);
-    aria2Global = json;
-    aria2Version = version.version;
-}
-
 function aria2RPCOptionsChanged({jsonrpc}) {
     aria2Global = {...aria2Global, ...jsonrpc};
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [jsonrpc]});
@@ -267,25 +259,6 @@ function aria2ClientSetup() {
     aria2RPC.onmessage = aria2WebSocket;
     aria2RPC.onclose = aria2ClientWorker;
     aria2ClientWorker();
-}
-
-function aria2ClientWorker() {
-    clearTimeout(aria2Retry);
-    aria2RPC.call(
-        {method: 'aria2.getGlobalOption'},
-        {method: 'aria2.getVersion'},
-        {method: 'aria2.tellActive'}
-    ).then(([global, version, active]) => {
-        chrome.action.setBadgeBackgroundColor({color: '#3cc'});
-        aria2RPCOptionsSetup(global.result, version.result);
-        aria2Active = active.result.length;
-        active.result.forEach(({gid}) => aria2Queue[gid] = gid);
-        aria2ToolbarBadge(aria2Active);
-    }).catch((error) => {
-        chrome.action.setBadgeBackgroundColor({color: '#c33'});
-        aria2ToolbarBadge('E');
-        aria2Retry = setTimeout(aria2ClientWorker, aria2Updated['manager_interval']);
-    });
 }
 
 async function aria2WebSocket({method, params}) {
@@ -313,6 +286,36 @@ async function aria2WebSocket({method, params}) {
 
 function aria2ToolbarBadge(number) {
     chrome.action.setBadgeText({text: !number ? '' : number + ''});
+}
+
+function aria2ClientWorker() {
+    clearTimeout(aria2Retry);
+    aria2RPC.call(
+        {method: 'aria2.getGlobalOption'},
+        {method: 'aria2.getVersion'},
+        {method: 'aria2.tellActive'}
+    ).then(([global, version, active]) => {
+        chrome.action.setBadgeBackgroundColor({color: '#3cc'});
+        aria2RPCOptionsSetup(global.result, version.result);
+        aria2Active = active.result.length;
+        active.result.forEach(({gid}) => aria2Queue[gid] = gid);
+        aria2ToolbarBadge(aria2Active);
+    }).catch((error) => {
+        chrome.action.setBadgeBackgroundColor({color: '#c33'});
+        aria2ToolbarBadge('E');
+        aria2Retry = setTimeout(aria2ClientWorker, aria2Updated['manager_interval']);
+    });
+}
+
+function aria2RPCOptionsSetup(json, version) {
+    json['disk-cache'] = getFileSize(json['disk-cache']);
+    json['min-split-size'] = getFileSize(json['min-split-size']);
+    json['max-download-limit'] = getFileSize(json['max-download-limit']);
+    json['max-upload-limit'] = getFileSize(json['max-upload-limit']);
+    json['max-overall-download-limit'] = getFileSize(json['max-overall-download-limit']);
+    json['max-overall-upload-limit'] = getFileSize(json['max-overall-upload-limit']);
+    aria2Global = json;
+    aria2Version = version.version;
 }
 
 function aria2CaptureResult(hostname, filename, filesize) {

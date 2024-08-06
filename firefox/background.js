@@ -7,17 +7,17 @@ var aria2WebRequest = {
 function aria2CaptureSwitch() {
     if (aria2Storage['capture_enabled']) {
         if (aria2Storage['capture_webrequest']) {
-            browser.webRequest.onHeadersReceived.addListener(webRequestCapture, {urls: ['<all_urls>'], types: ['main_frame', 'sub_frame']}, ['blocking', 'responseHeaders']);
-            return browser.downloads.onCreated.removeListener(downloadCapture);
+            browser.webRequest.onHeadersReceived.addListener(aria2CaptureWebRequest, {urls: ['<all_urls>'], types: ['main_frame', 'sub_frame']}, ['blocking', 'responseHeaders']);
+            return browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
         }
-        browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
-        return browser.downloads.onCreated.addListener(downloadCapture);
+        browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
+        return browser.downloads.onCreated.addListener(aria2CaptureDownloads);
     }
-    browser.downloads.onCreated.removeListener(downloadCapture);
-    browser.webRequest.onHeadersReceived.removeListener(webRequestCapture);
+    browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
+    browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
 }
 
-async function downloadCapture({id, url, referrer, filename, fileSize, cookieStoreId}) {
+async function aria2CaptureDownloads({id, url, referrer, filename, fileSize, cookieStoreId}) {
     if (url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
@@ -31,7 +31,7 @@ async function downloadCapture({id, url, referrer, filename, fileSize, cookieSto
     }
 }
 
-async function webRequestCapture({statusCode, url, originUrl, responseHeaders, tabId}) {
+async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeaders, tabId}) {
     if (statusCode !== 200) {
         return;
     }
@@ -47,7 +47,7 @@ async function webRequestCapture({statusCode, url, originUrl, responseHeaders, t
     }
     var disposition = result['content-disposition'];
     if (disposition?.startsWith('attachment')) {
-        var out = getFileName(disposition);
+        var out = decodeFileName(disposition);
     }
     var hostname = getHostname(originUrl);
     if (aria2CaptureResult(hostname, out, result['content-length'] | 0)) {
@@ -71,7 +71,7 @@ async function getFirefoxOptions(filename) {
     return {out, dir: null};
 }
 
-function getFileName(disposition) {
+function decodeFileName(disposition) {
     var RFC2047 = disposition.match(/filename="?(=\?[^;]+\?=)/);
     if (RFC2047) {
         return decodeRFC2047(RFC2047[1]);
@@ -82,7 +82,7 @@ function getFileName(disposition) {
     }
     var match = disposition.match(/filename="?([^";]+);?/);
     if (match) {
-        return decodeFileName(match.pop());
+        return decodeNonASCII(match.pop());
     }
     return '';
 }
@@ -102,7 +102,7 @@ function decodeISO8859(text) {
 function decodeRFC5987(text) {
     var [string, utf8, code, data] = text.match(/(?:(utf-?8)|([^']+))''([^']+)/i);
     if (utf8) {
-        return decodeFileName(data);
+        return decodeNonASCII(data);
     }
     var decode = [];
     data.match(/%[0-9a-fA-F]{2}|./g)?.forEach(s => {
@@ -139,7 +139,7 @@ function decodeRFC2047(text) {
     return result;
 }
 
-function decodeFileName(text) {
+function decodeNonASCII(text) {
     try {
         return /[^\u0000-\u007f]/.test(text) ? decodeISO8859(text) : decodeURI(text);
     }
@@ -147,8 +147,3 @@ function decodeFileName(text) {
         return '';
     }
 }
-
-browser.storage.sync.get(null).then((json) => {
-    aria2UpdateStorage({...aria2Default, ...json});
-    aria2ClientSetup();
-});

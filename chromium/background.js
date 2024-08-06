@@ -1,4 +1,4 @@
-function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
+function aria2CaptureFilename({id, finalUrl, referrer, filename, fileSize}) {
     if (finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
         return;
     }
@@ -12,12 +12,7 @@ function captureOnFilename({id, finalUrl, referrer, filename, fileSize}) {
 
 function aria2CaptureSwitch() {
     if (aria2Storage['capture_enabled']) {
-        return chrome.downloads.onDeterminingFilename.addListener(captureOnFilename);
+        return chrome.downloads.onDeterminingFilename.addListener(aria2CaptureFilename);
     }
-    chrome.downloads.onDeterminingFilename.removeListener(captureOnFilename);
+    chrome.downloads.onDeterminingFilename.removeListener(aria2CaptureFilename);
 }
-
-chrome.storage.sync.get(null, (json) => {
-    aria2UpdateStorage({...aria2Default, ...json});
-    aria2ClientSetup();
-});
