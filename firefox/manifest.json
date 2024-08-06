@@ -19,7 +19,6 @@
     "background": {
         "scripts": [
             "libs/aria2.js",
-            "crossbrowser.js",
             "background.js"
         ]
     },
