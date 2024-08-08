@@ -81,7 +81,7 @@ async function aria2DownloadHandler(url, options, referer, hostname, tabId) {
 
 function aria2SetHeaders(url, referer, tabId) {
     tabId ??= Object.keys(aria2Inspect).find((id) => aria2Inspect[id][url]);
-    var headers = aria2Inspect[tabId] ? aria2Inspect[tabId][url] : [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
+    var headers = aria2Inspect[tabId] && aria2Inspect[tabId][url] || [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
     if (aria2Storage['headers_override']) {
         var ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
         headers[ua].value = aria2Storage['headers_useragent'];
