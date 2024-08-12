@@ -47,6 +47,14 @@ input[type="checkbox"] + label {
     content: "aria2/";
 }
 
+.options {
+    margin: 30px 0px;
+}
+
+.even {
+    margin-top: 31px;
+}
+
 .match {
     padding: 10px;
     border-style: inset;
@@ -54,16 +62,8 @@ input[type="checkbox"] + label {
     margin: 20px 0px;
 }
 
-.match > :nth-child(2n + 3) {
+.match.options > :nth-child(n + 3) {
     margin-top: 30px;
-}
-
-.options {
-    margin: 30px 0px;
-}
-
-.even {
-    margin-top: 31px;
 }
 
 .list {
@@ -78,9 +78,14 @@ input[type="checkbox"] + label {
     margin-top: 5px;
 }
 
+.listx {
+    grid-template-columns: repeat(5, 1fr);
+    height: 59px;
+}
+
 .rule {
     display: grid;
-    grid-template-columns: 186px 24px;
+    grid-template-columns: 1fr 24px;
     white-space: nowrap;
     border-width: 1px;
     border-style: outset;
