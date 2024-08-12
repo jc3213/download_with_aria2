@@ -111,8 +111,8 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) =
 });
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
-    var inspect = aria2Inspect[tabId];
-    if (!inspect || inspect[url]) {
+    var inspect = aria2Inspect[tabId] ??= {images: []};
+    if (inspect[url]) {
         return;
     }
     if (type === 'image') {

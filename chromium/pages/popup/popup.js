@@ -146,7 +146,7 @@ function taskElementRemove(queue, gid, task) {
 }
 
 function taskElementSync({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    var task = aria2Tasks.total[gid] ?? taskElementCreate(gid, status, bittorrent, files);
+    var task = aria2Tasks.total[gid] ??= taskElementCreate(gid, status, bittorrent, files);
     var time = (totalLength - completedLength) / downloadSpeed;
     var days = time / 86400 | 0;
     var hours = time / 3600 - days * 24 | 0;
@@ -216,9 +216,8 @@ function taskElementCreate(gid, status, bittorrent, files) {
             aria2RPC.call({method: 'aria2.changeOption', params: [gid, task.options]});
         }
     });
-    aria2Tasks.total[gid] = task;
-    files.forEach((file) => taskFileElementCreate(task, gid, task.files, file));
     taskStatusChange(task, gid, status);
+    files.forEach((file) => taskFileElementCreate(task, gid, task.files, file));
     return task;
 }
 
