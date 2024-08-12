@@ -81,6 +81,7 @@ input[type="checkbox"] + label {
     display: grid;
     grid-template-columns: 135px 22px;
     grid-template-rows: 29px;
+    white-space: nowrap;
 }
 
 .rule > * {
