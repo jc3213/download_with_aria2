@@ -34,31 +34,6 @@ var switches = {
     'capture_webrequest': true
 };
 
-options.forEach((entry) => {
-    entries[entry.dataset.eid] = entry;
-});
-
-matches.forEach((match) => {
-    var id = match.dataset.map;
-    var [entry, list] = match.querySelectorAll('input, .list');
-    match.addEventListener('keydown', ({key}) => {
-        if (key === 'Enter') {
-            addMatchRule(list, id, entry);
-        }
-    });
-    match.addEventListener('click', (event) => {
-        switch (event.target.dataset.bid) {
-            case 'add_rule':
-                addMatchRule(list, id, entry);
-                break;
-            case 'remove_rule':
-                removeMatchRule(list, id, event.target.dataset.mid);
-                break;
-        }
-    });
-    records[id] = list;
-});
-
 if (typeof browser !== 'undefined') {
     extension.add('firefox');
     var [folderff, captureen, captureff] = document.querySelectorAll('#folder_firefox, #capture_enabled, #capture_webrequest');
@@ -189,7 +164,7 @@ async function optionsJsonrpc() {
 function optionsExtension() {
     optionEmptyChanges();
     global = true;
-    aria2OptionsSetUp();
+    aria2OptionsSetup();
     extension.remove('jsonrpc');
 }
 
@@ -203,6 +178,26 @@ document.getElementById('files').addEventListener('change', (event) => {
     optionsImport(event.files[0]);
     event.target.value = '';
 });
+
+function optionsImport(file) {
+    optionEmptyChanges();
+    var reader = new FileReader();
+    reader.onload = async (event) => {
+        if (global) {
+            aria2SaveStorage(JSON.parse(reader.result));
+            return aria2OptionsSetup();
+        }
+        var conf = {};
+        reader.result.split('\n').forEach((entry) => {
+            var [key, value] = entry.split('=');
+            conf[key] = value;
+        });
+        chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: conf}});
+        aria2Global = jsonrpc.disposition(conf);
+        updated = {...aria2Global};
+    };
+    reader.readAsText(file);
+}
 
 document.getElementById('options').addEventListener('change', (event) => {
     var id = event.target.dataset.eid;
@@ -231,25 +226,30 @@ function optionsChangeApply(id, new_value) {
     }
 }
 
-function optionsImport(file) {
-    optionEmptyChanges();
-    var reader = new FileReader();
-    reader.onload = async (event) => {
-        if (global) {
-            aria2SaveStorage(JSON.parse(reader.result));
-            return aria2OptionsSetUp();
+options.forEach((entry) => {
+    entries[entry.dataset.eid] = entry;
+});
+
+matches.forEach((match) => {
+    var id = match.dataset.map;
+    var [entry, list] = match.querySelectorAll('input, .list');
+    match.addEventListener('keydown', ({key}) => {
+        if (key === 'Enter') {
+            addMatchRule(list, id, entry);
         }
-        var conf = {};
-        reader.result.split('\n').forEach((entry) => {
-            var [key, value] = entry.split('=');
-            conf[key] = value;
-        });
-        chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: conf}});
-        aria2Global = jsonrpc.disposition(conf);
-        updated = {...aria2Global};
-    };
-    reader.readAsText(file);
-}
+    });
+    match.addEventListener('click', (event) => {
+        switch (event.target.dataset.bid) {
+            case 'add_rule':
+                addMatchRule(list, id, entry);
+                break;
+            case 'remove_rule':
+                removeMatchRule(list, id, event.target.dataset.mid);
+                break;
+        }
+    });
+    records[id] = list;
+});
 
 function addMatchRule(list, id, entry) {
     var old_value = updated[id];
@@ -291,20 +291,14 @@ function createMatchRule(list, value, roll) {
 }
 
 function undoMatchRule({add, remove}) {
-    if (remove) {
-        return remove.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
-    }
-    add.forEach(({rule}) => rule.remove());
+    add ? add.forEach(({rule}) => rule.remove()) : remove.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
 }
 
 function redoMatchRule({add, remove}) {
-    if (remove) {
-        return remove.forEach(({rule}) => rule.remove());
-    }
-    add.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
+    add ? add.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index])) : remove.forEach(({rule}) => rule.remove());
 }
 
-function aria2OptionsSetUp() {
+function aria2OptionsSetup() {
     updated = {...aria2Storage};
     aria2ver.textContent = version;
     options.forEach((entry) => {
@@ -340,5 +334,5 @@ chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc, vers
     aria2Storage = storage;
     aria2Conf = {'enable-rpc': true, ...jsonrpc};
     aria2Version = version;
-    aria2OptionsSetUp();
+    aria2OptionsSetup();
 });
