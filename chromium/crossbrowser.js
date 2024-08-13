@@ -257,7 +257,7 @@ async function aria2WebSocket({method, params}) {
     if (!method) {
         return;
     }
-    var [{gid}] = params;
+    var gid = params[0].gid;
     switch (method) {
         case 'aria2.onDownloadStart':
             if (!aria2Queue[gid]) {

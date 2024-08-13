@@ -6,7 +6,7 @@ var aria2Stats = {};
 var aria2Detail = {};
 var aria2Filter = localStorage['queues']?.match(/[^;]+/g) ?? [];
 var manager = document.body.classList;
-var chooseQueue = document.querySelector('#choose');
+var chooseQueue = document.getElementById('choose');
 document.querySelectorAll('#queue > *').forEach((queue) => aria2Queue[queue.id] = queue);
 document.querySelectorAll('#stats > *').forEach((stat) => aria2Stats[stat.dataset.sid] = stat);
 var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
@@ -14,10 +14,10 @@ var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
 manager.add(...aria2Filter);
 
 chooseQueue.addEventListener('click', (event) => {
-    var {qid} = event.target.dataset;
-    var index = aria2Filter.indexOf(qid);
-    index === -1 ? aria2Filter.push(qid) : aria2Filter.splice(index, 1);
-    manager.toggle(qid);
+    var id = event.target.dataset.qid;
+    var index = aria2Filter.indexOf(id);
+    index === -1 ? aria2Filter.push(id) : aria2Filter.splice(index, 1);
+    manager.toggle(id);
     localStorage['queues'] = aria2Filter.join(';');
 });
 
@@ -28,28 +28,28 @@ document.addEventListener('keydown', (event) => {
                 event.preventDefault();
                 managerPurge();
                 break;
-            case 'd':
-                event.preventDefault();
-                managerDownload();
-                break;
             case 's':
                 event.preventDefault();
                 managerOptions();
+                break;
+            case 'd':
+                event.preventDefault();
+                managerDownload();
                 break;
         }
     }
 });
 
-document.querySelector('#menu').addEventListener('click', (event) => {
-    switch (event.target.id) {
+document.getElementById('menu').addEventListener('click', (event) => {
+    switch (event.target.dataset.bid) {
         case 'purge_btn':
             managerPurge();
             break;
-        case 'download_btn':
-            managerDownload();
-            break;
         case 'options_btn':
             managerOptions();
+            break;
+        case 'download_btn':
+            managerDownload();
             break;
     }
 });
@@ -93,7 +93,7 @@ function aria2WebSocket({method, params}) {
     if (!method) {
         return;
     }
-    var [{gid}] = params;
+    var gid = params[0].gid;
     switch (method) {
         case 'aria2.onBtDownloadComplete':
             break;

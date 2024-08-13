@@ -8,7 +8,7 @@ else {
 }
 
 function aria2Toolbar() {
-    var queue = document.querySelector('#queue');
+    var queue = document.getElementById('queue');
     var left = queue.offsetWidth - choose.offsetWidth;
     var top = queue.offsetHeight - choose.offsetHeight + 58;
     queue.addEventListener('contextmenu', (event) => {

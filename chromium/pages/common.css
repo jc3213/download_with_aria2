@@ -49,10 +49,6 @@ input {
     border-style: inset;
 }
 
-input[type="file"], a {
-    display: none;
-}
-
 input + span {
     display: none;
     position: absolute;
@@ -106,7 +102,7 @@ h4, h4 + div + div {
     filter: contrast(25%);
 }
 
-.template {
+.template, .files {
     display: none;
 }
 

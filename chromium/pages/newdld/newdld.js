@@ -1,6 +1,6 @@
 var aria2Storage = {};
 var aria2Global = {};
-var entry = document.querySelector('#entries');
+var entry = document.getElementById('entries');
 var settings = document.querySelectorAll('[data-rid]');
 
 document.addEventListener('keydown', (event) => {
@@ -36,19 +36,20 @@ function downloadProxy(event) {
 }
 
 document.addEventListener('change', (event) => {
-    var {files, dataset: {rid}, value} = event.target;
-    if (files) {
-        return downloadFiles(files);
+    var id = event.target.dataset.rid;
+    if (id) {
+        aria2Global[id] = value;
     }
-    if (rid) {
-        aria2Global[rid] = value;
-    }
+});
+
+document.getElementById('files').addEventListener('change', (event) => {
+    downloadFiles(event.target.files);
 });
 
 async function downloadFiles(files) {
     var file = await getFileData(files[0]);
-    var files = file.name.endsWith('torrent') ? {torrents: [file]} : {metalinks: [file]};
-    chrome.runtime.sendMessage({action: 'message_download', params: files});
+    var params = file.name.endsWith('torrent') ? {torrents: [file]} : {metalinks: [file]};
+    chrome.runtime.sendMessage({action: 'message_download', params});
     close();
 }
 

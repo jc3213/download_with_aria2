@@ -14,7 +14,7 @@ var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, exporter, aria2ua] = docume
 var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('[data-rid]');
 var matches = document.querySelectorAll('[data-map]');
-var ruleLet = document.querySelector('.template > .rule');
+var ruleLET = document.querySelector('.template > .rule');
 var entries = {};
 var records = {};
 var switches = {
@@ -38,21 +38,21 @@ options.forEach((entry) => {
     entries[entry.dataset.eid] = entry;
 });
 
-matches.forEach(menu => {
-    var id = menu.dataset.map;
-    var [entry, list] = menu.querySelectorAll('input, .list');
-    menu.addEventListener('keydown', ({key}) => {
+matches.forEach((match) => {
+    var id = match.dataset.map;
+    var [entry, list] = match.querySelectorAll('input, .list');
+    match.addEventListener('keydown', ({key}) => {
         if (key === 'Enter') {
-            addRule(list, id, entry);
+            addMatchRule(list, id, entry);
         }
     });
-    menu.addEventListener('click', (event) => {
+    match.addEventListener('click', (event) => {
         switch (event.target.dataset.bid) {
             case 'add_rule':
-                addRule(list, id, entry);
+                addMatchRule(list, id, entry);
                 break;
             case 'remove_rule':
-                removeRule(list, id, event.target.dataset.mid);
+                removeMatchRule(list, id, event.target.dataset.mid);
                 break;
         }
     });
@@ -123,11 +123,12 @@ async function optionsSave() {
 
 function optionsUndo() {
     var undo = undoes.pop();
-    var {id, old_value} = undo;
     redoes.push(undo);
-    redoBtn.disabled = false;
+    var {id, old_value} = undo;
+    updated[id] = changes[id] = old_value;
+    records[id] ? undoMatchRule(undo) : optionsValueUpdate(id, old_value);
+    saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
-    optionSetValue(id, old_value);
     if (undoes.length === 0) {
         undoBtn.disabled = true;
     }
@@ -135,22 +136,18 @@ function optionsUndo() {
 
 function optionsRedo() {
     var redo = redoes.pop();
-    var {id, new_value} = redo;
     undoes.push(redo);
-    undoBtn.disabled = false;
-    optionSetValue(id, new_value);
+    var {id, new_value} = redo;
+    updated[id] = changes[id] = new_value;
+    records[id] ? redoMatchRule(redo) : optionsValueUpdate(id, new_value);
+    saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
     }
 }
 
-function optionSetValue(id, value) {
-    updated[id] = changes[id] = value;
-    saveBtn.disabled = false;
+function optionsValueUpdate(id, value) {
     var entry = entries[id];
-    if (records[id]) {
-        return updateRule(id, value);
-    }
     if (id in switches) {
         entry.checked = value;
         if (switches[id]) {
@@ -202,28 +199,31 @@ function optionEmptyChanges() {
     saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
 }
 
-document.addEventListener('change', ({target}) => {
-    var {dataset: {eid, rid}, value, checked, files} = target;
-    if (eid) {
-        return optionChange(eid, eid in switches ? checked : value);
-    }
-    if (rid) {
-        return optionChange(rid, value);
-    }
-    if (files) {
-        optionsImport(files[0]);
-        target.value = '';
-    }
+document.getElementById('files').addEventListener('change', (event) => {
+    optionsImport(event.files[0]);
+    event.target.value = '';
 });
 
-function optionChange(id, new_value) {
-    var old_value = updated[id];
-    undoes.push({id, old_value, new_value});
-    saveBtn.disabled = undoBtn.disabled = false;
-    updated[id] = changes[id] = new_value;
+document.getElementById('options').addEventListener('change', (event) => {
+    var id = event.target.dataset.eid;
+    optionsAddChange(id, id in switches ? event.target.checked : event.target.value);
+});
+
+document.getElementById('jsonrpc').addEventListener('change', (event) => {
+    optionsAddChange(event.target.dataset.rid, event.target.value);
+});
+
+function optionsAddChange(id, new_value) {
+    undoes.push({id, old_value: updated[id], new_value});
     if (switches[id]) {
         extension.toggle(id);
     }
+    optionsCheckUndone(id, new_value);
+}
+
+function optionsCheckUndone(id, new_value) {
+    updated[id] = changes[id] = new_value;
+    saveBtn.disabled = undoBtn.disabled = false;
     if (undone) {
         redoes = [];
         undone = false;
@@ -251,43 +251,57 @@ function optionsImport(file) {
     reader.readAsText(file);
 }
 
-function addRule(list, id, entry) {
-    var new_value = [...updated[id]];
-    var add_value = entry.value.match(/[^\s;,"'`]+/g);
+function addMatchRule(list, id, entry) {
+    var old_value = updated[id];
+    var new_value = [...old_value];
+    var add = [];
+    entry.value.match(/[^\s;,"'`]+/g)?.forEach((value) => {
+        if (value && !new_value.includes(value)) {
+            var rule = createMatchRule(list, value, true);
+            add.push({list, value, index: new_value.length, rule});
+            new_value.push(value);
+        }
+    });
     entry.value = '';
-    if (add_value) {
-        add_value.forEach((value) => {
-            if (value && !new_value.includes(value)) {
-                new_value.push(value);
-                printRule(list, value, true);
-            }
-        });
-        optionChange(id, new_value);
-    }
+    undoes.push({id, old_value, new_value, add});
+    optionsCheckUndone(id, new_value);
 }
 
-function removeRule(list, id, rule) {
-    var new_value = [...updated[id]];
-    new_value.splice(new_value.indexOf(rule), 1);
-    optionChange(id, new_value);
-    list[rule].remove();
+function removeMatchRule(list, id, value) {
+    var old_value = updated[id]
+    var new_value = [...old_value];
+    var index = new_value.indexOf(value);
+    var rule = list[value];
+    new_value.splice(index, 1);
+    rule.remove();
+    undoes.push({id, old_value, new_value, remove: [{list, value, index, rule}]});
+    optionsCheckUndone(id, new_value);
 }
 
-function printRule(list, rule, roll) {
-    var item = ruleLet.cloneNode(true);
-    var [div, btn] = item.querySelectorAll('div, button');
-    item.title = div.textContent = btn.dataset.mid = rule;
-    list[rule] = item;
-    list.append(item);
+function createMatchRule(list, value, roll) {
+    var rule = ruleLET.cloneNode(true);
+    var [div, btn] = rule.querySelectorAll('div, button');
+    rule.title = div.textContent = btn.dataset.mid = value;
+    list[value] = rule;
+    list.append(rule);
     if (roll) {
         list.scrollTop = list.scrollHeight;
     }
+    return rule;
 }
 
-function updateRule(id, rules) {
-    var list = records[id];
-    list.innerHTML = '';
-    rules.forEach((rule) => printRule(list, rule));
+function undoMatchRule({add, remove}) {
+    if (remove) {
+        return remove.forEach(({list, value, index, rule}) => list.insertBefore(rule, list.children[index]));
+    }
+    add.forEach(({list, value, index, rule}) => rule.remove());
+}
+
+function redoMatchRule({add, remove}) {
+    if (remove) {
+        return remove.forEach(({list, value, index, rule}) => rule.remove());
+    }
+    add.forEach(({list, value, index, rule}) => list.insertBefore(rule, list.children[index]));
 }
 
 function aria2OptionsSetUp() {
@@ -307,7 +321,9 @@ function aria2OptionsSetUp() {
     });
     matches.forEach((menu) => {
         var id = menu.dataset.map;
-        updateRule(id, updated[id]);
+        var list = records[id];
+        list.innerHTML = '';
+        updated[id].forEach((rule) => createMatchRule(list, rule));
     });
 }
 
