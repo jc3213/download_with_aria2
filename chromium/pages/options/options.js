@@ -206,22 +206,22 @@ document.getElementById('files').addEventListener('change', (event) => {
 
 document.getElementById('options').addEventListener('change', (event) => {
     var id = event.target.dataset.eid;
-    optionsAddChange(id, id in switches ? event.target.checked : event.target.value);
+    optionsChanges(id, id in switches ? event.target.checked : event.target.value);
 });
 
 document.getElementById('jsonrpc').addEventListener('change', (event) => {
-    optionsAddChange(event.target.dataset.rid, event.target.value);
+    optionsChanges(event.target.dataset.rid, event.target.value);
 });
 
-function optionsAddChange(id, new_value) {
+function optionsChanges(id, new_value) {
     undoes.push({id, old_value: updated[id], new_value});
     if (switches[id]) {
         extension.toggle(id);
     }
-    optionsCheckUndone(id, new_value);
+    optionsChangeApply(id, new_value);
 }
 
-function optionsCheckUndone(id, new_value) {
+function optionsChangeApply(id, new_value) {
     updated[id] = changes[id] = new_value;
     saveBtn.disabled = undoBtn.disabled = false;
     if (undone) {
@@ -258,13 +258,13 @@ function addMatchRule(list, id, entry) {
     entry.value.match(/[^\s;,"'`]+/g)?.forEach((value) => {
         if (value && !new_value.includes(value)) {
             var rule = createMatchRule(list, value, true);
-            add.push({list, value, index: new_value.length, rule});
+            add.push({list, index: new_value.length, rule});
             new_value.push(value);
         }
     });
     entry.value = '';
     undoes.push({id, old_value, new_value, add});
-    optionsCheckUndone(id, new_value);
+    optionsChangeApply(id, new_value);
 }
 
 function removeMatchRule(list, id, value) {
@@ -274,8 +274,8 @@ function removeMatchRule(list, id, value) {
     var rule = list[value];
     new_value.splice(index, 1);
     rule.remove();
-    undoes.push({id, old_value, new_value, remove: [{list, value, index, rule}]});
-    optionsCheckUndone(id, new_value);
+    undoes.push({id, old_value, new_value, remove: [{list, index, rule}]});
+    optionsChangeApply(id, new_value);
 }
 
 function createMatchRule(list, value, roll) {
@@ -292,16 +292,16 @@ function createMatchRule(list, value, roll) {
 
 function undoMatchRule({add, remove}) {
     if (remove) {
-        return remove.forEach(({list, value, index, rule}) => list.insertBefore(rule, list.children[index]));
+        return remove.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
     }
-    add.forEach(({list, value, index, rule}) => rule.remove());
+    add.forEach(({rule}) => rule.remove());
 }
 
 function redoMatchRule({add, remove}) {
     if (remove) {
-        return remove.forEach(({list, value, index, rule}) => rule.remove());
+        return remove.forEach(({rule}) => rule.remove());
     }
-    add.forEach(({list, value, index, rule}) => list.insertBefore(rule, list.children[index]));
+    add.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
 }
 
 function aria2OptionsSetUp() {
