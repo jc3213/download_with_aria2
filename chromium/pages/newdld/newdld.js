@@ -47,7 +47,7 @@ document.getElementById('menu').addEventListener('change', async (event) => {
     var params = file.name.endsWith('torrent') ? {torrents: [file]} : {metalinks: [file]};
     chrome.runtime.sendMessage({action: 'message_download', params});
     close();
-}};
+});
 
 function getFileData(file) {
     return new Promise((resolve) => {
