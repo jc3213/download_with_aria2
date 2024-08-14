@@ -58,7 +58,7 @@ async function imagesSubmit() {
     var urls = [];
     aria2Images.forEach(({src, alt, header, classList}) => {
         if (classList.contains('checked')) {
-            var options = {'out': alt, header, ...aria2Global};
+            var options = {out: alt, header, ...aria2Global};
             urls.push({url: src, options});
         }
     });
@@ -87,19 +87,18 @@ function selectFlip() {
 }
 
 document.addEventListener('change', (event) => {
-    var {dataset: {rid}, value} = event.target;
-    aria2Global[rid] = value;
+    aria2Global[event.target.dataset.rid] = event.target.value;
 });
 
-gallery.addEventListener('click', ({target}) => {
-    if (target.tagName === 'IMG') {
-        target.classList.toggle('checked');
+gallery.addEventListener('click', (event) => {
+    if (event.target.tagName === 'IMG') {
+        event.target.classList.toggle('checked');
     }
 });
 
-gallery.addEventListener('mouseenter', ({target}) => {
-    if (target.tagName === 'IMG') {
-        preview.src = target.src;
+gallery.addEventListener('mouseenter', (event) => {
+    if (event.target.tagName === 'IMG') {
+        preview.src = event.target.src;
     }
 }, true);
 

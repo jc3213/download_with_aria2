@@ -43,22 +43,17 @@ document.addEventListener('change', (event) => {
 });
 
 document.getElementById('menu').addEventListener('change', async (event) => {
-    var file = await getFileData(event.target.files[0]);
-    var params = file.name.endsWith('torrent') ? {torrents: [file]} : {metalinks: [file]};
-    chrome.runtime.sendMessage({action: 'message_download', params});
-    close();
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.onload = (event) => {
+        var body = reader.result.slice(reader.result.indexOf(',') + 1);
+        var data = {name: file.name, body, options: aria2Global};
+        var params = file.name.endsWith('torrent') ? {torrents: [data]} : {metalinks: [data]};
+        chrome.runtime.sendMessage({action: 'message_download', params});
+        close();
+    };
+    reader.readAsDataURL(file);
 });
-
-function getFileData(file) {
-    return new Promise((resolve) => {
-        var reader = new FileReader();
-        reader.onload = (event) => {
-            var body = reader.result.slice(reader.result.indexOf(',') + 1);
-            resolve({name: file.name, body, options: aria2Global});
-        };
-        reader.readAsDataURL(file);
-    });
-}
 
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc}) => {
     chrome.tabs.query({active: true, currentWindow: false}, (tabs) => {

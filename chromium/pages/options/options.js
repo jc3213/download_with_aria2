@@ -175,14 +175,8 @@ function optionEmptyChanges() {
 }
 
 document.getElementById('menu').addEventListener('change', (event) => {
-    optionsImport(event.files[0]);
-    event.target.value = '';
-});
-
-function optionsImport(file) {
-    optionEmptyChanges();
     var reader = new FileReader();
-    reader.onload = async (event) => {
+    reader.onload = (event) => {
         if (global) {
             aria2SaveStorage(JSON.parse(reader.result));
             return aria2OptionsSetup();
@@ -196,8 +190,10 @@ function optionsImport(file) {
         aria2Global = jsonrpc.disposition(conf);
         updated = {...aria2Global};
     };
-    reader.readAsText(file);
-}
+    reader.readAsText(event.target.files[0]);
+    optionEmptyChanges();
+    event.target.value = '';
+});
 
 document.getElementById('options').addEventListener('change', (event) => {
     var id = event.target.dataset.eid;
