@@ -42,16 +42,12 @@ document.addEventListener('change', (event) => {
     }
 });
 
-document.getElementById('files').addEventListener('change', (event) => {
-    downloadFiles(event.target.files);
-});
-
-async function downloadFiles(files) {
-    var file = await getFileData(files[0]);
+document.getElementById('menu').addEventListener('change', async (event) => {
+    var file = await getFileData(event.target.files[0]);
     var params = file.name.endsWith('torrent') ? {torrents: [file]} : {metalinks: [file]};
     chrome.runtime.sendMessage({action: 'message_download', params});
     close();
-}
+}};
 
 function getFileData(file) {
     return new Promise((resolve) => {

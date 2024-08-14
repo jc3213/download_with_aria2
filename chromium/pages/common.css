@@ -56,13 +56,17 @@ input + span {
     right: 8px;
 }
 
-input[type="number"] + span {
-    right: 24px;
-}
-
 input:focus + span {
     font-size: 17px;
     display: block;
+}
+
+input[type="file"], a {
+    display: none;
+}
+
+input[type="number"] + span {
+    right: 24px;
 }
 
 select:only-child {
@@ -102,7 +106,7 @@ h4, h4 + div + div {
     filter: contrast(25%);
 }
 
-.template, .files {
+.template {
     display: none;
 }
 

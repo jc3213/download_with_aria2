@@ -10,7 +10,7 @@ var redoes = [];
 var global = true;
 var extension = document.body.classList;
 var {version, manifest_version} = chrome.runtime.getManifest();
-var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, exporter, aria2ua] = document.querySelectorAll('#menu > :nth-child(-n+6), #aria2ua');
+var [saveBtn, undoBtn, redoBtn, aria2ver, exporter, aria2ua] = document.querySelectorAll('#menu > :nth-child(-n+4), a, #aria2ua');
 var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('[data-rid]');
 var matches = document.querySelectorAll('[data-map]');
@@ -174,7 +174,7 @@ function optionEmptyChanges() {
     saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
 }
 
-document.getElementById('files').addEventListener('change', (event) => {
+document.getElementById('menu').addEventListener('change', (event) => {
     optionsImport(event.files[0]);
     event.target.value = '';
 });
@@ -201,7 +201,9 @@ function optionsImport(file) {
 
 document.getElementById('options').addEventListener('change', (event) => {
     var id = event.target.dataset.eid;
-    optionsChanges(id, id in switches ? event.target.checked : event.target.value);
+    if (id) {
+        optionsChanges(id, id in switches ? event.target.checked : event.target.value);
+    }
 });
 
 document.getElementById('jsonrpc').addEventListener('change', (event) => {
