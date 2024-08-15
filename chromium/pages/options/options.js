@@ -15,8 +15,14 @@ var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('[data-rid]');
 var matches = document.querySelectorAll('[data-map]');
 var ruleLET = document.querySelector('.template > .rule');
-var entries = {};
-var records = {};
+var records = {
+    'capture_exclude': true,
+    'capture_include': true,
+    'capture_type_exclude': true,
+    'capture_type_include': true,
+    'headers_exclude': true,
+    'proxy_include': true
+};
 var switches = {
     'context_enabled': true,
     'context_cascade': false,
@@ -101,7 +107,7 @@ function optionsUndo() {
     redoes.push(undo);
     var {id, old_value} = undo;
     updated[id] = changes[id] = old_value;
-    records[id] ? undoMatchRule(undo) : optionsValueUpdate(id, old_value);
+    records[id] ? undoMatchRule(undo) : id in switches ? optionsCheckbox(undo.entry, id, old_value) : optionsEntryValue(undo.entry, old_value);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
     if (undoes.length === 0) {
@@ -114,22 +120,21 @@ function optionsRedo() {
     undoes.push(redo);
     var {id, new_value} = redo;
     updated[id] = changes[id] = new_value;
-    records[id] ? redoMatchRule(redo) : optionsValueUpdate(id, new_value);
+    records[id] ? redoMatchRule(redo) : id in switches ? optionsCheckbox(redo.entry, id, new_value) :optionsEntryValue(redo.entry, new_value);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
     }
 }
 
-function optionsValueUpdate(id, value) {
-    var entry = entries[id];
-    if (id in switches) {
-        entry.checked = value;
-        if (switches[id]) {
-            extension.toggle(id);
-        }
-        return;
+function optionsCheckbox(entry, id, value, startup) {
+    entry.checked = value;
+    if (switches[id]) {
+        startup ? value ? extension.add(id) : extension.remove(id) : extension.toggle(id);
     }
+}
+
+function optionsEntryValue(entry, value) {
     entry.value = value;
 }
 
@@ -198,16 +203,16 @@ document.getElementById('menu').addEventListener('change', (event) => {
 document.getElementById('options').addEventListener('change', (event) => {
     var id = event.target.dataset.eid;
     if (id) {
-        optionsChanges(id, id in switches ? event.target.checked : event.target.value);
+        optionsChanges(event.target, id, id in switches ? event.target.checked : event.target.value);
     }
 });
 
 document.getElementById('jsonrpc').addEventListener('change', (event) => {
-    optionsChanges(event.target.dataset.rid, event.target.value);
+    optionsChanges(event.target, event.target.dataset.rid, event.target.value);
 });
 
-function optionsChanges(id, new_value) {
-    undoes.push({id, old_value: updated[id], new_value});
+function optionsChanges(entry, id, new_value) {
+    undoes.push({entry, id, new_value, old_value: updated[id]});
     if (switches[id]) {
         extension.toggle(id);
     }
@@ -224,13 +229,10 @@ function optionsChangeApply(id, new_value) {
     }
 }
 
-options.forEach((entry) => {
-    entries[entry.dataset.eid] = entry;
-});
-
 matches.forEach((match) => {
     var id = match.dataset.map;
     var [entry, list] = match.querySelectorAll('input, .list');
+    match.list = list;
     match.addEventListener('keydown', ({key}) => {
         if (key === 'Enter') {
             addMatchRule(list, id, entry);
@@ -246,7 +248,6 @@ matches.forEach((match) => {
                 break;
         }
     });
-    records[id] = list;
 });
 
 function addMatchRule(list, id, entry) {
@@ -255,13 +256,14 @@ function addMatchRule(list, id, entry) {
     var add = [];
     entry.value.match(/[^\s;,"'`]+/g)?.forEach((value) => {
         if (value && !new_value.includes(value)) {
-            var rule = createMatchRule(list, value, true);
+            var rule = createMatchRule(list, value);
             add.push({list, index: new_value.length, rule});
             new_value.push(value);
+            list.scrollTop = list.scrollHeight;
         }
     });
     entry.value = '';
-    undoes.push({id, old_value, new_value, add});
+    undoes.push({add, id, new_value, old_value});
     optionsChangeApply(id, new_value);
 }
 
@@ -272,19 +274,16 @@ function removeMatchRule(list, id, value) {
     var rule = list[value];
     new_value.splice(index, 1);
     rule.remove();
-    undoes.push({id, old_value, new_value, remove: [{list, index, rule}]});
+    undoes.push({id, new_value, old_value, remove: [{list, index, rule}]});
     optionsChangeApply(id, new_value);
 }
 
-function createMatchRule(list, value, roll) {
+function createMatchRule(list, value) {
     var rule = ruleLET.cloneNode(true);
     var [div, btn] = rule.querySelectorAll('div, button');
     rule.title = div.textContent = btn.dataset.mid = value;
     list[value] = rule;
     list.append(rule);
-    if (roll) {
-        list.scrollTop = list.scrollHeight;
-    }
     return rule;
 }
 
@@ -300,22 +299,15 @@ function aria2OptionsSetup() {
     updated = {...aria2Storage};
     aria2ver.textContent = version;
     options.forEach((entry) => {
-        var eid = entry.dataset.eid;
-        var value = updated[eid];
-        if (eid in switches) {
-            entry.checked = value;
-            if (switches[eid]) {
-                value ? extension.add(eid) : extension.remove(eid);
-            }
-            return;
-        }
-        entry.value = value;
+        var id = entry.dataset.eid;
+        var value = updated[id];
+        id in switches ? optionsCheckbox(entry, id, value, true) : optionsEntryValue(entry, value);
     });
-    matches.forEach((menu) => {
-        var id = menu.dataset.map;
-        var list = records[id];
+    matches.forEach((match) => {
+        var id = match.dataset.map;
+        var list = match.list;
         list.innerHTML = '';
-        updated[id].forEach((rule) => createMatchRule(list, rule));
+        updated[id].forEach((value) => createMatchRule(list, value));
     });
 }
 
