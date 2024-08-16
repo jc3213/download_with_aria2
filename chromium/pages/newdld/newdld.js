@@ -38,7 +38,7 @@ function downloadProxy(event) {
 document.addEventListener('change', (event) => {
     var id = event.target.dataset.rid;
     if (id) {
-        aria2Global[id] = value;
+        aria2Global[id] = event.target.value;
     }
 });
 
