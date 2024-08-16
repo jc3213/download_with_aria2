@@ -105,9 +105,9 @@ async function optionsSave() {
 function optionsUndo() {
     var undo = undoes.pop();
     redoes.push(undo);
-    var {id, old_value} = undo;
+    var {add, entry, id, old_value, remove} = undo;
     updated[id] = changes[id] = old_value;
-    records[id] ? undoMatchRule(undo) : id in switches ? optionsCheckbox(undo.entry, id, old_value) : optionsEntryValue(undo.entry, old_value);
+    records[id] ? undoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, old_value) : optionsEntryValue(entry, old_value);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
     if (undoes.length === 0) {
@@ -118,9 +118,9 @@ function optionsUndo() {
 function optionsRedo() {
     var redo = redoes.pop();
     undoes.push(redo);
-    var {id, new_value} = redo;
+    var {add, entry, id, new_value, remove} = redo;
     updated[id] = changes[id] = new_value;
-    records[id] ? redoMatchRule(redo) : id in switches ? optionsCheckbox(redo.entry, id, new_value) :optionsEntryValue(redo.entry, new_value);
+    records[id] ? redoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, new_value) :optionsEntryValue(entry, new_value);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
@@ -287,11 +287,11 @@ function createMatchRule(list, value) {
     return rule;
 }
 
-function undoMatchRule({add, remove}) {
+function undoMatchRule(add, remove) {
     add ? add.forEach(({rule}) => rule.remove()) : remove.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
 }
 
-function redoMatchRule({add, remove}) {
+function redoMatchRule(add, remove) {
     add ? add.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index])) : remove.forEach(({rule}) => rule.remove());
 }
 
