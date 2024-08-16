@@ -111,7 +111,7 @@ chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc
     aria2Storage = storage;
     jsonrpc['user-agent'] = aria2Storage['headers_useragent'];
     aria2Global = document.querySelectorAll('#options input').disposition(jsonrpc);
-    aria2Manifest === 2 ? aria2ManifestV2(params) : aria2ManifestV3(params.images);
+    aria2Manifest === 2 ? aria2HeadersMV2(params) : aria2HeadersMV3(params);
     gallery.append(...aria2Images);
 });
 
@@ -122,7 +122,7 @@ function getImagePreview(url, headers) {
     aria2Images.push(img);
 }
 
-function aria2ManifestV2({images, filter}) {
+function aria2HeadersMV2({images, filter}) {
     var rules = {};
     images.forEach(({url, headers}) => {
         getImagePreview(url, headers);
@@ -133,7 +133,7 @@ function aria2ManifestV2({images, filter}) {
     }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['blocking', ...filter]);
 }
 
-function aria2ManifestV3(images) {
+function aria2HeadersMV3({images}) {
     var addRules = [];
     images.forEach(({url, headers}, index) => {
         getImagePreview(url, headers);
