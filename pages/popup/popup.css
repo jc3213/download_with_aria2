@@ -1,0 +1,70 @@
+body {
+    margin: 8px;
+    min-width: 232px;
+}
+
+select {
+    width: 100%;
+}
+
+input[type="checkbox"] {
+    width: auto;
+    transform: scale(1.5);
+    accent-color: #006cbe;
+}
+
+label {
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+button {
+    width: 100%;
+}
+
+#output:empty + hr {
+    display: none;
+}
+
+#expand, #menu {
+    display: grid;
+    grid-gap: 5px;
+}
+
+#expand {
+    grid-template-columns: 1fr 29px;
+}
+
+#menu {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+body:not(.expand) .hostname, .expand .wildcard {
+    display: none;
+}
+
+.hibernate > #expand > *, .hibernate > #menu > :nth-child(-n+2) {
+    pointer-events: none;
+    filter: contrast(25%);
+}
+
+.expand > #expand > button {
+    border-style: inset;
+}
+
+.host {
+    padding: 3px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 5px;
+}
+
+.match {
+    color: #e76b4a;
+    display: grid !important;
+}
+
+.tempo {
+    color: #7ac2fc;
+    display: grid !important;
+}
