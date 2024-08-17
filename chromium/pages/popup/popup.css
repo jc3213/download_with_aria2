@@ -36,7 +36,9 @@ body {
     filter: contrast(45%);
 }
 
-#choose::before, #choose > *, #choose > ::before {
+#choose::before,
+#choose > *,
+#choose > ::before {
     padding: 5px;
 }
 
@@ -58,13 +60,15 @@ body {
     overflow-y: auto;
 }
 
-#queue > :nth-child(n+4) input, #queue > :nth-child(n+4) select,
+#queue > :nth-child(n+4) input,
+#queue > :nth-child(n+4) select,
 .session.http [name="max-upload-limit"] {
     pointer-events: none;
     filter: contrast(25%);
 }
 
-.session.http label, .session[data-done="true"] label {
+.session.http label,
+.session[data-done="true"] label {
     pointer-events: none;
 }
 
@@ -85,7 +89,9 @@ body {
     background-color: #4a4a4a;
 }
 
-#queue .meter > .ratio, .file > :checked + label, .uri > .used {
+#queue .meter > .ratio,
+.file > :checked + label,
+.uri > .used {
     background-color: #0e4d7b;
     color: #ffffff;
 }
@@ -135,7 +141,10 @@ body {
     display: none;
 }
 
-.day::after, .hour::after, .minute::after, .second::after {
+.day::after,
+.hour::after,
+.minute::after,
+.second::after {
     vertical-align: sub;
 }
 
@@ -198,20 +207,6 @@ body {
     padding: 4px;
 }
 
-.file > *, .uri > * {
-    border-width: 1px;
-    border-style: solid;
-    height: 21px;
-    padding: 3px;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.file > :not(:nth-child(3)), .uri > :nth-child(n+2) {
-    text-align: center;
-    padding: 3px 0px;
-}
-
 .file {
     display: grid;
     grid-template-columns: 0px 40px auto 80px 60px;
@@ -220,6 +215,22 @@ body {
 .uri {
     display: grid;
     grid-template-columns: auto 40px 40px;
+}
+
+.file > *,
+.uri > * {
+    border-width: 1px;
+    border-style: solid;
+    height: 21px;
+    padding: 3px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.file > :not(:nth-child(3)),
+.uri > :nth-child(n+2) {
+    text-align: center;
+    padding: 3px 0px;
 }
 
 .session:not(.extra) > .options {
