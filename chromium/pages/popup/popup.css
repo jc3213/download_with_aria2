@@ -125,11 +125,14 @@ body {
     filter: contrast(45%);
 }
 
-.download::after, .upload::after {
+.download::after,
+.upload::after {
     content: "B/s";
 }
 
-.total::after, .completed::after, .size::after {
+.total::after,
+.completed::after,
+.size::after {
     content: "B";
 }
 
