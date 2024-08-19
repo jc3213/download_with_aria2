@@ -56,7 +56,6 @@ document.getElementById('uploader').addEventListener('change', async (event) => 
             var {name} = file;
             var type = name.slice(name.lastIndexOf('.') + 1);
             var body = reader.result.slice(reader.result.indexOf(',') + 1);
-            console.log(type, aria2Upload[type]);
             var data = aria2Upload[type].push({name: file.name, body, options: aria2Global});
             resolve(data);
         };
