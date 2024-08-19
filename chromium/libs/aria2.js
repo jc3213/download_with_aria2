@@ -8,7 +8,6 @@ class Aria2 {
     }
     version = '0.7.0';
     jsonrpc = { trial: 0, retry: 5, timeout: 10000 };
-    events = {};
     set scheme (scheme) {
         this.call = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send }[ scheme ];
         if (!this.call) { throw new Error('Invalid JSON-RPC scheme: "' + scheme + '" is not supported!'); }
