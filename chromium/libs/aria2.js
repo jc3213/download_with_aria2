@@ -71,13 +71,13 @@ class Aria2 {
         this.jsonrpc.onmessage = typeof callback === 'function' ? callback : null;
     }
     get onmessage () {
-        return typeof this.jsonrpc.onmessage === 'function' ? this.jsonrpc.onmessage : null;
+        return this.jsonrpc.onmessage;
     }
     set onclose (callback) {
         this.jsonrpc.onclose = typeof callback === 'function' ? callback : null;
     }
     get onclose () {
-        return typeof this.jsonrpc.onclose === 'function' ? this.jsonrpc.onclose : null;
+        return this.jsonrpc.onclose;
     }
     send (...args) {
         return this.socket.then((ws) => new Promise((resolve, reject) => {
