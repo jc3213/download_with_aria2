@@ -68,16 +68,16 @@ class Aria2 {
         this.socket?.then( (ws) => ws.close() );
     }
     set onmessage (callback) {
-        this.jsonrpc.onmessage = typeof callback === 'function' ? callback : null;
+        this.jsonrpc.onmessage = callback;
     }
     get onmessage () {
-        return this.jsonrpc.onmessage;
+        return typeof this.jsonrpc.onmessage === 'function' ? this.jsonrpc.onmessage : null;
     }
     set onclose (callback) {
-        this.jsonrpc.onclose = typeof callback === 'function' ? callback : null;
+        this.jsonrpc.onclose = callback;
     }
     get onclose () {
-        return this.jsonrpc.onclose;
+        return typeof this.jsonrpc.onclose === 'function' ? this.jsonrpc.onclose : null;
     }
     send (...args) {
         return this.socket.then((ws) => new Promise((resolve, reject) => {
