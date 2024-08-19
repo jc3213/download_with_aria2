@@ -1,5 +1,12 @@
 var aria2Storage = {};
 var aria2Global = {};
+var torrents = [];
+var metalinks = [];
+var aria2Upload = {
+    torrent: [],
+    metalink: [],
+    meta4: []
+};
 var entry = document.getElementById('entries');
 var settings = document.querySelectorAll('[data-rid]');
 
@@ -42,17 +49,22 @@ document.addEventListener('change', (event) => {
     }
 });
 
-document.getElementById('menu').addEventListener('change', async (event) => {
-    var file = event.target.files[0];
-    var reader = new FileReader();
-    reader.onload = (event) => {
-        var body = reader.result.slice(reader.result.indexOf(',') + 1);
-        var data = {name: file.name, body, options: aria2Global};
-        var params = file.name.endsWith('torrent') ? {torrents: [data]} : {metalinks: [data]};
-        chrome.runtime.sendMessage({action: 'message_download', params});
-        close();
-    };
-    reader.readAsDataURL(file);
+document.getElementById('uploader').addEventListener('change', async (event) => {
+    await Promise.all([...event.target.files].map((file) => new Promise((resolve) => {
+        var reader = new FileReader();
+        reader.onload = (event) => {
+            var {name} = file;
+            var type = name.slice(name.lastIndexOf('.') + 1);
+            var body = reader.result.slice(reader.result.indexOf(',') + 1);
+            console.log(type, aria2Upload[type]);
+            var data = aria2Upload[type].push({name: file.name, body, options: aria2Global});
+            resolve(data);
+        };
+        reader.readAsDataURL(file);
+    })));
+    var params = {torrents: aria2Upload.torrent, metalinks: [...aria2Upload.metalink, ...aria2Upload.meta4]};
+    chrome.runtime.sendMessage({action: 'message_download', params});
+    close();
 });
 
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc}) => {
