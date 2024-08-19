@@ -7,7 +7,7 @@ class Aria2 {
         this.secret = path[3];
     }
     version = '0.7.0';
-    jsonrpc = { trial: 0, retry: 5, timeout: 10000 };
+    jsonrpc = { trial: 0, retry: 10, timeout: 10000 };
     set scheme (scheme) {
         this.call = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send }[ scheme ];
         if (!this.call) { throw new Error('Invalid JSON-RPC scheme: "' + scheme + '" is not supported!'); }
@@ -36,14 +36,14 @@ class Aria2 {
         return this.jsonrpc.secret;
     }
     set retry (number) {
-        this.jsonrpc.retry = number === 0 ? Infinity : number;
         this.jsonrpc.trial = 0;
+        this.jsonrpc.retry = isNaN(number) || number <= 0 ? Infinity : number;
     }
     get retry () {
-        return this.jsonrpc.retry === Infinity ? 0 : this.jsonrpc.retry;
+        return this.jsonrpc.retry | 0;
     }
     set timeout (number) {
-        this.jsonrpc.timeout = number * 1000;
+        this.jsonrpc.timeout = isNaN(number) ? 10000 : number <= 3 ? 3000 : number * 1000;
     }
     get timeout () {
         return this.jsonrpc.timeout / 1000;
