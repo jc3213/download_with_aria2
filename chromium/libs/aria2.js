@@ -5,11 +5,10 @@ class Aria2 {
         this.scheme = path[1];
         this.url = path[2];
         this.secret = path[3];
-        this.retry = this.timeout = 10;
-        this.onmessage = this.onclose = null;
     }
     version = '0.7.0';
-    jsonrpc = {};
+    jsonrpc = { trial: 0, retry: 5, timeout: 10000 };
+    events = {};
     set scheme (scheme) {
         this.call = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send }[ scheme ];
         if (!this.call) { throw new Error('Invalid JSON-RPC scheme: "' + scheme + '" is not supported!'); }
@@ -45,11 +44,10 @@ class Aria2 {
         return this.jsonrpc.retry === Infinity ? 0 : this.jsonrpc.retry;
     }
     set timeout (number) {
-        this.jsonrpc.time = number;
         this.jsonrpc.timeout = number * 1000;
     }
     get timeout () {
-        return this.jsonrpc.time;
+        return this.jsonrpc.timeout / 1000;
     }
     connect () {
         this.socket = new Promise((resolve, reject) => {
@@ -57,12 +55,13 @@ class Aria2 {
             ws.onopen = (event) => resolve(ws);
             ws.onmessage = (event) => {
                 let response = JSON.parse(event.data);
-                response.method ? this.jsonrpc.onmessage(response) : ws.resolve(response);
+                if (!response.method) { ws.resolve(response); }
+                else if (typeof this.jsonrpc.onmessage === 'function') { this.jsonrpc.onmessage(response); }
             };
             ws.onclose = (event) => {
                 if (!event.wasClean && this.jsonrpc.trial < this.jsonrpc.retry) { setTimeout(() => this.connect(), this.jsonrpc.timeout); }
+                if (typeof this.jsonrpc.onclose === 'function') { this.jsonrpc.onclose(event); }
                 this.jsonrpc.trial ++;
-                this.jsonrpc.onclose(event);
             };
         });
     }
@@ -70,18 +69,16 @@ class Aria2 {
         this.socket?.then( (ws) => ws.close() );
     }
     set onmessage (callback) {
-        this.jsonrpc.atmessage = typeof callback === 'function';
-        this.jsonrpc.onmessage = this.jsonrpc.atmessage ? callback : () => null;
+        this.jsonrpc.onmessage = typeof callback === 'function' ? callback : null;
     }
     get onmessage () {
-        return this.jsonrpc.atmessage ? this.jsonrpc.onmessage : null;
+        return this.jsonrpc.onmessage;
     }
     set onclose (callback) {
-        this.jsonrpc.atclose = typeof callback === 'function';
-        this.jsonrpc.onclose = this.jsonrpc.atclose ? callback : () => null;
+        this.jsonrpc.onclose = typeof callback === 'function' ? callback : null;
     }
     get onclose () {
-        return this.jsonrpc.atclose ? this.jsonrpc.onclose : null;
+        return this.jsonrpc.onclose;
     }
     send (...args) {
         return this.socket.then((ws) => new Promise((resolve, reject) => {
