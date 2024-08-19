@@ -24,6 +24,8 @@ class Aria2 {
         this.jsonrpc.url = url;
         this.jsonrpc.path = this.jsonrpc.scheme + '://' + url;
         this.jsonrpc.ws = this.jsonrpc.path.replace('http', 'ws');
+        this.disconnect();
+        this.connect();
     }
     get url () {
         return this.jsonrpc.url;
@@ -59,25 +61,27 @@ class Aria2 {
             };
             ws.onclose = (event) => {
                 if (!event.wasClean && this.jsonrpc.trial < this.jsonrpc.retry) { setTimeout(() => this.connect(), this.jsonrpc.timeout); }
-                this.jsonrpc.onclose(event);
                 this.jsonrpc.trial ++;
+                this.jsonrpc.onclose(event);
             };
         });
     }
     disconnect () {
-        return this.socket?.then( (ws) => ws.close() );
+        this.socket?.then( (ws) => ws.close() );
     }
     set onmessage (callback) {
-        this.jsonrpc.onmessage = typeof callback === 'function' ? callback : () => null;
+        this.jsonrpc.atmessage = typeof callback === 'function';
+        this.jsonrpc.onmessage = this.jsonrpc.atmessage ? callback : () => null;
     }
     get onmessage () {
-        return this.jsonrpc.onmessage.toString() === '() => null' ? null : this.jsonrpc.onmessage;
+        return this.jsonrpc.atmessage ? this.jsonrpc.onmessage : null;
     }
     set onclose (callback) {
-        this.jsonrpc.onclose = typeof callback === 'function' ? callback : () => null;
+        this.jsonrpc.atclose = typeof callback === 'function';
+        this.jsonrpc.onclose = this.jsonrpc.atclose ? callback : () => null;
     }
     get onclose () {
-        return this.jsonrpc.onclose.toString() === '() => null' ? null : this.jsonrpc.onclose;
+        return this.jsonrpc.atclose ? this.jsonrpc.onclose : null;
     }
     send (...args) {
         return this.socket.then((ws) => new Promise((resolve, reject) => {
