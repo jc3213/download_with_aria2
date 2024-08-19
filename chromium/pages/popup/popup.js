@@ -64,6 +64,8 @@ async function managerPurge() {
 
 function aria2ClientSetup() {
     aria2RPC = new Aria2(aria2Scheme, aria2Url, aria2Secret);
+    aria2RPC.retry = 0;
+    aria2RPC.connect();
     aria2RPC.onmessage = aria2WebSocket;
     aria2RPC.onclose = aria2ClientWorker;
     return aria2ClientWorker();

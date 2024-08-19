@@ -204,6 +204,8 @@ function aria2OptionsChanged({storage, changes}) {
     }
     if (changes['jsonrpc_url']) {
         aria2RPC.url = aria2Storage['jsonrpc_url'];
+        aria2RPC.disconnect();
+        aria2RPC.connect();
     }
     chrome.storage.sync.set(aria2Storage);
 }
@@ -248,6 +250,8 @@ function aria2UpdateStorage(json) {
 chrome.storage.sync.get(null, (json) => {
     aria2UpdateStorage({...aria2Default, ...json});
     aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
+    aria2RPC.retry = 0;
+    aria2RPC.connect();
     aria2RPC.onmessage = aria2WebSocket;
     aria2RPC.onclose = aria2ClientWorker;
     aria2ClientWorker();

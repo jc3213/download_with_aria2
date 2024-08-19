@@ -59,6 +59,8 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     }
     if (changes['jsonrpc_url']) {
         aria2RPC.url = aria2Url;
+        aria2RPC.disconnect();
+        aria2RPC.connect();
     }
 });
 
