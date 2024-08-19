@@ -46,9 +46,6 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
         chrome.storage.sync.set(aria2Default);
     }
     aria2WhenInstall(reason);
-    if (reason === 'update' && previousVersion <= '4.11.0.2780') {
-        chrome.storage.sync.remove(['headers_enabled', 'download_prompt', 'proxy_always']);
-    }
 });
 
 chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url}) => {
