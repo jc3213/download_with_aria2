@@ -91,9 +91,6 @@ function aria2ClientWorker() {
 }
 
 function aria2WebSocket({method, params}) {
-    if (!method) {
-        return;
-    }
     var gid = params[0].gid;
     switch (method) {
         case 'aria2.onBtDownloadComplete':
