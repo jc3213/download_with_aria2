@@ -252,9 +252,6 @@ chrome.storage.sync.get(null, (json) => {
 });
 
 async function aria2WebSocket({method, params}) {
-    if (!method) {
-        return;
-    }
     var gid = params[0].gid;
     switch (method) {
         case 'aria2.onDownloadStart':
