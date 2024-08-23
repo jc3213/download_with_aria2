@@ -235,26 +235,26 @@ matches.forEach((match) => {
     match.list = list;
     match.addEventListener('keydown', ({key}) => {
         if (key === 'Enter') {
-            addMatchRule(list, id, entry);
+            addMatchPattern(list, id, entry);
         }
     });
     match.addEventListener('click', (event) => {
         switch (event.target.dataset.bid) {
             case 'add_rule':
-                addMatchRule(list, id, entry);
+                addMatchPattern(list, id, entry);
                 break;
             case 'remove_rule':
-                removeMatchRule(list, id, event.target.dataset.mid);
+                removeMatchPattern(list, id, event.target.dataset.mid);
                 break;
         }
     });
 });
 
-function addMatchRule(list, id, entry) {
+function addMatchPattern(list, id, entry) {
     var old_value = updated[id];
     var new_value = [...old_value];
     var add = [];
-    entry.value.match(/[^\s;,"'`]+/g)?.forEach((value) => {
+    entry.value.match(/[^\s\r\n+=,;"'`\\|/?!@#$%^&()\[\]{}<>]+/g)?.forEach((value) => {
         if (value && !new_value.includes(value)) {
             var rule = createMatchRule(list, value);
             add.push({list, index: new_value.length, rule});
@@ -267,7 +267,7 @@ function addMatchRule(list, id, entry) {
     optionsChangeApply(id, new_value);
 }
 
-function removeMatchRule(list, id, value) {
+function removeMatchPattern(list, id, value) {
     var old_value = updated[id]
     var new_value = [...old_value];
     var index = new_value.indexOf(value);
