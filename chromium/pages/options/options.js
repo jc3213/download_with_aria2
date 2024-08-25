@@ -14,7 +14,7 @@ var [saveBtn, undoBtn, redoBtn, aria2ver, exporter, aria2ua] = document.querySel
 var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('[data-rid]');
 var matches = document.querySelectorAll('[data-map]');
-var ruleLET = document.querySelector('.template > .rule');
+var ruleLET = document.querySelector('.template > div');
 var records = {
     'capture_exclude': true,
     'capture_include': true,

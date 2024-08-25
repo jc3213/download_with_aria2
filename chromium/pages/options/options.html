@@ -93,7 +93,7 @@
                     <input data-eid="headers_useragent" type="text">
                 </div>
             </div>
-            <div class="match">
+            <div class="matches">
                 <div i18n_title="option_headers_exclude_title" data-map="headers_exclude">
                     <h4 i18n="option_match_exclude"></h4>
                     <div class="flex">
@@ -121,7 +121,7 @@
                     <input data-eid="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
                 </div>
             </div>
-            <div class="match">
+            <div class="matches">
                 <div i18n_title="option_proxy_include_title" data-map="proxy_include">
                     <h4 i18n="option_match_include"></h4>
                     <div class="flex">
@@ -140,7 +140,7 @@
                 <input id="capture_webrequest" data-eid="capture_webrequest" type="checkbox">
                 <label for="capture_webrequest" i18n="option_capture_webrequest"></label>
             </div>
-            <div class="match options" data-rel="capture_enabled">
+            <div class="matches options" data-rel="capture_enabled">
                 <div class="menu" i18n_title="option_capture_size_include_title">
                     <h4 i18n="option_capture_size_include"></h4>
                     <div>
@@ -196,8 +196,9 @@
             </div>
         </div>
         <div class="template">
-            <div class="rule">
-                <div></div><button data-bid="remove_rule">❌</button>
+            <div>
+                <div></div>
+                <button data-bid="remove_rule">❌</button>
             </div>
         </div>
         <div id="jsonrpc" class="options" data-rel="jsonrpc">

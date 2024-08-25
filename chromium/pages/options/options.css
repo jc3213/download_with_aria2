@@ -59,14 +59,14 @@ input[type="checkbox"] + label {
     margin-top: 31px;
 }
 
-.match {
+.matches {
     padding: 10px;
     border-style: inset;
     border-width: 1px;
     margin: 20px 0px;
 }
 
-.match.options > :nth-child(2n + 3) {
+.matches.options > :nth-child(2n + 3) {
     margin-top: 30px;
 }
 
@@ -87,7 +87,7 @@ input[type="checkbox"] + label {
     height: 59px;
 }
 
-.rule {
+.list > * {
     display: grid;
     grid-template-columns: 1fr 24px;
     white-space: nowrap;
@@ -95,11 +95,11 @@ input[type="checkbox"] + label {
     border-style: outset;
 }
 
-.rule > * {
+.list > * > * {
     padding: 3px;
     overflow: hidden;
 }
 
-.rule button {
+.list button {
     font-size: 12px;
 }
