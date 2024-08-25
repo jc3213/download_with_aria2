@@ -1,9 +1,9 @@
 ## About
 - The browser extension for [aria2 - ultra fast download utility](https://github.com/aria2/aria2) via JSON-RPC
     - Install for ~~Google Chrome~~, [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec), and [Mozilla Firefox](https://addons.mozilla.org/firefox/addon/download-with-aria2/)
-    - Build it yourself with [How to build](//github.com/jc3213/download_with_aria2/wiki/HowToBuild)
-    - Read the [Wiki](//github.com/jc3213/download_with_aria2/wiki) for usage
-    - File an issue [here](//github.com/jc3213/download_with_aria2/issues/new/)
+    - Build the extension with [How to build](//github.com/jc3213/download_with_aria2/wiki/HowToBuild)
+    - Read [Wiki](//github.com/jc3213/download_with_aria2/wiki) for usage
+    - Send feedback [here](//github.com/jc3213/download_with_aria2/issues/new/)
 - Built-in Task Manager
     - [Github Repository](https://github.com/jc3213/aria2.app) | [Github Pages](https://jc3213.github.io/aria2.app/)
 - Context menus
@@ -32,21 +32,21 @@
 ## Screenshot
 <details>
     <summary>Options: Extension</summary>
-    <p><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/0da3a3ef-3b43-4fbd-ad06-4daa57e3753f"></p>
+    <br><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/0da3a3ef-3b43-4fbd-ad06-4daa57e3753f">
 </details>
 <details>
     <summary>Options: JSON-RPC</summary>
-    <p><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/3152302d-ef1f-410a-8ea1-534380c13e1b"></p>
+    <br><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/3152302d-ef1f-410a-8ea1-534380c13e1b">
 </details>
 <details>
     <summary>Task Manager</summary>
-    <p><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/2e007b6b-bce2-4da0-ba6d-6efa6df57746"></p>
+    <br><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/2e007b6b-bce2-4da0-ba6d-6efa6df57746">
 </details>
 <details>
     <summary>New Download</summary>
-    <p><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/965f1be8-99e6-4485-985a-96f47a13267b"></p>
+    <br><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/965f1be8-99e6-4485-985a-96f47a13267b">
 </details>
 <details>
     <summary>Detected Images</summary>
-    <p><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/5626cb60-0dd8-42ff-88c4-0b9e16e80a1c"></p>
+    <br><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/5626cb60-0dd8-42ff-88c4-0b9e16e80a1c">
 </details>
