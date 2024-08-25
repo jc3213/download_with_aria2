@@ -1,7 +1,5 @@
 var aria2Storage = {};
 var aria2Global = {};
-var torrents = [];
-var metalinks = [];
 var aria2Upload = {
     torrent: [],
     metalink: [],
