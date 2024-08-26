@@ -292,7 +292,7 @@ function removeMatchPattern(list, id, rule) {
 
 function createMatchRule(list, value) {
     var rule = ruleLET.cloneNode(true);
-    var [div, btn] = rule.querySelectorAll('div, button');
+    var div = rule.querySelector('div');
     rule.title = div.textContent = value;
     list[value] = rule;
     list.appendChild(rule);
