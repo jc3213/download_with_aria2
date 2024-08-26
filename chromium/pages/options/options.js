@@ -105,9 +105,9 @@ async function optionsSave() {
 function optionsUndo() {
     var undo = undoes.pop();
     redoes.push(undo);
-    var {add, entry, id, old_value, remove} = undo;
+    var {add, entry, id, old_value, remove, resort} = undo;
     updated[id] = changes[id] = old_value;
-    records[id] ? undoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, old_value) : optionsEntryValue(entry, old_value);
+    records[id] ? resort ? undoResort(resort) : undoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, old_value) : optionsEntryValue(entry, old_value);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
     if (undoes.length === 0) {
@@ -118,9 +118,9 @@ function optionsUndo() {
 function optionsRedo() {
     var redo = redoes.pop();
     undoes.push(redo);
-    var {add, entry, id, new_value, remove} = redo;
+    var {add, entry, id, new_value, remove, resort} = redo;
     updated[id] = changes[id] = new_value;
-    records[id] ? redoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, new_value) :optionsEntryValue(entry, new_value);
+    records[id] ? resort ? redoResort(resort) : redoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, new_value) :optionsEntryValue(entry, new_value);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
@@ -233,8 +233,8 @@ matches.forEach((match) => {
     var id = match.dataset.map;
     var [entry, list] = match.querySelectorAll('input, .list');
     match.list = list;
-    match.addEventListener('keydown', ({key}) => {
-        if (key === 'Enter') {
+    match.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
             addMatchPattern(list, id, entry);
         }
     });
@@ -243,8 +243,11 @@ matches.forEach((match) => {
             case 'add_rule':
                 addMatchPattern(list, id, entry);
                 break;
+            case 'resort_rule':
+                resortMatchPattern(list, id);
+                break;
             case 'remove_rule':
-                removeMatchPattern(list, id, event.target.dataset.mid);
+                removeMatchPattern(list, id, event.target.dataset.value);
                 break;
         }
     });
@@ -267,6 +270,16 @@ function addMatchPattern(list, id, entry) {
     optionsChangeApply(id, new_value);
 }
 
+function resortMatchPattern(list, id) {
+    var old_value = updated[id];
+    var new_value = old_value.sort();
+    var old_order = [...list.children];
+    var new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
+    list.append(...new_order);
+    undoes.push({id, old_value, new_value, resort: {list, old_order, new_order}});
+    optionsChangeApply(id, new_value);
+}
+
 function removeMatchPattern(list, id, value) {
     var old_value = updated[id]
     var new_value = [...old_value];
@@ -281,10 +294,18 @@ function removeMatchPattern(list, id, value) {
 function createMatchRule(list, value) {
     var rule = ruleLET.cloneNode(true);
     var [div, btn] = rule.querySelectorAll('div, button');
-    rule.title = div.textContent = btn.dataset.mid = value;
+    rule.title = div.textContent = btn.dataset.value = value;
     list[value] = rule;
     list.append(rule);
     return rule;
+}
+
+function undoResort({list, old_order}) {
+    list.append(...old_order);
+}
+
+function redoResort({list, new_order}) {
+    list.append(...new_order);
 }
 
 function undoMatchRule(add, remove) {
