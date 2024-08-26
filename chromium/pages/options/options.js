@@ -272,7 +272,7 @@ function addMatchPattern(list, id, entry) {
 
 function resortMatchPattern(list, id) {
     var old_value = updated[id];
-    var new_value = old_value.sort();
+    var new_value = [...old_value].sort();
     var old_order = [...list.children];
     var new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
@@ -292,9 +292,7 @@ function removeMatchPattern(list, id, rule) {
 
 function createMatchRule(list, value) {
     var rule = ruleLET.cloneNode(true);
-    var div = rule.querySelector('div');
-    rule.title = div.textContent = value;
-    list[value] = rule;
+    rule.querySelector('div').textContent = rule.title = value;
     list.appendChild(rule);
     return rule;
 }
