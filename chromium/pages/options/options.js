@@ -247,7 +247,7 @@ matches.forEach((match) => {
                 resortMatchPattern(list, id);
                 break;
             case 'remove_rule':
-                removeMatchPattern(list, id, event.target.dataset.value);
+                removeMatchPattern(list, id, event.target.parentNode);
                 break;
         }
     });
@@ -280,11 +280,10 @@ function resortMatchPattern(list, id) {
     optionsChangeApply(id, new_value);
 }
 
-function removeMatchPattern(list, id, value) {
+function removeMatchPattern(list, id, rule) {
     var old_value = updated[id]
     var new_value = [...old_value];
-    var index = new_value.indexOf(value);
-    var rule = list[value];
+    var index = new_value.indexOf(rule.title);
     new_value.splice(index, 1);
     rule.remove();
     undoes.push({id, new_value, old_value, remove: [{list, index, rule}]});
@@ -294,7 +293,7 @@ function removeMatchPattern(list, id, value) {
 function createMatchRule(list, value) {
     var rule = ruleLET.cloneNode(true);
     var [div, btn] = rule.querySelectorAll('div, button');
-    rule.title = div.textContent = btn.dataset.value = value;
+    rule.title = div.textContent = value;
     list[value] = rule;
     list.appendChild(rule);
     return rule;
