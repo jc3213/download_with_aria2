@@ -296,7 +296,7 @@ function createMatchRule(list, value) {
     var [div, btn] = rule.querySelectorAll('div, button');
     rule.title = div.textContent = btn.dataset.value = value;
     list[value] = rule;
-    list.append(rule);
+    list.appendChild(rule);
     return rule;
 }
 
