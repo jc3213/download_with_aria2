@@ -13,9 +13,9 @@ var {version, manifest_version} = chrome.runtime.getManifest();
 var [saveBtn, undoBtn, redoBtn, aria2ver, exporter, aria2ua] = document.querySelectorAll('#menu > :nth-child(-n+4), a, #aria2ua');
 var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('[data-rid]');
-var matches = document.querySelectorAll('[data-map]');
+var mapping = document.querySelectorAll('[data-map]');
 var ruleLET = document.querySelector('.template > div');
-var records = {
+var matches = {
     'capture_exclude': true,
     'capture_include': true,
     'capture_type_exclude': true,
@@ -107,7 +107,7 @@ function optionsUndo() {
     redoes.push(undo);
     var {add, entry, id, old_value, remove, resort} = undo;
     updated[id] = changes[id] = old_value;
-    records[id] ? resort ? undoResort(resort) : undoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, old_value) : optionsEntryValue(entry, old_value);
+    matches[id] ? resort ? undoResort(resort) : undoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, old_value) : optionsEntryValue(entry, old_value);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
     if (undoes.length === 0) {
@@ -120,7 +120,7 @@ function optionsRedo() {
     undoes.push(redo);
     var {add, entry, id, new_value, remove, resort} = redo;
     updated[id] = changes[id] = new_value;
-    records[id] ? resort ? redoResort(resort) : redoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, new_value) :optionsEntryValue(entry, new_value);
+    matches[id] ? resort ? redoResort(resort) : redoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, new_value) :optionsEntryValue(entry, new_value);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
@@ -229,8 +229,8 @@ function optionsChangeApply(id, new_value) {
     }
 }
 
-matches.forEach((match) => {
-    var id = match.dataset.map;
+mapping.forEach((match) => {
+    var id = match.id;
     var [entry, list] = match.querySelectorAll('input, .list');
     match.list = list;
     match.addEventListener('keydown', (event) => {
@@ -276,7 +276,7 @@ function resortMatchPattern(list, id) {
     var old_order = [...list.children];
     var new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    undoes.push({id, old_value, new_value, resort: {list, old_order, new_order}});
+    undoes.push({id, old_value, new_value, resort: {list, new_order, old_order}});
     optionsChangeApply(id, new_value);
 }
 
@@ -321,9 +321,7 @@ function aria2OptionsSetup() {
         var value = updated[id];
         id in switches ? optionsCheckbox(entry, id, value, true) : optionsEntryValue(entry, value);
     });
-    matches.forEach((match) => {
-        var id = match.dataset.map;
-        var list = match.list;
+    mapping.forEach(({id, list}) => {
         list.innerHTML = '';
         updated[id].forEach((value) => createMatchRule(list, value));
     });
