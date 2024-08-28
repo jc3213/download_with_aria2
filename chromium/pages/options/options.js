@@ -74,7 +74,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-document.addEventListener('click', (event) => {
+document.getElementById('menu').addEventListener('click', (event) => {
     switch (event.target.dataset.bid) {
         case 'save_btn':
             optionsSave();
@@ -88,14 +88,12 @@ document.addEventListener('click', (event) => {
         case 'export_btn':
             optionsExport();
             break;
-        case 'aria2_btn':
-            optionsJsonrpc();
-            break;
-        case 'back_btn':
-            optionsExtension();
-            break;
     }
 });
+
+document.getElementById('goto-jsonrpc').addEventListener('click', optionsJsonrpc);
+
+document.getElementById('goto-options').addEventListener('click', optionsExtension)
 
 async function optionsSave() {
     saveBtn.disabled = true;
@@ -239,7 +237,7 @@ mapping.forEach((match) => {
         }
     });
     match.addEventListener('click', (event) => {
-        switch (event.target.dataset.bid) {
+        switch (event.target.dataset.mid) {
             case 'add_rule':
                 addMatchPattern(list, id, entry);
                 break;
@@ -262,10 +260,10 @@ function addMatchPattern(list, id, entry) {
             var rule = createMatchRule(list, value);
             add.push({list, index: new_value.length, rule});
             new_value.push(value);
-            list.scrollTop = list.scrollHeight;
         }
     });
     entry.value = '';
+    list.scrollTop = list.scrollHeight;
     undoes.push({add, id, new_value, old_value});
     optionsChangeApply(id, new_value);
 }
