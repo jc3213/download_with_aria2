@@ -91,10 +91,6 @@ document.getElementById('menu').addEventListener('click', (event) => {
     }
 });
 
-document.getElementById('goto-jsonrpc').addEventListener('click', optionsJsonrpc);
-
-document.getElementById('goto-options').addEventListener('click', optionsExtension)
-
 async function optionsSave() {
     saveBtn.disabled = true;
     global ? aria2SaveStorage(updated) : chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: changes}});
@@ -152,31 +148,6 @@ function optionsExport() {
     exporter.click();
 }
 
-async function optionsJsonrpc() {
-    if (!aria2Version) {
-        return;
-    }
-    optionEmptyChanges();
-    global = false;
-    aria2Global = jsonrpc.disposition(aria2Conf);
-    updated = {...aria2Global};
-    aria2ver.textContent = aria2ua.textContent = aria2Version;
-    extension.add('jsonrpc');
-}
-
-function optionsExtension() {
-    optionEmptyChanges();
-    global = true;
-    aria2OptionsSetup();
-    extension.remove('jsonrpc');
-}
-
-function optionEmptyChanges() {
-    undoes = [];
-    redoes = [];
-    saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
-}
-
 document.getElementById('menu').addEventListener('change', (event) => {
     var reader = new FileReader();
     reader.onload = (event) => {
@@ -196,6 +167,31 @@ document.getElementById('menu').addEventListener('change', (event) => {
     reader.readAsText(event.target.files[0]);
     optionEmptyChanges();
     event.target.value = '';
+});
+
+function optionEmptyChanges() {
+    undoes = [];
+    redoes = [];
+    saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
+}
+
+document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
+    if (!aria2Version) {
+        return;
+    }
+    optionEmptyChanges();
+    global = false;
+    aria2Global = jsonrpc.disposition(aria2Conf);
+    updated = {...aria2Global};
+    aria2ver.textContent = aria2ua.textContent = aria2Version;
+    extension.add('jsonrpc');
+});
+
+document.getElementById('goto-options').addEventListener('click', (event) => {
+    optionEmptyChanges();
+    global = true;
+    aria2OptionsSetup();
+    extension.remove('jsonrpc');
 });
 
 document.getElementById('options').addEventListener('change', (event) => {
