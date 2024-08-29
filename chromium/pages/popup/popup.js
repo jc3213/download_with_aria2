@@ -42,14 +42,14 @@ document.addEventListener('keydown', (event) => {
 
 document.getElementById('menu').addEventListener('click', (event) => {
     switch (event.target.dataset.bid) {
+        case 'download_btn':
+            managerDownload();
+            break;
         case 'purge_btn':
             managerPurge();
             break;
         case 'options_btn':
             managerOptions();
-            break;
-        case 'download_btn':
-            managerDownload();
             break;
     }
 });
