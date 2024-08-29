@@ -227,7 +227,7 @@ mapping.forEach((match) => {
     var id = match.id;
     var [entry, list] = match.querySelectorAll('input, .list');
     match.list = list;
-    match.addEventListener('keydown', (event) => {
+    entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             addMatchPattern(list, id, entry);
         }
