@@ -1,9 +1,9 @@
 ## About
 - The browser extension for [aria2 - ultra fast download utility](https://github.com/aria2/aria2) via JSON-RPC
-    - Install for ~~Google Chrome~~, [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec), and [Mozilla Firefox](https://addons.mozilla.org/firefox/addon/download-with-aria2/)
-    - Build the extension with [How to build](//github.com/jc3213/download_with_aria2/wiki/HowToBuild)
-    - Read [Wiki](//github.com/jc3213/download_with_aria2/wiki) for usage
-    - Send feedback [here](//github.com/jc3213/download_with_aria2/issues/new/)
+    - The development is based on [aria2.js](https://github.com/jc3213/aria2.js) 
+    - Install this extension for ~~Google Chrome~~, [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec), and [Mozilla Firefox](https://addons.mozilla.org/firefox/addon/download-with-aria2/)
+    - Read [Wiki](//github.com/jc3213/download_with_aria2/wiki) for usage, and [how to build](//github.com/jc3213/download_with_aria2/wiki/HowToBuild)
+    - Send feedback in [issues page](//github.com/jc3213/download_with_aria2/issues/new/)
 - Built-in Task Manager
     - [Github Repository](https://github.com/jc3213/aria2.app) | [Github Pages](https://jc3213.github.io/aria2.app/)
 - Context menus
