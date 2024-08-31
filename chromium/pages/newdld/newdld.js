@@ -41,9 +41,8 @@ function downloadProxy(event) {
 }
 
 document.getElementById('download').addEventListener('change', (event) => {
-    var id = event.target.name;
-    if (id) {
-        aria2Global[id] = event.target.value;
+    if (event.target.name) {
+        aria2Global[event.target.name] = event.target.value;
     }
 });
 
