@@ -9,10 +9,9 @@ document.querySelectorAll('[i18n-title]').forEach((node) => {
 NodeList.prototype.disposition = function (json) {
     var result = {};
     this.forEach((node) => {
-        var id = node.name;
-        var value = json[id];
+        var value = json[node.name];
         if (value) {
-            node.value = result[id] = value;
+            node.value = result[node.name] = value;
         }
     });
     return result;
