@@ -6,7 +6,7 @@ var aria2Upload = {
     meta4: []
 };
 var entry = document.getElementById('entries');
-var settings = document.querySelectorAll('[data-rid]');
+var settings = document.querySelectorAll('[name]');
 
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey && event.key === 'Enter') {
@@ -40,8 +40,8 @@ function downloadProxy(event) {
     event.target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Storage['proxy_server'];
 }
 
-document.addEventListener('change', (event) => {
-    var id = event.target.dataset.rid;
+document.getElementById('download').addEventListener('change', (event) => {
+    var id = event.target.name;
     if (id) {
         aria2Global[id] = event.target.value;
     }

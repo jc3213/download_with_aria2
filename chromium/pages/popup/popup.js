@@ -209,8 +209,8 @@ function taskElementCreate(gid, status, bittorrent, files) {
         }
     });
     task.addEventListener('change', (event) => {
-        if (event.target.dataset.rid) {
-            task.options[event.target.dataset.rid] = event.target.value;
+        if (event.target.name) {
+            task.options[event.target.name] = event.target.value;
             aria2RPC.call({method: 'aria2.changeOption', params: [gid, task.options]});
         }
     });

@@ -117,7 +117,7 @@ h4, h4 + div + div {
 }
 
 .menu {
-    margin-top: 5px;
+    margin: 1px 0px;
 }
 
 .options > :not(.menu) {

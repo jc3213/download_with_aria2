@@ -87,7 +87,7 @@ function aria2SetHeaders(url, referer, tabId) {
 }
 
 function aria2DownloadPrompt() {
-    getPopupWindow('/pages/newdld/newdld.html', 487);
+    getPopupWindow('/pages/newdld/newdld.html', 476);
 }
 
 async function aria2ImagesPrompt(tabId) {

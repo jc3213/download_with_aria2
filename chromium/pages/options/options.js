@@ -12,7 +12,7 @@ var extension = document.body.classList;
 var {version, manifest_version} = chrome.runtime.getManifest();
 var [saveBtn, undoBtn, redoBtn, aria2ver, exporter, aria2ua] = document.querySelectorAll('#menu > :nth-child(-n+4), a, #aria2ua');
 var options = document.querySelectorAll('[data-eid]');
-var jsonrpc = document.querySelectorAll('[data-rid]');
+var jsonrpc = document.querySelectorAll('#jsonrpc input');
 var mapping = document.querySelectorAll('[data-map]');
 var ruleLET = document.querySelector('.template > div');
 var matches = {
@@ -197,24 +197,24 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
 document.getElementById('options').addEventListener('change', (event) => {
     var id = event.target.dataset.eid;
     if (id) {
-        optionsChanges(event.target, id, id in switches ? event.target.checked : event.target.value);
+        optionsChanged(event.target, id, id in switches ? event.target.checked : event.target.value);
     }
 });
 
 document.getElementById('jsonrpc').addEventListener('change', (event) => {
-    optionsChanges(event.target, event.target.dataset.rid, event.target.value);
+    optionsChanged(event.target, event.target.name, event.target.value);
 });
 
-function optionsChanges(entry, id, new_value) {
-    undoes.push({entry, id, new_value, old_value: updated[id]});
+function optionsChanged(entry, id, new_value) {
     if (switches[id]) {
         extension.toggle(id);
     }
-    optionsChangeApply(id, new_value);
+    optionsChangeApply(id, new_value, {entry, id, new_value, old_value: updated[id]});
 }
 
-function optionsChangeApply(id, new_value) {
+function optionsChangeApply(id, new_value, undo) {
     updated[id] = changes[id] = new_value;
+    undoes.push(undo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (undone) {
         redoes = [];
@@ -260,8 +260,7 @@ function addMatchPattern(list, id, entry) {
     });
     entry.value = '';
     list.scrollTop = list.scrollHeight;
-    undoes.push({add, id, new_value, old_value});
-    optionsChangeApply(id, new_value);
+    optionsChangeApply(id, new_value, {add, id, new_value, old_value});
 }
 
 function resortMatchPattern(list, id) {
@@ -270,8 +269,7 @@ function resortMatchPattern(list, id) {
     var old_order = [...list.children];
     var new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    undoes.push({id, old_value, new_value, resort: {list, new_order, old_order}});
-    optionsChangeApply(id, new_value);
+    optionsChangeApply(id, new_value, {id, old_value, new_value, resort: {list, new_order, old_order}});
 }
 
 function removeMatchPattern(list, id, rule) {
@@ -280,8 +278,7 @@ function removeMatchPattern(list, id, rule) {
     var index = new_value.indexOf(rule.title);
     new_value.splice(index, 1);
     rule.remove();
-    undoes.push({id, new_value, old_value, remove: [{list, index, rule}]});
-    optionsChangeApply(id, new_value);
+    optionsChangeApply(id, new_value, {id, new_value, old_value, remove: [{list, index, rule}]});
 }
 
 function createMatchRule(list, value) {

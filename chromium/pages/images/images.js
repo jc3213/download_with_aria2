@@ -67,7 +67,7 @@ async function imagesSubmit() {
 }
 
 function imagesOptions() {
-    document.body.classList.toggle('options');
+    document.body.classList.toggle('extra');
 }
 
 function imagesProxy(proxy) {
@@ -86,8 +86,8 @@ function selectFlip() {
     aria2Images.forEach((img) => img.classList.toggle('checked'));
 }
 
-document.addEventListener('change', (event) => {
-    aria2Global[event.target.dataset.rid] = event.target.value;
+document.getElementById('options').addEventListener('change', (event) => {
+    aria2Global[event.target.name] = event.target.value;
 });
 
 gallery.addEventListener('click', (event) => {
