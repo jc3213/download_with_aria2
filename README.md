@@ -27,7 +27,6 @@
 - Notification system
     - When download started, or completed
     - When extension installed, or updated
-- ~~Prompt new download window when enabled before download starts~~
 
 ## Screenshot
 <details>
