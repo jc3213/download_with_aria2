@@ -8,13 +8,16 @@ var undoes = [];
 var undone = false;
 var redoes = [];
 var global = true;
+
 var extension = document.body.classList;
 var {version, manifest_version} = chrome.runtime.getManifest();
-var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, exporter, aria2ua] = document.querySelectorAll('#menu > :nth-child(-n+5), a, #aria2ua');
+var [saveBtn, undoBtn, redoBtn, storageExp, jsonrpcExp] = document.querySelectorAll('#menu > button')
+var [aria2ver, exporter, aria2ua] = document.querySelectorAll('#version, a, #useragent');
 var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('#jsonrpc input');
 var mapping = document.querySelectorAll('[data-map]');
 var ruleLET = document.querySelector('.template > div');
+
 var matches = {
     'capture_exclude': true,
     'capture_include': true,
@@ -104,31 +107,22 @@ redoBtn.addEventListener('click', (event) => {
     }
 });
 
-exportBtn.addEventListener('click', (event) => {
-    var time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
-    if (global) {
-        var output = [JSON.stringify(aria2Storage, null, 4)];
-        var name = 'downwitharia2_options-' + time + '.json';
-    }
-    else {
-        output = Object.keys(aria2Conf).map((key) => key + '=' + aria2Conf[key] + '\n');
-        name = 'aria2c_jsonrpc-' + time + '.conf';
-    }
-    var blob = new Blob(output);
-    exporter.href = URL.createObjectURL(blob);
-    exporter.download = name;
-    exporter.click();
+storageExp.addEventListener('click', (event) => {
+    var body = [JSON.stringify(aria2Storage, null, 4)];
+    fileSaver(body, 'downwitharia2', 'json');
 });
 
-function optionsCheckbox(entry, id, value, startup) {
-    entry.checked = value;
-    if (switches[id]) {
-        startup ? value ? extension.add(id) : extension.remove(id) : extension.toggle(id);
-    }
-}
+jsonrpcExp.addEventListener('click', (event) => {
+    var body = Object.keys(aria2Conf).map((key) => key + '=' + aria2Conf[key] + '\n');
+    fileSaver(body, 'aria2_jsonrpc', 'conf');
+});
 
-function optionsEntryValue(entry, value) {
-    entry.value = value;
+function fileSaver(body, name, type) {
+    var time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
+    var blob = new Blob(body);
+    exporter.href = URL.createObjectURL(blob);
+    exporter.download = name + '-' + time + '.' + type;
+    exporter.click();
 }
 
 document.getElementById('storage').addEventListener('change', async (event) => {
@@ -199,6 +193,17 @@ document.getElementById('options').addEventListener('change', (event) => {
 document.getElementById('jsonrpc').addEventListener('change', (event) => {
     optionsChanged(event.target, event.target.name, event.target.value);
 });
+
+function optionsCheckbox(entry, id, value, startup) {
+    entry.checked = value;
+    if (switches[id]) {
+        startup ? value ? extension.add(id) : extension.remove(id) : extension.toggle(id);
+    }
+}
+
+function optionsEntryValue(entry, value) {
+    entry.value = value;
+}
 
 function optionsChanged(entry, id, new_value) {
     if (switches[id]) {

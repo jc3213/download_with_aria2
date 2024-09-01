@@ -23,13 +23,17 @@ document.addEventListener('keydown', (event) => {
                 break;
             case 'Enter':
                 event.preventDefault();
-                submitBtn();
+                submitBtn.click();
                 break;
             case 's':
                 event.preventDefault();
-                optionsBtn();
+                optionsBtn.click();
                 break;
         }
+    }
+    else if (event.altKey && event.key === 's') {
+        event.preventDefault();
+        submitBtn.click();
     }
 });
 

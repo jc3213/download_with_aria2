@@ -12,7 +12,8 @@
             <button i18n="option_undo" disabled></button>
             <button i18n="option_redo" disabled></button>
             <div id="version"></div>
-            <button i18n="option_export"></button>
+            <button data-exc="jsonrpc" i18n="option_export"></button>
+            <button data-rel="jsonrpc" i18n="option_export"></button>
             <button data-exc="jsonrpc"><label for="storage" i18n="option_import"></label></button>
             <button data-rel="jsonrpc"><label for="config" i18n="option_import"></label></button>
             <a></a>
@@ -314,7 +315,7 @@
                     <input name="user-agent" type="text">
                 </div>
                 <div>
-                    <span i18n="common_default"></span>: <i id="aria2ua"></i>
+                    <span i18n="common_default"></span>: <i id="useragent"></i>
                 </div>
             </div>
             <h1>BitTorrent</h1>
