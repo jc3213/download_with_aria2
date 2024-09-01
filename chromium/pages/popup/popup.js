@@ -51,10 +51,6 @@ purgeBtn.addEventListener('click', async (event) => {
     aria2Tasks.total = {...aria2Tasks.active, ...aria2Tasks.waiting};
 });
 
-downBtn.addEventListener('click', managerDownload);
-
-optionsBtn.addEventListener('click', managerOptions);
-
 function aria2ClientSetup() {
     aria2RPC = new Aria2(aria2Scheme, aria2Url, aria2Secret);
     aria2RPC.retry = 0;

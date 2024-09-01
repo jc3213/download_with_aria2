@@ -24,19 +24,19 @@ function aria2Toolbar() {
     choose.style.display = 'none';
 }
 
-async function managerDownload() {
+downBtn.addEventListener('click', async (event) => {
     chrome.runtime.sendMessage({action: 'open_new_download'});
     if (!aria2InTab) {
         close();
     }
-}
+});
 
-function managerOptions() {
+optionsBtn.addEventListener('click', (event) => {
     chrome.runtime.openOptionsPage();
     if (!aria2InTab) {
         close();
     }
-}
+});
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     if (action !== 'options_onchange') {
