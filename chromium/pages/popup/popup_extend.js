@@ -1,11 +1,6 @@
 var aria2InTab = location.search !== '?toolbar';
 
-if (aria2InTab) {
-    manager.add('full');
-}
-else {
-    aria2Toolbar();
-}
+aria2InTab ? manager.add('full') : aria2Toolbar();
 
 function aria2Toolbar() {
     var queue = document.getElementById('queue');
