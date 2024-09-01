@@ -4,7 +4,7 @@ var aria2Images = [];
 var aria2Manifest = chrome.runtime.getManifest().manifest_version;
 
 var [selectAll, selectNone, selectFlip, submitBtn, optionsBtn] = document.querySelectorAll('#menu > button');
-var [preview, gallery] = document.querySelectorAll('#gallery, #preview > img');
+var [preview, gallery] = document.querySelectorAll('#preview > img, #gallery');
 
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey) {
