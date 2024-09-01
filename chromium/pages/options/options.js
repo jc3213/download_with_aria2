@@ -10,7 +10,7 @@ var redoes = [];
 var global = true;
 var extension = document.body.classList;
 var {version, manifest_version} = chrome.runtime.getManifest();
-var [saveBtn, undoBtn, redoBtn, aria2ver, exporter, aria2ua] = document.querySelectorAll('#menu > :nth-child(-n+4), a, #aria2ua');
+var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, exporter, aria2ua] = document.querySelectorAll('#menu > :nth-child(-n+5), a, #aria2ua');
 var options = document.querySelectorAll('[data-eid]');
 var jsonrpc = document.querySelectorAll('#jsonrpc input');
 var mapping = document.querySelectorAll('[data-map]');
@@ -74,29 +74,12 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-document.getElementById('menu').addEventListener('click', (event) => {
-    switch (event.target.dataset.bid) {
-        case 'save_btn':
-            optionsSave();
-            break;
-        case 'undo_btn':
-            optionsUndo();
-            break;
-        case 'redo_btn':
-            optionsRedo();
-            break;
-        case 'export_btn':
-            optionsExport();
-            break;
-    }
-});
-
-async function optionsSave() {
+saveBtn.addEventListener('click', (event) => {
     saveBtn.disabled = true;
     global ? aria2SaveStorage(updated) : chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: changes}});
-}
+});
 
-function optionsUndo() {
+undoBtn.addEventListener('click', (event) => {
     var undo = undoes.pop();
     redoes.push(undo);
     var {add, entry, id, old_value, remove, resort} = undo;
@@ -107,9 +90,9 @@ function optionsUndo() {
     if (undoes.length === 0) {
         undoBtn.disabled = true;
     }
-}
+});
 
-function optionsRedo() {
+redoBtn.addEventListener('click', (event) => {
     var redo = redoes.pop();
     undoes.push(redo);
     var {add, entry, id, new_value, remove, resort} = redo;
@@ -119,20 +102,9 @@ function optionsRedo() {
     if (redoes.length === 0) {
         redoBtn.disabled = true;
     }
-}
+});
 
-function optionsCheckbox(entry, id, value, startup) {
-    entry.checked = value;
-    if (switches[id]) {
-        startup ? value ? extension.add(id) : extension.remove(id) : extension.toggle(id);
-    }
-}
-
-function optionsEntryValue(entry, value) {
-    entry.value = value;
-}
-
-function optionsExport() {
+exportBtn.addEventListener('click', (event) => {
     var time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
     if (global) {
         var output = [JSON.stringify(aria2Storage, null, 4)];
@@ -146,28 +118,51 @@ function optionsExport() {
     exporter.href = URL.createObjectURL(blob);
     exporter.download = name;
     exporter.click();
+});
+
+function optionsCheckbox(entry, id, value, startup) {
+    entry.checked = value;
+    if (switches[id]) {
+        startup ? value ? extension.add(id) : extension.remove(id) : extension.toggle(id);
+    }
 }
 
-document.getElementById('menu').addEventListener('change', (event) => {
-    var reader = new FileReader();
-    reader.onload = (event) => {
-        if (global) {
-            aria2SaveStorage(JSON.parse(reader.result));
-            return aria2OptionsSetup();
-        }
-        var conf = {};
-        reader.result.split('\n').forEach((entry) => {
-            var [key, value] = entry.split('=');
-            conf[key] = value;
-        });
-        chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: conf}});
-        aria2Global = jsonrpc.disposition(conf);
-        updated = {...aria2Global};
-    };
-    reader.readAsText(event.target.files[0]);
+function optionsEntryValue(entry, value) {
+    entry.value = value;
+}
+
+document.getElementById('storage').addEventListener('change', async (event) => {
+    var file = await fileReader(event.target.files[0]);
+    changes = JSON.parse(file);
+    aria2SaveStorage(changes);
+    aria2OptionsSetup();
     optionEmptyChanges();
     event.target.value = '';
 });
+
+document.getElementById('config').addEventListener('change', async (event) => {
+    var file = await fileReader(event.target.files[0]);
+    var conf = {};
+    file.split('\n').forEach((line) => {
+        if (line[0] !== '#') {
+            var [key, value] = line.split('=');
+            conf[key] = value;
+        }
+    });
+    chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: conf}});
+    aria2Global = jsonrpc.disposition(conf);
+    updated = {...aria2Global};
+    optionEmptyChanges();
+    event.target.value = '';
+});
+
+function fileReader(file) {
+    return new Promise((resolve) => {
+        var reader = new FileReader();
+        reader.onload = (event) => resolve(reader.result);
+        reader.readAsText(file);
+    });
+}
 
 function optionEmptyChanges() {
     undoes = [];
@@ -225,26 +220,15 @@ function optionsChangeApply(id, new_value, undo) {
 
 mapping.forEach((match) => {
     var id = match.id;
-    var [entry, list] = match.querySelectorAll('input, .list');
+    var [entry, addbtn, resort, list] = match.querySelectorAll('input, button, .list');
     match.list = list;
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             addMatchPattern(list, id, entry);
         }
     });
-    match.addEventListener('click', (event) => {
-        switch (event.target.dataset.mid) {
-            case 'add_rule':
-                addMatchPattern(list, id, entry);
-                break;
-            case 'resort_rule':
-                resortMatchPattern(list, id);
-                break;
-            case 'remove_rule':
-                removeMatchPattern(list, id, event.target.parentNode);
-                break;
-        }
-    });
+    addbtn.addEventListener('click', (event) => addMatchPattern(list, id, entry));
+    resort.addEventListener('click', (event) => resortMatchPattern(list, id));
 });
 
 function addMatchPattern(list, id, entry) {
@@ -253,7 +237,7 @@ function addMatchPattern(list, id, entry) {
     var add = [];
     entry.value.match(/[^\s\r\n+=,;"'`\\|/?!@#$%^&()\[\]{}<>]+/g)?.forEach((value) => {
         if (value && !new_value.includes(value)) {
-            var rule = createMatchRule(list, value);
+            var rule = createMatchRule(list, id, value);
             add.push({list, index: new_value.length, rule});
             new_value.push(value);
         }
@@ -269,7 +253,7 @@ function resortMatchPattern(list, id) {
     var old_order = [...list.children];
     var new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    optionsChangeApply(id, new_value, {id, old_value, new_value, resort: {list, new_order, old_order}});
+    optionsChangeApply(id, new_value, {id, new_value, old_value, resort: {list, new_order, old_order}});
 }
 
 function removeMatchPattern(list, id, rule) {
@@ -281,9 +265,11 @@ function removeMatchPattern(list, id, rule) {
     optionsChangeApply(id, new_value, {id, new_value, old_value, remove: [{list, index, rule}]});
 }
 
-function createMatchRule(list, value) {
+function createMatchRule(list, id, value) {
     var rule = ruleLET.cloneNode(true);
-    rule.querySelector('div').textContent = rule.title = value;
+    var [content, purge] = rule.querySelectorAll('*');
+    content.textContent = rule.title = value;
+    purge.addEventListener('click', (event) => removeMatchPattern(list, id, event.target.parentNode));
     list.appendChild(rule);
     return rule;
 }
@@ -314,7 +300,7 @@ function aria2OptionsSetup() {
     });
     mapping.forEach(({id, list}) => {
         list.innerHTML = '';
-        updated[id].forEach((value) => createMatchRule(list, value));
+        updated[id].forEach((value) => createMatchRule(list, id, value));
     });
 }
 

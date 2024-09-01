@@ -2,59 +2,50 @@ var aria2Storage = {};
 var aria2Global = {};
 var aria2Images = [];
 var aria2Manifest = chrome.runtime.getManifest().manifest_version;
+
+var [selectAll, selectNone, selectFlip, submitBtn, optionsBtn] = document.querySelectorAll('#menu > button');
 var [preview, gallery] = document.querySelectorAll('#gallery, #preview > img');
 
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey) {
         switch (event.key) {
-            case 'Enter':
-                event.preventDefault();
-                imagesSubmit();
-                break;
-            case 's':
-                event.preventDefault();
-                imagesOptions();
-                break;
             case 'a':
                 event.preventDefault();
-                selectAll();
+                selectAll.click();
                 break;
             case 'x':
                 event.preventDefault();
-                selectNone();
+                selectNone.click();
                 break;
             case 'r':
                 event.preventDefault();
-                selectFlip();
+                selectFlip.click();
+                break;
+            case 'Enter':
+                event.preventDefault();
+                submitBtn();
+                break;
+            case 's':
+                event.preventDefault();
+                optionsBtn();
                 break;
         }
     }
 });
 
-document.addEventListener('click', (event) => {
-    switch (event.target.dataset.bid) {
-        case 'submit_btn':
-            imagesSubmit();
-            break;
-        case 'options_btn':
-            imagesOptions();
-            break;
-        case 'proxy_btn':
-            imagesProxy(event.target);
-            break;
-        case 'select_all':
-            selectAll();
-            break;
-        case 'select_none':
-            selectNone();
-            break;
-        case 'select_flip':
-            selectFlip();
-            break;
-    }
+selectAll.addEventListener('click', (event) => {
+    aria2Images.forEach((img) => img.classList.add('checked'));
 });
 
-async function imagesSubmit() {
+selectNone.addEventListener('click', (event) => {
+    aria2Images.forEach((img) => img.classList.remove('checked'));
+});
+
+selectFlip.addEventListener('click', (event) => {
+    aria2Images.forEach((img) => img.classList.toggle('checked'));
+});
+
+submitBtn.addEventListener('click', (event) => {
     var urls = [];
     aria2Images.forEach(({src, alt, header, classList}) => {
         if (classList.contains('checked')) {
@@ -64,48 +55,19 @@ async function imagesSubmit() {
     });
     chrome.runtime.sendMessage({action: 'message_download', params: {urls}});
     close();
-}
+});
 
-function imagesOptions() {
+optionsBtn.addEventListener('click', (event) => {
     document.body.classList.toggle('extra');
-}
+});
 
-function imagesProxy(proxy) {
-    proxy.previousElementSibling.value = aria2Global['all-proxy'] = aria2Storage['proxy_server'];
-}
-
-function selectAll() {
-    aria2Images.forEach((img) => img.classList.add('checked'));
-}
-
-function selectNone() {
-    aria2Images.forEach((img) => img.classList.remove('checked'));
-}
-
-function selectFlip() {
-    aria2Images.forEach((img) => img.classList.toggle('checked'));
-}
+document.getElementById('proxy').addEventListener('click', (event) => {
+    event.target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Storage['proxy_server'];
+});
 
 document.getElementById('options').addEventListener('change', (event) => {
     aria2Global[event.target.name] = event.target.value;
 });
-
-gallery.addEventListener('click', (event) => {
-    if (event.target.tagName === 'IMG') {
-        event.target.classList.toggle('checked');
-    }
-});
-
-gallery.addEventListener('mouseenter', (event) => {
-    if (event.target.tagName === 'IMG') {
-        preview.src = event.target.src;
-    }
-}, true);
-
-gallery.addEventListener('load', ({target}) => {
-    var [full, name, ext = '.jpg'] = target.src.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
-    target.alt = name  + '_' + target.alt + '_' + target.naturalWidth + 'x' + target.naturalHeight + ext;
-}, true);
 
 chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc, params}) => {
     aria2Storage = storage;
@@ -119,8 +81,16 @@ function getImagePreview(url, headers) {
     var img = document.createElement('img');
     img.src = img.title = url;
     img.header = headers.map(({name, value}) => name + ': ' + value);
+    img.addEventListener('click', (event) => img.classList.toggle('checked'));
+    img.addEventListener('load', (event) => getImageAlt(img, url));
+    img.addEventListener('mouseenter', (event) => preview.src = url);
     aria2Images.push(img);
 }
+
+function getImageAlt(img, url) {
+    var [full, name, ext = '.jpg'] = url.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
+    img.alt = name  + '_' + img.alt + '_' + img.naturalWidth + 'x' + img.naturalHeight + ext;
+};
 
 function aria2HeadersMV2({images, filter}) {
     var rules = {};

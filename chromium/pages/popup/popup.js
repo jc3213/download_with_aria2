@@ -5,11 +5,14 @@ var aria2Queue = {};
 var aria2Stats = {};
 var aria2Detail = {};
 var aria2Filter = localStorage['queues']?.match(/[^;]+/g) ?? [];
+
 var manager = document.body.classList;
 var chooseQueue = document.getElementById('choose');
+var [downBtn, purgeBtn, optionsBtn] = document.querySelectorAll('#menu button');
+var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
+
 document.querySelectorAll('#queue > *').forEach((queue) => aria2Queue[queue.id] = queue);
 document.querySelectorAll('#stats > *').forEach((stat) => aria2Stats[stat.dataset.sid] = stat);
-var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
 
 manager.add(...aria2Filter);
 
@@ -26,41 +29,31 @@ document.addEventListener('keydown', (event) => {
         switch (event.key) {
             case 'r':
                 event.preventDefault();
-                managerPurge();
-                break;
-            case 's':
-                event.preventDefault();
-                managerOptions();
+                purgeBtn.click();
                 break;
             case 'd':
                 event.preventDefault();
-                managerDownload();
+                downBtn.click();
+                break;
+            case 's':
+                event.preventDefault();
+                optionsBtn.click();
                 break;
         }
     }
 });
 
-document.getElementById('menu').addEventListener('click', (event) => {
-    switch (event.target.dataset.bid) {
-        case 'download_btn':
-            managerDownload();
-            break;
-        case 'purge_btn':
-            managerPurge();
-            break;
-        case 'options_btn':
-            managerOptions();
-            break;
-    }
-});
-
-async function managerPurge() {
+purgeBtn.addEventListener('click', async (event) => {
     await aria2RPC.call({method: 'aria2.purgeDownloadResult'});
     aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
     aria2Stats.stopped.textContent = '0';
     aria2Tasks.stopped = {};
     aria2Tasks.total = {...aria2Tasks.active, ...aria2Tasks.waiting};
-}
+});
+
+downBtn.addEventListener('click', managerDownload);
+
+optionsBtn.addEventListener('click', managerOptions);
 
 function aria2ClientSetup() {
     aria2RPC = new Aria2(aria2Scheme, aria2Url, aria2Secret);
@@ -177,37 +170,13 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.id = gid;
     task.links = [];
     task.classList.add(bittorrent ? 'p2p' : 'http');
-    task.addEventListener('click', (event) => {
-        switch (event.target.dataset.bid) {
-            case 'remove_btn':
-                taskRemove(task, gid);
-                break;
-            case 'detail_btn':
-                taskDetail(task, gid);
-                break;
-            case 'retry_btn':
-                taskRetry(task, gid);
-                break;
-            case 'pause_btn':
-                taskPause(task, gid);
-                break;
-            case 'proxy_btn':
-                taskProxy(event, gid);
-                break;
-            case 'save_btn':
-                taskChangeFiles(task, gid);
-                break;
-            case 'file_alt_btn':
-                taskSelectFile(task);
-                break;
-            case 'uri_add_btn':
-                taskAddUri(event, gid);
-                break;
-            case 'uri_alt_btn':
-                taskRemoveUri(gid, event.target.textContent, event.ctrlKey);
-                break;
-        }
-    });
+    task.purge.addEventListener('click', (event) => taskRemove(task, gid));
+    task.detail.addEventListener('click', (event) => taskDetail(task, gid));
+    task.retry.addEventListener('click', (event) => taskRetry(task, gid));
+    task.meter.addEventListener('click', (event) => taskPause(task, gid));
+    task.proxy.addEventListener('click', (event) => taskProxy(event.target.previousElementSibling, gid));
+    task.save.addEventListener('click', (event) => taskChangeFiles(task, gid));
+    task.adduri.addEventListener('click', (event) => taskAddUri(event.target.previousElementSibling, gid));
     task.addEventListener('change', (event) => {
         if (event.target.name) {
             task.options[event.target.name] = event.target.value;
@@ -225,17 +194,19 @@ function taskFileElementCreate(task, gid, files, {index, selected, path, length,
     file.check.id = gid + '_' + index;
     file.index.textContent = index;
     file.index.setAttribute('for', file.check.id);
+    file.index.addEventListener('click', (event) => taskSelectFile(task));
     files.appendChild(file);
     files[index] = file;
-    uris.forEach((uri) => taskUriElementCreate(task.uris, task.links, uri.uri));
+    uris.forEach((uri) => taskUriElementCreate(gid, task.uris, task.links, uri.uri));
 }
 
-function taskUriElementCreate(uris, links, uri) {
+function taskUriElementCreate(gid, uris, links, uri) {
     if (uris[uri]) {
         return;
     }
     var url = uriLET.cloneNode(true);
     url.querySelectorAll('*').forEach((div) => url[div.className] = div);
+    url.link.addEventListener('click', (event) => taskRemoveUri(event, gid, uri));
     url.link.title = url.link.textContent = uri;
     uris[uri] = url;
     uris.appendChild(url);
@@ -343,9 +314,9 @@ async function taskPause(task, gid) {
     }
 }
 
-async function taskProxy(event, gid) {
+async function taskProxy(entry, gid) {
     await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2Proxy}]});
-    event.target.previousElementSibling.value = aria2Proxy;
+    entry.value = aria2Proxy;
     task.scrollIntoView({block: 'nearest'});
 }
 
@@ -359,14 +330,13 @@ function taskSelectFile(task) {
     task.save.style.display = 'block';
 }
 
-async function taskAddUri(event, gid) {
-    var uri = event.target.previousElementSibling;
-    await aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [], [uri.value]]});
-    uri.value = '';
+async function taskAddUri(entry, gid) {
+    await aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [], [entry.value]]});
+    entry.value = '';
 }
 
-async function taskRemoveUri(gid, uri, ctrl) {
-    ctrl ? aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [uri], []]}) : navigator.clipboard.writeText(uri);
+async function taskRemoveUri(event, gid, uri) {
+    event.ctrlKey ? aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [uri], []]}) : navigator.clipboard.writeText(uri);
 }
 
 function getFileSize(bytes) {

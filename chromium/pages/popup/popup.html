@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <title i18n="plugins_popup"></title>
         <link rel="stylesheet" href="/pages/common.css">
-        <link rel="stylesheet" href="popup.css">
         <link rel="stylesheet" href="popup_extend.css">
+        <link rel="stylesheet" href="popup.css">
     </head>
     <body>
         <div id="menu" class="flex">
@@ -16,9 +16,9 @@
                 <div data-sid="waiting">0</div>
                 <div data-sid="stopped">0</div>
             </div>
-            <button data-bid="download_btn" i18n="popup_newdld"></button>
-            <button data-bid="purge_btn" i18n="popup_purge"></button>
-            <button data-bid="options_btn" i18n="popup_options"></button>
+            <button id="download" i18n="popup_newdld"></button>
+            <button id="purge" i18n="popup_purge"></button>
+            <button id="options" i18n="popup_options"></button>
         </div>
         <div id="choose">
             <div data-qid="active" i18n="popup_active_queue"></div>
@@ -47,12 +47,12 @@
                 <div>⏬ <span class="download"></span></div>
                 <div data-p2p>⏫ <span class="upload"></span></div>
                 <div class="manage">
-                    <button class="purge" data-bid="remove_btn">❌</button>
-                    <button class="detail" data-bid="detail_btn">⚙️</button>
-                    <button class="retry" data-bid="retry_btn">♻️</button>
+                    <button class="purge">❌</button>
+                    <button class="detail">⚙️</button>
+                    <button class="retry">♻️</button>
                 </div>
-                <div class="meter" data-bid="pause_btn">
-                    <div class="ratio" data-bid="pause_btn"></div>
+                <div class="meter">
+                    <div class="ratio"></div>
                 </div>
                 <div class="options">
                     <div class="menu" i18n-title="task_download_title">
@@ -73,7 +73,7 @@
                         <h4 i18n="task_proxy"></h4>
                         <div class="flex">
                             <input name="all-proxy" type="url">
-                            <button data-bid="proxy_btn">⚡️</button>
+                            <button class="proxy">⚡️</button>
                         </div>
                     </div>
                     <div class="menu" i18n-title="aria2_http_split_title" data-http>
@@ -114,13 +114,13 @@
                     <div i18n-title="task_files_title">
                         <h4 i18n="task_files"></h4>
                         <div class="files"></div>
-                        <button class="save" data-bid="save_btn" i18n="common_save"></button>
+                        <button class="save" i18n="common_save"></button>
                     </div>
                     <div i18n-title="task_urls_title" data-http>
                         <h4 i18n="task_urls"></h4>
                         <div class="flex">
                             <input type="url">
-                            <button data-bid="uri_add_btn">➕</button>
+                            <button class="adduri">➕</button>
                         </div>
                         <div class="uris"></div>
                     </div>
@@ -128,20 +128,20 @@
             </div>
             <div class="file">
                 <input class="check" type="checkbox">
-                <label class="index" data-bid="file_alt_btn"></label>
+                <label class="index"></label>
                 <div class="name"></div>
                 <div class="size"></div>
                 <div class="ratio"></div>
             </div>
             <div class="uri">
-                <div class="link" data-bid="uri_alt_btn"></div>
+                <div class="link"></div>
                 <div class="used">0</div>
                 <div class="wait">0</div>
             </div>
         </div>
         <script src="/libs/aria2.js"></script>
         <script src="/pages/common.js"></script>
-        <script src="popup.js"></script>
         <script src="popup_extend.js"></script>
+        <script src="popup.js"></script>
     </body>
 </html>

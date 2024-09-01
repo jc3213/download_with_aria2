@@ -5,28 +5,19 @@ var aria2Upload = {
     metalink: [],
     meta4: []
 };
+
 var entry = document.getElementById('entries');
+var submitBtn = document.getElementById('submit');
 var settings = document.querySelectorAll('[name]');
 
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey && event.key === 'Enter') {
         event.preventDefault();
-        downloadSubmit();
+        submitBtn.click();
     }
 });
 
-document.addEventListener('click', (event) => {
-    switch (event.target.dataset.bid) {
-        case 'submit_btn':
-            downloadSubmit();
-            break;
-        case 'proxy_btn':
-            downloadProxy(event);
-            break;
-    }
-});
-
-async function downloadSubmit() {
+submitBtn.addEventListener('click', (event) => {
     var urls = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
     if (urls.length !== 1) {
         delete aria2Global['out'];
@@ -34,11 +25,11 @@ async function downloadSubmit() {
     urls = urls.map((url) => ({url, options: aria2Global}));
     chrome.runtime.sendMessage({action: 'message_download', params: {urls}});
     close();
-}
+});
 
-function downloadProxy(event) {
+document.getElementById('proxy').addEventListener('click', (event) => {
     event.target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Storage['proxy_server'];
-}
+});
 
 document.getElementById('download').addEventListener('change', (event) => {
     if (event.target.name) {
