@@ -7,7 +7,6 @@ var changes = {};
 var undoes = [];
 var undone = false;
 var redoes = [];
-var global = true;
 
 var extension = document.body.classList;
 var {version, manifest_version} = chrome.runtime.getManifest();
@@ -79,7 +78,7 @@ document.addEventListener('keydown', (event) => {
 
 saveBtn.addEventListener('click', (event) => {
     saveBtn.disabled = true;
-    global ? aria2SaveStorage(updated) : chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: changes}});
+    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: changes}}) : aria2SaveStorage(updated);
 });
 
 undoBtn.addEventListener('click', (event) => {
@@ -169,7 +168,6 @@ document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
         return;
     }
     optionEmptyChanges();
-    global = false;
     aria2Global = jsonrpc.disposition(aria2Conf);
     updated = {...aria2Global};
     aria2ver.textContent = aria2ua.textContent = aria2Version;
@@ -178,7 +176,6 @@ document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
 
 document.getElementById('goto-options').addEventListener('click', (event) => {
     optionEmptyChanges();
-    global = true;
     aria2OptionsSetup();
     extension.remove('jsonrpc');
 });
