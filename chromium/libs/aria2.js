@@ -7,7 +7,7 @@ class Aria2 {
         this.secret = path[3];
     }
     version = '0.7.0';
-    jsonrpc = { trial: 0, retry: 10, timeout: 10000 };
+    jsonrpc = { retry: 10, timeout: 10000 };
     set scheme (scheme) {
         this.call = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send }[ scheme ];
         if (!this.call) { throw new Error('Invalid JSON-RPC scheme: "' + scheme + '" is not supported!'); }
@@ -22,6 +22,7 @@ class Aria2 {
         this.jsonrpc.url = url;
         this.jsonrpc.path = this.jsonrpc.scheme + '://' + url;
         this.jsonrpc.ws = this.jsonrpc.path.replace('http', 'ws');
+        this.trial = 0;
         this.disconnect();
         this.connect();
     }
@@ -36,7 +37,6 @@ class Aria2 {
         return this.jsonrpc.secret;
     }
     set retry (number) {
-        this.jsonrpc.trial = 0;
         this.jsonrpc.retry = isNaN(number) || number <= 0 ? Infinity : number;
     }
     get retry () {
