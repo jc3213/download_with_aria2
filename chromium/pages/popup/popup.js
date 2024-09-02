@@ -51,12 +51,14 @@ purgeBtn.addEventListener('click', async (event) => {
     aria2Tasks.total = {...aria2Tasks.active, ...aria2Tasks.waiting};
 });
 
-function aria2ClientSetup() {
-    aria2RPC = new Aria2(aria2Scheme, aria2Url, aria2Secret);
+function aria2ClientSetup({jsonrpc = 'http://localhost:6800/jsonrpc', secret = '', interval = 10, proxy = ''}) {
+    aria2RPC = new Aria2(jsonrpc, secret);
     aria2RPC.retry = 0;
     aria2RPC.onmessage = aria2WebSocket;
     aria2RPC.onclose = aria2ClientWorker;
-    return aria2ClientWorker();
+    aria2Interval = interval * 1000;
+    aria2Proxy = proxy;
+    aria2ClientWorker();
 }
 
 function aria2ClientWorker() {

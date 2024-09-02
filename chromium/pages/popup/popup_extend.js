@@ -38,34 +38,28 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
         return;
     }
     var {storage, changes} = params;
-    aria2Variables(storage);
     if ('manager_newtab' in changes && !changes['manager_newtab']) {
         close();
     }
-    if (changes['manager_interval']) {
+    if ('manager_interval') {
         clearInterval(aria2Alive);
-        aria2Alive = setInterval(updateManager, aria2Interval);
+        aria2Interval = changes['manager_interval'] * 1000;
+        aria2Alive = setInterval(aria2ClientUpdate, aria2Interval);
     }
-    if (changes['jsonrpc_scheme']) {
-        aria2RPC.scheme = aria2Scheme;
+    if ('proxy_server' in changes) {
+        aria2Proxy = changes['proxy_server'];
     }
-    if (changes['jsonrpc_secret']) {
-        aria2RPC.secret = aria2Secret;
+    if ('jsonrpc_scheme' in changes) {
+        aria2RPC.scheme = changes['jsonrpc_scheme'];
     }
-    if (changes['jsonrpc_url']) {
-        aria2RPC.url = aria2Url;
+    if ('jsonrpc_secret' in changes) {
+        aria2RPC.secret = changes['jsonrpc_secret'];
+    }
+    if ('jsonrpc_url' in changes) {
+        aria2RPC.url = changes['jsonrpc_url'];
     }
 });
 
-function aria2Variables(json) {
-    aria2Scheme = json['jsonrpc_scheme']
-    aria2Url = json['jsonrpc_url'];
-    aria2Secret = json['jsonrpc_secret'];
-    aria2Interval = json['manager_interval'] * 1000;
-    aria2Proxy = json['proxy_server'];
-}
-
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
-    aria2Variables(storage);
-    aria2ClientSetup();
+    aria2ClientSetup({jsonrpc: storage['jsonrpc_scheme'] + '://' + storage['jsonrpc_url'], secret: storage['jsonrpc_secret'], interval: storage['manager_interval'], proxy: storage['proxy_server']});
 });
