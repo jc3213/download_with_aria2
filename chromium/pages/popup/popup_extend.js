@@ -47,7 +47,7 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
         aria2Alive = setInterval(aria2ClientUpdate, aria2Interval);
     }
     if ('proxy_server' in changes) {
-        aria2Proxy = changes['proxy_server'];
+        aria2Proxy = storage['proxy_server'];
     }
     if ('jsonrpc_scheme' in changes) {
         aria2RPC.scheme = storage['jsonrpc_scheme'];
