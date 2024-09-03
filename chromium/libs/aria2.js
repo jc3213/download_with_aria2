@@ -22,7 +22,7 @@ class Aria2 {
         this.jsonrpc.url = url;
         this.jsonrpc.path = this.jsonrpc.scheme + '://' + url;
         this.jsonrpc.ws = this.jsonrpc.path.replace('http', 'ws');
-        this.trial = 0;
+        this.jsonrpc.trial = 0;
         this.disconnect();
         this.connect();
     }
