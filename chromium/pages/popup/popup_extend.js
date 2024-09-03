@@ -41,22 +41,22 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     if ('manager_newtab' in changes && !changes['manager_newtab']) {
         close();
     }
-    if ('manager_interval') {
+    if ('manager_interval' in changes) {
         clearInterval(aria2Alive);
-        aria2Interval = changes['manager_interval'] * 1000;
+        aria2Interval = storage['manager_interval'] * 1000;
         aria2Alive = setInterval(aria2ClientUpdate, aria2Interval);
     }
     if ('proxy_server' in changes) {
         aria2Proxy = changes['proxy_server'];
     }
     if ('jsonrpc_scheme' in changes) {
-        aria2RPC.scheme = changes['jsonrpc_scheme'];
+        aria2RPC.scheme = storage['jsonrpc_scheme'];
     }
     if ('jsonrpc_secret' in changes) {
-        aria2RPC.secret = changes['jsonrpc_secret'];
+        aria2RPC.secret = storage['jsonrpc_secret'];
     }
     if ('jsonrpc_url' in changes) {
-        aria2RPC.url = changes['jsonrpc_url'];
+        aria2RPC.url = storage['jsonrpc_url'];
     }
 });
 

@@ -51,7 +51,7 @@ purgeBtn.addEventListener('click', async (event) => {
     aria2Tasks.total = {...aria2Tasks.active, ...aria2Tasks.waiting};
 });
 
-function aria2ClientSetup({jsonrpc = 'http://localhost:6800/jsonrpc', secret = '', interval = 10, proxy = ''}) {
+function aria2ClientSetup({jsonrpc, secret, interval, proxy}) {
     aria2RPC = new Aria2(jsonrpc, secret);
     aria2RPC.retry = 0;
     aria2RPC.onmessage = aria2WebSocket;
