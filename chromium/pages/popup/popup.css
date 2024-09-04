@@ -77,12 +77,12 @@ body {
 #queue > #error .options button,
 .session.http [data-p2p],
 .session.p2p [data-http],
-.retry, .save {
+.start, .save {
     display: none;
 }
 
-#queue > :nth-child(n+4) > .http .retry {
-    display: inline-block;
+#queue > :nth-child(n+4) > .http .start {
+    display: block;
 }
 
 #queue .meter {

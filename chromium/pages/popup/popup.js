@@ -169,7 +169,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.purge.addEventListener('click', (event) => taskRemove(task, gid));
     task.detail.addEventListener('click', (event) => taskDetail(task, gid));
-    task.restart.addEventListener('click', (event) => taskRetry(task, gid));
+    task.start.addEventListener('click', (event) => taskRetry(task, gid));
     task.meter.addEventListener('click', (event) => taskPause(task, gid));
     task.proxy.addEventListener('click', (event) => taskProxy(event.target.previousElementSibling, gid));
     task.save.addEventListener('click', (event) => taskChangeFiles(task, gid));
