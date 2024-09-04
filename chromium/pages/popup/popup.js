@@ -156,7 +156,7 @@ function taskElementSync({gid, status, files, bittorrent, completedLength, total
     task.ratio.textContent = percent;
     task.ratio.style.width = percent + '%';
     if (aria2Detail[gid]) {
-        files.forEach(({completedLength, index, length, uris}) => taskDetailSync(task.files[index], completedLength, length, task.uris, task.links, uris));
+        files.forEach(({completedLength, index, length, uris}) => taskDetailSync(gid, task.files[index], completedLength, length, task.uris, uris));
     }
     return task;
 }
@@ -166,7 +166,6 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.querySelectorAll('[class]').forEach((item) => task[item.className] = item);
     task.settings = task.querySelectorAll('input, select');
     task.id = gid;
-    task.links = [];
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.purge.addEventListener('click', (event) => taskRemove(task, gid));
     task.detail.addEventListener('click', (event) => taskDetail(task, gid));
@@ -195,20 +194,17 @@ function taskFileElementCreate(task, gid, list, {index, selected, path, length, 
     file.index.addEventListener('click', (event) => taskSelectFile(task));
     list[index] = file;
     list.appendChild(file);
-    uris.forEach((uri) => taskUriElementCreate(gid, task.uris, task.links, uri.uri));
+    uris.forEach((uri) => task.uris[uri] ??= taskUriElementCreate(gid, task.uris, uri.uri));
 }
 
-function taskUriElementCreate(gid, list, links, uri) {
-    if (list[uri]) {
-        return;
-    }
+function taskUriElementCreate(gid, list, uri) {
     var url = uriLET.cloneNode(true);
     url.querySelectorAll('*').forEach((div) => url[div.className] = div);
     url.link.addEventListener('click', (event) => taskRemoveUri(event, gid, uri));
     url.link.title = url.link.textContent = uri;
     list[uri] = url;
     list.appendChild(url);
-    links.push(uri);
+    return url;
 }
 
 async function taskRemove(task, gid) {
@@ -255,22 +251,26 @@ function taskDetailOpened(task, gid, files, options) {
         file.name.textContent = path.slice(path.lastIndexOf('/') + 1);
         file.name.title = path;
         file.size.textContent = getFileSize(length);
-        taskDetailSync(gid, file, completedLength, length, task.uris, task.links, uris);
+        taskDetailSync(gid, file, completedLength, length, task.uris, uris);
     });
 }
 
-function taskDetailSync(gid, file, completed, length, list, links, uris) {
+function taskDetailSync(gid, file, completed, length, list, uris) {
     file.ratio.textContent = (completed / length * 10000 | 0) / 100;
     if (uris.length === 0) {
         return;
     }
+    var links = [];
     var result = {};
     uris.forEach(({uri, status}) => {
-        taskUriElementCreate(gid, list, links, uri);
-        result[uri] ??= {used: 0, wait: 0};
+        if (!result[uri]) {
+            list[uri] ??= taskUriElementCreate(gid, list, uri);
+            result[uri] = {used: 0, wait: 0};
+            links.push(uri);
+        }
         status === 'used' ? result[uri].used ++ : result[uri].wait ++;
     });
-    links = links.filter((uri) => {
+    links.filter((uri) => {
         if (!result[uri]) {
             list[uri].remove();
             delete list[uri];
