@@ -31,10 +31,6 @@ document.addEventListener('keydown', (event) => {
                 break;
         }
     }
-    else if (event.altKey && event.key === 's') {
-        event.preventDefault();
-        submitBtn.click();
-    }
 });
 
 selectAll.addEventListener('click', (event) => {
