@@ -105,6 +105,7 @@ body {
     background-color: #d7ad51;
 }
 
+#queue > :nth-child(1) [data-done="true"] .name::before,
 #queue > :nth-child(4) .name::before,
 #queue > :nth-child(4) .meter > .ratio {
     background-color: #146032;
@@ -162,7 +163,7 @@ body {
     margin-bottom: 5px;
     display: grid;
     gap: 3px;
-    grid-template-columns: repeat(3, 1fr) 22.5px;
+    grid-template-columns: repeat(3, 1fr) 25px;
 }
 
 .session > .name {
@@ -184,10 +185,8 @@ body {
 }
 
 .session > .manage > button {
-    font-size: 14px;
-    padding: 1px;
-    width: 22px;
-    height: 22px;
+    padding: 0px;
+    width: 25px;
 }
 
 .session > .manage > :nth-child(n+2) {

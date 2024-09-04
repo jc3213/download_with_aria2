@@ -77,14 +77,26 @@
     "common_save": {
         "message": "Save"
     },
-    "select_all": {
-        "message": "Select All"
+    "add_match_pattern": {
+        "message": "Add new match patterns"
     },
-    "select_none": {
-        "message": "Select None"
+    "sort_match_pattern": {
+        "message": "Resort match patterns"
     },
-    "select_flip": {
-        "message": "Flip Selection"
+    "remove_match_pattern": {
+        "message": "Remove this match pattern"
+    },
+    "append_proxy_server": {
+        "message": "Append preferred proxy server"
+    },
+    "remove_download": {
+        "message": "Remove this download"
+    },
+    "detail_download": {
+        "message": "Toggle detail of this download"
+    },
+    "restart_download": {
+        "message": "Restart this download"
     },
     "option_undo": {
         "message": "Undo"
@@ -364,6 +376,15 @@
     },
     "task_files_title": {
         "message": "Files that are selected for this download"
+    },
+    "select_all": {
+        "message": "Select All"
+    },
+    "select_none": {
+        "message": "Select None"
+    },
+    "select_flip": {
+        "message": "Flip Selection"
     },
     "aria2_true": {
         "message": "True"

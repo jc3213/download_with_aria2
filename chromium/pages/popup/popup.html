@@ -47,49 +47,49 @@
                 <div>⏬ <span class="download"></span></div>
                 <div data-p2p>⏫ <span class="upload"></span></div>
                 <div class="manage">
-                    <button class="purge">❌</button>
-                    <button class="detail">⚙️</button>
-                    <button class="retry">♻️</button>
+                    <button class="purge" i18n-tips="remove_download"">❌</button>
+                    <button class="detail" i18n-tips="detail_download">⚙️</button>
+                    <button class="restart" i18n-tips="restart_download">♻️</button>
                 </div>
                 <div class="meter">
                     <div class="ratio"></div>
                 </div>
                 <div class="options">
-                    <div class="menu" i18n-title="task_download_title">
+                    <div class="menu" i18n-tips="task_download_title">
                         <h4 i18n="task_download"></h4>
                         <div>
                             <input name="max-download-limit" type="text">
                             <span>B/s</span>
                         </div>
                     </div>
-                    <div class="menu" i18n-title="task_upload_title" data-p2p>
+                    <div class="menu" i18n-tips="task_upload_title" data-p2p>
                         <h4 i18n="task_upload"></h4>
                         <div>
                             <input name="max-upload-limit" type="text">
                             <span>B/s</span>
                         </div>
                     </div>
-                    <div class="menu" i18n-title="task_proxy_title">
+                    <div class="menu" i18n-tips="task_proxy_title">
                         <h4 i18n="task_proxy"></h4>
                         <div class="flex">
                             <input name="all-proxy" type="url">
-                            <button class="proxy">⚡️</button>
+                            <button class="proxy" i18n-tips="append_proxy_server">⚡️</button>
                         </div>
                     </div>
-                    <div class="menu" i18n-title="aria2_http_split_title" data-http>
+                    <div class="menu" i18n-tips="aria2_http_split_title" data-http>
                         <h4 i18n="aria2_http_split"></h4>
                         <div>
                             <input name="split" type="number">
                         </div>
                     </div>
-                    <div class="menu" i18n-title="aria2_http_size_title" data-http>
+                    <div class="menu" i18n-tips="aria2_http_size_title" data-http>
                         <h4 i18n="aria2_http_size"></h4>
                         <div>
                             <input name="min-split-size" type="text">
                             <span>B</span>
                         </div>
                     </div>
-                    <div class="menu" i18n-title="aria2_bt_remove_title" data-p2p>
+                    <div class="menu" i18n-tips="aria2_bt_remove_title" data-p2p>
                         <h4 i18n="aria2_bt_remove"></h4>
                         <div>
                             <select name="bt-remove-unselected-file">
@@ -98,25 +98,25 @@
                             </select>
                         </div>
                     </div>
-                    <div class="menu" i18n-title="aria2_bt_ratio_title" data-p2p>
+                    <div class="menu" i18n-tips="aria2_bt_ratio_title" data-p2p>
                         <h4 i18n="aria2_bt_ratio"></h4>
                         <div>
                             <input name="seed-ratio" type="number" min="0" step="0.1">
                         </div>
                     </div>
-                    <div class="menu" i18n-title="aria2_bt_seed_title" data-p2p>
+                    <div class="menu" i18n-tips="aria2_bt_seed_title" data-p2p>
                         <h4 i18n="aria2_bt_seed"></h4>
                         <div>
                             <input name="seed-time" type="number">
                             <span i18n="time_minute_full"></span>
                         </div>
                     </div>
-                    <div i18n-title="task_files_title">
+                    <div i18n-tips="task_files_title">
                         <h4 i18n="task_files"></h4>
                         <div class="files"></div>
                         <button class="save" i18n="common_save"></button>
                     </div>
-                    <div i18n-title="task_urls_title" data-http>
+                    <div i18n-tips="task_urls_title" data-http>
                         <h4 i18n="task_urls"></h4>
                         <div class="flex">
                             <input type="url">

@@ -77,14 +77,26 @@
     "common_save": {
         "message": "保存"
     },
-    "select_all": {
-        "message": "选择全部"
+    "add_match_pattern": {
+        "message": "添加匹配规则"
     },
-    "select_none": {
-        "message": "取消全部"
+    "sort_match_pattern": {
+        "message": "排序匹配规则"
     },
-    "select_flip": {
-        "message": "反转选择"
+    "remove_match_pattern": {
+        "message": "删除此匹配规则"
+    },
+    "append_proxy_server": {
+        "message": "添加预设的代理服务器"
+    },
+    "remove_download": {
+        "message": "移除此下载"
+    },
+    "detail_download": {
+        "message": "切换下载详情"
+    },
+    "restart_download": {
+        "message": "重启此下载"
     },
     "option_undo": {
         "message": "撤销"
@@ -364,6 +376,15 @@
     },
     "task_files_title": {
         "message": "本次下载中正在下载的文件"
+    },
+    "select_all": {
+        "message": "选择全部"
+    },
+    "select_none": {
+        "message": "取消全部"
+    },
+    "select_flip": {
+        "message": "反转选择"
     },
     "aria2_true": {
         "message": "是"
