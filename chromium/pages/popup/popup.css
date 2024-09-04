@@ -72,17 +72,13 @@ body {
     pointer-events: none;
 }
 
-#queue > #complete .options button,
-#queue > #removed .options button,
-#queue > #error .options button,
+#queue > :nth-child(n + 4) .options button,
+#queue > :nth-child(-n + 3) .start,
+#queue > :nth-child(n + 4) > :not(.http) .start,
 .session.http [data-p2p],
 .session.p2p [data-http],
-.start, .save {
+.session .save {
     display: none;
-}
-
-#queue > :nth-child(n+4) > .http .start {
-    display: block;
 }
 
 #queue .meter {
@@ -163,7 +159,7 @@ body {
     margin-bottom: 5px;
     display: grid;
     gap: 3px;
-    grid-template-columns: repeat(3, 1fr) 25px;
+    grid-template-columns: repeat(3, 1fr) auto;
 }
 
 .session > .name {
@@ -186,7 +182,8 @@ body {
 
 .session > .manage > button {
     padding: 0px;
-    width: 25px;
+    width: 23px;
+    display: block;
 }
 
 .session > .manage > :nth-child(n+2) {
