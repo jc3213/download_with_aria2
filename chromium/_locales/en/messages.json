@@ -86,14 +86,14 @@
     "remove_match_pattern": {
         "message": "Remove this match pattern"
     },
-    "append_proxy_server": {
-        "message": "Append preferred proxy server"
+    "apply_proxy_server": {
+        "message": "Apply preset proxy server for this download"
     },
     "remove_download": {
         "message": "Remove this download"
     },
     "detail_download": {
-        "message": "Toggle detail of this download"
+        "message": "Toggle the detail of this download"
     },
     "restart_download": {
         "message": "Restart this download"
@@ -231,7 +231,7 @@
         "message": "Proxy Server"
     },
     "option_proxy_title": {
-        "message": "Set your preferred proxy server"
+        "message": "Set the preset proxy server for downloads"
     },
     "option_proxy_include_title": {
         "message": "Add proxy server for new downloads from these hosts"

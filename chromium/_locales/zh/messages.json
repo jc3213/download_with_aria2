@@ -86,7 +86,7 @@
     "remove_match_pattern": {
         "message": "删除此匹配规则"
     },
-    "append_proxy_server": {
+    "apply_proxy_server": {
         "message": "添加预设的代理服务器"
     },
     "remove_download": {
@@ -231,7 +231,7 @@
         "message": "代理服务器"
     },
     "option_proxy_title": {
-        "message": "设置首选的代理服务器"
+        "message": "设置下载用的预设代理服务器"
     },
     "option_proxy_include_title": {
         "message": "为所设置域名的下载添加代理服务器"
