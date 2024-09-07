@@ -191,12 +191,20 @@ body {
 }
 
 .session > .meter {
-    grid-area: 4 / 1 / 4 / 5;
+    grid-area: 4 / 1 / 5 / 5;
     text-align: center;
 }
 
 .session > .options {
-    grid-area: 5 / 1 / 5 / 5;
+    grid-area: 5 / 1 / 6 / 5;
+}
+
+.session > .files {
+    grid-area: 6 / 1 / 7 / 5;
+}
+
+.session > .uris {
+    grid-area: 7 / 1 / 8 / 5;
 }
 
 .session .save {
@@ -232,7 +240,7 @@ body {
     padding: 3px 0px;
 }
 
-.session:not(.extra) > .options {
+.session:not(.extra) > :nth-last-child(-n+3) {
     display: none;
 }
 

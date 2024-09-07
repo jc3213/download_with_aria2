@@ -164,21 +164,19 @@ function taskElementSync({gid, status, files, bittorrent, completedLength, total
 function taskElementCreate(gid, status, bittorrent, files) {
     var task = sessionLET.cloneNode(true);
     task.querySelectorAll('[class]').forEach((item) => task[item.className] = item);
-    task.settings = task.querySelectorAll('input, select');
+    task.entries = task.querySelectorAll('[name]');
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.purge.addEventListener('click', (event) => taskRemove(task, gid));
     task.detail.addEventListener('click', (event) => taskDetail(task, gid));
     task.start.addEventListener('click', (event) => taskRetry(task, gid));
     task.meter.addEventListener('click', (event) => taskPause(task, gid));
-    task.proxy.addEventListener('click', (event) => taskProxy(event.target.previousElementSibling, gid));
+    task.proxy.addEventListener('click', (event) => taskProxy(task, gid, event.target.previousElementSibling));
     task.save.addEventListener('click', (event) => taskChangeFiles(task, gid));
-    task.adduri.addEventListener('click', (event) => taskAddUri(event.target.previousElementSibling, gid));
-    task.addEventListener('change', (event) => {
-        if (event.target.name) {
-            task.options[event.target.name] = event.target.value;
-            aria2RPC.call({method: 'aria2.changeOption', params: [gid, task.options]});
-        }
+    task.adduri.addEventListener('click', (event) => taskAddUri(task, gid, event.target.previousElementSibling));
+    task.options.addEventListener('change', (event) => {
+        task.settings[event.target.name] = event.target.value;
+        aria2RPC.call({method: 'aria2.changeOption', params: [gid, task.settings]});
     });
     taskStatusChange(task, gid, status);
     files.forEach((file) => taskFileElementCreate(task, gid, task.files, file));
@@ -248,7 +246,7 @@ function taskDetailOpened(task, gid, files, options) {
     options['min-split-size'] = getFileSize(options['min-split-size']);
     options['max-download-limit'] = getFileSize(options['max-download-limit']);
     options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
-    task.options = task.settings.disposition(options);
+    task.settings = task.entries.disposition(options);
     files.forEach(({index, length, completedLength, path, selected, uris}) => {
         var file = task.files[index];
         file.check.checked = selected === 'true';
@@ -314,7 +312,7 @@ async function taskPause(task, gid) {
     }
 }
 
-async function taskProxy(entry, gid) {
+async function taskProxy(task, gid, entry) {
     await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2Proxy}]});
     entry.value = aria2Proxy;
     task.scrollIntoView({block: 'nearest'});
@@ -330,7 +328,7 @@ function taskSelectFile(task) {
     task.save.style.display = 'block';
 }
 
-async function taskAddUri(entry, gid) {
+async function taskAddUri(task, gid, entry) {
     await aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [], [entry.value]]});
     entry.value = '';
 }
