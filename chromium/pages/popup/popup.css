@@ -101,7 +101,6 @@ body {
     background-color: #d7ad51;
 }
 
-#queue > :nth-child(1) [data-done="true"] .name::before,
 #queue > :nth-child(4) .name::before,
 #queue > :nth-child(4) .meter > .ratio {
     background-color: #146032;
