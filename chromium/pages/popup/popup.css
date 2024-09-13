@@ -67,8 +67,7 @@ body {
     filter: contrast(25%);
 }
 
-.session.http label,
-.session[data-done="true"] label {
+.session.http label {
     pointer-events: none;
 }
 
