@@ -178,34 +178,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
         aria2RPC.call({method: 'aria2.changeOption', params: [gid, task.settings]});
     });
     taskStatusChange(task, gid, status);
-    files.forEach((file) => taskFileElementCreate(task, gid, task.files, file));
     return task;
-}
-
-function taskFileElementCreate(task, gid, list, {index, selected, path, length, uris}) {
-    var file = fileLET.cloneNode(true);
-    file.querySelectorAll('*').forEach((item) => file[item.className] = item);
-    file.check.id = gid + '_' + index;
-    file.index.textContent = index;
-    file.index.setAttribute('for', file.check.id);
-    file.index.addEventListener('click', (event) => taskSelectFile(task));
-    list[index] = file;
-    list.appendChild(file);
-    task.uris.uris = [];
-    uris.forEach((uri) => taskUriElementCreate(gid, task.uris, uri.uri));
-}
-
-function taskUriElementCreate(gid, list, uri) {
-    if (list[uri]) {
-        return;
-    }
-    var url = uriLET.cloneNode(true);
-    url.querySelectorAll('*').forEach((div) => url[div.className] = div);
-    url.link.addEventListener('click', (event) => taskRemoveUri(event, gid, uri));
-    url.link.title = url.link.textContent = uri;
-    list.uris.push(uri);
-    list[uri] = url;
-    list.appendChild(url);
 }
 
 async function taskRemove(task, gid) {
@@ -246,8 +219,9 @@ function taskDetailOpened(task, gid, files, options) {
     options['max-download-limit'] = getFileSize(options['max-download-limit']);
     options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
     task.settings = task.entries.disposition(options);
+    task.uris.uris = [];
     files.forEach(({index, length, completedLength, path, selected, uris}) => {
-        var file = task.files[index];
+        var file = task.files[index] ?? taskFileElementCreate(task, gid, task.files, index, selected, path, length, uris);
         file.check.checked = selected === 'true';
         file.name.textContent = path.slice(path.lastIndexOf('/') + 1);
         file.name.title = path;
@@ -279,6 +253,31 @@ function taskDetailSync(gid, file, completed, length, list, uris) {
         list[uri].wait.textContent = result[uri].wait;
         return true;
     });
+}
+
+function taskFileElementCreate(task, gid, list, index, selected, path, length, uris) {
+    var file = fileLET.cloneNode(true);
+    file.querySelectorAll('*').forEach((item) => file[item.className] = item);
+    file.check.id = gid + '_' + index;
+    file.index.textContent = index;
+    file.index.setAttribute('for', file.check.id);
+    file.index.addEventListener('click', (event) => taskSelectFile(task));
+    list[index] = file;
+    list.appendChild(file);
+    return file;
+}
+
+function taskUriElementCreate(gid, list, uri) {
+    if (list[uri]) {
+        return;
+    }
+    var url = uriLET.cloneNode(true);
+    url.querySelectorAll('*').forEach((div) => url[div.className] = div);
+    url.link.addEventListener('click', (event) => taskRemoveUri(event, gid, uri));
+    url.link.title = url.link.textContent = uri;
+    list.uris.push(uri);
+    list[uri] = url;
+    list.appendChild(url);
 }
 
 async function taskRetry(task, gid) {
