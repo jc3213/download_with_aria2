@@ -1,7 +1,7 @@
 # Download with Aria2
 
 ## Install
-| <a href="https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec"><img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" width="64" height="64"></a> | <a href="https://addons.mozilla.org/firefox/addon/download-with-aria2/"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Firefox_51.0.1.svg" width="64" height="64"></a> | TBA |
+| <a href="https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec"><img src="https://edgestatic.azureedge.net/shared/cms/lrs1c69a1j/section-images/2c3f3c46bd764335beec466a0acfde0e.png" width="64" height="64"></a> | <a href="https://addons.mozilla.org/firefox/addon/download-with-aria2/"><img src="https://www.mozilla.org/media/protocol/img/logos/firefox/browser/logo.svg" width="64" height="64"></a> | TBA |
 | - | - | - |
 
 ## About
