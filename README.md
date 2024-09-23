@@ -1,7 +1,7 @@
 # Download with Aria2
 
 ## Install
-| <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg" width="64" height="64"> | <a href="https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec"><img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" width="64" height="64"></a> | <a href="https://addons.mozilla.org/firefox/addon/download-with-aria2/"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Firefox_51.0.1.svg" width="64" height="64"></a> |
+| ~~TBA~~ | <a href="https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec"><img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" width="64" height="64"></a> | <a href="https://addons.mozilla.org/firefox/addon/download-with-aria2/"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Firefox_51.0.1.svg" width="64" height="64"></a> |
 | - | - | - |
 
 ## About
