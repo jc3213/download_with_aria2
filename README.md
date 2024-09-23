@@ -1,7 +1,13 @@
+# Download with Aria2
+
+## Install
+| Google Chrome | Microsoft Edge | Mozilla Firefox |
+| - | - | - |
+| ~~TBA~~ | <a href="https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec"><img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" width="64" height="64"></a> | <a href="https://addons.mozilla.org/firefox/addon/download-with-aria2/"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Firefox_51.0.1.svg" width="64" height="64"></a> |
+
 ## About
 - The browser extension for [aria2 - ultra fast download utility](https://github.com/aria2/aria2) via JSON-RPC
     - The development is based on [aria2.js](https://github.com/jc3213/aria2.js) 
-    - Install this extension for ~~Google Chrome~~, [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/cgoonbdaiddmlpnneceehfamhjmkbmec), and [Mozilla Firefox](https://addons.mozilla.org/firefox/addon/download-with-aria2/)
     - Read [Wiki](//github.com/jc3213/download_with_aria2/wiki) for usage, and [how to build](//github.com/jc3213/download_with_aria2/wiki/HowToBuild)
     - Send feedback at [issues page](//github.com/jc3213/download_with_aria2/issues/new/)
 - Built-in Task Manager
