@@ -35,23 +35,18 @@
     - When extension installed, or updated
 
 ## Screenshot
-<details>
-    <summary>Options: Extension</summary>
-    <br><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/0da3a3ef-3b43-4fbd-ad06-4daa57e3753f">
-</details>
-<details>
-    <summary>Options: JSON-RPC</summary>
-    <br><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/3152302d-ef1f-410a-8ea1-534380c13e1b">
-</details>
-<details>
-    <summary>Task Manager</summary>
-    <br><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/2e007b6b-bce2-4da0-ba6d-6efa6df57746">
-</details>
-<details>
-    <summary>New Download</summary>
-    <br><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/965f1be8-99e6-4485-985a-96f47a13267b">
-</details>
-<details>
-    <summary>Detected Images</summary>
-    <br><img src="https://github.com/jc3213/download_with_aria2/assets/8744936/5626cb60-0dd8-42ff-88c4-0b9e16e80a1c">
-</details>
+
+### Options: Extension
+![!Options: Extension](https://github.com/jc3213/download_with_aria2/assets/8744936/0da3a3ef-3b43-4fbd-ad06-4daa57e3753f "Options: Extension")
+
+### Options: JSON-RPC
+![!Options: JSON-RPC](https://github.com/jc3213/download_with_aria2/assets/8744936/3152302d-ef1f-410a-8ea1-534380c13e1b "Options: JSON-RPC")
+
+### Task Manager
+![!Task Manager](https://github.com/jc3213/download_with_aria2/assets/8744936/2e007b6b-bce2-4da0-ba6d-6efa6df57746 "Task Manager")
+
+### New Download
+<i![!New Download](https://github.com/jc3213/download_with_aria2/assets/8744936/965f1be8-99e6-4485-985a-96f47a13267b "New Download")
+
+### Detected Images
+![!Detected Images](https://github.com/jc3213/download_with_aria2/assets/8744936/5626cb60-0dd8-42ff-88c4-0b9e16e80a1c "Detected Images")
