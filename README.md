@@ -7,10 +7,11 @@
 ## About
 - The browser extension for [aria2 - ultra fast download utility](https://github.com/aria2/aria2) via JSON-RPC
     - The development is based on [aria2.js](https://github.com/jc3213/aria2.js) 
-    - Read [Wiki](//github.com/jc3213/download_with_aria2/wiki) for usage, and [how to build](//github.com/jc3213/download_with_aria2/wiki/HowToBuild)
+    - Read [Wiki](//github.com/jc3213/download_with_aria2/wiki) for usage
     - Send feedback at [issues page](//github.com/jc3213/download_with_aria2/issues/new/)
 - Built-in Task Manager
-    - [Github Repository](https://github.com/jc3213/aria2.app) | [Github Pages](https://jc3213.github.io/aria2.app/)
+    - Parted to [Github Repository](https://github.com/jc3213/aria2.js/tree/main/manager)
+    - Try [Github Pages](https://jc3213.github.io/aria2.js/manager)
 - Context menus
     - Download this link
     - Download this image
