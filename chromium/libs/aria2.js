@@ -46,7 +46,7 @@ class Aria2 {
         this.jsonrpc.timeout = isNaN(number) ? 10000 : number <= 3 ? 3000 : number * 1000;
     }
     get timeout () {
-        return this.jsonrpc.timeout / 1000;
+        return this.jsonrpc.timeout / 1000 | 0;
     }
     connect () {
         this.socket = new Promise((resolve, reject) => {
@@ -71,13 +71,13 @@ class Aria2 {
         this.jsonrpc.onmessage = typeof callback === 'function' ? callback : null;
     }
     get onmessage () {
-        return this.jsonrpc.onmessage;
+        return this.jsonrpc.onmessage ? this.jsonrpc.onmessage : null;
     }
     set onclose (callback) {
         this.jsonrpc.onclose = typeof callback === 'function' ? callback : null;
     }
     get onclose () {
-        return this.jsonrpc.onclose;
+        return this.jsonrpc.onclose ? this.jsonrpc.onclose : null;
     }
     send (...args) {
         return this.socket.then((ws) => new Promise((resolve, reject) => {
