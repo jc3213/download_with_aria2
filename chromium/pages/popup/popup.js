@@ -209,7 +209,7 @@ async function taskDetail(task, gid) {
     }
     var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
     task.classList.add('extra');
-    task.scrollIntoView({block: 'nearest'});
+    task.scrollIntoView({block: 'start'});
     aria2Detail[gid] = true;
     taskDetailOpened(task, gid, files.result, options.result);
 }
@@ -313,7 +313,7 @@ async function taskPause(task, gid) {
 async function taskProxy(task, gid, entry) {
     await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2Proxy}]});
     entry.value = aria2Proxy;
-    task.scrollIntoView({block: 'nearest'});
+    task.scrollIntoView({block: 'start'});
 }
 
 async function taskChangeFiles(task, gid) {
