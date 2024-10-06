@@ -78,7 +78,6 @@ option:checked {
 }
 
 button {
-    width: fit-content;
     padding: 3px 5px;
     border-width: 1px;
     border-style: outset;
