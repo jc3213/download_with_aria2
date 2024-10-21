@@ -33,6 +33,10 @@ body, div {
     position: relative;
 }
 
+body {
+    margin: 8px;
+}
+
 span, label {
     display: inline-block;
 }

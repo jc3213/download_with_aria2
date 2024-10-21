@@ -71,6 +71,12 @@
     "common_disabled": {
         "message": "禁用"
     },
+    "common_true": {
+        "message": "是"
+    },
+    "common_false": {
+        "message": "否"
+    },
     "common_submit": {
         "message": "确认"
     },
@@ -385,12 +391,6 @@
     },
     "select_flip": {
         "message": "反转选择"
-    },
-    "aria2_true": {
-        "message": "是"
-    },
-    "aria2_false": {
-        "message": "否"
     },
     "aria2_options": {
         "message": "通用设置"

@@ -1,6 +1,6 @@
 body {
-    margin: auto;
     width: 680px;
+    margin: auto;
 }
 
 body:not(.jsonrpc) [data-rel="jsonrpc"],

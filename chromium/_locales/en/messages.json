@@ -71,6 +71,12 @@
     "common_disabled": {
         "message": "Disabled"
     },
+    "common_true": {
+        "message": "True"
+    },
+    "common_false": {
+        "message": "False"
+    },
     "common_submit": {
         "message": "Submit"
     },
@@ -385,12 +391,6 @@
     },
     "select_flip": {
         "message": "Flip Selection"
-    },
-    "aria2_true": {
-        "message": "True"
-    },
-    "aria2_false": {
-        "message": "False"
     },
     "aria2_options": {
         "message": "Common Settings"
