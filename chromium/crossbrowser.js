@@ -322,7 +322,7 @@ function aria2CaptureResult(hostname, filename, filesize) {
 function aria2WhenInstall(reason) {
     if (aria2Storage['notify_install']) {
         var title = chrome.i18n.getMessage('extension_' + reason);
-        var message = chrome.i18n.getMessage('extension_version').replace('{ver}', aria2Manifest.version);
+        var message = chrome.i18n.getMessage('extension_version').replace('{version}', aria2Manifest.version);
         return getNotification(title, message);
     }
 }

@@ -12,7 +12,10 @@
         "message": "Extension Update"
     },
     "extension_version": {
-        "message": "The v{ver} has been installed!"
+        "message": "The v{version} has been installed!"
+    },
+    "extension_echo": {
+        "message": "The browser has installed {name} v{version}"
     },
     "shortcut_options": {
         "message": "Open options"

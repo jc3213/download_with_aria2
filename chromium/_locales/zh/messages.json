@@ -12,7 +12,10 @@
         "message": "扩展升级"
     },
     "extension_version": {
-        "message": "已安装版本v{ver}！"
+        "message": "已安装版本v{version}！"
+    },
+    "extension_echo": {
+        "message": "浏览器已安装 {name} v{version}"
     },
     "shortcut_options": {
         "message": "打开设置"
