@@ -1,10 +1,5 @@
 var aria2Storage = {};
 var aria2Global = {};
-var aria2Upload = {
-    torrent: [],
-    metalink: [],
-    meta4: []
-};
 
 var entry = document.getElementById('entries');
 var submitBtn = document.getElementById('submit');
@@ -22,8 +17,8 @@ submitBtn.addEventListener('click', (event) => {
     if (urls.length !== 1) {
         delete aria2Global['out'];
     }
-    urls = urls.map((url) => ({url, options: aria2Global}));
-    chrome.runtime.sendMessage({action: 'message_download', params: {urls}});
+    var params = urls.map((url) => ({url, options: aria2Global}));
+    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params });
     close();
 });
 
@@ -38,26 +33,26 @@ document.getElementById('download').addEventListener('change', (event) => {
 });
 
 document.getElementById('uploader').addEventListener('change', async (event) => {
-    await Promise.all([...event.target.files].map((file) => new Promise((resolve) => {
+    var options = {...aria2Global, out: null, referer: null};
+    var result = [...event.target.files].map((file) => new Promise((resolve) => {
+        var name = file.name;
         var reader = new FileReader();
         reader.onload = (event) => {
-            var {name} = file;
-            var type = name.slice(name.lastIndexOf('.') + 1);
+            var type = file.name.slice(name.lastIndexOf('.') + 1);
             var body = reader.result.slice(reader.result.indexOf(',') + 1);
-            var data = aria2Upload[type].push({name: file.name, body, options: aria2Global});
-            resolve(data);
+            var metadata = type === 'torrent' ? { method: 'aria2.addTorrent', params: [body, [], options] } : { method: 'aria2.addMetalink', params: [body, options] };
+            resolve({name: file.name, metadata});
         };
         reader.readAsDataURL(file);
-    })));
-    var params = {torrents: aria2Upload.torrent, metalinks: [...aria2Upload.metalink, ...aria2Upload.meta4]};
-    chrome.runtime.sendMessage({action: 'message_download', params});
+    }));
+    var params = await Promise.all(result);
+    chrome.runtime.sendMessage({action: 'jsonrpc_metadata', params});
     close();
 });
 
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc}) => {
     chrome.tabs.query({active: true, currentWindow: false}, (tabs) => {
         aria2Storage = storage;
-        jsonrpc['user-agent'] = storage['headers_useragent'];
         jsonrpc['referer'] = tabs[0].url;
         aria2Global = settings.disposition(jsonrpc);
     });

@@ -154,8 +154,11 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
         case 'jsonrpc_onchange':
             aria2RPCOptionsChanged(params);
             break;
-        case 'message_download':
+        case 'jsonrpc_download':
             aria2MessageHandler(params);
+            break;
+        case 'jsonrpc_metadata':
+            aria2MetadataHandler(params);
             break;
         case 'open_new_download':
             aria2DownloadPrompt();
@@ -172,20 +175,21 @@ function aria2SendResponse(tabId, response) {
     });
 }
 
-async function aria2MessageHandler({urls, torrents, metalinks}) {
+async function aria2MessageHandler(urls) {
     var message = '';
-    var session = [];
-    urls?.forEach(({url, options = {}}) => {
+    var session = urls.map(({url, options = {}}) => {
         message += url + '\n';
-        session.push({method: 'aria2.addUri', params: [[url], options]});
+        return { method: 'aria2.addUri', params: [ [url], options ] };
     });
-    torrents?.forEach(({name, body, options = {}}) => {
+    await aria2RPC.call(...session);
+    await aria2WhenStart(message);
+}
+
+async function aria2MetadataHandler(files) {
+    var message = '';
+    var session = files.map(({name, metadata}) => {
         message += name + '\n';
-        session.push({method: 'aria2.addTorrent', params: [body, [], options]});
-    });
-    metalinks?.map(({name, body, options = {}}) => {
-        message += name + '\n';
-        session.push({method: 'aria2.addMetalink', params: [body, options]});
+        return metadata;
     });
     await aria2RPC.call(...session);
     await aria2WhenStart(message);
