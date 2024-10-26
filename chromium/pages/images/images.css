@@ -11,7 +11,7 @@ body:not(.extra) #options {
     display: none;
 }
 
-.extra [data-bid="options_btn"] {
+.extra > #menu > :last-child {
     border-style: inset;
 }
 
