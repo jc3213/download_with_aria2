@@ -18,6 +18,7 @@
     "headers_exclude": [],
     "headers_override": false,
     "headers_useragent": "Transmission/4.0.0",
+    "jsonrpc_retries":, 0,
     "jsonrpc_host": "localhost:6800",
     "jsonrpc_scheme": "http",
     "jsonrpc_secret": "",
