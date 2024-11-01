@@ -1,7 +1,7 @@
 importScripts('libs/aria2.js', 'crossbrowser.js');
 
 function aria2CaptureFilename({id, finalUrl, referrer, filename, fileSize}) {
-    if (finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
+    if (!aria2RPC.connected || finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
         return;
     }
     var hostname = referrer ? getHostname(referrer) : getHostname(finalUrl);
