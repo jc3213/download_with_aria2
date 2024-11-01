@@ -18,7 +18,7 @@ function aria2CaptureSwitch() {
 }
 
 async function aria2CaptureDownloads({id, url, referrer, filename, fileSize, cookieStoreId}) {
-    if (!aria2RPC.connected || url.startsWith('data') || url.startsWith('blob')) {
+    if (!aria2RPC.alive || url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
     var hostname = getHostname(referrer);
@@ -32,7 +32,7 @@ async function aria2CaptureDownloads({id, url, referrer, filename, fileSize, coo
 }
 
 async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeaders, tabId}) {
-    if (!aria2RPC.connected || statusCode !== 200) {
+    if (!aria2RPC.alive || statusCode !== 200) {
         return;
     }
     var result = {};
