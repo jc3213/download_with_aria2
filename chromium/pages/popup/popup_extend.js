@@ -62,7 +62,7 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
 
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
     aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
-    aria2RPC.retries = 0;
+    aria2RPC.retries = storage['jsonrpc_retries'] || 0;
     aria2RPC.onmessage = aria2WebSocket;
     aria2RPC.onclose = aria2ClientWorker;
     aria2Delay = storage['manager_interval'] * 1000;
