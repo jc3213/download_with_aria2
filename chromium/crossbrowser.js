@@ -2,7 +2,7 @@ var aria2Default = {
     'jsonrpc_scheme': 'http',
     'jsonrpc_url': 'localhost:6800/jsonrpc',
     'jsonrpc_secret': '',
-    'jsonrpc_retries': 5,
+    'jsonrpc_retries': 0,
     'manager_newtab': false,
     'manager_interval': 10,
     'context_enabled': true,
@@ -250,7 +250,7 @@ function aria2UpdateStorage(json) {
 chrome.storage.sync.get(null, (json) => {
     aria2UpdateStorage({...aria2Default, ...json});
     aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
-    aria2RPC.retries = aria2Storage['jsonrpc_retries'] || Infinity;
+    aria2RPC.retries = aria2Storage['jsonrpc_retries'];
     aria2RPC.onmessage = aria2WebSocket;
     aria2RPC.onclose = aria2ClientWorker;
     aria2ClientWorker();

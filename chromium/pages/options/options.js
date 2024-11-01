@@ -307,6 +307,7 @@ function aria2OptionsSetup() {
 }
 
 function aria2SaveStorage(json) {
+    json['jsonrpc_retries'] = json['jsonrpc_retries'] | 0;
     json['manager_interval'] = json['manager_interval'] | 0;
     json['capture_size_include'] = json['capture_size_include'] | 0;
     json['capture_size_exclude'] = json['capture_size_exclude'] | 0;
