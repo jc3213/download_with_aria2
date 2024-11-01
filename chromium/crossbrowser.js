@@ -2,6 +2,7 @@ var aria2Default = {
     'jsonrpc_scheme': 'http',
     'jsonrpc_url': 'localhost:6800/jsonrpc',
     'jsonrpc_secret': '',
+    'jsonrpc_retries': 5,
     'manager_newtab': false,
     'manager_interval': 10,
     'context_enabled': true,
@@ -30,7 +31,7 @@ var aria2Default = {
     'capture_size_exclude': 0
 };
 var aria2RPC;
-var aria2Retry;
+var aria2Timeout;
 var aria2Storage = {};
 var aria2Updated = {};
 var aria2Global = {};
@@ -249,7 +250,7 @@ function aria2UpdateStorage(json) {
 chrome.storage.sync.get(null, (json) => {
     aria2UpdateStorage({...aria2Default, ...json});
     aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
-    aria2RPC.retries = 0;
+    aria2RPC.retries = aria2Storage['jsonrpc_retries'] || Infinity;
     aria2RPC.onmessage = aria2WebSocket;
     aria2RPC.onclose = aria2ClientWorker;
     aria2ClientWorker();
@@ -276,7 +277,7 @@ async function aria2WebSocket({method, params}) {
 }
 
 function aria2ClientWorker() {
-    clearTimeout(aria2Retry);
+    clearTimeout(aria2Timeout);
     aria2RPC.call(
         {method: 'aria2.getGlobalOption'},
         {method: 'aria2.getVersion'},
@@ -290,7 +291,7 @@ function aria2ClientWorker() {
     }).catch((error) => {
         chrome.action.setBadgeBackgroundColor({color: '#c33'});
         aria2ToolbarBadge('E');
-        aria2Retry = setTimeout(aria2ClientWorker, aria2Updated['manager_interval']);
+        aria2Timeout = setTimeout(aria2ClientWorker, aria2Updated['manager_interval']);
     });
 }
 

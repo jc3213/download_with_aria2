@@ -1,5 +1,5 @@
-var aria2Alive;
-var aria2Retry;
+var aria2Interval;
+var aria2Timeout;
 var aria2Tasks = {};
 var aria2Queue = {};
 var aria2Stats = {};
@@ -51,19 +51,9 @@ purgeBtn.addEventListener('click', async (event) => {
     aria2Tasks.total = {...aria2Tasks.active, ...aria2Tasks.waiting};
 });
 
-function aria2ClientSetup({jsonrpc, secret, interval, proxy}) {
-    aria2RPC = new Aria2(jsonrpc, secret);
-    aria2RPC.retry = 0;
-    aria2RPC.onmessage = aria2WebSocket;
-    aria2RPC.onclose = aria2ClientWorker;
-    aria2Interval = interval * 1000;
-    aria2Proxy = proxy;
-    aria2ClientWorker();
-}
-
 function aria2ClientWorker() {
-    clearTimeout(aria2Retry);
-    clearInterval(aria2Alive);
+    clearTimeout(aria2Timeout);
+    clearInterval(aria2Interval);
     aria2Tasks = {active: {}, waiting: {}, stopped: {}, total: {}};
     return aria2RPC.call(
         {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
@@ -73,11 +63,11 @@ function aria2ClientWorker() {
         [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementSync);
         aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
         aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
-        aria2Alive = setInterval(aria2ClientUpdate, aria2Interval);
+        aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
     }).catch((error) => {
         aria2Stats.active.textContent = aria2Stats.waiting.textContent = aria2Stats.stopped.textContent = aria2Stats.download.textContent = aria2Stats.upload.textContent = '0';
         aria2Queue.active.innerHTML = aria2Queue.waiting.innerHTML = aria2Queue.paused.innerHTML = aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
-        aria2Retry = setTimeout(aria2ClientWorker, aria2Interval);
+        aria2Timeout = setTimeout(aria2ClientWorker, aria2Delay);
     });
 }
 
