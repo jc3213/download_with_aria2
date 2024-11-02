@@ -131,3 +131,9 @@ h4, h4 + div + div {
     display: flex;
     gap: 3px;
 }
+
+.flat {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-column-gap: 5px;
+}
