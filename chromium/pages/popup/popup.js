@@ -62,9 +62,9 @@ async function aria2ClientOpened() {
 }
 
 function aria2ClientClosed() {
+    clearInterval(aria2Interval);
     aria2Stats.active.textContent = aria2Stats.waiting.textContent = aria2Stats.stopped.textContent = aria2Stats.download.textContent = aria2Stats.upload.textContent = '0';
     aria2Queue.active.innerHTML = aria2Queue.waiting.innerHTML = aria2Queue.paused.innerHTML = aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
-    clearInterval(aria2Interval);
 }
 
 function aria2ClientMessage({method, params}) {

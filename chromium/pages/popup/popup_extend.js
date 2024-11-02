@@ -67,6 +67,6 @@ chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
     aria2RPC.retries = storage['jsonrpc_retries'];
     aria2RPC.timeout = storage['jsonrpc_timeout'];
     aria2RPC.onopen = aria2ClientOpened;
-    aria2RPC.onmessage = aria2ClientMessage;
     aria2RPC.onclose = aria2ClientClosed;
+    aria2RPC.onmessage = aria2ClientMessage;
 });
