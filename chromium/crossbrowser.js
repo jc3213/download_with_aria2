@@ -32,7 +32,6 @@ var aria2Default = {
     'capture_size_exclude': 0
 };
 var aria2RPC;
-var aria2Timeout;
 var aria2Storage = {};
 var aria2Updated = {};
 var aria2Global = {};
@@ -255,12 +254,12 @@ chrome.storage.sync.get(null, (json) => {
     aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
     aria2RPC.retries = aria2Storage['jsonrpc_retries'];
     aria2RPC.timeout = aria2Storage['jsonrpc_timeout'];
-    aria2RPC.onmessage = aria2WebSocket;
-    aria2RPC.onclose = aria2ClientWorker;
-    aria2ClientWorker();
+    aria2RPC.onopen = aria2ClientOpened;
+    aria2RPC.onmessage = aria2ClientMessage;
+    aria2RPC.onclose = aria2ClientClosed;
 });
 
-async function aria2WebSocket({method, params}) {
+async function aria2ClientMessage({method, params}) {
     var gid = params[0].gid;
     switch (method) {
         case 'aria2.onDownloadStart':
@@ -280,23 +279,22 @@ async function aria2WebSocket({method, params}) {
     aria2ToolbarBadge(aria2Active);
 }
 
-function aria2ClientWorker() {
-    clearTimeout(aria2Timeout);
-    aria2RPC.call(
-        {method: 'aria2.getGlobalOption'},
-        {method: 'aria2.getVersion'},
-        {method: 'aria2.tellActive'}
-    ).then(([global, version, active]) => {
-        chrome.action.setBadgeBackgroundColor({color: '#3cc'});
-        aria2RPCOptionsSetup(global.result, version.result);
-        aria2Active = active.result.length;
-        active.result.forEach(({gid}) => aria2Queue[gid] = gid);
-        aria2ToolbarBadge(aria2Active);
-    }).catch((error) => {
-        chrome.action.setBadgeBackgroundColor({color: '#c33'});
-        aria2ToolbarBadge('E');
-        aria2Timeout = setTimeout(aria2ClientWorker, aria2Updated['manager_interval']);
-    });
+async function aria2ClientOpened() {
+    var [global, version, active] = await aria2RPC.call( {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'} );
+    chrome.action.setBadgeBackgroundColor({color: '#3cc'});
+    aria2RPCOptionsSetup(global.result, version.result);
+    aria2Active = active.result.length;
+    active.result.forEach(({gid}) => aria2Queue[gid] = gid);
+    aria2ToolbarBadge(aria2Active);
+}
+
+function aria2ToolbarBadge(number) {
+    chrome.action.setBadgeText({text: !number ? '' : number + ''});
+}
+
+function aria2ClientClosed() {
+    chrome.action.setBadgeBackgroundColor({color: '#c33'});
+    chrome.action.setBadgeText({text: 'E'});
 }
 
 function aria2RPCOptionsSetup(json, version) {
@@ -308,10 +306,6 @@ function aria2RPCOptionsSetup(json, version) {
     json['max-overall-upload-limit'] = getFileSize(json['max-overall-upload-limit']);
     aria2Global = json;
     aria2Version = version.version;
-}
-
-function aria2ToolbarBadge(number) {
-    chrome.action.setBadgeText({text: !number ? '' : number + ''});
 }
 
 function aria2CaptureResult(hostname, filename, filesize) {
