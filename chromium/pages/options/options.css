@@ -62,11 +62,11 @@ input[type="checkbox"] + label {
 .extra {
     display: flex;
     margin-top: 20px;
-    gap: 5px;
+    gap: 30px;
 }
 
 .extra button {
-    margin-right: 50px;
+    margin-right: 20px;
 }
 
 .extra > :last-child {

@@ -13,7 +13,7 @@ var {version, manifest_version} = chrome.runtime.getManifest();
 var [saveBtn, undoBtn, redoBtn, storageExp, jsonrpcExp] = document.querySelectorAll('#menu > button')
 var [aria2ver, exporter, aria2ua] = document.querySelectorAll('#version, a, #useragent');
 var options = document.querySelectorAll('#options [name]');
-var jsonrpc = document.querySelectorAll('#jsonrpc input');
+var jsonrpc = document.querySelectorAll('#jsonrpc [name]');
 var mapping = document.querySelectorAll('[data-map]');
 var ruleLET = document.querySelector('.template > div');
 
