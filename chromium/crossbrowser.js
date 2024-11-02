@@ -255,9 +255,23 @@ chrome.storage.sync.get(null, (json) => {
     aria2RPC.retries = aria2Storage['jsonrpc_retries'];
     aria2RPC.timeout = aria2Storage['jsonrpc_timeout'];
     aria2RPC.onopen = aria2ClientOpened;
-    aria2RPC.onmessage = aria2ClientMessage;
     aria2RPC.onclose = aria2ClientClosed;
+    aria2RPC.onmessage = aria2ClientMessage;
 });
+
+async function aria2ClientOpened() {
+    var [global, version, active] = await aria2RPC.call( {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'} );
+    chrome.action.setBadgeBackgroundColor({color: '#3cc'});
+    aria2RPCOptionsSetup(global.result, version.result);
+    aria2Active = active.result.length;
+    active.result.forEach(({gid}) => aria2Queue[gid] = gid);
+    aria2ToolbarBadge(aria2Active);
+}
+
+function aria2ClientClosed() {
+    chrome.action.setBadgeBackgroundColor({color: '#c33'});
+    chrome.action.setBadgeText({text: 'E'});
+}
 
 async function aria2ClientMessage({method, params}) {
     var gid = params[0].gid;
@@ -279,22 +293,8 @@ async function aria2ClientMessage({method, params}) {
     aria2ToolbarBadge(aria2Active);
 }
 
-async function aria2ClientOpened() {
-    var [global, version, active] = await aria2RPC.call( {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'} );
-    chrome.action.setBadgeBackgroundColor({color: '#3cc'});
-    aria2RPCOptionsSetup(global.result, version.result);
-    aria2Active = active.result.length;
-    active.result.forEach(({gid}) => aria2Queue[gid] = gid);
-    aria2ToolbarBadge(aria2Active);
-}
-
 function aria2ToolbarBadge(number) {
     chrome.action.setBadgeText({text: !number ? '' : number + ''});
-}
-
-function aria2ClientClosed() {
-    chrome.action.setBadgeBackgroundColor({color: '#c33'});
-    chrome.action.setBadgeText({text: 'E'});
 }
 
 function aria2RPCOptionsSetup(json, version) {
