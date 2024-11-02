@@ -12,7 +12,7 @@ var extension = document.body.classList;
 var {version, manifest_version} = chrome.runtime.getManifest();
 var [saveBtn, undoBtn, redoBtn, storageExp, jsonrpcExp] = document.querySelectorAll('#menu > button')
 var [aria2ver, exporter, aria2ua] = document.querySelectorAll('#version, a, #useragent');
-var options = document.querySelectorAll('[data-eid]');
+var options = document.querySelectorAll('#options [name]');
 var jsonrpc = document.querySelectorAll('#jsonrpc input');
 var mapping = document.querySelectorAll('[data-map]');
 var ruleLET = document.querySelector('.template > div');
@@ -181,7 +181,7 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
 });
 
 document.getElementById('options').addEventListener('change', (event) => {
-    var id = event.target.dataset.eid;
+    var id = event.target.name;
     if (id) {
         optionsChanged(event.target, id, id in switches ? event.target.checked : event.target.value);
     }
@@ -296,7 +296,7 @@ function aria2OptionsSetup() {
     updated = {...aria2Storage};
     aria2ver.textContent = version;
     options.forEach((entry) => {
-        var id = entry.dataset.eid;
+        var id = entry.name;
         var value = updated[id];
         id in switches ? optionsCheckbox(entry, id, value, true) : optionsEntryValue(entry, value);
     });
@@ -308,6 +308,7 @@ function aria2OptionsSetup() {
 
 function aria2SaveStorage(json) {
     json['jsonrpc_retries'] = json['jsonrpc_retries'] | 0;
+    json['jsonrpc_timeout'] = json['jsonrpc_timeout'] | 0;
     json['manager_interval'] = json['manager_interval'] | 0;
     json['capture_size_include'] = json['capture_size_include'] | 0;
     json['capture_size_exclude'] = json['capture_size_exclude'] | 0;

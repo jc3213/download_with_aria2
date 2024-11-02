@@ -134,6 +134,18 @@
     "option_jsonrpc_title": {
         "message": "Set scheme, host, and secret of the JSON-RPC"
     },
+    "option_jsonrpc_retries": {
+        "message": "Max Retries"
+    },
+    "option_jsonrpc_retries_title": {
+        "message": "Set the retries when JSON-RPC in unreachable. Set \"-1\" for unlimited"
+    },
+    "option_jsonrpc_timeout": {
+        "message": "Retry Interval"
+    },
+    "option_jsonrpc_timeout_title": {
+        "message": "Set the time interval between retries"
+    },
     "option_task_manager": {
         "message": "Task Manager"
     },

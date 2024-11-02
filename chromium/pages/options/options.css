@@ -51,12 +51,26 @@ input[type="checkbox"] + label {
     content: "aria2/";
 }
 
+#jsonrpc > .menu:first-of-type {
+    margin-top: 28px;
+}
+
 .options {
     margin: 30px 0px;
 }
 
-.even {
-    margin-top: 28px;
+.extra {
+    display: flex;
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.extra button {
+    margin-right: 50px;
+}
+
+.extra > :last-child {
+    flex: 1;
 }
 
 .matches {

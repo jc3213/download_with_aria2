@@ -7,7 +7,7 @@ class Aria2 {
         this.secret = path[3];
     }
     version = '0.8.0';
-    jsonrpc = { quota: 10, timeout: 10000 };
+    jsonrpc = { retries: 10, timeout: 10000 };
     events = { onopen: null, onmessage: null, onclose: null };
     set scheme (scheme) {
         this.call = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send }[ scheme ];
@@ -23,7 +23,7 @@ class Aria2 {
         this.jsonrpc.url = url;
         this.jsonrpc.path = this.jsonrpc.scheme + '://' + url;
         this.jsonrpc.ws = this.jsonrpc.path.replace('http', 'ws');
-        this.jsonrpc.retry = 0;
+        this.jsonrpc.count = 0;
         this.disconnect();
         this.connect();
     }
@@ -38,16 +38,17 @@ class Aria2 {
         return this.jsonrpc.secret;
     }
     set retries (number) {
-        this.jsonrpc.quota = isNaN(number) || number <= 0 ? Infinity : number;
+        this.jsonrpc.retries = isNaN(number) || number < 0 ? Infinity : number;
     }
     get retries () {
-        return this.jsonrpc.quota | 0;
+        return isNaN(this.jsonrpc.retries) ? Infinity : this.jsonrpc.retries;
     }
     set timeout (number) {
-        this.jsonrpc.timeout = isNaN(number) ? 10000 : number <= 3 ? 3000 : number * 1000;
+        this.jsonrpc.time = isNaN(number) ? 10 : number | 0;
+        this.jsonrpc.timeout = this.jsonrpc.time * 1000;
     }
     get timeout () {
-        return this.jsonrpc.timeout / 1000 | 0;
+        return isNaN(this.jsonrpc.time) ? 10 : this.jsonrpc.time | 0;
     }
     connect () {
         this.socket = new Promise((resolve, reject) => {
@@ -64,9 +65,9 @@ class Aria2 {
             };
             ws.onclose = (event) => {
                 this.alive = false;
-                if (!event.wasClean && this.jsonrpc.retry < this.jsonrpc.quota) { setTimeout(() => this.connect(), this.jsonrpc.timeout); }
+                if (!event.wasClean && this.jsonrpc.count < this.jsonrpc.retries) { setTimeout(() => this.connect(), this.jsonrpc.timeout); }
                 if (typeof this.events.onclose === 'function') { this.events.onclose(event); }
-                this.jsonrpc.retry ++;
+                this.jsonrpc.count ++;
             };
         });
     }

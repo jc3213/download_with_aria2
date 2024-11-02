@@ -25,79 +25,86 @@
             <div i18n-tips="option_jsonrpc_title">
                 <h4 i18n="option_jsonrpc"></h4>
                 <div class="flex">
-                    <select data-eid="jsonrpc_scheme">
+                    <select name="jsonrpc_scheme">
                         <option value="http">HTTP</option>
                         <option value="https">HTTPS</option>
                         <option value="ws">WS</option>
                         <option value="wss">WSS</option>
                     </select>
-                    <input data-eid="jsonrpc_url" type="url" placeholder="$$hostname:port/jsonrpc$$">
-                    <input data-eid="jsonrpc_secret" type="text" placeholder="$$secret$$">
-                    <select data-eid="jsonrpc_retries">
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="15">15</option>
-                        <option value="0">∞</option>
-                    </select>
+                    <input name="jsonrpc_url" type="url" placeholder="$$hostname:port/jsonrpc$$">
+                    <input name="jsonrpc_secret" type="text" placeholder="$$secret$$">
                 </div>
             </div>
-            <div class="even">
+            <div class="extra">
                 <button id="goto-jsonrpc" i18n="option_aria2"></button>
+                <div class="flat" i18n-tips="option_jsonrpc_retries_title">
+                    <h4 i18n="option_jsonrpc_retries"></h4>
+                    <div>
+                        <input type="number" name="jsonrpc_retries" min="-1" max="30" setp="1">
+                    </div>
+                </div>
+                <div class="flat" i18n-tips="option_jsonrpc_timeout_title">
+                    <h4 i18n="option_jsonrpc_timeout"></h4>
+                    <div>
+                        <input type="number" name="jsonrpc_timeout" min="3" max="20" step="1">
+                        <span i18n="time_second_full"></span>
+                    </div>
+                </div>
             </div>
             <h1 i18n="option_task_manager"></h1>
-            <div class="menu even" i18n-tips="option_manager_newtab_title">
-                <input id="manager_newtab" data-eid="manager_newtab" type="checkbox">
+            <div class="menu" i18n-tips="option_manager_newtab_title">
+                <input id="manager_newtab" name="manager_newtab" type="checkbox">
                 <label for="manager_newtab" i18n="option_manager_newtab"></label>
             </div>
-            <div class="menu" i18n-tips="option_manager_interval_title">
+            <div class="menu flat" i18n-tips="option_manager_interval_title">
                 <h4 i18n="option_manager_interval"></h4>
                 <div>
-                    <input data-eid="manager_interval" type="number" min="5" max="30" step="1">
+                    <input name="manager_interval" type="number" min="5" max="30" step="1">
                     <span i18n="time_second_full"></span>
                 </div>
             </div>
             <h1 i18n="option_context"></h1>
             <div class="menu" i18n-tips="option_context_enabled_title">
-                <input id="context_enabled" data-eid="context_enabled" type="checkbox">
+                <input id="context_enabled" name="context_enabled" type="checkbox">
                 <label for="context_enabled" i18n="option_context_enabled"></label>
             </div>
             <div class="menu" i18n-tips="option_context_cascade_title" data-rel="context_enabled">
-                <input id="context_cascade" data-eid="context_cascade" type="checkbox">
+                <input id="context_cascade" name="context_cascade" type="checkbox">
                 <label for="context_cascade" i18n="option_context_cascade"></label>
             </div>
             <div class="menu" i18n-tips="option_context_thisurl_title" data-rel="context_enabled">
-                <input id="context_thisurl" data-eid="context_thisurl" type="checkbox">
+                <input id="context_thisurl" name="context_thisurl" type="checkbox">
                 <label for="context_thisurl" i18n="contextmenu_thisurl"></label>
             </div>
             <div class="menu" i18n-tips="option_context_thisimage_title" data-rel="context_enabled">
-                <input id="context_thisimage" data-eid="context_thisimage" type="checkbox">
+                <input id="context_thisimage" name="context_thisimage" type="checkbox">
                 <label for="context_thisimage" i18n="contextmenu_thisimage"></label>
             </div>
             <div class="menu" i18n-tips="option_context_allimages_title" data-rel="context_enabled">
-                <input id="context_allimages" data-eid="context_allimages" type="checkbox">
+                <input id="context_allimages" name="context_allimages" type="checkbox">
                 <label for="context_allimages" i18n="contextmenu_allimages"></label>
             </div>
             <h1 i18n="option_notification"></h1>
             <div i18n-tips="option_notify_install_title">
-                <input id="notify_install" data-eid="notify_install" type="checkbox">
+                <input id="notify_install" name="notify_install" type="checkbox">
                 <label for="notify_install" i18n="option_notify_install"></label>
             </div>
             <div class="menu" i18n-tips="option_notify_start_title">
-                <input id="notify_start" data-eid="notify_start" type="checkbox">
+                <input id="notify_start" name="notify_start" type="checkbox">
                 <label for="notify_start" i18n="option_notify_start"></label>
             </div>
             <div class="menu" i18n-tips="option_notify_complete_title">
-                <input id="notify_complete" data-eid="notify_complete" type="checkbox">
+                <input id="notify_complete" name="notify_complete" type="checkbox">
                 <label for="notify_complete" i18n="option_notify_complete"></label>
             </div>
             <h1 i18n="option_headers"></h1>
             <div class="menu" i18n-tips="option_headers_override_title">
-                <input id="headers_override" data-eid="headers_override" type="checkbox">
+                <input id="headers_override" name="headers_override" type="checkbox">
                 <label for="headers_override" i18n="option_headers_override"></label>
             </div>
             <div class="menu" i18n-tips="option_headers_useragent_title" data-rel="headers_override">
                 <div>
-                    <input data-eid="headers_useragent" type="text">
+                    <input name="headers_useragent" type="text">
                 </div>
             </div>
             <div class="matches">
@@ -113,20 +120,20 @@
             </div>
             <h1 i18n="option_folder"></h1>
             <div i18n-tips="option_folder_title">
-                <input data-eid="folder_defined" type="text">
+                <input name="folder_defined" type="text">
             </div>
             <div class="menu even" i18n-tips="option_folder_enabled_title">
-                <input id="folder_enabled" data-eid="folder_enabled" type="checkbox">
+                <input id="folder_enabled" name="folder_enabled" type="checkbox">
                 <label for="folder_enabled" i18n="option_folder_enabled"></label>
             </div>
             <div class="menu even" i18n-tips="option_folder_firefox_title" data-app="firefox" data-rel="folder_enabled" data-exc="capture_enabled, capture_webrequest">
-                <input id="folder_firefox" data-eid="folder_firefox" type="checkbox">
+                <input id="folder_firefox" name="folder_firefox" type="checkbox">
                 <label for="folder_firefox" i18n="option_folder_firefox"></label>
             </div>
             <h1 i18n="option_proxy"></h1>
             <div i18n-tips="option_proxy_title">
                 <div>
-                    <input data-eid="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
+                    <input name="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
                 </div>
             </div>
             <div class="matches">
@@ -142,18 +149,18 @@
             </div>
             <h1 i18n="option_capture"></h1>
             <div class="menu" i18n-tips="option_capture_enabled_title">
-                <input id="capture_enabled" data-eid="capture_enabled" type="checkbox">
+                <input id="capture_enabled" name="capture_enabled" type="checkbox">
                 <label for="capture_enabled" i18n="option_capture_enabled"></label>
             </div>
             <div class="menu" i18n-tips="option_capture_webrequest_title" data-app="firefox" data-rel="capture_enabled">
-                <input id="capture_webrequest" data-eid="capture_webrequest" type="checkbox">
+                <input id="capture_webrequest" name="capture_webrequest" type="checkbox">
                 <label for="capture_webrequest" i18n="option_capture_webrequest"></label>
             </div>
             <div class="matches options" data-rel="capture_enabled">
                 <div class="menu" i18n-tips="option_capture_size_include_title">
                     <h4 i18n="option_capture_size_include"></h4>
                     <div>
-                        <input data-eid="capture_size_include" type="number" min="0">
+                        <input name="capture_size_include" type="number" min="0">
                         <span>MB</span>
                     </div>
                     <div>
@@ -163,7 +170,7 @@
                 <div class="menu" i18n-tips="option_capture_size_exclude_title">
                     <h4 i18n="option_capture_size_exclude"></h4>
                     <div>
-                        <input data-eid="capture_size_exclude" type="number" min="0">
+                        <input name="capture_size_exclude" type="number" min="0">
                         <span>MB</span>
                     </div>
                     <div>
@@ -216,7 +223,7 @@
         </div>
         <div id="jsonrpc" class="options" data-rel="jsonrpc">
             <h1 i18n="aria2_options"></h1>
-            <div class="menu even">
+            <div class="menu">
                 <button id="goto-options" i18n="option_back"></button>
             </div>
             <div class="menu" i18n-tips="aria2_com_dir_title">

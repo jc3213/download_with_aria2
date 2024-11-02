@@ -132,7 +132,19 @@
         "message": "JSON-RPC 服务器"
     },
     "option_jsonrpc_title": {
-        "message": "设置 JSON-RPC 的 协议、主机及密钥"
+        "message": "设置 JSON-RPC 的协议、主机及密钥"
+    },
+    "option_jsonrpc_retries": {
+        "message": "重试次数"
+    },
+    "option_jsonrpc_retries_title": {
+        "message": "设置无法访问 JSON-RPC 时的重试次数，\"-1\"为无限次"
+    },
+    "option_jsonrpc_timeout": {
+        "message": "重试间隔"
+    },
+    "option_jsonrpc_timeout_title": {
+        "message": "设置重试之间的时间间隔"
     },
     "option_task_manager": {
         "message": "任务管理器"
