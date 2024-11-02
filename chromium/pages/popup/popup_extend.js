@@ -61,12 +61,12 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
 });
 
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
+    aria2Delay = storage['manager_interval'] * 1000;
+    aria2Proxy = storage['proxy_server'];
     aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
     aria2RPC.retries = storage['jsonrpc_retries'];
     aria2RPC.timeout = storage['jsonrpc_timeout'];
-    aria2RPC.onmessage = aria2WebSocket;
-    aria2RPC.onclose = aria2ClientWorker;
-    aria2Delay = storage['manager_interval'] * 1000;
-    aria2Proxy = storage['proxy_server'];
-    aria2ClientWorker();
+    aria2RPC.onopen = aria2ClientOpened;
+    aria2RPC.onmessage = aria2ClientMessage;
+    aria2RPC.onclose = aria2ClientClosed;
 });

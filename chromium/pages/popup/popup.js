@@ -1,10 +1,11 @@
-var aria2Interval;
-var aria2Timeout;
 var aria2Tasks = {};
 var aria2Queue = {};
 var aria2Stats = {};
 var aria2Detail = {};
 var aria2Filter = localStorage['queues']?.match(/[^;]+/g) ?? [];
+var aria2Proxy;
+var aria2Delay;
+var aria2Interval;
 
 var manager = document.body.classList;
 var chooseQueue = document.getElementById('choose');
@@ -51,27 +52,22 @@ purgeBtn.addEventListener('click', async (event) => {
     aria2Tasks.total = {...aria2Tasks.active, ...aria2Tasks.waiting};
 });
 
-function aria2ClientWorker() {
-    clearTimeout(aria2Timeout);
-    clearInterval(aria2Interval);
+async function aria2ClientOpened() {
     aria2Tasks = {active: {}, waiting: {}, stopped: {}, total: {}};
-    return aria2RPC.call(
-        {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'},
-        {method: 'aria2.tellWaiting', params: [0, 999]},
-        {method: 'aria2.tellStopped', params: [0, 999]}
-    ).then(([global, active, waiting, stopped]) => {
-        [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementSync);
-        aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
-        aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
-        aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
-    }).catch((error) => {
-        aria2Stats.active.textContent = aria2Stats.waiting.textContent = aria2Stats.stopped.textContent = aria2Stats.download.textContent = aria2Stats.upload.textContent = '0';
-        aria2Queue.active.innerHTML = aria2Queue.waiting.innerHTML = aria2Queue.paused.innerHTML = aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
-        aria2Timeout = setTimeout(aria2ClientWorker, aria2Delay);
-    });
+    var [global, active, waiting, stopped] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]} );
+    [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementSync);
+    aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
+    aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
+    aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
 }
 
-function aria2WebSocket({method, params}) {
+function aria2ClientClosed() {
+    aria2Stats.active.textContent = aria2Stats.waiting.textContent = aria2Stats.stopped.textContent = aria2Stats.download.textContent = aria2Stats.upload.textContent = '0';
+    aria2Queue.active.innerHTML = aria2Queue.waiting.innerHTML = aria2Queue.paused.innerHTML = aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
+    clearInterval(aria2Interval);
+}
+
+function aria2ClientMessage({method, params}) {
     var gid = params[0].gid;
     switch (method) {
         case 'aria2.onBtDownloadComplete':
