@@ -51,28 +51,25 @@ class Aria2 {
         return isNaN(this.jsonrpc.time) ? 10 : this.jsonrpc.time | 0;
     }
     connect () {
-        this.socket = new Promise((resolve, reject) => {
-            let ws = new WebSocket(this.jsonrpc.ws);
-            ws.onopen = (event) => {
-                this.alive = true;
-                if (typeof this.events.onopen === 'function') { this.events.onopen(event); }
-                resolve(ws);
-            };
-            ws.onmessage = (event) => {
-                let response = JSON.parse(event.data);
-                if (!response.method) { ws.resolve(response); }
-                else if (typeof this.events.onmessage === 'function') { this.events.onmessage(response); }
-            };
-            ws.onclose = (event) => {
-                this.alive = false;
-                if (!event.wasClean && this.jsonrpc.count < this.jsonrpc.retries) { setTimeout(() => this.connect(), this.jsonrpc.timeout); }
-                if (typeof this.events.onclose === 'function') { this.events.onclose(event); }
-                this.jsonrpc.count ++;
-            };
-        });
+        this.socket = new WebSocket(this.jsonrpc.ws);
+        this.socket.onopen = (event) => {
+            this.alive = true;
+            if (typeof this.events.onopen === 'function') { this.events.onopen(event); }
+        };
+        this.socket.onmessage = (event) => {
+            let response = JSON.parse(event.data);
+            if (!response.method) { this.socket.resolve(response); }
+            else if (typeof this.events.onmessage === 'function') { this.events.onmessage(response); }
+        };
+        this.socket.onclose = (event) => {
+            this.alive = false;
+            if (!event.wasClean && this.jsonrpc.count < this.jsonrpc.retries) { setTimeout(() => this.connect(), this.jsonrpc.timeout); }
+            if (typeof this.events.onclose === 'function') { this.events.onclose(event); }
+            this.jsonrpc.count ++;
+        };
     }
     disconnect () {
-        this.socket?.then( (ws) => ws.close() );
+        this.socket?.close();
     }
     set onopen (callback) {
         this.events.onopen = typeof callback === 'function' ? callback : null;
@@ -93,11 +90,11 @@ class Aria2 {
         return typeof this.events.onclose === 'function' ? this.events.onclose : null;
     }
     send (...args) {
-        return this.socket.then((ws) => new Promise((resolve, reject) => {
-            ws.resolve = resolve;
-            ws.onerror = reject;
-            ws.send(this.json(args));
-        }));
+        return new Promise((resolve, reject) => {
+            this.socket.resolve = resolve;
+            this.socket.onerror = reject;
+            this.socket.send(this.json(args));
+        });
     }
     post (...args) {
         return fetch(this.jsonrpc.path, {method: 'POST', body: this.json(args)}).then((response) => {
