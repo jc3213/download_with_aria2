@@ -132,7 +132,7 @@
         "message": "JSON-RPC Server"
     },
     "option_jsonrpc_title": {
-        "message": "Set scheme, host, and secret of the JSON-RPC"
+        "message": "Set scheme, url, and secret token of the JSON-RPC"
     },
     "option_jsonrpc_retries": {
         "message": "Max Retries"

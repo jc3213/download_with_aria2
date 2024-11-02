@@ -120,7 +120,7 @@
         "message": "导入"
     },
     "option_aria2": {
-        "message": "修改 JSON-RPC 设置"
+        "message": "前往 JSON-RPC 设置"
     },
     "option_back": {
         "message": "返回 扩展 设置"
@@ -132,7 +132,7 @@
         "message": "JSON-RPC 服务器"
     },
     "option_jsonrpc_title": {
-        "message": "设置 JSON-RPC 的协议、主机及密钥"
+        "message": "设置 JSON-RPC 的协议、链接及密钥"
     },
     "option_jsonrpc_retries": {
         "message": "重试次数"
