@@ -41,13 +41,13 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     if ('manager_newtab' in changes && !changes['manager_newtab']) {
         close();
     }
+    aria2RPC.retries = storage['jsonrpc_retries'];
+    aria2RPC.timeout = storage['jsonrpc_timeout'];
+    aria2Proxy = storage['proxy_server'];
     if ('manager_interval' in changes) {
         clearInterval(aria2Interval);
         aria2Delay = storage['manager_interval'] * 1000;
         aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
-    }
-    if ('proxy_server' in changes) {
-        aria2Proxy = storage['proxy_server'];
     }
     if ('jsonrpc_scheme' in changes) {
         aria2RPC.scheme = storage['jsonrpc_scheme'];
@@ -63,6 +63,7 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
     aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
     aria2RPC.retries = storage['jsonrpc_retries'];
+    aria2RPC.timeout = storage['jsonrpc_timeout'];
     aria2RPC.onmessage = aria2WebSocket;
     aria2RPC.onclose = aria2ClientWorker;
     aria2Delay = storage['manager_interval'] * 1000;
