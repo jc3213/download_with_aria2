@@ -19,7 +19,7 @@
     "headers_override": false,
     "headers_useragent": "Transmission/4.0.0",
     "jsonrpc_host": "localhost:6800",
-    "jsonrpc_retries":, 0,
+    "jsonrpc_retries":, -1,
     "jsonrpc_scheme": "http",
     "jsonrpc_secret": "",
     "jsonrpc_timeout":, 10,
