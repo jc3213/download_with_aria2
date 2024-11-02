@@ -138,7 +138,7 @@
         "message": "重试次数"
     },
     "option_jsonrpc_retries_title": {
-        "message": "设置无法访问 JSON-RPC 时的重试次数，\"-1\"为无限次"
+        "message": "设置无法访问 JSON-RPC 时的重试次数\n\n设为\"0\"则不重试\n\n设为\"-1\"则无限重试"
     },
     "option_jsonrpc_timeout": {
         "message": "重试间隔"

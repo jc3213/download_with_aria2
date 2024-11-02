@@ -138,7 +138,7 @@
         "message": "Max Retries"
     },
     "option_jsonrpc_retries_title": {
-        "message": "Set the retries when JSON-RPC in unreachable. \"-1\" for unlimited retries"
+        "message": "Set the retries when JSON-RPC is unreachable\n\nSet \"0\" for no retries\n\nSet \"-1\" for unlimited retries"
     },
     "option_jsonrpc_timeout": {
         "message": "Retry Interval"
