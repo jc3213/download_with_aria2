@@ -191,13 +191,13 @@ async function taskDetail(task, gid) {
         task.classList.remove('extra');
         task.save.style.display = 'none';
         delete aria2Detail[gid];
-        return;
+    } else {
+        var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
+        task.classList.add('extra');
+        task.scrollIntoView({block: 'start'});
+        aria2Detail[gid] = true;
+        taskDetailOpened(task, gid, files.result, options.result);
     }
-    var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
-    task.classList.add('extra');
-    task.scrollIntoView({block: 'start'});
-    aria2Detail[gid] = true;
-    taskDetailOpened(task, gid, files.result, options.result);
 }
 
 function taskDetailOpened(task, gid, files, options) {

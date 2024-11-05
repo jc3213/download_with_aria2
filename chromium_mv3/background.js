@@ -14,9 +14,10 @@ function aria2CaptureFilename({id, finalUrl, referrer, filename, fileSize}) {
 
 function aria2CaptureSwitch() {
     if (aria2Storage['capture_enabled']) {
-        return chrome.downloads.onDeterminingFilename.addListener(aria2CaptureFilename);
+        chrome.downloads.onDeterminingFilename.addListener(aria2CaptureFilename);
+    } else {
+        chrome.downloads.onDeterminingFilename.removeListener(aria2CaptureFilename);
     }
-    chrome.downloads.onDeterminingFilename.removeListener(aria2CaptureFilename);
 }
 
 chrome.runtime.onStartup.addListener(chrome.runtime.getPlatformInfo);

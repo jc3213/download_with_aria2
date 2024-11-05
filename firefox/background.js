@@ -5,16 +5,16 @@ var aria2WebRequest = {
 };
 
 function aria2CaptureSwitch() {
-    if (aria2Storage['capture_enabled']) {
-        if (aria2Storage['capture_webrequest']) {
-            browser.webRequest.onHeadersReceived.addListener(aria2CaptureWebRequest, {urls: ['<all_urls>'], types: ['main_frame', 'sub_frame']}, ['blocking', 'responseHeaders']);
-            return browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
-        }
+    if (!aria2Storage['capture_enabled']) {
+        browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
         browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
-        return browser.downloads.onCreated.addListener(aria2CaptureDownloads);
+    } else if (aria2Storage['capture_webrequest']) {
+        browser.webRequest.onHeadersReceived.addListener(aria2CaptureWebRequest, {urls: ['<all_urls>'], types: ['main_frame', 'sub_frame']}, ['blocking', 'responseHeaders']);
+        browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
+    } else {
+        browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
+        browser.downloads.onCreated.addListener(aria2CaptureDownloads);
     }
-    browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
-    browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
 }
 
 async function aria2CaptureDownloads({id, url, referrer, filename, fileSize, cookieStoreId}) {
