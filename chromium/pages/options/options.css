@@ -59,29 +59,28 @@ input[type="checkbox"] + label {
     margin: 30px 0px;
 }
 
-.extra {
+.misc {
     display: flex;
     margin-top: 20px;
     gap: 30px;
 }
 
-.extra button {
+.misc button {
     margin-right: 20px;
 }
 
-.extra > :last-child {
+.misc > :last-child {
     flex: 1;
+}
+
+.cush, .matches, .matches.options > :nth-child(2n + 3) {
+    margin-top: 20px;
 }
 
 .matches {
     padding: 10px;
     border-style: inset;
     border-width: 1px;
-    margin: 20px 0px;
-}
-
-.matches.options > :nth-child(2n + 3) {
-    margin-top: 30px;
 }
 
 .list {
