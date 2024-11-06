@@ -1,6 +1,10 @@
 @media (prefers-color-scheme: light) {
+    body, div {
+        background-color: #FFFFFF;
+    }
+
     button, input, textarea, select {
-        background-color: #F7F7F7;
+        background-color: #F3F3F3;
     }
 }
 
