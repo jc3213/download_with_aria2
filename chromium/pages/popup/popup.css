@@ -29,11 +29,11 @@ body {
 }
 
 #choose > :hover {
-    filter: contrast(75%);
+    filter: contrast(80%);
 }
 
 #choose > :active {
-    filter: contrast(45%);
+    filter: contrast(60%);
 }
 
 #choose::before,
@@ -68,7 +68,7 @@ body {
 #queue > :nth-child(n+4) select,
 .session.http [name="max-upload-limit"] {
     pointer-events: none;
-    filter: contrast(25%);
+    filter: contrast(40%);
 }
 
 .session.http label {
@@ -85,43 +85,43 @@ body {
 }
 
 #queue .meter {
-    background-color: #3c3c3c;
+    background-color: #3C3C3C;
 }
 
 #queue .meter > .ratio,
 .file > :checked + label,
 .uri > .used {
-    background-color: #59a8ff;
+    background-color: #59A8FF;
     color: #ffffff;
 }
 
 #queue > :nth-child(1) .name::before {
-    background-color: #59a8ff;
+    background-color: #59A8FF;
 }
 
 #queue > :nth-child(n+2):nth-child(-n+3) .name::before,
 #queue > :nth-child(3) .meter > .ratio {
-    background-color: #e9c769;
+    background-color: #E9C769;
 }
 
 #queue > :nth-child(4) .name::before,
 #queue > :nth-child(4) .meter > .ratio {
-    background-color: #2c7d2c;
+    background-color: #2C7D2C;
 }
 
 #queue > :nth-child(n+5) .name::before,
 #queue > :nth-child(6) .meter > .ratio {
-    background-color: #d44b31;
+    background-color: #D44B31;
 }
 
 #queue > :nth-child(-n+3) .meter:active,
 #queue > :nth-child(-n+3) .meter > .ratio:active,
 #queue > :nth-child(-n+3) .p2p .file > :nth-child(1):active {
-    filter: contrast(45%);
+    filter: contrast(40%);
 }
 
 #queue .http .uri > :nth-child(1):active {
-    filter: contrast(45%);
+    filter: contrast(40%);
 }
 
 .download::after,
@@ -169,13 +169,13 @@ body {
 }
 
 .session > .name::before {
-    content: "";
     border-radius: 50%;
+    content: "";
     display: inline-block;
-    vertical-align: middle;
     height: 12px;
-    width: 12px;
     margin: 0px 9px 0px 5px;
+    width: 12px;
+    vertical-align: middle;
 }
 
 .session > .manage {
@@ -183,9 +183,9 @@ body {
 }
 
 .session > .manage > button {
+    display: block;
     padding: 0px;
     width: 23px;
-    display: block;
 }
 
 .session > .manage > :nth-child(n+2) {
@@ -210,10 +210,10 @@ body {
 }
 
 .session .save {
-    position: absolute;
-    top: -4px;
-    right: 0px;
     padding: 4px;
+    position: absolute;
+    right: 0px;
+    top: -4px;
 }
 
 .file {
@@ -231,15 +231,15 @@ body {
     border-width: 1px;
     border-style: solid;
     height: 21px;
-    padding: 3px;
     overflow: hidden;
+    padding: 3px;
     white-space: nowrap;
 }
 
 .file > :not(:nth-child(3)),
 .uri > :nth-child(n+2) {
-    text-align: center;
     padding: 3px 0px;
+    text-align: center;
 }
 
 .session:not(.extra) > :nth-last-child(-n+3) {
