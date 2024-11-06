@@ -47,12 +47,16 @@ body {
     margin-right: 5px;
 }
 
-#stats {
-    flex: 1;
-    display: grid;
+#menu {
+    display: flex;
+    gap: 3px;
 }
 
-#stats > *, #stats > ::before {
+#menu > div {
+    flex: 1;
+}
+
+#menu > div, #menu > div::before {
     padding: 4px 8px 4px 0px;
 }
 

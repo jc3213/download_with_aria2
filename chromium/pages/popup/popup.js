@@ -12,8 +12,8 @@ var chooseQueue = document.getElementById('choose');
 var [downBtn, purgeBtn, optionsBtn] = document.querySelectorAll('#menu button');
 var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
 
-document.querySelectorAll('#queue > *').forEach((queue) => aria2Queue[queue.id] = queue);
-document.querySelectorAll('#stats > *').forEach((stat) => aria2Stats[stat.dataset.sid] = stat);
+document.querySelectorAll('[data-tid]').forEach((queue) => aria2Queue[queue.id] = queue);
+document.querySelectorAll('[data-sid]').forEach((stat) => aria2Stats[stat.dataset.sid] = stat);
 
 manager.add(...aria2Filter);
 
@@ -112,10 +112,10 @@ async function taskElementUpdate(gid) {
 }
 
 function taskElementRemove(queue, gid, task) {
+    delete aria2Tasks[queue][gid];
     aria2Stats[queue].textContent --;
     if (task) {
         task.remove();
-        delete aria2Tasks[queue][gid];
         delete aria2Tasks.total[gid];
     }
 }

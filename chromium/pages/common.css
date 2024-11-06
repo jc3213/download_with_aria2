@@ -1,6 +1,6 @@
 @media (prefers-color-scheme: light) {
-    body, div {
-        background-color: #ffffff;
+    button, input, textarea, select {
+        background-color: #F7F7F7;
     }
 }
 
@@ -10,16 +10,16 @@
     }
     
     button, input, textarea, select {
-        background-color: #56585d;
+        background-color: #56585D;
     }
 
     body, div, button, input, textarea, select {
-        color: #ffffff;
+        color: #FFFFFF;
     }
 }
 
 * {
-    border-color: #aab0b6;
+    border-color: #AAB0B6;
     border-radius: 3px;
 }
 
@@ -46,23 +46,23 @@ select {
 }
 
 input {
-    padding: 3px 5px;
-    width: calc(100% - 12px);
-    resize: none;
-    border-width: 1px;
     border-style: inset;
+    border-width: 1px;
+    padding: 3px 5px;
+    resize: none;
+    width: calc(100% - 12px);
 }
 
 input + span {
     display: none;
     position: absolute;
-    top: 3px;
     right: 8px;
+    top: 3px;
 }
 
 input:focus + span {
-    font-size: 17px;
     display: block;
+    font-size: 17px;
 }
 
 input[type="file"], a {
@@ -82,19 +82,25 @@ option:checked {
 }
 
 button {
-    padding: 3px 5px;
     border-width: 1px;
     border-style: outset;
+    padding: 3px 5px;
 }
 
 button:enabled:hover {
     cursor: pointer;
-    filter: contrast(75%);
+    filter: contrast(80%);
 }
 
 button:enabled:active {
-    filter: contrast(45%);
     border-style: inset;
+    filter: contrast(60%);
+}
+
+button:disabled {
+    border-width: 0px;
+    filter: contrast(40%);
+    padding: 4px 6px;
 }
 
 h1 {
@@ -105,18 +111,14 @@ h4, h4 + div + div {
     margin: 3px 0px;
 }
 
-:disabled {
-    filter: contrast(25%);
-}
-
 .template {
     display: none;
 }
 
 .options {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
     grid-column-gap: 5px;
+    grid-template-columns: repeat(2, 1fr);
 }
 
 .menu {
@@ -134,6 +136,6 @@ h4, h4 + div + div {
 
 .flat {
     display: grid;
-    grid-template-columns: auto 1fr;
     grid-column-gap: 5px;
+    grid-template-columns: auto 1fr;
 }
