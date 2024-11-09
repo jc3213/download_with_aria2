@@ -35,11 +35,8 @@ input[type="checkbox"] + label {
     z-index: 999999;
 }
 
-#menu > div {
-    margin-left: auto;
-}
-
 #version {
+    margin-left: auto;
     padding: 4px;
 }
 
@@ -51,30 +48,16 @@ input[type="checkbox"] + label {
     content: "aria2/";
 }
 
-#jsonrpc > .menu:first-of-type {
-    margin-top: 28px;
-}
-
 .options {
-    margin: 30px 0px;
+    margin: 28px 0px;
 }
 
-.misc {
-    display: flex;
-    gap: 30px;
-    margin-top: 20px;
-}
-
-.misc button {
-    margin-right: 20px;
-}
-
-.misc > :last-child {
-    flex: 1;
+.flat > :nth-child(2):not(:last-child) {
+    margin: 0px 20px 0px 50px;
 }
 
 .cush, .matches, .matches.options > :nth-child(2n + 3) {
-    margin-top: 20px;
+    margin-top: 28px;
 }
 
 .matches {

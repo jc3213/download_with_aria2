@@ -139,7 +139,10 @@ h4, h4 + div + div {
 }
 
 .flat {
-    display: grid;
-    grid-column-gap: 5px;
-    grid-template-columns: auto 1fr;
+    display: flex;
+    gap: 5px;
+}
+
+.flat > :last-child {
+    flex: 1;
 }
