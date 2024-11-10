@@ -1,0 +1,148 @@
+@media (prefers-color-scheme: light) {
+    body, div {
+        background-color: #FFFFFF;
+    }
+
+    button, input, textarea, select {
+        background-color: #F3F3F3;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body, div {
+        background-color: #202124;
+    }
+    
+    button, input, textarea, select {
+        background-color: #56585D;
+    }
+
+    body, div, button, input, textarea, select {
+        color: #FFFFFF;
+    }
+}
+
+* {
+    border-color: #AAB0B6;
+    border-radius: 3px;
+}
+
+body, button, input, textarea, select {
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 16px;
+}
+
+body, div {
+    user-select: none;
+    position: relative;
+}
+
+body {
+    margin: 8px;
+}
+
+span, label {
+    display: inline-block;
+}
+
+select {
+    padding: 2px 5px;
+}
+
+input {
+    border-style: inset;
+    border-width: 1px;
+    padding: 3px 5px;
+    resize: none;
+    width: calc(100% - 12px);
+}
+
+input + span {
+    display: none;
+    position: absolute;
+    right: 8px;
+    top: 3px;
+}
+
+input:focus + span {
+    display: block;
+    font-size: 17px;
+}
+
+input[type="file"], a {
+    display: none;
+}
+
+input[type="number"] + span {
+    right: 24px;
+}
+
+select:only-child {
+    width: 100%;
+}
+
+option:checked {
+    font-weight: bold;
+}
+
+button {
+    border-style: outset;
+    border-width: 1px;
+    padding: 3px 5px;
+}
+
+button:enabled:hover {
+    cursor: pointer;
+    filter: contrast(80%);
+}
+
+button:enabled:active {
+    border-style: inset;
+    filter: contrast(60%);
+}
+
+button:disabled {
+    border-width: 0px;
+    filter: contrast(40%);
+    padding: 4px 6px;
+}
+
+h1 {
+    margin: 50px 0px 20px;
+}
+
+h4, h4 + div + div {
+    margin: 3px 0px;
+}
+
+.template {
+    display: none;
+}
+
+.options {
+    display: grid;
+    grid-column-gap: 5px;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.menu {
+    margin: 1px 0px;
+}
+
+.options > :not(.menu) {
+    grid-column: span 2;
+}
+
+.flex {
+    display: flex;
+    gap: 3px;
+}
+
+.flat {
+    display: flex;
+    gap: 5px;
+}
+
+.flat > :last-child {
+    flex: 1;
+}

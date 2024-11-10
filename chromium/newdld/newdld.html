@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title i18n="plugins_newdld"></title>
+        <link rel="stylesheet" href="/pages/common.css">
+        <link rel="stylesheet" href="newdld.css">
+    </head>
+    <body>
+        <div id="download" class="options">
+            <div i18n-tips="task_referer_title">
+                <h4 i18n="task_referer"></h4>
+                <div>
+                    <input name="referer" type="text">
+                </div>
+            </div>
+            <div class="step" i18n-tips="task_batch_title">
+                <h4 i18n="task_batch"></h4>
+                <textarea id="entries" rows="2"></textarea>
+            </div>
+            <div class="menu" i18n-tips="task_name_title">
+                <h4 i18n="task_name"></h4>
+                <div>
+                    <input name="out" type="text">
+                </div>
+            </div>
+            <div class="menu" i18n-tips="aria2_com_dir_title">
+                <h4 i18n="aria2_com_dir"></h4>
+                <div>
+                    <input name="dir" type="text">
+                </div>
+            </div>
+            <div class="menu" i18n-tips="aria2_http_ua_title">
+                <h4 i18n="aria2_http_ua"></h4>
+                <div>
+                    <input name="user-agent" type="text">
+                </div>
+            </div>
+            <div class="menu" i18n-tips="task_proxy_title">
+                <h4 i18n="task_proxy"></h4>
+                <div class="flex">
+                    <input name="all-proxy" type="url">
+                    <button id="proxy" i18n-tips="apply_proxy_server">⚡️</button>
+                </div>
+            </div>
+            <div class="menu" i18n-tips="aria2_http_split_title">
+                <h4 i18n="aria2_http_split"></h4>
+                <div>
+                    <input name="split" type="number">
+                </div>
+            </div>
+            <div class="menu" i18n-tips="aria2_http_size_title">
+                <h4 i18n="aria2_http_size"></h4>
+                <div>
+                    <input name="min-split-size" type="text">
+                    <span>B</span>
+                </div>
+            </div>
+            <div class="menu" i18n-tips="aria2_max_connection_title">
+                <h4 i18n="aria2_max_connection"></h4>
+                <div>
+                    <input name="max-connection-per-server" type="number">
+                </div>
+            </div>
+            <div class="menu" i18n-tips="task_download_title">
+                <h4 i18n="task_download"></h4>
+                <div>
+                    <input name="max-download-limit" type="text">
+                    <span>B/s</span>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div id="menu">
+            <button id="submit" i18n="common_submit"></button>
+            <button><label for="uploader" i18n="task_metaurl"></label></button>
+            <input id="uploader" type="file" accept=".torrent,.metalink,.meta4" multiple>
+        </div>
+        <script src="/pages/common.js"></script>
+        <script src="newdld.js"></script>
+    </body>
+</html>
