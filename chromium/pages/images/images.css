@@ -1,6 +1,6 @@
 img {
-    border-width: 1px;
     border-style: solid;
+    border-width: 1px;
 }
 
 img.checked {
@@ -21,25 +21,25 @@ body:not(.extra) #options {
 }
 
 #preview > img {
+    left: 50%;
     max-height: 100%;
     max-width: 100%;
     position: absolute;
-    left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
 }
 
 #gallery {
-    height: 155px;
     display: grid;
     gap: 5px;
     grid-template-columns: repeat(auto-fill, 88px);
+    height: 155px;
     overflow: auto;
 }
 
 #gallery > img {
-    width: 86px;
     height: 86px;
+    width: 86px;
 }
 
 #menu > :nth-child(4) {
@@ -47,11 +47,11 @@ body:not(.extra) #options {
 }
 
 #options {
-    border-width: 1px;
     border-style: solid;
-    position: absolute;
-    right: 0px;
+    border-width: 1px;
     bottom: 38px;
     padding: 5px;
+    position: absolute;
+    right: 0px;
     width: 50%;
 }

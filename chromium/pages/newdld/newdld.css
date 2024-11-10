@@ -1,11 +1,10 @@
 textarea {
-    padding: 3px;
-    width: calc(100% - 12px);
-    resize: none;
-    border-width: 1px;
     border-style: inset;
-    overflow-y: auto;
-    overflow-x: hidden;
+    border-width: 1px;
+    overflow: hidden auto;
+    padding: 3px;
+    resize: none;
+    width: calc(100% - 12px);
 }
 
 #menu {

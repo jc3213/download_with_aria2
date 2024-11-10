@@ -86,8 +86,8 @@ option:checked {
 }
 
 button {
-    border-width: 1px;
     border-style: outset;
+    border-width: 1px;
     padding: 3px 5px;
 }
 

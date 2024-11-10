@@ -21,8 +21,8 @@ body {
 }
 
 #choose {
-    border-width: 1px;
     border-style: solid;
+    border-width: 1px;
     position: fixed;
     top: 42px;
     z-index: 999999;
@@ -155,8 +155,8 @@ body {
 }
 
 .session {
-    border-width: 1px;
     border-style: outset;
+    border-width: 1px;
     padding: 3px;
     margin-bottom: 5px;
     display: grid;
@@ -228,8 +228,8 @@ body {
 
 .file > *,
 .uri > * {
-    border-width: 1px;
     border-style: solid;
+    border-width: 1px;
     height: 21px;
     overflow: hidden;
     padding: 3px;
