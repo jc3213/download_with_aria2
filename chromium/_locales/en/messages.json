@@ -47,7 +47,7 @@
     "plugins_newdld": {
         "message": "New Download - Download with Aria2"
     },
-    "plugins_allimages": {
+    "plugins_images": {
         "message": "Detected Images - Download with Aria2"
     },
     "time_day": {
