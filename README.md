@@ -37,16 +37,16 @@
 ## Screenshot
 
 ### Options: Extension
-![Options: Extension](https://github.com/jc3213/download_with_aria2/assets/8744936/0da3a3ef-3b43-4fbd-ad06-4daa57e3753f "Options: Extension")
+![Options - Extension](https://github.com/user-attachments/assets/bd5e3f33-9771-4b7c-86e2-fb73609b9e47)
 
 ### Options: JSON-RPC
-![Options: JSON-RPC](https://github.com/jc3213/download_with_aria2/assets/8744936/3152302d-ef1f-410a-8ea1-534380c13e1b "Options: JSON-RPC")
+![Options - JSON-RPC](https://github.com/user-attachments/assets/6fff2d40-c296-423d-beda-1592cd6a4572)
 
 ### Task Manager
-![Task Manager](https://github.com/jc3213/download_with_aria2/assets/8744936/2e007b6b-bce2-4da0-ba6d-6efa6df57746 "Task Manager")
+![Task Manager](https://github.com/user-attachments/assets/991c3b4c-1fd1-492d-8f55-7196ab5c1f0a)
 
 ### New Download
-![New Download](https://github.com/jc3213/download_with_aria2/assets/8744936/965f1be8-99e6-4485-985a-96f47a13267b "New Download")
+![New Download](https://github.com/user-attachments/assets/47c05dfd-8204-4551-b105-d9edd7aca2d1)
 
 ### Detected Images
-![Detected Images](https://github.com/jc3213/download_with_aria2/assets/8744936/5626cb60-0dd8-42ff-88c4-0b9e16e80a1c "Detected Images")
+![Detected Images](https://github.com/user-attachments/assets/6ee6ffcc-dcd8-465c-9ab1-e3ad3db63bca)
