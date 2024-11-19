@@ -261,7 +261,7 @@ chrome.storage.sync.get(null, (json) => {
 
 async function aria2ClientOpened() {
     var [global, version, active] = await aria2RPC.call( {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'} );
-    chrome.action.setBadgeBackgroundColor({color: '#1c4c7f'});
+    chrome.action.setBadgeBackgroundColor({color: '#1C4CD4'});
     aria2RPCOptionsSetup(global.result, version.result);
     aria2Active = active.result.length;
     active.result.forEach(({gid}) => aria2Queue[gid] = gid);
@@ -269,7 +269,7 @@ async function aria2ClientOpened() {
 }
 
 function aria2ClientClosed() {
-    chrome.action.setBadgeBackgroundColor({color: '#c33'});
+    chrome.action.setBadgeBackgroundColor({color: '#D33A26'});
     chrome.action.setBadgeText({text: 'E'});
 }
 
