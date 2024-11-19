@@ -32,10 +32,6 @@ var aria2Default = {
     'capture_size_exclude': 0
 };
 var aria2RPC;
-var aria2Ignore = {
-    'ping': true,
-    'xmlhttprequest': true
-};
 var aria2Storage = {};
 var aria2Updated = {};
 var aria2Global = {};
@@ -44,6 +40,10 @@ var aria2Manifest = chrome.runtime.getManifest();
 var aria2Active = 0;
 var aria2Queue = {};
 var aria2Inspect = {};
+var aria2Ignore = {
+    'ping': true,
+    'xmlhttprequest': true
+};
 var aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
