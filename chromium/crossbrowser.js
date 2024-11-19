@@ -100,13 +100,13 @@ chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
     if (frameId === 0) {
         aria2Inspect[tabId] = {images: [], url};
     }
-}, {urls: [ 'http://*/*', 'https://*/*' ]});
+}, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) => {
     if (aria2Inspect?.[tabId]?.url !== url) {
         aria2Inspect[tabId] = {images: [], url};
     }
-}, {urls: [ 'http://*/*', 'https://*/*' ]});
+}, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
     var inspect = aria2Inspect[tabId] ??= {images: []};
