@@ -32,6 +32,10 @@ var aria2Default = {
     'capture_size_exclude': 0
 };
 var aria2RPC;
+var aria2Ignore = {
+    'ping': true,
+    'xmlhttprequest': true
+};
 var aria2Storage = {};
 var aria2Updated = {};
 var aria2Global = {};
@@ -109,6 +113,9 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) =
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
+    if (aria2Ignore[type]) {
+        return;
+    }
     var inspect = aria2Inspect[tabId] ??= {images: []};
     if (inspect[url]) {
         return;
