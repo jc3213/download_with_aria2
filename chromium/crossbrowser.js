@@ -40,10 +40,6 @@ var aria2Manifest = chrome.runtime.getManifest();
 var aria2Active = 0;
 var aria2Queue = {};
 var aria2Inspect = {};
-var aria2Ignore = {
-    'ping': true,
-    'xmlhttprequest': true
-};
 var aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
@@ -102,21 +98,18 @@ async function aria2ImagesPrompt(tabId) {
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
     if (frameId === 0) {
-        aria2Inspect[tabId] = {images: [], url};
+        aria2Inspect[tabId] =  {images: [], url };
     }
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url, frameId}) => {
     if (aria2Inspect?.[tabId]?.url !== url) {
-        aria2Inspect[tabId] = {images: [], url};
+        aria2Inspect[tabId] = { images: [], url };
     }
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
-    if (aria2Ignore[type]) {
-        return;
-    }
-    var inspect = aria2Inspect[tabId] ??= {images: []};
+    var inspect = aria2Inspect[tabId] ??= { images: [] };
     if (inspect[url]) {
         return;
     }
@@ -124,7 +117,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
         inspect.images.push({url, headers: requestHeaders});
     }
     inspect[url] = requestHeaders;
-}, {urls: [ 'http://*/*', 'https://*/*' ]}, aria2Headers);
+}, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Headers);
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
