@@ -93,12 +93,12 @@ function aria2DownloadPrompt() {
 
 async function aria2ImagesPrompt(tabId) {
     var popId = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Inspect[popId] = {images: aria2Inspect[tabId].images, filter: aria2Headers};
+    aria2Inspect[popId] = { images: aria2Inspect[tabId].images, filter: aria2Headers };
 }
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
     if (frameId === 0) {
-        aria2Inspect[tabId] =  {images: [], url };
+        aria2Inspect[tabId] = { images: [], url };
     }
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
