@@ -115,8 +115,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
     }
     if (type === 'image') {
         inspect.images.push({url, headers: requestHeaders});
+    } else {
+        inspect[url] = requestHeaders;
     }
-    inspect[url] = requestHeaders;
 }, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Headers);
 
 chrome.tabs.onRemoved.addListener((tabId) => {
