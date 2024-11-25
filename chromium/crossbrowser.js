@@ -114,6 +114,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
         return;
     }
     if (type === 'image') {
+        inspect[url] = inspect.images.length;
         inspect.images.push({url, headers: requestHeaders});
     } else {
         inspect[url] = requestHeaders;
