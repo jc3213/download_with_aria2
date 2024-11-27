@@ -373,8 +373,13 @@ function getContextMenu(id, i18n, contexts, parentId) {
 }
 
 function getMatchPattern(pattern, filetype) {
-    var regfix = filetype ? '\\.' : '^';
-    return pattern.length === 0 ? /!/ : new RegExp(regfix + '(' + pattern.join('|').replace(/\./g, '\\.').replace(/\\?\.?\*\\?\.?/g, '.*') + ')$');
+    if (pattern.length === 0) {
+        return /!/;
+    }
+    if (filetype) {
+        return new RegExp('^.*\\.(' + pattern.join('|') + ')$');
+    }
+    return new RegExp('^(' + pattern.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*').replace(/\.\*\\\./g, '([^.]+\\.)*').replace(/\\\.\.\*/g, '(\\.[^.]+)*') + ')$');
 }
 
 function getHostname(url) {
