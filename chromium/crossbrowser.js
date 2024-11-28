@@ -372,14 +372,18 @@ function getContextMenu(id, i18n, contexts, parentId) {
     chrome.contextMenus.create({id, title: chrome.i18n.getMessage(i18n), contexts, documentUrlPatterns: ['http://*/*', 'https://*/*'], parentId});
 }
 
-function getMatchPattern(pattern, filetype) {
-    if (pattern.length === 0) {
+function getMatchPattern(array, filetype) {
+    if (array.length === 0) {
         return /!/;
     }
-    if (filetype) {
-        return new RegExp('^.*\\.(' + pattern.join('|') + ')$');
+    var pattern = array.join('|');
+    if (pattern === '<all-urls>') {
+        return /.*/;
     }
-    return new RegExp('^(' + pattern.join('|').replace(/\./g, '\\.').replace(/\*/g, '.*').replace(/\.\*\\\./g, '([^.]+\\.)*').replace(/\\\.\.\*/g, '(\\.[^.]+)*') + ')$');
+    if (filetype) {
+        return new RegExp('^.*\\.(' + pattern + ')$');
+    }
+    return new RegExp('^(' + pattern.replace(/\./g, '\\.').replace(/\*\\\./g, '([^.]+\\.)*').replace(/\\\.\*/g, '(\\.[^.]+)*') + ')$');
 }
 
 function getHostname(url) {

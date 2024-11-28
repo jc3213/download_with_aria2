@@ -237,7 +237,7 @@ function addMatchPattern(list, id, entry) {
     var old_value = updated[id];
     var new_value = [...old_value];
     var add = [];
-    entry.value.match(/[^\s\r\n+=,;"'`\\|/?!@#$%^&()\[\]{}<>]+/g)?.forEach((value) => {
+    entry.value.match(/[^\s;]+/g)?.forEach((value) => {
         if (value && !new_value.includes(value)) {
             var rule = createMatchRule(list, id, value);
             add.push({list, index: new_value.length, rule});
