@@ -3,7 +3,7 @@
         background-color: #FFFFFF;
     }
 
-    button, input, textarea, select {
+    button, input, textarea, select, option {
         background-color: #F3F3F3;
     }
 }
@@ -13,11 +13,11 @@
         background-color: #202124;
     }
     
-    button, input, textarea, select {
+    button, input, textarea, select, option {
         background-color: #56585D;
     }
 
-    body, div, button, input, textarea, select {
+    body, div, button, input, textarea, select, option {
         color: #FFFFFF;
     }
 }
