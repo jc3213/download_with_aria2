@@ -6,6 +6,10 @@
     button, input, textarea, select, option {
         background-color: #F3F3F3;
     }
+
+    body, div, button, input, textarea, select, option {
+        color: #000000;
+    }
 }
 
 @media (prefers-color-scheme: dark) {
