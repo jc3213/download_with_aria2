@@ -31,14 +31,16 @@ var aria2Default = {
     'capture_size_include': 0,
     'capture_size_exclude': 0
 };
-var aria2RPC;
 var aria2Storage = {};
 var aria2Updated = {};
+
+var aria2RPC;
 var aria2Global = {};
 var aria2Version;
-var aria2Manifest = chrome.runtime.getManifest();
 var aria2Active = 0;
 var aria2Queue = {};
+
+var aria2Manifest = chrome.runtime.getManifest();
 var aria2Inspect = {};
 var aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
