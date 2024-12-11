@@ -169,6 +169,7 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
             aria2DownloadPrompt();
             break;
     }
+    return true;
 });
 
 function aria2SendResponse(tabId, response) {
