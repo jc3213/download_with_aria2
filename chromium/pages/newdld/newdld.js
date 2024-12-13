@@ -50,10 +50,10 @@ document.getElementById('uploader').addEventListener('change', async (event) => 
     close();
 });
 
-chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc}) => {
+chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, options}) => {
     chrome.tabs.query({active: true, currentWindow: false}, (tabs) => {
         aria2Storage = storage;
-        jsonrpc['referer'] = tabs[0].url;
-        aria2Global = settings.disposition(jsonrpc);
+        options['referer'] = tabs[0].url;
+        aria2Global = settings.disposition(options);
     });
 });

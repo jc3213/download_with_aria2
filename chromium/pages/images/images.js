@@ -46,14 +46,14 @@ selectFlip.addEventListener('click', (event) => {
 });
 
 submitBtn.addEventListener('click', (event) => {
-    var urls = [];
+    var params = [];
     aria2Images.forEach(({src, alt, header, classList}) => {
         if (classList.contains('checked')) {
             var options = {out: alt, header, ...aria2Global};
-            urls.push({url: src, options});
+            params.push({url: src, options});
         }
     });
-    chrome.runtime.sendMessage({action: 'message_download', params: {urls}});
+    chrome.runtime.sendMessage({action: 'jsonrpc_download', params});
     close();
 });
 
@@ -69,11 +69,11 @@ document.getElementById('options').addEventListener('change', (event) => {
     aria2Global[event.target.name] = event.target.value;
 });
 
-chrome.runtime.sendMessage({action: 'allimage_prompt'}, async ({storage, jsonrpc, params}) => {
+chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, filter}) => {
     aria2Storage = storage;
-    jsonrpc['user-agent'] = aria2Storage['headers_useragent'];
-    aria2Global = document.querySelectorAll('#options input').disposition(jsonrpc);
-    aria2Manifest === 2 ? aria2HeadersMV2(params) : aria2HeadersMV3(params);
+    options['user-agent'] = aria2Storage['headers_useragent'];
+    aria2Global = document.querySelectorAll('#options input').disposition(options);
+    aria2Manifest === 2 ? aria2HeadersMV2(images, filter) : aria2HeadersMV3(images);
     gallery.append(...aria2Images);
 });
 
@@ -92,7 +92,7 @@ function getImageAlt(img, url) {
     img.alt = name  + '_' + img.alt + '_' + img.naturalWidth + 'x' + img.naturalHeight + ext;
 };
 
-function aria2HeadersMV2({images, filter}) {
+function aria2HeadersMV2(images, filter) {
     var rules = {};
     images.forEach(({url, headers}) => {
         getImagePreview(url, headers);
@@ -103,7 +103,7 @@ function aria2HeadersMV2({images, filter}) {
     }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['blocking', ...filter]);
 }
 
-function aria2HeadersMV3({images}) {
+function aria2HeadersMV3(images) {
     var addRules = [];
     images.forEach(({url, headers}, index) => {
         getImagePreview(url, headers);

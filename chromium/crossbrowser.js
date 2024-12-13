@@ -95,7 +95,7 @@ function aria2DownloadPrompt() {
 
 async function aria2ImagesPrompt(tabId) {
     var popId = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Inspect[popId] = { images: aria2Inspect[tabId].images, filter: aria2Headers };
+    aria2Inspect[popId] = { images: aria2Inspect[tabId].images, filter: aria2Headers, storage: aria2Storage, options: aria2Global };
 }
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
@@ -149,9 +149,11 @@ chrome.action.onClicked.addListener((tab) => {
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     switch (action) {
-        case 'allimage_prompt':
         case 'options_plugins':
-            aria2SendResponse(sender?.tab?.id, response);
+            response({ storage: aria2Storage, options: aria2Global });
+            break;
+        case 'jsonrpc_initiate':
+            response({ alive: aria2RPC.alive, options: aria2Global, version: aria2Version });
             break;
         case 'options_onchange':
             aria2OptionsChanged(params);
@@ -165,21 +167,15 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
         case 'jsonrpc_metadata':
             aria2MetadataHandler(params);
             break;
+        case 'open_all_images':
+            response(aria2Inspect[sender.tab.id]);
+            break;
         case 'open_new_download':
             aria2DownloadPrompt();
             break;
     }
     return true;
 });
-
-function aria2SendResponse(tabId, response) {
-    response({
-        storage: aria2Storage,
-        jsonrpc: aria2Global,
-        version: aria2Version,
-        params: aria2Inspect[tabId]
-    });
-}
 
 async function aria2MessageHandler(urls) {
     var message = '';
@@ -217,9 +213,9 @@ function aria2OptionsChanged({storage, changes}) {
     chrome.storage.sync.set(aria2Storage);
 }
 
-function aria2RPCOptionsChanged({jsonrpc}) {
-    aria2Global = {...aria2Global, ...jsonrpc};
-    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [jsonrpc]});
+function aria2RPCOptionsChanged(options) {
+    aria2Global = {...aria2Global, ...options};
+    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
 function aria2UpdateStorage(json) {

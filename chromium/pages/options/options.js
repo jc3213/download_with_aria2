@@ -1,7 +1,7 @@
 var aria2Storage = {};
 var aria2Global = {};
 var aria2Conf = {};
-var aria2Version;
+
 var updated = {};
 var changes = {};
 var undoes = [];
@@ -78,7 +78,7 @@ document.addEventListener('keydown', (event) => {
 
 saveBtn.addEventListener('click', (event) => {
     saveBtn.disabled = true;
-    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: changes}}) : aria2SaveStorage(updated);
+    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: changes}) : aria2SaveStorage(updated);
 });
 
 undoBtn.addEventListener('click', (event) => {
@@ -142,7 +142,7 @@ document.getElementById('config').addEventListener('change', async (event) => {
             conf[key] = value;
         }
     });
-    chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: {jsonrpc: conf}});
+    chrome.runtime.sendMessage({ action: 'jsonrpc_onchange', params: conf });
     aria2Global = jsonrpc.disposition(conf);
     updated = {...aria2Global};
     optionEmptyChanges();
@@ -164,14 +164,15 @@ function optionEmptyChanges() {
 }
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
-    if (!aria2Version) {
-        return;
-    }
-    optionEmptyChanges();
-    aria2Global = jsonrpc.disposition(aria2Conf);
-    updated = {...aria2Global};
-    aria2ver.textContent = aria2ua.textContent = aria2Version;
-    extension.add('jsonrpc');
+    chrome.runtime.sendMessage({action: 'jsonrpc_initiate'}, ({alive, options, version}) => {
+        if (alive) {
+            optionEmptyChanges();
+            aria2Global = jsonrpc.disposition(options);
+            updated = {...aria2Global};
+            aria2ver.textContent = aria2ua.textContent = version;
+            extension.add('jsonrpc');
+        }
+    });
 });
 
 document.getElementById('goto-options').addEventListener('click', (event) => {
@@ -317,9 +318,7 @@ function aria2SaveStorage(json) {
     changes = {};
 }
 
-chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, jsonrpc, version}) => {
+chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
     aria2Storage = storage;
-    aria2Conf = {'enable-rpc': true, ...jsonrpc};
-    aria2Version = version;
     aria2OptionsSetup();
 });
