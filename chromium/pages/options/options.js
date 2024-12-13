@@ -135,15 +135,15 @@ document.getElementById('storage').addEventListener('change', async (event) => {
 
 document.getElementById('config').addEventListener('change', async (event) => {
     var file = await fileReader(event.target.files[0]);
-    var conf = {};
+    var params = {};
     file.split('\n').forEach((line) => {
         if (line[0] !== '#') {
             var [key, value] = line.split('=');
-            conf[key] = value;
+            params[key] = value;
         }
     });
-    chrome.runtime.sendMessage({ action: 'jsonrpc_onchange', params: conf });
-    aria2Global = jsonrpc.disposition(conf);
+    chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params});
+    aria2Global = jsonrpc.disposition(params);
     updated = {...aria2Global};
     optionEmptyChanges();
     event.target.value = '';
