@@ -6,7 +6,7 @@ class Aria2 {
         this.url = path[2];
         this.secret = path[3];
     }
-    version = '0.9.0';
+    version = '0.8.0';
     jsonrpc = { retries: 10, timeout: 10000 };
     events = { onopen: null, onmessage: null, onclose: null };
     set scheme (scheme) {
@@ -24,6 +24,8 @@ class Aria2 {
         this.jsonrpc.path = this.jsonrpc.scheme + '://' + url;
         this.jsonrpc.ws = this.jsonrpc.path.replace('http', 'ws');
         this.jsonrpc.count = 0;
+        this.disconnect();
+        this.connect();
     }
     get url () {
         return this.jsonrpc.url;
@@ -89,7 +91,6 @@ class Aria2 {
     }
     send (...args) {
         return new Promise((resolve, reject) => {
-            if (this.socket?.readyState !== WebSocket.OPEN) { throw new Error('WebSocket is not connected!'); }
             this.socket.resolve = resolve;
             this.socket.onerror = reject;
             this.socket.send(this.json(args));
