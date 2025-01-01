@@ -87,7 +87,7 @@ class Aria2 {
     get onclose () {
         return typeof this.events.onclose === 'function' ? this.events.onclose : null;
     }
-    send(...args) {
+    send (...args) {
         return new Promise((resolve, reject) => {
             if (this.socket?.readyState !== WebSocket.OPEN) { throw new Error('WebSocket is not connected!'); }
             this.socket.resolve = resolve;
