@@ -56,7 +56,9 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
         aria2RPC.secret = storage['jsonrpc_secret'];
     }
     if ('jsonrpc_url' in changes) {
+        aria2RPC.disconnect();
         aria2RPC.url = storage['jsonrpc_url'];
+        aria2RPC.connect();
     }
 });
 
@@ -69,4 +71,5 @@ chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
     aria2RPC.onopen = aria2ClientOpened;
     aria2RPC.onclose = aria2ClientClosed;
     aria2RPC.onmessage = aria2ClientMessage;
+    aria2RPC.connect();
 });
