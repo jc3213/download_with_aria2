@@ -1,5 +1,5 @@
 var aria2Storage = {};
-var aria2Global = {};
+var aria2Config = {};
 var aria2Images = [];
 var aria2Manifest = chrome.runtime.getManifest().manifest_version;
 
@@ -49,7 +49,7 @@ submitBtn.addEventListener('click', (event) => {
     var params = [];
     aria2Images.forEach(({src, alt, header, classList}) => {
         if (classList.contains('checked')) {
-            var options = {out: alt, header, ...aria2Global};
+            var options = {out: alt, header, ...aria2Config};
             params.push({url: src, options});
         }
     });
@@ -62,17 +62,17 @@ optionsBtn.addEventListener('click', (event) => {
 });
 
 document.getElementById('proxy').addEventListener('click', (event) => {
-    event.target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Storage['proxy_server'];
+    event.target.previousElementSibling.value = aria2Config['all-proxy'] = aria2Storage['proxy_server'];
 });
 
 document.getElementById('options').addEventListener('change', (event) => {
-    aria2Global[event.target.name] = event.target.value;
+    aria2Config[event.target.name] = event.target.value;
 });
 
 chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, filter}) => {
     aria2Storage = storage;
     options['user-agent'] = aria2Storage['headers_useragent'];
-    aria2Global = document.querySelectorAll('#options input').disposition(options);
+    aria2Config = document.querySelectorAll('#options input').disposition(options);
     aria2Manifest === 2 ? aria2HeadersMV2(images, filter) : aria2HeadersMV3(images);
     gallery.append(...aria2Images);
 });

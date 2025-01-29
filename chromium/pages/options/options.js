@@ -1,6 +1,5 @@
 var aria2Storage = {};
-var aria2Global = {};
-var aria2Conf = {};
+var aria2Config = {};
 
 var updated = {};
 var changes = {};
@@ -10,8 +9,8 @@ var redoes = [];
 
 var extension = document.body.classList;
 var {version, manifest_version} = chrome.runtime.getManifest();
-var [saveBtn, undoBtn, redoBtn, storageExp, jsonrpcExp] = document.querySelectorAll('#menu > button')
-var [aria2ver, exporter, aria2ua] = document.querySelectorAll('#version, a, #useragent');
+var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, jsonFile, confFile, exporter] = document.querySelectorAll('#menu > *')
+var [jsonrpcBtn, optionsBtn, aria2ua] = document.querySelectorAll('#goto-jsonrpc, #goto-options, #useragent');
 var options = document.querySelectorAll('#options [name]');
 var jsonrpc = document.querySelectorAll('#jsonrpc [name]');
 var mapping = document.querySelectorAll('[data-map]');
@@ -106,14 +105,12 @@ redoBtn.addEventListener('click', (event) => {
     }
 });
 
-storageExp.addEventListener('click', (event) => {
-    var body = [JSON.stringify(aria2Storage, null, 4)];
-    fileSaver(body, 'downwitharia2', 'json');
+exportBtn.addEventListener('click', (event) => {
+    extension.contains('jsonrpc') ? fileSaver(Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key] + '\n'), 'aria2_jsonrpc', 'conf') : fileSaver([JSON.stringify(aria2Storage, null, 4)], 'downwitharia2', 'json');
 });
 
-jsonrpcExp.addEventListener('click', (event) => {
-    var body = Object.keys(aria2Conf).map((key) => key + '=' + aria2Conf[key] + '\n');
-    fileSaver(body, 'aria2_jsonrpc', 'conf');
+importBtn.addEventListener('click', (event) => {
+    extension.contains('jsonrpc') ? confFile.click() : jsonFile.click();
 });
 
 function fileSaver(body, name, type) {
@@ -124,7 +121,7 @@ function fileSaver(body, name, type) {
     exporter.click();
 }
 
-document.getElementById('storage').addEventListener('change', async (event) => {
+jsonFile.addEventListener('change', async (event) => {
     var file = await fileReader(event.target.files[0]);
     changes = JSON.parse(file);
     aria2SaveStorage(changes);
@@ -133,7 +130,7 @@ document.getElementById('storage').addEventListener('change', async (event) => {
     event.target.value = '';
 });
 
-document.getElementById('config').addEventListener('change', async (event) => {
+confFile.addEventListener('change', async (event) => {
     var file = await fileReader(event.target.files[0]);
     var params = {};
     file.split('\n').forEach((line) => {
@@ -143,8 +140,8 @@ document.getElementById('config').addEventListener('change', async (event) => {
         }
     });
     chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params});
-    aria2Global = jsonrpc.disposition(params);
-    updated = {...aria2Global};
+    aria2Config = jsonrpc.disposition({...aria2Config, ...params});
+    updated = {...aria2Config};
     optionEmptyChanges();
     event.target.value = '';
 });
@@ -163,19 +160,19 @@ function optionEmptyChanges() {
     saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
 }
 
-document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
+jsonrpcBtn.addEventListener('click', (event) => {
     chrome.runtime.sendMessage({action: 'jsonrpc_initiate'}, ({alive, options, version}) => {
         if (alive) {
             optionEmptyChanges();
-            aria2Global = jsonrpc.disposition(options);
-            updated = {...aria2Global};
+            aria2Config = jsonrpc.disposition(options);
+            updated = {...aria2Config};
             aria2ver.textContent = aria2ua.textContent = version;
             extension.add('jsonrpc');
         }
     });
 });
 
-document.getElementById('goto-options').addEventListener('click', (event) => {
+optionsBtn.addEventListener('click', (event) => {
     optionEmptyChanges();
     aria2OptionsSetup();
     extension.remove('jsonrpc');

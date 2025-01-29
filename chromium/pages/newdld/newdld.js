@@ -1,5 +1,5 @@
 var aria2Storage = {};
-var aria2Global = {};
+var aria2Config = {};
 
 var entry = document.getElementById('entries');
 var submitBtn = document.getElementById('submit');
@@ -15,25 +15,25 @@ document.addEventListener('keydown', (event) => {
 submitBtn.addEventListener('click', (event) => {
     var urls = entry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
     if (urls.length !== 1) {
-        delete aria2Global['out'];
+        delete aria2Config['out'];
     }
-    var params = urls.map((url) => ({url, options: aria2Global}));
+    var params = urls.map((url) => ({url, options: aria2Config}));
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params });
     close();
 });
 
 document.getElementById('proxy').addEventListener('click', (event) => {
-    event.target.previousElementSibling.value = aria2Global['all-proxy'] = aria2Storage['proxy_server'];
+    event.target.previousElementSibling.value = aria2Config['all-proxy'] = aria2Storage['proxy_server'];
 });
 
 document.getElementById('download').addEventListener('change', (event) => {
     if (event.target.name) {
-        aria2Global[event.target.name] = event.target.value;
+        aria2Config[event.target.name] = event.target.value;
     }
 });
 
 document.getElementById('uploader').addEventListener('change', async (event) => {
-    var options = {...aria2Global, out: null, referer: null};
+    var options = {...aria2Config, out: null, referer: null};
     var result = [...event.target.files].map((file) => new Promise((resolve) => {
         var name = file.name;
         var reader = new FileReader();
@@ -54,6 +54,6 @@ chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, options}) => 
     chrome.tabs.query({active: true, currentWindow: false}, (tabs) => {
         aria2Storage = storage;
         options['referer'] = tabs[0].url;
-        aria2Global = settings.disposition(options);
+        aria2Config = settings.disposition(options);
     });
 });

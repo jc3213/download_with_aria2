@@ -35,7 +35,7 @@ var aria2Storage = {};
 var aria2Updated = {};
 
 var aria2RPC;
-var aria2Global = {};
+var aria2Config = {};
 var aria2Version;
 var aria2Active = 0;
 var aria2Queue = {};
@@ -95,7 +95,7 @@ function aria2DownloadPrompt() {
 
 async function aria2ImagesPrompt(tabId) {
     var popId = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Inspect[popId] = { images: aria2Inspect[tabId].images, filter: aria2Headers, storage: aria2Storage, options: aria2Global };
+    aria2Inspect[popId] = { images: aria2Inspect[tabId].images, filter: aria2Headers, storage: aria2Storage, options: aria2Config };
 }
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
@@ -150,10 +150,10 @@ chrome.action.onClicked.addListener((tab) => {
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     switch (action) {
         case 'options_plugins':
-            response({ storage: aria2Storage, options: aria2Global });
+            response({ storage: aria2Storage, options: aria2Config });
             break;
         case 'jsonrpc_initiate':
-            response({ alive: aria2RPC.alive, options: aria2Global, version: aria2Version });
+            response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version });
             break;
         case 'options_onchange':
             aria2OptionsChanged(params);
@@ -214,7 +214,7 @@ function aria2OptionsChanged({storage, changes}) {
 }
 
 function aria2RPCOptionsChanged(options) {
-    aria2Global = {...aria2Global, ...options};
+    aria2Config = {...aria2Config, ...options};
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
@@ -305,7 +305,7 @@ function aria2RPCOptionsSetup(json, version) {
     json['max-upload-limit'] = getFileSize(json['max-upload-limit']);
     json['max-overall-download-limit'] = getFileSize(json['max-overall-download-limit']);
     json['max-overall-upload-limit'] = getFileSize(json['max-overall-upload-limit']);
-    aria2Global = json;
+    aria2Config = json;
     aria2Version = version.version;
 }
 
