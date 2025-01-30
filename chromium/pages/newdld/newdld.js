@@ -1,7 +1,7 @@
 var aria2Storage = {};
 var aria2Config = {};
 
-var [jsonrpcPane, entries, proxyBtn, submitBtn, metaImport] = document.querySelectorAll('#download, #entries, #proxy, #submit, #uploader');
+var [jsonrpcPane, entries, proxyBtn, submitBtn, metaImport] = document.querySelectorAll('#jsonrpc, #entries, #proxy, #submit, #uploader');
 var jsonrpcEntries = document.querySelectorAll('[name]');
 
 document.addEventListener('keydown', (event) => {
