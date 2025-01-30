@@ -7,7 +7,7 @@ img.checked {
     filter: contrast(45%);
 }
 
-body:not(.extra) #options {
+body:not(.extra) #jsonrpc {
     display: none;
 }
 
@@ -46,7 +46,7 @@ body:not(.extra) #options {
     margin-left: auto;
 }
 
-#options {
+#jsonrpc {
     border-style: solid;
     border-width: 1px;
     bottom: 38px;
