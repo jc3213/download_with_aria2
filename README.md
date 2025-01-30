@@ -24,7 +24,8 @@
     - Capture downloads via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
     - Capture downloads via [file extension match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#file-extension)
 - Simulating browser `Request Headers` to bypass CORS checks
-    - Forwards `Cookies` only when capturing browser downloads
+    - Only for `Capturing Browser Downloads`
+    - Has ability to override `User-Agent`
     - Exclude rules via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
 - Proxy server
     - Auto-proxy rules via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
