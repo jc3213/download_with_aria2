@@ -10,11 +10,11 @@ var redoes = [];
 var extension = document.body.classList;
 var {version, manifest_version} = chrome.runtime.getManifest();
 var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, jsonFile, confFile, exporter] = document.querySelectorAll('#menu > *')
-var [jsonrpcBtn, optionsBtn, aria2ua] = document.querySelectorAll('#goto-jsonrpc, #goto-options, #useragent');
-var options = document.querySelectorAll('#options [name]');
-var jsonrpc = document.querySelectorAll('#jsonrpc [name]');
-var mapping = document.querySelectorAll('[data-map]');
-var ruleLET = document.querySelector('.template > div');
+var [optionsPane, jsonrpcBtn, jsonrpcPane, optionsBtn, aria2ua] = document.querySelectorAll('#options, #goto-jsonrpc, #jsonrpc, #goto-options, #useragent');
+var optionsEntries = document.querySelectorAll('#options [name]');
+var jsonrpcEntries = document.querySelectorAll('#jsonrpc [name]');
+var matchEntries = document.querySelectorAll('[data-map]');
+var matchLET = document.querySelector('.template > div');
 
 var matches = {
     'capture_exclude': true,
@@ -140,7 +140,7 @@ confFile.addEventListener('change', async (event) => {
         }
     });
     chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params});
-    aria2Config = jsonrpc.disposition({...aria2Config, ...params});
+    aria2Config = jsonrpcEntries.disposition({...aria2Config, ...params});
     updated = {...aria2Config};
     optionEmptyChanges();
     event.target.value = '';
@@ -164,7 +164,7 @@ jsonrpcBtn.addEventListener('click', (event) => {
     chrome.runtime.sendMessage({action: 'jsonrpc_initiate'}, ({alive, options, version}) => {
         if (alive) {
             optionEmptyChanges();
-            aria2Config = jsonrpc.disposition(options);
+            aria2Config = jsonrpcEntries.disposition(options);
             updated = {...aria2Config};
             aria2ver.textContent = aria2ua.textContent = version;
             extension.add('jsonrpc');
@@ -178,14 +178,14 @@ optionsBtn.addEventListener('click', (event) => {
     extension.remove('jsonrpc');
 });
 
-document.getElementById('options').addEventListener('change', (event) => {
+optionsPane.addEventListener('change', (event) => {
     var id = event.target.name;
     if (id) {
         optionsChanged(event.target, id, id in switches ? event.target.checked : event.target.value);
     }
 });
 
-document.getElementById('jsonrpc').addEventListener('change', (event) => {
+jsonrpcPane.addEventListener('change', (event) => {
     optionsChanged(event.target, event.target.name, event.target.value);
 });
 
@@ -218,7 +218,7 @@ function optionsChangeApply(id, new_value, undo) {
     }
 }
 
-mapping.forEach((match) => {
+matchEntries.forEach((match) => {
     var id = match.id;
     var [entry, addbtn, resort, list] = match.querySelectorAll('input, button, .list');
     match.list = list;
@@ -266,7 +266,7 @@ function removeMatchPattern(list, id, rule) {
 }
 
 function createMatchRule(list, id, value) {
-    var rule = ruleLET.cloneNode(true);
+    var rule = matchLET.cloneNode(true);
     var [content, purge] = rule.querySelectorAll('*');
     content.textContent = rule.title = value;
     purge.addEventListener('click', (event) => removeMatchPattern(list, id, event.target.parentNode));
@@ -293,12 +293,12 @@ function redoMatchRule(add, remove) {
 function aria2OptionsSetup() {
     updated = {...aria2Storage};
     aria2ver.textContent = version;
-    options.forEach((entry) => {
+    optionsEntries.forEach((entry) => {
         var id = entry.name;
         var value = updated[id];
         id in switches ? optionsCheckbox(entry, id, value, true) : optionsEntryValue(entry, value);
     });
-    mapping.forEach(({id, list}) => {
+    matchEntries.forEach(({id, list}) => {
         list.innerHTML = '';
         updated[id].forEach((value) => createMatchRule(list, id, value));
     });
