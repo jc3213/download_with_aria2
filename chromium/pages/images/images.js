@@ -72,7 +72,7 @@ jsonrpcPane.addEventListener('change', (event) => {
 chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, filter}) => {
     aria2Storage = storage;
     options['user-agent'] = aria2Storage['headers_useragent'];
-    aria2Config = document.querySelectorAll('#options input').disposition(options);
+    aria2Config = document.querySelectorAll('#jsonrpc input').disposition(options);
     aria2Manifest === 2 ? aria2HeadersMV2(images, filter) : aria2HeadersMV3(images);
     galleryPane.append(...aria2Images);
 });
