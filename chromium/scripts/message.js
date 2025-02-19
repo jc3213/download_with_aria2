@@ -10,13 +10,14 @@ window.addEventListener('message', (event) => {
 });
 
 function aria2RPCEcho() {
-    var {name, version} = chrome.runtime.getManifest();
-    var message = chrome.i18n.getMessage('extension_echo').replace('{version}', version);
+    let {name, version} = chrome.runtime.getManifest();
+    let message = chrome.i18n.getMessage('extension_echo').replace('{version}', version);
     window.postMessage({ extension_name: name, extension_version: version, message});
 }
 
-function aria2RPCCall(params) {
-    if (params) {
+function aria2RPCCall(entries) {
+    let params = (Array.isArray(entries) ? entries : [entries]).filter((entry) => entry?.url);
+    if (params.length > 0) {
         chrome.runtime.sendMessage({ action: 'jsonrpc_download', params });
     }
 }
