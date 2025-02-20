@@ -14,9 +14,6 @@
     "extension_version": {
         "message": "The v{version} has been installed!"
     },
-    "extension_echo": {
-        "message": "\"Download with Aria2\" v{version} has been installed "
-    },
     "shortcut_options": {
         "message": "Open options"
     },

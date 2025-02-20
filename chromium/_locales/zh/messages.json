@@ -14,9 +14,6 @@
     "extension_version": {
         "message": "已安装版本v{version}！"
     },
-    "extension_echo": {
-        "message": "已安装 \"通过 Aria2 下载\" v{version}"
-    },
     "shortcut_options": {
         "message": "打开设置"
     },

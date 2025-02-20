@@ -11,8 +11,7 @@ window.addEventListener('message', (event) => {
 
 function aria2RPCEcho() {
     let {name, version} = chrome.runtime.getManifest();
-    let message = chrome.i18n.getMessage('extension_echo').replace('{version}', version);
-    window.postMessage({ extension_name: name, extension_version: version, message});
+    window.postMessage({ extension_name: name, extension_version: version });
 }
 
 function aria2RPCCall(entries) {
