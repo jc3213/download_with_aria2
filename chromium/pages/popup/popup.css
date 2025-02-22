@@ -90,7 +90,7 @@ body {
 
 #queue .meter > .ratio,
 .file > :checked + label,
-.uri > .used {
+.uri > .busy {
     background-color: #59A8FF;
     color: #ffffff;
 }

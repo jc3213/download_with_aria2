@@ -222,20 +222,17 @@ function taskDetailSync(gid, file, completed, length, list, uris) {
     }
     var result = {};
     uris.forEach(({uri, status}) => {
-        if (!result[uri]) {
-            taskUriElementCreate(gid, list, uri);
-            result[uri] = {used: 0, wait: 0};
-        }
-        status === 'used' ? result[uri].used ++ : result[uri].wait ++;
+        result[uri] = list[uri] ??= taskUriElementCreate(gid, list, uri);
+        result[uri][status] ++;
     });
-    list.uris.filter((uri) => {
+    list.uris = list.uris.filter((uri) => {
         if (!result[uri]) {
             list[uri].remove();
-            delete list[uri];
+            delete list[uri].url;
             return false;
         }
-        list[uri].used.textContent = result[uri].used;
-        list[uri].wait.textContent = result[uri].wait;
+        list[uri].busy.textContent = result[uri].used;
+        list[uri].idle.textContent = result[uri].waiting;
         return true;
     });
 }
@@ -253,16 +250,17 @@ function taskFileElementCreate(task, gid, list, index, selected, path, length, u
 }
 
 function taskUriElementCreate(gid, list, uri) {
-    if (list[uri]) {
-        return;
+    if (!list[uri]) {
+        var url = uriLET.cloneNode(true);
+        url.querySelectorAll('*').forEach((div) => url[div.className] = div);
+        url.link.addEventListener('click', (event) => taskRemoveUri(event, gid, uri));
+        url.link.title = url.link.textContent = uri;
+        url.used = url.waiting = 0;
+        list.uris.push(uri);
+        list[uri] = url;
+        list.appendChild(url);
     }
-    var url = uriLET.cloneNode(true);
-    url.querySelectorAll('*').forEach((div) => url[div.className] = div);
-    url.link.addEventListener('click', (event) => taskRemoveUri(event, gid, uri));
-    url.link.title = url.link.textContent = uri;
-    list.uris.push(uri);
-    list[uri] = url;
-    list.appendChild(url);
+    return list[uri];
 }
 
 async function taskRetry(task, gid) {
