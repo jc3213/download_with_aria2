@@ -228,7 +228,7 @@ function taskDetailSync(gid, file, completed, length, list, uris) {
     list.uris = list.uris.filter((uri) => {
         if (!result[uri]) {
             list[uri].remove();
-            delete list[uri].url;
+            delete list[uri];
             return false;
         }
         list[uri].busy.textContent = result[uri].used;
