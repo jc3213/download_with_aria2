@@ -3,7 +3,7 @@
         "message": "Download with Aria2"
     },
     "extension_description": {
-        "message": "The browser extenson for aria2 download utility via JSON-RPC"
+        "message": "The browser extenson for aria2 download utility over JSON-RPC"
     },
     "extension_install": {
         "message": "Extension Install"
