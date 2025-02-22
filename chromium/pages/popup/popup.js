@@ -222,7 +222,8 @@ function taskDetailSync(gid, file, completed, length, list, uris) {
     }
     var result = {};
     uris.forEach(({uri, status}) => {
-        result[uri] = list[uri] ??= taskUriElementCreate(gid, list, uri);
+        taskUriElementCreate(gid, list, uri);
+        result[uri] ??= {used: 0, waiting: 0};
         result[uri][status] ++;
     });
     list.uris = list.uris.filter((uri) => {
@@ -250,17 +251,16 @@ function taskFileElementCreate(task, gid, list, index, selected, path, length, u
 }
 
 function taskUriElementCreate(gid, list, uri) {
-    if (!list[uri]) {
-        var url = uriLET.cloneNode(true);
-        url.querySelectorAll('*').forEach((div) => url[div.className] = div);
-        url.link.addEventListener('click', (event) => taskRemoveUri(event, gid, uri));
-        url.link.title = url.link.textContent = uri;
-        url.used = url.waiting = 0;
-        list.uris.push(uri);
-        list[uri] = url;
-        list.appendChild(url);
+    if (list[uri]) {
+        return;
     }
-    return list[uri];
+    var url = uriLET.cloneNode(true);
+    url.querySelectorAll('*').forEach((div) => url[div.className] = div);
+    url.link.addEventListener('click', (event) => taskRemoveUri(event, gid, uri));
+    url.link.title = url.link.textContent = uri;
+    list.uris.push(uri);
+    list[uri] = url;
+    list.appendChild(url);
 }
 
 async function taskRetry(task, gid) {
