@@ -8,14 +8,12 @@
     </head>
     <body>
         <div id="entries">
-            <div class="flex">
-                <h4 i18n="task_entry"></h4>
-                <select id="downmode">
-                    <option value="link" i18n="task_add_urls"></option>
-                    <option value="meta" i18n="task_add_files"></option>
-                </select>
-            </div>
-            <div class="flex" i18n-tips="task_entry_title">
+            <h4 i18n="task_entry"></h4>
+            <select id="downmode">
+                <option value="link" i18n="task_add_urls"></option>
+                <option value="meta" i18n="task_add_files"></option>
+            </select>
+            <div class="flex" i18n-tips="task_entry_title" data-rel="url">
                 <textarea id="urls" rows="2"></textarea>
                 <button id="submit" i18n="common_submit"></button>
             </div>

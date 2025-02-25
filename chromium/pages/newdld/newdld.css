@@ -10,10 +10,6 @@
     }
 }
 
-select {
-    margin: 0px 0px 3px 5px;
-}
-
 textarea {
     border-style: inset;
     border-width: 1px;
@@ -25,6 +21,11 @@ textarea {
 
 #entries {
     margin-bottom: 5px;
+}
+
+#entries > h4 {
+    display: inline-block;
+    margin: 0px 3px 7px 0px;
 }
 
 #files {
@@ -42,12 +43,6 @@ textarea {
     filter: contrast(60%);
 }
 
-#submit {
-    grid-area: 2 / 4 / 3 / 5;
-}
-
-.meta #urls,
-.meta #submit,
 .meta [data-rel="url"] {
     display: none;
 }
