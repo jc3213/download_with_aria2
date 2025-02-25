@@ -47,7 +47,9 @@
 ![Task Manager](https://github.com/user-attachments/assets/991c3b4c-1fd1-492d-8f55-7196ab5c1f0a)
 
 ### New Download
-![New Download](https://github.com/user-attachments/assets/47c05dfd-8204-4551-b105-d9edd7aca2d1)
+![Download Urls](https://github.com/user-attachments/assets/4e8c7bee-48e5-466d-835d-bab177ebd452)
+![Upload Files](https://github.com/user-attachments/assets/d66d5802-c0a3-4b72-ab8c-407714f88d68)
+
 
 ### Detected Images
 ![Detected Images](https://github.com/user-attachments/assets/6ee6ffcc-dcd8-465c-9ab1-e3ad3db63bca)
