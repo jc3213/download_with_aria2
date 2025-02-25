@@ -13,10 +13,8 @@
                 <option value="link" i18n="task_add_urls"></option>
                 <option value="meta" i18n="task_add_files"></option>
             </select>
-            <div class="flex" i18n-tips="task_entry_title" data-exc="meta">
-                <textarea id="urls" rows="2"></textarea>
-                <button id="submit" i18n="common_submit"></button>
-            </div>
+            <button id="submit" i18n="common_submit" data-exc="meta"></button>
+            <textarea id="urls" rows="4" i18n-tips="task_entry_title" data-exc="meta"></textarea>
             <div id="files" i18n="task_tips_files"></div>
             <input id="metaurl" type="file" accept=".json,.meta4,.metalink">
         </div>
