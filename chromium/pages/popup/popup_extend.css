@@ -52,7 +52,7 @@
 }
 
 body:not(.full) > #queue {
-    height: 537px;
+    height: 535px;
 }
 
 body:not(.full) #menu {
