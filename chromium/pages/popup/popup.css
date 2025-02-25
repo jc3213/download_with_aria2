@@ -20,11 +20,30 @@ body {
     display: none;
 }
 
+#menu,
+#choose {
+    display: flex;
+    gap: 3px;
+}
+
+#menu > div,
+#choose > div {
+    padding: 5px 10px;
+}
+
+#menu > div {
+    flex: 1;
+}
+
+#menu > div::before {
+    margin-right: 8px;
+}
+
 #choose {
     border-style: solid;
     border-width: 1px;
+    flex-direction: column;
     position: fixed;
-    top: 42px;
     z-index: 999999;
 }
 
@@ -36,28 +55,9 @@ body {
     filter: contrast(60%);
 }
 
-#choose::before,
-#choose > *,
-#choose > ::before {
-    padding: 5px;
-}
-
 #choose > ::before {
     content: "✔️";
     margin-right: 5px;
-}
-
-#menu {
-    display: flex;
-    gap: 3px;
-}
-
-#menu > div {
-    flex: 1;
-}
-
-#menu > div, #menu > div::before {
-    padding: 4px 8px 4px 0px;
 }
 
 #queue {
