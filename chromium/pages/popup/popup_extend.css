@@ -1,7 +1,7 @@
 .full {
     display: grid;
     grid-template-columns: 200px 1fr;
-    grid-template-rows: auto auto auto 1fr;
+    grid-template-rows: auto auto 1fr;
     gap: 3px;
     margin: 8px auto;
     width: 1280px;
@@ -47,7 +47,7 @@
 }
 
 .full > #queue {
-    grid-area: 1 / 2 / 5 / 3;
+    grid-area: 1 / 2 / 4 / 3;
 }
 
 body:not(.full) > #queue {
