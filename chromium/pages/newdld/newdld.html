@@ -13,7 +13,7 @@
                 <option value="link" i18n="task_add_urls"></option>
                 <option value="meta" i18n="task_add_files"></option>
             </select>
-            <div class="flex" i18n-tips="task_entry_title" data-rel="url">
+            <div class="flex" i18n-tips="task_entry_title" data-exc="meta">
                 <textarea id="urls" rows="2"></textarea>
                 <button id="submit" i18n="common_submit"></button>
             </div>
@@ -21,13 +21,13 @@
             <input id="metaurl" type="file" accept=".json,.meta4,.metalink">
         </div>
         <div id="jsonrpc" class="options">
-            <div i18n-tips="task_referer_title" data-rel="url">
+            <div i18n-tips="task_referer_title" data-exc="meta">
                 <h4 i18n="task_referer"></h4>
                 <div>
                     <input name="referer" type="text">
                 </div>
             </div>
-            <div class="menu" i18n-tips="task_name_title" data-rel="url">
+            <div class="menu" i18n-tips="task_name_title" data-exc="meta">
                 <h4 i18n="task_name"></h4>
                 <div>
                     <input name="out" type="text">
@@ -39,7 +39,7 @@
                     <input name="dir" type="text">
                 </div>
             </div>
-            <div class="menu" i18n-tips="aria2_http_ua_title" data-rel="url">
+            <div class="menu" i18n-tips="aria2_http_ua_title" data-exc="meta">
                 <h4 i18n="aria2_http_ua"></h4>
                 <div>
                     <input name="user-agent" type="text">

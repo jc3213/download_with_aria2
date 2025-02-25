@@ -43,7 +43,7 @@ textarea {
     filter: contrast(60%);
 }
 
-.meta [data-rel="url"] {
+.meta [data-exc="meta"] {
     display: none;
 }
 
