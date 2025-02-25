@@ -17,7 +17,7 @@ document.addEventListener('keydown', (event) => {
                 event.preventDefault();
                 selectNone.click();
                 break;
-            case 'r':
+            case 'f':
                 event.preventDefault();
                 selectFlip.click();
                 break;
@@ -28,6 +28,12 @@ document.addEventListener('keydown', (event) => {
             case 's':
                 event.preventDefault();
                 optionsBtn.click();
+                break;
+        }
+    } else {
+        switch (event.key) {
+            case 'Escape':
+                close();
                 break;
         }
     }

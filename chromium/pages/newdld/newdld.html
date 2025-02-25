@@ -7,18 +7,29 @@
         <link rel="stylesheet" href="newdld.css">
     </head>
     <body>
+        <div id="entries" i18n-tips="task_entry_title">
+            <div class="flex">
+                <h4 i18n="task_entry"></h4>
+                <select id="downmode">
+                    <option value="link" i18n="task_add_urls"></option>
+                    <option value="meta" i18n="task_add_files"></option>
+                </select>
+            </div>
+            <div class="flex">
+                <textarea id="urls" rows="2"></textarea>
+                <button id="submit" i18n="common_submit"></button>
+            </div>
+            <div id="files" i18n="task_tips_files"></div>
+            <input id="metaurl" type="file" accept=".json,.meta4,.metalink">
+        </div>
         <div id="jsonrpc" class="options">
-            <div i18n-tips="task_referer_title">
+            <div i18n-tips="task_referer_title" data-rel="url">
                 <h4 i18n="task_referer"></h4>
                 <div>
                     <input name="referer" type="text">
                 </div>
             </div>
-            <div class="step" i18n-tips="task_batch_title">
-                <h4 i18n="task_batch"></h4>
-                <textarea id="entries" rows="2"></textarea>
-            </div>
-            <div class="menu" i18n-tips="task_name_title">
+            <div class="menu" i18n-tips="task_name_title" data-rel="url">
                 <h4 i18n="task_name"></h4>
                 <div>
                     <input name="out" type="text">
@@ -30,7 +41,7 @@
                     <input name="dir" type="text">
                 </div>
             </div>
-            <div class="menu" i18n-tips="aria2_http_ua_title">
+            <div class="menu" i18n-tips="aria2_http_ua_title" data-rel="url">
                 <h4 i18n="aria2_http_ua"></h4>
                 <div>
                     <input name="user-agent" type="text">
@@ -69,12 +80,6 @@
                     <span>B/s</span>
                 </div>
             </div>
-        </div>
-        <hr>
-        <div id="menu">
-            <button id="submit" i18n="common_submit"></button>
-            <button><label for="uploader" i18n="task_metaurl"></label></button>
-            <input id="uploader" type="file" accept=".torrent,.metalink,.meta4" multiple>
         </div>
         <script src="/pages/common.js"></script>
         <script src="newdld.js"></script>

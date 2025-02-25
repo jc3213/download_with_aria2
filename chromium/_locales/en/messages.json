@@ -350,10 +350,10 @@
     "task_referer_title": {
         "message": "Set \"Referer\" header for this download"
     },
-    "task_batch": {
-        "message": "Download Urls"
+    "task_entry": {
+        "message": "Download Mode"
     },
-    "task_batch_title": {
+    "task_entry_title": {
         "message": "Support multi-line \"URLs\" or \"JSON\" strings"
     },
     "task_name": {
@@ -368,8 +368,14 @@
     "task_proxy_title": {
         "message": "Set the proxy server for this download"
     },
-    "task_metaurl": {
-        "message": "Upload"
+    "task_add_urls": {
+        "message": "Url Batch"
+    },
+    "task_add_files": {
+        "message": "Add Files"
+    },
+    "task_tips_files": {
+        "message": "Click here to add files...\nDrag and drop \".torrent\", \".meta4\" and \".metalink\" files here..."
     },
     "task_download": {
         "message": "Max Download Speed"

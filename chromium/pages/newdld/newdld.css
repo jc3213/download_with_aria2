@@ -1,3 +1,19 @@
+@media (prefers-color-scheme: light) {
+    #files {
+        background-color: #F3F3F3;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    #files {
+        background-color: #56585D;
+    }
+}
+
+select {
+    margin: 0px 0px 3px 5px;
+}
+
 textarea {
     border-style: inset;
     border-width: 1px;
@@ -7,10 +23,35 @@ textarea {
     width: calc(100% - 12px);
 }
 
-#menu {
-    text-align: center;
+#entries {
+    margin-bottom: 5px;
 }
 
-.step {
-    margin-top: 5px;
+#files {
+    align-items: center;
+    border-style: solid;
+    border-width: 1px;
+    display: none;
+    height: 162px;
+    justify-content: center;
+    text-align: center;
+    white-space: pre-wrap;
+}
+
+#files:active {
+    filter: contrast(60%);
+}
+
+#submit {
+    grid-area: 2 / 4 / 3 / 5;
+}
+
+.meta #urls,
+.meta #submit,
+.meta [data-rel="url"] {
+    display: none;
+}
+
+.meta #files {
+    display: flex;
 }
