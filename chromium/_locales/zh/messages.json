@@ -299,29 +299,8 @@
     "option_capture_type_exclude_title": {
         "message": "忽略拥有所设置文件后缀的下载"
     },
-    "popup_download": {
-        "message": "下载速度"
-    },
-    "popup_upload": {
-        "message": "上传速度"
-    },
-    "popup_active": {
-        "message": "活跃"
-    },
-    "popup_waiting": {
-        "message": "等待"
-    },
-    "popup_stopped": {
-        "message": "停止"
-    },
-    "popup_newdld": {
-        "message": "下载"
-    },
-    "popup_purge": {
-        "message": "清理"
-    },
-    "popup_options": {
-        "message": "选项"
+    "popup_menu": {
+        "message": "功能菜单"
     },
     "popup_queue": {
         "message": "任务队列"
@@ -343,6 +322,30 @@
     },
     "popup_error_queue": {
         "message": "发生错误"
+    },
+    "popup_newdld": {
+        "message": "新下载"
+    },
+    "popup_purge": {
+        "message": "清理"
+    },
+    "popup_options": {
+        "message": "选项"
+    },
+    "popup_download": {
+        "message": "下载速度"
+    },
+    "popup_upload": {
+        "message": "上传速度"
+    },
+    "popup_active": {
+        "message": "活跃"
+    },
+    "popup_waiting": {
+        "message": "等待"
+    },
+    "popup_stopped": {
+        "message": "停止"
     },
     "task_mode": {
         "message": "下载模式"

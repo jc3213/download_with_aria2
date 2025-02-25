@@ -299,29 +299,8 @@
     "option_capture_type_exclude_title": {
         "message": "Ignore browser downloads with these file extensions"
     },
-    "popup_download": {
-        "message": "DL Speed"
-    },
-    "popup_upload": {
-        "message": "UL Speed"
-    },
-    "popup_active": {
-        "message": "Active"
-    },
-    "popup_waiting": {
-        "message": "Waiting"
-    },
-    "popup_stopped": {
-        "message": "Stopped"
-    },
-    "popup_newdld": {
-        "message": "New DL"
-    },
-    "popup_purge": {
-        "message": "Purge"
-    },
-    "popup_options": {
-        "message": "Options"
+    "popup_menu": {
+        "message": "Main Menu"
     },
     "popup_queue": {
         "message": "Task Queue"
@@ -343,6 +322,30 @@
     },
     "popup_error_queue": {
         "message": "Error Occured"
+    },
+    "popup_newdld": {
+        "message": "New DL"
+    },
+    "popup_purge": {
+        "message": "Purge"
+    },
+    "popup_options": {
+        "message": "Options"
+    },
+    "popup_download": {
+        "message": "DL Speed"
+    },
+    "popup_upload": {
+        "message": "UL Speed"
+    },
+    "popup_active": {
+        "message": "Active"
+    },
+    "popup_waiting": {
+        "message": "Waiting"
+    },
+    "popup_stopped": {
+        "message": "Stopped"
     },
     "task_mode": {
         "message": "Download Mode"
