@@ -369,7 +369,7 @@
         "message": "Set the proxy server for this download"
     },
     "task_add_urls": {
-        "message": "Url Batch"
+        "message": "URL Batch"
     },
     "task_add_files": {
         "message": "Add Files"
