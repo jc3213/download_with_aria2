@@ -15,8 +15,6 @@ function aria2RPCEcho() {
 }
 
 function aria2RPCCall(entries) {
-    let params = (Array.isArray(entries) ? entries : [entries]).filter((entry) => entry?.url);
-    if (params.length > 0) {
-        chrome.runtime.sendMessage({ action: 'jsonrpc_download', params });
-    }
+    let params = ( Array.isArray(entries) ? entries : [entries] ).filter( (entry) => entry?.url );
+    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params });
 }
