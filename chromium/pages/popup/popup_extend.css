@@ -21,6 +21,7 @@
 }
 
 .full > #menu > div::before {
+    display: inline-block;
     margin-left: 10%;
     width: 45%;
 }
