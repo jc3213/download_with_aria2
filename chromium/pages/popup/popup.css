@@ -22,17 +22,16 @@ body {
 
 #menu,
 #choose {
+    border-style: solid;
+    border-width: 1px;
     display: flex;
     gap: 3px;
 }
 
 #menu > div,
 #choose > div {
-    padding: 5px 10px;
-}
-
-#menu > div {
     flex: 1;
+    padding: 5px;
 }
 
 #menu > div::before {
@@ -40,11 +39,8 @@ body {
 }
 
 #choose {
-    border-style: solid;
-    border-width: 1px;
     flex-direction: column;
-    position: fixed;
-    z-index: 999999;
+    padding: 8px;
 }
 
 #choose > :hover {

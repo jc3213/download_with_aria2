@@ -15,8 +15,6 @@
 }
 
 .full > #menu {
-    border-style: solid;
-    border-width: 1px;
     flex-direction: column;
     grid-area: 1 / 1 / 2 / 2;
     padding: 8px;
@@ -29,7 +27,7 @@
 }
 
 .full > #menu::before {
-    content: "Main Menu";
+    content: "__MSG_popup_menu__";
     order: -2;
 }
 
@@ -43,7 +41,6 @@
 
 .full > #choose {
     grid-area: 2 / 1 / 3 / 2;
-    padding: 8px;
 }
 
 .full > #choose::before {
@@ -58,8 +55,17 @@ body:not(.full) > #queue {
     height: 537px;
 }
 
+body:not(.full) #menu {
+    border-width: 0px;
+}
+
 body:not(.full) #menu > div:nth-child(n+3) {
     display: none;
+}
+
+body:not(.full) > #choose {
+    position: fixed;
+    z-index: 999999;
 }
 
 #menu > div:nth-child(1)::before {
