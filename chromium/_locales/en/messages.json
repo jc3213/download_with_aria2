@@ -344,17 +344,26 @@
     "popup_error_queue": {
         "message": "Error Occured"
     },
+    "task_mode": {
+        "message": "Download Mode"
+    },
+    "task_tips_entry": {
+        "message": "Support multiple \"http\", \"ftp\", and \"magnet\" URLs"
+    },
+    "task_add_urls": {
+        "message": "URL Batch"
+    },
+    "task_add_files": {
+        "message": "Add Files"
+    },
+    "task_tips_files": {
+        "message": "Click here to add files...\nDrag and drop \".torrent\", \".meta4\" and \".metalink\" files here..."
+    },
     "task_referer": {
         "message": "Referer"
     },
     "task_referer_title": {
         "message": "Set \"Referer\" header for this download"
-    },
-    "task_entry": {
-        "message": "Download Mode"
-    },
-    "task_entry_title": {
-        "message": "Support multi-line \"URLs\" or \"JSON\" strings"
     },
     "task_name": {
         "message": "File Name"
@@ -367,15 +376,6 @@
     },
     "task_proxy_title": {
         "message": "Set the proxy server for this download"
-    },
-    "task_add_urls": {
-        "message": "URL Batch"
-    },
-    "task_add_files": {
-        "message": "Add Files"
-    },
-    "task_tips_files": {
-        "message": "Click here to add files...\nDrag and drop \".torrent\", \".meta4\" and \".metalink\" files here..."
     },
     "task_download": {
         "message": "Max Download Speed"

@@ -344,17 +344,26 @@
     "popup_error_queue": {
         "message": "发生错误"
     },
+    "task_mode": {
+        "message": "下载模式"
+    },
+    "task_tips_entry": {
+        "message": "可批量输入 \"http\", \"ftp\", 及 \"magnet\" 链接"
+    },
+    "task_add_urls": {
+        "message": "批量链接"
+    },
+    "task_add_files": {
+        "message": "上传文件"
+    },
+    "task_tips_files": {
+        "message": "点此上传文件……\n拖拽\".torrent\", \".meta4\" 以及 \".metalink\" 文件到此处..."
+    },
     "task_referer": {
         "message": "引用页"
     },
     "task_referer_title": {
         "message": "为本次下载添加\"Referer\"请求头"
-    },
-    "task_entry": {
-        "message": "下载模式"
-    },
-    "task_entry_title": {
-        "message": "支持下载多条 \"URL\", 或 \"JSON\" 字符串"
     },
     "task_name": {
         "message": "文件名"
@@ -367,15 +376,6 @@
     },
     "task_proxy_title": {
         "message": "设置本次下载所使用的代理服务器"
-    },
-    "task_add_urls": {
-        "message": "批量链接"
-    },
-    "task_add_files": {
-        "message": "上传文件"
-    },
-    "task_tips_files": {
-        "message": "点此上传文件……\n拖拽\".torrent\", \".meta4\" 以及 \".metalink\" 文件到此处..."
     },
     "task_download": {
         "message": "最大下载速度"
