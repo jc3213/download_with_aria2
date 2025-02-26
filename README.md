@@ -44,11 +44,12 @@
 ![Options - JSON-RPC](https://github.com/user-attachments/assets/6fff2d40-c296-423d-beda-1592cd6a4572)
 
 ### Task Manager
-![Task Manager](https://github.com/user-attachments/assets/991c3b4c-1fd1-492d-8f55-7196ab5c1f0a)
+![Task Manager - Popup](https://github.com/user-attachments/assets/991c3b4c-1fd1-492d-8f55-7196ab5c1f0a)
+![Task Manager - Open In Tab](https://github.com/user-attachments/assets/0b21aa61-fe61-4638-9143-600bc0d1d67f)
 
 ### New Download
-![Download Urls](https://github.com/user-attachments/assets/f6487cd0-a9bc-4536-a5f3-cadd4d6a017f)
-![Upload Files with Drag'nDrop](https://github.com/user-attachments/assets/4a2eac68-67f9-4942-a44b-705a7e9bea78)
+![New Download - URLs](https://github.com/user-attachments/assets/f6487cd0-a9bc-4536-a5f3-cadd4d6a017f)
+![New Download - Files](https://github.com/user-attachments/assets/4a2eac68-67f9-4942-a44b-705a7e9bea78)
 
 ### Detected Images
 ![Detected Images](https://github.com/user-attachments/assets/6ee6ffcc-dcd8-465c-9ab1-e3ad3db63bca)
