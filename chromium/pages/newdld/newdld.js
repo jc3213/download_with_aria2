@@ -22,11 +22,6 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-function downModeSwitch() {
-    downMode.value = downMode.value === 'meta' ? 'link' : 'meta';
-    document.body.classList.toggle('meta');
-}
-
 downMode.addEventListener('change', (event) => {
     document.body.classList.toggle('meta');
 });
