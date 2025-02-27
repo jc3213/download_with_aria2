@@ -8,10 +8,6 @@ var jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey) {
         switch (event.key) {
-            case 'Tab':
-                event.preventDefault();
-                downModeSwitch();
-                break;
             case 'Enter':
                 event.preventDefault();
                 submitBtn.click();
