@@ -8,6 +8,10 @@ var jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey) {
         switch (event.key) {
+            case 'Tab':
+                event.preventDefault();
+                downModeSwitch();
+                break;
             case 'Enter':
                 event.preventDefault();
                 submitBtn.click();
@@ -22,8 +26,13 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+function downModeSwitch() {
+    downMode.value = downMode.value === 'meta' ? 'link' : 'meta';
+    document.body.classList.toggle('meta');
+}
+
 downMode.addEventListener('change', (event) => {
-    document.body.className = event.target.value;
+    document.body.classList.toggle('meta');
 });
 
 submitBtn.addEventListener('click', (event) => {
