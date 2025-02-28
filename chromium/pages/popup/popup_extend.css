@@ -51,21 +51,21 @@
     grid-area: 1 / 2 / 4 / 3;
 }
 
-body:not(.full) > #queue {
-    height: 535px;
-}
-
-body:not(.full) #menu {
+body:not(.full) > #menu {
     border-width: 0px;
 }
 
-body:not(.full) #menu > div:nth-child(n+3) {
+body:not(.full) > #menu > div:nth-child(n+3) {
     display: none;
 }
 
 body:not(.full) > #filter {
     position: fixed;
     z-index: 999999;
+}
+
+body:not(.full) > #queue {
+    height: 535px;
 }
 
 #menu > div:nth-child(1)::before {
