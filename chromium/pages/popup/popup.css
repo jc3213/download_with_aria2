@@ -2,21 +2,21 @@ body {
     width: 680px;
 }
 
-.active > #filter > :nth-child(1)::before,
-.waiting > #filter > :nth-child(2)::before,
-.paused > #filter > :nth-child(3)::before,
-.complete > #filter > :nth-child(4)::before,
-.removed > #filter > :nth-child(5)::before,
-.error > #filter > :nth-child(6)::before {
+.active [data-fid="active"]::before,
+.waiting [data-fid="waiting"]::before,
+.paused [data-fid="paused"]::before,
+.complete [data-fid="complete"]::before,
+.removed [data-fid="removed"]::before,
+.error [data-fid="error"]::before {
     visibility: hidden;
 }
 
-.active > #queue > :nth-child(1),
-.waiting > #queue > :nth-child(2),
-.paused > #queue > :nth-child(3),
-.complete > #queue > :nth-child(4),
-.removed > #queue > :nth-child(5),
-.error > #queue > :nth-child(6) {
+.active > #queue > #active,
+.waiting > #queue > #waiting,
+.paused > #queue > #paused,
+.complete > #queue > #complete,
+.removed > #queue > #removed,
+.error > #queue > #error {
     display: none;
 }
 
@@ -71,9 +71,9 @@ body {
     pointer-events: none;
 }
 
-#queue > :nth-child(n + 4) .options button,
-#queue > :nth-child(-n + 3) .start,
-#queue > :nth-child(n + 4) > :not(.http) .start,
+#queue > :nth-child(n+4) .options button,
+#queue > :nth-child(-n+3) .start,
+#queue > :nth-child(n+4) > :not(.http) .start,
 .session.http [data-p2p],
 .session.p2p [data-http],
 .session .save {
@@ -91,32 +91,29 @@ body {
     color: #ffffff;
 }
 
-#queue > :nth-child(1) .name::before {
+#queue > #active .name::before {
     background-color: #59A8FF;
 }
 
 #queue > :nth-child(n+2):nth-child(-n+3) .name::before,
-#queue > :nth-child(3) .meter > .ratio {
+#queue > #paused .meter > .ratio {
     background-color: #E9C769;
 }
 
-#queue > :nth-child(4) .name::before,
-#queue > :nth-child(4) .meter > .ratio {
+#queue > #complete .name::before,
+#queue > #complete .meter > .ratio {
     background-color: #2C7D2C;
 }
 
 #queue > :nth-child(n+5) .name::before,
-#queue > :nth-child(6) .meter > .ratio {
+#queue > #error .meter > .ratio {
     background-color: #D44B31;
 }
 
 #queue > :nth-child(-n+3) .meter:active,
-#queue > :nth-child(-n+3) .meter > .ratio:active,
-#queue > :nth-child(-n+3) .p2p .file > :nth-child(1):active {
-    filter: contrast(40%);
-}
-
-#queue .http .uri > :nth-child(1):active {
+#queue > :nth-child(-n+3) .ratio:active,
+#queue > :nth-child(-n+3) .p2p .index:active,
+#queue .http .link:active {
     filter: contrast(40%);
 }
 
@@ -234,7 +231,6 @@ body {
 
 .file > :not(:nth-child(3)),
 .uri > :nth-child(n+2) {
-    padding: 3px 0px;
     text-align: center;
 }
 

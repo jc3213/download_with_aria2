@@ -68,23 +68,23 @@ body:not(.full) > #queue {
     height: 535px;
 }
 
-#menu > div:nth-child(1)::before {
+[data-sid="download"]::before {
     content: "__MSG_popup_download__";
 }
 
-#menu > div:nth-child(2)::before {
+[data-sid="upload"]::before {
     content: "__MSG_popup_upload__";
 }
 
-#menu > div:nth-child(3)::before {
+[data-sid="active"]::before {
     content: "__MSG_popup_active__";
 }
 
-#menu > div:nth-child(4)::before {
+[data-sid="waiting"]::before {
     content: "__MSG_popup_waiting__";
 }
 
-#menu > div:nth-child(5)::before {
+[data-sid="stopped"]::before {
     content: "__MSG_popup_stopped__";
 }
 
