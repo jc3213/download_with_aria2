@@ -8,8 +8,7 @@ var aria2Delay;
 var aria2Interval;
 
 var manager = document.body.classList;
-var chooseQueue = document.getElementById('choose');
-var [downBtn, purgeBtn, optionsBtn] = document.querySelectorAll('#menu button');
+var [downBtn, purgeBtn, optionsBtn, filterPane, queuePane] = document.querySelectorAll('#menu > button, #filter, #queue');
 var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
 
 document.querySelectorAll('[data-tid]').forEach((queue) => aria2Queue[queue.id] = queue);
@@ -17,8 +16,8 @@ document.querySelectorAll('[data-sid]').forEach((stat) => aria2Stats[stat.datase
 
 manager.add(...aria2Filter);
 
-chooseQueue.addEventListener('click', (event) => {
-    var id = event.target.dataset.qid;
+filterPane.addEventListener('click', (event) => {
+    var id = event.target.dataset.fid;
     var index = aria2Filter.indexOf(id);
     index === -1 ? aria2Filter.push(id) : aria2Filter.splice(index, 1);
     manager.toggle(id);

@@ -2,12 +2,12 @@ body {
     width: 680px;
 }
 
-.active > #choose > :nth-child(1)::before,
-.waiting > #choose > :nth-child(2)::before,
-.paused > #choose > :nth-child(3)::before,
-.complete > #choose > :nth-child(4)::before,
-.removed > #choose > :nth-child(5)::before,
-.error > #choose > :nth-child(6)::before {
+.active > #filter > :nth-child(1)::before,
+.waiting > #filter > :nth-child(2)::before,
+.paused > #filter > :nth-child(3)::before,
+.complete > #filter > :nth-child(4)::before,
+.removed > #filter > :nth-child(5)::before,
+.error > #filter > :nth-child(6)::before {
     visibility: hidden;
 }
 
@@ -21,7 +21,7 @@ body {
 }
 
 #menu,
-#choose {
+#filter {
     border-style: solid;
     border-width: 1px;
     display: flex;
@@ -29,7 +29,7 @@ body {
 }
 
 #menu > div,
-#choose > div {
+#filter > div {
     flex: 1;
     padding: 5px;
 }
@@ -38,20 +38,20 @@ body {
     margin-right: 8px;
 }
 
-#choose {
+#filter {
     flex-direction: column;
     padding: 8px;
 }
 
-#choose > :hover {
+#filter > :hover {
     filter: contrast(80%);
 }
 
-#choose > :active {
+#filter > :active {
     filter: contrast(60%);
 }
 
-#choose > ::before {
+#filter > ::before {
     content: "✔️";
     margin-right: 5px;
 }

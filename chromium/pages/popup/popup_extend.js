@@ -3,20 +3,19 @@ var aria2InTab = location.search !== '?toolbar';
 aria2InTab ? manager.add('full') : aria2Toolbar();
 
 function aria2Toolbar() {
-    var queue = document.getElementById('queue');
-    var left = queue.offsetWidth - choose.offsetWidth;
-    var top = queue.offsetHeight - choose.offsetHeight + 58;
-    queue.addEventListener('contextmenu', (event) => {
+    var left = queuePane.offsetWidth - filterPane.offsetWidth;
+    var top = queuePane.offsetHeight - filterPane.offsetHeight + 58;
+    queuePane.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         var {clientX, clientY} = event;
         var css = clientX > left ? 'right: 0px;' : 'left: ' + clientX + 'px;';
         css += clientY > top ? 'top: auto; bottom: 0px;' : 'top: ' + clientY + 'px;';
-        chooseQueue.style.cssText = css;
+        filterPane.style.cssText = css;
     });
-    queue.addEventListener('click', (event) => {
-        chooseQueue.style.display = 'none';
+    queuePane.addEventListener('click', (event) => {
+        filterPane.style.display = 'none';
     });
-    choose.style.display = 'none';
+    filterPane.style.display = 'none';
 }
 
 downBtn.addEventListener('click', async (event) => {
