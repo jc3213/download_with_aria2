@@ -1,5 +1,6 @@
 var aria2Storage = {};
 var aria2Config = {};
+var aria2Version;
 
 var updated = {};
 var changes = {};
@@ -8,7 +9,6 @@ var undone = false;
 var redoes = [];
 
 var extension = document.body.classList;
-var {version, manifest_version} = chrome.runtime.getManifest();
 var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, jsonFile, confFile, exporter] = document.querySelectorAll('#menu > *')
 var [optionsPane, jsonrpcBtn, jsonrpcPane, optionsBtn, aria2ua] = document.querySelectorAll('#options, #goto-jsonrpc, #jsonrpc, #goto-options, #useragent');
 var optionsEntries = document.querySelectorAll('#options [name]');
@@ -161,7 +161,7 @@ function optionEmptyChanges() {
 }
 
 jsonrpcBtn.addEventListener('click', (event) => {
-    chrome.runtime.sendMessage({action: 'jsonrpc_initiate'}, ({alive, options, version}) => {
+    chrome.runtime.sendMessage({action: 'jsonrpc_handshake'}, ({alive, options, version}) => {
         if (alive) {
             optionEmptyChanges();
             aria2Config = jsonrpcEntries.disposition(options);
@@ -292,7 +292,7 @@ function redoMatchRule(add, remove) {
 
 function aria2OptionsSetup() {
     updated = {...aria2Storage};
-    aria2ver.textContent = version;
+    aria2ver.textContent = aria2Version;
     optionsEntries.forEach((entry) => {
         var id = entry.name;
         var value = updated[id];
@@ -315,7 +315,8 @@ function aria2SaveStorage(json) {
     changes = {};
 }
 
-chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
+chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, version}) => {
     aria2Storage = storage;
+    aria2Version = version;
     aria2OptionsSetup();
 });

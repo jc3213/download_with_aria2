@@ -150,9 +150,9 @@ chrome.action.onClicked.addListener((tab) => {
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     switch (action) {
         case 'options_plugins':
-            response({ storage: aria2Storage, options: aria2Config });
+            response({ storage: aria2Storage, options: aria2Config, version: aria2Manifest.version });
             break;
-        case 'jsonrpc_initiate':
+        case 'jsonrpc_handshake':
             response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version });
             break;
         case 'options_onchange':
