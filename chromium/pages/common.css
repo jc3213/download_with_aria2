@@ -93,6 +93,7 @@ button {
     border-style: outset;
     border-width: 1px;
     padding: 3px 5px;
+    white-space: nowrap;
 }
 
 button:enabled:hover {
