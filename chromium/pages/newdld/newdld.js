@@ -86,9 +86,7 @@ function promiseFileReader(file) {
 }
 
 jsonrpcPane.addEventListener('change', (event) => {
-    if (event.target.name) {
-        aria2Config[event.target.name] = event.target.value;
-    }
+    aria2Config[event.target.name] = event.target.value;
 });
 
 refererEntry.addEventListener('focus', (event) => {
