@@ -61,7 +61,7 @@ body:not(.full) > #menu > div:nth-child(n+3) {
 
 body:not(.full) > #filter {
     position: fixed;
-    z-index: 999999;
+    z-index: 9;
 }
 
 body:not(.full) > #queue {

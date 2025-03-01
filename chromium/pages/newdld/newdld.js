@@ -1,9 +1,10 @@
 var aria2Storage = {};
 var aria2Config = {};
 
-var [entryPane, jsonrpcPane, proxyBtn] = document.querySelectorAll('#entries, #jsonrpc, #proxy');
+var [entryPane, jsonrpcPane, refererPane, proxyBtn] = document.querySelectorAll('#entries, #jsonrpc, #referer, #proxy');
 var [, downMode, submitBtn, downEntry, metaPane, metaImport] = entryPane.children;
 var jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
+var refererEntry = jsonrpcEntries[0];
 
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey) {
@@ -78,6 +79,19 @@ function promiseFileReader(file) {
     });
 }
 
+refererEntry.addEventListener('focus', (event) => {
+    refererPane.style.display = 'block';
+});
+
+refererEntry.addEventListener('change', (event) => {
+    refererPane.style.display = '';
+});
+
+refererPane.addEventListener('click', (event) => {
+    aria2Config['referer'] = refererEntry.value = event.target.title;
+    refererPane.style.display = '';
+});
+
 jsonrpcPane.addEventListener('change', (event) => {
     if (event.target.name) {
         aria2Config[event.target.name] = event.target.value;
@@ -89,9 +103,15 @@ proxyBtn.addEventListener('click', (event) => {
 });
 
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, options}) => {
-    chrome.tabs.query({active: true, currentWindow: false}, (tabs) => {
-        aria2Storage = storage;
-        options['referer'] = tabs[0].url;
-        aria2Config = jsonrpcEntries.disposition(options);
+    aria2Storage = storage;
+    aria2Config = jsonrpcEntries.disposition(options);
+    chrome.tabs.query({active: false, currentWindow: false}, (tabs) => {
+        tabs.forEach((tab) => {
+            if (tab.url.startsWith('http')) {
+                var referer = document.createElement('div');
+                referer.title = referer.textContent = tab.url;
+                refererPane.appendChild(referer);
+            }
+        });
     });
 });
