@@ -53,7 +53,7 @@ textarea {
     overflow: hidden auto;
     position: absolute;
     top: 100%;
-    width: 100%;
+    width: calc(100% - 4px);
     z-index: 9;
 }
 

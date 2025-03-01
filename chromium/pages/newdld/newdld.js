@@ -23,6 +23,12 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+document.addEventListener('click', (event) => {
+    if (event.target !== refererEntry && refererPane.style.display === 'block') {
+        refererPane.style.display = ''; 
+    }
+});
+
 downMode.addEventListener('change', (event) => {
     document.body.classList.toggle('meta');
 });
@@ -89,13 +95,14 @@ refererEntry.addEventListener('focus', (event) => {
     refererPane.style.display = 'block';
 });
 
-refererEntry.addEventListener('change', (event) => {
-    refererPane.style.display = '';
+refererEntry.addEventListener('input', (event) => {
+    refererPane.childNodes.forEach((modal) => {
+        modal.style.display = modal.title.includes(refererEntry.value) ? '' : 'none';
+    });
 });
 
 refererPane.addEventListener('click', (event) => {
     aria2Config['referer'] = refererEntry.value = event.target.title;
-    refererPane.style.display = '';
 });
 
 proxyBtn.addEventListener('click', (event) => {
