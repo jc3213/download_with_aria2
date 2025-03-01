@@ -109,7 +109,7 @@ proxyBtn.addEventListener('click', (event) => {
     event.target.previousElementSibling.value = aria2Config['all-proxy'] = aria2Storage['proxy_server'];
 });
 
-chrome.tabs.query({active: false, currentWindow: false}, (tabs) => {
+chrome.tabs.query({currentWindow: false}, (tabs) => {
     tabs.forEach((tab) => {
         if (tab.url.startsWith('http')) {
             var referer = document.createElement('div');
