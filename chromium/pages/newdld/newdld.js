@@ -79,6 +79,12 @@ function promiseFileReader(file) {
     });
 }
 
+jsonrpcPane.addEventListener('change', (event) => {
+    if (event.target.name) {
+        aria2Config[event.target.name] = event.target.value;
+    }
+});
+
 refererEntry.addEventListener('focus', (event) => {
     refererPane.style.display = 'block';
 });
@@ -90,12 +96,6 @@ refererEntry.addEventListener('change', (event) => {
 refererPane.addEventListener('click', (event) => {
     aria2Config['referer'] = refererEntry.value = event.target.title;
     refererPane.style.display = '';
-});
-
-jsonrpcPane.addEventListener('change', (event) => {
-    if (event.target.name) {
-        aria2Config[event.target.name] = event.target.value;
-    }
 });
 
 proxyBtn.addEventListener('click', (event) => {
