@@ -1,5 +1,6 @@
 var aria2Storage = {};
 var aria2Config = {};
+var aria2Referer = [];
 
 var [entryPane, jsonrpcPane, refererPane, proxyBtn] = document.querySelectorAll('#entries, #jsonrpc, #referer, #proxy');
 var [, downMode, submitBtn, downEntry, metaPane, metaImport] = entryPane.children;
@@ -94,8 +95,8 @@ refererEntry.addEventListener('focus', (event) => {
 });
 
 refererEntry.addEventListener('input', (event) => {
-    refererPane.childNodes.forEach((modal) => {
-        modal.style.display = modal.title.includes(refererEntry.value) ? '' : 'none';
+    aria2Referer.forEach((referer) => {
+        referer.style.display = referer.title.includes(refererEntry.value) ? '' : 'none';
     });
 });
 
@@ -112,6 +113,7 @@ chrome.tabs.query({currentWindow: false}, (tabs) => {
         if (tab.url.startsWith('http')) {
             var referer = document.createElement('div');
             referer.title = referer.textContent = tab.url;
+            aria2Referer.push(referer);
             refererPane.appendChild(referer);
         }
     });
