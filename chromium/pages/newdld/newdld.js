@@ -109,16 +109,17 @@ proxyBtn.addEventListener('click', (event) => {
     event.target.previousElementSibling.value = aria2Config['all-proxy'] = aria2Storage['proxy_server'];
 });
 
+chrome.tabs.query({active: false, currentWindow: false}, (tabs) => {
+    tabs.forEach((tab) => {
+        if (tab.url.startsWith('http')) {
+            var referer = document.createElement('div');
+            referer.title = referer.textContent = tab.url;
+            refererPane.appendChild(referer);
+        }
+    });
+});
+
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, options}) => {
     aria2Storage = storage;
     aria2Config = jsonrpcEntries.disposition(options);
-    chrome.tabs.query({active: false, currentWindow: false}, (tabs) => {
-        tabs.forEach((tab) => {
-            if (tab.url.startsWith('http')) {
-                var referer = document.createElement('div');
-                referer.title = referer.textContent = tab.url;
-                refererPane.appendChild(referer);
-            }
-        });
-    });
 });
