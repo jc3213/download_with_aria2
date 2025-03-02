@@ -91,12 +91,17 @@ jsonrpcPane.addEventListener('change', (event) => {
 });
 
 refererEntry.addEventListener('click', (event) => {
+    refererModalPopup();
     refererPane.style.display = 'block';
 });
 
 refererEntry.addEventListener('input', (event) => {
+    refererModalPopup();
+});
+
+function refererModalPopup() {
     var entry = refererEntry.value;
-    var regexp = new RegExp(entry, 'gi');
+    var regexp = new RegExp(entry.replace(/\./g, '\\.').replace(/\//g, '\\/'), 'gi');
     aria2Referer.forEach((referer) => {
         if (referer.title.includes(entry)) {
             referer.style.display = '';
@@ -106,7 +111,7 @@ refererEntry.addEventListener('input', (event) => {
             referer.textContent = referer.title;
         }
     });
-});
+}
 
 refererPane.addEventListener('click', (event) => {
     aria2Config['referer'] = refererEntry.value = event.target.title;
