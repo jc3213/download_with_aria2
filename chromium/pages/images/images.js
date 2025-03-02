@@ -67,12 +67,12 @@ optionsBtn.addEventListener('click', (event) => {
     document.body.classList.toggle('extra');
 });
 
-proxyBtn.addEventListener('click', (event) => {
-    event.target.previousElementSibling.value = aria2Config['all-proxy'] = aria2Storage['proxy_server'];
-});
-
 jsonrpcPane.addEventListener('change', (event) => {
     aria2Config[event.target.name] = event.target.value;
+});
+
+proxyBtn.addEventListener('click', (event) => {
+    aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
 
 chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, filter}) => {

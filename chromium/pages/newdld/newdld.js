@@ -90,7 +90,7 @@ jsonrpcPane.addEventListener('change', (event) => {
     aria2Config[event.target.name] = event.target.value;
 });
 
-refererEntry.addEventListener('focus', (event) => {
+refererEntry.addEventListener('click', (event) => {
     refererPane.style.display = 'block';
 });
 
