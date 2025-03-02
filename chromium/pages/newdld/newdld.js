@@ -74,7 +74,7 @@ async function metaFileDownload(files) {
         }
     })
     var params = (await Promise.all(session)).filter((param) => param);
-    chrome.runtime.sendMessage({action: 'jsonrpc_metadata', params});
+    chrome.runtime.sendMessage({ action: 'jsonrpc_metadata', params });
     close();
 }
 
@@ -95,8 +95,16 @@ refererEntry.addEventListener('focus', (event) => {
 });
 
 refererEntry.addEventListener('input', (event) => {
+    var entry = refererEntry.value;
+    var regexp = new RegExp(entry, 'gi');
     aria2Referer.forEach((referer) => {
-        referer.style.display = referer.title.includes(refererEntry.value) ? '' : 'none';
+        if (referer.title.includes(entry)) {
+            referer.style.display = '';
+            referer.innerHTML = referer.title.replace(regexp, '<span style="background-color: yellow;">' + entry + '</span>');
+        } else {
+            referer.style.display = 'none';
+            referer.textContent = referer.title;
+        }
     });
 });
 
@@ -105,7 +113,7 @@ refererPane.addEventListener('click', (event) => {
 });
 
 proxyBtn.addEventListener('click', (event) => {
-    event.target.previousElementSibling.value = aria2Config['all-proxy'] = aria2Storage['proxy_server'];
+    aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
 
 chrome.tabs.query({currentWindow: false}, (tabs) => {
