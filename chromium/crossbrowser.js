@@ -381,7 +381,7 @@ function getMatchPattern(array, isFile) {
     if (isFile) {
         return new RegExp('^.*\\.(' + array.join('|') + ')$');
     }
-    return new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*\\\./g, '([^.]+\\.)*').replace(/\\\.\*/g, '(\\.[^.]+)*') + ')$');
+    return new RegExp('^(' + array.join('|').replace(/(\*\.|\.\*|\.)/g, (match) => match === '*.' ? '([^.]+\\.)*' : match === '.*' ? '(\\.[^.]+)*' : '\\.') + ')$');
 }
 
 function getHostname(url) {
