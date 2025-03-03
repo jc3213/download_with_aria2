@@ -105,7 +105,7 @@ function refererModalPopup() {
     aria2Referer.forEach((referer) => {
         if (referer.title.includes(entry)) {
             referer.style.display = '';
-            referer.innerHTML = referer.title.replace(regexp, '<span style="background-color: yellow;">' + entry + '</span>');
+            referer.innerHTML = referer.title.replace(regexp, '<mark>' + entry + '</mark>');
         } else {
             referer.style.display = 'none';
             referer.textContent = referer.title;
