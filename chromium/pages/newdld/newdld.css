@@ -55,11 +55,6 @@ textarea {
     filter: contrast(60%);
 }
 
-body:not(.meta) #uris,
-.meta .uploader {
-    border-bottom-style: inset;
-}
-
 .meta [data-exc="meta"] {
     display: none;
 }
