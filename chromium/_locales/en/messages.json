@@ -347,17 +347,17 @@
     "popup_stopped": {
         "message": "Stopped"
     },
-    "task_mode": {
-        "message": "Download Mode"
-    },
-    "task_tips_entry": {
-        "message": "Support multiple \"http\", \"ftp\", and \"magnet\" URLs"
+    "task_add_mode": {
+        "message": "Download"
     },
     "task_add_urls": {
         "message": "URL Batch"
     },
     "task_add_files": {
-        "message": "Add Files"
+        "message": "Meta Files"
+    },
+    "task_tips_urls": {
+        "message": "Support multiple \"http\", \"ftp\", and \"magnet\" URLs"
     },
     "task_tips_files": {
         "message": "Click here to add files...\nDrag and drop \".torrent\", \".meta4\" and \".metalink\" files here..."

@@ -347,17 +347,17 @@
     "popup_stopped": {
         "message": "停止"
     },
-    "task_mode": {
-        "message": "下载模式"
-    },
-    "task_tips_entry": {
-        "message": "可批量输入 \"http\", \"ftp\", 及 \"magnet\" 链接"
+    "task_add_mode": {
+        "message": "下载"
     },
     "task_add_urls": {
         "message": "批量链接"
     },
     "task_add_files": {
-        "message": "上传文件"
+        "message": "分布式文件"
+    },
+    "task_tips_urls": {
+        "message": "可批量输入 \"http\", \"ftp\", 及 \"magnet\" 链接"
     },
     "task_tips_files": {
         "message": "点此上传文件……\n拖拽\".torrent\", \".meta4\" 以及 \".metalink\" 文件到此处..."

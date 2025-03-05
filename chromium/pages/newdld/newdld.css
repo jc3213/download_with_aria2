@@ -1,11 +1,11 @@
 @media (prefers-color-scheme: light) {
-    #files {
+    .uploader {
         background-color: #F3F3F3;
     }
 }
 
 @media (prefers-color-scheme: dark) {
-    #files {
+    .uploader {
         background-color: #56585D;
     }
 }
@@ -16,7 +16,7 @@ textarea {
     overflow: hidden auto;
     padding: 3px;
     resize: none;
-    width: calc(100% - 12px);
+    width: calc(100% - 8px);
 }
 
 #entries > h4 {
@@ -24,24 +24,9 @@ textarea {
     margin: 0px 3px 8px 0px;
 }
 
-#submit {
+#entries > button {
     position: absolute;
-    right: 4px;
-}
-
-#files {
-    align-items: center;
-    border-style: solid;
-    border-width: 1px;
-    display: none;
-    height: 208px;
-    justify-content: center;
-    text-align: center;
-    white-space: pre-wrap;
-}
-
-#files:active {
-    filter: contrast(60%);
+    right: 0px;
 }
 
 #referer {
@@ -70,10 +55,30 @@ textarea {
     filter: contrast(60%);
 }
 
+body:not(.meta) #uris,
+.meta .uploader {
+    border-bottom-style: inset;
+}
+
 .meta [data-exc="meta"] {
     display: none;
 }
 
-.meta #files {
+.meta .uploader {
     display: flex;
+}
+
+.uploader {
+    align-items: center;
+    border-style: solid;
+    border-width: 1px;
+    display: none;
+    height: 208px;
+    justify-content: center;
+    text-align: center;
+    white-space: pre-wrap;
+}
+
+.uploader:active {
+    filter: contrast(60%);
 }
