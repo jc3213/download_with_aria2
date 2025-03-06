@@ -315,8 +315,8 @@ function aria2SaveStorage(json) {
     changes = {};
 }
 
-chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, version}) => {
+chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, manifest}) => {
     aria2Storage = storage;
-    aria2Version = version;
+    aria2Version = manifest.version;
     aria2OptionsSetup();
 });

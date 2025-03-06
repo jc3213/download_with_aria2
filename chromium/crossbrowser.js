@@ -95,7 +95,7 @@ function aria2DownloadPrompt() {
 
 async function aria2ImagesPrompt(tabId) {
     var popId = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Inspect[popId] = { images: aria2Inspect[tabId].images, filter: aria2Headers, storage: aria2Storage, options: aria2Config };
+    aria2Inspect[popId] = { storage: aria2Storage, options: aria2Config, manifest: aria2Manifest, images: aria2Inspect[tabId].images, filter: aria2Headers };
 }
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
@@ -150,7 +150,7 @@ chrome.action.onClicked.addListener((tab) => {
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     switch (action) {
         case 'options_plugins':
-            response({ storage: aria2Storage, options: aria2Config, version: aria2Manifest.version });
+            response({ storage: aria2Storage, options: aria2Config, manifest: aria2Manifest });
             break;
         case 'jsonrpc_handshake':
             response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version });
@@ -176,6 +176,10 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     }
     return true;
 });
+
+function aria2RealTimeStatus() {
+    return { storage: aria2Storage, options: aria2Config, manifest: aria2Manifest, version: aria2Version };
+}
 
 async function aria2MessageHandler(urls) {
     var message = '';

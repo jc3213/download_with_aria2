@@ -7,6 +7,14 @@ var [, downMode, submitBtn, downEntry, metaPane, metaImport] = entryPane.childre
 var jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 var refererEntry = jsonrpcEntries[0];
 
+document.querySelectorAll('[i18n]').forEach((node) => {
+    node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
+});
+
+document.querySelectorAll('[i18n-tips]').forEach((node) => {
+    node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
+});
+
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey) {
         switch (event.key) {
@@ -134,5 +142,7 @@ chrome.tabs.query({currentWindow: false}, (tabs) => {
 
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, options}) => {
     aria2Storage = storage;
-    aria2Config = jsonrpcEntries.disposition(options);
+    jsonrpcEntries.forEach((entry) => {
+        entry.value = aria2Config[entry.name] = options[entry.name] ?? '';
+    });
 });

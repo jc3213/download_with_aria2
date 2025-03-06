@@ -1,10 +1,18 @@
 var aria2Storage = {};
 var aria2Config = {};
 var aria2Images = [];
-var aria2Manifest = chrome.runtime.getManifest().manifest_version;
 
 var [selectAll, selectNone, selectFlip, submitBtn, optionsBtn, proxyBtn] = document.querySelectorAll('button');
 var [preview, galleryPane, jsonrpcPane] = document.querySelectorAll('#preview > img, #gallery, #jsonrpc');
+var jsonrpcEntries = document.querySelectorAll('#jsonrpc [name]');
+
+document.querySelectorAll('[i18n]').forEach((node) => {
+    node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
+});
+
+document.querySelectorAll('[i18n-tips]').forEach((node) => {
+    node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
+});
 
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey) {
@@ -75,12 +83,13 @@ proxyBtn.addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
 
-chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, filter}) => {
+chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, manifest, filter}) => {
     aria2Storage = storage;
-    options['user-agent'] = aria2Storage['headers_useragent'];
-    aria2Config = document.querySelectorAll('#jsonrpc input').disposition(options);
-    aria2Manifest === 2 ? aria2HeadersMV2(images, filter) : aria2HeadersMV3(images);
+    manifest.manifest_version === 2 ? aria2HeadersMV2(images, filter) : aria2HeadersMV3(images);
     galleryPane.append(...aria2Images);
+    jsonrpcEntries.forEach((entry) => {
+        entry.value = aria2Config[entry.name] = options[entry.name] ?? '';
+    });
 });
 
 function getImagePreview(url, headers) {
