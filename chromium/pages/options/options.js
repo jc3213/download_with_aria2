@@ -10,33 +10,16 @@ var redoes = [];
 
 var extension = document.body.classList;
 var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, jsonFile, confFile, exporter] = document.querySelectorAll('#menu > *')
-var [optionsPane, jsonrpcBtn, jsonrpcPane, optionsBtn, aria2ua] = document.querySelectorAll('#options, #goto-jsonrpc, #jsonrpc, #goto-options, #useragent');
-var optionsEntries = document.querySelectorAll('#options [name]');
-var jsonrpcEntries = document.querySelectorAll('#jsonrpc [name]');
-var matchEntries = document.querySelectorAll('[data-map]');
+var [jsonrpcBtn, optionsBtn, aria2ua] = document.querySelectorAll('#goto-jsonrpc, #goto-options, #useragent');
+var optionsEntries = document.querySelectorAll('[name]:not([type="checkbox"])');
+var optionsCheckboxes = document.querySelectorAll('[type="checkbox"]');
+var optionsMatches = document.querySelectorAll('[data-map]');
 var matchLET = document.querySelector('.template > div');
 
-var matches = {
-    'capture_exclude': true,
-    'capture_include': true,
-    'capture_type_exclude': true,
-    'capture_type_include': true,
-    'headers_exclude': true,
-    'proxy_include': true
-};
 var switches = {
     'context_enabled': true,
-    'context_cascade': false,
-    'context_thisurl': false,
-    'context_thisimage': false,
-    'context_allimages': false,
-    'manager_newtab': false,
-    'notify_install': false,
-    'notify_start': false,
-    'notify_complete': false,
     'headers_override': true,
     'folder_enabled': true,
-    'folder_firefox': false,
     'capture_enabled': true,
     'capture_webrequest': true
 };
@@ -83,9 +66,9 @@ saveBtn.addEventListener('click', (event) => {
 undoBtn.addEventListener('click', (event) => {
     var undo = undoes.pop();
     redoes.push(undo);
-    var {add, entry, id, old_value, remove, resort} = undo;
+    var {id, old_value} = undo;
     updated[id] = changes[id] = old_value;
-    matches[id] ? resort ? undoResort(resort) : undoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, old_value) : optionsEntryValue(entry, old_value);
+    optionsUndoRedo('undo', old_value, undo);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
     if (undoes.length === 0) {
@@ -96,14 +79,29 @@ undoBtn.addEventListener('click', (event) => {
 redoBtn.addEventListener('click', (event) => {
     var redo = redoes.pop();
     undoes.push(redo);
-    var {add, entry, id, new_value, remove, resort} = redo;
+    var {id, new_value} = redo;
     updated[id] = changes[id] = new_value;
-    matches[id] ? resort ? redoResort(resort) : redoMatchRule(add, remove) : id in switches ? optionsCheckbox(entry, id, new_value) :optionsEntryValue(entry, new_value);
+    optionsUndoRedo('redo', new_value, redo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
     }
 });
+
+function optionsUndoRedo(action, value, {add, checkbox, entry, id, remove, resort}) {
+    if (entry) {
+        entry.value = value;
+    } else if (checkbox) {
+        if (switches[id]) {
+            extension.toggle(id);
+        }
+        checkbox.checked = value;
+    } else if (resort) {
+        window[action + 'Resort'](resort);
+    } else {
+        redoMatchRule(add, remove);
+    }
+}
 
 exportBtn.addEventListener('click', (event) => {
     extension.contains('jsonrpc') ? fileSaver(Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key] + '\n'), 'aria2_jsonrpc', 'conf') : fileSaver([JSON.stringify(aria2Storage, null, 4)], 'downwitharia2', 'json');
@@ -122,7 +120,7 @@ function fileSaver(body, name, type) {
 }
 
 jsonFile.addEventListener('change', async (event) => {
-    var file = await fileReader(event.target.files[0]);
+    var file = await promiseFileReader(event.target.files[0]);
     changes = JSON.parse(file);
     aria2SaveStorage(changes);
     aria2OptionsSetup();
@@ -131,7 +129,7 @@ jsonFile.addEventListener('change', async (event) => {
 });
 
 confFile.addEventListener('change', async (event) => {
-    var file = await fileReader(event.target.files[0]);
+    var file = await promiseFileReader(event.target.files[0]);
     var params = {};
     file.split('\n').forEach((line) => {
         if (line[0] !== '#') {
@@ -140,13 +138,13 @@ confFile.addEventListener('change', async (event) => {
         }
     });
     chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params});
-    aria2Config = jsonrpcEntries.disposition({...aria2Config, ...params});
+    aria2Config = optionsEntries.disposition({...aria2Config, ...params});
     updated = {...aria2Config};
     optionEmptyChanges();
     event.target.value = '';
 });
 
-function fileReader(file) {
+function promiseFileReader(file) {
     return new Promise((resolve) => {
         var reader = new FileReader();
         reader.onload = (event) => resolve(reader.result);
@@ -164,7 +162,7 @@ jsonrpcBtn.addEventListener('click', (event) => {
     chrome.runtime.sendMessage({action: 'jsonrpc_handshake'}, ({alive, options, version}) => {
         if (alive) {
             optionEmptyChanges();
-            aria2Config = jsonrpcEntries.disposition(options);
+            aria2Config = optionsEntries.disposition(options);
             updated = {...aria2Config};
             aria2ver.textContent = aria2ua.textContent = version;
             extension.add('jsonrpc');
@@ -178,47 +176,26 @@ optionsBtn.addEventListener('click', (event) => {
     extension.remove('jsonrpc');
 });
 
-optionsPane.addEventListener('change', (event) => {
-    var id = event.target.name;
-    if (id) {
-        optionsChanged(event.target, id, id in switches ? event.target.checked : event.target.value);
-    }
+optionsEntries.forEach((entry) => {
+    entry.addEventListener('change', (event) => {
+        var id = entry.name;
+        var new_value = entry.value;
+        optionsChangeApply(id, new_value, {entry, id, new_value, old_value: updated[id]});
+    });
 });
 
-jsonrpcPane.addEventListener('change', (event) => {
-    optionsChanged(event.target, event.target.name, event.target.value);
+optionsCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener('change', (event) => {
+        var id = checkbox.name;
+        var new_value = checkbox.checked;
+        if (switches[id]) {
+            extension.toggle(id);
+        }
+        optionsChangeApply(id, new_value, {checkbox, id, new_value, old_value: !new_value});
+    });
 });
 
-function optionsCheckbox(entry, id, value, startup) {
-    entry.checked = value;
-    if (switches[id]) {
-        startup ? value ? extension.add(id) : extension.remove(id) : extension.toggle(id);
-    }
-}
-
-function optionsEntryValue(entry, value) {
-    entry.value = value;
-}
-
-function optionsChanged(entry, id, new_value) {
-    if (switches[id]) {
-        extension.toggle(id);
-    }
-    optionsChangeApply(id, new_value, {entry, id, new_value, old_value: updated[id]});
-}
-
-function optionsChangeApply(id, new_value, undo) {
-    updated[id] = changes[id] = new_value;
-    undoes.push(undo);
-    saveBtn.disabled = undoBtn.disabled = false;
-    if (undone) {
-        redoes = [];
-        undone = false;
-        redoBtn.disabled = true;
-    }
-}
-
-matchEntries.forEach((match) => {
+optionsMatches.forEach((match) => {
     var id = match.id;
     var [entry, addbtn, resort, list] = match.querySelectorAll('input, button, .list');
     match.list = list;
@@ -230,6 +207,17 @@ matchEntries.forEach((match) => {
     addbtn.addEventListener('click', (event) => addMatchPattern(list, id, entry));
     resort.addEventListener('click', (event) => resortMatchPattern(list, id));
 });
+
+function optionsChangeApply(id, new_value, undo) {
+    updated[id] = changes[id] = new_value;
+    undoes.push(undo);
+    saveBtn.disabled = undoBtn.disabled = false;
+    if (undone) {
+        redoes = [];
+        undone = false;
+        redoBtn.disabled = true;
+    }
+}
 
 function addMatchPattern(list, id, entry) {
     var old_value = updated[id];
@@ -294,11 +282,16 @@ function aria2OptionsSetup() {
     updated = {...aria2Storage};
     aria2ver.textContent = aria2Version;
     optionsEntries.forEach((entry) => {
-        var id = entry.name;
-        var value = updated[id];
-        id in switches ? optionsCheckbox(entry, id, value, true) : optionsEntryValue(entry, value);
+        entry.value = updated[entry.name];
     });
-    matchEntries.forEach(({id, list}) => {
+    optionsCheckboxes.forEach((checkbox) => {
+        var id = checkbox.name;
+        if (switches[id]) {
+            updated[id] ? extension.add(id) : extension.remove(id);
+        }
+        checkbox.checked = updated[id];
+    });
+    optionsMatches.forEach(({id, list}) => {
         list.innerHTML = '';
         updated[id].forEach((value) => createMatchRule(list, id, value));
     });
