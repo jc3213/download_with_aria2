@@ -171,7 +171,7 @@ function promiseFileReader(file) {
 
 function aria2ConfigSetup(json) {
     jsonrpcEntries.forEach((entry) => {
-        entry.value = aria2Config[entry.name] = json[entry.name];
+        entry.value = aria2Config[entry.name] = json[entry.name] ?? '';
     });
 }
 
