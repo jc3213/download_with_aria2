@@ -13,7 +13,7 @@ var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, jsonFile, confFi
 var [jsonrpcBtn, optionsBtn, aria2ua] = document.querySelectorAll('#goto-jsonrpc, #goto-options, #useragent');
 var optionsEntries = document.querySelectorAll('[name]:not([type="checkbox"])');
 var optionsCheckboxes = document.querySelectorAll('[type="checkbox"]');
-var optionsMatches = document.querySelectorAll('[data-map]');
+var optionsMatches = document.querySelectorAll('.matches > [id]');
 var matchLET = document.querySelector('.template > div');
 
 if (typeof browser !== 'undefined') {
