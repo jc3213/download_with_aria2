@@ -177,10 +177,6 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     return true;
 });
 
-function aria2RealTimeStatus() {
-    return { storage: aria2Storage, options: aria2Config, manifest: aria2Manifest, version: aria2Version };
-}
-
 async function aria2MessageHandler(urls) {
     var message = '';
     var session = urls.map(({url, options = {}}) => {
