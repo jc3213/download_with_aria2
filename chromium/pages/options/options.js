@@ -16,14 +16,6 @@ var optionsCheckboxes = document.querySelectorAll('[type="checkbox"]');
 var optionsMatches = document.querySelectorAll('[data-map]');
 var matchLET = document.querySelector('.template > div');
 
-var switches = {
-    'context_enabled': true,
-    'headers_override': true,
-    'folder_enabled': true,
-    'capture_enabled': true,
-    'capture_webrequest': true
-};
-
 if (typeof browser !== 'undefined') {
     extension.add('firefox');
     var [folderff, captureen, captureff] = document.querySelectorAll('#folder_firefox, #capture_enabled, #capture_webrequest');
@@ -92,14 +84,14 @@ function optionsUndoRedo(action, value, {add, checkbox, entry, id, remove, resor
     if (entry) {
         entry.value = value;
     } else if (checkbox) {
-        if (switches[id]) {
+        if (checkbox.dataset.key) {
             extension.toggle(id);
         }
         checkbox.checked = value;
     } else if (resort) {
-        window[action + 'Resort'](resort);
+        self[action + 'Resort'](resort);
     } else {
-        redoMatchRule(add, remove);
+        self[action + 'MatchRule'](add, remove);
     }
 }
 
@@ -188,7 +180,7 @@ optionsCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener('change', (event) => {
         var id = checkbox.name;
         var new_value = checkbox.checked;
-        if (switches[id]) {
+        if (checkbox.dataset.key) {
             extension.toggle(id);
         }
         optionsChangeApply(id, new_value, {checkbox, id, new_value, old_value: !new_value});
@@ -286,7 +278,7 @@ function aria2OptionsSetup() {
     });
     optionsCheckboxes.forEach((checkbox) => {
         var id = checkbox.name;
-        if (switches[id]) {
+        if (checkbox.dataset.key) {
             updated[id] ? extension.add(id) : extension.remove(id);
         }
         checkbox.checked = updated[id];
