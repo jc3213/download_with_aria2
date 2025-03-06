@@ -32,6 +32,14 @@ if (typeof browser !== 'undefined') {
     });
 }
 
+document.querySelectorAll('[i18n]').forEach((node) => {
+    node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
+});
+
+document.querySelectorAll('[i18n-tips]').forEach((node) => {
+    node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
+});
+
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey) {
         switch (event.key) {
@@ -147,7 +155,7 @@ confFile.addEventListener('change', async (event) => {
         }
     });
     chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params});
-    aria2Config = jsonrpcEntries.disposition({...aria2Config, ...params});
+    aria2ConfigSetup(params);
     updated = {...aria2Config};
     optionEmptyChanges();
     event.target.value = '';
@@ -161,6 +169,12 @@ function promiseFileReader(file) {
     });
 }
 
+function aria2ConfigSetup(json) {
+    jsonrpcEntries.forEach((entry) => {
+        entry.value = aria2Config[entry.name] = json[entry.name];
+    });
+}
+
 function optionEmptyChanges() {
     undoes = [];
     redoes = [];
@@ -171,7 +185,7 @@ jsonrpcBtn.addEventListener('click', (event) => {
     chrome.runtime.sendMessage({action: 'jsonrpc_handshake'}, ({alive, options, version}) => {
         if (alive) {
             optionEmptyChanges();
-            aria2Config = jsonrpcEntries.disposition(options);
+            aria2ConfigSetup(options);
             updated = {...aria2Config};
             aria2ver.textContent = aria2ua.textContent = version;
             extension.add('jsonrpc');
