@@ -151,61 +151,92 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.entries = task.querySelectorAll('[name]');
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
-    task.purge.addEventListener('click', (event) => taskRemove(task, gid));
-    task.detail.addEventListener('click', (event) => taskDetail(task, gid));
-    task.start.addEventListener('click', (event) => taskRetry(task, gid));
-    task.meter.addEventListener('click', (event) => taskPause(task, gid));
-    task.proxy.addEventListener('click', (event) => taskProxy(task, gid, event.target.previousElementSibling));
-    task.save.addEventListener('click', (event) => taskChangeFiles(task, gid));
-    task.adduri.addEventListener('click', (event) => taskAddUri(task, gid, event.target.previousElementSibling));
+    task.purge.addEventListener('click', async (event) => {
+        switch (task.status) {
+            case 'active':
+                await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
+                break;
+            case 'waiting':
+            case 'paused':
+                await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
+                taskElementRemove('waiting', gid, task);
+                break;
+            case 'complete':
+            case 'removed':
+            case 'error':
+                await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
+                taskElementRemove('stopped', gid, task);
+                break;
+        }
+    });
+    task.detail.addEventListener('click', async (event) => {
+        if (aria2Detail[gid]) {
+            task.classList.remove('extra');
+            task.save.style.display = 'none';
+            delete aria2Detail[gid];
+        } else {
+            var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
+            task.classList.add('extra');
+            aria2Detail[gid] = true;
+            taskDetailOpened(task, gid, files.result, options.result);
+        }
+    });
+    task.start.addEventListener('click', async (event) => {
+        var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
+        var {uris, path} = files.result[0];
+        var url = [...new Set(uris.map(({uri}) => uri))];
+        if (path) {
+            var ni = path.lastIndexOf('/');
+            var name = {'dir': path.slice(0, ni), 'out': path.slice(ni + 1)};
+        }
+        var [added, removed] = await aria2RPC.call(
+            {method: 'aria2.addUri', params: [url, {...options.result, ...name}]},
+            {method: 'aria2.removeDownloadResult', params: [gid]}
+        );
+        taskElementUpdate(added.result);
+        taskElementRemove('stopped', gid, task);
+    });
+    task.meter.addEventListener('click', async (event) => {
+        switch (task.status) {
+            case 'active':
+            case 'waiting':
+                await aria2RPC.call({method: 'aria2.forcePause', params: [gid]});
+                aria2Queue.paused.appendChild(task);
+                break;
+            case 'paused':
+                await aria2RPC.call({method: 'aria2.unpause', params: [gid]});
+                aria2Queue.waiting.appendChild(task);
+                break;
+        }
+    });
+    task.proxy.addEventListener('click', async (event) => {
+        await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2Proxy}]});
+        task.proxy.previousElementSibling.value = aria2Proxy;
+    });
+    task.save.addEventListener('click', async (event) => {
+        var selected = [...task.files.querySelectorAll(':checked + label')].map((index) => index.textContent);
+        await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'select-file': selected.join()}]});
+        task.save.style.display = 'none';
+    });
+    task.adduri.addEventListener('click', async (event) => {
+        var uri = task.adduri.previousElementSibling;
+        await aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [], [uri.value]]});
+        uri.value = '';
+    });
     task.options.addEventListener('change', (event) => {
-        task.settings[event.target.name] = event.target.value;
-        aria2RPC.call({method: 'aria2.changeOption', params: [gid, task.settings]});
+        aria2RPC.call({method: 'aria2.changeOption', params: [gid, {[event.target.name]: event.target.value}]});
     });
     taskStatusChange(task, gid, status);
     return task;
-}
-
-async function taskRemove(task, gid) {
-    switch (task.status) {
-        case 'active':
-            await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
-            break;
-        case 'waiting':
-        case 'paused':
-            await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
-            taskElementRemove('waiting', gid, task);
-            break;
-        case 'complete':
-        case 'removed':
-        case 'error':
-            await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
-            taskElementRemove('stopped', gid, task);
-            break;
-    }
-}
-
-async function taskDetail(task, gid) {
-    if (aria2Detail[gid]) {
-        task.classList.remove('extra');
-        task.save.style.display = 'none';
-        delete aria2Detail[gid];
-    } else {
-        var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
-        task.classList.add('extra');
-        aria2Detail[gid] = true;
-        taskDetailOpened(task, gid, files.result, options.result);
-    }
 }
 
 function taskDetailOpened(task, gid, files, options) {
     options['min-split-size'] = getFileSize(options['min-split-size']);
     options['max-download-limit'] = getFileSize(options['max-download-limit']);
     options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
-    task.settings = {};
     task.uris.uris = [];
     task.entries.forEach((entry) => {
-        entry.value = task.settings[entry.name] = options[entry.name];
+        entry.value = options[entry.name] ?? '';
     });
     files.forEach(({index, length, completedLength, path, selected, uris}) => {
         var file = task.files[index] ?? taskFileElementCreate(task, gid, task.files, index, selected, path, length, uris);
@@ -246,7 +277,9 @@ function taskFileElementCreate(task, gid, list, index, selected, path, length, u
     file.check.id = gid + '_' + index;
     file.index.textContent = index;
     file.index.setAttribute('for', file.check.id);
-    file.index.addEventListener('click', (event) => taskSelectFile(task));
+    file.index.addEventListener('click', (event) => {
+        task.save.style.display = 'block';
+    });
     list[index] = file;
     list.appendChild(file);
     return file;
@@ -258,65 +291,13 @@ function taskUriElementCreate(gid, list, uri) {
     }
     var url = uriLET.cloneNode(true);
     url.querySelectorAll('*').forEach((div) => url[div.className] = div);
-    url.link.addEventListener('click', (event) => taskRemoveUri(event, gid, uri));
+    url.link.addEventListener('click', (event) => {
+        navigator.clipboard.writeText(uri);
+    });
     url.link.title = url.link.textContent = uri;
     list.uris.push(uri);
     list[uri] = url;
     list.appendChild(url);
-}
-
-async function taskRetry(task, gid) {
-    var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
-    var {uris, path} = files.result[0];
-    var url = [...new Set(uris.map(({uri}) => uri))];
-    if (path) {
-        var ni = path.lastIndexOf('/');
-        var name = {'dir': path.slice(0, ni), 'out': path.slice(ni + 1)};
-     }
-     var [added, removed] = await aria2RPC.call(
-        {method: 'aria2.addUri', params: [url, {...options.result, ...name}]},
-        {method: 'aria2.removeDownloadResult', params: [gid]}
-     );
-     taskElementUpdate(added.result);
-     taskElementRemove('stopped', gid, task);
-}
-
-async function taskPause(task, gid) {
-    switch (task.status) {
-        case 'active':
-        case 'waiting':
-            await aria2RPC.call({method: 'aria2.forcePause', params: [gid]});
-            aria2Queue.paused.appendChild(task);
-            break;
-        case 'paused':
-            await aria2RPC.call({method: 'aria2.unpause', params: [gid]});
-            aria2Queue.waiting.appendChild(task);
-            break;
-    }
-}
-
-async function taskProxy(task, gid, entry) {
-    await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2Proxy}]});
-    entry.value = aria2Proxy;
-}
-
-async function taskChangeFiles(task, gid) {
-    var selected = [...task.files.querySelectorAll(':checked + label')].map((index) => index.textContent);
-    await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'select-file': selected.join()}]});
-    task.save.style.display = 'none';
-}
-
-function taskSelectFile(task) {
-    task.save.style.display = 'block';
-}
-
-async function taskAddUri(task, gid, entry) {
-    await aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [], [entry.value]]});
-    entry.value = '';
-}
-
-async function taskRemoveUri(event, gid, uri) {
-    event.ctrlKey ? aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [uri], []]}) : navigator.clipboard.writeText(uri);
 }
 
 function getFileSize(bytes) {
