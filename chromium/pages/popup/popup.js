@@ -202,8 +202,11 @@ function taskDetailOpened(task, gid, files, options) {
     options['min-split-size'] = getFileSize(options['min-split-size']);
     options['max-download-limit'] = getFileSize(options['max-download-limit']);
     options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
-    task.settings = task.entries.disposition(options);
+    task.settings = {};
     task.uris.uris = [];
+    task.entries.forEach((entry) => {
+        entry.value = task.settings[entry.name] = options[entry.name];
+    });
     files.forEach(({index, length, completedLength, path, selected, uris}) => {
         var file = task.files[index] ?? taskFileElementCreate(task, gid, task.files, index, selected, path, length, uris);
         file.check.checked = selected === 'true';

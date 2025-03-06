@@ -1,10 +1,18 @@
 var aria2InTab = location.search !== '?toolbar';
 
+document.querySelectorAll('[i18n]').forEach((node) => {
+    node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
+});
+
+document.querySelectorAll('[i18n-tips]').forEach((node) => {
+    node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
+});
+
 aria2InTab ? manager.add('full') : aria2Toolbar();
 
 function aria2Toolbar() {
     var left = queuePane.offsetWidth - filterPane.offsetWidth;
-    var top = queuePane.offsetHeight - filterPane.offsetHeight + 58;
+    var top = queuePane.offsetHeight - filterPane.offsetHeight;
     queuePane.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         var {clientX, clientY} = event;
