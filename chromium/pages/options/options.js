@@ -95,6 +95,22 @@ function optionsUndoRedo(action, value, {add, checkbox, entry, id, remove, resor
     }
 }
 
+function undoResort({list, old_order}) {
+    list.append(...old_order);
+}
+
+function redoResort({list, new_order}) {
+    list.append(...new_order);
+}
+
+function undoMatchRule(add, remove) {
+    add ? add.forEach(({rule}) => rule.remove()) : remove.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
+}
+
+function redoMatchRule(add, remove) {
+    add ? add.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index])) : remove.forEach(({rule}) => rule.remove());
+}
+
 exportBtn.addEventListener('click', (event) => {
     extension.contains('jsonrpc') ? fileSaver(Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key] + '\n'), 'aria2_jsonrpc', 'conf') : fileSaver([JSON.stringify(aria2Storage, null, 4)], 'downwitharia2', 'json');
 });
@@ -252,22 +268,6 @@ function createMatchRule(list, id, value) {
     purge.addEventListener('click', (event) => removeMatchPattern(list, id, event.target.parentNode));
     list.appendChild(rule);
     return rule;
-}
-
-function undoResort({list, old_order}) {
-    list.append(...old_order);
-}
-
-function redoResort({list, new_order}) {
-    list.append(...new_order);
-}
-
-function undoMatchRule(add, remove) {
-    add ? add.forEach(({rule}) => rule.remove()) : remove.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
-}
-
-function redoMatchRule(add, remove) {
-    add ? add.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index])) : remove.forEach(({rule}) => rule.remove());
 }
 
 function aria2OptionsSetup() {
