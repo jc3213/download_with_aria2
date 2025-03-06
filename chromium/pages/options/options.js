@@ -11,9 +11,10 @@ var redoes = [];
 var extension = document.body.classList;
 var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, jsonFile, confFile, exporter] = document.querySelectorAll('#menu > *')
 var [jsonrpcBtn, optionsBtn, aria2ua] = document.querySelectorAll('#goto-jsonrpc, #goto-options, #useragent');
-var optionsEntries = document.querySelectorAll('[name]:not([type="checkbox"])');
+var optionsEntries = document.querySelectorAll('#options [name]:not([type="checkbox"])');
 var optionsCheckboxes = document.querySelectorAll('[type="checkbox"]');
 var optionsMatches = document.querySelectorAll('.matches > [id]');
+var jsonrpcEntries = document.querySelectorAll('#jsonrpc [name]');
 var matchLET = document.querySelector('.template > div');
 
 if (typeof browser !== 'undefined') {
@@ -146,7 +147,7 @@ confFile.addEventListener('change', async (event) => {
         }
     });
     chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params});
-    aria2Config = optionsEntries.disposition({...aria2Config, ...params});
+    aria2Config = jsonrpcEntries.disposition({...aria2Config, ...params});
     updated = {...aria2Config};
     optionEmptyChanges();
     event.target.value = '';
@@ -170,7 +171,7 @@ jsonrpcBtn.addEventListener('click', (event) => {
     chrome.runtime.sendMessage({action: 'jsonrpc_handshake'}, ({alive, options, version}) => {
         if (alive) {
             optionEmptyChanges();
-            aria2Config = optionsEntries.disposition(options);
+            aria2Config = jsonrpcEntries.disposition(options);
             updated = {...aria2Config};
             aria2ver.textContent = aria2ua.textContent = version;
             extension.add('jsonrpc');
@@ -184,7 +185,7 @@ optionsBtn.addEventListener('click', (event) => {
     extension.remove('jsonrpc');
 });
 
-optionsEntries.forEach((entry) => {
+[...optionsEntries, ...jsonrpcEntries].forEach((entry) => {
     entry.addEventListener('change', (event) => {
         var id = entry.name;
         var new_value = entry.value;
