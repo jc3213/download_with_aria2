@@ -157,6 +157,10 @@ body {
     grid-template-columns: repeat(3, 1fr) auto;
 }
 
+.session > :nth-child(n+2):not(.manage) {
+    margin-top: 3px;
+}
+
 .session > .name {
     grid-area: 1 / 1 / 1 / 4;
 }
@@ -165,9 +169,9 @@ body {
     border-radius: 50%;
     content: "";
     display: inline-block;
-    height: 12px;
-    margin: 0px 9px 0px 5px;
-    width: 12px;
+    height: 16px;
+    margin: 0px 5px 3px 3px;
+    width: 16px;
     vertical-align: middle;
 }
 
@@ -177,8 +181,8 @@ body {
 
 .session > .manage > button {
     display: block;
-    padding: 0px;
-    width: 23px;
+    padding: 1px;
+    width: 25px;
 }
 
 .session > .manage > :nth-child(n+2) {
