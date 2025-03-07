@@ -66,6 +66,10 @@ input[type="checkbox"] + label {
     padding: 10px;
 }
 
+.matches > div > [id] > input {
+    width: calc(100% - 89px);
+}
+
 .list {
     border-style: inset;
     border-width: 1px;

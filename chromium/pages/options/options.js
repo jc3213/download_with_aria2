@@ -13,7 +13,7 @@ var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, jsonFile, confFi
 var [jsonrpcBtn, optionsBtn, aria2ua] = document.querySelectorAll('#goto-jsonrpc, #goto-options, #useragent');
 var optionsEntries = document.querySelectorAll('#options [name]:not([type="checkbox"])');
 var optionsCheckboxes = document.querySelectorAll('[type="checkbox"]');
-var optionsMatches = document.querySelectorAll('.matches > [id]');
+var optionsMatches = document.querySelectorAll('.matches div[id]');
 var jsonrpcEntries = document.querySelectorAll('#jsonrpc [name]');
 var matchLET = document.querySelector('.template > div');
 
@@ -100,7 +100,7 @@ function optionsUndoRedo(action, value, {add, checkbox, entry, id, remove, resor
     } else if (resort) {
         self[action + 'Resort'](resort);
     } else {
-        self[action + 'MatchRule'](add, remove);
+        self[action + 'MatchPattern'](add, remove);
     }
 }
 
@@ -112,12 +112,12 @@ function redoResort({list, new_order}) {
     list.append(...new_order);
 }
 
-function undoMatchRule(add, remove) {
+function undoMatchPattern(add, remove) {
     add?.forEach(({rule}) => rule.remove());
     remove?.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
 }
 
-function redoMatchRule(add, remove) {
+function redoMatchPattern(add, remove) {
     add?.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
     remove?.forEach(({rule}) => rule.remove());
 }
@@ -227,15 +227,36 @@ optionsCheckboxes.forEach((checkbox) => {
 
 optionsMatches.forEach((match) => {
     var id = match.id;
-    var [entry, addbtn, resort, list] = match.querySelectorAll('input, button, .list');
+    var [entry, addbtn, resort, list] = match.children;
     match.list = list;
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            addMatchPattern(list, id, entry);
+            addbtn.click();
         }
     });
-    addbtn.addEventListener('click', (event) => addMatchPattern(list, id, entry));
-    resort.addEventListener('click', (event) => resortMatchPattern(list, id));
+    addbtn.addEventListener('click', (event) => {
+        var old_value = updated[id];
+        var new_value = [...old_value];
+        var add = [];
+        entry.value.match(/[^\s;]+/g)?.forEach((value) => {
+            if (value && !new_value.includes(value)) {
+                var rule = createMatchPattern(list, id, value);
+                add.push({list, index: new_value.length, rule});
+                new_value.push(value);
+            }
+        });
+        entry.value = '';
+        list.scrollTop = list.scrollHeight;
+        optionsChangeApply(id, new_value, {add, id, new_value, old_value});
+    });
+    resort.addEventListener('click', (event) => {
+        var old_value = updated[id];
+        var new_value = [...old_value].sort();
+        var old_order = [...list.children];
+        var new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
+        list.append(...new_order);
+        optionsChangeApply(id, new_value, {id, new_value, old_value, resort: {list, new_order, old_order}});
+    });
 });
 
 function optionsChangeApply(id, new_value, undo) {
@@ -251,45 +272,18 @@ function optionsChangeApply(id, new_value, undo) {
 
 function createMatchPattern(list, id, value) {
     var rule = matchLET.cloneNode(true);
-    var [content, purge] = rule.querySelectorAll('*');
+    var [content, purge] = rule.children;
     content.textContent = rule.title = value;
-    purge.addEventListener('click', (event) => removeMatchPattern(list, id, event.target.parentNode));
+    purge.addEventListener('click', (event) => {
+        var old_value = updated[id]
+        var new_value = [...old_value];
+        var index = new_value.indexOf(rule.title);
+        new_value.splice(index, 1);
+        rule.remove();
+        optionsChangeApply(id, new_value, {id, new_value, old_value, remove: [{list, index, rule}]});
+    });
     list.appendChild(rule);
     return rule;
-}
-
-function addMatchPattern(list, id, entry) {
-    var old_value = updated[id];
-    var new_value = [...old_value];
-    var add = [];
-    entry.value.match(/[^\s;]+/g)?.forEach((value) => {
-        if (value && !new_value.includes(value)) {
-            var rule = createMatchPattern(list, id, value);
-            add.push({list, index: new_value.length, rule});
-            new_value.push(value);
-        }
-    });
-    entry.value = '';
-    list.scrollTop = list.scrollHeight;
-    optionsChangeApply(id, new_value, {add, id, new_value, old_value});
-}
-
-function resortMatchPattern(list, id) {
-    var old_value = updated[id];
-    var new_value = [...old_value].sort();
-    var old_order = [...list.children];
-    var new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
-    list.append(...new_order);
-    optionsChangeApply(id, new_value, {id, new_value, old_value, resort: {list, new_order, old_order}});
-}
-
-function removeMatchPattern(list, id, rule) {
-    var old_value = updated[id]
-    var new_value = [...old_value];
-    var index = new_value.indexOf(rule.title);
-    new_value.splice(index, 1);
-    rule.remove();
-    optionsChangeApply(id, new_value, {id, new_value, old_value, remove: [{list, index, rule}]});
 }
 
 function aria2OptionsSetup() {

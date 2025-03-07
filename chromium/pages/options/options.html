@@ -101,19 +101,17 @@
                 <label for="headers_override" i18n="option_headers_override"></label>
             </div>
             <div class="menu" i18n-tips="option_headers_useragent_title" data-rel="headers_override">
-                <div>
-                    <input name="headers_useragent" type="text">
-                </div>
+                <input name="headers_useragent" type="text">
             </div>
             <div class="matches">
-                <div id="headers_exclude" i18n-tips="option_headers_exclude_title">
+                <div i18n-tips="option_headers_exclude_title">
                     <h4 i18n="option_match_exclude"></h4>
-                    <div class="flex">
+                    <div id="headers_exclude">
                         <input type="text">
                         <button i18n-tips="tips_add_match">➕</button>
                         <button i18n-tips="tips_resort_match">🧲</button>
+                        <div class="list"></div>
                     </div>
-                    <div class="list"></div>
                 </div>
             </div>
             <h1 i18n="option_folder"></h1>
@@ -130,19 +128,17 @@
             </div>
             <h1 i18n="option_proxy"></h1>
             <div i18n-tips="option_proxy_title">
-                <div>
-                    <input name="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
-                </div>
+                <input name="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
             </div>
             <div class="matches">
-                <div id="proxy_include" i18n-tips="option_proxy_include_title">
+                <div i18n-tips="option_proxy_include_title">
                     <h4 i18n="option_match_include"></h4>
-                    <div class="flex">
+                    <div id="proxy_include">
                         <input type="text">
                         <button i18n-tips="tips_add_match">➕</button>
                         <button i18n-tips="tips_resort_match">🧲</button>
+                        <div class="list"></div>
                     </div>
-                    <div class="list"></div>
                 </div>
             </div>
             <h1 i18n="option_capture"></h1>
@@ -175,41 +171,41 @@
                         <span i18n="common_disabled"></span>: <i>0</i>
                     </div>
                 </div>
-                <div id="capture_include" i18n-tips="option_capture_include_title">
+                <div i18n-tips="option_capture_include_title">
                     <h4 i18n="option_match_include"></h4>
-                    <div class="flex">
+                    <div id="capture_include">
                         <input type="text">
                         <button i18n-tips="tips_add_match">➕</button>
                         <button i18n-tips="tips_resort_match">🧲</button>
+                        <div class="list"></div>
                     </div>
-                    <div class="list"></div>
                 </div>
-                <div id="capture_exclude" i18n-tips="option_capture_exclude_title">
+                <div i18n-tips="option_capture_exclude_title">
                     <h4 i18n="option_match_exclude"></h4>
-                    <div class="flex">
+                    <div id="capture_exclude">
                         <input type="text">
                         <button i18n-tips="tips_add_match">➕</button>
                         <button i18n-tips="tips_resort_match">🧲</button>
+                        <div class="list"></div>
                     </div>
-                    <div class="list"></div>
                 </div>
-                <div id="capture_type_include" i18n-tips="option_capture_type_include_title">
+                <div i18n-tips="option_capture_type_include_title">
                     <h4 i18n="option_capture_type_include"></h4>
-                    <div class="flex">
+                    <div id="capture_type_include">
                         <input type="text">
                         <button i18n-tips="tips_add_match">➕</button>
                         <button i18n-tips="tips_resort_match">🧲</button>
+                        <div class="list listx"></div>
                     </div>
-                    <div class="list listx"></div>
                 </div>
-                <div id="capture_type_exclude" i18n-tips="option_capture_type_exclude_title">
+                <div i18n-tips="option_capture_type_exclude_title">
                     <h4 i18n="option_capture_type_exclude"></h4>
-                    <div class="flex">
+                    <div id="capture_type_exclude">
                         <input type="text">
                         <button i18n-tips="tips_add_match">➕</button>
                         <button i18n-tips="tips_resort_match">🧲</button>
+                        <div class="list listx"></div>
                     </div>
-                    <div class="list listx"></div>
                 </div>
             </div>
         </div>
