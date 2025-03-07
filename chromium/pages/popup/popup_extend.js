@@ -12,7 +12,7 @@ aria2InTab ? manager.add('full') : aria2Toolbar();
 
 function aria2Toolbar() {
     var left = queuePane.offsetWidth - filterPane.offsetWidth;
-    var top = queuePane.offsetHeight - filterPane.offsetHeight;
+    var top = queuePane.offsetHeight - filterPane.offsetHeight + 62;
     queuePane.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         var {clientX, clientY} = event;
