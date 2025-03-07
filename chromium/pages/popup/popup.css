@@ -72,8 +72,8 @@ body {
 }
 
 #queue > :nth-child(n+4) > .session > :nth-last-child(-n+3) button,
-#queue > :nth-child(n+4) > :not(.http) .start,
-#queue > :nth-child(-n+3) .start,
+#queue > :nth-child(n+4) > :not(.http) .retry,
+#queue > :nth-child(-n+3) .retry,
 .session.http [data-p2p],
 .session.p2p [data-http] {
     display: none;

@@ -181,7 +181,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
             taskDetailOpened(task, gid, files.result, options.result);
         }
     });
-    task.start.addEventListener('click', async (event) => {
+    task.retry.addEventListener('click', async (event) => {
         var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
         var {uris, path} = files.result[0];
         var url = [...new Set(uris.map(({uri}) => uri))];
