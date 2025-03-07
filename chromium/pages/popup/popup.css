@@ -157,6 +157,12 @@ body {
     grid-template-columns: repeat(3, 1fr) auto;
 }
 
+.session button {
+    display: block;
+    padding: 1px;
+    width: 25px;
+}
+
 .session > :nth-child(n+2):not(.manage) {
     margin-top: 3px;
 }
@@ -177,12 +183,6 @@ body {
 
 .session > .manage {
     grid-area: 1 / 4 / 4 / 5;
-}
-
-.session > .manage > button {
-    display: block;
-    padding: 1px;
-    width: 25px;
 }
 
 .session > .manage > :nth-child(n+2) {
@@ -207,10 +207,9 @@ body {
 }
 
 .session .savebtn {
-    padding: 4px;
     position: absolute;
     right: 0px;
-    top: -4px;
+    top: 0px;
 }
 
 .file {
