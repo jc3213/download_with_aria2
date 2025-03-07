@@ -113,28 +113,35 @@ function redoResort({list, new_order}) {
 }
 
 function undoMatchRule(add, remove) {
-    add ? add.forEach(({rule}) => rule.remove()) : remove.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
+    add?.forEach(({rule}) => rule.remove());
+    remove?.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
 }
 
 function redoMatchRule(add, remove) {
-    add ? add.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index])) : remove.forEach(({rule}) => rule.remove());
+    add?.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
+    remove?.forEach(({rule}) => rule.remove());
 }
 
 exportBtn.addEventListener('click', (event) => {
-    extension.contains('jsonrpc') ? fileSaver(Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key] + '\n'), 'aria2_jsonrpc', 'conf') : fileSaver([JSON.stringify(aria2Storage, null, 4)], 'downwitharia2', 'json');
-});
-
-importBtn.addEventListener('click', (event) => {
-    extension.contains('jsonrpc') ? confFile.click() : jsonFile.click();
-});
-
-function fileSaver(body, name, type) {
+    if (extension.contains('jsonrpc')) {
+        var name = 'aria2_jsonrpc';
+        var type = 'conf';
+        var body = Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key]);
+    } else {
+        name = 'downwitharia2';
+        type = 'json';
+        body = [JSON.stringify(aria2Storage, null, 4)];
+    }
     var time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
     var blob = new Blob(body);
     exporter.href = URL.createObjectURL(blob);
     exporter.download = name + '-' + time + '.' + type;
     exporter.click();
-}
+});
+
+importBtn.addEventListener('click', (event) => {
+    extension.contains('jsonrpc') ? confFile.click() : jsonFile.click();
+});
 
 jsonFile.addEventListener('change', async (event) => {
     var file = await promiseFileReader(event.target.files[0]);
@@ -242,13 +249,22 @@ function optionsChangeApply(id, new_value, undo) {
     }
 }
 
+function createMatchPattern(list, id, value) {
+    var rule = matchLET.cloneNode(true);
+    var [content, purge] = rule.querySelectorAll('*');
+    content.textContent = rule.title = value;
+    purge.addEventListener('click', (event) => removeMatchPattern(list, id, event.target.parentNode));
+    list.appendChild(rule);
+    return rule;
+}
+
 function addMatchPattern(list, id, entry) {
     var old_value = updated[id];
     var new_value = [...old_value];
     var add = [];
     entry.value.match(/[^\s;]+/g)?.forEach((value) => {
         if (value && !new_value.includes(value)) {
-            var rule = createMatchRule(list, id, value);
+            var rule = createMatchPattern(list, id, value);
             add.push({list, index: new_value.length, rule});
             new_value.push(value);
         }
@@ -276,15 +292,6 @@ function removeMatchPattern(list, id, rule) {
     optionsChangeApply(id, new_value, {id, new_value, old_value, remove: [{list, index, rule}]});
 }
 
-function createMatchRule(list, id, value) {
-    var rule = matchLET.cloneNode(true);
-    var [content, purge] = rule.querySelectorAll('*');
-    content.textContent = rule.title = value;
-    purge.addEventListener('click', (event) => removeMatchPattern(list, id, event.target.parentNode));
-    list.appendChild(rule);
-    return rule;
-}
-
 function aria2OptionsSetup() {
     updated = {...aria2Storage};
     aria2ver.textContent = aria2Version;
@@ -300,7 +307,7 @@ function aria2OptionsSetup() {
     });
     optionsMatches.forEach(({id, list}) => {
         list.innerHTML = '';
-        updated[id].forEach((value) => createMatchRule(list, id, value));
+        updated[id].forEach((value) => createMatchPattern(list, id, value));
     });
 }
 
