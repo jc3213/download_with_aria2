@@ -157,7 +157,7 @@ body {
     grid-template-columns: repeat(3, 1fr) auto;
 }
 
-.session button {
+.session > .manage > button {
     display: block;
     padding: 1px;
     width: 25px;
@@ -207,9 +207,12 @@ body {
 }
 
 .session .savebtn {
+    display: none;
     position: absolute;
+    padding: 1px;
     right: 0px;
     top: 0px;
+    width: 25px;
 }
 
 .file {
