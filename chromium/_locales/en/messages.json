@@ -83,25 +83,28 @@
     "common_save": {
         "message": "Save"
     },
-    "add_match_pattern": {
+    "tips_add_match": {
         "message": "Add new match patterns"
     },
-    "sort_match_pattern": {
+    "tips_resort_match": {
         "message": "Resort match patterns"
     },
-    "remove_match_pattern": {
+    "tips_remove_match": {
         "message": "Remove this match pattern"
     },
-    "apply_proxy_server": {
-        "message": "Apply preset proxy server for this download"
+    "tips_proxy_server": {
+        "message": "Set the preset proxy server for this download"
     },
-    "remove_download": {
+    "tips_select_file": {
+        "message": "Change the selected files for this download"
+    },
+    "tips_task_remove": {
         "message": "Remove this download"
     },
-    "detail_download": {
-        "message": "Toggle the detail of this download"
+    "tips_task_detail": {
+        "message": "Show details of this download"
     },
-    "restart_download": {
+    "tips_task_retry": {
         "message": "Restart this download"
     },
     "option_undo": {

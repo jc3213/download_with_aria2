@@ -83,25 +83,28 @@
     "common_save": {
         "message": "保存"
     },
-    "add_match_pattern": {
+    "tips_add_match": {
         "message": "添加匹配规则"
     },
-    "sort_match_pattern": {
+    "tips_resort_match": {
         "message": "排序匹配规则"
     },
-    "remove_match_pattern": {
+    "tips_remove_match": {
         "message": "删除此匹配规则"
     },
-    "apply_proxy_server": {
+    "tips_proxy_server": {
         "message": "添加预设的代理服务器"
     },
-    "remove_download": {
+    "tips_select_file": {
+        "message": "修改此下载所选择的文件"
+    },
+    "tips_task_remove": {
         "message": "移除此下载"
     },
-    "detail_download": {
-        "message": "切换下载详情"
+    "tips_task_detail": {
+        "message": "显示下载详情"
     },
-    "restart_download": {
+    "tips_task_retry": {
         "message": "重启此下载"
     },
     "option_undo": {

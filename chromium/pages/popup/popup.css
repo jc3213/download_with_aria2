@@ -76,7 +76,7 @@ body {
 #queue > :nth-child(n+4) > :not(.http) .start,
 .session.http [data-p2p],
 .session.p2p [data-http],
-.session .save {
+.session .savebtn {
     display: none;
 }
 
@@ -202,7 +202,7 @@ body {
     grid-area: 7 / 1 / 8 / 5;
 }
 
-.session .save {
+.session .savebtn {
     padding: 4px;
     position: absolute;
     right: 0px;

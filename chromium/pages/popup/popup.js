@@ -172,7 +172,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.detail.addEventListener('click', async (event) => {
         if (aria2Detail[gid]) {
             task.classList.remove('extra');
-            task.save.style.display = 'none';
+            task.savebtn.style.display = 'none';
             delete aria2Detail[gid];
         } else {
             var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
@@ -209,14 +209,14 @@ function taskElementCreate(gid, status, bittorrent, files) {
                 break;
         }
     });
-    task.proxy.addEventListener('click', async (event) => {
+    task.proxybtn.addEventListener('click', async (event) => {
         await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2Proxy}]});
-        task.proxy.previousElementSibling.value = aria2Proxy;
+        task.proxybtn.previousElementSibling.value = aria2Proxy;
     });
-    task.save.addEventListener('click', async (event) => {
+    task.savebtn.addEventListener('click', async (event) => {
         var selected = [...task.files.querySelectorAll(':checked + label')].map((index) => index.textContent);
         await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'select-file': selected.join()}]});
-        task.save.style.display = 'none';
+        task.savebtn.style.display = 'none';
     });
     task.adduri.addEventListener('click', async (event) => {
         var uri = task.adduri.previousElementSibling;
@@ -278,7 +278,7 @@ function taskFileElementCreate(task, gid, list, index, selected, path, length, u
     file.index.textContent = index;
     file.index.setAttribute('for', file.check.id);
     file.index.addEventListener('click', (event) => {
-        task.save.style.display = 'block';
+        task.savebtn.style.display = 'block';
     });
     list[index] = file;
     list.appendChild(file);
