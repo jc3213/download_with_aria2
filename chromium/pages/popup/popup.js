@@ -87,7 +87,7 @@ function aria2ClientMessage({method, params}) {
 }
 
 async function aria2ClientUpdate() {
-    var [global, active] = await aria2RPC.call({method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'});
+    var [global, active] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'} );
     active.result.forEach(taskElementSync);
     aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
     aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
@@ -175,24 +175,21 @@ function taskElementCreate(gid, status, bittorrent, files) {
             task.savebtn.style.display = 'none';
             delete aria2Detail[gid];
         } else {
-            var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
+            var [files, options] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
             task.classList.add('extra');
             aria2Detail[gid] = true;
             taskDetailOpened(task, gid, files.result, options.result);
         }
     });
     task.retry.addEventListener('click', async (event) => {
-        var [files, options] = await aria2RPC.call({method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]});
+        var [files, options] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
         var {uris, path} = files.result[0];
         var url = [...new Set(uris.map(({uri}) => uri))];
         if (path) {
             var ni = path.lastIndexOf('/');
             var name = {'dir': path.slice(0, ni), 'out': path.slice(ni + 1)};
         }
-        var [added, removed] = await aria2RPC.call(
-            {method: 'aria2.addUri', params: [url, {...options.result, ...name}]},
-            {method: 'aria2.removeDownloadResult', params: [gid]}
-        );
+        var [added, removed] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, {...options.result, ...name}]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
         taskElementUpdate(added.result);
         taskElementRemove('stopped', gid, task);
     });
