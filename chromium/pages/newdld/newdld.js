@@ -38,8 +38,13 @@ document.addEventListener('click', (event) => {
     }
 });
 
-downMode.addEventListener('change', (event) => {
+downMode.addEventListener('click', (event) => {
+    downMode.value = downMode.value === 'meta' ? 'link' : 'meta';
     document.body.classList.toggle('meta');
+});
+
+downMode.addEventListener('mousedown', (event) => {
+    event.preventDefault();
 });
 
 submitBtn.addEventListener('click', (event) => {
