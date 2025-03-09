@@ -1,5 +1,6 @@
 .popup {
     width: 680px;
+    margin: 4px 0px 0px;
 }
 
 .popup > #menu::before,
@@ -39,5 +40,3 @@
     height: 540px;
     overflow-y: auto;
 }
-
-
