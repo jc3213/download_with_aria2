@@ -1,4 +1,4 @@
-var aria2InTab = location.search !== '?toolbar';
+var aria2Toolbar = location.search === '?toolbar';
 
 document.querySelectorAll('[i18n]').forEach((node) => {
     node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
@@ -8,34 +8,29 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-aria2InTab ? manager.add('full') : aria2Toolbar();
-
-function aria2Toolbar() {
-    var left = queuePane.offsetWidth - filterPane.offsetWidth;
-    var top = queuePane.offsetHeight - filterPane.offsetHeight + 62;
+if (aria2Toolbar) {
     queuePane.addEventListener('contextmenu', (event) => {
         event.preventDefault();
-        var {clientX, clientY} = event;
-        var css = clientX > left ? 'right: 0px;' : 'left: ' + clientX + 'px;';
-        css += clientY > top ? 'top: auto; bottom: 0px;' : 'top: ' + clientY + 'px;';
-        filterPane.style.cssText = css;
+        var css = event.clientX > 487 ? 'right: 0px;' : 'left: ' + event.clientX + 'px;';
+        css += event.clientY > 391 ? 'top: auto; bottom: 0px;' : 'top: ' + event.clientY + 'px;';
+        filterPane.style.cssText = css + 'display: block;';
     });
     queuePane.addEventListener('click', (event) => {
         filterPane.style.display = 'none';
     });
-    filterPane.style.display = 'none';
+    manager.add('popup');
 }
 
 downBtn.addEventListener('click', async (event) => {
     chrome.runtime.sendMessage({action: 'open_new_download'});
-    if (!aria2InTab) {
+    if (aria2Toolbar) {
         close();
     }
 });
 
 optionsBtn.addEventListener('click', (event) => {
     chrome.runtime.openOptionsPage();
-    if (!aria2InTab) {
+    if (aria2Toolbar) {
         close();
     }
 });

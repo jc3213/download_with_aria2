@@ -9,14 +9,14 @@
     </head>
     <body>
         <div id="menu">
+            <button id="download" i18n="popup_newdld"></button>
+            <button id="purge" i18n="popup_purge"></button>
+            <button id="options" i18n="popup_options"></button>
             <div class="download" data-sid="download"></div>
             <div class="upload" data-sid="upload"></div>
             <div data-sid="active">0</div>
             <div data-sid="waiting">0</div>
             <div data-sid="stopped">0</div>
-            <button id="download" i18n="popup_newdld"></button>
-            <button id="purge" i18n="popup_purge"></button>
-            <button id="options" i18n="popup_options"></button>
         </div>
         <div id="filter">
             <div data-fid="active" i18n="popup_active_queue"></div>
@@ -26,7 +26,6 @@
             <div data-fid="removed" i18n="popup_removed_queue"></div>
             <div data-fid="error" i18n="popup_error_queue"></div>
         </div>
-        <hr>
         <div id="queue">
             <div id="active" data-tid="active"></div>
             <div id="waiting" data-tid="waiting"></div>
