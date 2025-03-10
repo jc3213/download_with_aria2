@@ -57,10 +57,6 @@ submitBtn.addEventListener('click', (event) => {
     close();
 });
 
-metaPane.addEventListener('click', (event) => {
-    metaImport.click();
-});
-
 metaPane.addEventListener('dragover', (event) => {
     event.preventDefault();
 });

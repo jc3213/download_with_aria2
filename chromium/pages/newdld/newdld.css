@@ -1,11 +1,11 @@
 @media (prefers-color-scheme: light) {
-    .uploader {
+    label {
         background-color: #F3F3F3;
     }
 }
 
 @media (prefers-color-scheme: dark) {
-    .uploader {
+    label {
         background-color: #56585D;
     }
 }
@@ -17,6 +17,21 @@ textarea {
     padding: 3px;
     resize: none;
     width: calc(100% - 8px);
+}
+
+label {
+    align-items: center;
+    border-style: solid;
+    border-width: 1px;
+    display: none;
+    height: 208px;
+    justify-content: center;
+    text-align: center;
+    white-space: pre-wrap;
+}
+
+label:active {
+    filter: contrast(60%);
 }
 
 #entries > h4 {
@@ -59,21 +74,6 @@ textarea {
     display: none;
 }
 
-.meta .uploader {
+.meta label {
     display: flex;
-}
-
-.uploader {
-    align-items: center;
-    border-style: solid;
-    border-width: 1px;
-    display: none;
-    height: 208px;
-    justify-content: center;
-    text-align: center;
-    white-space: pre-wrap;
-}
-
-.uploader:active {
-    filter: contrast(60%);
 }

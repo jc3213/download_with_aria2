@@ -37,7 +37,9 @@ body > ::before {
     border-style: solid;
     border-width: 1px;
     display: flex;
+    flex-direction: column;
     gap: 3px;
+    padding: 8px;
 }
 
 #menu > div,
@@ -47,9 +49,7 @@ body > ::before {
 }
 
 #menu {
-    flex-direction: column;
     grid-area: 1 / 1 / 2 / 2;
-    padding: 8px;
 }
 
 #menu > div::before {
@@ -59,9 +59,7 @@ body > ::before {
 }
 
 #filter {
-    flex-direction: column;
     grid-area: 2 / 1 / 3 / 2;
-    padding: 8px;
 }
 
 #filter > :hover {
