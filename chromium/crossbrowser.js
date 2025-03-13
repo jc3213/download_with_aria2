@@ -158,7 +158,7 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
         case 'jsonrpc_handshake':
             response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version });
             break;
-        case 'jsonrpc_onchange':
+        case 'jsonrpc_update':
             aria2ConfigChanged(params);
             break;
         case 'jsonrpc_download':

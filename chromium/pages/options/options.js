@@ -60,7 +60,7 @@ document.addEventListener('keydown', (event) => {
 
 saveBtn.addEventListener('click', (event) => {
     saveBtn.disabled = true;
-    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: updated}) : aria2StorageUpdate();
+    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_update', params: updated}) : aria2StorageUpdate();
 });
 
 undoBtn.addEventListener('click', (event) => {
@@ -161,7 +161,7 @@ confFile.addEventListener('change', async (event) => {
             params[key] = value;
         }
     });
-    chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params});
+    chrome.runtime.sendMessage({action: 'jsonrpc_update', params});
     aria2ConfigSetup(params);
     event.target.value = '';
 });
