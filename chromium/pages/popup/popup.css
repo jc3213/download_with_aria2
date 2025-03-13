@@ -54,7 +54,7 @@ body > ::before {
 
 #menu > div::before {
     display: inline-block;
-    margin: 0px 8px 0px 16px;
+    margin: 0px 8px;
     width: 40%;
 }
 

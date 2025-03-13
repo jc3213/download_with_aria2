@@ -65,21 +65,20 @@ function aria2ToolbarSetup() {
     queuePane.addEventListener('click', (event) => {
         filterPane.style.display = 'none';
     });
-    manager.add('popup');
     var toolbar = document.createElement('style');
     document.head.appendChild(toolbar);
     toolbar.textContent = `
-.popup {
+body {
     width: 680px;
     margin: 4px 0px 0px;
 }
 
-.popup > #menu::before,
+#menu::before,
 .popup > #filter::before {
     display: none;
 }
 
-.popup > #menu {
+#menu {
     border-radius: 0px;
     border-width: 0px 0px 2px;
     flex-direction: row;
@@ -87,26 +86,26 @@ function aria2ToolbarSetup() {
     padding: 0px 4px 4px;
 }
 
-.popup > #menu > button {
+#menu > button {
     order: 9;
 }
 
-.popup > #menu > div::before {
+#menu > div::before {
     margin-left: 0px;
     width: auto;
 }
 
-.popup > #menu > div:nth-child(n+6) {
+#menu > div:nth-child(n+6) {
     display: none;
 }
 
-.popup > #filter {
+#filter {
     display: none;
     position: fixed;
     z-index: 9;
 }
 
-.popup > #queue {
+#queue {
     grid-area: 2 / 1 / 4 / 3;
     height: 540px;
     overflow-y: auto;
