@@ -50,6 +50,24 @@ class Aria2 {
     get timeout () {
         return isNaN(this.jsonrpc.time) ? 10 : this.jsonrpc.time | 0;
     }
+    set onopen (callback) {
+        this.events.onopen = typeof callback === 'function' ? callback : null;
+    }
+    get onopen () {
+        return typeof this.events.onopen === 'function' ? this.events.onopen : null;
+    }
+    set onmessage (callback) {
+        this.events.onmessage = typeof callback === 'function' ? callback : null;
+    }
+    get onmessage () {
+        return typeof this.events.onmessage === 'function' ? this.events.onmessage : null;
+    }
+    set onclose (callback) {
+        this.events.onclose = typeof callback === 'function' ? callback : null;
+    }
+    get onclose () {
+        return typeof this.events.onclose === 'function' ? this.events.onclose : null;
+    }
     connect () {
         this.socket = new WebSocket(this.jsonrpc.ws);
         this.socket.onopen = (event) => {
@@ -70,24 +88,6 @@ class Aria2 {
     }
     disconnect () {
         this.socket?.close();
-    }
-    set onopen (callback) {
-        this.events.onopen = typeof callback === 'function' ? callback : null;
-    }
-    get onopen () {
-        return typeof this.events.onopen === 'function' ? this.events.onopen : null;
-    }
-    set onmessage (callback) {
-        this.events.onmessage = typeof callback === 'function' ? callback : null;
-    }
-    get onmessage () {
-        return typeof this.events.onmessage === 'function' ? this.events.onmessage : null;
-    }
-    set onclose (callback) {
-        this.events.onclose = typeof callback === 'function' ? callback : null;
-    }
-    get onclose () {
-        return typeof this.events.onclose === 'function' ? this.events.onclose : null;
     }
     send (...args) {
         return new Promise((resolve, reject) => {
