@@ -60,7 +60,7 @@ document.addEventListener('keydown', (event) => {
 
 saveBtn.addEventListener('click', (event) => {
     saveBtn.disabled = true;
-    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: updated}) : aria2SaveStorage();
+    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: updated}) : aria2StorageUpdate();
 });
 
 undoBtn.addEventListener('click', (event) => {
@@ -146,8 +146,8 @@ jsonFile.addEventListener('change', async (event) => {
     optionsHistoryFlushed();
     var file = await promiseFileReader(event.target.files[0]);
     updated = JSON.parse(file);
-    aria2SaveStorage();
-    aria2OptionsSetup();
+    aria2StorageUpdate();
+    aria2StorageSetup();
     event.target.value = '';
 });
 
@@ -200,7 +200,7 @@ jsonrpcBtn.addEventListener('click', (event) => {
 
 optionsBtn.addEventListener('click', (event) => {
     optionsHistoryFlushed();
-    aria2OptionsSetup();
+    aria2StorageSetup();
     extension.remove('jsonrpc');
 });
 
@@ -284,7 +284,7 @@ function createMatchPattern(list, id, value) {
     return rule;
 }
 
-function aria2OptionsSetup() {
+function aria2StorageSetup() {
     updated = {...aria2Storage};
     tellVer.textContent = aria2Version;
     optionsEntries.forEach((entry) => {
@@ -303,18 +303,18 @@ function aria2OptionsSetup() {
     });
 }
 
-function aria2SaveStorage() {
+function aria2StorageUpdate() {
     aria2Storage = {...updated};
     updated['jsonrpc_retries'] = updated['jsonrpc_retries'] | 0;
     updated['jsonrpc_timeout'] = updated['jsonrpc_timeout'] | 0;
     updated['manager_interval'] = updated['manager_interval'] | 0;
     updated['capture_size_include'] = updated['capture_size_include'] | 0;
     updated['capture_size_exclude'] = updated['capture_size_exclude'] | 0;
-    chrome.runtime.sendMessage({action: 'options_onchange', params: updated});
+    chrome.runtime.sendMessage({action: 'storage_update', params: updated});
 }
 
-chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, manifest}) => {
+chrome.runtime.sendMessage({action: 'storage_query'}, ({storage, manifest}) => {
     aria2Storage = storage;
     aria2Version = manifest.version;
-    aria2OptionsSetup();
+    aria2StorageSetup();
 });

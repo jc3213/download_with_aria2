@@ -149,10 +149,10 @@ chrome.action.onClicked.addListener((tab) => {
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     switch (action) {
-        case 'options_plugins':
+        case 'storage_query':
             response({ storage: aria2Storage, options: aria2Config, manifest: aria2Manifest });
             break;
-        case 'options_onchange':
+        case 'storage_update':
             aria2StorageChanged(params);
             break;
         case 'jsonrpc_handshake':

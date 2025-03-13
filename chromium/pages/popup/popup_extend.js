@@ -44,7 +44,7 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
 });
 
-chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
+chrome.runtime.sendMessage({action: 'storage_query'}, ({storage}) => {
     aria2Delay = storage['manager_interval'] * 1000;
     aria2Proxy = storage['proxy_server'];
     aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
