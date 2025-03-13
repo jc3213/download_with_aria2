@@ -3,14 +3,13 @@ var aria2Config = {};
 var aria2Version;
 
 var updated = {};
-var changes = {};
 var undoes = [];
 var undone = false;
 var redoes = [];
 
 var extension = document.body.classList;
-var [saveBtn, undoBtn, redoBtn, aria2ver, exportBtn, importBtn, jsonFile, confFile, exporter] = document.querySelectorAll('#menu > *')
-var [jsonrpcBtn, optionsBtn, aria2ua] = document.querySelectorAll('#goto-jsonrpc, #goto-options, #useragent');
+var [saveBtn, undoBtn, redoBtn, tellVer, exportBtn, importBtn, jsonFile, confFile, exporter] = document.querySelectorAll('#menu > *')
+var [jsonrpcBtn, optionsBtn, tellUA] = document.querySelectorAll('#goto-jsonrpc, #goto-options, #useragent');
 var optionsEntries = document.querySelectorAll('#options [name]:not([type="checkbox"])');
 var optionsCheckboxes = document.querySelectorAll('[type="checkbox"]');
 var optionsMatches = document.querySelectorAll('.matches div[id]');
@@ -68,7 +67,7 @@ undoBtn.addEventListener('click', (event) => {
     var undo = undoes.pop();
     redoes.push(undo);
     var {id, old_value} = undo;
-    updated[id] = changes[id] = old_value;
+    updated[id] = old_value;
     optionsUndoRedo('undo', old_value, undo);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
@@ -81,7 +80,7 @@ redoBtn.addEventListener('click', (event) => {
     var redo = redoes.pop();
     undoes.push(redo);
     var {id, new_value} = redo;
-    updated[id] = changes[id] = new_value;
+    updated[id] = new_value;
     optionsUndoRedo('redo', new_value, redo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
@@ -146,9 +145,9 @@ importBtn.addEventListener('click', (event) => {
 jsonFile.addEventListener('change', async (event) => {
     var file = await promiseFileReader(event.target.files[0]);
     updated = JSON.parse(file);
+    emptyChangeHistory();
     aria2SaveStorage();
     aria2OptionsSetup();
-    optionEmptyChanges();
     event.target.value = '';
 });
 
@@ -164,7 +163,7 @@ confFile.addEventListener('change', async (event) => {
     chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params});
     aria2ConfigSetup(params);
     updated = {...aria2Config};
-    optionEmptyChanges();
+    emptyChangeHistory();
     event.target.value = '';
 });
 
@@ -182,7 +181,7 @@ function aria2ConfigSetup(json) {
     });
 }
 
-function optionEmptyChanges() {
+function emptyChangeHistory() {
     undoes = [];
     redoes = [];
     saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
@@ -191,17 +190,17 @@ function optionEmptyChanges() {
 jsonrpcBtn.addEventListener('click', (event) => {
     chrome.runtime.sendMessage({action: 'jsonrpc_handshake'}, ({alive, options, version}) => {
         if (alive) {
-            optionEmptyChanges();
+            emptyChangeHistory();
             aria2ConfigSetup(options);
             updated = {...aria2Config};
-            aria2ver.textContent = aria2ua.textContent = version;
+            tellVer.textContent = tellUA.textContent = version;
             extension.add('jsonrpc');
         }
     });
 });
 
 optionsBtn.addEventListener('click', (event) => {
-    optionEmptyChanges();
+    emptyChangeHistory();
     aria2OptionsSetup();
     extension.remove('jsonrpc');
 });
@@ -260,7 +259,7 @@ optionsMatches.forEach((match) => {
 });
 
 function optionsChangeApply(id, new_value, undo) {
-    updated[id] = changes[id] = new_value;
+    updated[id] =  new_value;
     undoes.push(undo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (undone) {
@@ -288,7 +287,7 @@ function createMatchPattern(list, id, value) {
 
 function aria2OptionsSetup() {
     updated = {...aria2Storage};
-    aria2ver.textContent = aria2Version;
+    tellVer.textContent = aria2Version;
     optionsEntries.forEach((entry) => {
         entry.value = updated[entry.name];
     });
@@ -306,14 +305,13 @@ function aria2OptionsSetup() {
 }
 
 function aria2SaveStorage() {
+    aria2Storage = {...updated};
     updated['jsonrpc_retries'] = updated['jsonrpc_retries'] | 0;
     updated['jsonrpc_timeout'] = updated['jsonrpc_timeout'] | 0;
     updated['manager_interval'] = updated['manager_interval'] | 0;
     updated['capture_size_include'] = updated['capture_size_include'] | 0;
     updated['capture_size_exclude'] = updated['capture_size_exclude'] | 0;
     chrome.runtime.sendMessage({action: 'options_onchange', params: updated});
-    aria2Storage = {...updated};
-    changes = {};
 }
 
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage, manifest}) => {
