@@ -152,14 +152,14 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
         case 'options_plugins':
             response({ storage: aria2Storage, options: aria2Config, manifest: aria2Manifest });
             break;
+        case 'options_onchange':
+            aria2StorageChanged(params);
+            break;
         case 'jsonrpc_handshake':
             response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version });
             break;
-        case 'options_onchange':
-            aria2OptionsChanged(params);
-            break;
         case 'jsonrpc_onchange':
-            aria2RPCOptionsChanged(params);
+            aria2ConfigChanged(params);
             break;
         case 'jsonrpc_download':
             aria2MessageHandler(params);
@@ -197,7 +197,7 @@ async function aria2MetadataHandler(files) {
     await aria2WhenStart(message);
 }
 
-function aria2OptionsChanged(storage) {
+function aria2StorageChanged(storage) {
     aria2UpdateStorage(storage);
     aria2RPC.scheme = storage['jsonrpc_scheme'];
     aria2RPC.url = storage['jsonrpc_url'];
@@ -207,7 +207,7 @@ function aria2OptionsChanged(storage) {
     chrome.storage.sync.set(aria2Storage);
 }
 
-function aria2RPCOptionsChanged(options) {
+function aria2ConfigChanged(options) {
     aria2Config = {...aria2Config, ...options};
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
