@@ -208,7 +208,7 @@ optionsBtn.addEventListener('click', (event) => {
     entry.addEventListener('change', (event) => {
         var id = entry.name;
         var new_value = entry.value;
-        optionsHistoryLogged(id, new_value, {entry, id, new_value, old_value: updated[id]});
+        optionsHistoryLogged({entry, id, new_value, old_value: updated[id]});
     });
 });
 
@@ -219,7 +219,7 @@ optionsCheckboxes.forEach((checkbox) => {
         if (checkbox.dataset.key) {
             extension.toggle(id);
         }
-        optionsHistoryLogged(id, new_value, {checkbox, id, new_value, old_value: !new_value});
+        optionsHistoryLogged({checkbox, id, new_value, old_value: !new_value});
     });
 });
 
@@ -245,7 +245,7 @@ optionsMatches.forEach((match) => {
         });
         entry.value = '';
         list.scrollTop = list.scrollHeight;
-        optionsHistoryLogged(id, new_value, {add, id, new_value, old_value});
+        optionsHistoryLogged({add, id, new_value, old_value});
     });
     resort.addEventListener('click', (event) => {
         var old_value = updated[id];
@@ -253,12 +253,12 @@ optionsMatches.forEach((match) => {
         var old_order = [...list.children];
         var new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
         list.append(...new_order);
-        optionsHistoryLogged(id, new_value, {id, new_value, old_value, resort: {list, new_order, old_order}});
+        optionsHistoryLogged({id, new_value, old_value, resort: {list, new_order, old_order}});
     });
 });
 
-function optionsHistoryLogged(id, new_value, undo) {
-    updated[id] = new_value;
+function optionsHistoryLogged(undo) {
+    updated[undo.id] = undo.new_value;
     undoes.push(undo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (undone) {
@@ -278,7 +278,7 @@ function createMatchPattern(list, id, value) {
         var index = new_value.indexOf(rule.title);
         new_value.splice(index, 1);
         rule.remove();
-        optionsHistoryLogged(id, new_value, {id, new_value, old_value, remove: [{list, index, rule}]});
+        optionsHistoryLogged({id, new_value, old_value, remove: [{list, index, rule}]});
     });
     list.appendChild(rule);
     return rule;
