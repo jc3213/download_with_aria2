@@ -197,19 +197,13 @@ async function aria2MetadataHandler(files) {
     await aria2WhenStart(message);
 }
 
-function aria2OptionsChanged({storage, changes}) {
+function aria2OptionsChanged(storage) {
     aria2UpdateStorage(storage);
-    aria2RPC.retries = aria2Storage['jsonrpc_retries'];
-    aria2RPC.timeout = aria2Storage['jsonrpc_timeout'];
-    if (changes['jsonrpc_scheme']) {
-        aria2RPC.scheme = aria2Storage['jsonrpc_scheme'];
-    }
-    if (changes['jsonrpc_secret']) {
-        aria2RPC.secret = aria2Storage['jsonrpc_secret'];
-    }
-    if (changes['jsonrpc_url']) {
-        aria2RPC.url = aria2Storage['jsonrpc_url'];
-    }
+    aria2RPC.scheme = storage['jsonrpc_scheme'];
+    aria2RPC.url = storage['jsonrpc_url'];
+    aria2RPC.secret = storage['jsonrpc_secret'];
+    aria2RPC.retries = storage['jsonrpc_retries'];
+    aria2RPC.timeout = storage['jsonrpc_timeout'];
     chrome.storage.sync.set(aria2Storage);
 }
 

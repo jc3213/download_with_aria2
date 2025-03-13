@@ -61,7 +61,7 @@ document.addEventListener('keydown', (event) => {
 
 saveBtn.addEventListener('click', (event) => {
     saveBtn.disabled = true;
-    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: changes}) : aria2SaveStorage(updated);
+    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params: updated}) : aria2SaveStorage();
 });
 
 undoBtn.addEventListener('click', (event) => {
@@ -145,8 +145,8 @@ importBtn.addEventListener('click', (event) => {
 
 jsonFile.addEventListener('change', async (event) => {
     var file = await promiseFileReader(event.target.files[0]);
-    changes = JSON.parse(file);
-    aria2SaveStorage(changes);
+    updated = JSON.parse(file);
+    aria2SaveStorage();
     aria2OptionsSetup();
     optionEmptyChanges();
     event.target.value = '';
@@ -305,14 +305,14 @@ function aria2OptionsSetup() {
     });
 }
 
-function aria2SaveStorage(json) {
-    json['jsonrpc_retries'] = json['jsonrpc_retries'] | 0;
-    json['jsonrpc_timeout'] = json['jsonrpc_timeout'] | 0;
-    json['manager_interval'] = json['manager_interval'] | 0;
-    json['capture_size_include'] = json['capture_size_include'] | 0;
-    json['capture_size_exclude'] = json['capture_size_exclude'] | 0;
-    chrome.runtime.sendMessage({action: 'options_onchange', params: {storage: json, changes}});
-    aria2Storage = json;
+function aria2SaveStorage() {
+    updated['jsonrpc_retries'] = updated['jsonrpc_retries'] | 0;
+    updated['jsonrpc_timeout'] = updated['jsonrpc_timeout'] | 0;
+    updated['manager_interval'] = updated['manager_interval'] | 0;
+    updated['capture_size_include'] = updated['capture_size_include'] | 0;
+    updated['capture_size_exclude'] = updated['capture_size_exclude'] | 0;
+    chrome.runtime.sendMessage({action: 'options_onchange', params: updated});
+    aria2Storage = {...updated};
     changes = {};
 }
 

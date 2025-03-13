@@ -30,27 +30,18 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     if (action !== 'options_onchange') {
         return;
     }
-    var {storage, changes} = params;
-    if ('manager_newtab' in changes && !changes['manager_newtab']) {
+    if (!params['manager_newtab']) {
         close();
     }
-    aria2RPC.retries = storage['jsonrpc_retries'];
-    aria2RPC.timeout = storage['jsonrpc_timeout'];
-    aria2Proxy = storage['proxy_server'];
-    if ('manager_interval' in changes) {
-        clearInterval(aria2Interval);
-        aria2Delay = storage['manager_interval'] * 1000;
-        aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
-    }
-    if ('jsonrpc_scheme' in changes) {
-        aria2RPC.scheme = storage['jsonrpc_scheme'];
-    }
-    if ('jsonrpc_secret' in changes) {
-        aria2RPC.secret = storage['jsonrpc_secret'];
-    }
-    if ('jsonrpc_url' in changes) {
-        aria2RPC.url = storage['jsonrpc_url'];
-    }
+    aria2RPC.scheme = params['jsonrpc_scheme'];
+    aria2RPC.url = params['jsonrpc_url'];
+    aria2RPC.secret = params['jsonrpc_secret'];
+    aria2RPC.retries = params['jsonrpc_retries'];
+    aria2RPC.timeout = params['jsonrpc_timeout'];
+    aria2Proxy = params['proxy_server'];
+    aria2Delay = params['manager_interval'] * 1000;
+    clearInterval(aria2Interval);
+    aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
 });
 
 chrome.runtime.sendMessage({action: 'options_plugins'}, ({storage}) => {
