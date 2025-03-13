@@ -74,7 +74,7 @@ body {
 }
 
 #menu::before,
-.popup > #filter::before {
+#filter::before {
     display: none;
 }
 
