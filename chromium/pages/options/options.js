@@ -143,15 +143,16 @@ importBtn.addEventListener('click', (event) => {
 });
 
 jsonFile.addEventListener('change', async (event) => {
+    optionsHistoryFlushed();
     var file = await promiseFileReader(event.target.files[0]);
     updated = JSON.parse(file);
-    emptyChangeHistory();
     aria2SaveStorage();
     aria2OptionsSetup();
     event.target.value = '';
 });
 
 confFile.addEventListener('change', async (event) => {
+    optionsHistoryFlushed();
     var file = await promiseFileReader(event.target.files[0]);
     var params = {};
     file.split('\n').forEach((line) => {
@@ -162,8 +163,6 @@ confFile.addEventListener('change', async (event) => {
     });
     chrome.runtime.sendMessage({action: 'jsonrpc_onchange', params});
     aria2ConfigSetup(params);
-    updated = {...aria2Config};
-    emptyChangeHistory();
     event.target.value = '';
 });
 
@@ -179,9 +178,10 @@ function aria2ConfigSetup(json) {
     jsonrpcEntries.forEach((entry) => {
         entry.value = aria2Config[entry.name] = json[entry.name] ?? '';
     });
+    updated = {...aria2Config};
 }
 
-function emptyChangeHistory() {
+function optionsHistoryFlushed() {
     undoes = [];
     redoes = [];
     saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
@@ -190,9 +190,8 @@ function emptyChangeHistory() {
 jsonrpcBtn.addEventListener('click', (event) => {
     chrome.runtime.sendMessage({action: 'jsonrpc_handshake'}, ({alive, options, version}) => {
         if (alive) {
-            emptyChangeHistory();
+            optionsHistoryFlushed();
             aria2ConfigSetup(options);
-            updated = {...aria2Config};
             tellVer.textContent = tellUA.textContent = version;
             extension.add('jsonrpc');
         }
@@ -200,7 +199,7 @@ jsonrpcBtn.addEventListener('click', (event) => {
 });
 
 optionsBtn.addEventListener('click', (event) => {
-    emptyChangeHistory();
+    optionsHistoryFlushed();
     aria2OptionsSetup();
     extension.remove('jsonrpc');
 });
@@ -209,7 +208,7 @@ optionsBtn.addEventListener('click', (event) => {
     entry.addEventListener('change', (event) => {
         var id = entry.name;
         var new_value = entry.value;
-        optionsChangeApply(id, new_value, {entry, id, new_value, old_value: updated[id]});
+        optionsHistoryLogged(id, new_value, {entry, id, new_value, old_value: updated[id]});
     });
 });
 
@@ -220,7 +219,7 @@ optionsCheckboxes.forEach((checkbox) => {
         if (checkbox.dataset.key) {
             extension.toggle(id);
         }
-        optionsChangeApply(id, new_value, {checkbox, id, new_value, old_value: !new_value});
+        optionsHistoryLogged(id, new_value, {checkbox, id, new_value, old_value: !new_value});
     });
 });
 
@@ -246,7 +245,7 @@ optionsMatches.forEach((match) => {
         });
         entry.value = '';
         list.scrollTop = list.scrollHeight;
-        optionsChangeApply(id, new_value, {add, id, new_value, old_value});
+        optionsHistoryLogged(id, new_value, {add, id, new_value, old_value});
     });
     resort.addEventListener('click', (event) => {
         var old_value = updated[id];
@@ -254,12 +253,12 @@ optionsMatches.forEach((match) => {
         var old_order = [...list.children];
         var new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
         list.append(...new_order);
-        optionsChangeApply(id, new_value, {id, new_value, old_value, resort: {list, new_order, old_order}});
+        optionsHistoryLogged(id, new_value, {id, new_value, old_value, resort: {list, new_order, old_order}});
     });
 });
 
-function optionsChangeApply(id, new_value, undo) {
-    updated[id] =  new_value;
+function optionsHistoryLogged(id, new_value, undo) {
+    updated[id] = new_value;
     undoes.push(undo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (undone) {
@@ -279,7 +278,7 @@ function createMatchPattern(list, id, value) {
         var index = new_value.indexOf(rule.title);
         new_value.splice(index, 1);
         rule.remove();
-        optionsChangeApply(id, new_value, {id, new_value, old_value, remove: [{list, index, rule}]});
+        optionsHistoryLogged(id, new_value, {id, new_value, old_value, remove: [{list, index, rule}]});
     });
     list.appendChild(rule);
     return rule;
