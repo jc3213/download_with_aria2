@@ -86,6 +86,7 @@ body > ::before {
     filter: contrast(40%);
 }
 
+#queue > :nth-child(n+4) label,
 .session.http label {
     pointer-events: none;
 }

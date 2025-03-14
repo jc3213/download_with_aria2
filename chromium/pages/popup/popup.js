@@ -1,7 +1,6 @@
 let aria2Tasks = {};
 let aria2Queue = {};
 let aria2Stats = {};
-let aria2Detail = {};
 let aria2Filter = localStorage['queues']?.match(/[^;]+/g) ?? [];
 let aria2Proxy;
 let aria2Delay;
@@ -139,7 +138,7 @@ function taskElementSync({gid, status, files, bittorrent, completedLength, total
     task.upload.textContent = getFileSize(uploadSpeed);
     task.ratio.textContent = percent;
     task.ratio.style.width = percent + '%';
-    if (aria2Detail[gid]) {
+    if (aria2Tasks[gid]) {
         taskDetailUpdate(task, gid, files);
     }
     return task;
@@ -171,12 +170,12 @@ function taskElementCreate(gid, status, bittorrent, files) {
         }
     });
     task.detail.addEventListener('click', async (event) => {
-        if (aria2Detail[gid]) {
-            delete aria2Detail[gid];
+        if (aria2Tasks[gid]) {
+            delete aria2Tasks[gid];
             task.classList.remove('extra');
             task.savebtn.style.display = 'none';
         } else {
-            aria2Detail[gid] = true;
+            aria2Tasks[gid] = true;
             let [files, options] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
             options.result['min-split-size'] = getFileSize(options.result['min-split-size']);
             options.result['max-download-limit'] = getFileSize(options.result['max-download-limit']);
