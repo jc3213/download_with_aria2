@@ -1,4 +1,4 @@
-const messageHandler = {
+const messageHandlers = {
     'aria2c_jsonrpc_echo': () => {
         let {name, version} = chrome.runtime.getManifest();
         window.postMessage({ extension_name: name, extension_version: version });
@@ -10,5 +10,5 @@ const messageHandler = {
 };
 
 window.addEventListener('message', (event) => {
-    messageHandler[event.data.aria2c](event.data.params);
+    messageHandlers[event.data.aria2c](event.data.params);
 });

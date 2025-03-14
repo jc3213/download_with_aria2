@@ -1,7 +1,7 @@
 class Aria2 {
     constructor (...args) {
         let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
-        if (!path) { throw new Error('Invalid JSON-RPC entry: "' + args.join('", "') + '"'); }
+        if (!path) { throw new Error('Malformed JSON-RPC entry: "' + args.join('", "') + '"'); }
         this.scheme = path[1];
         this.url = path[2];
         this.secret = path[3];
