@@ -10,5 +10,5 @@ const messageHandler = {
 };
 
 window.addEventListener('message', (event) => {
-    messageHandler[event.data.aria2c]?.(event.data.params);
+    messageHandler[event.data.aria2c](event.data.params);
 });

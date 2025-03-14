@@ -84,7 +84,7 @@ async function aria2ImagesPrompt(tabId) {
 }
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    contextMenusHandlers[info.menuItemId]?.(info, tab);
+    contextMenusHandlers[info.menuItemId](info, tab);
 });
 
 const commandsHandlers = {
@@ -93,7 +93,7 @@ const commandsHandlers = {
 };
 
 chrome.commands.onCommand.addListener((command) => {
-    commandsHandlers[command]?.();
+    commandsHandlers[command]();
 });
 
 const messageHandlers = {
@@ -143,7 +143,7 @@ async function aria2DownloadFiles(files) {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
-    messageHandlers[message.action]?.(response, message.params ?? sender);
+    messageHandlers[message.action](response, message.params ?? sender);
     return true;
 });
 
