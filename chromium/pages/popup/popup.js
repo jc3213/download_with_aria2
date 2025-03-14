@@ -172,14 +172,20 @@ function taskElementCreate(gid, status, bittorrent, files) {
     });
     task.detail.addEventListener('click', async (event) => {
         if (aria2Detail[gid]) {
+            delete aria2Detail[gid];
             task.classList.remove('extra');
             task.savebtn.style.display = 'none';
-            delete aria2Detail[gid];
         } else {
-            let [files, options] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
-            task.classList.add('extra');
             aria2Detail[gid] = true;
-            taskDetailOpened(task, gid, files.result, options.result);
+            let [files, options] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
+            options.result['min-split-size'] = getFileSize(options.result['min-split-size']);
+            options.result['max-download-limit'] = getFileSize(options.result['max-download-limit']);
+            options.result['max-upload-limit'] = getFileSize(options.result['max-upload-limit']);
+            task.entries.forEach((entry) => {
+                entry.value = options.result[entry.name] ?? '';
+            });
+            taskDetailUpdate(task, gid, files.result);
+            task.classList.add('extra');
         }
     });
     task.retry.addEventListener('click', async (event) => {
@@ -227,16 +233,6 @@ function taskElementCreate(gid, status, bittorrent, files) {
     });
     taskStatusChange(task, gid, status);
     return task;
-}
-
-function taskDetailOpened(task, gid, files, options) {
-    options['min-split-size'] = getFileSize(options['min-split-size']);
-    options['max-download-limit'] = getFileSize(options['max-download-limit']);
-    options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
-    task.entries.forEach((entry) => {
-        entry.value = options[entry.name] ?? '';
-    });
-    taskDetailUpdate(task, gid, files, true);
 }
 
 function taskDetailUpdate(task, gid, files) {
