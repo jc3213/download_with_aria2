@@ -186,7 +186,7 @@ chrome.action.onClicked.addListener((tab) => {
 });
 
 function aria2UpdateStorage(json) {
-    let contextId;
+    let menuId;
     aria2Storage = json;
     aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
     aria2Updated['headers_exclude'] = getMatchPattern(json['headers_exclude']);
@@ -204,17 +204,17 @@ function aria2UpdateStorage(json) {
         return;
     }
     if (json['context_cascade']) {
-        contextId = 'aria2c_contextmenu';
-        getContextMenu(parentId, 'extension_name', ['link', 'image', 'page']);
+        menuId = 'aria2c_contextmenu';
+        getContextMenu(menuId, 'extension_name', ['link', 'image', 'page']);
     }
     if (json['context_thisurl']) {
-        getContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], contextId);
+        getContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], menuId);
     }
     if (json['context_thisimage']) {
-        getContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], contextId);
+        getContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], menuId);
     }
     if (json['context_allimages']) {
-        getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], contextId);
+        getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], menuId);
     }
 }
 
