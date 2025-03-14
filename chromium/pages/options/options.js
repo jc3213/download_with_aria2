@@ -66,9 +66,7 @@ saveBtn.addEventListener('click', (event) => {
 undoBtn.addEventListener('click', (event) => {
     var undo = undoes.pop();
     redoes.push(undo);
-    var {id, old_value} = undo;
-    updated[id] = old_value;
-    optionsUndoRedo('undo', old_value, undo);
+    optionsUndoRedo('undo', undo.old_value, undo);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
     if (undoes.length === 0) {
@@ -79,9 +77,7 @@ undoBtn.addEventListener('click', (event) => {
 redoBtn.addEventListener('click', (event) => {
     var redo = redoes.pop();
     undoes.push(redo);
-    var {id, new_value} = redo;
-    updated[id] = new_value;
-    optionsUndoRedo('redo', new_value, redo);
+    optionsUndoRedo('redo', redo.new_value, redo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
@@ -89,6 +85,7 @@ redoBtn.addEventListener('click', (event) => {
 });
 
 function optionsUndoRedo(action, value, {add, checkbox, entry, id, remove, resort}) {
+    updated[id] = value;
     if (entry) {
         entry.value = value;
     } else if (checkbox) {
