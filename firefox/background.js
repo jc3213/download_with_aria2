@@ -1,4 +1,4 @@
-var aria2WebRequest = {
+let aria2WebRequest = {
     'content-disposition': true,
     'content-type': true,
     'content-length': true
@@ -21,8 +21,8 @@ async function aria2CaptureDownloads({id, url, referrer, filename, fileSize, coo
     if (!aria2RPC.alive || url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
-    var hostname = getHostname(referrer);
-    var captured = aria2CaptureResult(hostname, filename, fileSize);
+    let hostname = getHostname(referrer);
+    let captured = aria2CaptureResult(hostname, filename, fileSize);
     if (captured) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
@@ -35,7 +35,7 @@ async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeade
     if (!aria2RPC.alive || statusCode !== 200) {
         return;
     }
-    var result = {};
+    let result = {};
     responseHeaders.forEach(({name, value}) => {
         name = name.toLowerCase();
         if (aria2WebRequest[name]) {
@@ -45,11 +45,11 @@ async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeade
     if (!result['content-type'].startsWith('application')) {
         return;
     }
-    var disposition = result['content-disposition'];
+    let disposition = result['content-disposition'];
     if (disposition?.startsWith('attachment')) {
-        var out = decodeFileName(disposition);
+        let out = decodeFileName(disposition);
     }
-    var hostname = getHostname(originUrl);
+    let hostname = getHostname(originUrl);
     if (aria2CaptureResult(hostname, out, result['content-length'] | 0)) {
         aria2DownloadHandler(url, {out}, originUrl, hostname, tabId);
         return {cancel: true};
@@ -57,9 +57,9 @@ async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeade
 }
 
 async function getFirefoxOptions(filename) {
-    var {os} = await browser.runtime.getPlatformInfo();
-    var idx = os === 'win' ? filename.lastIndexOf('\\') : filename.lastIndexOf('/');
-    var out = filename.slice(idx + 1);
+    let {os} = await browser.runtime.getPlatformInfo();
+    let idx = os === 'win' ? filename.lastIndexOf('\\') : filename.lastIndexOf('/');
+    let out = filename.slice(idx + 1);
     if (aria2Storage['folder_enabled']) {
         if (aria2Storage['folder_firefox']) {
             return {out, dir: filename.slice(0, idx + 1)};
@@ -72,15 +72,15 @@ async function getFirefoxOptions(filename) {
 }
 
 function decodeFileName(disposition) {
-    var RFC2047 = disposition.match(/filename="?(=\?[^;]+\?=)/);
+    let RFC2047 = disposition.match(/filename="?(=\?[^;]+\?=)/);
     if (RFC2047) {
         return decodeRFC2047(RFC2047[1]);
     }
-    var RFC5987 = disposition.match(/filename\*="?([^;]+''[^";]+)/i);
+    let RFC5987 = disposition.match(/filename\*="?([^;]+''[^";]+)/i);
     if (RFC5987) {
         return decodeRFC5987(RFC5987[1]);
     }
-    var match = disposition.match(/filename="?([^";]+);?/);
+    let match = disposition.match(/filename="?([^";]+);?/);
     if (match) {
         return decodeNonASCII(match.pop());
     }
@@ -88,10 +88,10 @@ function decodeFileName(disposition) {
 }
 
 function decodeISO8859(text) {
-    var decode = [];
-    var code = document.characterSet ?? 'UTF-8';
-    [...text].forEach(s => {
-        var c = s.charCodeAt(0);
+    let decode = [];
+    let code = document.characterSet ?? 'UTF-8';
+    [...text].forEach((s) => {
+        let c = s.charCodeAt(0);
         if (c < 256) {
             decode.push(c);
         }
@@ -100,13 +100,13 @@ function decodeISO8859(text) {
 }
 
 function decodeRFC5987(text) {
-    var [string, utf8, code, data] = text.match(/(?:(utf-?8)|([^']+))''([^']+)/i);
+    let [, utf8, code, data] = text.match(/(?:(utf-?8)|([^']+))''([^']+)/i);
     if (utf8) {
         return decodeNonASCII(data);
     }
-    var decode = [];
-    data.match(/%[0-9a-fA-F]{2}|./g)?.forEach(s => {
-        var c = s.length === 3 ? parseInt(s.slice(1), 16) : s.charCodeAt(0);
+    let decode = [];
+    data.match(/%[0-9a-fA-F]{2}|./g)?.forEach((s) => {
+        let c = s.length === 3 ? parseInt(s.slice(1), 16) : s.charCodeAt(0);
         if (c < 256) {
             decode.push(c);
         }
@@ -115,13 +115,13 @@ function decodeRFC5987(text) {
 }
 
 function decodeRFC2047(text) {
-    var result = '';
+    let result = '';
+    let decode;
     text.match(/[^\s]+/g).forEach(s => {
-        var [string, code, b, q, data] = s.match(/=\?([^\?]+)\?(?:(b)|(q))\?([^\?]+)\?=/i);
+        let [, code, b, q, data] = s.match(/=\?([^\?]+)\?(?:(b)|(q))\?([^\?]+)\?=/i);
         if (b) {
-            var decode = [...atob(data)].map(s => s.charCodeAt(0));
-        }
-        if (q) {
+            decode = [...atob(data)].map(s => s.charCodeAt(0));
+        } else if (q) {
             decode = data.match(/=[0-9a-fA-F]{2}|./g)?.map(v => {
                 if (v === '_') {
                     return 0x20;
