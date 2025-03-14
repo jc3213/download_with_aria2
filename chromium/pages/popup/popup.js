@@ -23,22 +23,16 @@ filterPane.addEventListener('click', (event) => {
     localStorage['queues'] = aria2Filter.join(';');
 });
 
+const shortcutHandlers = {
+    'r': () => purgeBtn.click(),
+    'd': () => downBtn.click(),
+    's': () => optionsBtn.click()
+};
+
 document.addEventListener('keydown', (event) => {
-    if (event.ctrlKey) {
-        switch (event.key) {
-            case 'r':
-                event.preventDefault();
-                purgeBtn.click();
-                break;
-            case 'd':
-                event.preventDefault();
-                downBtn.click();
-                break;
-            case 's':
-                event.preventDefault();
-                optionsBtn.click();
-                break;
-        }
+    if (event.ctrlKey && shortcutHandler[event.key]) {
+        event.preventDefault();
+        shortcutHandlers[event.key]();
     }
 });
 

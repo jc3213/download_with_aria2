@@ -51,7 +51,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     aria2WhenInstall(reason);
 });
 
-const contextMenusHandler = {
+const contextMenusHandlers = {
     'aria2c_this_url': (info, tab) => aria2DownloadHandler(info.linkUrl, tab.url, {}, tab.id),
     'aria2c_this_image': (info, tab) => aria2DownloadHandler(info.srcUrl, tab.url, {}, tab.id),
     'aria2c_all_images': (info, tab) => aria2ImagesPrompt(tab.id)
@@ -84,27 +84,27 @@ async function aria2ImagesPrompt(tabId) {
 }
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    contextMenusHandler[info.menuItemId]?.(info, tab);
+    contextMenusHandlers[info.menuItemId]?.(info, tab);
 });
 
-const commandsHandler = {
+const commandsHandlers = {
     'open_options': () => chrome.runtime.openOptionsPage(),
     'open_new_download': () => getPopupWindow('/pages/newdld/newdld.html', 472)
 };
 
 chrome.commands.onCommand.addListener((command) => {
-    commandsHandler[command]?.();
+    commandsHandlers[command]?.();
 });
 
-const messageHandler = {
+const messageHandlers = {
     'storage_query': (response) => response({ storage: aria2Storage, options: aria2Config, manifest: aria2Manifest }),
     'storage_update': (response, params) => aria2StorageChanged(params),
     'jsonrpc_handshake': (response) => response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version }),
     'jsonrpc_update': (response, params) => aria2ConfigChanged(params),
     'jsonrpc_download': (response, params) => aria2DownloadUrls(params),
     'jsonrpc_metadata': (response, params) => aria2DownloadFiles(params),
-    'open_all_images': (response) => response(aria2Inspect[sender.tab.id]),
-    'open_new_download': commandsHandler['open_new_download']
+    'open_all_images': (response, sender) => response(aria2Inspect[sender.tab.id]),
+    'open_new_download': commandsHandlers['open_new_download']
 };
 
 function aria2StorageChanged(storage) {
@@ -143,7 +143,7 @@ async function aria2DownloadFiles(files) {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
-    messageHandler[message.action]?.(response, message.params);
+    messageHandlers[message.action]?.(response, message.params ?? sender);
     return true;
 });
 

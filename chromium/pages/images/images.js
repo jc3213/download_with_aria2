@@ -14,36 +14,21 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
+const shortcutHandlers = {
+    'a': () => selectAll.click(),
+    'e': () => selectNone.click(),
+    'f': () => selectFlip.click(),
+    's': () => optionsBtn.click(),
+    'Enter': () => submitBtn.click()
+};
+
 document.addEventListener('keydown', (event) => {
-    if (event.ctrlKey) {
-        switch (event.key) {
-            case 'a':
-                event.preventDefault();
-                selectAll.click();
-                break;
-            case 'x':
-                event.preventDefault();
-                selectNone.click();
-                break;
-            case 'f':
-                event.preventDefault();
-                selectFlip.click();
-                break;
-            case 'Enter':
-                event.preventDefault();
-                submitBtn.click();
-                break;
-            case 's':
-                event.preventDefault();
-                optionsBtn.click();
-                break;
-        }
-    } else {
-        switch (event.key) {
-            case 'Escape':
-                close();
-                break;
-        }
+    if (event.key === 'Escape') {
+        close();
+    }
+    if (event.ctrlKey && shortcutHandlers[event.key]) {
+        event.preventDefault();
+        shortcutHandlers[event.key]();
     }
 });
 
