@@ -1,10 +1,10 @@
-var aria2Storage = {};
-var aria2Config = {};
-var aria2Images = [];
+let aria2Storage = {};
+let aria2Config = {};
+let aria2Images = [];
 
-var [selectAll, selectNone, selectFlip, submitBtn, optionsBtn, proxyBtn] = document.querySelectorAll('button');
-var [preview, galleryPane, jsonrpcPane] = document.querySelectorAll('#preview > img, #gallery, #jsonrpc');
-var jsonrpcEntries = document.querySelectorAll('#jsonrpc [name]');
+let [selectAll, selectNone, selectFlip, submitBtn, optionsBtn, proxyBtn] = document.querySelectorAll('button');
+let [preview, galleryPane, jsonrpcPane] = document.querySelectorAll('#preview > img, #gallery, #jsonrpc');
+let jsonrpcEntries = document.querySelectorAll('#jsonrpc [name]');
 
 document.querySelectorAll('[i18n]').forEach((node) => {
     node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
@@ -60,10 +60,10 @@ selectFlip.addEventListener('click', (event) => {
 });
 
 submitBtn.addEventListener('click', (event) => {
-    var params = [];
+    let params = [];
     aria2Images.forEach(({src, alt, header, classList}) => {
         if (classList.contains('checked')) {
-            var options = {out: alt, header, ...aria2Config};
+            let options = {out: alt, header, ...aria2Config};
             params.push({url: src, options});
         }
     });
@@ -93,22 +93,24 @@ chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, imag
 });
 
 function getImagePreview(url, headers) {
-    var img = document.createElement('img');
+    let img = document.createElement('img');
     img.src = img.title = url;
     img.header = headers.map(({name, value}) => name + ': ' + value);
-    img.addEventListener('click', (event) => img.classList.toggle('checked'));
-    img.addEventListener('load', (event) => getImageAlt(img, url));
-    img.addEventListener('mouseenter', (event) => preview.src = url);
+    img.addEventListener('click', (event) => {
+        img.classList.toggle('checked');
+    });
+    img.addEventListener('load', (event) => {
+        let [, name, ext = '.jpg'] = url.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
+        img.alt = name  + '_' + img.alt + '_' + img.naturalWidth + 'x' + img.naturalHeight + ext;
+    });
+    img.addEventListener('mouseenter', (event) => {
+        preview.src = url;
+    });
     aria2Images.push(img);
 }
 
-function getImageAlt(img, url) {
-    var [full, name, ext = '.jpg'] = url.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
-    img.alt = name  + '_' + img.alt + '_' + img.naturalWidth + 'x' + img.naturalHeight + ext;
-};
-
 function aria2HeadersMV2(images, filter) {
-    var rules = {};
+    let rules = {};
     images.forEach(({url, headers}) => {
         getImagePreview(url, headers);
         rules[url] = headers;
@@ -119,7 +121,7 @@ function aria2HeadersMV2(images, filter) {
 }
 
 function aria2HeadersMV3(images) {
-    var addRules = [];
+    let addRules = [];
     images.forEach(({url, headers}, index) => {
         getImagePreview(url, headers);
         addRules.push({

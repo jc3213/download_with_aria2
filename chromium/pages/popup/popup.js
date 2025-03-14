@@ -1,15 +1,15 @@
-var aria2Tasks = {};
-var aria2Queue = {};
-var aria2Stats = {};
-var aria2Detail = {};
-var aria2Filter = localStorage['queues']?.match(/[^;]+/g) ?? [];
-var aria2Proxy;
-var aria2Delay;
-var aria2Interval;
+let aria2Tasks = {};
+let aria2Queue = {};
+let aria2Stats = {};
+let aria2Detail = {};
+let aria2Filter = localStorage['queues']?.match(/[^;]+/g) ?? [];
+let aria2Proxy;
+let aria2Delay;
+let aria2Interval;
 
-var manager = document.body.classList;
-var [downBtn, purgeBtn, optionsBtn, filterPane, queuePane] = document.querySelectorAll('#menu > button, #filter, #queue');
-var [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
+let manager = document.body.classList;
+let [downBtn, purgeBtn, optionsBtn, filterPane, queuePane] = document.querySelectorAll('#menu > button, #filter, #queue');
+let [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
 
 document.querySelectorAll('[data-tid]').forEach((queue) => aria2Queue[queue.id] = queue);
 document.querySelectorAll('[data-sid]').forEach((stat) => aria2Stats[stat.dataset.sid] = stat);
@@ -17,8 +17,8 @@ document.querySelectorAll('[data-sid]').forEach((stat) => aria2Stats[stat.datase
 manager.add(...aria2Filter);
 
 filterPane.addEventListener('click', (event) => {
-    var id = event.target.dataset.fid;
-    var index = aria2Filter.indexOf(id);
+    let id = event.target.dataset.fid;
+    let index = aria2Filter.indexOf(id);
     index === -1 ? aria2Filter.push(id) : aria2Filter.splice(index, 1);
     manager.toggle(id);
     localStorage['queues'] = aria2Filter.join(';');
@@ -53,7 +53,7 @@ purgeBtn.addEventListener('click', async (event) => {
 
 async function aria2ClientOpened() {
     aria2Tasks = {active: {}, waiting: {}, stopped: {}, total: {}};
-    var [global, active, waiting, stopped] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]} );
+    let [global, active, waiting, stopped] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]} );
     [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementSync);
     aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
     aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
@@ -67,7 +67,7 @@ function aria2ClientClosed() {
 }
 
 function aria2ClientMessage({method, params}) {
-    var gid = params[0].gid;
+    let {gid} = params[0];
     switch (method) {
         case 'aria2.onBtDownloadComplete':
             break;
@@ -87,15 +87,15 @@ function aria2ClientMessage({method, params}) {
 }
 
 async function aria2ClientUpdate() {
-    var [global, active] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'} );
+    let [global, active] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'} );
     active.result.forEach(taskElementSync);
     aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
     aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
 }
 
 function taskStatusChange(task, gid, status) {
-    var queue = aria2Queue[status];
-    var type = queue.dataset.tid;
+    let queue = aria2Queue[status];
+    let type = queue.dataset.tid;
     if (!aria2Tasks[type][gid]) {
         aria2Tasks[type][gid] = task;
         aria2Stats[type].textContent ++;
@@ -105,8 +105,8 @@ function taskStatusChange(task, gid, status) {
 }
 
 async function taskElementUpdate(gid) {
-    var [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-    var task = taskElementSync(session.result);
+    let [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
+    let task = taskElementSync(session.result);
     taskStatusChange(task, gid, session.result.status);
 }
 
@@ -120,13 +120,13 @@ function taskElementRemove(queue, gid, task) {
 }
 
 function taskElementSync({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    var task = aria2Tasks.total[gid] ??= taskElementCreate(gid, status, bittorrent, files);
-    var time = (totalLength - completedLength) / downloadSpeed;
-    var days = time / 86400 | 0;
-    var hours = time / 3600 - days * 24 | 0;
-    var minutes = time / 60 - days * 1440 - hours * 60 | 0;
-    var seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
-    var percent = (completedLength / totalLength * 10000 | 0) / 100;
+    let task = aria2Tasks.total[gid] ??= taskElementCreate(gid, status, bittorrent, files);
+    let time = (totalLength - completedLength) / downloadSpeed;
+    let days = time / 86400 | 0;
+    let hours = time / 3600 - days * 24 | 0;
+    let minutes = time / 60 - days * 1440 - hours * 60 | 0;
+    let seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
+    let percent = (completedLength / totalLength * 10000 | 0) / 100;
     task.name.textContent = getSessionName(gid, bittorrent, files);
     task.completed.textContent = getFileSize(completedLength);
     task.total.textContent = getFileSize(totalLength);
@@ -140,16 +140,17 @@ function taskElementSync({gid, status, files, bittorrent, completedLength, total
     task.ratio.textContent = percent;
     task.ratio.style.width = percent + '%';
     if (aria2Detail[gid]) {
-        files.forEach(({completedLength, index, length, uris}) => taskDetailSync(gid, task.files[index], completedLength, length, task.uris, uris));
+        taskDetailUpdate(task, gid, files);
     }
     return task;
 }
 
 function taskElementCreate(gid, status, bittorrent, files) {
-    var task = sessionLET.cloneNode(true);
+    let task = sessionLET.cloneNode(true);
     task.querySelectorAll('[class]').forEach((item) => task[item.className] = item);
     task.entries = task.querySelectorAll('[name]');
     task.id = gid;
+    task.fetch = [];
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.purge.addEventListener('click', async (event) => {
         switch (task.status) {
@@ -175,22 +176,22 @@ function taskElementCreate(gid, status, bittorrent, files) {
             task.savebtn.style.display = 'none';
             delete aria2Detail[gid];
         } else {
-            var [files, options] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
+            let [files, options] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
             task.classList.add('extra');
             aria2Detail[gid] = true;
             taskDetailOpened(task, gid, files.result, options.result);
         }
     });
     task.retry.addEventListener('click', async (event) => {
-        var [files, options] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
-        var {uris, path} = files.result[0];
-        var url = [...new Set(uris.map(({uri}) => uri))];
+        let [files, options] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
+        let {uris, path} = files.result[0];
+        let url = [...new Set(uris.map(({uri}) => uri))];
         if (path) {
-            var ni = path.lastIndexOf('/');
+            let ni = path.lastIndexOf('/');
             options.result['dir'] = path.slice(0, ni);
             options.result['out'] = path.slice(ni + 1);
         }
-        var [added] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options.result]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
+        let [added] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options.result]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
         taskElementUpdate(added.result);
         taskElementRemove('stopped', gid, task);
     });
@@ -212,12 +213,12 @@ function taskElementCreate(gid, status, bittorrent, files) {
         task.proxybtn.previousElementSibling.value = aria2Proxy;
     });
     task.savebtn.addEventListener('click', async (event) => {
-        var selected = [...task.files.querySelectorAll(':checked + label')].map((index) => index.textContent);
+        let selected = [...task.files.querySelectorAll(':checked + label')].map((index) => index.textContent);
         await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'select-file': selected.join()}]});
         task.savebtn.style.display = 'none';
     });
     task.adduri.addEventListener('click', async (event) => {
-        var uri = task.adduri.previousElementSibling;
+        let uri = task.adduri.previousElementSibling;
         await aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [], [uri.value]]});
         uri.value = '';
     });
@@ -232,70 +233,68 @@ function taskDetailOpened(task, gid, files, options) {
     options['min-split-size'] = getFileSize(options['min-split-size']);
     options['max-download-limit'] = getFileSize(options['max-download-limit']);
     options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
-    task.uris.uris = [];
     task.entries.forEach((entry) => {
         entry.value = options[entry.name] ?? '';
     });
+    taskDetailUpdate(task, gid, files, true);
+}
+
+function taskDetailUpdate(task, gid, files) {
     files.forEach(({index, length, completedLength, path, selected, uris}) => {
-        var file = task.files[index] ?? taskFileElementCreate(task, gid, task.files, index, selected, path, length, uris);
-        file.check.checked = selected === 'true';
-        file.name.textContent = path.slice(path.lastIndexOf('/') + 1);
-        file.name.title = path;
-        file.size.textContent = getFileSize(length);
-        taskDetailSync(gid, file, completedLength, length, task.uris, uris);
-    });
-}
-
-function taskDetailSync(gid, file, completed, length, list, uris) {
-    file.ratio.textContent = (completed / length * 10000 | 0) / 100;
-    if (uris.length === 0) {
-        return;
-    }
-    var result = {};
-    uris.forEach(({uri, status}) => {
-        taskUriElementCreate(gid, list, uri);
-        result[uri] ??= {used: 0, waiting: 0};
-        result[uri][status] ++;
-    });
-    list.uris = list.uris.filter((uri) => {
-        if (!result[uri]) {
-            list[uri].remove();
-            delete list[uri];
-            return false;
+        let file = task.files[index] ??= taskFileElementCreate(task, gid, index);
+        file.ratio.textContent = (completedLength / length * 10000 | 0) / 100;
+        if (!file.once) {
+            file.once = true;
+            file.check.checked = selected === 'true';
+            file.name.textContent = path.slice(path.lastIndexOf('/') + 1);
+            file.name.title = path;
+            file.size.textContent = getFileSize(length);
         }
-        list[uri].busy.textContent = result[uri].used;
-        list[uri].idle.textContent = result[uri].waiting;
-        return true;
+        if (uris.length === 0) {
+            return;
+        }
+        let result = {};
+        uris.forEach(({uri, status}) => {
+            let url = task.uris[uri] ??= taskUriElementCreate(task, gid, uri);
+            result[uri] ??= {used: 0, waiting: 0};
+            result[uri][status] ++;
+        });
+        task.fetch = task.fetch.filter((uri) => {
+            if (!result[uri]) {
+                task.uris[uri].remove();
+                delete task.uris[uri];
+                return false;
+            }
+            task.uris[uri].busy.textContent = result[uri].used;
+            task.uris[uri].idle.textContent = result[uri].waiting;
+            return true;
+        });
     });
 }
 
-function taskFileElementCreate(task, gid, list, index, selected, path, length, uris) {
-    var file = fileLET.cloneNode(true);
-    file.querySelectorAll('*').forEach((item) => file[item.className] = item);
+function taskFileElementCreate(task, gid, index) {
+    let file = fileLET.cloneNode(true);
+    file.childNodes.forEach((item) => file[item.className] = item);
     file.check.id = gid + '_' + index;
     file.index.textContent = index;
     file.index.setAttribute('for', file.check.id);
     file.index.addEventListener('click', (event) => {
         task.savebtn.style.display = 'block';
     });
-    list[index] = file;
-    list.appendChild(file);
+    task.files.appendChild(file);
     return file;
 }
 
-function taskUriElementCreate(gid, list, uri) {
-    if (list[uri]) {
-        return;
-    }
-    var url = uriLET.cloneNode(true);
-    url.querySelectorAll('*').forEach((div) => url[div.className] = div);
+function taskUriElementCreate(task, gid, uri) {
+    let url = uriLET.cloneNode(true);
+    url.childNodes.forEach((div) => url[div.className] = div);
+    url.link.title = url.link.textContent = uri;
     url.link.addEventListener('click', (event) => {
         navigator.clipboard.writeText(uri);
     });
-    url.link.title = url.link.textContent = uri;
-    list.uris.push(uri);
-    list[uri] = url;
-    list.appendChild(url);
+    task.fetch.push(uri);
+    task.uris.appendChild(url);
+    return url;
 }
 
 function getFileSize(bytes) {

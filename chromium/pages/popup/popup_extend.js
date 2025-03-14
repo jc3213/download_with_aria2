@@ -1,4 +1,4 @@
-var aria2Toolbar = location.search === '?toolbar';
+let aria2Toolbar = location.search === '?toolbar';
 
 if (aria2Toolbar) {
     aria2ToolbarSetup();
@@ -58,14 +58,14 @@ chrome.runtime.sendMessage({action: 'storage_query'}, ({storage}) => {
 function aria2ToolbarSetup() {
     queuePane.addEventListener('contextmenu', (event) => {
         event.preventDefault();
-        var css = event.clientX > 487 ? 'right: 0px;' : 'left: ' + event.clientX + 'px;';
+        let css = event.clientX > 487 ? 'right: 0px;' : 'left: ' + event.clientX + 'px;';
         css += event.clientY > 391 ? 'top: auto; bottom: 0px;' : 'top: ' + event.clientY + 'px;';
         filterPane.style.cssText = css + 'display: block;';
     });
     queuePane.addEventListener('click', (event) => {
         filterPane.style.display = 'none';
     });
-    var toolbar = document.createElement('style');
+    let toolbar = document.createElement('style');
     document.head.appendChild(toolbar);
     toolbar.textContent = `
 body {

@@ -1,11 +1,11 @@
-var aria2Storage = {};
-var aria2Config = {};
-var aria2Referer = [];
+let aria2Storage = {};
+let aria2Config = {};
+let aria2Referer = [];
 
-var [entryPane, jsonrpcPane, refererPane, proxyBtn] = document.querySelectorAll('#entries, #jsonrpc, #referer, #proxy');
-var [, downMode, submitBtn, downEntry, metaPane, metaImport] = entryPane.children;
-var jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
-var refererEntry = jsonrpcEntries[0];
+let [entryPane, jsonrpcPane, refererPane, proxyBtn] = document.querySelectorAll('#entries, #jsonrpc, #referer, #proxy');
+let [, downMode, submitBtn, downEntry, metaPane, metaImport] = entryPane.children;
+let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
+let refererEntry = jsonrpcEntries[0];
 
 document.querySelectorAll('[i18n]').forEach((node) => {
     node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
@@ -48,11 +48,11 @@ downMode.addEventListener('mousedown', (event) => {
 });
 
 submitBtn.addEventListener('click', (event) => {
-    var urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
+    let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
     if (urls.length !== 1) {
         delete aria2Config['out'];
     }
-    var params = urls.map((url) => ({url, options: aria2Config}));
+    let params = urls.map((url) => ({url, options: aria2Config}));
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params });
     close();
 });
@@ -71,25 +71,25 @@ metaImport.addEventListener('change', (event) => {
 });
 
 async function metaFileDownload(files) {
-    var accept = {torrent: 'aria2.addTorrent', meta4: 'aria2.addMetalink', metalink: 'aria2.addMetalink'};
-    var options = {...aria2Config, out: null, referer: null, 'user-agent': null};
-    var session = [...files].map(async (file) => {
-        var type = file.name.slice(file.name.lastIndexOf('.') + 1);
-        var method = accept[type];
+    let accept = {torrent: 'aria2.addTorrent', meta4: 'aria2.addMetalink', metalink: 'aria2.addMetalink'};
+    let options = {...aria2Config, out: null, referer: null, 'user-agent': null};
+    let session = [...files].map(async (file) => {
+        let type = file.name.slice(file.name.lastIndexOf('.') + 1);
+        let method = accept[type];
         if (method) {
-            var body = await promiseFileReader(file);
-            var params = type === 'torrent' ? [body, [], options] : [body, options];
+            let body = await promiseFileReader(file);
+            let params = type === 'torrent' ? [body, [], options] : [body, options];
             return {name: file.name, metadata: {method, params}};
         }
     })
-    var params = (await Promise.all(session)).filter((param) => param);
+    let params = (await Promise.all(session)).filter((param) => param);
     chrome.runtime.sendMessage({ action: 'jsonrpc_metadata', params });
     close();
 }
 
 function promiseFileReader(file) {
     return new Promise((resolve) => {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = (event) => resolve(reader.result.slice(reader.result.indexOf(',') + 1));
         reader.readAsDataURL(file);
     });
@@ -109,8 +109,8 @@ refererEntry.addEventListener('input', (event) => {
 });
 
 function refererModalPopup() {
-    var entry = refererEntry.value;
-    var regexp = new RegExp(entry.replace(/[.?/]/g, '\\$&'), 'gi');
+    let entry = refererEntry.value;
+    let regexp = new RegExp(entry.replace(/[.?/]/g, '\\$&'), 'gi');
     aria2Referer.forEach((referer) => {
         if (referer.title.includes(entry)) {
             referer.style.display = '';
@@ -133,7 +133,7 @@ proxyBtn.addEventListener('click', (event) => {
 chrome.tabs.query({currentWindow: false}, (tabs) => {
     tabs.forEach((tab) => {
         if (tab.url.startsWith('http')) {
-            var referer = document.createElement('div');
+            let referer = document.createElement('div');
             referer.title = referer.textContent = tab.url;
             aria2Referer.push(referer);
             refererPane.appendChild(referer);

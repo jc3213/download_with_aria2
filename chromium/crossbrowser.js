@@ -1,4 +1,4 @@
-var aria2Default = {
+let aria2Default = {
     'jsonrpc_scheme': 'http',
     'jsonrpc_url': 'localhost:6800/jsonrpc',
     'jsonrpc_secret': '',
@@ -31,18 +31,18 @@ var aria2Default = {
     'capture_size_include': 0,
     'capture_size_exclude': 0
 };
-var aria2Storage = {};
-var aria2Updated = {};
+let aria2Storage = {};
+let aria2Updated = {};
 
-var aria2RPC;
-var aria2Config = {};
-var aria2Version;
-var aria2Active = 0;
-var aria2Queue = {};
+let aria2RPC;
+let aria2Config = {};
+let aria2Version;
+let aria2Active = 0;
+let aria2Queue = {};
 
-var aria2Manifest = chrome.runtime.getManifest();
-var aria2Inspect = {};
-var aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
+let aria2Manifest = chrome.runtime.getManifest();
+let aria2Inspect = {};
+let aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     if (reason === 'install') {
@@ -81,9 +81,9 @@ async function aria2DownloadHandler(url, options, referer, hostname, tabId) {
 
 function aria2SetHeaders(url, referer, tabId) {
     tabId ??= Object.keys(aria2Inspect).find((id) => aria2Inspect[id][url]);
-    var headers = aria2Inspect?.[tabId]?.[url] ?? [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
+    let headers = aria2Inspect?.[tabId]?.[url] ?? [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
     if (aria2Storage['headers_override']) {
-        var ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
+        let ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
         headers[ua].value = aria2Storage['headers_useragent'];
     }
     return headers.map((header) => header.name + ': ' + header.value);
@@ -94,7 +94,7 @@ function aria2DownloadPrompt() {
 }
 
 async function aria2ImagesPrompt(tabId) {
-    var popId = await getPopupWindow('/pages/images/images.html', 680);
+    let popId = await getPopupWindow('/pages/images/images.html', 680);
     aria2Inspect[popId] = { storage: aria2Storage, options: aria2Config, manifest: aria2Manifest, images: aria2Inspect[tabId].images, filter: aria2Headers };
 }
 
@@ -111,7 +111,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
-    var inspect = aria2Inspect[tabId] ??= { images: [] };
+    let inspect = aria2Inspect[tabId] ??= { images: [] };
     if (inspect[url]) {
         return;
     }
@@ -140,9 +140,9 @@ chrome.commands.onCommand.addListener((command) => {
 
 chrome.action ??= chrome.browserAction;
 chrome.action.onClicked.addListener((tab) => {
-    var url = chrome.runtime.getURL('/pages/popup/popup.html');
+    let url = chrome.runtime.getURL('/pages/popup/popup.html');
     chrome.tabs.query({currentWindow: true}, (tabs) => {
-        var popup = tabs.find((tab) => tab.url === url);
+        let popup = tabs.find((tab) => tab.url === url);
         popup ? chrome.tabs.update(popup.id, {active: true}) : chrome.tabs.create({url, active: true});
     });
 });
@@ -178,8 +178,8 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
 });
 
 async function aria2MessageHandler(urls) {
-    var message = '';
-    var session = urls.map(({url, options = {}}) => {
+    let message = '';
+    let session = urls.map(({url, options = {}}) => {
         message += url + '\n';
         return { method: 'aria2.addUri', params: [ [url], options ] };
     });
@@ -188,8 +188,8 @@ async function aria2MessageHandler(urls) {
 }
 
 async function aria2MetadataHandler(files) {
-    var message = '';
-    var session = files.map(({name, metadata}) => {
+    let message = '';
+    let session = files.map(({name, metadata}) => {
         message += name + '\n';
         return metadata;
     });
@@ -213,6 +213,7 @@ function aria2ConfigChanged(options) {
 }
 
 function aria2UpdateStorage(json) {
+    let contextId;
     aria2Storage = json;
     aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
     aria2Updated['headers_exclude'] = getMatchPattern(json['headers_exclude']);
@@ -230,17 +231,17 @@ function aria2UpdateStorage(json) {
         return;
     }
     if (json['context_cascade']) {
-        var parentId = 'aria2c_contextmenu';
+        contextId = 'aria2c_contextmenu';
         getContextMenu(parentId, 'extension_name', ['link', 'image', 'page']);
     }
     if (json['context_thisurl']) {
-        getContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], parentId);
+        getContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], contextId);
     }
     if (json['context_thisimage']) {
-        getContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], parentId);
+        getContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], contextId);
     }
     if (json['context_allimages']) {
-        getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], parentId);
+        getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], contextId);
     }
 }
 
@@ -255,7 +256,7 @@ chrome.storage.sync.get(null, (json) => {
 });
 
 async function aria2ClientOpened() {
-    var [global, version, active] = await aria2RPC.call( {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'} );
+    let [global, version, active] = await aria2RPC.call( {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'} );
     chrome.action.setBadgeBackgroundColor({color: '#1C4CD4'});
     aria2RPCOptionsSetup(global.result, version.result);
     aria2Active = active.result.length;
@@ -269,7 +270,7 @@ function aria2ClientClosed() {
 }
 
 async function aria2ClientMessage({method, params}) {
-    var gid = params[0].gid;
+    let {gid} = params[0];
     switch (method) {
         case 'aria2.onDownloadStart':
             if (!aria2Queue[gid]) {
@@ -319,25 +320,25 @@ function aria2CaptureResult(hostname, filename, filesize) {
 
 function aria2WhenInstall(reason) {
     if (aria2Storage['notify_install']) {
-        var title = chrome.i18n.getMessage('extension_' + reason);
-        var message = chrome.i18n.getMessage('extension_version').replace('{version}', aria2Manifest.version);
+        let title = chrome.i18n.getMessage('extension_' + reason);
+        let message = chrome.i18n.getMessage('extension_version').replace('{version}', aria2Manifest.version);
         return getNotification(title, message);
     }
 }
 
 function aria2WhenStart(message) {
     if (aria2Storage['notify_start']) {
-        var title = chrome.i18n.getMessage('download_start');
+        let title = chrome.i18n.getMessage('download_start');
         return getNotification(title, message);
     }
 }
 
 async function aria2WhenComplete(gid) {
     if (aria2Storage['notify_complete']) {
-        var response = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-        var {bittorrent, files: [{path, uris}]} = response[0].result;
-        var name = bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
-        var title = chrome.i18n.getMessage('download_complete');
+        let response = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
+        let {bittorrent, files: [{path, uris}]} = response[0].result;
+        let name = bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
+        let title = chrome.i18n.getMessage('download_complete');
         return getNotification(title, name);
     }
 }
@@ -379,8 +380,8 @@ function getMatchPattern(array, isFile) {
 }
 
 function getHostname(url) {
-    var temp = url.slice(url.indexOf(':') + 3);
-    var host = temp.slice(0, temp.indexOf('/'));
+    let path = url.slice(url.indexOf(':') + 3);
+    let host = path.slice(0, path.indexOf('/'));
     return host.slice(host.indexOf('@') + 1);
 }
 
@@ -395,7 +396,7 @@ function getNotification(title, message) {
 }
 
 function getPopupWindow(url, offsetHeight) {
-    return new Promise(async resolve => {
+    return new Promise(async (resolve) => {
         chrome.windows.getCurrent(({width, height, left, top}) => {
             top += (height - offsetHeight) / 2 | 0;
             left += (width - 710) / 2 | 0;
