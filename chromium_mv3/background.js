@@ -8,7 +8,7 @@ function aria2CaptureFilename({id, finalUrl, referrer, filename, fileSize}) {
     let captured = aria2CaptureResult(hostname, filename, fileSize);
     if (captured) {
         chrome.downloads.erase({id});
-        aria2DownloadHandler(finalUrl, {out: filename}, referrer, hostname);
+        aria2DownloadHandler(finalUr, referrerl, {out: filename});
     }
 }
 
@@ -22,4 +22,4 @@ function aria2CaptureSwitch() {
 
 chrome.runtime.onStartup.addListener(chrome.runtime.getPlatformInfo);
 
-let aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 26000);
+let aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 28000);

@@ -51,21 +51,14 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
     aria2WhenInstall(reason);
 });
 
-chrome.contextMenus.onClicked.addListener(async ({menuItemId, linkUrl, srcUrl}, {id, url}) => {
-    switch (menuItemId) {
-        case 'aria2c_this_url':
-            aria2DownloadHandler(linkUrl, {}, url, getHostname(url), id);
-            break;
-        case 'aria2c_this_image':
-            aria2DownloadHandler(srcUrl, {}, url, getHostname(url), id);
-            break;
-        case 'aria2c_all_images':
-            aria2ImagesPrompt(id);
-            break;
-    }
-});
+const contextMenusHandler = {
+    'aria2c_this_url': (info, tab) => aria2DownloadHandler(info.linkUrl, tab.url, {}, tab.id),
+    'aria2c_this_image': (info, tab) => aria2DownloadHandler(info.srcUrl, tab.url, {}, tab.id),
+    'aria2c_all_images': (info, tab) => aria2ImagesPrompt(tab.id)
+};
 
-async function aria2DownloadHandler(url, options, referer, hostname, tabId) {
+async function aria2DownloadHandler(url, referer, options, tabId) {
+    let hostname = getHostname(referer || url);
     if (aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
@@ -73,30 +66,86 @@ async function aria2DownloadHandler(url, options, referer, hostname, tabId) {
         options['dir'] = aria2Storage['folder_defined'];
     }
     if (!aria2Updated['headers_exclude'].test(hostname)) {
-        options['header'] = aria2SetHeaders(url, referer, tabId);
+        tabId ??= Object.keys(aria2Inspect).find((id) => aria2Inspect[id][url]);
+        let headers = aria2Inspect?.[tabId]?.[url] ?? [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
+        if (aria2Storage['headers_override']) {
+            let ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
+            headers[ua].value = aria2Storage['headers_useragent'];
+        }
+        options['header'] = headers.map((header) => header.name + ': ' + header.value);
     }
     await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
     await aria2WhenStart(url);
-}
-
-function aria2SetHeaders(url, referer, tabId) {
-    tabId ??= Object.keys(aria2Inspect).find((id) => aria2Inspect[id][url]);
-    let headers = aria2Inspect?.[tabId]?.[url] ?? [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
-    if (aria2Storage['headers_override']) {
-        let ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
-        headers[ua].value = aria2Storage['headers_useragent'];
-    }
-    return headers.map((header) => header.name + ': ' + header.value);
-}
-
-function aria2DownloadPrompt() {
-    getPopupWindow('/pages/newdld/newdld.html', 472);
 }
 
 async function aria2ImagesPrompt(tabId) {
     let popId = await getPopupWindow('/pages/images/images.html', 680);
     aria2Inspect[popId] = { storage: aria2Storage, options: aria2Config, manifest: aria2Manifest, images: aria2Inspect[tabId].images, filter: aria2Headers };
 }
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+    contextMenusHandler[info.menuItemId]?.(info, tab);
+});
+
+const commandsHandler = {
+    'open_options': () => chrome.runtime.openOptionsPage(),
+    'open_new_download': () => getPopupWindow('/pages/newdld/newdld.html', 472)
+};
+
+chrome.commands.onCommand.addListener((command) => {
+    commandsHandler[command]?.();
+});
+
+const messageHandler = {
+    'storage_query': (response) => response({ storage: aria2Storage, options: aria2Config, manifest: aria2Manifest }),
+    'storage_update': (response, params) => aria2StorageChanged(params),
+    'jsonrpc_handshake': (response) => response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version }),
+    'jsonrpc_update': (response, params) => aria2ConfigChanged(params),
+    'jsonrpc_download': (response, params) => aria2DownloadUrls(params),
+    'jsonrpc_metadata': (response, params) => aria2DownloadFiles(params),
+    'open_all_images': (response) => response(aria2Inspect[sender.tab.id]),
+    'open_new_download': commandsHandler['open_new_download']
+};
+
+function aria2StorageChanged(storage) {
+    aria2UpdateStorage(storage);
+    aria2RPC.scheme = storage['jsonrpc_scheme'];
+    aria2RPC.url = storage['jsonrpc_url'];
+    aria2RPC.secret = storage['jsonrpc_secret'];
+    aria2RPC.retries = storage['jsonrpc_retries'];
+    aria2RPC.timeout = storage['jsonrpc_timeout'];
+    chrome.storage.sync.set(aria2Storage);
+}
+
+function aria2ConfigChanged(options) {
+    aria2Config = {...aria2Config, ...options};
+    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
+}
+
+async function aria2DownloadUrls(urls) {
+    let message = '';
+    let session = urls.map(({url, options = {}}) => {
+        message += url + '\n';
+        return { method: 'aria2.addUri', params: [ [url], options ] };
+    });
+    await aria2RPC.call(...session);
+    await aria2WhenStart(message);
+}
+
+async function aria2DownloadFiles(files) {
+    let message = '';
+    let session = files.map(({name, metadata}) => {
+        message += name + '\n';
+        return metadata;
+    });
+    await aria2RPC.call(...session);
+    await aria2WhenStart(message);
+}
+
+chrome.runtime.onMessage.addListener((message, sender, response) => {
+    messageHandler[message.action]?.(response, message.params);
+    return true;
+});
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
     if (frameId === 0) {
@@ -127,17 +176,6 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
 });
 
-chrome.commands.onCommand.addListener((command) => {
-    switch (command) {
-        case 'open_options':
-            chrome.runtime.openOptionsPage();
-            break;
-        case 'open_new_download':
-            aria2DownloadPrompt();
-            break;
-    }
-});
-
 chrome.action ??= chrome.browserAction;
 chrome.action.onClicked.addListener((tab) => {
     let url = chrome.runtime.getURL('/pages/popup/popup.html');
@@ -146,71 +184,6 @@ chrome.action.onClicked.addListener((tab) => {
         popup ? chrome.tabs.update(popup.id, {active: true}) : chrome.tabs.create({url, active: true});
     });
 });
-
-chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
-    switch (action) {
-        case 'storage_query':
-            response({ storage: aria2Storage, options: aria2Config, manifest: aria2Manifest });
-            break;
-        case 'storage_update':
-            aria2StorageChanged(params);
-            break;
-        case 'jsonrpc_handshake':
-            response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version });
-            break;
-        case 'jsonrpc_update':
-            aria2ConfigChanged(params);
-            break;
-        case 'jsonrpc_download':
-            aria2MessageHandler(params);
-            break;
-        case 'jsonrpc_metadata':
-            aria2MetadataHandler(params);
-            break;
-        case 'open_all_images':
-            response(aria2Inspect[sender.tab.id]);
-            break;
-        case 'open_new_download':
-            aria2DownloadPrompt();
-            break;
-    }
-    return true;
-});
-
-async function aria2MessageHandler(urls) {
-    let message = '';
-    let session = urls.map(({url, options = {}}) => {
-        message += url + '\n';
-        return { method: 'aria2.addUri', params: [ [url], options ] };
-    });
-    await aria2RPC.call(...session);
-    await aria2WhenStart(message);
-}
-
-async function aria2MetadataHandler(files) {
-    let message = '';
-    let session = files.map(({name, metadata}) => {
-        message += name + '\n';
-        return metadata;
-    });
-    await aria2RPC.call(...session);
-    await aria2WhenStart(message);
-}
-
-function aria2StorageChanged(storage) {
-    aria2UpdateStorage(storage);
-    aria2RPC.scheme = storage['jsonrpc_scheme'];
-    aria2RPC.url = storage['jsonrpc_url'];
-    aria2RPC.secret = storage['jsonrpc_secret'];
-    aria2RPC.retries = storage['jsonrpc_retries'];
-    aria2RPC.timeout = storage['jsonrpc_timeout'];
-    chrome.storage.sync.set(aria2Storage);
-}
-
-function aria2ConfigChanged(options) {
-    aria2Config = {...aria2Config, ...options};
-    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
-}
 
 function aria2UpdateStorage(json) {
     let contextId;
@@ -256,12 +229,19 @@ chrome.storage.sync.get(null, (json) => {
 });
 
 async function aria2ClientOpened() {
-    let [global, version, active] = await aria2RPC.call( {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'} );
-    chrome.action.setBadgeBackgroundColor({color: '#1C4CD4'});
-    aria2RPCOptionsSetup(global.result, version.result);
+    let [options, version, active] = await aria2RPC.call( {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'} );
+    aria2Config = options.result;
+    aria2Version = version.result.version;
+    aria2Config['disk-cache'] = getFileSize(aria2Config['disk-cache']);
+    aria2Config['min-split-size'] = getFileSize(aria2Config['min-split-size']);
+    aria2Config['max-download-limit'] = getFileSize(aria2Config['max-download-limit']);
+    aria2Config['max-upload-limit'] = getFileSize(aria2Config['max-upload-limit']);
+    aria2Config['max-overall-download-limit'] = getFileSize(aria2Config['max-overall-download-limit']);
+    aria2Config['max-overall-upload-limit'] = getFileSize(aria2Config['max-overall-upload-limit']);
     aria2Active = active.result.length;
     active.result.forEach(({gid}) => aria2Queue[gid] = gid);
-    aria2ToolbarBadge(aria2Active);
+    chrome.action.setBadgeBackgroundColor({color: '#1C4CD4'});
+    chrome.action.setBadgeText({text: !aria2Active ? '' : aria2Active + ''});
 }
 
 function aria2ClientClosed() {
@@ -286,22 +266,7 @@ async function aria2ClientMessage({method, params}) {
             delete aria2Queue[gid];
             aria2Active --;
     }
-    aria2ToolbarBadge(aria2Active);
-}
-
-function aria2ToolbarBadge(number) {
-    chrome.action.setBadgeText({text: !number ? '' : number + ''});
-}
-
-function aria2RPCOptionsSetup(json, version) {
-    json['disk-cache'] = getFileSize(json['disk-cache']);
-    json['min-split-size'] = getFileSize(json['min-split-size']);
-    json['max-download-limit'] = getFileSize(json['max-download-limit']);
-    json['max-upload-limit'] = getFileSize(json['max-upload-limit']);
-    json['max-overall-download-limit'] = getFileSize(json['max-overall-download-limit']);
-    json['max-overall-upload-limit'] = getFileSize(json['max-overall-upload-limit']);
-    aria2Config = json;
-    aria2Version = version.version;
+    chrome.action.setBadgeText({text: !aria2Active ? '' : aria2Active + ''});
 }
 
 function aria2CaptureResult(hostname, filename, filesize) {
