@@ -89,14 +89,13 @@ function decodeFileName(disposition) {
 
 function decodeISO8859(text) {
     let decode = [];
-    let code = document.characterSet ?? 'UTF-8';
     [...text].forEach((s) => {
         let c = s.charCodeAt(0);
         if (c < 256) {
             decode.push(c);
         }
     });
-    return new TextDecoder(code).decode(Uint8Array.from(decode));
+    return new TextDecoder('UTF-8').decode(Uint8Array.from(decode));
 }
 
 function decodeRFC5987(text) {
@@ -117,19 +116,13 @@ function decodeRFC5987(text) {
 function decodeRFC2047(text) {
     let result = '';
     let decode;
-    text.match(/[^\s]+/g).forEach(s => {
+    text.match(/[^\s]+/g).forEach((s) => {
         let [, code, b, q, data] = s.match(/=\?([^\?]+)\?(?:(b)|(q))\?([^\?]+)\?=/i);
         if (b) {
             decode = [...atob(data)].map(s => s.charCodeAt(0));
         } else if (q) {
-            decode = data.match(/=[0-9a-fA-F]{2}|./g)?.map(v => {
-                if (v === '_') {
-                    return 0x20;
-                }
-                if (v.length === 3) {
-                    return parseInt(v.slice(1), 16)
-                }
-                return v.charCodeAt(0);
+            decode = data.match(/=[0-9a-fA-F]{2}|./g)?.map((v) => {
+                return v === '_' ? 0x20 : v.length === 3 ? parseInt(v.slice(1), 16) : v.charCodeAt(0);
             });
         }
         if (decode) {
