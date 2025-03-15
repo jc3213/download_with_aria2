@@ -172,11 +172,12 @@ function taskElementCreate(gid, status, bittorrent, files) {
         } else {
             aria2Tasks[gid] = true;
             let [files, options] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
-            options.result['min-split-size'] = getFileSize(options.result['min-split-size']);
-            options.result['max-download-limit'] = getFileSize(options.result['max-download-limit']);
-            options.result['max-upload-limit'] = getFileSize(options.result['max-upload-limit']);
+            let config = options.result;
+            config['min-split-size'] = getFileSize(config['min-split-size']);
+            config['max-download-limit'] = getFileSize(config['max-download-limit']);
+            config['max-upload-limit'] = getFileSize(config['max-upload-limit']);
             task.entries.forEach((entry) => {
-                entry.value = options.result[entry.name] ?? '';
+                entry.value = config[entry.name] ?? '';
             });
             taskDetailUpdate(task, gid, files.result);
             task.classList.add('extra');
@@ -223,7 +224,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
         uri.value = '';
     });
     task.options.addEventListener('change', (event) => {
-        aria2RPC.call({method: 'aria2.changeOption', params: [gid, {[event.target.name]: event.target.value}]});
+        aria2RPC.call({method: 'aria2.changeOption', params: [gid, { [event.target.name]: event.target.value }]});
     });
     taskStatusChange(task, gid, status);
     return task;
