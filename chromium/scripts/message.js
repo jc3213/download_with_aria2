@@ -10,5 +10,7 @@ const messageHandlers = {
 };
 
 window.addEventListener('message', (event) => {
-    messageHandlers[event.data.aria2c](event.data.params);
+    if (messageHandlers[event.data.aria2c]) {
+        messageHandlers[event.data.aria2c](event.data.params);
+    }
 });

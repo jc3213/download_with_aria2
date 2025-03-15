@@ -31,17 +31,16 @@ let aria2Default = {
     'capture_size_include': 0,
     'capture_size_exclude': 0
 };
-let aria2Storage = {};
-let aria2Updated = {};
 
 let aria2RPC;
-let aria2Config = {};
 let aria2Version;
-let aria2Active = 0;
+let aria2Storage = {};
+let aria2Updated = {};
+let aria2Config = {};
 let aria2Queue = {};
-
+let aria2Active = 0;
 let aria2Manifest = chrome.runtime.getManifest();
-let aria2Inspect = {};
+let aria2Inspect = { tabs: [] };
 let aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
@@ -66,8 +65,8 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
         options['dir'] = aria2Storage['folder_defined'];
     }
     if (!aria2Updated['headers_exclude'].test(hostname)) {
-        tabId ??= Object.keys(aria2Inspect).find((id) => aria2Inspect[id][url]);
-        let headers = aria2Inspect?.[tabId]?.[url] ?? [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
+        tabId ??= aria2Inspect.tabs.find((id) => aria2Inspect[id][url]);
+        let headers = aria2Inspect[tabId][url] ?? [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
             headers[ua].value = aria2Storage['headers_useragent'];
@@ -101,8 +100,8 @@ const messageHandlers = {
     'storage_update': (response, params) => aria2StorageChanged(params),
     'jsonrpc_handshake': (response) => response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version }),
     'jsonrpc_update': (response, params) => aria2ConfigChanged(params),
-    'jsonrpc_download': (response, params) => aria2DownloadUrls(params),
-    'jsonrpc_metadata': (response, params) => aria2DownloadFiles(params),
+    'jsonrpc_download': (response, params) => aria2MessageUrls(params),
+    'jsonrpc_metadata': (response, params) => aria2MessageFiles(params),
     'open_all_images': (response, sender) => response(aria2Inspect[sender.tab.id]),
     'open_new_download': commandsHandlers['open_new_download']
 };
@@ -122,7 +121,7 @@ function aria2ConfigChanged(options) {
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
-async function aria2DownloadUrls(urls) {
+async function aria2MessageUrls(urls) {
     let message = '';
     let session = urls.map(({url, options = {}}) => {
         message += url + '\n';
@@ -132,7 +131,7 @@ async function aria2DownloadUrls(urls) {
     await aria2WhenStart(message);
 }
 
-async function aria2DownloadFiles(files) {
+async function aria2MessageFiles(files) {
     let message = '';
     let session = files.map(({name, metadata}) => {
         message += name + '\n';
@@ -147,6 +146,23 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     return true;
 });
 
+chrome.tabs.query({}, (tabs) => {
+    tabs.forEach(({id, url}) => {
+        aria2Inspect[id] = { images: [], url };
+        aria2Inspect.tabs.push(id);
+    });
+});
+
+chrome.tabs.onCreated.addListener(({id, url}) => {
+    aria2Inspect[id] = { images: [], url };
+    aria2Inspect.tabs.push(id);
+});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+    delete aria2Inspect[tabId];
+    aria2Inspect.tabs.splice(aria2Inspect.tabs.indexOf(tabId), 1);
+});
+
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
     if (frameId === 0) {
         aria2Inspect[tabId] = { images: [], url };
@@ -154,7 +170,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
-    if (aria2Inspect?.[tabId]?.url !== url) {
+    if (aria2Inspect[tabId].url !== url) {
         aria2Inspect[tabId] = { images: [], url };
     }
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
@@ -171,10 +187,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
         inspect[url] = requestHeaders;
     }
 }, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Headers);
-
-chrome.tabs.onRemoved.addListener((tabId) => {
-    delete aria2Inspect[tabId];
-});
 
 chrome.action ??= chrome.browserAction;
 chrome.action.onClicked.addListener((tab) => {
