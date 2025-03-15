@@ -3,8 +3,8 @@ const messageHandlers = {
         let {name, version} = chrome.runtime.getManifest();
         window.postMessage({ extension_name: name, extension_version: version });
     },
-    'aria2c_jsonrpc_call': (entries) => {
-        let params = ( Array.isArray(entries) ? entries : [entries] ).filter( (entry) => entry?.url );
+    'aria2c_jsonrpc_call': (args) => {
+        let params = ( Array.isArray(args) ? args : [args] ).filter( (entry) => entry?.url );
         chrome.runtime.sendMessage({ action: 'jsonrpc_download', params });
     }
 };
