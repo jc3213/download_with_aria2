@@ -40,7 +40,7 @@ let aria2Config = {};
 let aria2Queue = {};
 let aria2Active = 0;
 let aria2Manifest = chrome.runtime.getManifest();
-let aria2Inspect = {};
+let aria2Inspect = { tabs: [] };
 let aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
@@ -65,6 +65,7 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
         options['dir'] = aria2Storage['folder_defined'];
     }
     if (!aria2Updated['headers_exclude'].test(hostname)) {
+        tabId ??= aria2Inspect.tabs.find((id) => aria2Inspect[id][url]);
         let headers = aria2Inspect[tabId][url] ?? [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
@@ -148,15 +149,18 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 chrome.tabs.query({}, (tabs) => {
     tabs.forEach(({id, url}) => {
         aria2Inspect[id] = { images: [], url };
+        aria2Inspect.tabs.push(id);
     });
 });
 
 chrome.tabs.onCreated.addListener(({id, url}) => {
     aria2Inspect[id] = { images: [], url };
+    aria2Inspect.tabs.push(id);
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
+    aria2Inspect.tabs.splice(aria2Inspect.tabs.indexOf(tabId), 1);
 });
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
