@@ -49,8 +49,7 @@ submitBtn.addEventListener('click', (event) => {
     let params = [];
     aria2Images.forEach(({src, alt, header, classList}) => {
         if (classList.contains('checked')) {
-            let options = {out: alt, header, ...aria2Config};
-            params.push({url: src, options});
+            params.push({ url: src, options: {out: alt, header, ...aria2Config} });
         }
     });
     chrome.runtime.sendMessage({action: 'jsonrpc_download', params});
@@ -111,7 +110,7 @@ function aria2HeadersMV3(images) {
     images.forEach(({url, headers}, index) => {
         getImagePreview(url, headers);
         addRules.push({
-            id: index + 1,
+            id: index,
             priority: 1,
             action: {
                 type:'modifyHeaders',
