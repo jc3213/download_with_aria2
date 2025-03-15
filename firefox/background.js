@@ -9,7 +9,7 @@ function aria2CaptureSwitch() {
         browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
         browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
     } else if (aria2Storage['capture_webrequest']) {
-        browser.webRequest.onHeadersReceived.addListener(aria2CaptureWebRequest, {urls: ['<all_urls>'], types: ['main_frame', 'sub_frame']}, ['blocking', 'responseHeaders']);
+        browser.webRequest.onHeadersReceived.addListener(aria2CaptureWebRequest, {urls: [ 'http://*/*', 'https://*/*' ], types: ['main_frame', 'sub_frame', 'other']}, ['blocking', 'responseHeaders']);
         browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
     } else {
         browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
@@ -17,7 +17,7 @@ function aria2CaptureSwitch() {
     }
 }
 
-async function aria2CaptureDownloads({id, url, referrer, filename, fileSize, cookieStoreId}) {
+async function aria2CaptureDownloads({id, url, referrer, filename, fileSize}) {
     if (!aria2RPC.alive || url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
@@ -26,7 +26,9 @@ async function aria2CaptureDownloads({id, url, referrer, filename, fileSize, coo
     if (captured) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
-            aria2DownloadHandler(url, referrer, await getFirefoxOptions(filename), cookieStoreId);
+            let tabs = await browser.tabs.query({currentWindow: true});
+            let tab = tabs.find((tab) => tab.url === referrer);
+            aria2DownloadHandler(url, referrer, await getFirefoxOptions(filename), tab.id);
         }).catch(error => aria2WhenComplete(url));
     }
 }
@@ -45,12 +47,10 @@ async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeade
     if (!result['content-type'].startsWith('application')) {
         return;
     }
-    let disposition = result['content-disposition'];
-    if (disposition?.startsWith('attachment')) {
-        let out = decodeFileName(disposition);
-    }
+    let out = decodeFileName(result['content-disposition']);
     let hostname = getHostname(originUrl);
-    if (aria2CaptureResult(hostname, out, result['content-length'] | 0)) {
+    let captured = aria2CaptureResult(hostname, out, result['content-length'] | 0);
+    if (captured) {
         aria2DownloadHandler(url, originUrl, {out}, tabId);
         return {cancel: true};
     }
@@ -72,6 +72,9 @@ async function getFirefoxOptions(filename) {
 }
 
 function decodeFileName(disposition) {
+    if (!disposition?.startsWith('attachment')) {
+        return null;
+    }
     let RFC2047 = disposition.match(/filename="?(=\?[^;]+\?=)/);
     if (RFC2047) {
         return decodeRFC2047(RFC2047[1]);
