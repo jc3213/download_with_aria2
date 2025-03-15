@@ -30,9 +30,10 @@ const shortcutHandlers = {
 };
 
 document.addEventListener('keydown', (event) => {
-    if (event.ctrlKey && shortcutHandlers[event.key]) {
+    let handler = shortcutHandlers[event.key];
+    if (event.ctrlKey && handler) {
         event.preventDefault();
-        shortcutHandlers[event.key]();
+        handler();
     }
 });
 
