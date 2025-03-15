@@ -26,9 +26,7 @@ async function aria2CaptureDownloads({id, url, referrer, filename, fileSize}) {
     if (captured) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
-            let tabs = await browser.tabs.query({currentWindow: true});
-            let tab = tabs.find((tab) => tab.url === referrer);
-            aria2DownloadHandler(url, referrer, await getFirefoxOptions(filename), tab.id);
+            aria2DownloadHandler(url, referrer, await getFirefoxOptions(filename));
         }).catch(error => aria2WhenComplete(url));
     }
 }
