@@ -53,7 +53,7 @@ chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
 const contextMenusHandlers = {
     'aria2c_this_url': (info, tab) => aria2DownloadHandler(info.linkUrl, tab.url, {}, tab.id),
     'aria2c_this_image': (info, tab) => aria2DownloadHandler(info.srcUrl, tab.url, {}, tab.id),
-    'aria2c_all_images': (info, tab) => aria2ImagesPrompt(tab.id)
+    'aria2c_all_images': aria2ImagesPrompt
 };
 
 async function aria2DownloadHandler(url, referer, options, tabId) {
@@ -77,9 +77,9 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
     await aria2WhenStart(url);
 }
 
-async function aria2ImagesPrompt(tabId) {
-    let popId = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Inspect[popId] = { storage: aria2Storage, options: aria2Config, manifest: aria2Manifest, images: aria2Inspect[tabId].images, filter: aria2Headers };
+async function aria2ImagesPrompt(info, tab) {
+    let id = await getPopupWindow('/pages/images/images.html', 680);
+    aria2Inspect[id] = { storage: aria2Storage, options: aria2Config, manifest: aria2Manifest, images: aria2Inspect[tab.id].images, filter: aria2Headers };
 }
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -97,16 +97,16 @@ chrome.commands.onCommand.addListener((command) => {
 
 const messageHandlers = {
     'storage_query': (response) => response({ storage: aria2Storage, options: aria2Config, manifest: aria2Manifest }),
-    'storage_update': (response, params) => aria2StorageChanged(params),
+    'storage_update': aria2StorageChanged,
     'jsonrpc_handshake': (response) => response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version }),
-    'jsonrpc_update': (response, params) => aria2ConfigChanged(params),
-    'jsonrpc_download': (response, params) => aria2MessageUrls(params),
-    'jsonrpc_metadata': (response, params) => aria2MessageFiles(params),
+    'jsonrpc_update': aria2ConfigChanged,
+    'jsonrpc_download': aria2MessageUrls,
+    'jsonrpc_metadata': aria2MessageFiles,
     'open_all_images': (response, sender) => response(aria2Inspect[sender.tab.id]),
     'open_new_download': commandsHandlers['open_new_download']
 };
 
-function aria2StorageChanged(storage) {
+function aria2StorageChanged(response, storage) {
     aria2UpdateStorage(storage);
     aria2RPC.scheme = storage['jsonrpc_scheme'];
     aria2RPC.url = storage['jsonrpc_url'];
@@ -116,12 +116,12 @@ function aria2StorageChanged(storage) {
     chrome.storage.sync.set(aria2Storage);
 }
 
-function aria2ConfigChanged(options) {
+function aria2ConfigChanged(response, options) {
     aria2Config = {...aria2Config, ...options};
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
-async function aria2MessageUrls(urls) {
+async function aria2MessageUrls(response, urls) {
     let message = '';
     let session = urls.map(({url, options = {}}) => {
         message += url + '\n';
@@ -131,7 +131,7 @@ async function aria2MessageUrls(urls) {
     await aria2WhenStart(message);
 }
 
-async function aria2MessageFiles(files) {
+async function aria2MessageFiles(response, files) {
     let message = '';
     let session = files.map(({name, metadata}) => {
         message += name + '\n';
