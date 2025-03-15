@@ -16,17 +16,16 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
 });
 
 const shortcutHandlers = {
-    'Enter': () => submitBtn.click()
+    'Enter': submitBtn
 };
 
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        close();
-    }
     let handler = shortcutHandlers[event.key];
     if (event.ctrlKey && handler) {
         event.preventDefault();
-        handler();
+        handler.click();
+    } else if (event.key === 'Escape') {
+        close();
     }
 });
 

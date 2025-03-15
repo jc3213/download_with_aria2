@@ -24,16 +24,16 @@ filterPane.addEventListener('click', (event) => {
 });
 
 const shortcutHandlers = {
-    'r': () => purgeBtn.click(),
-    'd': () => downBtn.click(),
-    's': () => optionsBtn.click()
+    'r': purgeBtn,
+    'd': downBtn,
+    's': optionsBtn
 };
 
 document.addEventListener('keydown', (event) => {
     let handler = shortcutHandlers[event.key];
     if (event.ctrlKey && handler) {
         event.preventDefault();
-        handler();
+        handler.click();
     }
 });
 

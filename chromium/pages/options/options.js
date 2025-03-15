@@ -40,16 +40,16 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
 });
 
 const shortcutHandlers = {
-    's': () => saveBtn.click(),
-    'z': () => undoBtn.click(),
-    'y': () => redoBtn.click()
+    's': saveBtn,
+    'z': undoBtn,
+    'y': redoBtn
 };
 
 document.addEventListener('keydown', (event) => {
     let handler = shortcutHandlers[event.key];
     if (event.ctrlKey && handler) {
         event.preventDefault();
-        handler();
+        handler.click();
     }
 });
 
