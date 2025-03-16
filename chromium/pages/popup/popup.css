@@ -80,8 +80,7 @@ body > ::before {
 }
 
 #queue > :nth-child(n+4) input,
-#queue > :nth-child(n+4) select,
-.session.http [name="max-upload-limit"] {
+#queue > :nth-child(n+4) select {
     pointer-events: none;
     filter: contrast(40%);
 }
@@ -91,7 +90,7 @@ body > ::before {
     pointer-events: none;
 }
 
-#queue > :nth-child(n+4) > .session > :nth-last-child(-n+3) button,
+#queue > :nth-child(n+4) > * > :nth-last-child(-n+3) button,
 #queue > :nth-child(n+4) > :not(.http) .retry,
 #queue > :nth-child(-n+3) .retry,
 .session.http [data-p2p],
@@ -104,8 +103,7 @@ body > ::before {
 }
 
 #queue .meter > .ratio,
-.file > :checked + label,
-.uri > :nth-child(2) {
+#queue .file > :checked + label {
     background-color: #59A8FF;
     color: #ffffff;
 }
@@ -131,8 +129,8 @@ body > ::before {
 
 #queue > :nth-child(-n+3) .meter:active,
 #queue > :nth-child(-n+3) .ratio:active,
-#queue > :nth-child(-n+3) .p2p .file > label:active,
-#queue .uri > :first-child:active {
+#queue .p2p .file > label:active,
+#queue .uri:active {
     filter: contrast(60%);
 }
 
@@ -213,9 +211,9 @@ body > ::before {
 .session {
     border-style: outset;
     border-width: 1px;
+    display: grid;
     padding: 3px;
     margin-bottom: 5px;
-    display: grid;
     gap: 3px;
     grid-template-columns: repeat(3, 1fr) auto;
 }
@@ -262,34 +260,27 @@ body > ::before {
 }
 
 .session > .files {
+    display: grid;
     grid-area: 6 / 1 / 7 / 5;
+    grid-template-columns: auto auto 1fr;
 }
 
 .session > .uris {
+    display: grid;
     grid-area: 7 / 1 / 8 / 5;
+    grid-template-columns: 1fr 1fr auto;
 }
 
-.session .savebtn {
-    display: none;
-    position: absolute;
-    padding: 1px;
-    right: 0px;
-    top: 0px;
-    width: 25px;
+.session > :nth-last-child(-n+2) > button {
+    margin-left: 3px;
 }
 
-.file {
-    display: grid;
-    grid-template-columns: 0px 40px auto 80px 60px;
-}
-
-.uri {
-    display: grid;
-    grid-template-columns: auto 40px 40px;
+.session > :nth-last-child(-n+2) > div {
+    grid-column: span 3;
 }
 
 .file > *,
-.uri > * {
+.uri {
     border-style: solid;
     border-width: 1px;
     height: 21px;
@@ -298,12 +289,17 @@ body > ::before {
     white-space: nowrap;
 }
 
-.file > :not(:nth-child(3)),
-.uri > :nth-child(n+2) {
+.file {
+    display: grid;
+    grid-template-columns: 0px 40px auto 80px 60px;
+}
+
+.file > :not(:nth-child(3)) {
     text-align: center;
 }
 
-.session:not(.extra) > :nth-last-child(-n+3) {
+.session:not(.extra) > :nth-last-child(-n+3),
+.savebtn {
     display: none;
 }
 
