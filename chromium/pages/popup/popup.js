@@ -220,9 +220,15 @@ function taskElementCreate(gid, status, bittorrent, files) {
         await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'select-file': selected.join()}]});
         task.savebtn.style.display = '';
     });
+    task.seturi.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            task.adduri.click();
+        }
+    });
     task.adduri.addEventListener('click', async (event) => {
-        let uri = task.adduri.previousElementSibling;
+        let uri = task.seturi;
         await aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [], [uri.value]]});
+        task[uri] ??= taskUriElement(task, uri.value);
         uri.value = '';
     });
     task.options.addEventListener('change', (event) => {
@@ -247,19 +253,21 @@ function taskElementCreate(gid, status, bittorrent, files) {
             task.data.push(check);
         }
         uris.forEach(({uri, status}) => {
-            if (!task[uri]) {
-                let url = uriLET.cloneNode(true);
-                url.title = url.textContent = uri;
-                url.addEventListener('click', (event) => {
-                    navigator.clipboard.writeText(uri);
-                });
-                task.uris.appendChild(url);
-                task[uri] = true;
-            }
+            task[uri] ??= taskUriElement(task, uri);
         });
     });
     taskStatusChange(task, gid, status);
     return task;
+}
+
+function taskUriElement(task, uri) {
+    let url = uriLET.cloneNode(true);
+    url.title = url.textContent = uri;
+    url.addEventListener('click', (event) => {
+        navigator.clipboard.writeText(uri);
+    });
+    task.uris.appendChild(url);
+    return true;
 }
 
 function getFileSize(bytes) {
