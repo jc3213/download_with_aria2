@@ -105,7 +105,7 @@ body > ::before {
 
 #queue .meter > .ratio,
 .file > :checked + label,
-.uri > .busy {
+.uri > :nth-child(2) {
     background-color: #59A8FF;
     color: #ffffff;
 }
@@ -131,9 +131,9 @@ body > ::before {
 
 #queue > :nth-child(-n+3) .meter:active,
 #queue > :nth-child(-n+3) .ratio:active,
-#queue > :nth-child(-n+3) .p2p .index:active,
-#queue .http .link:active {
-    filter: contrast(40%);
+#queue > :nth-child(-n+3) .p2p .file > label:active,
+#queue .uri > :first-child:active {
+    filter: contrast(60%);
 }
 
 #menu::before {
