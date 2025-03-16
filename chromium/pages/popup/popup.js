@@ -232,15 +232,8 @@ function taskElementCreate(gid, status, bittorrent, files) {
 
 function taskDetailUpdate(task, gid, files) {
     files.forEach(({index, length, completedLength, path, selected, uris}) => {
-        let file = task.files[index] ??= taskFileElementCreate(task, gid, index);
+        let file = task.files[index] ??= taskFileElementCreate(task, gid, index, selected, path, length);
         file.ratio.textContent = (completedLength / length * 10000 | 0) / 100;
-        if (!file.once) {
-            file.once = true;
-            file.check.checked = selected === 'true';
-            file.name.textContent = path.slice(path.lastIndexOf('/') + 1);
-            file.name.title = path;
-            file.size.textContent = getFileSize(length);
-        }
         if (uris.length === 0) {
             return;
         }
@@ -263,28 +256,35 @@ function taskDetailUpdate(task, gid, files) {
     });
 }
 
-function taskFileElementCreate(task, gid, index) {
+function taskFileElementCreate(task, gid, index, selected, path, length) {
     let file = fileLET.cloneNode(true);
-    file.childNodes.forEach((item) => file[item.className] = item);
-    file.check.id = gid + '_' + index;
-    file.index.textContent = index;
-    file.index.setAttribute('for', file.check.id);
-    file.index.addEventListener('click', (event) => {
+    let [check, track, name, size, ratio] = file.children;
+    check.id = gid + '_' + index;
+    check.checked = selected === 'true';
+    track.textContent = index;
+    track.setAttribute('for', check.id);
+    track.addEventListener('click', (event) => {
         task.savebtn.style.display = 'block';
     });
+    name.textContent = path.slice(path.lastIndexOf('/') + 1);
+    name.title = path;
+    size.textContent = getFileSize(length);
     task.files.appendChild(file);
+    file.ratio = ratio;
     return file;
 }
 
 function taskUriElementCreate(task, gid, uri) {
     let url = uriLET.cloneNode(true);
-    url.childNodes.forEach((div) => url[div.className] = div);
-    url.link.title = url.link.textContent = uri;
-    url.link.addEventListener('click', (event) => {
+    let [link, busy, idle] = url.children;
+    link.title = link.textContent = uri;
+    link.addEventListener('click', (event) => {
         navigator.clipboard.writeText(uri);
     });
     task.fetch.push(uri);
     task.uris.appendChild(url);
+    url.busy = busy;
+    url.idle = idle;
     return url;
 }
 
