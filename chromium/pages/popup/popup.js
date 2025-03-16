@@ -217,6 +217,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
         }
     });
     task.proxybtn.addEventListener('click', async (event) => {
+        config['all-proxy'] = aria2Proxy;
         await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2Proxy}]});
         task.proxybtn.previousElementSibling.value = aria2Proxy;
     });
