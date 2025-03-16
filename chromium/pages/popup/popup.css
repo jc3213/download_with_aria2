@@ -265,14 +265,19 @@ body > ::before {
     grid-template-columns: auto auto 1fr;
 }
 
+.session > .files > button {
+    display: none;
+    margin-left: 5px;
+}
+
 .session > .uris {
     display: grid;
     grid-area: 7 / 1 / 8 / 5;
     grid-template-columns: 1fr 1fr auto;
 }
 
-.session > :nth-last-child(-n+2) > button {
-    margin-left: 3px;
+.session > .uris > div:first-of-type {
+    margin-top: 1px;
 }
 
 .session > :nth-last-child(-n+2) > div {
@@ -298,8 +303,7 @@ body > ::before {
     text-align: center;
 }
 
-.session:not(.extra) > :nth-last-child(-n+3),
-.savebtn {
+.session:not(.extra) > :nth-last-child(-n+3) {
     display: none;
 }
 

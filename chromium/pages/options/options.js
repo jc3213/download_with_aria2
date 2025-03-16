@@ -217,7 +217,7 @@ optionsCheckboxes.forEach((checkbox) => {
 
 optionsMatches.forEach((match) => {
     var id = match.id;
-    var [entry, addbtn, resort, list] = match.children;
+    var [, entry, addbtn, resort, list] = match.children;
     match.list = list;
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {

@@ -57,7 +57,7 @@ input[type="checkbox"] + label {
 }
 
 .cush, .matches, .matches.options > :nth-child(2n + 3) {
-    margin-top: 28px;
+    margin: 28px 0px 8px;
 }
 
 .matches {
@@ -66,17 +66,19 @@ input[type="checkbox"] + label {
     padding: 10px;
 }
 
-.matches > div > [id] > input {
-    width: calc(100% - 89px);
+.matches > [id] {
+    display: grid;
+    grid-template-columns: 1fr 55% auto auto;
 }
 
 .list {
-    border-style: inset;
+    border-style: outset;
     border-width: 1px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 29px;
-    margin-top: 5px;
+    grid-column: span 4;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 3px;
     max-height: 118px;
     min-height: 59px;
     overflow-y: scroll;
