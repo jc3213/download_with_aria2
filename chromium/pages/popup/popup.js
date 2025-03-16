@@ -221,15 +221,15 @@ function taskElementCreate(gid, status, bittorrent, files) {
         task.proxybtn.previousElementSibling.value = aria2Proxy;
     });
     task.savebtn.addEventListener('click', async (event) => {
-        let selected = '';
+        let selected = [];
         checks.forEach((check) => {
             let label = check.labels[0].textContent;
             chosen[label] = check.checked;
             if (check.checked) {
-                selected += label + ',';
+                selected.push(label);
             }
         });
-        await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, {'select-file': selected}] });
+        await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, {'select-file': selected.join()}] });
         task.savebtn.style.display = '';
     });
     task.seturi.addEventListener('keydown', (event) => {
