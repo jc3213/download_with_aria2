@@ -113,7 +113,8 @@ h1 {
 }
 
 h4 {
-    margin: 3px 0px 0px;
+    margin: 0px;
+    padding: 3px 0px;
 }
 
 .template {
