@@ -56,11 +56,15 @@ input[type="checkbox"] + label {
     margin: 28px 0px;
 }
 
-.flex > .flex:first-of-type {
+.flex > button + div {
     margin: 0px 30px;
 }
 
-.flex > div:last-child {
+.flat > input {
+    margin-top: 1px;
+}
+
+.flat {
     flex: 1;
 }
 
