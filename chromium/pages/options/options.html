@@ -33,15 +33,15 @@
                     <input name="jsonrpc_secret" type="text" placeholder="$$secret$$">
                 </div>
             </div>
-            <div class="flat align">
+            <div class="flex align">
                 <button id="goto-jsonrpc" i18n="option_aria2"></button>
-                <div class="flat" i18n-tips="tips_jsonrpc_retries">
+                <div class="flex" i18n-tips="tips_jsonrpc_retries">
                     <h4 i18n="option_jsonrpc_retries"></h4>
                     <div>
                         <input name="jsonrpc_retries" type="number" min="-1" max="30" setp="1">
                     </div>
                 </div>
-                <div class="flat" i18n-tips="tips_jsonrpc_timeout">
+                <div class="flex" i18n-tips="tips_jsonrpc_timeout">
                     <h4 i18n="option_jsonrpc_timeout"></h4>
                     <div>
                         <input name="jsonrpc_timeout" type="number" min="3" max="20" step="1">
@@ -54,7 +54,7 @@
                 <input id="manager_newtab" name="manager_newtab" type="checkbox">
                 <label for="manager_newtab" i18n="option_manager_newtab"></label>
             </div>
-            <div class="groupitem flat" i18n-tips="tips_manager_interval">
+            <div class="groupitem flex" i18n-tips="tips_manager_interval">
                 <h4 i18n="option_manager_interval"></h4>
                 <div>
                     <input name="manager_interval" type="number" min="5" max="30" step="1">
