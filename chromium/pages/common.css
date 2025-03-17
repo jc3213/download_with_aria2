@@ -126,26 +126,26 @@ h4 {
     grid-template-columns: repeat(2, 1fr);
 }
 
-.group > :not(.item) {
+.group > :not(.groupitem) {
     grid-column: span 2;
 }
 
-.item > select {
+.groupitem > select {
     width: 100%;
 }
 
-.flex, .menu {
+.flex, .flexmenu {
     display: flex;
     gap: 3px;
     margin-bottom: 1px;
 }
 
-.menu > input:not(:first-child) {
+.flexmenu > input:not(:first-child) {
     margin-left: auto;
     width: 50%;
 }
 
-.menu > button {
+.flexmenu > button {
     padding: 1px;
     width: 25px;
 }
