@@ -65,12 +65,6 @@
     "time_second_full": {
         "message": "Second(s)"
     },
-    "common_default": {
-        "message": "Default"
-    },
-    "common_disabled": {
-        "message": "Disabled"
-    },
     "common_true": {
         "message": "True"
     },
@@ -118,6 +112,12 @@
     },
     "option_import": {
         "message": "Import"
+    },
+    "option_default": {
+        "message": "Default"
+    },
+    "option_disabled": {
+        "message": "Disabled"
     },
     "option_aria2": {
         "message": "Open JSON-RPC Options"

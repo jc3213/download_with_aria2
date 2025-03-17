@@ -65,12 +65,6 @@
     "time_second_full": {
         "message": "秒"
     },
-    "common_default": {
-        "message": "默认"
-    },
-    "common_disabled": {
-        "message": "禁用"
-    },
     "common_true": {
         "message": "是"
     },
@@ -118,6 +112,12 @@
     },
     "option_import": {
         "message": "导入"
+    },
+    "option_default": {
+        "message": "默认"
+    },
+    "option_disabled": {
+        "message": "禁用"
     },
     "option_aria2": {
         "message": "前往 JSON-RPC 设置"
