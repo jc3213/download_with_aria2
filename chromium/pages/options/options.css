@@ -56,7 +56,7 @@ input[type="checkbox"] + label {
     margin: 28px 0px;
 }
 
-.flex > button + div {
+.flex > .flex:first-of-type {
     margin: 0px 30px;
 }
 
