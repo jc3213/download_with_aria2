@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title i18n="plugins_images"></title>
+        <link rel="stylesheet" href="/pages/common.css">
+        <link rel="stylesheet" href="images.css">
+    </head>
+    <body>
+        <div id="preview"><img></img></div>
+        <hr>
+        <div id="gallery"></div>
+        <hr>
+        <div id="menu" class="flex">
+            <button i18n="select_all"></button>
+            <button i18n="select_none"></button>
+            <button i18n="select_flip"></button>
+            <button i18n="common_submit"></button>
+            <button i18n="popup_options"></button>
+        </div>
+        <div id="jsonrpc">
+            <div class="item" i18n-tips="tips_aria2_com_dir">
+                <h4 i18n="aria2_com_dir"></h4>
+                <div>
+                    <input name="dir" type="text">
+                </div>
+            </div>
+            <div class="item" i18n-tips="tips_task_proxy">
+                <h4 i18n="task_proxy"></h4>
+                <div class="flex">
+                    <input name="all-proxy" type="url">
+                    <button id="proxy" i18n-tips="tips_proxy_server">⚡️</button>
+                </div>
+            </div>
+        </div>
+        <script src="images.js"></script>
+    </body>
+</html>

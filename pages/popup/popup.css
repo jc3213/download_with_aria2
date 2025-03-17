@@ -1,0 +1,321 @@
+body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: auto auto 1fr;
+    gap: 3px;
+    margin: 8px auto;
+    width: 1280px;
+}
+
+body > ::before {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.active [data-fid="active"]::before,
+.waiting [data-fid="waiting"]::before,
+.paused [data-fid="paused"]::before,
+.complete [data-fid="complete"]::before,
+.removed [data-fid="removed"]::before,
+.error [data-fid="error"]::before {
+    visibility: hidden;
+}
+
+.active > #queue > #active,
+.waiting > #queue > #waiting,
+.paused > #queue > #paused,
+.complete > #queue > #complete,
+.removed > #queue > #removed,
+.error > #queue > #error {
+    display: none;
+}
+
+#menu,
+#filter {
+    border-style: solid;
+    border-width: 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px;
+}
+
+#menu > div,
+#filter > div {
+    flex: 1;
+    padding: 5px;
+}
+
+#menu {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+#menu > div::before {
+    display: inline-block;
+    margin: 0px 8px;
+    width: 40%;
+}
+
+#filter {
+    grid-area: 2 / 1 / 3 / 2;
+}
+
+#filter > :hover {
+    filter: contrast(80%);
+}
+
+#filter > :active {
+    filter: contrast(60%);
+}
+
+#filter > ::before {
+    content: "✔️";
+    margin-right: 5px;
+}
+
+#queue {
+    grid-area: 1 / 2 / 4 / 3;
+}
+
+#queue > :nth-child(n+4) input,
+#queue > :nth-child(n+4) select {
+    pointer-events: none;
+    filter: contrast(40%);
+}
+
+#queue > :nth-child(n+4) label,
+.session.http label {
+    pointer-events: none;
+}
+
+#queue > :nth-child(n+4) > * > :nth-last-child(-n+3) button,
+#queue > :nth-child(n+4) > :not(.http) .retry,
+#queue > :nth-child(-n+3) .retry,
+.session.http [data-p2p],
+.session.p2p [data-http] {
+    display: none;
+}
+
+#queue .meter {
+    background-color: #3C3C3C;
+}
+
+#queue .meter > .ratio,
+#queue .file > :checked + label {
+    background-color: #59A8FF;
+    color: #ffffff;
+}
+
+#queue > #active .name::before {
+    background-color: #59A8FF;
+}
+
+#queue > :nth-child(n+2):nth-child(-n+3) .name::before,
+#queue > #paused .meter > .ratio {
+    background-color: #E9C769;
+}
+
+#queue > #complete .name::before,
+#queue > #complete .meter > .ratio {
+    background-color: #2C7D2C;
+}
+
+#queue > :nth-child(n+5) .name::before,
+#queue > #error .meter > .ratio {
+    background-color: #D44B31;
+}
+
+#queue > :nth-child(-n+3) .meter:active,
+#queue > :nth-child(-n+3) .ratio:active,
+#queue .p2p .file > label:active,
+#queue .uri:active {
+    filter: contrast(60%);
+}
+
+#menu::before {
+    content: "__MSG_popup_menu__";
+}
+
+#filter::before {
+    content: "__MSG_popup_queue__";
+}
+
+[data-sid="download"]::before {
+    content: "__MSG_popup_download__";
+}
+
+[data-sid="upload"]::before {
+    content: "__MSG_popup_upload__";
+}
+
+[data-sid="active"]::before {
+    content: "__MSG_popup_active__";
+}
+
+[data-sid="waiting"]::before {
+    content: "__MSG_popup_waiting__";
+}
+
+[data-sid="stopped"]::before {
+    content: "__MSG_popup_stopped__";
+}
+
+.day:not(:empty)::after {
+    content: "__MSG_time_day__";
+}
+
+.hour:not(:empty)::after {
+    content: "__MSG_time_hour__";
+}
+
+.minute:not(:empty)::after {
+    content: "__MSG_time_minute__";
+}
+
+.second:not(:empty)::after {
+    content: "__MSG_time_second__";
+}
+
+.download::after,
+.upload::after {
+    content: "B/s";
+}
+
+.total::after,
+.completed::after,
+.size::after {
+    content: "B";
+}
+
+.ratio::after {
+    content: "%";
+}
+
+.infinite {
+    display: none;
+}
+
+.day::after,
+.hour::after,
+.minute::after,
+.second::after {
+    vertical-align: sub;
+}
+
+.day:empty + .hour:empty + .minute:empty + .second:empty + .infinite {
+    display: inline-block;
+}
+
+.session {
+    border-style: outset;
+    border-width: 1px;
+    display: grid;
+    padding: 3px;
+    margin-bottom: 5px;
+    gap: 3px;
+    grid-template-columns: repeat(3, 1fr) auto;
+}
+
+.session > .name {
+    grid-area: 1 / 1 / 1 / 4;
+}
+
+.session > .name::before {
+    border-radius: 50%;
+    content: "";
+    display: inline-block;
+    height: 16px;
+    margin: 0px 5px 3px 3px;
+    width: 16px;
+    vertical-align: middle;
+}
+
+.session > :not([class]) {
+    margin: 1px 0px;
+}
+
+.session > .manage {
+    grid-area: 1 / 4 / 4 / 5;
+}
+
+.session > .manage > button {
+    display: block;
+    padding: 1px;
+    width: 25px;
+}
+
+.session > .meter {
+    grid-area: 4 / 1 / 5 / 5;
+    text-align: center;
+}
+
+.session > .group {
+    grid-area: 5 / 1 / 6 / 5;
+}
+
+.session > .files {
+    grid-area: 6 / 1 / 7 / 5;
+}
+
+.session > .uris {
+    grid-area: 7 / 1 / 8 / 5;
+}
+
+.session:not(.extra) > :nth-last-child(-n+3),
+.session > .files > button {
+    display: none;
+}
+
+.session.extra .detail {
+    border-style: inset;
+}
+
+.session > :nth-last-child(-n+2) {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.session > :nth-last-child(-n+2) > button {
+    padding: 1px;
+    width: 27px;
+}
+
+.session > :nth-last-child(-n+2) > div:first-of-type {
+    margin-top: 1px;
+}
+
+.session > .files > button {
+    margin-left: 5px;
+}
+
+.session > .uris > input {
+    padding: 1px 5px;
+    margin-left: auto;
+    width: 50%;
+}
+
+.file > *,
+.uri {
+    border-style: solid;
+    border-width: 1px;
+    height: 21px;
+    overflow: hidden;
+    padding: 3px;
+    white-space: nowrap;
+}
+
+.file {
+    display: grid;
+    grid-template-columns: 0px 40px auto 80px 60px;
+    width: 100%;
+}
+
+.file > :not(:nth-child(3)) {
+    text-align: center;
+}
+
+.uri {
+    width: 100%;
+}

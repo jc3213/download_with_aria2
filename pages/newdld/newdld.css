@@ -1,0 +1,85 @@
+@media (prefers-color-scheme: light) {
+    label {
+        background-color: #F3F3F3;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    label {
+        background-color: #56585D;
+    }
+}
+
+textarea {
+    border-style: inset;
+    border-width: 1px;
+    overflow: hidden auto;
+    padding: 3px;
+    resize: none;
+    width: calc(100% - 8px);
+}
+
+label {
+    align-items: center;
+    border-style: solid;
+    border-width: 1px;
+    display: none;
+    height: 204px;
+    justify-content: center;
+    text-align: center;
+    white-space: pre-wrap;
+    width: 100%;
+}
+
+label:active {
+    filter: contrast(60%);
+}
+
+#entries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px 0px;
+}
+
+#entries > select {
+    margin: 0px auto 0px 5px;
+    padding: 1px 5px;
+}
+
+#entries > button {
+    padding: 1px 5px;
+}
+
+#referer {
+    border-style: solid;
+    border-width: 2px;
+    display: none;
+    left: 0px;
+    max-height: 155px;
+    overflow: hidden auto;
+    position: absolute;
+    top: 100%;
+    width: calc(100% - 4px);
+    z-index: 9;
+}
+
+#referer > * {
+    padding: 5px;
+    white-space: nowrap;
+}
+
+#referer > :hover {
+    filter: contrast(80%);
+}
+
+#referer > :active {
+    filter: contrast(60%);
+}
+
+.meta [data-exc="meta"] {
+    display: none;
+}
+
+.meta label {
+    display: flex;
+}

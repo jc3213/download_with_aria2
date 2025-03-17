@@ -1,0 +1,127 @@
+body {
+    margin: auto;
+    width: 680px;
+}
+
+body:not(.jsonrpc) [data-rel="jsonrpc"],
+body.jsonrpc [data-exc="jsonrpc"],
+body:not(.context_enabled) [data-rel="context_enabled"],
+body:not(.headers_override) [data-rel="headers_override"],
+body:not(.firefox) [data-app="firefox"],
+body:not(.folder_enabled) [data-rel="folder_enabled"],
+body:not(.capture_enabled) [data-rel="capture_enabled"],
+body.capture_webrequest [data-exc*="capture_webrequest"] {
+    display: none;
+}
+
+input[type="checkbox"] {
+    accent-color: #006cbe;
+    transform: scale(1.5);
+    width: auto;
+}
+
+input[type="checkbox"] + label {
+    padding: 3px 0px;
+    font-weight: bold;
+}
+
+#menu {
+    border-style: solid;
+    border-width: 0px 1px 1px;
+    padding: 8px;
+    position: fixed;
+    top: 0px;
+    width: 662px;
+    z-index: 999999;
+}
+
+#version {
+    margin-left: auto;
+    padding: 4px;
+}
+
+#version::before {
+    content: "v";
+}
+
+#aria2ua::before {
+    content: "aria2/";
+}
+
+.group {
+    margin: 28px 0px;
+}
+
+.hybrid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.hybrid > input {
+    margin-left: auto;
+    padding: 1px 5px;
+    width: 50%
+}
+
+.hybrid > button {
+    padding: 1px;
+    width: 27px;
+}
+
+.flat {
+    display: flex;
+    gap: 5px;
+}
+
+.flat > :last-child {
+    flex: 1;
+}
+
+.flat > :nth-child(2):not(:last-child) {
+    margin: 0px 20px 0px 50px;
+}
+
+.align {
+    margin: 28px 0px 8px;
+}
+
+.matches {
+    border-style: inset;
+    border-width: 1px;
+    padding: 8px;
+}
+
+.list {
+    border-style: outset;
+    border-width: 1px;
+    display: grid;
+    grid-auto-rows: 29px;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 3px;
+    max-height: 118px;
+    min-height: 59px;
+    overflow-y: scroll;
+    width: 100%;
+}
+
+.listx {
+    grid-template-columns: repeat(5, 1fr);
+    height: 59px;
+}
+
+.list > * {
+    border-style: outset;
+    border-width: 1px;
+    display: grid;
+    grid-template-columns: 1fr 27px;
+    white-space: nowrap;
+}
+
+.list > * > * {
+    overflow: hidden;
+    padding: 3px;
+}
+
+.list button {
+    font-size: 14px;
+}

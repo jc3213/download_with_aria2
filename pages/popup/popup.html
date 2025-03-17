@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title i18n="plugins_popup"></title>
+        <link rel="stylesheet" href="/pages/common.css">
+        <link rel="stylesheet" href="popup.css">
+    </head>
+    <body>
+        <div id="menu">
+            <button i18n="popup_newdld"></button>
+            <button i18n="popup_purge"></button>
+            <button i18n="popup_options"></button>
+            <div class="download" data-sid="download"></div>
+            <div class="upload" data-sid="upload"></div>
+            <div data-sid="active">0</div>
+            <div data-sid="waiting">0</div>
+            <div data-sid="stopped">0</div>
+        </div>
+        <div id="filter">
+            <div data-fid="active" i18n="popup_active_queue"></div>
+            <div data-fid="waiting" i18n="popup_waiting_queue"></div>
+            <div data-fid="paused" i18n="popup_paused_queue"></div>
+            <div data-fid="complete" i18n="popup_complete_queue"></div>
+            <div data-fid="removed" i18n="popup_removed_queue"></div>
+            <div data-fid="error" i18n="popup_error_queue"></div>
+        </div>
+        <div id="queue">
+            <div id="active" data-tid="active"></div>
+            <div id="waiting" data-tid="waiting"></div>
+            <div id="paused" data-tid="waiting"></div>
+            <div id="complete" data-tid="stopped"></div>
+            <div id="removed" data-tid="stopped"></div>
+            <div id="error" data-tid="stopped"></div>
+        </div>
+        <div class="template">
+            <div class="session">
+                <div class="name"></div>
+                <div>🖥️ <span class="completed"></span></div>
+                <div>⏲️ <span class="day"></span><span class="hour"></span><span class="minute"></span><span class="second"></span><span class="infinite">∞</span></div>
+                <div>📦 <span class="total"></span></div>
+                <div>📶️ <span class="connect"></span></div>
+                <div>⏬ <span class="download"></span></div>
+                <div data-p2p>⏫ <span class="upload"></span></div>
+                <div class="manage">
+                    <button class="purge" i18n-tips="tips_task_remove">❌</button>
+                    <button class="detail" i18n-tips="tips_task_detail">⚙️</button>
+                    <button class="retry" i18n-tips="tips_task_retry">♻️</button>
+                </div>
+                <div class="meter">
+                    <div class="ratio"></div>
+                </div>
+                <div class="group">
+                    <div class="item" i18n-tips="tips_task_download">
+                        <h4 i18n="task_download"></h4>
+                        <div>
+                            <input name="max-download-limit" type="text">
+                            <span>B/s</span>
+                        </div>
+                    </div>
+                    <div class="item" i18n-tips="tips_task_upload" data-p2p>
+                        <h4 i18n="task_upload"></h4>
+                        <div>
+                            <input name="max-upload-limit" type="text">
+                            <span>B/s</span>
+                        </div>
+                    </div>
+                    <div class="item" i18n-tips="tips_task_proxy">
+                        <h4 i18n="task_proxy"></h4>
+                        <div class="flex">
+                            <input name="all-proxy" type="url">
+                            <button class="proxybtn" i18n-tips="tips_proxy_server">⚡️</button>
+                        </div>
+                    </div>
+                    <div class="item" i18n-tips="tips_aria2_http_split" data-http>
+                        <h4 i18n="aria2_http_split"></h4>
+                        <div>
+                            <input name="split" type="number">
+                        </div>
+                    </div>
+                    <div class="item" i18n-tips="tips_aria2_http_size" data-http>
+                        <h4 i18n="aria2_http_size"></h4>
+                        <div>
+                            <input name="min-split-size" type="text">
+                            <span>B</span>
+                        </div>
+                    </div>
+                    <div class="item" i18n-tips="tips_aria2_bt_remove" data-p2p>
+                        <h4 i18n="aria2_bt_remove"></h4>
+                        <div>
+                            <select name="bt-remove-unselected-file">
+                                <option value="true" i18n="common_true"></option>
+                                <option value="false" i18n="common_false"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="item" i18n-tips="tips_aria2_bt_ratio" data-p2p>
+                        <h4 i18n="aria2_bt_ratio"></h4>
+                        <div>
+                            <input name="seed-ratio" type="number" min="0" step="0.1">
+                        </div>
+                    </div>
+                    <div class="item" i18n-tips="tips_aria2_bt_seed" data-p2p>
+                        <h4 i18n="aria2_bt_seed"></h4>
+                        <div>
+                            <input name="seed-time" type="number">
+                            <span i18n="time_minute_full"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="files" i18n-tips="tips_task_files">
+                    <h4 i18n="task_files"></h4>
+                    <button class="savebtn" i18n-tips="tips_select_file">💾</button>
+                </div>
+                <div class="uris" i18n-tips="tips_task_urls" data-http>
+                    <h4 i18n="task_urls"></h4>
+                    <input class="seturi" type="url">
+                    <button class="adduri">➕</button>
+                </div>
+            </div>
+            <div class="file">
+                <input type="checkbox">
+                <label></label>
+                <div></div>
+                <div></div>
+                <div class="ratio"></div>
+            </div>
+            <div class="uri"></div>
+        </div>
+        <script src="/libs/aria2.js"></script>
+        <script src="popup.js"></script>
+        <script src="popup_extend.js"></script>
+    </body>
+</html>
