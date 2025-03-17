@@ -39,7 +39,7 @@ select {
 }
 
 #entries > button {
-    width: 80px;
+    padding: 1px 5px;
 }
 
 #referer {
