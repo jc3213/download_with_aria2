@@ -134,8 +134,10 @@ function taskElementSync({gid, status, files, bittorrent, completedLength, total
     task.upload.textContent = getFileSize(uploadSpeed);
     task.ratio.textContent = percent;
     task.ratio.style.width = percent + '%';
-    files.forEach(({index, length, completedLength}) => {
-        task[index].textContent = (completedLength / length * 10000 | 0) / 100;
+    files.forEach(({index, length, path, completedLength}) => {
+        let {name, ratio} = task[index];
+        name.textContent ||= path?.slice(path.lastIndexOf('/') + 1);
+        ratio.textContent = (completedLength / length * 10000 | 0) / 100;
     });
     return task;
 }
@@ -275,7 +277,7 @@ function taskFileElement(task, gid, chosen, checks, index, selected, path, lengt
     task.files.appendChild(file);
     chosen[index] = check.checked;
     checks.push(check);
-    return ratio;
+    return {name, ratio};
 }
 
 function taskUriElement(task, uri) {
