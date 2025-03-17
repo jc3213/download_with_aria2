@@ -134,10 +134,6 @@ h4 {
     grid-column: span 2;
 }
 
-.item {
-    margin: 1px 0px;
-}
-
 .flex {
     display: flex;
     gap: 3px;
