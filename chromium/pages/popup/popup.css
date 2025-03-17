@@ -266,17 +266,10 @@ body > ::before {
     border-style: inset;
 }
 
-.session > :nth-last-child(-n+2) button,
-.session > .manage > button {
+.session button {
     display: block;
     padding: 1px;
-    width: 27px;
-}
-
-.session > .uris input {
-    padding: 1px 5px;
-    margin-left: auto;
-    width: 50%;
+    width: 25px;
 }
 
 .file > *,

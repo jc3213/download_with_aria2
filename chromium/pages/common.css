@@ -50,13 +50,13 @@ span, label {
 }
 
 select {
-    padding: 2px 5px;
+    padding: 1px 5px;
 }
 
 input {
     border-style: inset;
     border-width: 1px;
-    padding: 3px 5px;
+    padding: 1px 5px;
     resize: none;
     width: calc(100% - 12px);
 }
@@ -65,12 +65,12 @@ input + span {
     display: none;
     position: absolute;
     right: 8px;
-    top: 3px;
+    top: 2px;
 }
 
 input:focus + span {
     display: block;
-    font-size: 17px;
+    font-size: 16px;
 }
 
 input[type="file"], a {
@@ -79,10 +79,6 @@ input[type="file"], a {
 
 input[type="number"] + span {
     right: 24px;
-}
-
-select:only-child {
-    width: 100%;
 }
 
 option:checked {
@@ -138,17 +134,18 @@ h4 {
     width: 100%;
 }
 
-.flex {
+.flex, .menu {
     display: flex;
     gap: 3px;
     margin-bottom: 1px;
 }
 
-.flat {
-    display: flex;
-    gap: 5px;
+.menu > input:not(:first-child) {
+    margin-left: auto;
+    width: 50%;
 }
 
-.flat > :last-child {
-    flex: 1;
+.menu > button {
+    padding: 1px;
+    width: 25px;
 }

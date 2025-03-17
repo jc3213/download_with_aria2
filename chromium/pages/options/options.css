@@ -35,6 +35,10 @@ input[type="checkbox"] + label {
     z-index: 999999;
 }
 
+#jsonrpc select {
+    width: 100%;
+}
+
 #version {
     margin-left: auto;
     padding: 4px;
@@ -54,12 +58,6 @@ input[type="checkbox"] + label {
 
 .group {
     margin: 28px 0px;
-}
-
-.flex > input {
-    margin-left: auto;
-    padding: 1px 5px;
-    width: 50%;
 }
 
 .flat {
