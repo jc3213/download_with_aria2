@@ -34,12 +34,10 @@ label:active {
     filter: contrast(60%);
 }
 
-select {
-    margin: 0px auto 0px 5px;
-}
-
 #entries > button {
+    margin-left: auto;
     padding: 1px 5px;
+    width: auto;
 }
 
 #referer {
