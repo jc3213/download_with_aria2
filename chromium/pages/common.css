@@ -140,10 +140,6 @@ h4 {
     margin-bottom: 1px;
 }
 
-.flexmenu > h4 {
-    margin: 0px;
-}
-
 .flexmenu > input:not(:first-child) {
     margin-left: auto;
     width: 50%;
@@ -152,5 +148,4 @@ h4 {
 .flexmenu > button {
     padding: 1px;
     width: 25px;
-    height: 25px;
 }
