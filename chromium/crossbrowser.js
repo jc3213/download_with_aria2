@@ -313,8 +313,8 @@ function aria2WhenStart(message) {
 async function aria2WhenComplete(gid) {
     if (aria2Storage['notify_complete']) {
         let response = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-        let {bittorrent, files: [{path, uris}]} = response[0].result;
-        let name = bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
+        let {bittorrent, files: [{path}]} = response[0].result;
+        let name = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1);
         let title = chrome.i18n.getMessage('download_complete');
         return getNotification(title, name);
     }
