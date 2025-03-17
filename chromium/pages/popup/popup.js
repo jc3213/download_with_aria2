@@ -121,7 +121,8 @@ function taskElementSync({gid, status, files, bittorrent, completedLength, total
     let minutes = time / 60 - days * 1440 - hours * 60 | 0;
     let seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
     let percent = (completedLength / totalLength * 10000 | 0) / 100;
-    task.name.textContent = getSessionName(gid, bittorrent, files);
+    let {path} = files[0];
+    task.name.textContent ||= bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1);
     task.completed.textContent = getFileSize(completedLength);
     task.total.textContent = getFileSize(totalLength);
     task.day.textContent = days || '';
@@ -249,30 +250,32 @@ function taskElementCreate(gid, status, bittorrent, files) {
         aria2RPC.call({ method: 'aria2.changeOption', params: [gid, config] });
     });
     files.forEach(({index, length, path, selected, uris}) => {
-        if (!task[index]) {
-            let file = fileLET.cloneNode(true);
-            let [check, label, name, size, ratio] = file.children;
-            check.id = gid + '_' + index;
-            check.checked = selected === 'true';
-            label.textContent = index;
-            label.setAttribute('for', check.id);
-            label.addEventListener('click', (event) => {
-                task.savebtn.style.display = 'block';
-            });
-            name.textContent = path.slice(path.lastIndexOf('/') + 1);
-            name.title = path;
-            size.textContent = getFileSize(length);
-            task.files.appendChild(file);
-            task[index] = ratio;
-            chosen[index] = check.checked;
-            checks.push(check);
-        }
+        task[index] ??= taskFileElement(task, gid, chosen, checks, index, selected, path, length);
         uris.forEach(({uri, status}) => {
             task[uri] ??= taskUriElement(task, uri);
         });
     });
     taskStatusChange(task, gid, status);
     return task;
+}
+
+function taskFileElement(task, gid, chosen, checks, index, selected, path, length) {
+    let file = fileLET.cloneNode(true);
+    let [check, label, name, size, ratio] = file.children;
+    check.id = gid + '_' + index;
+    check.checked = selected === 'true';
+    label.textContent = index;
+    label.setAttribute('for', check.id);
+    label.addEventListener('click', (event) => {
+        task.savebtn.style.display = 'block';
+    });
+    name.textContent = path.slice(path.lastIndexOf('/') + 1);
+    name.title = path;
+    size.textContent = getFileSize(length);
+    task.files.appendChild(file);
+    chosen[index] = check.checked;
+    checks.push(check);
+    return ratio;
 }
 
 function taskUriElement(task, uri) {
@@ -302,8 +305,4 @@ function getFileSize(bytes) {
         return (bytes / 10737418.24 | 0) / 100 + 'G';
     }
     return (bytes / 10995116277.76 | 0) / 100 + 'T';
-}
-
-function getSessionName(gid, bittorrent, [{path, uris}]) {
-    return bittorrent?.info?.name || path?.slice(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
 }
