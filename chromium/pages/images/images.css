@@ -30,16 +30,16 @@ body:not(.extra) #jsonrpc {
 }
 
 #gallery {
-    display: grid;
-    gap: 5px;
-    grid-template-columns: repeat(auto-fill, 88px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
     height: 155px;
     overflow: auto;
 }
 
 #gallery > img {
-    height: 86px;
-    width: 86px;
+    height: 88px;
+    width: 88px;
 }
 
 #menu > :nth-child(4) {
