@@ -75,16 +75,11 @@ input[type="checkbox"] + label {
     padding: 8px;
 }
 
-.matches button {
-    padding: 1px;
-    width: 27px;
-}
-
 .list {
     border-style: outset;
     border-width: 1px;
     display: grid;
-    grid-auto-rows: 29px;
+    grid-auto-rows: 27px;
     grid-template-columns: repeat(3, 1fr);
     max-height: 118px;
     min-height: 59px;
@@ -99,14 +94,18 @@ input[type="checkbox"] + label {
 .list > * {
     border-style: outset;
     border-width: 1px;
-    display: grid;
-    grid-template-columns: 1fr 27px;
+    display: flex;
     white-space: nowrap;
 }
 
-.list > * > * {
+.list > * > div {
+    flex: 1;
     overflow: hidden;
     padding: 3px;
+}
+
+.list button {
+    padding: 0px;
 }
 
 .sample::before {
