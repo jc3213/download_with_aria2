@@ -144,8 +144,8 @@ function taskElementCreate(gid, status, bittorrent, files) {
     let chosen = {};
     let config = {};
     let checks = [];
+    let entries = task.querySelectorAll('[name]');
     task.querySelectorAll('[class]').forEach((item) => task[item.className] = item);
-    task.entries = task.querySelectorAll('[name]');
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.purge.addEventListener('click', async (event) => {
@@ -181,7 +181,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
                 config['max-upload-limit'] = getFileSize(config['max-upload-limit']);
                 task.once = true;
             }
-            task.entries.forEach((entry) => {
+            entries.forEach((entry) => {
                 entry.value = config[entry.name] ?? '';
             });
             checks.forEach((check, index) => {
@@ -244,7 +244,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
         task[uri] ??= taskUriElement(task, uri.value);
         uri.value = '';
     });
-    task.options.addEventListener('change', (event) => {
+    task.group.addEventListener('change', (event) => {
         config[event.target.name] = event.target.value;
         aria2RPC.call({ method: 'aria2.changeOption', params: [gid, config] });
     });

@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="newdld.css">
     </head>
     <body>
-        <div id="entries">
+        <div id="entries" class="hybrid">
             <h4 i18n="task_add_mode"></h4>
             <select>
                 <option value="link" i18n="task_add_urls"></option>
@@ -18,7 +18,7 @@
             <label for="uploader" i18n="task_tips_files"></label>
             <input id="uploader" type="file" accept=".torrent,.meta4,.metalink">
         </div>
-        <div id="jsonrpc" class="options">
+        <div id="jsonrpc" class="group">
             <div i18n-tips="tips_task_referer" data-exc="meta">
                 <h4 i18n="task_referer"></h4>
                 <div>
@@ -26,51 +26,51 @@
                 </div>
                 <div id="referer"></div>
             </div>
-            <div class="menu" i18n-tips="tips_task_name" data-exc="meta">
+            <div class="item" i18n-tips="tips_task_name" data-exc="meta">
                 <h4 i18n="task_name"></h4>
                 <div>
                     <input name="out" type="text">
                 </div>
             </div>
-            <div class="menu" i18n-tips="tips_aria2_com_dir">
+            <div class="item" i18n-tips="tips_aria2_com_dir">
                 <h4 i18n="aria2_com_dir"></h4>
                 <div>
                     <input name="dir" type="text">
                 </div>
             </div>
-            <div class="menu" i18n-tips="tips_aria2_http_ua" data-exc="meta">
+            <div class="item" i18n-tips="tips_aria2_http_ua" data-exc="meta">
                 <h4 i18n="aria2_http_ua"></h4>
                 <div>
                     <input name="user-agent" type="text">
                 </div>
             </div>
-            <div class="menu" i18n-tips="tips_task_proxy">
+            <div class="item" i18n-tips="tips_task_proxy">
                 <h4 i18n="task_proxy"></h4>
                 <div class="flex">
                     <input name="all-proxy" type="url">
                     <button id="proxy" i18n-tips="tips_proxy_server">⚡️</button>
                 </div>
             </div>
-            <div class="menu" i18n-tips="tips_aria2_http_split">
+            <div class="item" i18n-tips="tips_aria2_http_split">
                 <h4 i18n="aria2_http_split"></h4>
                 <div>
                     <input name="split" type="number">
                 </div>
             </div>
-            <div class="menu" i18n-tips="tips_aria2_http_size">
+            <div class="item" i18n-tips="tips_aria2_http_size">
                 <h4 i18n="aria2_http_size"></h4>
                 <div>
                     <input name="min-split-size" type="text">
                     <span>B</span>
                 </div>
             </div>
-            <div class="menu" i18n-tips="tips_aria2_max_connection">
+            <div class="item" i18n-tips="tips_aria2_max_connection">
                 <h4 i18n="aria2_max_connection"></h4>
                 <div>
                     <input name="max-connection-per-server" type="number">
                 </div>
             </div>
-            <div class="menu" i18n-tips="tips_task_download">
+            <div class="item" i18n-tips="tips_task_download">
                 <h4 i18n="task_download"></h4>
                 <div>
                     <input name="max-download-limit" type="text">

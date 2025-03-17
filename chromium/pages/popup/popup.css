@@ -218,12 +218,6 @@ body > ::before {
     grid-template-columns: repeat(3, 1fr) auto;
 }
 
-.session > .manage > button {
-    display: block;
-    padding: 1px;
-    width: 25px;
-}
-
 .session > .name {
     grid-area: 1 / 1 / 1 / 4;
 }
@@ -246,8 +240,10 @@ body > ::before {
     grid-area: 1 / 4 / 4 / 5;
 }
 
-.session > .manage > :nth-child(n+2) {
-    margin-top: 1px;
+.session > .manage > button {
+    display: block;
+    padding: 1px;
+    width: 25px;
 }
 
 .session > .meter {
@@ -255,33 +251,49 @@ body > ::before {
     text-align: center;
 }
 
-.session > .options {
+.session > .group {
     grid-area: 5 / 1 / 6 / 5;
 }
 
 .session > .files {
-    display: grid;
     grid-area: 6 / 1 / 7 / 5;
-    grid-template-columns: auto auto 1fr;
-}
-
-.session > .files > button {
-    display: none;
-    margin-left: 5px;
 }
 
 .session > .uris {
-    display: grid;
     grid-area: 7 / 1 / 8 / 5;
-    grid-template-columns: 1fr 1fr auto;
 }
 
-.session > .uris > div:first-of-type {
+.session:not(.extra) > :nth-last-child(-n+3),
+.session > .files > button {
+    display: none;
+}
+
+.session.extra .detail {
+    border-style: inset;
+}
+
+.session > :nth-last-child(-n+2) {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.session > :nth-last-child(-n+2) > button {
+    padding: 1px;
+    width: 27px;
+}
+
+.session > :nth-last-child(-n+2) > div:first-of-type {
     margin-top: 1px;
 }
 
-.session > :nth-last-child(-n+2) > div {
-    grid-column: span 3;
+.session > .files > button {
+    margin-left: 5px;
+}
+
+.session > .uris > input {
+    padding: 1px 5px;
+    margin-left: auto;
+    width: 50%;
 }
 
 .file > *,
@@ -297,16 +309,13 @@ body > ::before {
 .file {
     display: grid;
     grid-template-columns: 0px 40px auto 80px 60px;
+    width: 100%;
 }
 
 .file > :not(:nth-child(3)) {
     text-align: center;
 }
 
-.session:not(.extra) > :nth-last-child(-n+3) {
-    display: none;
-}
-
-.session.extra .detail {
-    border-style: inset;
+.uri {
+    width: 100%;
 }

@@ -2,7 +2,7 @@ let aria2Storage = {};
 let aria2Config = {};
 let aria2Referer = [];
 
-let [entryPane, jsonrpcPane, refererPane, proxyBtn] = document.querySelectorAll('#entries, #jsonrpc, #referer, #proxy');
+let [entryPane, jsonrpcPane, refererPane, proxyBtn] = document.querySelectorAll('body > *, #referer, #proxy');
 let [, downMode, submitBtn, downEntry, metaPane, metaImport] = entryPane.children;
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let refererEntry = jsonrpcEntries[0];

@@ -48,27 +48,47 @@ input[type="checkbox"] + label {
     content: "aria2/";
 }
 
-.options {
+.group {
     margin: 28px 0px;
+}
+
+.hybrid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.hybrid > input {
+    margin-left: auto;
+    padding: 1px 5px;
+    width: 50%
+}
+
+.hybrid > button {
+    padding: 1px;
+    width: 27px;
+}
+
+.flat {
+    display: flex;
+    gap: 5px;
+}
+
+.flat > :last-child {
+    flex: 1;
 }
 
 .flat > :nth-child(2):not(:last-child) {
     margin: 0px 20px 0px 50px;
 }
 
-.cush, .matches, .matches.options > :nth-child(2n + 3) {
+.align {
     margin: 28px 0px 8px;
 }
 
 .matches {
     border-style: inset;
     border-width: 1px;
-    padding: 10px;
-}
-
-.matches > [id] {
-    display: grid;
-    grid-template-columns: 1fr 55% auto auto;
+    padding: 8px;
 }
 
 .list {
@@ -76,12 +96,12 @@ input[type="checkbox"] + label {
     border-width: 1px;
     display: grid;
     grid-auto-rows: 29px;
-    grid-column: span 4;
     grid-template-columns: repeat(3, 1fr);
     margin-top: 3px;
     max-height: 118px;
     min-height: 59px;
     overflow-y: scroll;
+    width: 100%;
 }
 
 .listx {
