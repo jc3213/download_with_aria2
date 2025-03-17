@@ -95,6 +95,10 @@ body {
     width: auto;
 }
 
+#menu > div {
+    padding: 3px 5px 0px 0px;
+}
+
 #menu > div:nth-child(n+6) {
     display: none;
 }
