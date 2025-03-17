@@ -24,21 +24,14 @@ label {
     border-style: solid;
     border-width: 1px;
     display: none;
-    height: 202px;
+    height: 206px;
     justify-content: center;
     text-align: center;
     white-space: pre-wrap;
-    width: 100%;
 }
 
 label:active {
     filter: contrast(60%);
-}
-
-#entries {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1px 0px;
 }
 
 #entries > select {

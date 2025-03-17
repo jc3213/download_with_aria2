@@ -134,9 +134,14 @@ h4 {
     grid-column: span 2;
 }
 
+.item > select {
+    width: 100%;
+}
+
 .flex {
     display: flex;
     gap: 3px;
+    margin-bottom: 1px;
 }
 
 .flat {

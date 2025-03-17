@@ -74,9 +74,7 @@
                     </div>
                     <div class="item" i18n-tips="tips_aria2_http_split" data-http>
                         <h4 i18n="aria2_http_split"></h4>
-                        <div>
-                            <input name="split" type="number">
-                        </div>
+                        <input name="split" type="number">
                     </div>
                     <div class="item" i18n-tips="tips_aria2_http_size" data-http>
                         <h4 i18n="aria2_http_size"></h4>
@@ -87,18 +85,14 @@
                     </div>
                     <div class="item" i18n-tips="tips_aria2_bt_remove" data-p2p>
                         <h4 i18n="aria2_bt_remove"></h4>
-                        <div>
-                            <select name="bt-remove-unselected-file">
-                                <option value="true" i18n="common_true"></option>
-                                <option value="false" i18n="common_false"></option>
-                            </select>
-                        </div>
+                        <select name="bt-remove-unselected-file">
+                            <option value="true" i18n="common_true"></option>
+                            <option value="false" i18n="common_false"></option>
+                        </select>
                     </div>
                     <div class="item" i18n-tips="tips_aria2_bt_ratio" data-p2p>
                         <h4 i18n="aria2_bt_ratio"></h4>
-                        <div>
-                            <input name="seed-ratio" type="number" min="0" step="0.1">
-                        </div>
+                        <input name="seed-ratio" type="number" min="0" step="0.1">
                     </div>
                     <div class="item" i18n-tips="tips_aria2_bt_seed" data-p2p>
                         <h4 i18n="aria2_bt_seed"></h4>
@@ -109,13 +103,17 @@
                     </div>
                 </div>
                 <div class="files" i18n-tips="tips_task_files">
-                    <h4 i18n="task_files"></h4>
-                    <button class="savebtn" i18n-tips="tips_select_file">💾</button>
+                    <div class="flex">
+                        <h4 i18n="task_files"></h4>
+                        <button class="savebtn" i18n-tips="tips_select_file">💾</button>
+                    </div>
                 </div>
                 <div class="uris" i18n-tips="tips_task_urls" data-http>
-                    <h4 i18n="task_urls"></h4>
-                    <input class="seturi" type="url">
-                    <button class="adduri">➕</button>
+                    <div class="flex">
+                        <h4 i18n="task_urls"></h4>
+                        <input class="seturi" type="url">
+                        <button class="adduri">➕</button>
+                    </div>
                 </div>
             </div>
             <div class="file">

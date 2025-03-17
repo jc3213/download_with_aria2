@@ -240,12 +240,6 @@ body > ::before {
     grid-area: 1 / 4 / 4 / 5;
 }
 
-.session > .manage > button {
-    display: block;
-    padding: 1px;
-    width: 25px;
-}
-
 .session > .meter {
     grid-area: 4 / 1 / 5 / 5;
     text-align: center;
@@ -264,7 +258,7 @@ body > ::before {
 }
 
 .session:not(.extra) > :nth-last-child(-n+3),
-.session > .files > button {
+.session > .files button {
     display: none;
 }
 
@@ -272,25 +266,14 @@ body > ::before {
     border-style: inset;
 }
 
-.session > :nth-last-child(-n+2) {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.session > :nth-last-child(-n+2) > button {
+.session > :nth-last-child(-n+2) button,
+.session > .manage > button {
+    display: block;
     padding: 1px;
     width: 27px;
 }
 
-.session > :nth-last-child(-n+2) > div:first-of-type {
-    margin-top: 1px;
-}
-
-.session > .files > button {
-    margin-left: 5px;
-}
-
-.session > .uris > input {
+.session > .uris input {
     padding: 1px 5px;
     margin-left: auto;
     width: 50%;
@@ -309,13 +292,8 @@ body > ::before {
 .file {
     display: grid;
     grid-template-columns: 0px 40px auto 80px 60px;
-    width: 100%;
 }
 
 .file > :not(:nth-child(3)) {
     text-align: center;
-}
-
-.uri {
-    width: 100%;
 }

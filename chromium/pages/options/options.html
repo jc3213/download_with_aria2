@@ -104,11 +104,13 @@
                 <input name="headers_useragent" type="text">
             </div>
             <div class="matches align">
-                <div id="headers_exclude" class="hybrid" i18n-tips="tips_headers_exclude">
-                    <h4 i18n="option_match_exclude"></h4>
-                    <input type="text">
-                    <button i18n-tips="tips_add_match">➕</button>
-                    <button i18n-tips="tips_resort_match">🧲</button>
+                <div id="headers_exclude" i18n-tips="tips_headers_exclude">
+                    <div class="flex">
+                        <h4 i18n="option_match_exclude"></h4>
+                        <input type="text">
+                        <button i18n-tips="tips_add_match">➕</button>
+                        <button i18n-tips="tips_resort_match">🧲</button>
+                    </div>
                     <div class="list"></div>
                 </div>
             </div>
@@ -129,11 +131,13 @@
                 <input name="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
             </div>
             <div class="matches align">
-                <div id="proxy_include" class="hybrid" i18n-tips="tips_proxy_include">
-                    <h4 i18n="option_match_include"></h4>
-                    <input type="text">
-                    <button i18n-tips="tips_add_match">➕</button>
-                    <button i18n-tips="tips_resort_match">🧲</button>
+                <div id="proxy_include" i18n-tips="tips_proxy_include">
+                    <div class="flex">
+                        <h4 i18n="option_match_include"></h4>
+                        <input type="text">
+                        <button i18n-tips="tips_add_match">➕</button>
+                        <button i18n-tips="tips_resort_match">🧲</button>
+                    </div>
                     <div class="list"></div>
                 </div>
             </div>
@@ -153,9 +157,7 @@
                         <input name="capture_size_include" type="number" min="0">
                         <span>MB</span>
                     </div>
-                    <div>
-                        <span i18n="common_disabled"></span>: <i>0</i>
-                    </div>
+                    <i class="disabled">0</i>
                 </div>
                 <div class="item" i18n-tips="tips_capture_size_exclude">
                     <h4 i18n="option_capture_size_exclude"></h4>
@@ -163,44 +165,44 @@
                         <input name="capture_size_exclude" type="number" min="0">
                         <span>MB</span>
                     </div>
-                    <div>
-                        <span i18n="common_disabled"></span>: <i>0</i>
+                    <i class="disabled">0</i>
+                </div>
+                <div id="capture_include" class="align" i18n-tips="tips_capture_include">
+                    <div class="flex">
+                        <h4 i18n="option_match_include"></h4>
+                        <input type="text">
+                        <button i18n-tips="tips_add_match">➕</button>
+                        <button i18n-tips="tips_resort_match">🧲</button>
                     </div>
-                </div>
-                <div id="capture_include" class="hybrid align" i18n-tips="tips_capture_include">
-                    <h4 i18n="option_match_include"></h4>
-                    <input type="text">
-                    <button i18n-tips="tips_add_match">➕</button>
-                    <button i18n-tips="tips_resort_match">🧲</button>
                     <div class="list"></div>
                 </div>
-                <div id="capture_exclude" class="hybrid" i18n-tips="tips_capture_exclude">
-                    <h4 i18n="option_match_exclude"></h4>
-                    <input type="text">
-                    <button i18n-tips="tips_add_match">➕</button>
-                    <button i18n-tips="tips_resort_match">🧲</button>
+                <div id="capture_exclude" i18n-tips="tips_capture_exclude">
+                    <div class="flex">
+                        <h4 i18n="option_match_exclude"></h4>
+                        <input type="text">
+                        <button i18n-tips="tips_add_match">➕</button>
+                        <button i18n-tips="tips_resort_match">🧲</button>
+                    </div>
                     <div class="list"></div>
                 </div>
-                <div id="capture_type_include" class="hybrid align" i18n-tips="tips_capture_type_include">
-                    <h4 i18n="option_capture_type_include"></h4>
-                    <input type="text">
-                    <button i18n-tips="tips_add_match">➕</button>
-                    <button i18n-tips="tips_resort_match">🧲</button>
+                <div id="capture_type_include" class="align" i18n-tips="tips_capture_type_include">
+                    <div class="flex">
+                        <h4 i18n="option_capture_type_include"></h4>
+                        <input type="text">
+                        <button i18n-tips="tips_add_match">➕</button>
+                        <button i18n-tips="tips_resort_match">🧲</button>
+                    </div>
                     <div class="list listx"></div>
                 </div>
-                <div id="capture_type_exclude" class="hybrid" i18n-tips="tips_capture_type_exclude">
-                    <h4 i18n="option_capture_type_exclude"></h4>
-                    <input type="text">
-                    <button i18n-tips="tips_add_match">➕</button>
-                    <button i18n-tips="tips_resort_match">🧲</button>
+                <div id="capture_type_exclude" i18n-tips="tips_capture_type_exclude">
+                    <div class="flex">
+                        <h4 i18n="option_capture_type_exclude"></h4>
+                        <input type="text">
+                        <button i18n-tips="tips_add_match">➕</button>
+                        <button i18n-tips="tips_resort_match">🧲</button>
+                    </div>
                     <div class="list listx"></div>
                 </div>
-            </div>
-        </div>
-        <div class="template">
-            <div>
-                <div></div>
-                <button i18n-tips="tips_remove_match">❌</button>
             </div>
         </div>
         <div id="jsonrpc" class="group" data-rel="jsonrpc">
@@ -210,12 +212,8 @@
             </div>
             <div class="item" i18n-tips="tips_aria2_com_dir">
                 <h4 i18n="aria2_com_dir"></h4>
-                <div>
-                    <input name="dir" type="text">
-                </div>
-                <div title="Windows: &quot;C:\Aria2\Download&quot;&#10;&#10;Linux: &quot;home/aria2/download&quot;">
-                    <u i18n="option_sample"></u>
-                </div>
+                <input name="dir" type="text">
+                <i class="sample" title="Windows: &quot;C:\Aria2\Download&quot;&#10;&#10;Linux: &quot;home/aria2/download&quot;"></i>
             </div>
             <div class="item" i18n-tips="tips_aria2_com_cache">
                 <h4 i18n="aria2_com_cache"></h4>
@@ -223,18 +221,12 @@
                     <input name="disk-cache" type="text">
                     <span>B</span>
                 </div>
-                <div>
-                    <span i18n="common_default"></span>: <i>16M</i>
-                </div>
+                <i class="default">16M</i>
             </div>
             <div class="item" i18n-tips="tips_aria2_max_concurrent">
                 <h4 i18n="aria2_max_concurrent"></h4>
-                <div>
-                    <input name="max-concurrent-downloads" type="number">
-                </div>
-                <div>
-                    <span i18n="common_default"></span>: <i>5</i>
-                </div>
+                <input name="max-concurrent-downloads" type="number">
+                <i class="default">5</i>
             </div>
             <div class="item" i18n-tips="tips_aria2_max_download">
                 <h4 i18n="aria2_max_download"></h4>
@@ -242,9 +234,7 @@
                     <input name="max-overall-download-limit" type="text">
                     <span>B/s</span>
                 </div>
-                <div>
-                    <span i18n="common_disabled"></span>: <i>0</i>
-                </div>
+                <i class="disabled">0</i>
             </div>
             <div class="item" i18n-tips="tips_aria2_max_upload">
                 <h4 i18n="aria2_max_upload"></h4>
@@ -252,19 +242,13 @@
                     <input name="max-overall-upload-limit" type="text">
                     <span>B/s</span>
                 </div>
-                <div>
-                    <span i18n="common_disabled"></span>: <i>0</i>
-                </div>
+                <i class="disabled">0</i>
             </div>
             <h1>HTTP/FTP</h1>
             <div class="item" i18n-tips="tips_aria2_http_retry">
                 <h4 i18n="aria2_http_retry"></h4>
-                <div>
-                    <input name="max-tries" type="number">
-                </div>
-                <div>
-                    <span i18n="common_default"></span>: <i>5</i>
-                </div>
+                <input name="max-tries" type="number">
+                <i class="default">5</i>
             </div>
             <div class="item" i18n-tips="tips_aria2_http_wait">
                 <h4 i18n="aria2_http_wait"></h4>
@@ -272,18 +256,12 @@
                     <input name="retry-wait" type="number">
                     <span i18n="time_second_full"></span>
                 </div>
-                <div>
-                    <span i18n="common_default"></span>: <i>0</i>
-                </div>
+                <i class="default">0</i>
             </div>
             <div class="item" i18n-tips="tips_aria2_http_split">
                 <h4 i18n="aria2_http_split"></h4>
-                <div>
-                    <input name="split" type="number">
-                </div>
-                <div>
-                    <span i18n="common_default"></span>: <i>5</i>
-                </div>
+                <input name="split" type="number">
+                <i class="default">5</i>
             </div>
             <div class="item" i18n-tips="tips_aria2_http_size">
                 <h4 i18n="aria2_http_size"></h4>
@@ -291,89 +269,61 @@
                     <input name="min-split-size" type="text">
                     <span>B</span>
                 </div>
-                <div>
-                    <span i18n="common_default"></span>: <i>20M</i>
-                </div>
+                <i class="default">20M</i>
             </div>
             <div class="item" i18n-tips="tips_aria2_max_connection">
                 <h4 i18n="aria2_max_connection"></h4>
-                <div>
-                    <input name="max-connection-per-server" type="number">
-                </div>
-                <div>
-                    <span i18n="common_default"></span>: <i>1</i>
-                </div>
+                <input name="max-connection-per-server" type="number">
+                <i class="default">1</i>
             </div>
             <div class="item" i18n-tips="tips_aria2_http_ua">
                 <h4 i18n="aria2_http_ua"></h4>
-                <div>
-                    <input name="user-agent" type="text">
-                </div>
-                <div>
-                    <span i18n="common_default"></span>: <i id="useragent"></i>
-                </div>
+                <input name="user-agent" type="text">
+                <i id="useragent" class="default"></i>
             </div>
             <h1>BitTorrent</h1>
             <div class="item" i18n-tips="tips_aria2_bt_port">
                 <h4 i18n="aria2_bt_port"></h4>
-                <div>
-                    <input name="listen-port" type="text">
-                </div>
-                <div>
-                    <span i18n="common_default"></span>: <i>6881-6999</i>
-                </div>
+                <input name="listen-port" type="text">
+                <i class="default">6881-6999</i>
             </div>
             <div class="item" i18n-tips="tips_aria2_bt_peers">
                 <h4 i18n="aria2_bt_peers"></h4>
-                <div>
-                    <input name="bt-max-peers" type="number">
-                </div>
-                <div>
-                    <span i18n="common_default"></span>: <i>55</i>
-                </div>
+                <input name="bt-max-peers" type="number">
+                <i class="default">55</i>
             </div>
             <div class="item" i18n-tips="tips_aria2_bt_follow">
                 <h4 i18n="aria2_bt_follow"></h4>
-                <div>
-                    <select name="follow-torrent">
-                        <option value="true" i18n="common_true"></option>
-                        <option value="false" i18n="common_false"></option>
-                    </select>
-                </div>
-                <div>
-                    <span i18n="common_default"></span>: <i i18n="common_true"></i>
-                </div>
+                <select name="follow-torrent">
+                    <option value="true" i18n="common_true"></option>
+                    <option value="false" i18n="common_false"></option>
+                </select>
+                <i class="default" i18n="common_true"></i>
             </div>
             <div class="item" i18n-tips="tips_aria2_bt_remove">
                 <h4 i18n="aria2_bt_remove"></h4>
-                <div>
-                    <select name="bt-remove-unselected-file">
-                        <option value="true" i18n="common_true"></option>
-                        <option value="false" i18n="common_false"></option>
-                    </select>
-                </div>
-                <div>
-                    <span i18n="common_default"></span>: <i i18n="common_false"></i>
-                </div>
+                <select name="bt-remove-unselected-file">
+                    <option value="true" i18n="common_true"></option>
+                    <option value="false" i18n="common_false"></option>
+                </select>
+                <i class="default" i18n="common_false"></i>
             </div>
             <div class="item" i18n-tips="tips_aria2_bt_ratio">
                 <h4 i18n="aria2_bt_ratio"></h4>
-                <div>
-                    <input name="seed-ratio" type="number" min="0" step="0.1">
-                </div>
-                <div>
-                    <span i18n="common_default"></span>: <i>1.0</i>
-                </div>
+                <input name="seed-ratio" type="number" min="0" step="0.1">
+                <i class="default">1.0</i>
             </div>
             <div class="item" i18n-tips="tips_aria2_bt_seed">
                 <h4 i18n="aria2_bt_seed"></h4>
-                <div>
-                    <input name="seed-time" type="number">
-                    <span i18n="time_minute_full"></span>
-                </div>
-                <div>
-                    <span i18n="common_default"></span>: <i>30</i>
-                </div>
+                <input name="seed-time" type="number">
+                <span i18n="time_minute_full"></span>
+                <i class="default">30</i>
+            </div>
+        </div>
+        <div class="template">
+            <div>
+                <div></div>
+                <button i18n-tips="tips_remove_match">❌</button>
             </div>
         </div>
         <script src="options.js"></script>

@@ -88,7 +88,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
 const commandsHandlers = {
     'open_options': () => chrome.runtime.openOptionsPage(),
-    'open_new_download': () => getPopupWindow('/pages/newdld/newdld.html', 458)
+    'open_new_download': () => getPopupWindow('/pages/newdld/newdld.html', 462)
 };
 
 chrome.commands.onCommand.addListener((command) => {

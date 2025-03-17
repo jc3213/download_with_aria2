@@ -1,24 +1,25 @@
-var aria2Storage = {};
-var aria2Config = {};
-var aria2Version;
+let aria2Storage = {};
+let aria2Config = {};
+let aria2Version;
 
-var updated = {};
-var undoes = [];
-var undone = false;
-var redoes = [];
+let updated = {};
+let undoes = [];
+let undone = false;
+let redoes = [];
 
-var extension = document.body.classList;
-var [saveBtn, undoBtn, redoBtn, tellVer, exportBtn, importBtn, jsonFile, confFile, exporter] = document.querySelectorAll('#menu > *')
-var [jsonrpcBtn, optionsBtn, tellUA] = document.querySelectorAll('#goto-jsonrpc, #goto-options, #useragent');
-var optionsEntries = document.querySelectorAll('#options [name]:not([type="checkbox"])');
-var optionsCheckboxes = document.querySelectorAll('[type="checkbox"]');
-var optionsMatches = document.querySelectorAll('.matches div[id]');
-var jsonrpcEntries = document.querySelectorAll('#jsonrpc [name]');
-var matchLET = document.querySelector('.template > div');
+let extension = document.body.classList;
+let [menuPane, optionsPane, jsonrpcPane, template] = document.body.children;
+let [saveBtn, undoBtn, redoBtn, tellVer, exportBtn, importBtn, jsonFile, confFile, exporter] = menuPane.children;
+let [jsonrpcBtn, optionsBtn, tellUA] = document.querySelectorAll('#goto-jsonrpc, #goto-options, #useragent');
+let optionsEntries = document.querySelectorAll('#options [name]:not([type="checkbox"])');
+let optionsCheckboxes = document.querySelectorAll('[type="checkbox"]');
+let optionsMatches = document.querySelectorAll('.matches div[id]');
+let jsonrpcEntries = document.querySelectorAll('#jsonrpc [name]');
+let matchLET = template.children[0];
 
 if (typeof browser !== 'undefined') {
     extension.add('firefox');
-    var [folderff, captureen, captureff] = document.querySelectorAll('#folder_firefox, #capture_enabled, #capture_webrequest');
+    let [folderff, captureen, captureff] = document.querySelectorAll('#folder_firefox, #capture_enabled, #capture_webrequest');
     captureen.addEventListener('change', (event) => {
         if (!captureen.checked) {
             folderff.checked = updated['folder_firefox'] = false;
@@ -59,7 +60,7 @@ saveBtn.addEventListener('click', (event) => {
 });
 
 undoBtn.addEventListener('click', (event) => {
-    var undo = undoes.pop();
+    let undo = undoes.pop();
     redoes.push(undo);
     optionsUndoRedo('undo', undo.old_value, undo);
     saveBtn.disabled = redoBtn.disabled = false;
@@ -70,7 +71,7 @@ undoBtn.addEventListener('click', (event) => {
 });
 
 redoBtn.addEventListener('click', (event) => {
-    var redo = redoes.pop();
+    let redo = redoes.pop();
     undoes.push(redo);
     optionsUndoRedo('redo', redo.new_value, redo);
     saveBtn.disabled = undoBtn.disabled = false;
@@ -115,16 +116,16 @@ function redoMatchPattern(add, remove) {
 
 exportBtn.addEventListener('click', (event) => {
     if (extension.contains('jsonrpc')) {
-        var name = 'aria2_jsonrpc';
-        var type = 'conf';
-        var body = Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key]);
+        let name = 'aria2_jsonrpc';
+        let type = 'conf';
+        let body = Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key]);
     } else {
         name = 'downwitharia2';
         type = 'json';
         body = [JSON.stringify(aria2Storage, null, 4)];
     }
-    var time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
-    var blob = new Blob(body);
+    let time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
+    let blob = new Blob(body);
     exporter.href = URL.createObjectURL(blob);
     exporter.download = name + '-' + time + '.' + type;
     exporter.click();
@@ -136,7 +137,7 @@ importBtn.addEventListener('click', (event) => {
 
 jsonFile.addEventListener('change', async (event) => {
     optionsHistoryFlushed();
-    var file = await promiseFileReader(event.target.files[0]);
+    let file = await promiseFileReader(event.target.files[0]);
     updated = JSON.parse(file);
     aria2StorageUpdate();
     aria2StorageSetup();
@@ -145,11 +146,11 @@ jsonFile.addEventListener('change', async (event) => {
 
 confFile.addEventListener('change', async (event) => {
     optionsHistoryFlushed();
-    var file = await promiseFileReader(event.target.files[0]);
-    var params = {};
+    let file = await promiseFileReader(event.target.files[0]);
+    let params = {};
     file.split('\n').forEach((line) => {
         if (line[0] !== '#') {
-            var [key, value] = line.split('=');
+            let [key, value] = line.split('=');
             params[key] = value;
         }
     });
@@ -160,7 +161,7 @@ confFile.addEventListener('change', async (event) => {
 
 function promiseFileReader(file) {
     return new Promise((resolve) => {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = (event) => resolve(reader.result);
         reader.readAsText(file);
     });
@@ -198,16 +199,16 @@ optionsBtn.addEventListener('click', (event) => {
 
 [...optionsEntries, ...jsonrpcEntries].forEach((entry) => {
     entry.addEventListener('change', (event) => {
-        var id = entry.name;
-        var new_value = entry.value;
+        let id = entry.name;
+        let new_value = entry.value;
         optionsHistoryLogged({entry, id, new_value, old_value: updated[id]});
     });
 });
 
 optionsCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener('change', (event) => {
-        var id = checkbox.name;
-        var new_value = checkbox.checked;
+        let id = checkbox.name;
+        let new_value = checkbox.checked;
         if (checkbox.dataset.key) {
             extension.toggle(id);
         }
@@ -216,8 +217,9 @@ optionsCheckboxes.forEach((checkbox) => {
 });
 
 optionsMatches.forEach((match) => {
-    var id = match.id;
-    var [, entry, addbtn, resort, list] = match.children;
+    let id = match.id;
+    let [menu, list] = match.children;
+    let [, entry, addbtn, resort] = menu.children;
     match.list = list;
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
@@ -225,12 +227,12 @@ optionsMatches.forEach((match) => {
         }
     });
     addbtn.addEventListener('click', (event) => {
-        var old_value = updated[id];
-        var new_value = [...old_value];
-        var add = [];
+        let old_value = updated[id];
+        let new_value = [...old_value];
+        let add = [];
         entry.value.match(/[^\s;]+/g)?.forEach((value) => {
             if (value && !new_value.includes(value)) {
-                var rule = createMatchPattern(list, id, value);
+                let rule = createMatchPattern(list, id, value);
                 add.push({list, index: new_value.length, rule});
                 new_value.push(value);
             }
@@ -240,10 +242,10 @@ optionsMatches.forEach((match) => {
         optionsHistoryLogged({add, id, new_value, old_value});
     });
     resort.addEventListener('click', (event) => {
-        var old_value = updated[id];
-        var new_value = [...old_value].sort();
-        var old_order = [...list.children];
-        var new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
+        let old_value = updated[id];
+        let new_value = [...old_value].sort();
+        let old_order = [...list.children];
+        let new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
         list.append(...new_order);
         optionsHistoryLogged({id, new_value, old_value, resort: {list, new_order, old_order}});
     });
@@ -261,13 +263,13 @@ function optionsHistoryLogged(undo) {
 }
 
 function createMatchPattern(list, id, value) {
-    var rule = matchLET.cloneNode(true);
-    var [content, purge] = rule.children;
+    let rule = matchLET.cloneNode(true);
+    let [content, purge] = rule.children;
     content.textContent = rule.title = value;
     purge.addEventListener('click', (event) => {
-        var old_value = updated[id]
-        var new_value = [...old_value];
-        var index = new_value.indexOf(rule.title);
+        let old_value = updated[id]
+        let new_value = [...old_value];
+        let index = new_value.indexOf(rule.title);
         new_value.splice(index, 1);
         rule.remove();
         optionsHistoryLogged({id, new_value, old_value, remove: [{list, index, rule}]});
@@ -283,7 +285,7 @@ function aria2StorageSetup() {
         entry.value = updated[entry.name];
     });
     optionsCheckboxes.forEach((checkbox) => {
-        var id = checkbox.name;
+        let id = checkbox.name;
         if (checkbox.dataset.key) {
             updated[id] ? extension.add(id) : extension.remove(id);
         }

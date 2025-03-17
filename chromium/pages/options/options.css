@@ -48,24 +48,18 @@ input[type="checkbox"] + label {
     content: "aria2/";
 }
 
+.align {
+    margin: 26px 0px 8px;
+}
+
 .group {
     margin: 28px 0px;
 }
 
-.hybrid {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.hybrid > input {
+.flex > input {
     margin-left: auto;
     padding: 1px 5px;
-    width: 50%
-}
-
-.hybrid > button {
-    padding: 1px;
-    width: 27px;
+    width: 50%;
 }
 
 .flat {
@@ -81,14 +75,15 @@ input[type="checkbox"] + label {
     margin: 0px 35px;
 }
 
-.align {
-    margin: 26px 0px 8px;
-}
-
 .matches {
     border-style: inset;
     border-width: 1px;
     padding: 8px;
+}
+
+.matches button {
+    padding: 1px;
+    width: 27px;
 }
 
 .list {
@@ -97,11 +92,9 @@ input[type="checkbox"] + label {
     display: grid;
     grid-auto-rows: 29px;
     grid-template-columns: repeat(3, 1fr);
-    margin-top: 3px;
     max-height: 118px;
     min-height: 59px;
     overflow-y: scroll;
-    width: 100%;
 }
 
 .listx {
@@ -122,6 +115,15 @@ input[type="checkbox"] + label {
     padding: 3px;
 }
 
-.list button {
-    font-size: 14px;
+.sample::before {
+    content: "__MSG_option_sample__";
+    text-decoration: underline;
+}
+
+.default::before {
+    content: "__MSG_option_default__: ";
+}
+
+.disabled::before {
+    content: "__MSG_option_disabled__: ";
 }
