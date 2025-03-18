@@ -3,9 +3,9 @@ let aria2Config = {};
 let aria2Referer = [];
 
 let [entryPane, downEntry, metaPane, metaImport, jsonrpcPane] = document.body.children;
-let [downMode, submitBtn, refererPane, proxyBtn] = document.querySelectorAll('select, button, #referer');
-let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
-let refererEntry = jsonrpcEntries[0];
+let [, downMode, submitBtn] = entryPane.children;
+let refererPane = document.getElementById('referer');
+let [refererEntry, ...jsonrpcEntries] = jsonrpcPane.querySelectorAll('[name]');
 
 document.querySelectorAll('[i18n]').forEach((node) => {
     node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
@@ -123,7 +123,7 @@ refererPane.addEventListener('click', (event) => {
     aria2Config['referer'] = refererEntry.value = event.target.title;
 });
 
-proxyBtn.addEventListener('click', (event) => {
+document.getElementById('proxy').addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
 
