@@ -32,7 +32,7 @@
 }
 
 body, button, input, textarea, select {
-    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-family: "Segoe UI", Arial, sans-serif;
     font-size: 16px;
 }
 
@@ -70,7 +70,6 @@ input + span {
 
 input:focus + span {
     display: block;
-    font-size: 16px;
 }
 
 input[type="file"], a {
