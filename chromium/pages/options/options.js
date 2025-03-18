@@ -10,16 +10,16 @@ let redoes = [];
 let extension = document.body.classList;
 let [menuPane, optionsPane, jsonrpcPane, template] = document.body.children;
 let [saveBtn, undoBtn, redoBtn, tellVer, exportBtn, importBtn, jsonFile, confFile, exporter] = menuPane.children;
-let [jsonrpcBtn, optionsBtn, tellUA] = document.querySelectorAll('#goto-jsonrpc, #goto-options, #useragent');
-let optionsEntries = document.querySelectorAll('#options [name]:not([type="checkbox"])');
-let optionsCheckboxes = document.querySelectorAll('[type="checkbox"]');
-let optionsMatches = document.querySelectorAll('.matches div[id]');
-let jsonrpcEntries = document.querySelectorAll('#jsonrpc [name]');
+let tellUA = document.getElementById('useragent');
+let optionsEntries = optionsPane.querySelectorAll('[name]:not([id])');
+let optionsCheckboxes = optionsPane.querySelectorAll('input[id]');
+let optionsMatches = optionsPane.querySelectorAll('.matches div[id]');
+let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let matchLET = template.children[0];
 
 if (typeof browser !== 'undefined') {
     extension.add('firefox');
-    let [folderff, captureen, captureff] = document.querySelectorAll('#folder_firefox, #capture_enabled, #capture_webrequest');
+    let [folderff, captureen, captureff] = optionsPane.querySelectorAll('#folder_firefox, #capture_enabled, #capture_webrequest');
     captureen.addEventListener('change', (event) => {
         if (!captureen.checked) {
             folderff.checked = updated['folder_firefox'] = false;
@@ -180,7 +180,7 @@ function optionsHistoryFlushed() {
     saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
 }
 
-jsonrpcBtn.addEventListener('click', (event) => {
+document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
     chrome.runtime.sendMessage({action: 'jsonrpc_handshake'}, ({alive, options, version}) => {
         if (alive) {
             optionsHistoryFlushed();
@@ -191,7 +191,7 @@ jsonrpcBtn.addEventListener('click', (event) => {
     });
 });
 
-optionsBtn.addEventListener('click', (event) => {
+document.getElementById('goto-options').addEventListener('click', (event) => {
     optionsHistoryFlushed();
     aria2StorageSetup();
     extension.remove('jsonrpc');
