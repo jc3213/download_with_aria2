@@ -2,9 +2,10 @@ let aria2Storage = {};
 let aria2Config = {};
 let aria2Images = [];
 
-let [selectAll, selectNone, selectFlip, submitBtn, optionsBtn, proxyBtn] = document.querySelectorAll('button');
-let [preview, galleryPane, jsonrpcPane] = document.querySelectorAll('#preview > img, #gallery, #jsonrpc');
-let jsonrpcEntries = document.querySelectorAll('#jsonrpc [name]');
+let [imagePane,, galleryPane,, menuPane, jsonrpcPane] = document.body.children;
+let [selectAll, selectNone, selectFlip, submitBtn, optionsBtn] = menu.children;
+let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
+let preview = imagePane.children[0];
 
 document.querySelectorAll('[i18n]').forEach((node) => {
     node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
@@ -63,7 +64,7 @@ jsonrpcPane.addEventListener('change', (event) => {
     aria2Config[event.target.name] = event.target.value;
 });
 
-proxyBtn.addEventListener('click', (event) => {
+document.getElementById('proxy').addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
 
