@@ -11,7 +11,7 @@ const messageHandlers = {
 
 window.addEventListener('message', (event) => {
     let handler = messageHandlers[event.data.aria2c];
-    if (typeof handler === 'function') {
+    if (handler) {
         handler(event.data.params);
     }
 });
