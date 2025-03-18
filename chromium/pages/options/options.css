@@ -78,15 +78,15 @@ input[type="checkbox"] + label {
     border-style: outset;
     border-width: 1px;
     display: grid;
-    grid-auto-rows: 27px;
-    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 25px;
+    grid-template-columns: repeat(3, 33.33%);
     max-height: 118px;
     min-height: 59px;
     overflow-y: scroll;
 }
 
 .listx {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, 20%);
     height: 59px;
 }
 
@@ -94,13 +94,11 @@ input[type="checkbox"] + label {
     border-style: outset;
     border-width: 1px;
     display: flex;
-    white-space: nowrap;
 }
 
 .list > * > div {
     flex: 1;
     overflow: hidden;
-    padding: 3px;
 }
 
 .list button {
