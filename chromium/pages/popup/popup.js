@@ -7,11 +7,12 @@ let aria2Delay;
 let aria2Interval;
 
 let manager = document.body.classList;
-let [downBtn, purgeBtn, optionsBtn, filterPane, queuePane] = document.querySelectorAll('#menu > button, #filter, #queue');
-let [sessionLET, fileLET, uriLET] = document.querySelectorAll('.template > *');
+let [menuPane, filterPane, queuePane, template] = document.body.children;
+let [downBtn, purgeBtn, optionsBtn, ...statEntries] = menuPane.children;
+let [sessionLET, fileLET, uriLET] = template.children;
 
-document.querySelectorAll('[data-tid]').forEach((queue) => aria2Queue[queue.id] = queue);
-document.querySelectorAll('[data-sid]').forEach((stat) => aria2Stats[stat.dataset.sid] = stat);
+[...queuePane.children].forEach((queue) => aria2Queue[queue.id] = queue);
+statEntries.forEach((stat) => aria2Stats[stat.dataset.sid] = stat);
 
 manager.add(...aria2Filter);
 
