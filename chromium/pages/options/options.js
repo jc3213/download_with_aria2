@@ -282,7 +282,7 @@ optionsMatches.forEach((match) => {
     });
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            matchEventAddNew(id, list, entry);
+            matchEventAddNew(event, {id, list, entry});
         }
     });
 });
