@@ -243,7 +243,7 @@ function matchEventAddNew(id, list, entry) {
             new_value.push(value);
         }
     });
-     entry.value = '';
+    entry.value = '';
     list.scrollTop = list.scrollHeight;
     optionsHistoryLogged(id, new_value, {old_value, add});
 }
