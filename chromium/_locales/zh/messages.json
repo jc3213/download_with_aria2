@@ -77,10 +77,10 @@
     "common_save": {
         "message": "保存"
     },
-    "tips_add_match": {
+    "tips_match_addnew": {
         "message": "添加匹配规则"
     },
-    "tips_resort_match": {
+    "tips_match_resort": {
         "message": "排序匹配规则"
     },
     "tips_remove_match": {

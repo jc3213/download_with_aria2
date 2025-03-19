@@ -77,10 +77,10 @@
     "common_save": {
         "message": "Save"
     },
-    "tips_add_match": {
+    "tips_match_addnew": {
         "message": "Add new match patterns"
     },
-    "tips_resort_match": {
+    "tips_match_resort": {
         "message": "Resort match patterns"
     },
     "tips_remove_match": {
