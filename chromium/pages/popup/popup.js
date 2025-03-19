@@ -38,25 +38,12 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-const menuEventHandlers = {
-    'popup_newdld': menuEventNewDL,
-    'popup_purge': menuEventPurge,
-    'popup_options': menuEventOptions
-}
-
-async function menuEventPurge() {
+purgeBtn.addEventListener('click', async (event) => {
     await aria2RPC.call({method: 'aria2.purgeDownloadResult'});
     aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
     aria2Stats.stopped.textContent = '0';
     aria2Tasks.stopped = {};
     aria2Tasks.total = {...aria2Tasks.active, ...aria2Tasks.waiting};
-}
-
-menuPane.addEventListener('click', (event) => {
-    let handler = menuEventHandlers[event.target.getAttribute('i18n')];
-    if (handler) {
-        handler();
-    }
 });
 
 async function aria2ClientOpened() {

@@ -4,26 +4,26 @@ if (aria2Toolbar) {
     aria2ToolbarSetup();
 }
 
-function menuEventNewDL() {
-    chrome.runtime.sendMessage({action: 'open_new_download'});
-    if (aria2Toolbar) {
-        close();
-    }
-}
-
-function menuEventOptions() {
-    chrome.runtime.openOptionsPage();
-    if (aria2Toolbar) {
-        close();
-    }
-}
-
 document.querySelectorAll('[i18n]').forEach((node) => {
     node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
 });
 
 document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
+});
+
+downBtn.addEventListener('click', async (event) => {
+    chrome.runtime.sendMessage({action: 'open_new_download'});
+    if (aria2Toolbar) {
+        close();
+    }
+})
+
+optionsBtn.addEventListener('click', (event) => {
+    chrome.runtime.openOptionsPage();
+    if (aria2Toolbar) {
+        close();
+    }
 });
 
 chrome.runtime.onMessage.addListener(({action, params}) => {
