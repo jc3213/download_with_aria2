@@ -29,7 +29,7 @@
                         <option value="ws">WS</option>
                         <option value="wss">WSS</option>
                     </select>
-                    <input name="jsonrpc_url" type="url" placeholder="$$hostname:port/jsonrpc$$">
+                    <input name="jsonrpc_url" type="text" placeholder="$$hostname:port/jsonrpc$$">
                     <input name="jsonrpc_secret" type="text" placeholder="$$secret$$">
                 </div>
             </div>
@@ -128,7 +128,7 @@
             </div>
             <h1 i18n="option_proxy"></h1>
             <div i18n-tips="tips_proxy">
-                <input name="proxy_server" type="url" placeholder="http://127.0.0.1:1280/">
+                <input name="proxy_server" type="text" placeholder="http://127.0.0.1:1280/">
             </div>
             <div class="matches align">
                 <div id="proxy_include" i18n-tips="tips_proxy_include">
@@ -315,8 +315,10 @@
             </div>
             <div class="groupitem" i18n-tips="tips_aria2_bt_seed">
                 <h4 i18n="aria2_bt_seed"></h4>
-                <input name="seed-time" type="number">
-                <span i18n="time_minute_full"></span>
+                <div>
+                    <input name="seed-time" type="number">
+                    <span i18n="time_minute_full"></span>
+                </div>
                 <i class="default">30</i>
             </div>
         </div>
