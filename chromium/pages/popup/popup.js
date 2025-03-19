@@ -180,10 +180,10 @@ async function taskEventDetail(task, gid) {
         aria2Tasks[gid] = true;
         task.config ??= await taskEventDetailGetter(gid);
         task.entries.forEach((entry) => {
-        entry.value = task.config[entry.name] ?? '';
+            entry.value = task.config[entry.name] ?? '';
         });
         task.checks.forEach((check, index) => {
-        check.checked = task.chosen[index + 1];
+            check.checked = task.chosen[index + 1];
         });
     }
     task.classList.toggle('expand');
@@ -260,9 +260,10 @@ function taskElementCreate(gid, status, bittorrent, files) {
     let ratio = meter.children[0];
     let retry = menu.children[2];
     let change = flist.children[0].children[1];
-    let [, newuri, adduri] = ulist.children[0].children;
-    Object.assign(task, {name, current, day, hour, minute, second, total, network, download, upload, meter, ratio, options, flist, ulist, retry, newuri, adduri, change, chosen: {}, checks: []})
+    let newuri = ulist.children[0].children[1];
+    Object.assign(task, {name, current, day, hour, minute, second, total, network, download, upload, meter, ratio, options, flist, ulist, retry, newuri, change, chosen: {}, checks: []});
     task.entries = task.options.querySelectorAll('[name]');
+    task.proxy = task.entries[2];
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', (event) => {
@@ -273,7 +274,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
     });
     newuri.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            task.adduri.click();
+            taskEventAddUri(task, gid);
         }
     });
     options.addEventListener('change', (event) => {
