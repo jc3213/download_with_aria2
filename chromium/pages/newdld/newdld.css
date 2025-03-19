@@ -34,12 +34,6 @@ label:active {
     filter: contrast(60%);
 }
 
-#entries > button {
-    margin-left: auto;
-    padding: 1px 5px;
-    width: auto;
-}
-
 #referer {
     border-style: solid;
     border-width: 2px;
@@ -72,4 +66,10 @@ label:active {
 
 .meta label {
     display: flex;
+}
+
+.flexmenu > button {
+    margin-left: auto;
+    padding: 1px 5px;
+    width: auto;
 }

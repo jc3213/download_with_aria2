@@ -2,8 +2,8 @@ let aria2Storage = {};
 let aria2Config = {};
 let aria2Referer = [];
 
-let [entryPane, downEntry, metaPane, metaImport, jsonrpcPane] = document.body.children;
-let [, downMode, submitBtn] = entryPane.children;
+let [menuPane, downEntry, metaPane, metaImport, jsonrpcPane] = document.body.children;
+let [, downMode, submitBtn] = menuPane.children;
 let refererPane = document.getElementById('referer');
 let [refererEntry, ...jsonrpcEntries] = jsonrpcPane.querySelectorAll('[name]');
 
