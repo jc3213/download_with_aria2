@@ -83,7 +83,7 @@
     "tips_match_resort": {
         "message": "排序匹配规则"
     },
-    "tips_remove_match": {
+    "tips_match_remove": {
         "message": "删除此匹配规则"
     },
     "tips_task_pause": {

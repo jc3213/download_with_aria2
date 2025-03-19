@@ -83,7 +83,7 @@
     "tips_match_resort": {
         "message": "Resort match patterns"
     },
-    "tips_remove_match": {
+    "tips_match_remove": {
         "message": "Remove this match pattern"
     },
     "tips_task_pause": {
