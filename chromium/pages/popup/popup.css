@@ -127,7 +127,7 @@ body > ::before {
 }
 
 #queue > :nth-child(-n+3) .meter:active,
-#queue > :nth-child(-n+3) .ratio:active,
+#queue > :nth-child(-n+3) .meter > .ratio:active,
 #queue .p2p .file > label:active,
 #queue .uri:active {
     filter: contrast(60%);

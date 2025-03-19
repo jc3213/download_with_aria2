@@ -38,12 +38,25 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-purgeBtn.addEventListener('click', async (event) => {
+const menuEventHandlers = {
+    'popup_newdld': menuEventNewDL,
+    'popup_purge': menuEventPurge,
+    'popup_options': menuEventOptions
+}
+
+async function menuEventPurge() {
     await aria2RPC.call({method: 'aria2.purgeDownloadResult'});
     aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
     aria2Stats.stopped.textContent = '0';
     aria2Tasks.stopped = {};
     aria2Tasks.total = {...aria2Tasks.active, ...aria2Tasks.waiting};
+}
+
+menuPane.addEventListener('click', (event) => {
+    let handler = menuEventHandlers[event.target.getAttribute('i18n')];
+    if (handler) {
+        handler();
+    }
 });
 
 async function aria2ClientOpened() {
@@ -272,14 +285,24 @@ function taskElementCreate(gid, status, bittorrent, files) {
             handler(task, gid);
         }
     });
-    task.newuri.addEventListener('keydown', (event) => {
+    newuri.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             task.adduri.click();
         }
     });
-    task.options.addEventListener('change', (event) => {
+    options.addEventListener('change', (event) => {
         task.config[event.target.name] = event.target.value;
         aria2RPC.call({ method: 'aria2.changeOption', params: [gid, task.config] });
+    });
+    flist.addEventListener('click', (event) => {
+        if (event.target.localName === 'label') {
+            task.change.style.display = 'block';
+        }
+    });
+    ulist.addEventListener('click', (event) => {
+        if (event.target.className === 'uri') {
+            navigator.clipboard.writeText(event.target.title);
+        }
     });
     files.forEach(({index, length, path, selected, uris}) => {
         task[index] ??= taskFileElement(task, gid, index, selected, path, length);
@@ -298,9 +321,6 @@ function taskFileElement(task, gid, index, selected, path, length) {
     check.checked = selected === 'true';
     label.textContent = index;
     label.setAttribute('for', check.id);
-    label.addEventListener('click', (event) => {
-        task.change.style.display = 'block';
-    });
     name.textContent = path.slice(path.lastIndexOf('/') + 1);
     name.title = path;
     size.textContent = getFileSize(length);
@@ -313,9 +333,6 @@ function taskFileElement(task, gid, index, selected, path, length) {
 function taskUriElement(task, uri) {
     let url = uriLET.cloneNode(true);
     url.title = url.textContent = uri;
-    url.addEventListener('click', (event) => {
-        navigator.clipboard.writeText(uri);
-    });
     task.ulist.appendChild(url);
     return true;
 }
