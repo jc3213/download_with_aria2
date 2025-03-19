@@ -17,7 +17,7 @@ downBtn.addEventListener('click', async (event) => {
     if (aria2Toolbar) {
         close();
     }
-})
+});
 
 optionsBtn.addEventListener('click', (event) => {
     chrome.runtime.openOptionsPage();
