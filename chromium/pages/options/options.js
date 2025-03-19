@@ -278,8 +278,9 @@ optionsMatches.forEach((match) => {
             let rule = event.target.parentNode;
             let value = rule.title;
             let old_value = updated[id];
+            let new_value = [...old_value];
             let index = old_value.indexOf(value);
-            let new_value = old_value.filter((item) => item !== value);
+            new_value.splice(index, 1);
             rule.remove();
             optionsHistoryLogged(id, new_value, {old_value, remove: [{list, index, rule}]});
         }
