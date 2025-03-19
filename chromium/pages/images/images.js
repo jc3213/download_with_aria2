@@ -33,6 +33,24 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+galleryPane.addEventListener('click', (event) => {
+    if (event.target.localName === 'img') {
+        event.target.classList.toggle('checked');
+    }
+});
+
+galleryPane.addEventListener('mouseover', (event) => {
+    if (event.target.localName === 'img') {
+        preview.src = event.target.src;
+    }
+});
+
+galleryPane.addEventListener('load', (event) => {
+    let img = event.target;
+    let [, name, ext = '.jpg'] = img.src.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
+    img.alt = name  + '_' + img.alt + '_' + img.naturalWidth + 'x' + img.naturalHeight + ext;
+}, true);
+
 selectAll.addEventListener('click', (event) => {
     aria2Images.forEach((img) => img.classList.add('checked'));
 });
@@ -81,16 +99,6 @@ function getImagePreview(url, headers) {
     let img = document.createElement('img');
     img.src = img.title = url;
     img.header = headers.map(({name, value}) => name + ': ' + value);
-    img.addEventListener('click', (event) => {
-        img.classList.toggle('checked');
-    });
-    img.addEventListener('load', (event) => {
-        let [, name, ext = '.jpg'] = url.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
-        img.alt = name  + '_' + img.alt + '_' + img.naturalWidth + 'x' + img.naturalHeight + ext;
-    });
-    img.addEventListener('mouseenter', (event) => {
-        preview.src = url;
-    });
     aria2Images.push(img);
 }
 
