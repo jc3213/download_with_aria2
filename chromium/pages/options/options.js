@@ -229,10 +229,11 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
 
 const matchEventHandlers = {
     'tips_match_addnew': matchEventAddNew,
-    'tips_match_resort': matchEventResort
+    'tips_match_resort': matchEventResort,
+    'tips_match_remove': matchEventRemove
 };
 
-function matchEventAddNew(id, list, entry) {
+function matchEventAddNew(event, {id, list, entry}) {
     let old_value = updated[id];
     let new_value = [...old_value];
     let add = [];
@@ -248,7 +249,7 @@ function matchEventAddNew(id, list, entry) {
     optionsHistoryLogged(id, new_value, {old_value, add});
 }
 
-function matchEventResort(id, list) {
+function matchEventResort(event, {id, list}) {
     let old_value = updated[id];
     let new_value = [...old_value].sort();
     let old_order = [...list.children];
@@ -257,32 +258,31 @@ function matchEventResort(id, list) {
     optionsHistoryLogged(id, new_value, {old_value, resort: {list, new_order, old_order}});
 }
 
+function matchEventRemove(event, {id, list}) {
+    let rule = event.target.parentNode;
+    let value = rule.title;
+    let old_value = updated[id];
+    let new_value = [...old_value];
+    let index = old_value.indexOf(value);
+    new_value.splice(index, 1);
+    rule.remove();
+    optionsHistoryLogged(id, new_value, {old_value, remove: [{list, index, rule}]});
+}
+
 optionsMatches.forEach((match) => {
     let id = match.id;
     let [menu, list] = match.children;
     let entry = menu.children[1];
     match.list = list;
-    menu.addEventListener('click', (event) => {
+    match.addEventListener('click', (event) => {
         let handler = matchEventHandlers[event.target.getAttribute('i18n-tips')];
         if (handler) {
-            handler(id, list, entry);
+            handler(event, {id, list, entry});
         }
     });
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             matchEventAddNew(id, list, entry);
-        }
-    });
-    list.addEventListener('click', (event) => {
-        if (event.target.localName === 'button') {
-            let rule = event.target.parentNode;
-            let value = rule.title;
-            let old_value = updated[id];
-            let new_value = [...old_value];
-            let index = old_value.indexOf(value);
-            new_value.splice(index, 1);
-            rule.remove();
-            optionsHistoryLogged(id, new_value, {old_value, remove: [{list, index, rule}]});
         }
     });
 });
