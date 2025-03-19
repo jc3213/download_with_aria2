@@ -54,6 +54,37 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+const optionsValueHandlers = {
+    'text': (entry, id, value) => optionsHistoryLogged(id, value, {entry}),
+    'number': (entry, id, value) => optionsHistoryLogged(id, value | 0, {entry}),
+    'checkbox': (check, id, _, value) => {
+        if (check.dataset.key) {
+            extension.toggle(id);
+        }
+        optionsHistoryLogged(id, value, {check});
+    }
+}
+
+function optionsHistoryLogged(id, new_value, undo) {
+    let old_value = updated[id];
+    updated[id] = new_value;
+    undoes.push({id, new_value, old_value, ...undo});
+    saveBtn.disabled = undoBtn.disabled = false;
+    if (undone) {
+        redoes = [];
+        undone = false;
+        redoBtn.disabled = true;
+    }
+}
+
+document.addEventListener('change', (event) => {
+    let entry = event.target;
+    let {name, value, type, checked} = entry;
+    if (name) {
+        optionsValueHandlers[type](entry, name, value, checked);
+    }
+});
+
 saveBtn.addEventListener('click', (event) => {
     saveBtn.disabled = true;
     extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_update', params: updated}) : aria2StorageUpdate();
@@ -80,15 +111,15 @@ redoBtn.addEventListener('click', (event) => {
     }
 });
 
-function optionsUndoRedo(action, value, {add, checkbox, entry, id, remove, resort}) {
+function optionsUndoRedo(action, value, {add, check, entry, id, remove, resort}) {
     updated[id] = value;
     if (entry) {
         entry.value = value;
-    } else if (checkbox) {
-        if (checkbox.dataset.key) {
+    } else if (check) {
+        if (check.dataset.key) {
             extension.toggle(id);
         }
-        checkbox.checked = value;
+        check.checked = value;
     } else if (resort) {
         self[action + 'Resort'](resort);
     } else {
@@ -197,25 +228,6 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
     extension.remove('jsonrpc');
 });
 
-[...optionsEntries, ...jsonrpcEntries].forEach((entry) => {
-    entry.addEventListener('change', (event) => {
-        let id = entry.name;
-        let new_value = entry.value;
-        optionsHistoryLogged({entry, id, new_value, old_value: updated[id]});
-    });
-});
-
-optionsCheckboxes.forEach((checkbox) => {
-    checkbox.addEventListener('change', (event) => {
-        let id = checkbox.name;
-        let new_value = checkbox.checked;
-        if (checkbox.dataset.key) {
-            extension.toggle(id);
-        }
-        optionsHistoryLogged({checkbox, id, new_value, old_value: !new_value});
-    });
-});
-
 optionsMatches.forEach((match) => {
     let id = match.id;
     let [menu, list] = match.children;
@@ -251,17 +263,6 @@ optionsMatches.forEach((match) => {
     });
 });
 
-function optionsHistoryLogged(undo) {
-    updated[undo.id] = undo.new_value;
-    undoes.push(undo);
-    saveBtn.disabled = undoBtn.disabled = false;
-    if (undone) {
-        redoes = [];
-        undone = false;
-        redoBtn.disabled = true;
-    }
-}
-
 function createMatchPattern(list, id, value) {
     let rule = matchLET.cloneNode(true);
     let [content, purge] = rule.children;
@@ -284,12 +285,12 @@ function aria2StorageSetup() {
     optionsEntries.forEach((entry) => {
         entry.value = updated[entry.name];
     });
-    optionsCheckboxes.forEach((checkbox) => {
-        let id = checkbox.name;
-        if (checkbox.dataset.key) {
+    optionsCheckboxes.forEach((check) => {
+        let id = check.name;
+        if (check.dataset.key) {
             updated[id] ? extension.add(id) : extension.remove(id);
         }
-        checkbox.checked = updated[id];
+        check.checked = updated[id];
     });
     optionsMatches.forEach(({id, list}) => {
         list.innerHTML = '';
@@ -299,11 +300,6 @@ function aria2StorageSetup() {
 
 function aria2StorageUpdate() {
     aria2Storage = {...updated};
-    updated['jsonrpc_retries'] = updated['jsonrpc_retries'] | 0;
-    updated['jsonrpc_timeout'] = updated['jsonrpc_timeout'] | 0;
-    updated['manager_interval'] = updated['manager_interval'] | 0;
-    updated['capture_size_include'] = updated['capture_size_include'] | 0;
-    updated['capture_size_exclude'] = updated['capture_size_exclude'] | 0;
     chrome.runtime.sendMessage({action: 'storage_update', params: updated});
 }
 
