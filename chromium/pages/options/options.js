@@ -11,8 +11,7 @@ let extension = document.body.classList;
 let [menuPane, optionsPane, jsonrpcPane, template] = document.body.children;
 let [saveBtn, undoBtn, redoBtn, tellVer, exportBtn, importBtn, jsonFile, confFile, exporter] = menuPane.children;
 let tellUA = document.getElementById('useragent');
-let optionsEntries = optionsPane.querySelectorAll('[name]:not([id])');
-let optionsCheckboxes = optionsPane.querySelectorAll('input[id]');
+let optionsEntries = optionsPane.querySelectorAll('[name]');
 let optionsMatches = optionsPane.querySelectorAll('.matches div[id]');
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let matchLET = template.children[0];
@@ -283,14 +282,15 @@ function aria2StorageSetup() {
     updated = {...aria2Storage};
     tellVer.textContent = aria2Version;
     optionsEntries.forEach((entry) => {
-        entry.value = updated[entry.name];
-    });
-    optionsCheckboxes.forEach((check) => {
-        let id = check.name;
-        if (check.dataset.key) {
-            updated[id] ? extension.add(id) : extension.remove(id);
+        let {name, type, value, checked} = entry;
+        if (type === 'checkbox') {
+            if (entry.dataset.key) {
+                updated[name] ? extension.add(name) : extension.remove(name);
+            }
+            entry.checked = updated[name];
+        } else {
+            entry.value = updated[name];
         }
-        check.checked = updated[id];
     });
     optionsMatches.forEach(({id, list}) => {
         list.innerHTML = '';
