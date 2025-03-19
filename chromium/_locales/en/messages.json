@@ -86,20 +86,26 @@
     "tips_remove_match": {
         "message": "Remove this match pattern"
     },
-    "tips_proxy_server": {
-        "message": "Set the preset proxy server for this download"
-    },
-    "tips_select_file": {
-        "message": "Change the selected files for this download"
+    "tips_task_pause": {
+        "message": "Pause/resume this task"
     },
     "tips_task_remove": {
-        "message": "Remove this download"
+        "message": "Remove this task"
     },
     "tips_task_detail": {
-        "message": "Show details of this download"
+        "message": "Show task details"
     },
     "tips_task_retry": {
-        "message": "Restart this download"
+        "message": "Restart this task"
+    },
+    "tips_task_adduri": {
+        "message": "Add new download uri"
+    },
+    "tips_select_file": {
+        "message": "Modify bit-torrent files"
+    },
+    "tips_proxy_server": {
+        "message": "Set the preset proxy server"
     },
     "option_undo": {
         "message": "Undo"

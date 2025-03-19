@@ -175,7 +175,6 @@ async function taskEventRemove(task, gid) {
 async function taskEventDetail(task, gid) {
     if (aria2Tasks[gid]) {
         delete aria2Tasks[gid];
-        task.classList.remove('expand');
         task.change.style.display = '';
     } else {
         aria2Tasks[gid] = true;
@@ -186,8 +185,8 @@ async function taskEventDetail(task, gid) {
         task.checks.forEach((check, index) => {
         check.checked = task.chosen[index + 1];
         });
-        task.classList.add('expand');
     }
+    task.classList.toggle('expand');
 }
 
 async function taskEventDetailGetter(gid) {

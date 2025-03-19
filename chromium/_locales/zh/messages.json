@@ -86,11 +86,8 @@
     "tips_remove_match": {
         "message": "删除此匹配规则"
     },
-    "tips_proxy_server": {
-        "message": "添加预设的代理服务器"
-    },
-    "tips_select_file": {
-        "message": "修改此下载所选择的文件"
+    "tips_task_pause": {
+        "message": "暂停/继续此下载"
     },
     "tips_task_remove": {
         "message": "移除此下载"
@@ -100,6 +97,15 @@
     },
     "tips_task_retry": {
         "message": "重启此下载"
+    },
+    "tips_task_adduri": {
+        "message": "添加新的链接"
+    },
+    "tips_select_file": {
+        "message": "修改 bit-torrent 文件"
+    },
+    "tips_proxy_server": {
+        "message": "设置预设代理服务器"
     },
     "option_undo": {
         "message": "撤销"
