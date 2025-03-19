@@ -150,7 +150,9 @@ const taskEventHandlers = {
     'tips_task_pause': taskEventPause,
     'tips_proxy_server': taskEventProxy,
     'tips_select_file': taskEventSelect,
-    'tips_task_adduri': taskEventAddUri
+    'tips_task_adduri': taskEventAddUri,
+    'tips_task_copy': taskEventCopyUri,
+    'tips_task_fileid': (task) => task.change.style.display = 'block'
 };
 
 async function taskEventRemove(task, gid) {
@@ -253,6 +255,10 @@ async function taskEventAddUri(task, gid) {
     task.newuri.value = '';
 }
 
+function taskEventCopyUri(task, gid, event) {
+    navigator.clipboard.writeText(event.target.title);
+}
+
 function taskElementCreate(gid, status, bittorrent, files) {
     let task = sessionLET.cloneNode(true);
     let [name, current, time, total, network, download, upload, menu, meter, options, flist, ulist] = task.children;
@@ -269,7 +275,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.addEventListener('click', (event) => {
         let handler = taskEventHandlers[event.target.getAttribute('i18n-tips')];
         if (handler) {
-            handler(task, gid);
+            handler(task, gid, event);
         }
     });
     newuri.addEventListener('keydown', (event) => {
@@ -280,16 +286,6 @@ function taskElementCreate(gid, status, bittorrent, files) {
     options.addEventListener('change', (event) => {
         task.config[event.target.name] = event.target.value;
         aria2RPC.call({ method: 'aria2.changeOption', params: [gid, task.config] });
-    });
-    flist.addEventListener('click', (event) => {
-        if (event.target.localName === 'label') {
-            task.change.style.display = 'block';
-        }
-    });
-    ulist.addEventListener('click', (event) => {
-        if (event.target.className === 'uri') {
-            navigator.clipboard.writeText(event.target.title);
-        }
     });
     files.forEach(({index, length, path, selected, uris}) => {
         task[index] ??= taskFileElement(task, gid, index, selected, path, length);
