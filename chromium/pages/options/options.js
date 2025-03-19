@@ -145,19 +145,19 @@ function redoMatchPattern(add, remove) {
 }
 
 exportBtn.addEventListener('click', (event) => {
+    let name;
+    let body;
+    let time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
     if (extension.contains('jsonrpc')) {
-        let name = 'aria2_jsonrpc';
-        let type = 'conf';
-        let body = Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key]);
+        name = 'aria2_jsonrpc-' + time + '.conf';
+        body = Object.keys(aria2Config).map((key) => (key + '=' + aria2Config[key] + '\n'));
     } else {
-        name = 'downwitharia2';
-        type = 'json';
+        name = 'downwitharia2-' + time + '.json';
         body = [JSON.stringify(aria2Storage, null, 4)];
     }
-    let time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
     let blob = new Blob(body);
     exporter.href = URL.createObjectURL(blob);
-    exporter.download = name + '-' + time + '.' + type;
+    exporter.download = name;
     exporter.click();
 });
 
@@ -227,53 +227,68 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
     extension.remove('jsonrpc');
 });
 
+const matchEventHandlers = {
+    'tips_match_addnew': matchEventAddNew,
+    'tips_match_resort': matchEventResort
+};
+
+function matchEventAddNew(id, list, entry) {
+    let old_value = updated[id];
+    let new_value = [...old_value];
+    let add = [];
+    entry.value.match(/[^\s;]+/g)?.forEach((value) => {
+        if (value && !new_value.includes(value)) {
+            let rule = createMatchPattern(list, id, value);
+            add.push({list, index: new_value.length, rule});
+            new_value.push(value);
+        }
+    });
+     entry.value = '';
+    list.scrollTop = list.scrollHeight;
+    optionsHistoryLogged(id, new_value, {old_value, add});
+}
+
+function matchEventResort(id, list) {
+    let old_value = updated[id];
+    let new_value = [...old_value].sort();
+    let old_order = [...list.children];
+    let new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
+    list.append(...new_order);
+    optionsHistoryLogged(id, new_value, {old_value, resort: {list, new_order, old_order}});
+}
+
 optionsMatches.forEach((match) => {
     let id = match.id;
     let [menu, list] = match.children;
-    let [, entry, addbtn, resort] = menu.children;
+    let entry = menu.children[1];
     match.list = list;
-    entry.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            addbtn.click();
+    menu.addEventListener('click', (event) => {
+        let handler = matchEventHandlers[event.target.getAttribute('i18n-tips')];
+        if (handler) {
+            handler(id, list, entry);
         }
     });
-    addbtn.addEventListener('click', (event) => {
-        let old_value = updated[id];
-        let new_value = [...old_value];
-        let add = [];
-        entry.value.match(/[^\s;]+/g)?.forEach((value) => {
-            if (value && !new_value.includes(value)) {
-                let rule = createMatchPattern(list, id, value);
-                add.push({list, index: new_value.length, rule});
-                new_value.push(value);
-            }
-        });
-        entry.value = '';
-        list.scrollTop = list.scrollHeight;
-        optionsHistoryLogged(id, new_value, {old_value, add});
+    entry.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            matchEventAddNew(id, list, entry);
+        }
     });
-    resort.addEventListener('click', (event) => {
-        let old_value = updated[id];
-        let new_value = [...old_value].sort();
-        let old_order = [...list.children];
-        let new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
-        list.append(...new_order);
-        optionsHistoryLogged(id, new_value, {old_value, resort: {list, new_order, old_order}});
+    list.addEventListener('click', (event) => {
+        if (event.target.localName === 'button') {
+            let rule = event.target.parentNode;
+            let value = rule.title;
+            let old_value = updated[id];
+            let index = old_value.indexOf(value);
+            let new_value = old_value.filter((item) => item !== value);
+            rule.remove();
+            optionsHistoryLogged(id, new_value, {old_value, remove: [{list, index, rule}]});
+        }
     });
 });
 
 function createMatchPattern(list, id, value) {
     let rule = matchLET.cloneNode(true);
-    let [content, purge] = rule.children;
-    content.textContent = rule.title = value;
-    purge.addEventListener('click', (event) => {
-        let old_value = updated[id]
-        let new_value = [...old_value];
-        let index = new_value.indexOf(rule.title);
-        new_value.splice(index, 1);
-        rule.remove();
-        optionsHistoryLogged(id, new_value, {old_value, remove: [{list, index, rule}]});
-    });
+    rule.title = rule.children[0].textContent = value;
     list.appendChild(rule);
     return rule;
 }
