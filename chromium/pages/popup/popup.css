@@ -90,8 +90,8 @@ body > ::before {
 }
 
 #queue > :nth-child(n+4) > * > :nth-last-child(-n+3) button,
-#queue > :nth-child(n+4) > :not(.http) .retry,
-#queue > :nth-child(-n+3) .retry,
+#queue > :nth-child(n+4) > :not(.http) > .menu > :nth-child(3),
+#queue > :nth-child(-n+3) > * > .menu > :nth-child(3),
 .session.http [data-p2p],
 .session.p2p [data-http] {
     display: none;
