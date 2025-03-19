@@ -65,9 +65,9 @@ const optionsValueHandlers = {
 }
 
 function optionsHistoryLogged(id, new_value, undo) {
-    let old_value = updated[id];
+    undo.old_value ??= updated[id];
     updated[id] = new_value;
-    undoes.push({id, new_value, old_value, ...undo});
+    undoes.push({id, new_value, ...undo});
     saveBtn.disabled = undoBtn.disabled = false;
     if (undone) {
         redoes = [];
@@ -250,7 +250,7 @@ optionsMatches.forEach((match) => {
         });
         entry.value = '';
         list.scrollTop = list.scrollHeight;
-        optionsHistoryLogged({add, id, new_value, old_value});
+        optionsHistoryLogged(id, new_value, {old_value, add});
     });
     resort.addEventListener('click', (event) => {
         let old_value = updated[id];
@@ -258,7 +258,7 @@ optionsMatches.forEach((match) => {
         let old_order = [...list.children];
         let new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
         list.append(...new_order);
-        optionsHistoryLogged({id, new_value, old_value, resort: {list, new_order, old_order}});
+        optionsHistoryLogged(id, new_value, {old_value, resort: {list, new_order, old_order}});
     });
 });
 
@@ -272,7 +272,7 @@ function createMatchPattern(list, id, value) {
         let index = new_value.indexOf(rule.title);
         new_value.splice(index, 1);
         rule.remove();
-        optionsHistoryLogged({id, new_value, old_value, remove: [{list, index, rule}]});
+        optionsHistoryLogged(id, new_value, {old_value, remove: [{list, index, rule}]});
     });
     list.appendChild(rule);
     return rule;
