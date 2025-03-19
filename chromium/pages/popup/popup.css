@@ -32,8 +32,7 @@ body > ::before {
     display: none;
 }
 
-#menu,
-#filter {
+#menu, #filter {
     border-style: solid;
     border-width: 1px;
     display: flex;
@@ -178,14 +177,11 @@ body > ::before {
     content: "__MSG_time_second__";
 }
 
-.download::after,
-.upload::after {
+.speed::after {
     content: "B/s";
 }
 
-.total::after,
-.completed::after,
-.size::after {
+.filesize::after {
     content: "B";
 }
 
@@ -197,15 +193,36 @@ body > ::before {
     display: none;
 }
 
-.day::after,
-.hour::after,
-.minute::after,
-.second::after {
+.estimated > ::after {
     vertical-align: sub;
 }
 
 .day:empty + .hour:empty + .minute:empty + .second:empty + .infinite {
     display: inline-block;
+}
+
+.completed::before {
+    content: "🖥️ ";
+}
+
+.estimated::before {
+    content: "⏲️ ";
+}
+
+.filesize::before {
+    content: "📦 ";
+}
+
+.network::before {
+    content: "📶️ ";
+}
+
+.download::before {
+    content: "⏬ ";
+}
+
+.upload::before {
+    content: "⏫ ";
 }
 
 .session {
@@ -236,7 +253,7 @@ body > ::before {
     margin: 1px 0px;
 }
 
-.session > .manage {
+.session > .menu {
     grid-area: 1 / 4 / 4 / 5;
 }
 
@@ -257,12 +274,12 @@ body > ::before {
     grid-area: 7 / 1 / 8 / 5;
 }
 
-.session:not(.extra) > :nth-last-child(-n+3),
+.session:not(.expand) > :nth-last-child(-n+3),
 .session > .files button {
     display: none;
 }
 
-.session.extra .detail {
+.expand > .menu > :nth-child(2) {
     border-style: inset;
 }
 
