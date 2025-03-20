@@ -155,7 +155,7 @@ const taskEventHandlers = {
     'tips_task_fileid': (task) => task.change.style.display = 'block'
 };
 
-async function taskEventRemove(event, {task, gid}) {
+async function taskEventRemove(task, gid) {
     switch (task.status) {
         case 'active':
             await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
@@ -174,7 +174,7 @@ async function taskEventRemove(event, {task, gid}) {
     }
 }
 
-async function taskEventDetail(event, {task, gid}) {
+async function taskEventDetail(task, gid) {
     if (aria2Tasks[gid]) {
         delete aria2Tasks[gid];
         task.change.style.display = '';
@@ -199,7 +199,7 @@ async function taskEventDetailGetter(gid) {
     return result;
 }
 
-async function taskEventRetry(event, {task, gid}) {
+async function taskEventRetry(task, gid) {
     let [files, options] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
     let {uris, path} = files.result[0];
     let url = [...new Set(uris.map(({uri}) => uri))];
@@ -213,7 +213,7 @@ async function taskEventRetry(event, {task, gid}) {
     taskElementRemove('stopped', gid, task);
 }
 
-async function taskEventPause(event, {task, gid}) {
+async function taskEventPause(task, gid) {
     switch (task.status) {
         case 'active':
         case 'waiting':
@@ -227,13 +227,13 @@ async function taskEventPause(event, {task, gid}) {
     }
 }
 
-async function taskEventProxy(event, {task, gid}) {
+async function taskEventProxy(task, gid) {
     task.config['all-proxy'] = aria2Proxy;
     await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2Proxy}]});
     task.proxy.value = aria2Proxy;
 }
 
-async function taskEventSelect(event, {task, gid}) {
+async function taskEventSelect(task, gid) {
     let selected = [];
     task.checks.forEach((check) => {
         let label = check.labels[0].textContent;
@@ -246,7 +246,7 @@ async function taskEventSelect(event, {task, gid}) {
     task.change.style.display = '';
 }
 
-async function taskEventAddUri(event, {task, gid}) {
+async function taskEventAddUri(task, gid) {
     let uri = task.newuri.value;
     if (/^(http|ftp)s?:\/\/[^/]+\/.*$/.test(uri)) {
         await aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [], [uri]]});
@@ -255,7 +255,7 @@ async function taskEventAddUri(event, {task, gid}) {
     task.newuri.value = '';
 }
 
-function taskEventCopyUri(event) {
+function taskEventCopyUri(task, gid, event) {
     navigator.clipboard.writeText(event.target.title);
 }
 
@@ -275,12 +275,12 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.addEventListener('click', (event) => {
         let handler = taskEventHandlers[event.target.getAttribute('i18n-tips')];
         if (handler) {
-            handler(event, {task, gid});
+            handler(task, gid, event);
         }
     });
     newuri.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            taskEventAddUri(event, {task, gid});
+            taskEventAddUri(task, gid, event);
         }
     });
     options.addEventListener('change', (event) => {
