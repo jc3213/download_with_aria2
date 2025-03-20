@@ -53,17 +53,6 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-const optionsValueHandlers = {
-    'text': (entry, id, value) => optionsHistoryLogged(id, value, {entry}),
-    'number': (entry, id, value) => optionsHistoryLogged(id, value | 0, {entry}),
-    'checkbox': (check, id,_, value) => {
-        if (check.dataset.key) {
-            extension.toggle(id);
-        }
-        optionsHistoryLogged(id, value, {check});
-    }
-}
-
 function optionsHistoryLogged(id, new_value, undo) {
     undo.old_value ??= updated[id];
     updated[id] = new_value;
@@ -79,9 +68,20 @@ function optionsHistoryLogged(id, new_value, undo) {
 document.addEventListener('change', (event) => {
     let entry = event.target;
     let {name, value, type, checked} = entry;
-    if (name) {
-        optionsValueHandlers[type](entry, name, value, checked);
+    if (!name) {
+        return;
     }
+    switch (type) {
+        case 'number': 
+            value = value | 0;
+        case 'checkbox':
+            value = checked;
+            if (entry.dataset.key) {
+                extension.toggle(name);
+            }
+            break;
+    }
+    optionsHistoryLogged(name, value, {entry, type});
 });
 
 const menuEventHandlers = {
@@ -118,20 +118,26 @@ function menuEventRedo() {
     }
 }
 
-function optionsHistoryLoaded(action, value, {add, check, entry, id, remove, resort}) {
+function optionsHistoryLoaded(action, value, {id, type, entry, add, remove, resort}) {
     updated[id] = value;
-    if (entry) {
-        entry.value = value;
-    } else if (check) {
-        if (check.dataset.key) {
-            extension.toggle(id);
-        }
-        check.checked = value;
-    } else if (resort) {
-        self[action + 'Resort'](resort);
-    } else {
-        self[action + 'MatchPattern'](add, remove);
-    }
+    switch (type) {
+        case 'text':
+        case 'number':
+            entry.value = value;
+            break;
+        case 'checkbox':
+            if (entry.dataset.key) {
+                extension.toggle(id);
+            }
+            entry.checked = value;
+            break;
+        case 'matches':
+            self[action + 'MatchPattern'](add, remove);
+            break;
+        case 'resort':
+            self[action + 'Resort'](resort);
+            break;
+    };
 }
 
 function undoResort({list, old_order}) {
@@ -261,7 +267,7 @@ function matchEventAddNew(event, {id, list, entry}) {
     });
     entry.value = '';
     list.scrollTop = list.scrollHeight;
-    optionsHistoryLogged(id, new_value, {old_value, add});
+    optionsHistoryLogged(id, new_value, {old_value, type: 'matches', add});
 }
 
 function matchEventResort(event, {id, list}) {
@@ -270,7 +276,7 @@ function matchEventResort(event, {id, list}) {
     let old_order = [...list.children];
     let new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    optionsHistoryLogged(id, new_value, {old_value, resort: {list, new_order, old_order}});
+    optionsHistoryLogged(id, new_value, {old_value, type: 'resort', resort: {list, new_order, old_order}});
 }
 
 function matchEventRemove(event, {id, list}) {
@@ -281,7 +287,7 @@ function matchEventRemove(event, {id, list}) {
     let index = old_value.indexOf(value);
     new_value.splice(index, 1);
     rule.remove();
-    optionsHistoryLogged(id, new_value, {old_value, remove: [{list, index, rule}]});
+    optionsHistoryLogged(id, new_value, {old_value, type: 'matches', remove: [{list, index, rule}]});
 }
 
 optionsMatches.forEach((match) => {
