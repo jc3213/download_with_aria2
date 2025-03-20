@@ -51,19 +51,15 @@ galleryPane.addEventListener('load', (event) => {
     img.alt = name  + '_' + img.alt + '_' + img.naturalWidth + 'x' + img.naturalHeight + ext;
 }, true);
 
-selectAll.addEventListener('click', (event) => {
-    aria2Images.forEach((img) => img.classList.add('checked'));
-});
+const menuEventHandlers = {
+    'select_all': () => aria2Images.forEach((img) => img.classList.add('checked')),
+    'select_none': () => aria2Images.forEach((img) => img.classList.remove('checked')),
+    'select_flip': () => aria2Images.forEach((img) => img.classList.toggle('checked')),
+    'common_submit': menuEventSubmit,
+    'popup_options': () => document.body.classList.toggle('extra')
+};
 
-selectNone.addEventListener('click', (event) => {
-    aria2Images.forEach((img) => img.classList.remove('checked'));
-});
-
-selectFlip.addEventListener('click', (event) => {
-    aria2Images.forEach((img) => img.classList.toggle('checked'));
-});
-
-submitBtn.addEventListener('click', (event) => {
+function menuEventSubmit() {
     let params = [];
     aria2Images.forEach(({src, alt, header, classList}) => {
         if (classList.contains('checked')) {
@@ -72,10 +68,13 @@ submitBtn.addEventListener('click', (event) => {
     });
     chrome.runtime.sendMessage({action: 'jsonrpc_download', params});
     close();
-});
+}
 
-optionsBtn.addEventListener('click', (event) => {
-    document.body.classList.toggle('extra');
+menuPane.addEventListener('click', (event) => {
+    let handler = menuEventHandlers[event.target.getAttribute('i18n')];
+    if (handler) {
+        handler();
+    }
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
