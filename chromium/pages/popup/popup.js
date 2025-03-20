@@ -255,7 +255,7 @@ async function taskEventAddUri(event, {task, gid}) {
     task.newuri.value = '';
 }
 
-function taskEventCopyUri(event, {task, gid}) {
+function taskEventCopyUri(event) {
     navigator.clipboard.writeText(event.target.title);
 }
 
