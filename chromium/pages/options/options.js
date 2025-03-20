@@ -56,7 +56,7 @@ document.addEventListener('keydown', (event) => {
 const optionsValueHandlers = {
     'text': (entry, id, value) => optionsHistoryLogged(id, value, {entry}),
     'number': (entry, id, value) => optionsHistoryLogged(id, value | 0, {entry}),
-    'checkbox': (check, id, _, value) => {
+    'checkbox': (check, id,_, value) => {
         if (check.dataset.key) {
             extension.toggle(id);
         }
@@ -84,33 +84,41 @@ document.addEventListener('change', (event) => {
     }
 });
 
-saveBtn.addEventListener('click', (event) => {
+const menuEventHandlers = {
+    'common_save': menuEventSave,
+    'option_undo': menuEventUndo,
+    'option_redo': menuEventRedo,
+    'option_export': menuEventExport,
+    'option_import': menuEventImport
+};
+
+function menuEventSave() {
     saveBtn.disabled = true;
     extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_update', params: updated}) : aria2StorageUpdate();
-});
+}
 
-undoBtn.addEventListener('click', (event) => {
+function menuEventUndo() {
     let undo = undoes.pop();
     redoes.push(undo);
-    optionsUndoRedo('undo', undo.old_value, undo);
+    optionsHistoryLoaded('undo', undo.old_value, undo);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
     if (undoes.length === 0) {
         undoBtn.disabled = true;
     }
-});
+}
 
-redoBtn.addEventListener('click', (event) => {
+function menuEventRedo() {
     let redo = redoes.pop();
     undoes.push(redo);
-    optionsUndoRedo('redo', redo.new_value, redo);
+    optionsHistoryLoaded('redo', redo.new_value, redo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
     }
-});
+}
 
-function optionsUndoRedo(action, value, {add, check, entry, id, remove, resort}) {
+function optionsHistoryLoaded(action, value, {add, check, entry, id, remove, resort}) {
     updated[id] = value;
     if (entry) {
         entry.value = value;
@@ -144,7 +152,7 @@ function redoMatchPattern(add, remove) {
     remove?.forEach(({rule}) => rule.remove());
 }
 
-exportBtn.addEventListener('click', (event) => {
+function menuEventExport() {
     let name;
     let body;
     let time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
@@ -159,10 +167,17 @@ exportBtn.addEventListener('click', (event) => {
     exporter.href = URL.createObjectURL(blob);
     exporter.download = name;
     exporter.click();
-});
+}
 
-importBtn.addEventListener('click', (event) => {
+function menuEventImport() {
     extension.contains('jsonrpc') ? confFile.click() : jsonFile.click();
+}
+
+menuPane.addEventListener('click', (event) => {
+    let handler = menuEventHandlers[event.target.getAttribute('i18n')];
+    if (handler) {
+        handler();
+    }
 });
 
 jsonFile.addEventListener('change', async (event) => {
