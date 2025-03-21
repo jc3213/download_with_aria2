@@ -271,9 +271,9 @@ const clientHandlers = {
     'aria2.onBtDownloadComplete': () => {},
     'aria2.onDownloadComplete': (gid) => {
         aria2WhenComplete(gid);
-        clientHandlers.default(gid);
+        clientHandlers['default'](gid);
     },
-    default: (gid) => {
+    'default': (gid) => {
         if (aria2Queue[gid]) {
             delete aria2Queue[gid];
             aria2Active--;
@@ -283,7 +283,7 @@ const clientHandlers = {
 
 async function aria2ClientMessage({ method, params }) {
     let gid = params[0].gid;
-    let handler = clientHandlers[method] ?? clientHandlers.default;
+    let handler = clientHandlers[method] ?? clientHandlers['default'];
     handler(gid);
     chrome.action.setBadgeText({text: !aria2Active ? '' : String(aria2Active)});
 }
