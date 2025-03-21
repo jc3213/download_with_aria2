@@ -265,7 +265,7 @@ const clientHandlers = {
     'aria2.onBtDownloadComplete': () => {},
     'aria2.onDownloadStart': (gid) => {
         if (!aria2Queue[gid]) {
-            aria2Active++;
+            aria2Active ++;
             aria2Queue[gid] = gid;
         }
     },
@@ -276,7 +276,7 @@ const clientHandlers = {
     'default': (gid) => {
         if (aria2Queue[gid]) {
             delete aria2Queue[gid];
-            aria2Active--;
+            aria2Active --;
         }
     }
 };
