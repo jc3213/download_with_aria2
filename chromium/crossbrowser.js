@@ -262,13 +262,13 @@ function aria2ClientClosed() {
 }
 
 const clientHandlers = {
+    'aria2.onBtDownloadComplete': () => {},
     'aria2.onDownloadStart': (gid) => {
         if (!aria2Queue[gid]) {
             aria2Active++;
             aria2Queue[gid] = gid;
         }
     },
-    'aria2.onBtDownloadComplete': () => {},
     'aria2.onDownloadComplete': (gid) => {
         aria2WhenComplete(gid);
         clientHandlers['default'](gid);
