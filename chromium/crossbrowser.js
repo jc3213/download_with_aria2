@@ -261,24 +261,31 @@ function aria2ClientClosed() {
     chrome.action.setBadgeText({text: 'E'});
 }
 
-async function aria2ClientMessage({method, params}) {
-    let {gid} = params[0];
-    switch (method) {
-        case 'aria2.onDownloadStart':
-            if (!aria2Queue[gid]) {
-                aria2Active ++;
-                aria2Queue[gid] = gid;
-            }
-            break;
-        case 'aria2.onBtDownloadComplete':
-            break;
-        case 'aria2.onDownloadComplete':
-            aria2WhenComplete(gid);
-        default:
+const clientHandlers = {
+    'aria2.onDownloadStart': (gid) => {
+        if (!aria2Queue[gid]) {
+            aria2Active++;
+            aria2Queue[gid] = gid;
+        }
+    },
+    'aria2.onBtDownloadComplete': () => {},
+    'aria2.onDownloadComplete': (gid) => {
+        aria2WhenComplete(gid);
+        clientHandlers.default(gid);
+    },
+    default: (gid) => {
+        if (aria2Queue[gid]) {
             delete aria2Queue[gid];
-            aria2Active --;
+            aria2Active--;
+        }
     }
-    chrome.action.setBadgeText({text: !aria2Active ? '' : aria2Active + ''});
+};
+
+async function aria2ClientMessage({ method, params }) {
+    let gid = params[0].gid;
+    let handler = clientHandlers[method] ?? clientHandlers.default;
+    handler(gid);
+    chrome.action.setBadgeText({text: !aria2Active ? '' : String(aria2Active)});
 }
 
 function aria2CaptureResult(hostname, filename, filesize) {
