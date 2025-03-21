@@ -61,24 +61,26 @@ function aria2ClientClosed() {
     aria2Queue.active.innerHTML = aria2Queue.waiting.innerHTML = aria2Queue.paused.innerHTML = aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
 }
 
-function aria2ClientMessage({method, params}) {
-    let {gid} = params[0];
-    switch (method) {
-        case 'aria2.onBtDownloadComplete':
-            break;
-        case 'aria2.onDownloadStart':
-            taskElementUpdate(gid);
-            if (aria2Tasks.waiting[gid]) {
-                taskElementRemove('waiting', gid);
-            }
-            break;
-        default:
-            taskElementUpdate(gid);
-            if (aria2Tasks.active[gid]) {
-                taskElementRemove('active', gid);
-            }
-            break;
+const clientHandlers = {
+    'aria2.onBtDownloadComplete': () => {},
+    'aria2.onDownloadStart': (gid) => {
+        taskElementUpdate(gid);
+        if (aria2Tasks.waiting[gid]) {
+            taskElementRemove('waiting', gid);
+        }
+    },
+    default: (gid) => {
+        taskElementUpdate(gid);
+        if (aria2Tasks.active[gid]) {
+            taskElementRemove('active', gid);
+        }
     }
+};
+
+function aria2ClientMessage({ method, params }) {
+    let {gid} = params[0];
+    let handler = clientHandlers[method] ?? clientHandlers.default;
+    handler(gid);
 }
 
 async function aria2ClientUpdate() {
@@ -155,23 +157,24 @@ const taskEventHandlers = {
     'tips_task_fileid': (task) => task.change.style.display = 'block'
 };
 
-async function taskEventRemove(task, gid) {
-    switch (task.status) {
-        case 'active':
-            await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
-            break;
-        case 'waiting':
-        case 'paused':
-            await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
-            taskElementRemove('waiting', gid, task);
-            break;
-        case 'complete':
-        case 'removed':
-        case 'error':
-            await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
-            taskElementRemove('stopped', gid, task);
-            break;
-    }
+const removeEvents = {
+    'active': async (gid) => await aria2RPC.call({ method: 'aria2.forceRemove', params: [gid] }),
+    'waiting': async (gid, task) => {
+        await removeEvents['active'](gid);
+        taskElementRemove('waiting', gid, task);
+    },
+    'paused': (gid, task) => removeEvents['waiting'](gid, task),
+    'complete': async (gid, task) => {
+        await aria2RPC.call({ method: 'aria2.removeDownloadResult', params: [gid] });
+        taskElementRemove('stopped', gid, task);
+    },
+    'removed': async (gid, task) => await removeEvents['complete'](gid, task),
+    'error': async (gid, task) => await removeEvents['complete'](gid, task),
+};
+
+function taskEventRemove(task, gid) {
+    let handler = removeEvents[task.status];
+    handler(gid, task);
 }
 
 async function taskEventDetail(task, gid) {
@@ -213,17 +216,22 @@ async function taskEventRetry(task, gid) {
     taskElementRemove('stopped', gid, task);
 }
 
-async function taskEventPause(task, gid) {
-    switch (task.status) {
-        case 'active':
-        case 'waiting':
-            await aria2RPC.call({method: 'aria2.forcePause', params: [gid]});
-            aria2Queue.paused.appendChild(task);
-            break;
-        case 'paused':
-            await aria2RPC.call({method: 'aria2.unpause', params: [gid]});
-            aria2Queue.waiting.appendChild(task);
-            break;
+const pauseEvents = {
+    'active': async (gid, task) => {
+        await aria2RPC.call({ method: 'aria2.forcePause', params: [gid] });
+        aria2Queue.paused.appendChild(task);
+    },
+    'waiting': (gid, task) => pauseEvents['active'](gid, task),
+    'paused': async (gid, task) => {
+        await aria2RPC.call({ method: 'aria2.unpause', params: [gid] });
+        aria2Queue.waiting.appendChild(task);
+    }
+};
+
+function taskEventPause(task, gid) {
+    let handler = pauseEvents[task.status];
+    if (handler) {
+        handler(gid, task);
     }
 }
 
