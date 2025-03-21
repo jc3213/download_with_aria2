@@ -49,7 +49,7 @@ purgeBtn.addEventListener('click', async (event) => {
 async function aria2ClientOpened() {
     aria2Tasks = {active: {}, waiting: {}, stopped: {}, total: {}};
     let [global, active, waiting, stopped] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]} );
-    [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementSync);
+    [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementUpdate);
     aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
     aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
     aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
@@ -64,13 +64,13 @@ function aria2ClientClosed() {
 const clientHandlers = {
     'aria2.onBtDownloadComplete': () => {},
     'aria2.onDownloadStart': (gid) => {
-        taskElementUpdate(gid);
+        taskElementRefresh(gid);
         if (aria2Tasks.waiting[gid]) {
             taskElementRemove('waiting', gid);
         }
     },
     'default': (gid) => {
-        taskElementUpdate(gid);
+        taskElementRefresh(gid);
         if (aria2Tasks.active[gid]) {
             taskElementRemove('active', gid);
         }
@@ -85,12 +85,12 @@ function aria2ClientMessage({method, params}) {
 
 async function aria2ClientUpdate() {
     let [global, active] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'} );
-    active.result.forEach(taskElementSync);
+    active.result.forEach(taskElementUpdate);
     aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
     aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
 }
 
-function taskStatusChange(task, gid, status) {
+function taskQueueChange(task, gid, status) {
     let queue = aria2Queue[status];
     let type = queue.dataset.tid;
     if (!aria2Tasks[type][gid]) {
@@ -101,10 +101,10 @@ function taskStatusChange(task, gid, status) {
     task.status = status;
 }
 
-async function taskElementUpdate(gid) {
+async function taskElementRefresh(gid) {
     let [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-    let task = taskElementSync(session.result);
-    taskStatusChange(task, gid, session.result.status);
+    let task = taskElementUpdate(session.result);
+    taskQueueChange(task, gid, session.result.status);
 }
 
 function taskElementRemove(queue, gid, task) {
@@ -116,7 +116,7 @@ function taskElementRemove(queue, gid, task) {
     }
 }
 
-function taskElementSync({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
+function taskElementUpdate({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
     let task = aria2Tasks.total[gid] ??= taskElementCreate(gid, status, bittorrent, files);
     let time = (totalLength - completedLength) / downloadSpeed;
     let days = time / 86400 | 0;
@@ -157,22 +157,20 @@ const taskEventHandlers = {
     'tips_task_fileid': (task) => task.change.style.display = 'block'
 };
 
+const removeHandlers = {
+    'active': { method: 'aria2.forceRemove' },
+    'waiting': { method: 'aria2.forceRemove', removed: 'waiting'},
+    'paused': { method: 'aria2.forceRemove', removed: 'waiting'},
+    'complete': { method: 'aria2.removeDownloadResult', removed: 'stopped'},
+    'removed': { method: 'aria2.removeDownloadResult', removed: 'stopped'},
+    'error': { method: 'aria2.removeDownloadResult', removed: 'stopped'}
+}
+
 async function taskEventRemove(task, gid) {
-    switch (task.status) {
-        case 'active':
-            await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
-            break;
-        case 'waiting':
-        case 'paused':
-            await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
-            taskElementRemove('waiting', gid, task);
-            break;
-        case 'complete':
-        case 'removed':
-        case 'error':
-            await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
-            taskElementRemove('stopped', gid, task);
-            break;
+    let {method, removed} = removeHandlers[task.status];
+    await aria2RPC.call({method, params: [gid]});
+    if (removed) {
+        taskElementRemove(removed, gid, task);
     }
 }
 
@@ -211,21 +209,21 @@ async function taskEventRetry(task, gid) {
         options.result['out'] = path.slice(ni + 1);
     }
     let [added] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options.result]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
-    taskElementUpdate(added.result);
+    taskElementRefresh(added.result);
     taskElementRemove('stopped', gid, task);
 }
 
+const pauseHandlers = {
+    'active': {method: 'aria2.forcePause', queue: 'paused'},
+    'waiting': {method: 'aria2.forcePause', queue: 'paused'},
+    'paused': {method: 'aria2.unpause', queue: 'waiting'},
+}
+
 async function taskEventPause(task, gid) {
-    switch (task.status) {
-        case 'active':
-        case 'waiting':
-            await aria2RPC.call({method: 'aria2.forcePause', params: [gid]});
-            aria2Queue.paused.appendChild(task);
-            break;
-        case 'paused':
-            await aria2RPC.call({method: 'aria2.unpause', params: [gid]});
-            aria2Queue.waiting.appendChild(task);
-            break;
+    let {method, queue} = pauseHandlers[task.status] ?? {};
+    if (method) {
+        await aria2RPC.call({method, params: [gid]});
+        aria2Queue[queue].appendChild(task);
     }
 }
 
@@ -295,7 +293,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
             task[uri] ??= taskUriElement(task, uri);
         });
     });
-    taskStatusChange(task, gid, status);
+    taskQueueChange(task, gid, status);
     return task;
 }
 
