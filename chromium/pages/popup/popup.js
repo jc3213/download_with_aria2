@@ -69,7 +69,7 @@ const clientHandlers = {
             taskElementRemove('waiting', gid);
         }
     },
-    default: (gid) => {
+    'default': (gid) => {
         taskElementUpdate(gid);
         if (aria2Tasks.active[gid]) {
             taskElementRemove('active', gid);
@@ -79,7 +79,7 @@ const clientHandlers = {
 
 function aria2ClientMessage({ method, params }) {
     let {gid} = params[0];
-    let handler = clientHandlers[method] ?? clientHandlers.default;
+    let handler = clientHandlers[method] ?? clientHandlers['default'];
     handler(gid);
 }
 
