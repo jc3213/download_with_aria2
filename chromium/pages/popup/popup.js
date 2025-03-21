@@ -66,13 +66,15 @@ const clientHandlers = {
     'aria2.onDownloadStart': (gid) => {
         taskElementRefresh(gid);
         if (aria2Tasks.waiting[gid]) {
-            taskElementRemove('waiting', gid);
+            delete aria2Tasks.waiting[gid];
+            aria2Stats.waiting.textContent --;
         }
     },
     'default': (gid) => {
         taskElementRefresh(gid);
         if (aria2Tasks.active[gid]) {
-            taskElementRemove('active', gid);
+            delete aria2Tasks.active[gid];
+            aria2Stats.active.textContent --;
         }
     }
 };
@@ -105,15 +107,6 @@ async function taskElementRefresh(gid) {
     let [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
     let task = taskElementUpdate(session.result);
     taskQueueChange(task, gid, session.result.status);
-}
-
-function taskElementRemove(queue, gid, task) {
-    delete aria2Tasks[queue][gid];
-    aria2Stats[queue].textContent --;
-    if (task) {
-        task.remove();
-        delete aria2Tasks.total[gid];
-    }
 }
 
 function taskElementUpdate({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
@@ -153,7 +146,7 @@ const taskEventHandlers = {
     'tips_proxy_server': taskEventProxy,
     'tips_select_file': taskEventSelect,
     'tips_task_adduri': taskEventAddUri,
-    'tips_task_copy': taskEventCopyUri,
+    'tips_task_copy': (task, gid, event) => navigator.clipboard.writeText(event.target.title),
     'tips_task_fileid': (task) => task.change.style.display = 'block'
 };
 
@@ -170,7 +163,10 @@ async function taskEventRemove(task, gid) {
     let {method, removed} = removeHandlers[task.status];
     await aria2RPC.call({method, params: [gid]});
     if (removed) {
-        taskElementRemove(removed, gid, task);
+        task.remove();
+        delete aria2Tasks.total[gid];
+        delete aria2Tasks[removed][gid];
+        aria2Stats[removed].textContent --;
     }
 }
 
@@ -210,7 +206,10 @@ async function taskEventRetry(task, gid) {
     }
     let [added] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options.result]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
     taskElementRefresh(added.result);
-    taskElementRemove('stopped', gid, task);
+    task.remove();
+    delete aria2Tasks.total[gid];
+    delete aria2Tasks.stopped[gid];
+    aria2Stats.stopped.textContent --;
 }
 
 const pauseHandlers = {
@@ -253,10 +252,6 @@ async function taskEventAddUri(task, gid) {
         task[uri] ??= taskUriElement(task, uri);
     }
     task.newuri.value = '';
-}
-
-function taskEventCopyUri(task, gid, event) {
-    navigator.clipboard.writeText(event.target.title);
 }
 
 function taskElementCreate(gid, status, bittorrent, files) {
