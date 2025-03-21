@@ -53,8 +53,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-function optionsHistoryLogged(id, new_value, undo) {
-    undo.old_value ??= updated[id];
+function optionsHistoryAdd(id, new_value, undo) {
     updated[id] = new_value;
     undoes.push({id, new_value, ...undo});
     saveBtn.disabled = undoBtn.disabled = false;
@@ -81,7 +80,7 @@ document.addEventListener('change', (event) => {
             }
             break;
     }
-    optionsHistoryLogged(name, value, {entry, type});
+    optionsHistoryAdd(name, value, {old_value: updated[name], type, entry});
 });
 
 const menuEventHandlers = {
@@ -100,7 +99,7 @@ function menuEventSave() {
 function menuEventUndo() {
     let undo = undoes.pop();
     redoes.push(undo);
-    optionsHistoryLoaded('undo', undo.old_value, undo);
+    optionsHistoryLoad('undo', undo.old_value, undo);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
     if (undoes.length === 0) {
@@ -111,14 +110,14 @@ function menuEventUndo() {
 function menuEventRedo() {
     let redo = redoes.pop();
     undoes.push(redo);
-    optionsHistoryLoaded('redo', redo.new_value, redo);
+    optionsHistoryLoad('redo', redo.new_value, redo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
     }
 }
 
-function optionsHistoryLoaded(action, value, {id, type, entry, add, remove, resort}) {
+function optionsHistoryLoad(action, value, {id, type, entry, add, remove, resort}) {
     updated[id] = value;
     switch (type) {
         case 'text':
@@ -187,7 +186,7 @@ menuPane.addEventListener('click', (event) => {
 });
 
 jsonFile.addEventListener('change', async (event) => {
-    optionsHistoryFlushed();
+    optionsHistoryFlush();
     let file = await promiseFileReader(event.target.files[0]);
     updated = JSON.parse(file);
     aria2StorageUpdate();
@@ -196,7 +195,7 @@ jsonFile.addEventListener('change', async (event) => {
 });
 
 confFile.addEventListener('change', async (event) => {
-    optionsHistoryFlushed();
+    optionsHistoryFlush();
     let file = await promiseFileReader(event.target.files[0]);
     let params = {};
     file.split('\n').forEach((line) => {
@@ -225,7 +224,7 @@ function aria2ConfigSetup(json) {
     updated = {...aria2Config};
 }
 
-function optionsHistoryFlushed() {
+function optionsHistoryFlush() {
     undoes = [];
     redoes = [];
     saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
@@ -234,7 +233,7 @@ function optionsHistoryFlushed() {
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
     chrome.runtime.sendMessage({action: 'jsonrpc_handshake'}, ({alive, options, version}) => {
         if (alive) {
-            optionsHistoryFlushed();
+            optionsHistoryFlush();
             aria2ConfigSetup(options);
             tellVer.textContent = tellUA.textContent = version;
             extension.add('jsonrpc');
@@ -243,7 +242,7 @@ document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
 });
 
 document.getElementById('goto-options').addEventListener('click', (event) => {
-    optionsHistoryFlushed();
+    optionsHistoryFlush();
     aria2StorageSetup();
     extension.remove('jsonrpc');
 });
@@ -267,7 +266,7 @@ function matchEventAddNew(event, {id, list, entry}) {
     });
     entry.value = '';
     list.scrollTop = list.scrollHeight;
-    optionsHistoryLogged(id, new_value, {old_value, type: 'matches', add});
+    optionsHistoryAdd(id, new_value, {old_value, type: 'matches', add});
 }
 
 function matchEventResort(event, {id, list}) {
@@ -276,7 +275,7 @@ function matchEventResort(event, {id, list}) {
     let old_order = [...list.children];
     let new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    optionsHistoryLogged(id, new_value, {old_value, type: 'resort', resort: {list, new_order, old_order}});
+    optionsHistoryAdd(id, new_value, {old_value, type: 'resort', resort: {list, new_order, old_order}});
 }
 
 function matchEventRemove(event, {id, list}) {
@@ -287,7 +286,7 @@ function matchEventRemove(event, {id, list}) {
     let index = old_value.indexOf(value);
     new_value.splice(index, 1);
     rule.remove();
-    optionsHistoryLogged(id, new_value, {old_value, type: 'matches', remove: [{list, index, rule}]});
+    optionsHistoryAdd(id, new_value, {old_value, type: 'matches', remove: [{list, index, rule}]});
 }
 
 optionsMatches.forEach((match) => {
