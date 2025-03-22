@@ -258,10 +258,9 @@ function taskElementCreate(gid, status, bittorrent, files) {
     let [name, current, time, total, network, download, upload, menu, meter, options, flist, ulist] = task.children;
     let [day, hour, minute, second] = time.children;
     let ratio = meter.children[0];
-    let retry = menu.children[2];
     let change = flist.children[0].children[1];
     let newuri = ulist.children[0].children[1];
-    Object.assign(task, {name, current, day, hour, minute, second, total, network, download, upload, meter, ratio, flist, ulist, retry, newuri, change, chosen: {}, checks: []});
+    Object.assign(task, {name, current, day, hour, minute, second, total, network, download, upload, ratio, flist, ulist, newuri, change, chosen: {}, checks: []});
     task.entries = options.querySelectorAll('[name]');
     task.proxy = task.entries[2];
     task.id = gid;
@@ -274,7 +273,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
     });
     newuri.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            taskEventAddUri(task, gid, event);
+            taskEventAddUri(task, gid);
         }
     });
     options.addEventListener('change', (event) => {
