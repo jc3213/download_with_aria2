@@ -282,9 +282,8 @@ const clientHandlers = {
 };
 
 async function aria2ClientMessage({method, params}) {
-    let gid = params[0].gid;
     let handler = clientHandlers[method] ?? clientHandlers['default'];
-    handler(gid);
+    handler(params[0].gid);
     chrome.action.setBadgeText({text: !aria2Active ? '' : String(aria2Active)});
 }
 
