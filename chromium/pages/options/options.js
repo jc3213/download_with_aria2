@@ -64,7 +64,7 @@ function optionsHistoryAdd(id, new_value, undo) {
     }
 }
 
-document.addEventListener('change', (event) => {
+optionsPane.addEventListener('change', (event) => {
     let entry = event.target;
     let {name, value, type, checked} = entry;
     if (!name) {
@@ -73,6 +73,7 @@ document.addEventListener('change', (event) => {
     switch (type) {
         case 'number': 
             value = value | 0;
+            break;
         case 'checkbox':
             value = checked;
             if (entry.dataset.key) {
@@ -81,6 +82,12 @@ document.addEventListener('change', (event) => {
             break;
     }
     optionsHistoryAdd(name, value, {old_value: updated[name], type, entry});
+});
+
+jsonrpcPane.addEventListener('change', (event) => {
+    let entry = event.target;
+    let {name, value} = event.target;
+    optionsHistoryAdd(name, value, {old_value: updated[name], type: 'text', entry});
 });
 
 const menuEventHandlers = {
