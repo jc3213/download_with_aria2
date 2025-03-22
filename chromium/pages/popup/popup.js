@@ -156,7 +156,7 @@ const removeHandlers = {
     'complete': { method: 'aria2.removeDownloadResult', removed: 'stopped'},
     'removed': { method: 'aria2.removeDownloadResult', removed: 'stopped'},
     'error': { method: 'aria2.removeDownloadResult', removed: 'stopped'}
-}
+};
 
 async function taskEventRemove(task, gid) {
     let {method, removed} = removeHandlers[task.status];
@@ -212,15 +212,16 @@ async function taskEventRetry(task, gid) {
 }
 
 const pauseHandlers = {
-    'active': 'aria2.forcePause',
-    'waiting': 'aria2.forcePause',
-    'paused': 'aria2.unpause'
-}
+    'active': {method: 'aria2.forcePause', queue: 'paused'},
+    'waiting': {method: 'aria2.forcePause', queue: 'paused'},
+    'paused': {method: 'aria2.unpause', queue: 'waiting'}
+};
 
 async function taskEventPause(task, gid) {
-    let method = pauseHandlers[task.status];
+    let {method, queue} = pauseHandlers[task.status] ?? {};
     if (method) {
         await aria2RPC.call({method, params: [gid]});
+        aria2Queue[queue].appendChild(task);
     }
 }
 
