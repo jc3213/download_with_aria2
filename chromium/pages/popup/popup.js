@@ -222,6 +222,7 @@ async function taskEventPause(task, gid) {
     if (method) {
         await aria2RPC.call({method, params: [gid]});
         aria2Queue[queue].appendChild(task);
+        task.status = queue;
     }
 }
 
