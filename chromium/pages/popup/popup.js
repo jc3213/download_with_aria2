@@ -213,16 +213,15 @@ async function taskEventRetry(task, gid) {
 }
 
 const pauseHandlers = {
-    'active': {method: 'aria2.forcePause', queue: 'paused'},
-    'waiting': {method: 'aria2.forcePause', queue: 'paused'},
-    'paused': {method: 'aria2.unpause', queue: 'waiting'},
+    'active': 'aria2.forcePause',
+    'waiting': 'aria2.forcePause',
+    'paused': 'aria2.unpause'
 }
 
 async function taskEventPause(task, gid) {
-    let {method, queue} = pauseHandlers[task.status] ?? {};
+    let method = pauseHandlers[task.status];
     if (method) {
         await aria2RPC.call({method, params: [gid]});
-        aria2Queue[queue].appendChild(task);
     }
 }
 
@@ -262,8 +261,8 @@ function taskElementCreate(gid, status, bittorrent, files) {
     let retry = menu.children[2];
     let change = flist.children[0].children[1];
     let newuri = ulist.children[0].children[1];
-    Object.assign(task, {name, current, day, hour, minute, second, total, network, download, upload, meter, ratio, options, flist, ulist, retry, newuri, change, chosen: {}, checks: []});
-    task.entries = task.options.querySelectorAll('[name]');
+    Object.assign(task, {name, current, day, hour, minute, second, total, network, download, upload, meter, ratio, flist, ulist, retry, newuri, change, chosen: {}, checks: []});
+    task.entries = options.querySelectorAll('[name]');
     task.proxy = task.entries[2];
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
