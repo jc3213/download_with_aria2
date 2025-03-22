@@ -80,9 +80,8 @@ const clientHandlers = {
 };
 
 function aria2ClientMessage({method, params}) {
-    let {gid} = params[0];
     let handler = clientHandlers[method] ?? clientHandlers['default'];
-    handler(gid);
+    handler(params[0].gid);
 }
 
 async function aria2ClientUpdate() {
