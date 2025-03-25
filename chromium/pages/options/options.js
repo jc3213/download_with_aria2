@@ -260,7 +260,7 @@ const matchEventHandlers = {
     'tips_match_remove': matchEventRemove
 };
 
-function matchEventAddNew(id, list, event, entry) {
+function matchEventAddNew(id, list, entry) {
     let old_value = updated[id];
     let new_value = [...old_value];
     let add = [];
@@ -285,7 +285,7 @@ function matchEventResort(id, list) {
     optionsHistoryAdd(id, new_value, {old_value, type: 'resort', resort: {list, new_order, old_order}});
 }
 
-function matchEventRemove(id, list, event) {
+function matchEventRemove(id, list, entry, event) {
     let rule = event.target.parentNode;
     let value = rule.title;
     let old_value = updated[id];
@@ -304,12 +304,12 @@ optionsMatches.forEach((match) => {
     match.addEventListener('click', (event) => {
         let handler = matchEventHandlers[event.target.getAttribute('i18n-tips')];
         if (handler) {
-            handler(id, list, event, entry);
+            handler(id, list, entry, event);
         }
     });
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            matchEventAddNew(id, list, event, entry);
+            matchEventAddNew(id, list, entry, event);
         }
     });
 });

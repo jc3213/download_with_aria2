@@ -35,14 +35,18 @@
             </div>
             <div class="flex align">
                 <button id="goto-jsonrpc" i18n="option_aria2"></button>
-                <div class="flex flat" i18n-tips="tips_jsonrpc_retries">
+                <div class="flex" i18n-tips="tips_jsonrpc_retries">
                     <h4 i18n="option_jsonrpc_retries"></h4>
-                    <input name="jsonrpc_retries" type="number" min="-1" max="30" setp="1">
+                    <div class="flat">
+                        <input name="jsonrpc_retries" type="number" min="-1" max="30" setp="1">
+                    </div>
                 </div>
                 <div class="flex flat" i18n-tips="tips_jsonrpc_timeout">
                     <h4 i18n="option_jsonrpc_timeout"></h4>
-                    <input name="jsonrpc_timeout" type="number" min="3" max="20" step="1">
-                    <span i18n="time_second_full"></span>
+                    <div class="flat">
+                        <input name="jsonrpc_timeout" type="number" min="3" max="20" step="1">
+                        <span i18n="time_second_full"></span>
+                    </div>
                 </div>
             </div>
             <h1 i18n="option_task_manager"></h1>
@@ -50,10 +54,12 @@
                 <input id="manager_newtab" name="manager_newtab" type="checkbox">
                 <label for="manager_newtab" i18n="option_manager_newtab"></label>
             </div>
-            <div class="groupitem flex flat" i18n-tips="tips_manager_interval">
+            <div class="groupitem flex" i18n-tips="tips_manager_interval">
                 <h4 i18n="option_manager_interval"></h4>
-                <input name="manager_interval" type="number" min="5" max="30" step="1">
-                <span i18n="time_second_full"></span>
+                <div class="flat">
+                    <input name="manager_interval" type="number" min="5" max="30" step="1">
+                    <span i18n="time_second_full"></span>
+                </div>
             </div>
             <h1 i18n="option_context"></h1>
             <div class="groupitem" i18n-tips="tips_context_enabled">

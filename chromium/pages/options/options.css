@@ -56,17 +56,16 @@ input[type="checkbox"] + label {
     margin: 28px 0px;
 }
 
-.flex > .flat:first-of-type {
+.flex > .flex:first-of-type {
     margin: 0px 30px;
 }
 
-.flex > .flat:last-of-type,
 .flat > input {
-    flex: 1;
+    margin-top: 1px;
 }
 
-.flat > span {
-    margin-top: 2px;
+.flat {
+    flex: 1;
 }
 
 .matches {
