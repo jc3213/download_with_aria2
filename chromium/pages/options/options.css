@@ -60,12 +60,10 @@ input[type="checkbox"] + label {
     margin: 0px 30px;
 }
 
-.flat > input {
-    margin-top: 1px;
-}
-
-.flat {
+.flex > .flex:nth-child(3),
+.flex > input {
     flex: 1;
+    height: 23px;
 }
 
 .matches {
@@ -90,18 +88,18 @@ input[type="checkbox"] + label {
     height: 59px;
 }
 
-.list > * {
+.rule {
     border-style: outset;
     border-width: 1px;
     display: flex;
 }
 
-.list > * > div {
+.rule > div {
     flex: 1;
     overflow: hidden;
 }
 
-.list button {
+.rule > button {
     padding: 0px;
 }
 
