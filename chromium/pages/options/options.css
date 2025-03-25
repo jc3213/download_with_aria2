@@ -60,12 +60,8 @@ input[type="checkbox"] + label {
     margin: 0px 30px;
 }
 
-.flex > .flat:last-of-type {
-    flex: 1;
-}
-
+.flex > .flat:last-of-type,
 .flat > input {
-    margin-top: 1px;
     flex: 1;
 }
 
