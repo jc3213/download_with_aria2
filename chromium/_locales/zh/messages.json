@@ -278,35 +278,20 @@
     "tips_option_capture_webrequest": {
         "message": "捕获网络请求而非下载请求，可能存在问题"
     },
-    "option_capture_size_include": {
-        "message": "捕获文件超过"
-    },
-    "tips_option_capture_size_include": {
-        "message": "捕获文件大小超过所设置容量的下载"
-    },
     "option_capture_size_exclude": {
-        "message": "忽略文件低于"
+        "message": "忽略文件大小"
     },
     "tips_option_capture_size_exclude": {
-        "message": "忽略文件大小低于锁设置容量的下载"
-    },
-    "tips_option_capture_include": {
-        "message": "捕获来自所设置域名的下载"
+        "message": "忽略低于所设置文件大小的下载"
     },
     "tips_option_capture_exclude": {
         "message": "忽略来自所设置域名的下载"
-    },
-    "option_capture_type_include": {
-        "message": "监视文件后缀"
-    },
-    "tips_option_capture_type_include": {
-        "message": "捕获拥有所设置文件后缀的下载"
     },
     "option_capture_type_exclude": {
         "message": "忽略文件后缀"
     },
     "tips_option_capture_type_exclude": {
-        "message": "忽略拥有所设置文件后缀的下载"
+        "message": "忽略满足所设置文件后缀的下载"
     },
     "popup_menu": {
         "message": "功能菜单"

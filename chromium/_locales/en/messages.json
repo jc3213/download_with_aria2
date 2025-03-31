@@ -278,29 +278,14 @@
     "tips_option_capture_webrequest": {
         "message": "Enable capture web requests instead of downloads, may be buggy"
     },
-    "option_capture_size_include": {
-        "message": "Include File Size Above"
-    },
-    "tips_option_capture_size_include": {
-        "message": "Capture browser downloads those are above the size"
-    },
     "option_capture_size_exclude": {
-        "message": "Exclude File Size Below"
+        "message": "Exclude File Size"
     },
     "tips_option_capture_size_exclude": {
         "message": "Ignore browser downloads those are below the size"
     },
-    "tips_option_capture_include": {
-        "message": "Capture browser downloads from these hosts"
-    },
     "tips_option_capture_exclude": {
         "message": "Ignore browser downloads from these hosts"
-    },
-    "option_capture_type_include": {
-        "message": "Includes File Extensions"
-    },
-    "tips_option_capture_type_include": {
-        "message": "Capture browser downloads with these file extensions"
     },
     "option_capture_type_exclude": {
         "message": "Exclude File Extensions"

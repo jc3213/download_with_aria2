@@ -145,15 +145,7 @@
                 <label for="capture_webrequest" i18n="option_capture_webrequest"></label>
             </div>
             <div class="matches align group" data-rel="capture_enabled">
-                <div class="groupitem" i18n-tips="tips_capture_size_include">
-                    <h4 i18n="option_capture_size_include"></h4>
-                    <div>
-                        <input name="capture_size_include" type="number" min="0">
-                        <span>MB</span>
-                    </div>
-                    <i class="disabled">0</i>
-                </div>
-                <div class="groupitem" i18n-tips="tips_capture_size_exclude">
+                <div i18n-tips="tips_capture_size_exclude">
                     <h4 i18n="option_capture_size_exclude"></h4>
                     <div>
                         <input name="capture_size_exclude" type="number" min="0">
@@ -161,16 +153,7 @@
                     </div>
                     <i class="disabled">0</i>
                 </div>
-                <div id="capture_include" class="align" i18n-tips="tips_capture_include">
-                    <div class="flexmenu">
-                        <h4 i18n="option_match_include"></h4>
-                        <input type="text">
-                        <button i18n-tips="tips_match_addnew">➕</button>
-                        <button i18n-tips="tips_match_resort">🧲</button>
-                    </div>
-                    <div class="list"></div>
-                </div>
-                <div id="capture_exclude" i18n-tips="tips_capture_exclude">
+                <div id="capture_host_exclude" class="align" i18n-tips="tips_capture_exclude">
                     <div class="flexmenu">
                         <h4 i18n="option_match_exclude"></h4>
                         <input type="text">
@@ -179,16 +162,7 @@
                     </div>
                     <div class="list"></div>
                 </div>
-                <div id="capture_type_include" class="align" i18n-tips="tips_capture_type_include">
-                    <div class="flexmenu">
-                        <h4 i18n="option_capture_type_include"></h4>
-                        <input type="text">
-                        <button i18n-tips="tips_match_addnew">➕</button>
-                        <button i18n-tips="tips_match_resort">🧲</button>
-                    </div>
-                    <div class="list listx"></div>
-                </div>
-                <div id="capture_type_exclude" i18n-tips="tips_capture_type_exclude">
+                <div id="capture_type_exclude" class="align" i18n-tips="tips_capture_type_exclude">
                     <div class="flexmenu">
                         <h4 i18n="option_capture_type_exclude"></h4>
                         <input type="text">

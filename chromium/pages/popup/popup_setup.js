@@ -59,7 +59,7 @@ function aria2ToolbarSetup() {
     queuePane.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         let css = event.clientX > 487 ? 'right: 0px;' : 'left: ' + event.clientX + 'px;';
-        css += event.clientY > 391 ? 'top: auto; bottom: 0px;' : 'top: ' + event.clientY + 'px;';
+        css += event.clientY > 391 ? 'bottom: 0px;' : 'top: ' + event.clientY + 'px;';
         filterPane.style.cssText = css + 'display: block;';
     });
     queuePane.addEventListener('click', (event) => {
