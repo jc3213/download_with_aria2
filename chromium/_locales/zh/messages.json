@@ -284,7 +284,7 @@
     "tips_option_capture_size_exclude": {
         "message": "忽略低于所设置文件大小的下载"
     },
-    "tips_option_capture_exclude": {
+    "tips_option_capture_host_exclude": {
         "message": "忽略来自所设置域名的下载"
     },
     "option_capture_type_exclude": {

@@ -284,7 +284,7 @@
     "tips_option_capture_size_exclude": {
         "message": "Ignore browser downloads those are below the size"
     },
-    "tips_option_capture_exclude": {
+    "tips_option_capture_host_exclude": {
         "message": "Ignore browser downloads from these hosts"
     },
     "option_capture_type_exclude": {
