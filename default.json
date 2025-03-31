@@ -1,11 +1,8 @@
 {
     "capture_enabled": false,
-    "capture_exclude": [],
-    "capture_size_include": 0,
+    "capture_host_exclude": [],
     "capture_size_exclude": 0,
-    "capture_include": [],
     "capture_type_exclude": [],
-    "capture_type_include": [],
     "capture_webrequest": false,
     "context_allimages": true,
     "context_cascade": true,
