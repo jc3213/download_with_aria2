@@ -178,11 +178,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
         return;
     }
     if (type === 'image') {
-        inspect[url] = inspect.images.length;
         inspect.images.push({url, headers: requestHeaders});
-    } else {
-        inspect[url] = requestHeaders;
     }
+    inspect[url] = requestHeaders;
 }, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Headers);
 
 chrome.action ??= chrome.browserAction;
