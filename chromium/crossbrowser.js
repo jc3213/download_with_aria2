@@ -76,7 +76,8 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
 
 async function aria2ImagesPrompt(info, tab) {
     let id = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Inspect[id] = { storage: aria2Storage, options: aria2Config, manifest: aria2Manifest, images: aria2Inspect[tab.id].images, filter: aria2Headers };
+    let options = {...aria2Config, referer: tab.url};
+    aria2Inspect[id] = { storage: aria2Storage, options, images: aria2Inspect[tab.id].images, manifest: aria2Manifest, filter: aria2Headers };
 }
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -151,7 +152,7 @@ chrome.tabs.query({}, (tabs) => {
 });
 
 chrome.tabs.onCreated.addListener(({id, url}) => {
-    aria2Inspect[id] = { images: [], url };
+    aria2Inspect[id] ??= { images: [], url };
     aria2Inspect.tabs.push(id);
 });
 
@@ -178,7 +179,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
         return;
     }
     if (type === 'image') {
-        inspect.images.push({url, headers: requestHeaders});
+        inspect.images.push(url);
     }
     inspect[url] = requestHeaders;
 }, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Headers);
