@@ -63,7 +63,7 @@ function menuEventSubmit() {
     let params = [];
     aria2Images.forEach(({src, alt, header, classList}) => {
         if (classList.contains('checked')) {
-            params.push({ url: src, options: {out: alt, header, ...aria2Config} });
+            params.push({ url: src, options: {...aria2Config, out: alt} });
         }
     });
     chrome.runtime.sendMessage({action: 'jsonrpc_download', params});
@@ -87,6 +87,7 @@ document.getElementById('proxy').addEventListener('click', (event) => {
 
 chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, manifest, filter}) => {
     aria2Storage = storage;
+    aria2Referer = options.referer;
     manifest.manifest_version === 2 ? aria2HeadersMV2(images, filter) : aria2HeadersMV3(images);
     galleryPane.append(...aria2Images);
     jsonrpcEntries.forEach((entry) => {
@@ -97,31 +98,27 @@ chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, imag
 function getImagePreview(url, headers) {
     let img = document.createElement('img');
     img.src = img.title = url;
-    img.header = headers.map(({name, value}) => name + ': ' + value);
     aria2Images.push(img);
 }
 
 function aria2HeadersMV2(images, filter) {
-    let rules = {};
-    images.forEach(({url, headers}) => {
-        getImagePreview(url, headers);
-        rules[url] = headers;
-    });
-    chrome.webRequest.onBeforeSendHeaders.addListener(({url}) => {
-        return {requestHeaders: rules[url]};
+    images.forEach(getImagePreview);
+    chrome.webRequest.onBeforeSendHeaders.addListener(({requestHeaders}) => {
+        requestHeaders.push({name: 'Referer', value: aria2Referer});;
+        return {requestHeaders};
     }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['blocking', ...filter]);
 }
 
 function aria2HeadersMV3(images) {
     let addRules = [];
-    images.forEach(({url, headers}, index) => {
-        getImagePreview(url, headers);
+    images.forEach((url, index) => {
+        getImagePreview(url);
         addRules.push({
             id: index,
             priority: 1,
             action: {
-                type:'modifyHeaders',
-                requestHeaders: headers.map(({name, value}) => ({header: name, operation: 'set', value}))
+                type: 'modifyHeaders',
+                requestHeaders: [ { header: "Referer", operation: "set", value: aria2Referer } ]
             },
             condition: {
                 urlFilter: url,
