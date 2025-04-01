@@ -9,7 +9,7 @@ function aria2CaptureSwitch() {
         browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
         browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
     } else if (aria2Storage['capture_webrequest']) {
-        browser.webRequest.onHeadersReceived.addListener(aria2CaptureWebRequest, {urls: [ 'http://*/*', 'https://*/*' ], types: ['main_frame', 'sub_frame', 'other']}, ['blocking', 'responseHeaders']);
+        browser.webRequest.onHeadersReceived.addListener(aria2CaptureWebRequest, {urls: [ 'http://*/*', 'https://*/*' ], types: ['main_frame', 'sub_frame']}, ['blocking', 'responseHeaders']);
         browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
     } else {
         browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
@@ -22,7 +22,7 @@ async function aria2CaptureDownloads({id, url, referrer, filename, fileSize}) {
         return;
     }
     let hostname = getHostname(referrer);
-    let captured = aria2CaptureResult(hostname, filename, fileSize);
+    let captured = aria2CaptureResult(hostname, filename, Math.abs(fileSize));
     if (captured) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
@@ -66,7 +66,7 @@ async function getFirefoxOptions(filename) {
             return {out, dir: aria2Storage['folder_defined']};
         }
     }
-    return {out, dir: null};
+    return {out};
 }
 
 function decodeFileName(disposition) {
@@ -85,7 +85,8 @@ function decodeFileName(disposition) {
     if (match) {
         return decodeNonASCII(match.pop());
     }
-    return '';
+    console.log(text);
+    return null;
 }
 
 function decodeISO8859(text) {
@@ -134,10 +135,7 @@ function decodeRFC2047(text) {
 }
 
 function decodeNonASCII(text) {
-    try {
-        return /[^\u0000-\u007f]/.test(text) ? decodeISO8859(text) : decodeURI(text);
-    }
-    catch {
-        return '';
-    }
+    console.log(text);
+    let result = /[^\u0000-\u007f]/.test(text) ? decodeISO8859(text) : decodeURI(text);
+    return result || null;
 }
