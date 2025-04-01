@@ -223,7 +223,8 @@ function aria2UpdateStorage(json) {
 }
 
 chrome.storage.sync.get(null, (json) => {
-    aria2UpdateStorage(json);
+    aria2Hotfix415(json);
+    //aria2UpdateStorage(json);
     aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
     aria2RPC.retries = aria2Storage['jsonrpc_retries'];
     aria2RPC.timeout = aria2Storage['jsonrpc_timeout'];
@@ -231,6 +232,19 @@ chrome.storage.sync.get(null, (json) => {
     aria2RPC.onclose = aria2ClientClosed;
     aria2RPC.onmessage = aria2ClientMessage;
 });
+
+function aria2Hotfix415(json) {
+    if ('capture_include' in json) {
+        delete json['capture_include'];
+        json['capture_host_exclude'] = json['capture_exclude'];
+        delete json['capture_exclude'];
+        delete json['capture_type_include'];
+        delete json['capture_size_include'];
+        chrome.storage.sync.set(json);
+        chrome.storage.sync.remove(['capture_include', 'capture_exclude', 'capture_type_include', 'capture_size_include', 'checkbox']);
+    }
+    aria2UpdateStorage(json);
+}
 
 async function aria2ClientOpened() {
     let [options, version, active] = await aria2RPC.call( {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'} );
@@ -282,7 +296,7 @@ async function aria2ClientMessage({method, params}) {
 function aria2CaptureResult(hostname, filename, filesize) {
     if (aria2Updated['capture_host_exclude'].test(hostname) ||
         aria2Updated['capture_type_exclude'].test(filename) ||
-        aria2Updated['capture_size_exclude'] >= filesize) {
+        aria2Updated['capture_size_exclude'] > filesize) {
         return false;
     }
     return true;
