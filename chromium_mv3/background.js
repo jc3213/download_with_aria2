@@ -8,7 +8,7 @@ function aria2CaptureFilename({id, finalUrl, referrer, filename, fileSize}) {
     let captured = aria2CaptureResult(hostname, filename, fileSize);
     if (captured) {
         chrome.downloads.erase({id});
-        aria2DownloadHandler(finalUr, referrerl, {out: filename});
+        aria2DownloadHandler(finalUrl, referrerl, {out: filename});
     }
 }
 
