@@ -109,10 +109,8 @@ function aria2HeadersMV2(regexp, filter) {
 }
 
 async function aria2HeadersMV3(regexp) {
-    let rules = await chrome.declarativeNetRequest.getDynamicRules();
-    let removeRuleIds = rules.map((rule) => rule.id);
     let addRules = [{
-        id: Date.now() % 1000,
+        id: 1,
         priority: 1,
         action: {
             type: 'modifyHeaders',
@@ -123,5 +121,6 @@ async function aria2HeadersMV3(regexp) {
             resourceTypes: ['image']
         }
     }];
-    chrome.declarativeNetRequest.updateDynamicRules({addRules, removeRuleIds});
+    let removeRuleIds = [1];
+    chrome.declarativeNetRequest.updateDynamicRules({ addRules, removeRuleIds });
 }
