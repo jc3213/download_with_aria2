@@ -76,8 +76,7 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
 
 async function aria2ImagesPrompt(info, tab) {
     let id = await getPopupWindow('/pages/images/images.html', 680);
-    let options = {...aria2Config, referer: tab.url};
-    aria2Inspect[id] = { storage: aria2Storage, options, images: aria2Inspect[tab.id].images, manifest: aria2Manifest, filter: aria2Headers };
+    aria2Inspect[id] = { ...aria2Inspect[tab.id], manifest: aria2Manifest, filter: aria2Headers, storage: aria2Storage, options: aria2Config };
 }
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -144,17 +143,16 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     return true;
 });
 
+function aria2TabQuery({id, url}) {
+    aria2Inspect[id] ??= { images: [], regexp: [], url };
+    aria2Inspect.tabs.push(id);
+}
+
 chrome.tabs.query({}, (tabs) => {
-    tabs.forEach(({id, url}) => {
-        aria2Inspect[id] = { images: [], url };
-        aria2Inspect.tabs.push(id);
-    });
+    tabs.forEach(aria2TabQuery);
 });
 
-chrome.tabs.onCreated.addListener(({id, url}) => {
-    aria2Inspect[id] ??= { images: [], url };
-    aria2Inspect.tabs.push(id);
-});
+chrome.tabs.onCreated.addListener(aria2TabQuery);
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
@@ -163,22 +161,27 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
     if (frameId === 0) {
-        aria2Inspect[tabId] = { images: [], url };
+        aria2Inspect[tabId] = { images: [], regexp: [], url };
     }
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
     if (aria2Inspect[tabId].url !== url) {
-        aria2Inspect[tabId] = { images: [], url };
+        aria2Inspect[tabId] = { images: [], regexp: [], url };
     }
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
-    let inspect = aria2Inspect[tabId] ??= { images: [] };
-    if (inspect[url]) {
+    let inspect = aria2Inspect[tabId];
+    if (inspect[url] || inspect.manifest) {
         return;
     }
     if (type === 'image') {
+        let host = getHostname(url);
+        if (!inspect[host]) {
+            inspect.regexp.push(host);
+            inspect[host] = true;
+        }
         inspect.images.push(url);
     }
     inspect[url] = requestHeaders;

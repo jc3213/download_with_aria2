@@ -85,46 +85,41 @@ document.getElementById('proxy').addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
 
-chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, manifest, filter}) => {
+chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, regexp, url, manifest, filter}) => {
     aria2Storage = storage;
-    aria2Referer = options.referer;
-    manifest.manifest_version === 2 ? aria2HeadersMV2(images, filter) : aria2HeadersMV3(images);
-    galleryPane.append(...aria2Images);
+    aria2Referer = options['referer'] = url;
+    manifest.manifest_version === 2 ? aria2HeadersMV2(regexp, filter) : aria2HeadersMV3(regexp);
     jsonrpcEntries.forEach((entry) => {
         entry.value = aria2Config[entry.name] = options[entry.name] ?? '';
     });
+    images.forEach((url) => {
+        let img = document.createElement('img');
+        img.src = img.title = url;
+        aria2Images.push(img);
+        galleryPane.appendChild(img);
+    });
 });
 
-function getImagePreview(url, headers) {
-    let img = document.createElement('img');
-    img.src = img.title = url;
-    aria2Images.push(img);
-}
-
-function aria2HeadersMV2(images, filter) {
-    images.forEach(getImagePreview);
+function aria2HeadersMV2(regexp, filter) {
+    let urls = regexp.map((host) => '*://' + host + '/*');
     chrome.webRequest.onBeforeSendHeaders.addListener(({requestHeaders}) => {
         requestHeaders.push({name: 'Referer', value: aria2Referer});;
         return {requestHeaders};
-    }, {urls: ['http://*/*', 'https://*/*'], types: ['image']}, ['blocking', ...filter]);
+    }, {urls, types: ['image']}, ['blocking', ...filter]);
 }
 
-function aria2HeadersMV3(images) {
-    let addRules = [];
-    images.forEach((url, index) => {
-        getImagePreview(url);
-        addRules.push({
-            id: index,
-            priority: 1,
-            action: {
-                type: 'modifyHeaders',
-                requestHeaders: [ { header: "Referer", operation: "set", value: aria2Referer } ]
-            },
-            condition: {
-                urlFilter: url,
-                resourceTypes: ['image']
-            }
-        });
-    });
+function aria2HeadersMV3(regexp) {
+    let addRules = [{
+        id: Date.now() % 1000,
+        priority: 1,
+        action: {
+            type: 'modifyHeaders',
+            requestHeaders: [ { header: "Referer", operation: "set", value: aria2Referer } ]
+        },
+        condition: {
+            regexFilter: regexp.join('|'),
+            resourceTypes: ['image']
+        }
+    }];
     chrome.declarativeNetRequest.updateDynamicRules({addRules});
 }
