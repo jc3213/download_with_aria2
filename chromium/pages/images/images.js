@@ -121,6 +121,5 @@ async function aria2HeadersMV3(regexp) {
             resourceTypes: ['image']
         }
     }];
-    let removeRuleIds = [1];
-    chrome.declarativeNetRequest.updateDynamicRules({ addRules, removeRuleIds });
+    chrome.declarativeNetRequest.updateDynamicRules({ addRules, removeRuleIds: [1] });
 }
