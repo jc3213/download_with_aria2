@@ -40,10 +40,7 @@ let aria2Manifest = chrome.runtime.getManifest();
 let aria2Inspect = { tabs: [] };
 let aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
-chrome.runtime.onInstalled.addListener(({reason, previousVersion}) => {
-    if (reason === 'install') {
-        chrome.storage.sync.set(aria2Default);
-    }
+chrome.runtime.onInstalled.addListener(({reason}) => {
     aria2WhenInstall(reason);
 });
 
@@ -227,7 +224,7 @@ function aria2UpdateStorage(json) {
 }
 
 chrome.storage.sync.get(null, (json) => {
-    aria2UpdateStorage(json);
+    aria2UpdateStorage({...aria2Default, ...json});
     aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
     aria2RPC.retries = aria2Storage['jsonrpc_retries'];
     aria2RPC.timeout = aria2Storage['jsonrpc_timeout'];
