@@ -40,10 +40,6 @@ let aria2Manifest = chrome.runtime.getManifest();
 let aria2Inspect = { tabs: [] };
 let aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
-chrome.runtime.onInstalled.addListener(({reason}) => {
-    aria2WhenInstall(reason);
-});
-
 const contextMenusHandlers = {
     'aria2c_this_url': (info, tab) => aria2DownloadHandler(info.linkUrl, tab.url, {}, tab.id),
     'aria2c_this_image': (info, tab) => aria2DownloadHandler(info.srcUrl, tab.url, {}, tab.id),
@@ -185,6 +181,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
 }, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Headers);
 
 chrome.action ??= chrome.browserAction;
+
 chrome.action.onClicked.addListener((tab) => {
     let url = chrome.runtime.getURL('/pages/popup/popup.html');
     chrome.tabs.query({currentWindow: true}, (tabs) => {
@@ -222,6 +219,10 @@ function aria2UpdateStorage(json) {
         getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], menuId);
     }
 }
+
+chrome.runtime.onInstalled.addListener(({reason}) => {
+    aria2WhenInstall(reason);
+});
 
 chrome.storage.sync.get(null, (json) => {
     aria2UpdateStorage({...aria2Default, ...json});
