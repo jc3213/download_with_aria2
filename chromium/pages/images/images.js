@@ -108,7 +108,9 @@ function aria2HeadersMV2(regexp, filter) {
     }, {urls, types: ['image']}, ['blocking', ...filter]);
 }
 
-function aria2HeadersMV3(regexp) {
+async function aria2HeadersMV3(regexp) {
+    let rules = await chrome.declarativeNetRequest.getDynamicRules();
+    let removeRuleIds = rules.map((rule) => rule.id);
     let addRules = [{
         id: Date.now() % 1000,
         priority: 1,
@@ -121,5 +123,5 @@ function aria2HeadersMV3(regexp) {
             resourceTypes: ['image']
         }
     }];
-    chrome.declarativeNetRequest.updateDynamicRules({addRules});
+    chrome.declarativeNetRequest.updateDynamicRules({addRules, removeRuleIds});
 }
