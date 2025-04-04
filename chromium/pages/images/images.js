@@ -87,8 +87,8 @@ document.getElementById('proxy').addEventListener('click', (event) => {
 
 chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, regexp, url, manifest, filter}) => {
     aria2Storage = storage;
-    aria2Referer = options['referer'] = url;
-    manifest.manifest_version === 2 ? aria2HeadersMV2(regexp, filter) : aria2HeadersMV3(regexp);
+    options['referer'] = url;
+    manifest.manifest_version === 2 ? aria2HeadersMV2(regexp, url, filter) : aria2HeadersMV3(regexp, url);
     jsonrpcEntries.forEach((entry) => {
         entry.value = aria2Config[entry.name] = options[entry.name] ?? '';
     });
@@ -100,21 +100,21 @@ chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, imag
     });
 });
 
-function aria2HeadersMV2(regexp, filter) {
+function aria2HeadersMV2(regexp, value, filter) {
     let urls = regexp.map((host) => '*://' + host + '/*');
     chrome.webRequest.onBeforeSendHeaders.addListener(({requestHeaders}) => {
-        requestHeaders.push({name: 'Referer', value: aria2Referer});;
+        requestHeaders.push({ name: 'Referer', value });;
         return {requestHeaders};
     }, {urls, types: ['image']}, ['blocking', ...filter]);
 }
 
-async function aria2HeadersMV3(regexp) {
+function aria2HeadersMV3(regexp, value) {
     let addRules = [{
         id: 1,
         priority: 1,
         action: {
             type: 'modifyHeaders',
-            requestHeaders: [ { header: "Referer", operation: "set", value: aria2Referer } ]
+            requestHeaders: [{ header: "Referer", operation: "set", value }]
         },
         condition: {
             regexFilter: regexp.join('|'),
