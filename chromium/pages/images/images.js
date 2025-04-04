@@ -117,9 +117,9 @@ function aria2HeadersMV3(regexp, value) {
             requestHeaders: [{ header: "Referer", operation: "set", value }]
         },
         condition: {
-            regexFilter: regexp.join('|'),
+            requestDomains: regexp,
             resourceTypes: ['image']
         }
     }];
-    chrome.declarativeNetRequest.updateDynamicRules({ addRules, removeRuleIds: [1] });
+    chrome.declarativeNetRequest.updateSessionRules({ addRules, removeRuleIds: [1] });
 }
