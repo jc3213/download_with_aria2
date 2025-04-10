@@ -1,7 +1,7 @@
 let aria2Tasks = {};
 let aria2Queue = {};
 let aria2Stats = {};
-let aria2Filter = localStorage['queues']?.match(/[^;]+/g) ?? [];
+let aria2Filter = new Set(localStorage['queues']?.match(/[^;]+/g) ?? []);
 let aria2Proxy;
 let aria2Delay;
 let aria2Interval;
@@ -18,10 +18,9 @@ manager.add(...aria2Filter);
 
 filterPane.addEventListener('click', (event) => {
     let id = event.target.dataset.fid;
-    let index = aria2Filter.indexOf(id);
-    index === -1 ? aria2Filter.push(id) : aria2Filter.splice(index, 1);
     manager.toggle(id);
-    localStorage['queues'] = aria2Filter.join(';');
+    aria2Filter.has(id) ? aria2Filter.delete(id) : aria2Filter.add(id);
+    localStorage['queues'] = [...aria2Filter].join(';');
 });
 
 const shortcutHandlers = {
