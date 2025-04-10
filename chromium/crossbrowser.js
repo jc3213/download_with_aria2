@@ -37,7 +37,7 @@ let aria2Config = {};
 let aria2Queue = {};
 let aria2Active = 0;
 let aria2Manifest = chrome.runtime.getManifest();
-let aria2Inspect = { tabs: [] };
+let aria2Inspect = {};
 let aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 const contextMenusHandlers = {
@@ -55,8 +55,7 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
         options['dir'] = aria2Storage['folder_defined'];
     }
     if (!aria2Updated['headers_exclude'].test(hostname)) {
-        tabId ??= aria2Inspect.tabs.find((id) => aria2Inspect[id][url]);
-        let headers = aria2Inspect[tabId][url] ?? [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
+        let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
             headers[ua].value = aria2Storage['headers_useragent'];
@@ -136,20 +135,18 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     return true;
 });
 
-function aria2TabQuery({id, url}) {
-    aria2Inspect[id] ??= { images: [], regexp: [], url };
-    aria2Inspect.tabs.push(id);
-}
-
 chrome.tabs.query({}, (tabs) => {
-    tabs.forEach(aria2TabQuery);
+    tabs.forEach(({id, url}) => {
+        aria2Inspect[id] ??= { images: [], regexp: [], url };
+    });
 });
 
-chrome.tabs.onCreated.addListener(aria2TabQuery);
+chrome.tabs.onCreated.addListener(({id, url}) => {
+    aria2Inspect[id] ??= { images: [], regexp: [], url };
+});
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
-    aria2Inspect.tabs.splice(aria2Inspect.tabs.indexOf(tabId), 1);
 });
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
@@ -166,7 +163,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
     let inspect = aria2Inspect[tabId];
-    if (inspect[url] || inspect.manifest) {
+    if (inspect[url]) {
         return;
     }
     if (type === 'image') {
