@@ -1,7 +1,7 @@
 body {
     display: grid;
     grid-template-columns: 200px 1fr;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto auto 1fr;
     gap: 3px;
     margin: 8px auto;
     width: 1280px;
@@ -47,18 +47,10 @@ body > ::before {
     padding: 5px;
 }
 
-#menu {
-    grid-area: 1 / 1 / 2 / 2;
-}
-
 #menu > div::before {
     display: inline-block;
     margin: 0px 8px;
     width: 40%;
-}
-
-#filter {
-    grid-area: 2 / 1 / 3 / 2;
 }
 
 #filter > :hover {
@@ -75,7 +67,7 @@ body > ::before {
 }
 
 #queue {
-    grid-area: 1 / 2 / 4 / 3;
+    grid-area: 1 / 2 / 5 / 3;
 }
 
 #queue > :nth-child(n+4) input,
