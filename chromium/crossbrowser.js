@@ -66,9 +66,10 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
     await aria2WhenStart(url);
 }
 
-async function aria2ImagesPrompt(info, tab) {
-    let id = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Inspect[id] = { ...aria2Inspect[tab.id], manifest: aria2Manifest, filter: aria2Request, storage: aria2Storage, options: aria2Config };
+async function aria2ImagesPrompt(info, {id, url}) {
+    let tab = await getPopupWindow('/pages/images/images.html', 680);
+    let {images} = aria2Inspect[id];
+    aria2Inspect[tab] = { images, url, manifest: aria2Manifest, request: aria2Request, storage: aria2Storage, options: aria2Config };
 }
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
