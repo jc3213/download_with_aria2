@@ -38,7 +38,7 @@ let aria2Queue = {};
 let aria2Active = 0;
 let aria2Manifest = chrome.runtime.getManifest();
 let aria2Inspect = {};
-let aria2Headers = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
+let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 const contextMenusHandlers = {
     'aria2c_this_url': (info, tab) => aria2DownloadHandler(info.linkUrl, tab.url, {}, tab.id),
@@ -68,7 +68,7 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
 
 async function aria2ImagesPrompt(info, tab) {
     let id = await getPopupWindow('/pages/images/images.html', 680);
-    aria2Inspect[id] = { ...aria2Inspect[tab.id], manifest: aria2Manifest, filter: aria2Headers, storage: aria2Storage, options: aria2Config };
+    aria2Inspect[id] = { ...aria2Inspect[tab.id], manifest: aria2Manifest, filter: aria2Request, storage: aria2Storage, options: aria2Config };
 }
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -137,12 +137,12 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 
 chrome.tabs.query({}, (tabs) => {
     tabs.forEach(({id, url}) => {
-        aria2Inspect[id] ??= { images: [], regexp: [], url };
+        aria2Inspect[id] ??= { images: [], url };
     });
 });
 
 chrome.tabs.onCreated.addListener(({id, url}) => {
-    aria2Inspect[id] ??= { images: [], regexp: [], url };
+    aria2Inspect[id] ??= { images: [], url };
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
@@ -151,13 +151,13 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
     if (frameId === 0) {
-        aria2Inspect[tabId] = { images: [], regexp: [], url };
+        aria2Inspect[tabId] = { images: [], url };
     }
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
     if (aria2Inspect[tabId].url !== url) {
-        aria2Inspect[tabId] = { images: [], regexp: [], url };
+        aria2Inspect[tabId] = { images: [], url };
     }
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
@@ -167,15 +167,10 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
         return;
     }
     if (type === 'image') {
-        let host = getHostname(url);
-        if (!inspect[host]) {
-            inspect.regexp.push(host);
-            inspect[host] = true;
-        }
         inspect.images.push(url);
     }
     inspect[url] = requestHeaders;
-}, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Headers);
+}, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Request);
 
 chrome.action ??= chrome.browserAction;
 
