@@ -163,15 +163,12 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
-    let inspect = aria2Inspect[tabId];
-    if (inspect[url]) {
-        return;
-    }
-    if (type === 'image') {
-        inspect.images.push(url);
-    }
-    inspect[url] = requestHeaders;
-}, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Request);
+    aria2Inspect[tabId][url] = requestHeaders;
+}, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'other' ] }, aria2Request);
+
+chrome.webRequest.onSendHeaders.addListener(({tabId, url}) => {
+    aria2Inspect[tabId].images.push(url);
+}, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'image' ] });
 
 chrome.action ??= chrome.browserAction;
 
