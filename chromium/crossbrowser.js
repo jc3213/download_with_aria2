@@ -159,7 +159,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
     if (type !== 'image') {
         inspect[url] = requestHeaders;
     } else if (tabId !== aria2Popup) {
-        aria2Inspect[tabId].images.push(url);
+        inspect.images.push(url);
     }
 }, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Request);
 
