@@ -136,16 +136,6 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     return true;
 });
 
-chrome.tabs.query({}, (tabs) => {
-    tabs.forEach(({id, url}) => {
-        aria2Inspect[id] ??= { images: [], url };
-    });
-});
-
-chrome.tabs.onCreated.addListener(({id, url}) => {
-    aria2Inspect[id] ??= { images: [], url };
-});
-
 chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
 });
@@ -157,13 +147,14 @@ chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
-    if (aria2Inspect[tabId].url !== url) {
+    if (aria2Inspect[tabId]?.url !== url) {
         aria2Inspect[tabId] = { images: [], url };
     }
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
-    aria2Inspect[tabId][url] = requestHeaders;
+    let inspect = aria2Inspect[tabId] ??= { images: [], url };
+    inspect[url] = requestHeaders;
 }, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'other' ] }, aria2Request);
 
 chrome.webRequest.onSendHeaders.addListener(({tabId, url}) => {
