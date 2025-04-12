@@ -70,7 +70,7 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
 
 async function aria2ImagesPrompt(info, {id, url}) {
     let tab = await getPopupWindow('/pages/images/images.html', 680);
-    let {images} = aria2Inspect[id];
+    let images = aria2Inspect[id]?.images ?? {};
     aria2Inspect[tab] = { images, url, manifest: aria2Manifest, request: aria2Request, storage: aria2Storage, options: aria2Config };
 }
 
