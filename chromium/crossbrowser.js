@@ -70,7 +70,7 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
 
 async function aria2ImagesPrompt(info, {id, url}) {
     let tab = await getPopupWindow('/pages/images/images.html', 680);
-    let images = aria2Inspect[id]?.images ?? {};
+    let images = aria2Inspect[id]?.images ?? [];
     aria2Inspect[tab] = { images, url, manifest: aria2Manifest, request: aria2Request, storage: aria2Storage, options: aria2Config };
 }
 
@@ -322,13 +322,7 @@ function getFileSize(bytes) {
 }
 
 function getContextMenu(id, i18n, contexts, parentId) {
-    chrome.contextMenus.create({
-        id,
-        title: chrome.i18n.getMessage(i18n),
-        contexts,
-        documentUrlPatterns: ['http://*/*', 'https://*/*'],
-        parentId
-    });
+    chrome.contextMenus.create({ id, contexts, title: chrome.i18n.getMessage(i18n), documentUrlPatterns: ['http://*/*', 'https://*/*'], parentId });
 }
 
 function getMatchPattern(array, isFile) {
