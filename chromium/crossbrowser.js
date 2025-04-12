@@ -156,14 +156,12 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
     let inspect = aria2Inspect[tabId] ??= { images: [], url };
-    inspect[url] = requestHeaders;
-}, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'other' ] }, aria2Request);
-
-chrome.webRequest.onSendHeaders.addListener(({tabId, url}) => {
-    if (tabId !== aria2Popup) {
+    if (type !== 'image') {
+        inspect[url] = requestHeaders;
+    } else if (tabId !== aria2Popup) {
         aria2Inspect[tabId].images.push(url);
     }
-}, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'image' ] });
+}, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Request);
 
 chrome.action ??= chrome.browserAction;
 
