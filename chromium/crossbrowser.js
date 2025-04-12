@@ -41,8 +41,8 @@ let aria2Inspect = {};
 let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 const contextMenusHandlers = {
-    'aria2c_this_url': (info, tab) => aria2DownloadHandler(info.linkUrl, tab.url, {}, tab.id),
-    'aria2c_this_image': (info, tab) => aria2DownloadHandler(info.srcUrl, tab.url, {}, tab.id),
+    'aria2c_this_url': ({linkUrl}, {id, url}) => aria2DownloadHandler(linkUrl, url, {}, id),
+    'aria2c_this_image': ({srcUrl}, {id, url}) => aria2DownloadHandler(srcUrl, url, {}, id),
     'aria2c_all_images': aria2ImagesPrompt
 };
 
