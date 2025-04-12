@@ -35,6 +35,7 @@ let aria2Storage = {};
 let aria2Updated = {};
 let aria2Config = {};
 let aria2Queue = {};
+let aria2Manager = 0;
 let aria2Active = 0;
 let aria2Manifest = chrome.runtime.getManifest();
 let aria2Inspect = {};
@@ -164,10 +165,14 @@ chrome.webRequest.onSendHeaders.addListener(({tabId, url}) => {
 chrome.action ??= chrome.browserAction;
 
 chrome.action.onClicked.addListener((tab) => {
-    let url = chrome.runtime.getURL('/pages/popup/popup.html');
-    chrome.tabs.query({currentWindow: true}, (tabs) => {
-        let popup = tabs.find((tab) => tab.url === url);
-        popup ? chrome.tabs.update(popup.id, {active: true}) : chrome.tabs.create({url, active: true});
+    chrome.tabs.get(aria2Manager, (tab) => {
+        if (chrome.runtime.lastError) {
+            chrome.tabs.create({url: '/pages/popup/popup.html', active: true}, (tab) => {
+                aria2Manager = tab.id;
+            });
+        } else {
+            chrome.tabs.update(aria2Manager, {active: true});
+        }
     });
 });
 
