@@ -36,6 +36,7 @@ let aria2Updated = {};
 let aria2Config = {};
 let aria2Queue = {};
 let aria2Manager = 0;
+let aria2Popup = 0;
 let aria2Active = 0;
 let aria2Manifest = chrome.runtime.getManifest();
 let aria2Inspect = {};
@@ -159,7 +160,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
 }, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'other' ] }, aria2Request);
 
 chrome.webRequest.onSendHeaders.addListener(({tabId, url}) => {
-    aria2Inspect[tabId].images.push(url);
+    if (tabId !== aria2Popup) {
+        aria2Inspect[tabId].images.push(url);
+    }
 }, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'image' ] });
 
 chrome.action ??= chrome.browserAction;
@@ -321,7 +324,13 @@ function getFileSize(bytes) {
 }
 
 function getContextMenu(id, i18n, contexts, parentId) {
-    chrome.contextMenus.create({id, title: chrome.i18n.getMessage(i18n), contexts, documentUrlPatterns: ['http://*/*', 'https://*/*'], parentId});
+    chrome.contextMenus.create({
+        id,
+        title: chrome.i18n.getMessage(i18n),
+        contexts,
+        documentUrlPatterns: ['http://*/*', 'https://*/*'],
+        parentId
+    });
 }
 
 function getMatchPattern(array, isFile) {
@@ -358,12 +367,21 @@ function getPopupWindow(url, offsetHeight) {
         chrome.windows.getCurrent(({width, height, left, top}) => {
             top += (height - offsetHeight) / 2 | 0;
             left += (width - 710) / 2 | 0;
-            chrome.windows.create({
-                url, left, top,
-                type: 'popup',
-                width: 698,
-                height: offsetHeight
-            }, (popup) => resolve(popup.tabs[0].id));
+            let where = { top, left, height: offsetHeight, width: 698 };
+            chrome.tabs.get(aria2Popup, (tab) => {
+                if (chrome.runtime.lastError) {
+                    chrome.windows.create({ url, type: 'popup', ...where }, (popup) => {
+                        aria2Popup = popup.tabs[0].id;
+                        resolve(aria2Popup);
+                    });
+                } else {
+                    chrome.windows.update(tab.windowId, { focused: true, ...where }, (window) => {
+                        chrome.tabs.update(aria2Popup, { url, active: true }, (tab) => {
+                            resolve(aria2Popup);
+                        });
+                    });
+                }
+            });
         });
     });
 }
