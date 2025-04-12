@@ -35,11 +35,12 @@ let aria2Storage = {};
 let aria2Updated = {};
 let aria2Config = {};
 let aria2Queue = {};
+let aria2Active = 0;
 let aria2Manager = 0;
 let aria2Popup = 0;
-let aria2Active = 0;
-let aria2Manifest = chrome.runtime.getManifest();
 let aria2Inspect = {};
+let aria2Detect = {};
+let aria2Manifest = chrome.runtime.getManifest();
 let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 const contextMenusHandlers = {
@@ -68,10 +69,9 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
     await aria2WhenStart(url);
 }
 
-async function aria2ImagesPrompt(info, {id, url}) {
-    let tab = await getPopupWindow('/pages/images/images.html', 680);
-    let images = aria2Inspect[id]?.images ?? [];
-    aria2Inspect[tab] = { images, url, manifest: aria2Manifest, request: aria2Request, storage: aria2Storage, options: aria2Config };
+function aria2ImagesPrompt(info, {id, url}) {
+    aria2Detect = {id, url};
+    getPopupWindow('/pages/images/images.html', 680);
 }
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -92,9 +92,9 @@ const messageHandlers = {
     'storage_update': aria2StorageChanged,
     'jsonrpc_handshake': (response) => response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version }),
     'jsonrpc_update': aria2ConfigChanged,
-    'jsonrpc_download': aria2MessageUrls,
-    'jsonrpc_metadata': aria2MessageFiles,
-    'open_all_images': (response, sender) => response(aria2Inspect[sender.tab.id]),
+    'jsonrpc_download': aria2DownloadUrls,
+    'jsonrpc_metadata': aria2DownloadFiles,
+    'open_all_images': aria2DetectedImages,
     'open_new_download': commandsHandlers['open_new_download']
 };
 
@@ -113,7 +113,7 @@ function aria2ConfigChanged(response, options) {
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
-async function aria2MessageUrls(response, urls) {
+async function aria2DownloadUrls(response, urls) {
     let message = '';
     let session = urls.map(({url, options = {}}) => {
         message += url + '\n';
@@ -123,7 +123,7 @@ async function aria2MessageUrls(response, urls) {
     await aria2WhenStart(message);
 }
 
-async function aria2MessageFiles(response, files) {
+async function aria2DownloadFiles(response, files) {
     let message = '';
     let session = files.map(({name, metadata}) => {
         message += name + '\n';
@@ -133,8 +133,14 @@ async function aria2MessageFiles(response, files) {
     await aria2WhenStart(message);
 }
 
+function aria2DetectedImages(response) {
+    let {id, url} = aria2Detect;
+    let images = aria2Inspect[id].images ?? [];
+    response({ images, url, manifest: aria2Manifest, request: aria2Request, storage: aria2Storage, options: aria2Config });
+}
+
 chrome.runtime.onMessage.addListener((message, sender, response) => {
-    messageHandlers[message.action](response, message.params ?? sender);
+    messageHandlers[message.action](response, message.params);
     return true;
 });
 
