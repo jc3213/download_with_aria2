@@ -161,11 +161,14 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
+    if (tabId === aria2Popup) {
+        return;
+    }
     let inspect = aria2Inspect[tabId] ??= { images: [], url };
-    if (type !== 'image') {
-        inspect[url] = requestHeaders;
-    } else if (tabId !== aria2Popup) {
+    if (type === 'image') {
         inspect.images.push(url);
+    } else {
+        inspect[url] = requestHeaders;
     }
 }, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Request);
 
@@ -360,12 +363,13 @@ function getNotification(title, message) {
     });
 }
 
-function getPopupWindow(url, offsetHeight) {
+function getPopupWindow(url, height) {
     return new Promise(async (resolve) => {
-        chrome.windows.getCurrent(({width, height, left, top}) => {
-            top += (height - offsetHeight) / 2 | 0;
-            left += (width - 710) / 2 | 0;
-            let where = { top, left, height: offsetHeight, width: 698 };
+        chrome.windows.getAll({populate: false, windowTypes: ['normal']}, (windows) => {
+            let window = windows[0];
+            let top = (window.top + window.height - height) / 2 | 0;
+            let left = (window.left + window.width - 710) / 2 | 0;
+            let where = { top, left, height, width: 698 };
             chrome.tabs.get(aria2Popup, (tab) => {
                 if (chrome.runtime.lastError) {
                     chrome.windows.create({ url, type: 'popup', ...where }, (popup) => {
