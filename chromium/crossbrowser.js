@@ -186,6 +186,20 @@ chrome.action.onClicked.addListener((tab) => {
     });
 });
 
+chrome.runtime.onInstalled.addListener(({reason}) => {
+    aria2WhenInstall(reason);
+});
+
+chrome.storage.sync.get(null, (json) => {
+    aria2UpdateStorage({...aria2Default, ...json});
+    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
+    aria2RPC.retries = aria2Storage['jsonrpc_retries'];
+    aria2RPC.timeout = aria2Storage['jsonrpc_timeout'];
+    aria2RPC.onopen = aria2ClientOpened;
+    aria2RPC.onclose = aria2ClientClosed;
+    aria2RPC.onmessage = aria2ClientMessage;
+});
+
 function aria2UpdateStorage(json) {
     let menuId;
     aria2Storage = json;
@@ -215,20 +229,6 @@ function aria2UpdateStorage(json) {
         getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], menuId);
     }
 }
-
-chrome.runtime.onInstalled.addListener(({reason}) => {
-    aria2WhenInstall(reason);
-});
-
-chrome.storage.sync.get(null, (json) => {
-    aria2UpdateStorage({...aria2Default, ...json});
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
-    aria2RPC.retries = aria2Storage['jsonrpc_retries'];
-    aria2RPC.timeout = aria2Storage['jsonrpc_timeout'];
-    aria2RPC.onopen = aria2ClientOpened;
-    aria2RPC.onclose = aria2ClientClosed;
-    aria2RPC.onmessage = aria2ClientMessage;
-});
 
 async function aria2ClientOpened() {
     let [options, version, active] = await aria2RPC.call( {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'} );
@@ -332,7 +332,7 @@ function getFileSize(bytes) {
 }
 
 function getContextMenu(id, i18n, contexts, parentId) {
-    chrome.contextMenus.create({ id, title: chrome.i18n.getMessage(i18n), documentUrlPatterns: ['http://*/*', 'https://*/*'], contexts, parentId });
+    chrome.contextMenus.create({ id, title: chrome.i18n.getMessage(i18n), contexts, parentId, documentUrlPatterns: ['http://*/*', 'https://*/*'] });
 }
 
 function getMatchPattern(array, isFile) {
@@ -356,11 +356,7 @@ function getHostname(url) {
 
 function getNotification(title, message) {
     return new Promise((resolve) => {
-        chrome.notifications.create({
-            title, message,
-            type: 'basic',
-            iconUrl: '/icons/48.png'
-        }, resolve);
+        chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' }, resolve);
     });
 }
 
@@ -368,9 +364,7 @@ function getPopupWindow(url, height) {
     return new Promise((resolve) => {
         chrome.windows.getAll({populate: false, windowTypes: ['normal']}, (windows) => {
             let window = windows[0];
-            let top = (window.top + window.height - height) / 2 | 0;
-            let left = (window.left + window.width - 710) / 2 | 0;
-            let where = { top, left, height, width: 698 };
+            let where = { top: (window.top + window.height - height) / 2 | 0, left: (window.left + window.width - 710) / 2 | 0, height, width: 698 };
             chrome.tabs.get(aria2Popup, (tab) => {
                 if (chrome.runtime.lastError) {
                     chrome.windows.create({ url, type: 'popup', ...where }, (popup) => {
