@@ -161,7 +161,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
-    if (tabId === aria2Popup) {
+    if (tabId === aria2Popup || tabId === aria2Manager) {
         return;
     }
     let inspect = aria2Inspect[tabId] ??= { images: [], url };
