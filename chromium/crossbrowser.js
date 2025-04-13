@@ -69,8 +69,8 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
     await aria2WhenStart(url);
 }
 
-function aria2ImagesPrompt(tabId, referer) {
-    aria2Detect = {tabId, referer};
+function aria2ImagesPrompt(id, referer) {
+    aria2Detect = {id, referer};
     getPopupWindow('/pages/images/images.html', 680);
 }
 
@@ -133,14 +133,14 @@ async function aria2DownloadFiles(response, files) {
     await aria2WhenStart(message);
 }
 
-function aria2DetectedImages(response) {
-    let {tabId, referer} = aria2Detect;
-    let images = aria2Inspect[tabId]?.images ?? [];
-    response({ images, referer, manifest: aria2Manifest, request: aria2Request, storage: aria2Storage, options: aria2Config });
+function aria2DetectedImages(response, params, sender) {
+    let {id, referer} = aria2Detect;
+    let images = aria2Inspect[id]?.images ?? [];
+    response({ images, referer, tabId: sender.tab.id, manifest: aria2Manifest, request: aria2Request, storage: aria2Storage, options: aria2Config });
 }
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
-    messageHandlers[action](response, params);
+    messageHandlers[action](response, params, sender);
     return true;
 });
 
@@ -364,7 +364,7 @@ function getNotification(title, message) {
 }
 
 function getPopupWindow(url, height) {
-    return new Promise(async (resolve) => {
+    return new Promise((resolve) => {
         chrome.windows.getAll({populate: false, windowTypes: ['normal']}, (windows) => {
             let window = windows[0];
             let top = (window.top + window.height - height) / 2 | 0;

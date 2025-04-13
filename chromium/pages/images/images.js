@@ -1,7 +1,6 @@
 let aria2Storage = {};
 let aria2Config = {};
 let aria2Images = [];
-let aria2Tab;
 
 let [imagePane,, galleryPane,, menuPane, jsonrpcPane] = document.body.children;
 let [selectAll, selectNone, selectFlip, submitBtn, optionsBtn] = menu.children;
@@ -86,14 +85,10 @@ document.getElementById('proxy').addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
 
-chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
-    aria2Tab = tabs[0].id;
-});
-
-chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, referer, manifest, request}) => {
+chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, referer, tabId, manifest, request}) => {
     aria2Storage = storage;
     options['referer'] = referer;
-    manifest.manifest_version === 2 ? aria2HeadersMV2(referer, request) : aria2HeadersMV3(referer);
+    manifest.manifest_version === 2 ? aria2HeadersMV2(referer, tabId, request) : aria2HeadersMV3(referer, tabId);
     jsonrpcEntries.forEach((entry) => {
         entry.value = aria2Config[entry.name] = options[entry.name] ?? '';
     });
@@ -105,14 +100,14 @@ chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, imag
     });
 });
 
-function aria2HeadersMV2(value, request) {
+function aria2HeadersMV2(value, tabId, request) {
     chrome.webRequest.onBeforeSendHeaders.addListener(({requestHeaders}) => {
         requestHeaders.push({ name: 'Referer', value });;
         return {requestHeaders};
-    }, {urls: ['http://*/*', 'https://*/*'], tabId: aria2Tab, types: ['image']}, ['blocking', ...request]);
+    }, {urls: ['http://*/*', 'https://*/*'], tabId, types: ['image']}, ['blocking', ...request]);
 }
 
-function aria2HeadersMV3(value) {
+function aria2HeadersMV3(value, tabId) {
     let addRules = [{
         id: 1,
         priority: 1,
@@ -121,7 +116,7 @@ function aria2HeadersMV3(value) {
             requestHeaders: [{ header: "Referer", operation: "set", value }]
         },
         condition: {
-            tabIds: [aria2Tab],
+            tabIds: [tabId],
             resourceTypes: ['image']
         }
     }];
