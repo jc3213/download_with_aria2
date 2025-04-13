@@ -280,6 +280,7 @@ async function aria2ClientMessage({method, params}) {
 function aria2CaptureResult(hostname, filename, filesize) {
     if (aria2Updated['capture_host_exclude'].test(hostname) ||
         aria2Updated['capture_type_exclude'].test(filename) ||
+        aria2Updated['capture_size_exclude'] > 0 &&
         aria2Updated['capture_size_exclude'] > filesize) {
         return false;
     }
