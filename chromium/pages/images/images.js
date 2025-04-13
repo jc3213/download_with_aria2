@@ -90,10 +90,10 @@ chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
     aria2Tab = tabs[0].id;
 });
 
-chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, url, manifest, request}) => {
+chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, referer, manifest, request}) => {
     aria2Storage = storage;
-    options['referer'] = url;
-    manifest.manifest_version === 2 ? aria2HeadersMV2(url, request) : aria2HeadersMV3(url);
+    options['referer'] = referer;
+    manifest.manifest_version === 2 ? aria2HeadersMV2(referer, request) : aria2HeadersMV3(referer);
     jsonrpcEntries.forEach((entry) => {
         entry.value = aria2Config[entry.name] = options[entry.name] ?? '';
     });

@@ -44,8 +44,8 @@ let aria2Manifest = chrome.runtime.getManifest();
 let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 const contextMenusHandlers = {
-    'aria2c_this_url': ({linkUrl}, {id, url}) => aria2DownloadHandler(linkUrl, url, {}, id),
-    'aria2c_this_image': ({srcUrl}, {id, url}) => aria2DownloadHandler(srcUrl, url, {}, id),
+    'aria2c_this_url': (tabId, referer, {linkUrl}) => aria2DownloadHandler(linkUrl, referer, {}, tabId),
+    'aria2c_this_image': (tabId, referer, {srcUrl}) => aria2DownloadHandler(srcUrl, referer, {}, tabId),
     'aria2c_all_images': aria2ImagesPrompt
 };
 
@@ -69,13 +69,13 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
     await aria2WhenStart(url);
 }
 
-function aria2ImagesPrompt(info, {id, url}) {
-    aria2Detect = {id, url};
+function aria2ImagesPrompt(tabId, referer) {
+    aria2Detect = {tabId, referer};
     getPopupWindow('/pages/images/images.html', 680);
 }
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
-    contextMenusHandlers[info.menuItemId](info, tab);
+chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url}) => {
+    contextMenusHandlers[menuItemId](id, url, {linkUrl, srcUrl});
 });
 
 const commandsHandlers = {
@@ -134,13 +134,13 @@ async function aria2DownloadFiles(response, files) {
 }
 
 function aria2DetectedImages(response) {
-    let {id, url} = aria2Detect;
-    let images = aria2Inspect[id].images ?? [];
-    response({ images, url, manifest: aria2Manifest, request: aria2Request, storage: aria2Storage, options: aria2Config });
+    let {tabId, referer} = aria2Detect;
+    let images = aria2Inspect[tabId]?.images ?? [];
+    response({ images, referer, manifest: aria2Manifest, request: aria2Request, storage: aria2Storage, options: aria2Config });
 }
 
-chrome.runtime.onMessage.addListener((message, sender, response) => {
-    messageHandlers[message.action](response, message.params);
+chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
+    messageHandlers[action](response, params);
     return true;
 });
 
@@ -328,7 +328,7 @@ function getFileSize(bytes) {
 }
 
 function getContextMenu(id, i18n, contexts, parentId) {
-    chrome.contextMenus.create({ id, contexts, title: chrome.i18n.getMessage(i18n), documentUrlPatterns: ['http://*/*', 'https://*/*'], parentId });
+    chrome.contextMenus.create({ id, title: chrome.i18n.getMessage(i18n), documentUrlPatterns: ['http://*/*', 'https://*/*'], contexts, parentId });
 }
 
 function getMatchPattern(array, isFile) {
