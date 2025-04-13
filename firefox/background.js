@@ -22,7 +22,7 @@ async function aria2CaptureDownloads({id, url, referrer, filename, fileSize}) {
         return;
     }
     let hostname = getHostname(referrer);
-    let captured = aria2CaptureResult(hostname, filename, Math.abs(fileSize));
+    let captured = aria2CaptureResult(hostname, filename, fileSize);
     if (captured) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
