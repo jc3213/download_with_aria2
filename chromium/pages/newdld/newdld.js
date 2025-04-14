@@ -49,7 +49,7 @@ submitBtn.addEventListener('click', (event) => {
     if (urls.length !== 1) {
         delete aria2Config['out'];
     }
-    let params = urls.map((url) => ({url, options: aria2Config}));
+    let params = urls.map((url) => ({ url, options: aria2Config }));
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params });
     close();
 });
@@ -67,19 +67,31 @@ metaImport.addEventListener('change', (event) => {
     metaFileDownload(event.target.files)
 });
 
+const metaFiles = {
+    'torrent': {
+        method: 'aria2.addTorrent',
+        params: (body, options) => [body, [], options]
+    },
+    'metalink': {
+        method: 'aria2.addMetalink',
+        params: (body, options) => [body, options]
+    }
+}
+metaFiles['meta4'] = metaFiles['metalink'];
+
 async function metaFileDownload(files) {
-    let accept = {torrent: 'aria2.addTorrent', meta4: 'aria2.addMetalink', metalink: 'aria2.addMetalink'};
     let options = {...aria2Config, out: null, referer: null, 'user-agent': null};
-    let session = [...files].map(async (file) => {
-        let type = file.name.slice(file.name.lastIndexOf('.') + 1);
-        let method = accept[type];
-        if (method) {
+    let datas = [...files].map(async (file) => {
+        let {name} = file;
+        let type = name.slice(name.lastIndexOf('.') + 1);
+        let metadata = metaFiles[type];
+        if (metadata) {
             let body = await promiseFileReader(file);
-            let params = type === 'torrent' ? [body, [], options] : [body, options];
-            return {name: file.name, metadata: {method, params}};
+            metadata.params = metadata.params(body, options);
+            return { name, metadata };
         }
     })
-    let params = (await Promise.all(session)).filter((param) => param);
+    let params = (await Promise.all(datas)).filter((data) => data);
     chrome.runtime.sendMessage({ action: 'jsonrpc_metadata', params });
     close();
 }
