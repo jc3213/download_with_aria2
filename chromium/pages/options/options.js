@@ -238,7 +238,7 @@ function optionsHistoryFlush() {
 }
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
-    chrome.runtime.sendMessage({action: 'jsonrpc_handshake'}, ({alive, options, version}) => {
+    chrome.runtime.sendMessage({action: 'jsonrpc_query'}, ({alive, options, version}) => {
         if (alive) {
             optionsHistoryFlush();
             aria2ConfigSetup(options);
