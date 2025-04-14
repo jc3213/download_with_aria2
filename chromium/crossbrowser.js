@@ -44,8 +44,8 @@ let aria2Manifest = chrome.runtime.getManifest();
 let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 const contextMenusHandlers = {
-    'aria2c_this_url': (tabId, referer, {linkUrl}) => aria2DownloadHandler(linkUrl, referer, {}, tabId),
-    'aria2c_this_image': (tabId, referer, {srcUrl}) => aria2DownloadHandler(srcUrl, referer, {}, tabId),
+    'aria2c_this_url': (tabId, referer, link) => aria2DownloadHandler(link, referer, {}, tabId),
+    'aria2c_this_image': (tabId, referer, link, src) => aria2DownloadHandler(src, referer, {}, tabId),
     'aria2c_all_images': aria2ImagesPrompt
 };
 
@@ -75,7 +75,7 @@ function aria2ImagesPrompt(id, referer) {
 }
 
 chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url}) => {
-    contextMenusHandlers[menuItemId](id, url, {linkUrl, srcUrl});
+    contextMenusHandlers[menuItemId](id, url, linkUrl, srcUrl);
 });
 
 const commandsHandlers = {
@@ -88,9 +88,9 @@ chrome.commands.onCommand.addListener((command) => {
 });
 
 const messageHandlers = {
-    'storage_query': (response) => response({ storage: aria2Storage, options: aria2Config, manifest: aria2Manifest }),
+    'storage_query': aria2StorageQuery,
     'storage_update': aria2StorageChanged,
-    'jsonrpc_handshake': (response) => response({ alive: aria2RPC.alive, options: aria2Config, version: aria2Version }),
+    'jsonrpc_query': aria2ConfigQuery,
     'jsonrpc_update': aria2ConfigChanged,
     'jsonrpc_download': aria2DownloadUrls,
     'jsonrpc_metadata': aria2DownloadFiles,
@@ -98,7 +98,15 @@ const messageHandlers = {
     'open_new_download': commandsHandlers['open_new_download']
 };
 
-function aria2StorageChanged(response, storage) {
+function aria2StorageQuery(params, sender, response) {
+    response({
+        storage: aria2Storage,
+        options: aria2Config,
+        manifest: aria2Manifest
+    })
+}
+
+function aria2StorageChanged(storage) {
     aria2UpdateStorage(storage);
     aria2RPC.scheme = storage['jsonrpc_scheme'];
     aria2RPC.url = storage['jsonrpc_url'];
@@ -108,12 +116,20 @@ function aria2StorageChanged(response, storage) {
     chrome.storage.sync.set(aria2Storage);
 }
 
-function aria2ConfigChanged(response, options) {
+function aria2ConfigQuery(params, sender, response) {
+    response({
+        alive: aria2RPC.alive,
+        options: aria2Config,
+        version: aria2Version
+    })
+}
+
+function aria2ConfigChanged(options) {
     aria2Config = {...aria2Config, ...options};
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
-async function aria2DownloadUrls(response, urls) {
+async function aria2DownloadUrls(urls) {
     let message = '';
     let session = urls.map(({url, options = {}}) => {
         message += url + '\n';
@@ -123,7 +139,7 @@ async function aria2DownloadUrls(response, urls) {
     await aria2WhenStart(message);
 }
 
-async function aria2DownloadFiles(response, files) {
+async function aria2DownloadFiles(files) {
     let message = '';
     let session = files.map(({name, metadata}) => {
         message += name + '\n';
@@ -133,14 +149,22 @@ async function aria2DownloadFiles(response, files) {
     await aria2WhenStart(message);
 }
 
-function aria2DetectedImages(response, params, sender) {
+function aria2DetectedImages(params, sender, response) {
     let {id, referer} = aria2Detect;
     let images = aria2Inspect[id]?.images ?? [];
-    response({ images, referer, tabId: sender.tab.id, manifest: aria2Manifest, request: aria2Request, storage: aria2Storage, options: aria2Config });
+    response({
+        images,
+        referer,
+        tabId: sender.tab.id,
+        manifest: aria2Manifest,
+        request: aria2Request,
+        storage: aria2Storage,
+        options: aria2Config
+    });
 }
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
-    messageHandlers[action](response, params, sender);
+    messageHandlers[action](params, sender, response);
     return true;
 });
 
@@ -332,7 +356,13 @@ function getFileSize(bytes) {
 }
 
 function getContextMenu(id, i18n, contexts, parentId) {
-    chrome.contextMenus.create({ id, title: chrome.i18n.getMessage(i18n), contexts, parentId, documentUrlPatterns: ['http://*/*', 'https://*/*'] });
+    chrome.contextMenus.create({
+        id,
+        title: chrome.i18n.getMessage(i18n),
+        contexts,
+        parentId,
+        documentUrlPatterns: ['http://*/*', 'https://*/*']
+    });
 }
 
 function getMatchPattern(array, isFile) {
@@ -356,7 +386,12 @@ function getHostname(url) {
 
 function getNotification(title, message) {
     return new Promise((resolve) => {
-        chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' }, resolve);
+        chrome.notifications.create({
+            title,
+            message,
+            type: 'basic',
+            iconUrl: '/icons/48.png'
+        }, resolve);
     });
 }
 
@@ -364,7 +399,12 @@ function getPopupWindow(url, height) {
     return new Promise((resolve) => {
         chrome.windows.getAll({populate: false, windowTypes: ['normal']}, (windows) => {
             let window = windows[0];
-            let where = { top: (window.top + window.height - height) / 2 | 0, left: (window.left + window.width - 710) / 2 | 0, height, width: 698 };
+            let where = {
+                top: (window.top + window.height - height) / 2 | 0,
+                left: (window.left + window.width - 710) / 2 | 0,
+                height,
+                width: 698
+            };
             chrome.tabs.get(aria2Popup, (tab) => {
                 if (chrome.runtime.lastError) {
                     chrome.windows.create({ url, type: 'popup', ...where }, (popup) => {
