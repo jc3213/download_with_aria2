@@ -395,7 +395,7 @@ function getNotification(title, message) {
 
 function getPopupWindow(url, height) {
     return new Promise((resolve) => {
-        chrome.windows.getAll({populate: false, windowTypes: ['normal']}, (windows) => {
+        chrome.windows.getAll({windowTypes: ['normal']}, (windows) => {
             let window = windows[0];
             let where = {
                 top: (window.top + window.height - height) / 2 | 0,
