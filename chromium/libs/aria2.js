@@ -8,8 +8,9 @@ class Aria2 {
     }
     version = '0.8.1';
     args = { retries: 10, timeout: 10000 };
+    methods = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send };
     set scheme (scheme) {
-        this.call = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send }[ scheme ];
+        this.call = this.methods[scheme];
         if (!this.call) { throw new Error('Unsupported JSON-RPC scheme: "' + scheme + '"'); }
         this.args.scheme = scheme;
         this.args.path = scheme + '://' + this.args.url;
