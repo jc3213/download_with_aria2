@@ -411,7 +411,7 @@ function getPopupWindow(url, height) {
                     });
                 } else {
                     chrome.windows.update(tab.windowId, { focused: true, ...where }, (window) => {
-                        chrome.tabs.update(aria2Popup, { url, active: true }, (tab) => {
+                        chrome.tabs.update(aria2Popup, {active: true, url: tab.url.endsWith(url) ? null : url}, (tab) => {
                             resolve(aria2Popup);
                         });
                     });
