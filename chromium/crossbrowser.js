@@ -66,7 +66,7 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
         options['header'] = headers.map((header) => header.name + ': ' + header.value);
     }
     await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
-    await aria2WhenStart(url);
+    aria2WhenStart(url);
 }
 
 function aria2ImagesPrompt(id, referer) {
@@ -136,7 +136,7 @@ async function aria2DownloadUrls(urls) {
         return { method: 'aria2.addUri', params: [ [url], options ] };
     });
     await aria2RPC.call(...session);
-    await aria2WhenStart(message);
+    aria2WhenStart(message);
 }
 
 async function aria2DownloadFiles(files) {
@@ -146,7 +146,7 @@ async function aria2DownloadFiles(files) {
         return metadata;
     });
     await aria2RPC.call(...session);
-    await aria2WhenStart(message);
+    aria2WhenStart(message);
 }
 
 function aria2DetectedImages(params, sender, response) {
@@ -313,14 +313,14 @@ function aria2WhenInstall(reason) {
     if (aria2Storage['notify_install']) {
         let title = chrome.i18n.getMessage('extension_' + reason);
         let message = chrome.i18n.getMessage('extension_version').replace('{version}', aria2Manifest.version);
-        return getNotification(title, message);
+        getNotification(title, message);
     }
 }
 
 function aria2WhenStart(message) {
     if (aria2Storage['notify_start']) {
         let title = chrome.i18n.getMessage('download_start');
-        return getNotification(title, message);
+        getNotification(title, message);
     }
 }
 
@@ -330,7 +330,7 @@ async function aria2WhenComplete(gid) {
         let {bittorrent, files: [{path}]} = response[0].result;
         let name = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1);
         let title = chrome.i18n.getMessage('download_complete');
-        return getNotification(title, name);
+        getNotification(title, name);
     }
 }
 
@@ -383,40 +383,36 @@ function getHostname(url) {
 }
 
 function getNotification(title, message) {
-    return new Promise((resolve) => {
-        chrome.notifications.create({
-            title,
-            message,
-            type: 'basic',
-            iconUrl: '/icons/48.png'
-        }, resolve);
+    chrome.notifications.create({
+        title,
+        message,
+        type: 'basic',
+        iconUrl: '/icons/48.png'
     });
 }
 
 function getPopupWindow(url, height) {
-    return new Promise((resolve) => {
-        chrome.windows.getAll({windowTypes: ['normal']}, (windows) => {
-            let window = windows[0];
-            let where = {
-                top: (window.top + window.height - height) / 2 | 0,
-                left: (window.left + window.width - 710) / 2 | 0,
-                height,
-                width: 698
-            };
-            chrome.tabs.get(aria2Popup, (tab) => {
-                if (chrome.runtime.lastError) {
-                    chrome.windows.create({ url, type: 'popup', ...where }, (popup) => {
-                        aria2Popup = popup.tabs[0].id;
-                        resolve(aria2Popup);
-                    });
-                } else {
-                    chrome.windows.update(tab.windowId, { focused: true, ...where }, (window) => {
-                        chrome.tabs.update(aria2Popup, {active: true, url: tab.url.endsWith(url) ? null : url}, (tab) => {
-                            resolve(aria2Popup);
-                        });
-                    });
+    chrome.windows.getAll({windowTypes: ['normal']}, (windows) => {
+        let window = windows[0];
+        let where = {
+            top: (window.top + window.height - height) / 2 | 0,
+            left: (window.left + window.width - 710) / 2 | 0,
+            height,
+            width: 698
+        };
+        chrome.tabs.get(aria2Popup, (tab) => {
+            if (chrome.runtime.lastError) {
+                chrome.windows.create({ url, type: 'popup', ...where }, (popup) => {
+                    aria2Popup = popup.tabs[0].id;
+                });
+            } else {
+                let update = { active: true };
+                if (!tab.url.includes(url)) {
+                    update.url = url;
                 }
-            });
+                chrome.windows.update(tab.windowId, { focused: true, ...where });
+                chrome.tabs.update(aria2Popup, update);
+            }
         });
     });
 }
