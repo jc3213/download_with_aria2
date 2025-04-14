@@ -66,8 +66,7 @@ function menuEventSubmit() {
             params.push({ url: src, options: {...aria2Config, out: alt} });
         }
     });
-    chrome.runtime.sendMessage({action: 'jsonrpc_download', params});
-    close();
+    chrome.runtime.sendMessage({action: 'jsonrpc_download', params}, close);
 }
 
 menuPane.addEventListener('click', (event) => {
