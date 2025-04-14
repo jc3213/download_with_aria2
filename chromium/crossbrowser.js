@@ -106,13 +106,13 @@ function aria2StorageQuery(params, sender, response) {
     })
 }
 
-function aria2StorageChanged(storage) {
-    aria2UpdateStorage(storage);
-    aria2RPC.scheme = storage['jsonrpc_scheme'];
-    aria2RPC.url = storage['jsonrpc_url'];
-    aria2RPC.secret = storage['jsonrpc_secret'];
-    aria2RPC.retries = storage['jsonrpc_retries'];
-    aria2RPC.timeout = storage['jsonrpc_timeout'];
+function aria2StorageChanged(json) {
+    aria2UpdateStorage(json);
+    aria2RPC.scheme = json['jsonrpc_scheme'];
+    aria2RPC.url = json['jsonrpc_url'];
+    aria2RPC.secret = json['jsonrpc_secret'];
+    aria2RPC.retries = json['jsonrpc_retries'];
+    aria2RPC.timeout = json['jsonrpc_timeout'];
     chrome.storage.sync.set(aria2Storage);
 }
 
@@ -150,12 +150,10 @@ async function aria2DownloadFiles(files) {
 }
 
 function aria2DetectedImages(params, sender, response) {
-    let {id, referer} = aria2Detect;
-    let images = aria2Inspect[id]?.images ?? [];
     response({
-        images,
-        referer,
+        referer: aria2Detect.referer,
         tabId: sender.tab.id,
+        images: aria2Inspect[aria2Detect.id]?.images ?? [],
         manifest: aria2Manifest,
         request: aria2Request,
         storage: aria2Storage,
