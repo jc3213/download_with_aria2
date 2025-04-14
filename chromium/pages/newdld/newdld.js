@@ -50,8 +50,7 @@ submitBtn.addEventListener('click', (event) => {
         delete aria2Config['out'];
     }
     let params = urls.map((url) => ({ url, options: aria2Config }));
-    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params });
-    close();
+    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 });
 
 metaPane.addEventListener('dragover', (event) => {
@@ -84,16 +83,15 @@ async function metaFileDownload(files) {
     let datas = [...files].map(async (file) => {
         let {name} = file;
         let type = name.slice(name.lastIndexOf('.') + 1);
-        let metadata = metaFiles[type];
-        if (metadata) {
+        let data = metaFiles[type];
+        if (data) {
             let body = await promiseFileReader(file);
-            metadata.params = metadata.params(body, options);
-            return { name, metadata };
+            data.params = data.params(body, options);
+            return { name, data };
         }
     })
     let params = (await Promise.all(datas)).filter((data) => data);
-    chrome.runtime.sendMessage({ action: 'jsonrpc_metadata', params });
-    close();
+    chrome.runtime.sendMessage({ action: 'jsonrpc_metadata', params }, close);
 }
 
 function promiseFileReader(file) {

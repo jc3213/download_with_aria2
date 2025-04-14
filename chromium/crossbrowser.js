@@ -129,23 +129,23 @@ function aria2ConfigChanged(options) {
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
-async function aria2DownloadUrls(urls) {
+function aria2DownloadUrls(urls) {
     let message = '';
     let session = urls.map(({url, options = {}}) => {
         message += url + '\n';
         return { method: 'aria2.addUri', params: [ [url], options ] };
     });
-    await aria2RPC.call(...session);
+    aria2RPC.call(...session);
     aria2WhenStart(message);
 }
 
 async function aria2DownloadFiles(files) {
     let message = '';
-    let session = files.map(({name, metadata}) => {
+    let session = files.map(({name, data}) => {
         message += name + '\n';
-        return metadata;
+        return data;
     });
-    await aria2RPC.call(...session);
+    aria2RPC.call(...session);
     aria2WhenStart(message);
 }
 
@@ -163,7 +163,6 @@ function aria2DetectedImages(params, sender, response) {
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     messageHandlers[action](params, sender, response);
-    return true;
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
