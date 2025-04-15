@@ -153,7 +153,7 @@ function aria2DetectedImages(params, sender, response) {
     response({
         referer: aria2Detect.referer,
         tabId: sender.tab.id,
-        images: aria2Inspect[aria2Detect.id]?.images ?? [],
+        images: aria2Inspect[aria2Detect.id] ? [...aria2Inspect[aria2Detect.id].images] : [],
         manifest: aria2Manifest,
         request: aria2Request,
         storage: aria2Storage,
@@ -171,13 +171,13 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
     if (frameId === 0) {
-        aria2Inspect[tabId] = { images: [], url };
+        aria2Inspect[tabId] = { images: new Set(), url };
     }
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
     if (aria2Inspect[tabId]?.url !== url) {
-        aria2Inspect[tabId] = { images: [], url };
+        aria2Inspect[tabId] = { images: new Set(), url };
     }
 }, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
 
@@ -185,9 +185,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
     if (tabId === aria2Popup) {
         return;
     }
-    let inspect = aria2Inspect[tabId] ??= { images: [], url };
+    let inspect = aria2Inspect[tabId] ??= { images: new Set(), url };
     if (type === 'image') {
-        inspect.images.push(url);
+        inspect.images.add(url);
     } else {
         inspect[url] = requestHeaders;
     }
@@ -223,6 +223,7 @@ chrome.storage.sync.get(null, (json) => {
 
 function aria2UpdateStorage(json) {
     let menuId;
+    let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     aria2Storage = json;
     aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
     aria2Updated['headers_exclude'] = getMatchPattern(json['headers_exclude']);
@@ -231,7 +232,7 @@ function aria2UpdateStorage(json) {
     aria2Updated['capture_type_exclude'] = getMatchPattern(json['capture_type_exclude'], true);
     aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
     aria2CaptureSwitch();
-    chrome.action.setPopup({popup: json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar'});
+    chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
     if (!json['context_enabled']) {
         return;
