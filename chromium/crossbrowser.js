@@ -98,7 +98,7 @@ const messageHandlers = {
     'open_new_download': commandsHandlers['open_new_download']
 };
 
-function aria2StorageQuery(params, sender, response) {
+function aria2StorageQuery(params, response) {
     response({
         storage: aria2Storage,
         options: aria2Config,
@@ -116,7 +116,7 @@ function aria2StorageChanged(json) {
     chrome.storage.sync.set(aria2Storage);
 }
 
-function aria2ConfigQuery(params, sender, response) {
+function aria2ConfigQuery(params, response) {
     response({
         alive: aria2RPC.alive,
         options: aria2Config,
@@ -149,10 +149,10 @@ async function aria2DownloadFiles(files) {
     aria2WhenStart(message);
 }
 
-function aria2DetectedImages(params, sender, response) {
+function aria2DetectedImages(params, response) {
     response({
         referer: aria2Detect.referer,
-        tabId: sender.tab.id,
+        tabId: aria2Popup,
         images: aria2Inspect[aria2Detect.id] ? [...aria2Inspect[aria2Detect.id].images] : [],
         manifest: aria2Manifest,
         request: aria2Request,
@@ -162,7 +162,7 @@ function aria2DetectedImages(params, sender, response) {
 }
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
-    messageHandlers[action](params, sender, response);
+    messageHandlers[action](params, response);
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
