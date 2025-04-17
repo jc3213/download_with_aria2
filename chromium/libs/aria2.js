@@ -9,8 +9,9 @@ class Aria2 {
     version = '0.8.1';
     args = { retries: 10, timeout: 10000 };
     set scheme (scheme) {
-        this.call = { 'http': this.post, 'https': this.post, 'ws': this.send, 'wss': this.send }[ scheme ];
-        if (!this.call) { throw new Error('Unsupported JSON-RPC scheme: "' + scheme + '"'); }
+        let method = scheme.match(/^(http|ws)s?$/)?.[1];
+        if (!method) { throw new Error('Unsupported JSON-RPC scheme: "' + scheme + '"'); }
+        this.call = this[scheme];
         this.args.scheme = scheme;
         this.args.path = scheme + '://' + this.args.url;
     }
@@ -88,17 +89,17 @@ class Aria2 {
     disconnect () {
         this.socket?.close();
     }
-    send (...args) {
+    http (...args) {
+        return fetch(this.args.path, {method: 'POST', body: this.json(args)}).then((response) => {
+            if (response.ok) { return response.json(); }
+            throw new Error(response.statusText);
+        });
+    }
+    ws (...args) {
         return new Promise((resolve, reject) => {
             this.socket.resolve = resolve;
             this.socket.onerror = reject;
             this.socket.send(this.json(args));
-        });
-    }
-    post (...args) {
-        return fetch(this.args.path, {method: 'POST', body: this.json(args)}).then((response) => {
-            if (response.ok) { return response.json(); }
-            throw new Error(response.statusText);
         });
     }
     json (args) {
