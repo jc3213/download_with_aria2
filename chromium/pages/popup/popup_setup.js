@@ -28,31 +28,20 @@ optionsBtn.addEventListener('click', (event) => {
 
 chrome.runtime.onMessage.addListener(({action, params}) => {
     if (action !== 'storage_update') {
-        return;
+        location.reload();
     }
-    if (!params['manager_newtab']) {
-        close();
-    }
-    aria2RPC.scheme = params['jsonrpc_scheme'];
-    aria2RPC.url = params['jsonrpc_url'];
-    aria2RPC.secret = params['jsonrpc_secret'];
-    aria2StorageUpdate(params);
 });
 
 chrome.runtime.sendMessage({action: 'storage_query'}, ({storage}) => {
     aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
+    aria2RPC.retries = json['jsonrpc_retries'];
+    aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.onopen = aria2ClientOpened;
     aria2RPC.onclose = aria2ClientClosed;
     aria2RPC.onmessage = aria2ClientMessage;
-    aria2StorageUpdate(storage);
-});
-
-function aria2StorageUpdate(json) {
-    aria2RPC.retries = json['jsonrpc_retries'];
-    aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2Delay = json['manager_interval'] * 1000;
     aria2Proxy = json['proxy_server'];
-}
+});
 
 function aria2ToolbarSetup() {
     queuePane.addEventListener('contextmenu', (event) => {
