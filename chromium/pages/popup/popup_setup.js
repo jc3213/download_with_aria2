@@ -33,25 +33,22 @@ chrome.runtime.onMessage.addListener(({action, params}) => {
     if (!params['manager_newtab']) {
         close();
     }
-    clearInterval(aria2Interval);
     aria2jsonSetup(params);
 });
 
 chrome.runtime.sendMessage({action: 'storage_query'}, ({storage}) => {
-    aria2jsonSetup(storage);
+    aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
+    aria2RPC.onopen = aria2ClientOpened;
+    aria2RPC.onclose = aria2ClientClosed;
+    aria2RPC.onmessage = aria2ClientMessage;
+    aria2Delay = storage['manager_interval'] * 1000;
+    aria2Proxy = storage['proxy_server'];
 });
 
 function aria2jsonSetup(json) {
-    if (!aria2RPC) {
-        aria2RPC = new Aria2(json['jsonrpc_scheme'], json['jsonrpc_url'], json['jsonrpc_secret']);
-        aria2RPC.onopen = aria2ClientOpened;
-        aria2RPC.onclose = aria2ClientClosed;
-        aria2RPC.onmessage = aria2ClientMessage;
-    } else {
-        aria2RPC.scheme = json['jsonrpc_scheme'];
-        aria2RPC.url = json['jsonrpc_url'];
-        aria2RPC.secret = json['jsonrpc_secret'];
-    }
+    aria2RPC.scheme = json['jsonrpc_scheme'];
+    aria2RPC.url = json['jsonrpc_url'];
+    aria2RPC.secret = json['jsonrpc_secret'];
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2Delay = json['manager_interval'] * 1000;

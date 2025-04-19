@@ -47,6 +47,7 @@ purgeBtn.addEventListener('click', async (event) => {
 });
 
 async function aria2ClientOpened() {
+    clearInterval(aria2Interval);
     aria2Tasks = {active: {}, waiting: {}, stopped: {}, total: {}};
     let [global, active, waiting, stopped] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]} );
     [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementUpdate);
