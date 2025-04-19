@@ -19,11 +19,10 @@ class Aria2 {
         return this.args.scheme;
     }
     set url (url) {
-        if (this.args.url === url) { return; }
+        if (url === this.args.url) { return; }
         this.args.url = url;
         this.args.path = 'http' + this.args.ssl + '://' + url;
         this.args.ws = 'ws' + this.args.ssl + '://' + url;
-        this.args.tries = 0;
         this.disconnect();
         this.connect();
     }
@@ -67,6 +66,7 @@ class Aria2 {
         return typeof this.args.onclose === 'function' ? this.args.onclose : null;
     }
     connect () {
+        let tries = 0;
         this.socket = new WebSocket(this.args.ws);
         this.socket.onopen = (event) => {
             this.alive = true;
@@ -79,7 +79,7 @@ class Aria2 {
         };
         this.socket.onclose = (event) => {
             this.alive = false;
-            if (!event.wasClean && this.args.tries ++ < this.args.retries) { setTimeout(() => this.connect(), this.args.timeout); }
+            if (!event.wasClean && tries ++ < this.args.retries) { setTimeout(() => this.connect(), this.args.timeout); }
             if (typeof this.args.onclose === 'function') { this.args.onclose(event); }
         };
     }
