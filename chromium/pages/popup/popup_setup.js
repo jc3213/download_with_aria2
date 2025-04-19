@@ -33,7 +33,10 @@ chrome.runtime.onMessage.addListener(({action, params}) => {
     if (!params['manager_newtab']) {
         close();
     }
-    aria2jsonSetup(params);
+    aria2RPC.scheme = params['jsonrpc_scheme'];
+    aria2RPC.url = params['jsonrpc_url'];
+    aria2RPC.secret = params['jsonrpc_secret'];
+    aria2StorageUpdate(params);
 });
 
 chrome.runtime.sendMessage({action: 'storage_query'}, ({storage}) => {
@@ -41,14 +44,10 @@ chrome.runtime.sendMessage({action: 'storage_query'}, ({storage}) => {
     aria2RPC.onopen = aria2ClientOpened;
     aria2RPC.onclose = aria2ClientClosed;
     aria2RPC.onmessage = aria2ClientMessage;
-    aria2Delay = storage['manager_interval'] * 1000;
-    aria2Proxy = storage['proxy_server'];
+    aria2StorageUpdate(storage);
 });
 
-function aria2jsonSetup(json) {
-    aria2RPC.scheme = json['jsonrpc_scheme'];
-    aria2RPC.url = json['jsonrpc_url'];
-    aria2RPC.secret = json['jsonrpc_secret'];
+function aria2StorageUpdate(json) {
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2Delay = json['manager_interval'] * 1000;

@@ -110,7 +110,7 @@ function aria2StorageChanged(json) {
     aria2RPC.scheme = json['jsonrpc_scheme'];
     aria2RPC.url = json['jsonrpc_url'];
     aria2RPC.secret = json['jsonrpc_secret'];
-    aria2StorageSetup(json);
+    aria2StorageUpdate(json);
     chrome.storage.sync.set(aria2Storage);
 }
 
@@ -215,10 +215,10 @@ chrome.storage.sync.get(null, (json) => {
     aria2RPC.onopen = aria2ClientOpened;
     aria2RPC.onclose = aria2ClientClosed;
     aria2RPC.onmessage = aria2ClientMessage;
-    aria2StorageSetup(storage);
+    aria2StorageUpdate(storage);
 });
 
-function aria2StorageSetup(json) {
+function aria2StorageUpdate(json) {
     let menuId;
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     aria2Storage = json;
