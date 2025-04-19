@@ -107,12 +107,7 @@ function aria2StorageQuery(params, response) {
 }
 
 function aria2StorageChanged(json) {
-    aria2UpdateStorage(json);
-    aria2RPC.scheme = json['jsonrpc_scheme'];
-    aria2RPC.url = json['jsonrpc_url'];
-    aria2RPC.secret = json['jsonrpc_secret'];
-    aria2RPC.retries = json['jsonrpc_retries'];
-    aria2RPC.timeout = json['jsonrpc_timeout'];
+    aria2StorageSetup(json);
     chrome.storage.sync.set(aria2Storage);
 }
 
@@ -212,19 +207,19 @@ chrome.runtime.onInstalled.addListener(({reason}) => {
 });
 
 chrome.storage.sync.get(null, (json) => {
-    aria2UpdateStorage({...aria2Default, ...json});
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
-    aria2RPC.retries = aria2Storage['jsonrpc_retries'];
-    aria2RPC.timeout = aria2Storage['jsonrpc_timeout'];
-    aria2RPC.onopen = aria2ClientOpened;
-    aria2RPC.onclose = aria2ClientClosed;
-    aria2RPC.onmessage = aria2ClientMessage;
+    aria2StorageSetup({...aria2Default, ...json});
 });
 
-function aria2UpdateStorage(json) {
+function aria2StorageSetup(json) {
     let menuId;
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     aria2Storage = json;
+    aria2RPC = new Aria2(json['jsonrpc_scheme'], json['jsonrpc_url'], json['jsonrpc_secret']);
+    aria2RPC.retries = json['jsonrpc_retries'];
+    aria2RPC.timeout = json['jsonrpc_timeout'];
+    aria2RPC.onopen = aria2ClientOpened;
+    aria2RPC.onclose = aria2ClientClosed;
+    aria2RPC.onmessage = aria2ClientMessage;
     aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
     aria2Updated['headers_exclude'] = getMatchPattern(json['headers_exclude']);
     aria2Updated['proxy_include'] = getMatchPattern(json['proxy_include']);
