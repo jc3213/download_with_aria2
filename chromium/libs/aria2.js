@@ -31,11 +31,10 @@ class Aria2 {
         return this.args.url;
     }
     set secret (secret) {
-        this.args.secret = secret;
-        this.args.params = secret ? ['token:' + secret] : [];
+        this.args.token = 'token:'　+ secret;
     }
     get secret () {
-        return this.args.secret;
+        return this.args.token.slice(6);
     }
     set retries (number) {
         this.args.retries = isNaN(number) || number < 0 ? Infinity : number;
@@ -103,7 +102,7 @@ class Aria2 {
         });
     }
     json (args) {
-        let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [...this.args.params, ...params] }) );
+        let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [this.args.token, ...params] }) );
         return JSON.stringify(json);
     }
 }
