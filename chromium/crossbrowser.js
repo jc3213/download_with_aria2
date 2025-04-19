@@ -214,12 +214,18 @@ function aria2StorageSetup(json) {
     let menuId;
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     aria2Storage = json;
-    aria2RPC = new Aria2(json['jsonrpc_scheme'], json['jsonrpc_url'], json['jsonrpc_secret']);
+    if (!aria2RPC) {
+        aria2RPC = new Aria2(json['jsonrpc_scheme'], json['jsonrpc_url'], json['jsonrpc_secret']);
+        aria2RPC.onopen = aria2ClientOpened;
+        aria2RPC.onclose = aria2ClientClosed;
+        aria2RPC.onmessage = aria2ClientMessage;
+    } else {
+        aria2RPC.scheme = json['jsonrpc_scheme'];
+        aria2RPC.url = json['jsonrpc_url'];
+        aria2RPC.secret = json['jsonrpc_secret'];
+    }
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
-    aria2RPC.onopen = aria2ClientOpened;
-    aria2RPC.onclose = aria2ClientClosed;
-    aria2RPC.onmessage = aria2ClientMessage;
     aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
     aria2Updated['headers_exclude'] = getMatchPattern(json['headers_exclude']);
     aria2Updated['proxy_include'] = getMatchPattern(json['proxy_include']);

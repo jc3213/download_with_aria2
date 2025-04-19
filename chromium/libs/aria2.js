@@ -12,7 +12,7 @@ class Aria2 {
         let method = scheme.match(/^(http|ws)(s)?$/)?.[1];
         if (!method) { throw new Error('Unsupported JSON-RPC scheme: "' + scheme + '"'); }
         this.args.scheme = scheme;
-        this.call = method === 'ws' ? this.send : this.post;
+        this.call = this[method];
     }
     get scheme () {
         return this.args.scheme;
@@ -85,14 +85,14 @@ class Aria2 {
     disconnect () {
         this.socket?.close();
     }
-    send (...args) {
+    ws (...args) {
         return new Promise((resolve, reject) => {
             this.args.onresponse = resolve;
             this.socket.onerror = reject;
             this.socket.send(this.json(args));
         });
     }
-    post (...args) {
+    http (...args) {
         return fetch(this.args.path, {method: 'POST', body: this.json(args)}).then((response) => {
             if (response.ok) { return response.json(); }
             throw new Error(response.statusText);

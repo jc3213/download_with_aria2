@@ -1,3 +1,4 @@
+let aria2RPC;
 let aria2Tasks = {};
 let aria2Queue = {};
 let aria2Stats = {};
