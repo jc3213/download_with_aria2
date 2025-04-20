@@ -30,6 +30,9 @@ chrome.runtime.onMessage.addListener(({action, params}) => {
     if (action !== 'storage_update') {
         return;
     }
+    if (!params['manager_newtab']) {
+        close();
+    }
     aria2RPC.disconnect();
     aria2RPC.scheme = params['jsonrpc_scheme'];
     aria2RPC.url = params['jsonrpc_url'];

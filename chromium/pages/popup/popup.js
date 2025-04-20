@@ -1,5 +1,5 @@
 let aria2RPC;
-let aria2Tasks = {};
+let aria2Tasks = { active: {}, waiting: {}, stopped: {}, total: {} };
 let aria2Queue = {};
 let aria2Stats = {};
 let aria2Filter = new Set(localStorage['queues']?.match(/[^;]+/g) ?? []);
@@ -48,7 +48,6 @@ purgeBtn.addEventListener('click', async (event) => {
 
 async function aria2ClientOpened() {
     clearInterval(aria2Interval);
-    aria2Tasks = {active: {}, waiting: {}, stopped: {}, total: {}};
     let [global, active, waiting, stopped] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]} );
     [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementUpdate);
     aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
@@ -58,6 +57,7 @@ async function aria2ClientOpened() {
 
 function aria2ClientClosed() {
     clearInterval(aria2Interval);
+    aria2Tasks = { active: {}, waiting: {}, stopped: {}, total: {} };
     aria2Stats.active.textContent = aria2Stats.waiting.textContent = aria2Stats.stopped.textContent = aria2Stats.download.textContent = aria2Stats.upload.textContent = '0';
     aria2Queue.active.innerHTML = aria2Queue.waiting.innerHTML = aria2Queue.paused.innerHTML = aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
 }
