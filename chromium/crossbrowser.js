@@ -107,6 +107,7 @@ function aria2StorageQuery(params, response) {
 }
 
 function aria2StorageChanged(json) {
+    aria2RPC.disconnect();
     aria2RPC.scheme = json['jsonrpc_scheme'];
     aria2RPC.url = json['jsonrpc_url'];
     aria2RPC.secret = json['jsonrpc_secret'];
@@ -224,6 +225,7 @@ function aria2StorageUpdate(json) {
     aria2Storage = json;
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
+    aria2RPC.connect();
     aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
     aria2Updated['headers_exclude'] = getMatchPattern(json['headers_exclude']);
     aria2Updated['proxy_include'] = getMatchPattern(json['proxy_include']);

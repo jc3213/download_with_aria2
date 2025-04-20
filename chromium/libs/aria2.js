@@ -9,10 +9,12 @@ class Aria2 {
     version = '0.9';
     args = { retries: 10, timeout: 10000 };
     set scheme (scheme) {
-        let method = scheme.match(/^(http|ws)(s)?$/)?.[1];
-        if (!method) { throw new Error('Unsupported JSON-RPC scheme: "' + scheme + '"'); }
+        let method = scheme.match(/^(http|ws)(s)?$/);
+        if (scheme === this.args.scheme || !method) { return; }
         this.args.scheme = scheme;
-        this.call = this[method];
+        this.args.ssl = method[2] ?? '';
+        this.call = this[method[1]];
+        this.path();
     }
     get scheme () {
         return this.args.scheme;
@@ -20,10 +22,7 @@ class Aria2 {
     set url (url) {
         if (url === this.args.url) { return; }
         this.args.url = url;
-        this.args.path = this.args.scheme + '://' + url;
-        this.args.ws = this.args.path.replace('http', 'ws');
-        this.disconnect();
-        this.connect();
+        this.path();
     }
     get url () {
         return this.args.url;
@@ -64,6 +63,11 @@ class Aria2 {
     get onclose () {
         return typeof this.args.onclose === 'function' ? this.args.onclose : null;
     }
+    path () {
+        let {ssl, url} = this.args;
+        this.args.xml = 'http' + ssl + '://' + url;
+        this.args.ws = 'ws' + ssl + '://' + url;
+    }
     connect () {
         let tries = 0;
         this.socket = new WebSocket(this.args.ws);
@@ -83,7 +87,7 @@ class Aria2 {
         };
     }
     disconnect () {
-        this.socket?.close();
+        this.socket.close();
     }
     ws (...args) {
         return new Promise((resolve, reject) => {
@@ -93,7 +97,7 @@ class Aria2 {
         });
     }
     http (...args) {
-        return fetch(this.args.path, {method: 'POST', body: this.json(args)}).then((response) => {
+        return fetch(this.args.xml, {method: 'POST', body: this.json(args)}).then((response) => {
             if (response.ok) { return response.json(); }
             throw new Error(response.statusText);
         });

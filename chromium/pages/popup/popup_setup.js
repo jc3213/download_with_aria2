@@ -34,13 +34,14 @@ chrome.runtime.onMessage.addListener(({action, params}) => {
 
 chrome.runtime.sendMessage({action: 'storage_query'}, ({storage}) => {
     aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
-    aria2RPC.retries = json['jsonrpc_retries'];
-    aria2RPC.timeout = json['jsonrpc_timeout'];
+    aria2RPC.retries = storage['jsonrpc_retries'];
+    aria2RPC.timeout = storage['jsonrpc_timeout'];
     aria2RPC.onopen = aria2ClientOpened;
     aria2RPC.onclose = aria2ClientClosed;
     aria2RPC.onmessage = aria2ClientMessage;
-    aria2Delay = json['manager_interval'] * 1000;
-    aria2Proxy = json['proxy_server'];
+    aria2RPC.connect();
+    aria2Delay = storage['manager_interval'] * 1000;
+    aria2Proxy = storage['proxy_server'];
 });
 
 function aria2ToolbarSetup() {
