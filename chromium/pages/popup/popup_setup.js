@@ -28,20 +28,29 @@ optionsBtn.addEventListener('click', (event) => {
 
 chrome.runtime.onMessage.addListener(({action, params}) => {
     if (action !== 'storage_update') {
-        location.reload();
+        return;
     }
+    aria2RPC.disconnect();
+    aria2RPC.scheme = params['jsonrpc_scheme'];
+    aria2RPC.url = params['jsonrpc_url'];
+    aria2RPC.secret = params['jsonrpc_secret'];
+    aria2StorageChanged(params);
 });
+
+function aria2StorageChanged(json) {
+    aria2RPC.retries = json['jsonrpc_retries'];
+    aria2RPC.timeout = json['jsonrpc_timeout'];
+    aria2RPC.connect();
+    aria2Delay = json['manager_interval'] * 1000;
+    aria2Proxy = json['proxy_server'];
+}
 
 chrome.runtime.sendMessage({action: 'storage_query'}, ({storage}) => {
     aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
-    aria2RPC.retries = storage['jsonrpc_retries'];
-    aria2RPC.timeout = storage['jsonrpc_timeout'];
     aria2RPC.onopen = aria2ClientOpened;
     aria2RPC.onclose = aria2ClientClosed;
     aria2RPC.onmessage = aria2ClientMessage;
-    aria2RPC.connect();
-    aria2Delay = storage['manager_interval'] * 1000;
-    aria2Proxy = storage['proxy_server'];
+    aria2StorageChanged(storage);
 });
 
 function aria2ToolbarSetup() {
