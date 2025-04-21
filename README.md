@@ -6,7 +6,8 @@
 
 ## About
 - The browser extension for [aria2 - ultra fast download utility](https://github.com/aria2/aria2) over JSON-RPC
-    - The development is based on [aria2.js](https://github.com/jc3213/aria2.js) 
+    - The development is based on [aria2.js](https://github.com/jc3213/aria2.js)
+    - Download [cli tool](https://github.com/jc3213/aria2.js/tree/main/cli) for aria2c.exe
     - Read [Wiki](//github.com/jc3213/download_with_aria2/wiki) for usage
     - Send feedback at [issues page](//github.com/jc3213/download_with_aria2/issues/new/)
 - Built-in Task Manager
@@ -17,23 +18,24 @@
     - Download this image
     - Download all images on this page
 - Capture browser downloads
-    - Capture downloads via [downloads](https://developer.chrome.com/docs/extensions/reference/downloads) API
-    - Capture downloads via [webRequest](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/webRequest) API
+    - Using [downloads](https://developer.chrome.com/docs/extensions/reference/downloads) API
+        - *Chromium Limited*
+    - Using [webRequest](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/webRequest) API
         - *Firefox only*
-    - Capture downloads via file size
-    - Capture downloads via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
-    - Capture downloads via [file extension match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#file-extension)
-- Simulating browser `Request Headers` to bypass CORS checks
-    - Only for `Capturing Browser Downloads`
-    - Has ability to override `User-Agent`
-    - Exclude rules via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
+    - Exclude rules based on on *file size*
+    - Exclude rules based on [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
+    - Exclude rules based on [file extension match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#file-extension)
+- Forward browser `Request Headers` to bypass CORS checks
+    - Better compatibility with `Capturing Browser Downloads`
+    - Can override `User-Agent` as you like
+    - Exclude rules based on [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
 - Proxy server
-    - Auto-proxy rules via [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
-- Change options for JSON-RPC and Tasks
-- Backup/Restore options for this extension and JSON-RPC
-- Notification system
+    - Include rules based on [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
+- Change the options of JSON-RPC and Tasks
+- Backup/Restore options of this extension and JSON-RPC
+- Notifications
     - When download started, or completed
-    - When extension installed, or updated
+    - When extension installed, and updated
 
 ## Screenshot
 
