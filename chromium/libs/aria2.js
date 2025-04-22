@@ -1,89 +1,102 @@
 class Aria2 {
     constructor (...args) {
         let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
-        if (!path) { throw new Error('Malformed JSON-RPC entry: "' + args.join('", "') + '"'); }
+        if (!path) { throw new Error('Unsupported parameters: "' + args.join('", "') + '"'); }
         this.scheme = path[1];
         this.url = path[2];
         this.secret = path[3];
     }
-    version = '0.9';
-    args = { retries: 10, timeout: 10000 };
+    version = '1.0';
+    #args = { retries: 10, timeout: 10000 };
     set scheme (scheme) {
-        let method = scheme.match(/^(http|ws)(s)?$/);
-        if (scheme === this.args.scheme || !method) { return; }
-        this.args.scheme = scheme;
-        this.args.ssl = method[2] ?? '';
-        this.call = this[method[1]];
-        this.path();
+        let type = scheme.match(/^(http|ws)(s)?$/);
+        if (!type) { throw new Error('Unsupported scheme: "' + scheme + '"'); }
+        this.#args.scheme = scheme;
+        this.method = type[1];
+        this.ssl = type[2];
     }
     get scheme () {
-        return this.args.scheme;
+        return this.#args.scheme;
+    }
+    set method (method) {
+        if (!/^(http|ws)$/.test(method)) { throw new Error('Unsupported method: "' + method + '"'); }
+        this.#args.method = method;
+        this.call = this[method];
+    }
+    get method () {
+        return this.#args.method;
+    }
+    set ssl (ssl) {
+        this.#args.ssl = ssl ? 's' : '';
+        this.path();
+    }
+    get ssl () {
+        return !!this.#args.ssl;
     }
     set url (url) {
-        if (url === this.args.url) { return; }
-        this.args.url = url;
+        this.#args.url = url;
         this.path();
     }
     get url () {
-        return this.args.url;
+        return this.#args.url;
     }
     set secret (secret) {
-        this.args.token = 'token:'　+ secret;
+        this.#args.token = 'token:'　+ secret;
     }
     get secret () {
-        return this.args.token.slice(6);
+        return this.#args.token.slice(6);
     }
     set retries (number) {
-        this.args.retries = isNaN(number) || number < 0 ? Infinity : number;
+        this.#args.retries = isNaN(number) || number < 0 ? Infinity : number;
     }
     get retries () {
-        return isNaN(this.args.retries) ? Infinity : this.args.retries;
+        return this.#args.retries;
     }
     set timeout (number) {
-        this.args.timeout = isNaN(number) ? 10000 : number * 1000;
+        this.#args.timeout = isNaN(number) ? 10000 : number * 1000;
     }
     get timeout () {
-        return isNaN(this.args.timeout) ? 10 : this.args.timeout / 1000;
+        return this.#args.timeout / 1000;
     }
-    set onopen (callback) {
-        this.args.onopen = typeof callback === 'function' ? callback : null;
+    set onopen (func) {
+        this.#args.onopen = typeof func === 'function' ? func : null;
     }
     get onopen () {
-        return typeof this.args.onopen === 'function' ? this.args.onopen : null;
+        return this.#args.onopen ?? null;
     }
-    set onmessage (callback) {
-        this.args.onmessage = typeof callback === 'function' ? callback : null;
+    set onmessage (func) {
+        this.#args.onmessage = typeof func === 'function' ? func : null;
     }
     get onmessage () {
-        return typeof this.args.onmessage === 'function' ? this.args.onmessage : null;
+        return this.#args.onmessage ?? null;
     }
-    set onclose (callback) {
-        this.args.onclose = typeof callback === 'function' ? callback : null;
+    set onclose (func) {
+        this.#args.onclose = typeof func === 'function' ? func : null;
     }
     get onclose () {
-        return typeof this.args.onclose === 'function' ? this.args.onclose : null;
+        return this.#args.onclose ?? null;
     }
     path () {
-        let {ssl, url} = this.args;
-        this.args.xml = 'http' + ssl + '://' + url;
-        this.args.ws = 'ws' + ssl + '://' + url;
+        let {ssl, url} = this.#args;
+        this.#args.xml = 'http' + ssl + '://' + url;
+        this.#args.ws = 'ws' + ssl + '://' + url;
     }
     connect () {
         let tries = 0;
-        this.socket = new WebSocket(this.args.ws);
+        this.socket = new WebSocket(this.#args.ws);
         this.socket.onopen = (event) => {
             this.alive = true;
-            if (typeof this.args.onopen === 'function') { this.args.onopen(event); }
+            if (this.#args.onopen) { this.#args.onopen(event); }
         };
         this.socket.onmessage = (event) => {
             let response = JSON.parse(event.data);
-            if (!response.method) { this.args.onresponse(response); }
-            else if (typeof this.args.onmessage === 'function') { this.args.onmessage(response); }
+            if (!response.method) { this.#args.onresponse(response); }
+            else if (this.#args.onmessage) { this.#args.onmessage(response); }
         };
         this.socket.onclose = (event) => {
             this.alive = false;
-            if (!event.wasClean && tries ++ < this.args.retries) { setTimeout(() => this.connect(), this.args.timeout); }
-            if (typeof this.args.onclose === 'function') { this.args.onclose(event); }
+            if (!event.wasClean && tries ++ < this.#args.retries) { setTimeout(() => this.connect(), this.#args.timeout); }
+            if (this.#args.onclose) { this.#args.onclose(event); }
         };
     }
     disconnect () {
@@ -91,19 +104,19 @@ class Aria2 {
     }
     ws (...args) {
         return new Promise((resolve, reject) => {
-            this.args.onresponse = resolve;
+            this.#args.onresponse = resolve;
             this.socket.onerror = reject;
             this.socket.send(this.json(args));
         });
     }
     http (...args) {
-        return fetch(this.args.xml, {method: 'POST', body: this.json(args)}).then((response) => {
+        return fetch(this.#args.xml, {method: 'POST', body: this.json(args)}).then((response) => {
             if (response.ok) { return response.json(); }
             throw new Error(response.statusText);
         });
     }
     json (args) {
-        let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [this.args.token, ...params] }) );
+        let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [this.#args.token, ...params] }) );
         return JSON.stringify(json);
     }
 }
