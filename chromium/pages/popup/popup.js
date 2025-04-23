@@ -1,5 +1,5 @@
 let aria2RPC;
-let aria2Tasks = { active: {}, waiting: {}, stopped: {}, total: {} };
+let aria2Tasks = { active: {}, waiting: {}, stopped: {} };
 let aria2Queue = {};
 let aria2Stats = {};
 let aria2Filter = new Set(localStorage['queues']?.match(/[^;]+/g) ?? []);
@@ -39,11 +39,11 @@ document.addEventListener('keydown', (event) => {
 });
 
 purgeBtn.addEventListener('click', async (event) => {
+    let {active, waiting} = aria2Tasks;
     await aria2RPC.call({method: 'aria2.purgeDownloadResult'});
     aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
     aria2Stats.stopped.textContent = '0';
-    aria2Tasks.stopped = {};
-    aria2Tasks.total = {...aria2Tasks.active, ...aria2Tasks.waiting};
+    aria2Tasks = { ...active, ...waiting, active, waiting, stopped: {} };
 });
 
 async function aria2ClientOpened() {
@@ -57,7 +57,7 @@ async function aria2ClientOpened() {
 
 function aria2ClientClosed() {
     clearInterval(aria2Interval);
-    aria2Tasks = { active: {}, waiting: {}, stopped: {}, total: {} };
+    aria2Tasks = { active: {}, waiting: {}, stopped: {} };
     aria2Stats.active.textContent = aria2Stats.waiting.textContent = aria2Stats.stopped.textContent = aria2Stats.download.textContent = aria2Stats.upload.textContent = '0';
     aria2Queue.active.innerHTML = aria2Queue.waiting.innerHTML = aria2Queue.paused.innerHTML = aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
 }
@@ -110,7 +110,7 @@ async function taskElementRefresh(gid) {
 }
 
 function taskElementUpdate({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    let task = aria2Tasks.total[gid] ??= taskElementCreate(gid, status, bittorrent, files);
+    let task = aria2Tasks[gid] ??= taskElementCreate(gid, status, bittorrent, files);
     let time = (totalLength - completedLength) / downloadSpeed;
     let days = time / 86400 | 0;
     let hours = time / 3600 - days * 24 | 0;
@@ -164,7 +164,7 @@ async function taskEventRemove(task, gid) {
     await aria2RPC.call({method, params: [gid]});
     if (removed) {
         task.remove();
-        delete aria2Tasks.total[gid];
+        delete aria2Tasks[gid];
         delete aria2Tasks[removed][gid];
         aria2Stats[removed].textContent --;
     }
@@ -207,7 +207,7 @@ async function taskEventRetry(task, gid) {
     let [added] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options.result]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
     taskElementRefresh(added.result);
     task.remove();
-    delete aria2Tasks.total[gid];
+    delete aria2Tasks[gid];
     delete aria2Tasks.stopped[gid];
     aria2Stats.stopped.textContent --;
 }
