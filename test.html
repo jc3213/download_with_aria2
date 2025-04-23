@@ -59,7 +59,7 @@ function aria2JsonrpcEcho() {
     testResult.value = 'Running';
     aria2ResponseEcho()
         .then(( { name, version } ) => {
-            testResult.value = 'Extension Name:' +name + '\nVersion: ' + version;
+            testResult.value = 'Extension Name: ' +name + '\nVersion: ' + version;
         })
         .catch((err) => {
             testResult.value = err;
