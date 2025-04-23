@@ -7,7 +7,7 @@
 ## About
 - The browser extension for [aria2 - ultra fast download utility](https://github.com/aria2/aria2) over JSON-RPC
     - The development is based on [aria2.js](https://github.com/jc3213/aria2.js)
-    - Read [Wiki](//github.com/jc3213/download_with_aria2/wiki) for usage
+    - Read [Wiki: Installation](//github.com/jc3213/download_with_aria2/wiki#first-of-all) for usage
     - Send feedback at [issues page](//github.com/jc3213/download_with_aria2/issues/new/)
 - Built-in Task Manager
     - Try the manager [HERE](https://jc3213.github.io/aria2.js/manager)
@@ -30,6 +30,9 @@
     - Exclude rules based on [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
 - Proxy server
     - Include rules based on [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
+- Communicate seamlessly with this extension using messaging.
+    - [Try the demo](https://jc3213.github.io/aria2.js/manager/test.html)
+    - Read [Wiki: Message](//github.com/jc3213/download_with_aria2/wiki/Message) for detailed documentation
 - Change the options of JSON-RPC and Tasks
 - Backup/Restore options of this extension and JSON-RPC
 - Notifications
