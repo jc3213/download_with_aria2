@@ -5,25 +5,25 @@
 | - | - | - |
 
 ## About
-- The browser extension for [aria2 - ultra fast download utility](https://github.com/aria2/aria2) over JSON-RPC
-    - The development is based on [aria2.js](https://github.com/jc3213/aria2.js)
+- The browser extension for [aria2 - ultra fast download utility](//github.com/aria2/aria2) over JSON-RPC
+    - The development is based on [aria2.js](//github.com/jc3213/aria2.js)
     - Read [Wiki: Installation](//github.com/jc3213/download_with_aria2/wiki#first-of-all) for usage
     - Send feedback at [issues page](//github.com/jc3213/download_with_aria2/issues/new/)
 - Built-in Task Manager
-    - Try the manager [HERE](https://jc3213.github.io/aria2.js/manager)
-    - Get the [Source code](https://github.com/jc3213/aria2.js/tree/main/manager)
+    - Try the manager [HERE](//jc3213.github.io/aria2.js/manager)
+    - Get the [Source code](//github.com/jc3213/aria2.js/tree/main/manager)
 - Context menus
     - Download this link
     - Download this image
     - Download all images on this page
 - Capture browser downloads
-    - Using [downloads](https://developer.chrome.com/docs/extensions/reference/downloads) API
+    - Using [downloads](//developer.chrome.com/docs/extensions/reference/downloads) API
         - *Chromium Limited*
-    - Using [webRequest](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/webRequest) API
+    - Using [webRequest](//developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/webRequest) API
         - *Firefox only*
     - Exclude rules based on on *file size*
-    - Exclude rules based on [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
-    - Exclude rules based on [file extension match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#file-extension)
+    - Exclude rules based on [hostname match patterns](//github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
+    - Exclude rules based on [file extension match patterns](//github.com/jc3213/download_with_aria2/wiki/MatchPattern#file-extension)
 - Forward browser `Request Headers` to bypass CORS checks
     - Better compatibility with `Capturing Browser Downloads`
     - Can override `User-Agent` as you like
@@ -31,7 +31,7 @@
 - Proxy server
     - Include rules based on [hostname match patterns](https://github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
 - Communicate seamlessly with this extension using messaging.
-    - [Try the demo](https://jc3213.github.io/aria2.js/manager/test.html)
+    - [Try the demo](//jc3213.github.io/download_with_aria2/test/test.html)
     - Read [Wiki: Message](//github.com/jc3213/download_with_aria2/wiki/Message) for detailed documentation
 - Change the options of JSON-RPC and Tasks
 - Backup/Restore options of this extension and JSON-RPC
