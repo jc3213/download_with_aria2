@@ -171,11 +171,11 @@ async function taskEventRemove(task, gid) {
 }
 
 async function taskEventDetail(task, gid) {
-    if (aria2Tasks[gid]) {
-        delete aria2Tasks[gid];
+    if (task.opened) {
+        task.opened = false;
         task.change.style.display = '';
     } else {
-        aria2Tasks[gid] = true;
+        task.opened = true;
         task.config ??= await taskEventDetailGetter(gid);
         task.entries.forEach((entry) => {
             entry.value = task.config[entry.name] ?? '';
