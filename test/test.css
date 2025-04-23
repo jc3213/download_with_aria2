@@ -1,0 +1,23 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width: 300px;
+    height: 80vh;
+    gap: 3px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+textarea {
+    width: 600px;
+    height: 300px;
+    resize: none;
+    font-size: 20px;
+}
