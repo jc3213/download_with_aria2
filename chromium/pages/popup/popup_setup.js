@@ -1,6 +1,4 @@
-let aria2Toolbar = location.search === '?toolbar';
-
-if (aria2Toolbar) {
+if (location.search === '?toolbar') {
     aria2ToolbarSetup();
 }
 
@@ -12,18 +10,12 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-downBtn.addEventListener('click', async (event) => {
+downBtn.addEventListener('click', (event) => {
     chrome.runtime.sendMessage({action: 'open_new_download'});
-    if (aria2Toolbar) {
-        close();
-    }
 });
 
 optionsBtn.addEventListener('click', (event) => {
     chrome.runtime.openOptionsPage();
-    if (aria2Toolbar) {
-        close();
-    }
 });
 
 chrome.runtime.onMessage.addListener(({action, params}) => {
