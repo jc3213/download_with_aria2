@@ -202,13 +202,12 @@ chrome.action ??= chrome.browserAction;
 chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.get(aria2Manager, (tab) => {
         let url = '/pages/popup/popup.html';
-        if (chrome.runtime.lastError) {
-            chrome.tabs.create({url, active: true}, (tab) => {
+        if (!chrome.runtime.lastError && tab.url.endsWith(url)) {
+            chrome.tabs.update(aria2Manager, { active: true });
+        } else {
+            chrome.tabs.create({ url, active: true }, (tab) => {
                 aria2Manager = tab.id;
             });
-        } else {
-            url = tab.url.endsWith(url) ? null : url;
-            chrome.tabs.update(aria2Manager, {url, active: true});
         }
     });
 });
