@@ -187,10 +187,8 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
     }
     let tab = aria2Inspect[tabId] ??= { images: new Map(), url };
     if (type === 'image') {
-        let si = url.indexOf('?');
-        let hi = url.indexOf('#');
-        let ii = (si !== -1 && hi !== -1) ? Math.min(si, hi) : si !== -1 ? si : hi !== -1 ? hi : -1;
-        let uri = ii !== -1 ? url.slice(0, ii) : url;
+        let index = url.indexOf('?');
+        let uri = index !== -1 ? url.slice(0, index) : url;
         tab.images.set(uri, url);
     } else {
         tab[url] = requestHeaders;
@@ -413,9 +411,8 @@ function getPopupWindow(url, height) {
                     aria2Popup = popup.tabs[0].id;
                 });
             } else {
-                url = tab.url.endsWith(url) ? null : url;
                 chrome.windows.update(tab.windowId, { focused: true, ...where });
-                chrome.tabs.update(aria2Popup, { url, active: true });
+                chrome.tabs.update(aria2Popup, { url: tab.url.endsWith(url) ? null : url, active: true });
             }
         });
     });
