@@ -7,16 +7,14 @@ class Aria2 {
         this.secret = path[3];
     }
     version = '1.0';
-    #scheme;
     set scheme (scheme) {
         let type = scheme.match(/^(http|ws)(s)?$/);
         if (!type) { throw new Error('Unsupported scheme: "' + scheme + '"'); }
-        this.#scheme = scheme;
         this.method = type[1];
         this.ssl = type[2];
     }
     get scheme () {
-        return this.#scheme;
+        return this.#method + this.#ssl;
     }
     #method;
     set method (method) {
@@ -50,8 +48,10 @@ class Aria2 {
     get secret () {
         return this.#secret.slice(6);
     }
+    #tries;
     #retries = 10;
     set retries (number) {
+        this.#tries = 0;
         this.#retries = isNaN(number) || number < 0 ? Infinity : number;
     }
     get retries () {
@@ -85,34 +85,33 @@ class Aria2 {
     get onclose () {
         return this.#onclose;
     }
-    #xml;
     #ws;
-    #tries;
-    #path () {
-        this.#xml = 'http' + this.#ssl + '://' + this.#url;
-        this.#ws = 'ws' + this.#ssl + '://' + this.#url;
-        this.#tries = 0;
-    }
-    #socket;
     connect () {
-        this.#socket = new WebSocket(this.#ws);
-        this.#socket.onopen = (event) => {
+        this.#ws = new WebSocket(this.#wsa);
+        this.#ws.onopen = (event) => {
             this.alive = true;
             if (this.#onopen) { this.#onopen(event); }
         };
-        this.#socket.onmessage = (event) => {
+        this.#ws.onmessage = (event) => {
             let response = JSON.parse(event.data);
             if (!response.method) { this.#onrecieve(response); }
             else if (this.#onmessage) { this.#onmessage(response); }
         };
-        this.#socket.onclose = (event) => {
+        this.#ws.onclose = (event) => {
             this.alive = false;
             if (!event.wasClean && this.#tries++ < this.#retries) { setTimeout(() => this.connect(), this.#timeout); }
             if (this.#onclose) { this.#onclose(event); }
         };
     }
     disconnect () {
-        this.#socket.close();
+        this.#ws.close();
+    }
+    #xml;
+    #wsa;
+    #path () {
+        let path = this.#ssl + '://' + this.#url;
+        this.#xml = 'http' + path;
+        this.#wsa = 'ws' + path;
     }
     #json (args) {
         let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [this.#secret, ...params] }) );
@@ -122,8 +121,8 @@ class Aria2 {
     #send (...args) {
         return new Promise((resolve, reject) => {
             this.#onrecieve = resolve;
-            this.#socket.onerror = reject;
-            this.#socket.send(this.#json(args));
+            this.#ws.onerror = reject;
+            this.#ws.send(this.#json(args));
         });
     }
     #post (...args) {
