@@ -187,7 +187,10 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
     }
     let tab = aria2Inspect[tabId] ??= { images: new Map(), url };
     if (type === 'image') {
-        let uri = url.match(/[^?#]+/)[0];
+        let si = url.indexOf('?');
+        let hi = url.indexOf('#');
+        let ii = (si !== -1 && hi !== -1) ? Math.min(si, hi) : si !== -1 ? si : hi !== -1 ? hi : -1;
+        let uri = ii !== -1 ? url.slice(0, ii) : url;
         tab.images.set(uri, url);
     } else {
         tab[url] = requestHeaders;
