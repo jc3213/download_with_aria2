@@ -201,12 +201,14 @@ chrome.action ??= chrome.browserAction;
 
 chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.get(aria2Manager, (tab) => {
+        let url = '/pages/popup/popup.html';
         if (chrome.runtime.lastError) {
-            chrome.tabs.create({url: '/pages/popup/popup.html', active: true}, (tab) => {
+            chrome.tabs.create({url, active: true}, (tab) => {
                 aria2Manager = tab.id;
             });
         } else {
-            chrome.tabs.update(aria2Manager, {active: true});
+            url = tab.url.endsWith(url) ? null : url;
+            chrome.tabs.update(aria2Manager, {url, active: true});
         }
     });
 });
@@ -412,12 +414,9 @@ function getPopupWindow(url, height) {
                     aria2Popup = popup.tabs[0].id;
                 });
             } else {
-                let update = { active: true };
-                if (!tab.url.includes(url)) {
-                    update.url = url;
-                }
+                url = tab.url.endsWith(url) ? null : url;
                 chrome.windows.update(tab.windowId, { focused: true, ...where });
-                chrome.tabs.update(aria2Popup, update);
+                chrome.tabs.update(aria2Popup, { url, active: true });
             }
         });
     });
