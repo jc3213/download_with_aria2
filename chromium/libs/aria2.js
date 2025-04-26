@@ -48,10 +48,8 @@ class Aria2 {
     get secret () {
         return this.#secret.slice(6);
     }
-    #tries;
     #retries = 10;
     set retries (number) {
-        this.#tries = 0;
         this.#retries = isNaN(number) || number < 0 ? Infinity : number;
     }
     get retries () {
@@ -85,6 +83,33 @@ class Aria2 {
     get onclose () {
         return this.#onclose;
     }
+    #xml;
+    #wsa;
+    #tries;
+    #path () {
+        let path = this.#ssl + '://' + this.#url;
+        this.#xml = 'http' + path;
+        this.#wsa = 'ws' + path;
+        this.#tries = 0;
+    }
+    #onrecieve = null;
+    #send (...args) {
+        return new Promise((resolve, reject) => {
+            this.#onrecieve = resolve;
+            this.#ws.onerror = reject;
+            this.#ws.send(this.#json(args));
+        });
+    }
+    #post (...args) {
+        return fetch(this.#xml, {method: 'POST', body: this.#json(args)}).then((response) => {
+            if (response.ok) { return response.json(); }
+            throw new Error(response.statusText);
+        });
+    }
+    #json (args) {
+        let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [this.#secret, ...params] }) );
+        return JSON.stringify(json);
+    }
     #ws;
     connect () {
         this.#ws = new WebSocket(this.#wsa);
@@ -105,30 +130,5 @@ class Aria2 {
     }
     disconnect () {
         this.#ws.close();
-    }
-    #xml;
-    #wsa;
-    #path () {
-        let path = this.#ssl + '://' + this.#url;
-        this.#xml = 'http' + path;
-        this.#wsa = 'ws' + path;
-    }
-    #json (args) {
-        let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [this.#secret, ...params] }) );
-        return JSON.stringify(json);
-    }
-    #onrecieve = null;
-    #send (...args) {
-        return new Promise((resolve, reject) => {
-            this.#onrecieve = resolve;
-            this.#ws.onerror = reject;
-            this.#ws.send(this.#json(args));
-        });
-    }
-    #post (...args) {
-        return fetch(this.#xml, {method: 'POST', body: this.#json(args)}).then((response) => {
-            if (response.ok) { return response.json(); }
-            throw new Error(response.statusText);
-        });
     }
 }
