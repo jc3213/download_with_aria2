@@ -14,7 +14,7 @@ let tellUA = document.getElementById('useragent');
 let optionsEntries = optionsPane.querySelectorAll('[name]');
 let optionsMatches = optionsPane.querySelectorAll('.matches div[id]');
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
-let matchLET = template.children[0];
+let matchLET = template.content.children[0];
 
 if (typeof browser !== 'undefined') {
     firefoxExclusive();

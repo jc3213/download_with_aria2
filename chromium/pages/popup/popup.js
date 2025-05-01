@@ -10,7 +10,7 @@ let aria2Interval;
 let manager = document.body.classList;
 let [menuPane, filterPane, queuePane, template] = document.body.children;
 let [downBtn, purgeBtn, optionsBtn, ...statEntries] = menuPane.children;
-let [sessionLET, fileLET, uriLET] = template.children;
+let [sessionLET, fileLET, uriLET] = template.content.children;
 
 [...queuePane.children].forEach((queue) => aria2Queue[queue.id] = queue);
 statEntries.forEach((stat) => aria2Stats[stat.dataset.sid] = stat);
