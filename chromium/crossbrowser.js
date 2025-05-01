@@ -313,7 +313,7 @@ async function aria2ClientMessage({method, params}) {
         default:
             aria2Active.delete(gid);
             break;
-    }
+    };
     setIndicator();
 }
 
