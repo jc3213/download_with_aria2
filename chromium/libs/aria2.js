@@ -1,15 +1,22 @@
 class Aria2 {
     constructor (...args) {
         let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
-        if (!path) { throw new Error('Unsupported parameters: "' + args.join('", "') + '"'); }
+        if (!path) { this.#error('parameters', args); }
         this.scheme = path[1];
         this.url = path[2];
         this.secret = path[3];
     }
     version = '1.0';
+    #error (error, args) {
+        throw new Error(`Unsupported ${error}: "${args.join('", "')}"`);
+    }
+    #alive;
+    get alive () {
+        return this.#alive;
+    }
     set scheme (scheme) {
         let type = scheme.match(/^(http|ws)(s)?$/);
-        if (!type) { throw new Error('Unsupported scheme: "' + scheme + '"'); }
+        if (!type) { this.#error('scheme', [scheme]); }
         this.method = type[1];
         this.ssl = type[2];
     }
@@ -18,8 +25,7 @@ class Aria2 {
     }
     #method;
     set method (method) {
-        this.call = { http: this.#post, ws: this.#send }[ method ];
-        if (!this.call) { throw new Error('Unsupported method: "' + method + '"'); }
+        this.call = method === "http" ? this.#post : method === "ws" ? this.#send : this.#error('method', [method]);
         this.#method = method;
     }
     get method () {
@@ -92,10 +98,10 @@ class Aria2 {
         this.#wsa = 'ws' + path;
         this.#tries = 0;
     }
-    #onrecieve = null;
+    #onreceive = null;
     #send (...args) {
         return new Promise((resolve, reject) => {
-            this.#onrecieve = resolve;
+            this.#onreceive = resolve;
             this.#ws.onerror = reject;
             this.#ws.send(this.#json(args));
         });
@@ -114,16 +120,16 @@ class Aria2 {
     connect () {
         this.#ws = new WebSocket(this.#wsa);
         this.#ws.onopen = (event) => {
-            this.alive = true;
+            this.#alive = true;
             if (this.#onopen) { this.#onopen(event); }
         };
         this.#ws.onmessage = (event) => {
             let response = JSON.parse(event.data);
-            if (!response.method) { this.#onrecieve(response); }
+            if (!response.method) { this.#onreceive(response); }
             else if (this.#onmessage) { this.#onmessage(response); }
         };
         this.#ws.onclose = (event) => {
-            this.alive = false;
+            this.#alive = false;
             if (!event.wasClean && this.#tries++ < this.#retries) { setTimeout(() => this.connect(), this.#timeout); }
             if (this.#onclose) { this.#onclose(event); }
         };
