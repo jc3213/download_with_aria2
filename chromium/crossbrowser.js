@@ -292,7 +292,7 @@ async function aria2ClientOpened() {
     aria2Config['max-overall-upload-limit'] = getFileSize(aria2Config['max-overall-upload-limit']);
     aria2Active = new Set(active.result.map(({ gid }) => gid));
     chrome.action.setBadgeBackgroundColor({color: '#1C4CD4'});
-    setBadgeText();
+    setIndicator();
 }
 
 function aria2ClientClosed() {
@@ -314,7 +314,7 @@ async function aria2ClientMessage({method, params}) {
             aria2Active.delete(gid);
             break;
     }
-    setBadgeText();
+    setIndicator();
 }
 
 function aria2CaptureResult(hostname, filename, filesize) {
@@ -400,7 +400,7 @@ function setContextMenu(id, i18n, contexts, parentId) {
     });
 }
 
-function setBadgeText() {
+function setIndicator() {
     let number = aria2Active.size;
     chrome.action.setBadgeText({text: !number ? '' : String(number)});
 }
