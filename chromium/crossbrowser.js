@@ -34,20 +34,13 @@ let aria2Version;
 let aria2Storage = {};
 let aria2Updated = {};
 let aria2Config = {};
-let aria2Queue = {};
-let aria2Active = 0;
+let aria2Active;
 let aria2Manager = 0;
 let aria2Popup = 0;
 let aria2Inspect = {};
 let aria2Detect = {};
 let aria2Manifest = chrome.runtime.getManifest();
 let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
-
-const contextMenusHandlers = {
-    'aria2c_this_url': (tabId, referer, link) => aria2DownloadHandler(link, referer, {}, tabId),
-    'aria2c_this_image': (tabId, referer, link, src) => aria2DownloadHandler(src, referer, {}, tabId),
-    'aria2c_all_images': aria2ImagesPrompt
-};
 
 async function aria2DownloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
@@ -69,36 +62,41 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
     aria2WhenStart(url);
 }
 
-function aria2ImagesPrompt(id, referer) {
-    aria2Detect = {id, referer};
-    getPopupWindow('/pages/images/images.html', 680);
+function aria2ImagesPrompt(referer, id) {
+    aria2Detect = {referer, id};
+    openPopupWindow('/pages/images/images.html', 680);
 }
 
 chrome.contextMenus.onClicked.addListener(({menuItemId, linkUrl, srcUrl}, {id, url}) => {
-    contextMenusHandlers[menuItemId](id, url, linkUrl, srcUrl);
+    switch (menuItemId) {
+        case 'aria2c_this_url':
+            aria2DownloadHandler(linkUrl, url, {}, id);
+            break;
+        case 'aria2c_this_image':
+            aria2DownloadHandler(srcUrl, url, {}, id);
+            break;
+        case 'aria2c_all_images':
+            aria2ImagesPrompt(url, id);
+            break;
+    };
 });
 
-const commandsHandlers = {
-    'open_options': () => chrome.runtime.openOptionsPage(),
-    'open_new_download': () => getPopupWindow('/pages/newdld/newdld.html', 462)
-};
+function aria2DownloadPrompt() {
+    openPopupWindow('/pages/newdld/newdld.html', 462);
+}
 
 chrome.commands.onCommand.addListener((command) => {
-    commandsHandlers[command]();
+    switch (command) {
+        case 'open_options':
+            chrome.runtime.openOptionsPage();
+            break;
+        case 'open_new_download':
+            aria2DownloadPrompt();
+            break;
+    };
 });
 
-const messageHandlers = {
-    'storage_query': aria2StorageQuery,
-    'storage_update': aria2StorageChanged,
-    'jsonrpc_query': aria2ConfigQuery,
-    'jsonrpc_update': aria2ConfigChanged,
-    'jsonrpc_download': aria2DownloadUrls,
-    'jsonrpc_metadata': aria2DownloadFiles,
-    'open_all_images': aria2DetectedImages,
-    'open_new_download': commandsHandlers['open_new_download']
-};
-
-function aria2StorageQuery(params, response) {
+function aria2StorageQuery(response) {
     response({
         storage: aria2Storage,
         options: aria2Config,
@@ -115,7 +113,7 @@ function aria2StorageChanged(json) {
     chrome.storage.sync.set(aria2Storage);
 }
 
-function aria2ConfigQuery(params, response) {
+function aria2ConfigQuery(response) {
     response({
         alive: aria2RPC.alive,
         options: aria2Config,
@@ -148,7 +146,7 @@ async function aria2DownloadFiles(files) {
     aria2WhenStart(message);
 }
 
-function aria2DetectedImages(params, response) {
+function aria2DetectedImages(response) {
     let tab = aria2Inspect[aria2Detect.id];
     response({
         referer: aria2Detect.referer,
@@ -162,7 +160,32 @@ function aria2DetectedImages(params, response) {
 }
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
-    messageHandlers[action](params, response);
+    switch (action) {
+        case 'storage_query':
+            aria2StorageQuery(response);
+            break;
+        case 'storage_update':
+            aria2StorageChanged(params);
+            break;
+        case 'jsonrpc_query':
+            aria2ConfigQuery(response);
+            break;
+        case 'jsonrpc_update':
+            aria2ConfigChanged(params);
+            break;
+        case 'jsonrpc_download':
+            aria2DownloadUrls(params);
+            break;
+        case 'jsonrpc_metadata':
+            aria2DownloadFiles(params);
+            break;
+        case 'open_all_images':
+            aria2DetectedImages(response);
+            break;
+        case 'open_new_download':
+            aria2DownloadPrompt();
+            break;
+    };
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
@@ -244,16 +267,16 @@ function aria2StorageUpdate(json) {
     }
     if (json['context_cascade']) {
         menuId = 'aria2c_contextmenu';
-        getContextMenu(menuId, 'extension_name', ['link', 'image', 'page']);
+        setContextMenu(menuId, 'extension_name', ['link', 'image', 'page']);
     }
     if (json['context_thisurl']) {
-        getContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], menuId);
+        setContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], menuId);
     }
     if (json['context_thisimage']) {
-        getContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], menuId);
+        setContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], menuId);
     }
     if (json['context_allimages']) {
-        getContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], menuId);
+        setContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], menuId);
     }
 }
 
@@ -267,10 +290,9 @@ async function aria2ClientOpened() {
     aria2Config['max-upload-limit'] = getFileSize(aria2Config['max-upload-limit']);
     aria2Config['max-overall-download-limit'] = getFileSize(aria2Config['max-overall-download-limit']);
     aria2Config['max-overall-upload-limit'] = getFileSize(aria2Config['max-overall-upload-limit']);
-    aria2Active = active.result.length;
-    active.result.forEach(({gid}) => aria2Queue[gid] = gid);
+    aria2Active = new Set(active.result.map(({ gid }) => gid));
     chrome.action.setBadgeBackgroundColor({color: '#1C4CD4'});
-    chrome.action.setBadgeText({text: !aria2Active ? '' : aria2Active + ''});
+    setBadgeText();
 }
 
 function aria2ClientClosed() {
@@ -278,30 +300,21 @@ function aria2ClientClosed() {
     chrome.action.setBadgeText({text: 'E'});
 }
 
-const clientHandlers = {
-    'aria2.onBtDownloadComplete': () => {},
-    'aria2.onDownloadStart': (gid) => {
-        if (!aria2Queue[gid]) {
-            aria2Active ++;
-            aria2Queue[gid] = gid;
-        }
-    },
-    'aria2.onDownloadComplete': (gid) => {
-        aria2WhenComplete(gid);
-        clientHandlers['default'](gid);
-    },
-    'default': (gid) => {
-        if (aria2Queue[gid]) {
-            delete aria2Queue[gid];
-            aria2Active --;
-        }
-    }
-};
-
 async function aria2ClientMessage({method, params}) {
-    let handler = clientHandlers[method] ?? clientHandlers['default'];
-    handler(params[0].gid);
-    chrome.action.setBadgeText({text: !aria2Active ? '' : String(aria2Active)});
+    let {gid} = params[0];
+    switch (method) {
+        case 'aria2.onDownloadStart':
+            aria2Active.add(gid);
+            break;
+        case 'aria2.onBtDownloadComplete':
+            break;
+        case 'aria2.onDownloadComplete':
+            aria2WhenComplete(gid);
+        default:
+            aria2Active.delete(gid);
+            break;
+    }
+    setBadgeText();
 }
 
 function aria2CaptureResult(hostname, filename, filesize) {
@@ -318,14 +331,14 @@ function aria2WhenInstall(reason) {
     if (aria2Storage['notify_install']) {
         let title = chrome.i18n.getMessage('extension_' + reason);
         let message = chrome.i18n.getMessage('extension_version').replace('{version}', aria2Manifest.version);
-        getNotification(title, message);
+        showNotification(title, message);
     }
 }
 
 function aria2WhenStart(message) {
     if (aria2Storage['notify_start']) {
         let title = chrome.i18n.getMessage('download_start');
-        getNotification(title, message);
+        showNotification(title, message);
     }
 }
 
@@ -335,7 +348,7 @@ async function aria2WhenComplete(gid) {
         let {bittorrent, files: [{path}]} = response[0].result;
         let name = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1);
         let title = chrome.i18n.getMessage('download_complete');
-        getNotification(title, name);
+        showNotification(title, name);
     }
 }
 
@@ -358,14 +371,10 @@ function getFileSize(bytes) {
     return (bytes / 10995116277.76 | 0) / 100 + 'T';
 }
 
-function getContextMenu(id, i18n, contexts, parentId) {
-    chrome.contextMenus.create({
-        id,
-        title: chrome.i18n.getMessage(i18n),
-        contexts,
-        parentId,
-        documentUrlPatterns: ['http://*/*', 'https://*/*']
-    });
+function getHostname(url) {
+    let path = url.slice(url.indexOf(':') + 3);
+    let host = path.slice(0, path.indexOf('/'));
+    return host.slice(host.indexOf('@') + 1);
 }
 
 function getMatchPattern(array, isFile) {
@@ -381,13 +390,22 @@ function getMatchPattern(array, isFile) {
     return new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*\\\./g, '([^.]+\\.)*').replace(/\\\.\*/g, '(\\.[^.]+)*') + ')$');
 }
 
-function getHostname(url) {
-    let path = url.slice(url.indexOf(':') + 3);
-    let host = path.slice(0, path.indexOf('/'));
-    return host.slice(host.indexOf('@') + 1);
+function setContextMenu(id, i18n, contexts, parentId) {
+    chrome.contextMenus.create({
+        id,
+        title: chrome.i18n.getMessage(i18n),
+        contexts,
+        parentId,
+        documentUrlPatterns: ['http://*/*', 'https://*/*']
+    });
 }
 
-function getNotification(title, message) {
+function setBadgeText() {
+    let number = aria2Active.size;
+    chrome.action.setBadgeText({text: !number ? '' : String(number)});
+}
+
+function showNotification(title, message) {
     chrome.notifications.create({
         title,
         message,
@@ -396,7 +414,7 @@ function getNotification(title, message) {
     });
 }
 
-function getPopupWindow(url, height) {
+function openPopupWindow(url, height) {
     chrome.windows.getAll({windowTypes: ['normal']}, (windows) => {
         let window = windows[0];
         let where = {
