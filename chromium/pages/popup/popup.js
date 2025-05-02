@@ -10,7 +10,7 @@ let aria2Interval;
 let manager = document.body.classList;
 let [menuPane, filterPane, queuePane, template] = document.body.children;
 let [downBtn, purgeBtn, optionsBtn, ...statEntries] = menuPane.children;
-let [sessionLET, fileLET, uriLET] = template.content.children;
+let [sessionLET, fileLET, uriLET] = template.children;
 
 [...queuePane.children].forEach((queue) => aria2Queue[queue.id] = queue);
 statEntries.forEach((stat) => aria2Stats[stat.dataset.sid] = stat);
@@ -24,18 +24,26 @@ filterPane.addEventListener('click', (event) => {
     localStorage['queues'] = [...aria2Filter].join(';');
 });
 
-const shortcutHandlers = {
-    'r': purgeBtn,
-    'd': downBtn,
-    's': optionsBtn
-};
+function shortcutHandler(event, ctrlKey, button) {
+    if (ctrlKey) {
+        event.preventDefault();
+        button.click();
+    }
+}
 
 document.addEventListener('keydown', (event) => {
-    let handler = shortcutHandlers[event.key];
-    if (event.ctrlKey && handler) {
-        event.preventDefault();
-        handler.click();
-    }
+    let {key, ctrlKey} = event;
+    switch (key) {
+        case 'r':
+            shortcutHandler(event, ctrlKey, purgeBtn);
+            break;
+        case 'd':
+            shortcutHandler(event, ctrlKey, downBtn);
+            break;
+        case 's':
+            shortcutHandler(event, ctrlKey, optionsBtn);
+            break;
+    };
 });
 
 purgeBtn.addEventListener('click', async (event) => {
@@ -62,27 +70,26 @@ function aria2ClientClosed() {
     aria2Queue.active.innerHTML = aria2Queue.waiting.innerHTML = aria2Queue.paused.innerHTML = aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
 }
 
-const clientHandlers = {
-    'aria2.onBtDownloadComplete': () => {},
-    'aria2.onDownloadStart': (gid) => {
-        taskElementRefresh(gid);
-        if (aria2Tasks.waiting[gid]) {
-            delete aria2Tasks.waiting[gid];
-            aria2Stats.waiting.textContent --;
-        }
-    },
-    'default': (gid) => {
-        taskElementRefresh(gid);
-        if (aria2Tasks.active[gid]) {
-            delete aria2Tasks.active[gid];
-            aria2Stats.active.textContent --;
-        }
-    }
-};
-
 function aria2ClientMessage({method, params}) {
-    let handler = clientHandlers[method] ?? clientHandlers['default'];
-    handler(params[0].gid);
+    let {gid} = params[0];
+    switch (method) {
+        case 'aria2.onDownloadStart':
+            taskElementRefresh(gid);
+            if (aria2Tasks.waiting[gid]) {
+                delete aria2Tasks.waiting[gid];
+                aria2Stats.waiting.textContent --;
+            }
+            break;
+        case 'aria2.onBtDownloadComplete':
+            break;
+        default:
+            taskElementRefresh(gid);
+            if (aria2Tasks.active[gid]) {
+                delete aria2Tasks.active[gid];
+                aria2Stats.active.textContent --;
+            }
+            break;
+    };
 }
 
 async function aria2ClientUpdate() {
@@ -94,10 +101,10 @@ async function aria2ClientUpdate() {
 
 function taskQueueChange(task, gid, status) {
     let queue = aria2Queue[status];
-    let type = queue.dataset.tid;
-    if (!aria2Tasks[type][gid]) {
-        aria2Tasks[type][gid] = task;
-        aria2Stats[type].textContent ++;
+    let group = queue.dataset.tid;
+    if (!aria2Tasks[group][gid]) {
+        aria2Tasks[group][gid] = task;
+        aria2Stats[group].textContent ++;
     }
     queue.appendChild(task);
     task.status = status;
@@ -138,35 +145,29 @@ function taskElementUpdate({gid, status, files, bittorrent, completedLength, tot
     return task;
 }
 
-const taskEventHandlers = {
-    'tips_task_remove': taskEventRemove,
-    'tips_task_detail': taskEventDetail,
-    'tips_task_retry': taskEventRetry,
-    'tips_task_pause': taskEventPause,
-    'tips_proxy_server': taskEventProxy,
-    'tips_select_file': taskEventSelect,
-    'tips_task_adduri': taskEventAddUri,
-    'tips_task_copy': (task, gid, event) => navigator.clipboard.writeText(event.target.title),
-    'tips_task_fileid': (task) => task.change.style.display = 'block'
-};
-
-const removeHandlers = {
-    'active': { method: 'aria2.forceRemove' },
-    'waiting': { method: 'aria2.forceRemove', removed: 'waiting'},
-    'paused': { method: 'aria2.forceRemove', removed: 'waiting'},
-    'complete': { method: 'aria2.removeDownloadResult', removed: 'stopped'},
-    'removed': { method: 'aria2.removeDownloadResult', removed: 'stopped'},
-    'error': { method: 'aria2.removeDownloadResult', removed: 'stopped'}
-};
-
-async function taskEventRemove(task, gid) {
-    let {method, removed} = removeHandlers[task.status];
+async function taskEventRemove(task, gid, method, group) {
+    switch (task.status) {
+        case 'active':
+            method = 'aria2.forceRemove';
+            break;
+        case 'waiting':
+        case 'paused':
+            method = 'aria2.forceRemove';
+            group = 'waiting';
+            break;
+        case 'complete':
+        case 'removed':
+        case 'error':
+            method = 'aria2.removeDownloadResult';
+            group = 'stopped';
+            break;
+    }
     await aria2RPC.call({method, params: [gid]});
-    if (removed) {
+    if (group) {
         task.remove();
         delete aria2Tasks[gid];
-        delete aria2Tasks[removed][gid];
-        aria2Stats[removed].textContent --;
+        delete aria2Tasks[group][gid];
+        aria2Stats[group].textContent --;
     }
 }
 
@@ -212,18 +213,25 @@ async function taskEventRetry(task, gid) {
     aria2Stats.stopped.textContent --;
 }
 
-const pauseHandlers = {
-    'active': {method: 'aria2.forcePause', queue: 'paused'},
-    'waiting': {method: 'aria2.forcePause', queue: 'paused'},
-    'paused': {method: 'aria2.unpause', queue: 'waiting'}
-};
-
-async function taskEventPause(task, gid) {
-    let {method, queue} = pauseHandlers[task.status] ?? {};
+async function taskEventPause(task, gid, method, status) {
+    switch (task.status) {
+        case 'active':
+            method = 'aria2.forcePause';
+            status = 'paused';
+            break;
+        case 'waiting':
+            method = 'aria2.forcePause';
+            status = 'paused';
+            break;
+        case 'paused':
+            method = 'aria2.unpause';
+            status = 'waiting';
+            break;
+    };
     if (method) {
         await aria2RPC.call({method, params: [gid]});
-        aria2Queue[queue].appendChild(task);
-        task.status = queue;
+        aria2Queue[status].appendChild(task);
+        task.status = status;
     }
 }
 
@@ -268,10 +276,35 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', (event) => {
-        let handler = taskEventHandlers[event.target.getAttribute('i18n-tips')];
-        if (handler) {
-            handler(task, gid, event);
-        }
+        switch (event.target.getAttribute('i18n-tips')) {
+            case 'tips_task_remove': 
+                taskEventRemove(task, gid);
+                break;
+            case 'tips_task_detail':
+                taskEventDetail(task, gid);
+                break;
+            case 'tips_task_retry':
+                taskEventRetry(task, gid);
+                break;
+            case 'tips_task_pause':
+                taskEventPause(task, gid);
+                break;
+            case 'tips_proxy_server':
+                taskEventProxy(task, gid);
+                break;
+            case 'tips_select_file':
+                taskEventSelect(task, gid);
+                break;
+            case 'tips_task_adduri':
+                taskEventAddUri(task, gid);
+                break;
+            case 'tips_task_copy':
+                navigator.clipboard.writeText(event.target.title);
+                break;
+            case 'tips_task_fileid': 
+                task.change.style.display = 'block';
+                break;
+        };
     });
     newuri.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
