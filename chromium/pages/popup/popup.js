@@ -14,7 +14,6 @@ let [sessionLET, fileLET, uriLET] = template.children;
 
 [...queuePane.children].forEach((queue) => aria2Queue.set(queue.id, queue));
 statEntries.forEach((stat) => aria2Stats.set(stat.dataset.sid, stat));
-
 manager.add(...aria2Filter);
 
 filterPane.addEventListener('click', (event) => {
@@ -74,23 +73,17 @@ function aria2ClientClosed() {
     aria2Queue.values().forEach((queue) => queue.innerHTML = '');
 }
 
-function messageHandler(gid, group) {
-    let tasks = aria2Tasks.get(group);
-    tasks.delete(gid);
-    aria2Stats.get(group).textContent = tasks.size;
-    taskElementRefresh(gid);
-}
-
 function aria2ClientMessage({method, params}) {
     let {gid} = params[0];
+    taskElementRefresh(gid);
     switch (method) {
         case 'aria2.onDownloadStart':
-            messageHandler(gid, 'waiting');
+            taskRemoved(gid, 'waiting');
             break;
         case 'aria2.onBtDownloadComplete':
             break;
         default:
-            messageHandler(gid, 'active');
+            taskRemoved(gid, 'active');
             break;
     };
 }
@@ -100,6 +93,12 @@ async function aria2ClientUpdate() {
     active.result.forEach(taskElementUpdate);
     aria2Stats.get('download').textContent = getFileSize(global.result.downloadSpeed);
     aria2Stats.get('upload').textContent = getFileSize(global.result.uploadSpeed);
+}
+
+function taskRemoved(gid, group) {
+    let tasks = aria2Tasks.get(group);
+    tasks.delete(gid);
+    aria2Stats.get(group).textContent = tasks.size;
 }
 
 function taskQueueChange(task, gid, status) {
@@ -168,8 +167,7 @@ async function taskEventRemove(task, gid, method, group) {
     if (group) {
         task.remove();
         aria2Tasks.delete(gid);
-        aria2Tasks.get(group).delete(gid);
-        aria2Stats.get(group).textContent --;
+        taskRemoved(gid, group);
     }
 }
 
@@ -211,8 +209,7 @@ async function taskEventRetry(task, gid) {
     taskElementRefresh(added.result);
     task.remove();
     aria2Tasks.delete(gid);
-    aria2Tasks.get('stopped').delete(gid);
-    aria2Stats.get('stopped').textContent --;
+    taskRemoved(gid, 'stopped');
 }
 
 async function taskEventPause(task, gid, method, status) {
