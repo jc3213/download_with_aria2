@@ -1,8 +1,8 @@
 let aria2RPC;
-let aria2Tasks = { active: {}, waiting: {}, stopped: {} };
-let aria2Queue = {};
-let aria2Stats = {};
-let aria2Filter = new Set(localStorage['queues']?.match(/[^;]+/g) ?? []);
+let aria2Tasks = new Map();
+let aria2Queue = new Map();
+let aria2Stats = new Map();
+let aria2Filter = new Set(localStorage.getItem('queues')?.match(/[^;]+/g) ?? []);
 let aria2Proxy;
 let aria2Delay;
 let aria2Interval;
@@ -12,8 +12,8 @@ let [menuPane, filterPane, queuePane, template] = document.body.children;
 let [downBtn, purgeBtn, optionsBtn, ...statEntries] = menuPane.children;
 let [sessionLET, fileLET, uriLET] = template.children;
 
-[...queuePane.children].forEach((queue) => aria2Queue[queue.id] = queue);
-statEntries.forEach((stat) => aria2Stats[stat.dataset.sid] = stat);
+[...queuePane.children].forEach((queue) => aria2Queue.set(queue.id, queue));
+statEntries.forEach((stat) => aria2Stats.set(stat.dataset.sid, stat));
 
 manager.add(...aria2Filter);
 
@@ -21,7 +21,7 @@ filterPane.addEventListener('click', (event) => {
     let id = event.target.dataset.fid;
     manager.toggle(id);
     aria2Filter.has(id) ? aria2Filter.delete(id) : aria2Filter.add(id);
-    localStorage['queues'] = [...aria2Filter].join(';');
+    localStorage.setItem('queues', [...aria2Filter].join(';'));
 });
 
 function shortcutHandler(event, ctrlKey, button) {
@@ -47,47 +47,52 @@ document.addEventListener('keydown', (event) => {
 });
 
 purgeBtn.addEventListener('click', async (event) => {
-    let {active, waiting} = aria2Tasks;
+    let stopped = aria2Tasks.get('stopped');
     await aria2RPC.call({method: 'aria2.purgeDownloadResult'});
-    aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
-    aria2Stats.stopped.textContent = '0';
-    aria2Tasks = { ...active, ...waiting, active, waiting, stopped: {} };
+    [...aria2Queue.values()].slice(3).forEach((queue) => queue.innerHTML = '');
+    aria2Stats.get('stopped').textContent = '0';
+    stopped.keys().forEach((gid) => aria2Tasks.delete(gid));
+    stopped.clear();
 });
 
 async function aria2ClientOpened() {
     clearInterval(aria2Interval);
+    aria2Tasks.set('active', new Map());
+    aria2Tasks.set('waiting', new Map());
+    aria2Tasks.set('stopped', new Map());
     let [global, active, waiting, stopped] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]} );
     [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementUpdate);
-    aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
-    aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
+    aria2Stats.get('download').textContent = getFileSize(global.result.downloadSpeed);
+    aria2Stats.get('upload').textContent = getFileSize(global.result.uploadSpeed);
     aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
 }
 
 function aria2ClientClosed() {
     clearInterval(aria2Interval);
-    aria2Tasks = { active: {}, waiting: {}, stopped: {} };
-    aria2Stats.active.textContent = aria2Stats.waiting.textContent = aria2Stats.stopped.textContent = aria2Stats.download.textContent = aria2Stats.upload.textContent = '0';
-    aria2Queue.active.innerHTML = aria2Queue.waiting.innerHTML = aria2Queue.paused.innerHTML = aria2Queue.complete.innerHTML = aria2Queue.removed.innerHTML = aria2Queue.error.innerHTML = '';
+    aria2Tasks.clear();
+    aria2Stats.values().forEach((stat) => stat.textContent = '0');
+    aria2Queue.values().forEach((queue) => queue.innerHTML = '');
+}
+
+function messageHandler(gid, group) {
+    let tasks = aria2Tasks.get(group);
+    if (tasks.has(gid)) {
+        tasks.delete(gid);
+        aria2Stats.get(group).textContent --;
+    }
+    taskElementRefresh(gid);
 }
 
 function aria2ClientMessage({method, params}) {
     let {gid} = params[0];
     switch (method) {
         case 'aria2.onDownloadStart':
-            taskElementRefresh(gid);
-            if (aria2Tasks.waiting[gid]) {
-                delete aria2Tasks.waiting[gid];
-                aria2Stats.waiting.textContent --;
-            }
+            messageHandler(gid, 'waiting');
             break;
         case 'aria2.onBtDownloadComplete':
             break;
         default:
-            taskElementRefresh(gid);
-            if (aria2Tasks.active[gid]) {
-                delete aria2Tasks.active[gid];
-                aria2Stats.active.textContent --;
-            }
+            messageHandler(gid, 'active');
             break;
     };
 }
@@ -95,16 +100,17 @@ function aria2ClientMessage({method, params}) {
 async function aria2ClientUpdate() {
     let [global, active] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'} );
     active.result.forEach(taskElementUpdate);
-    aria2Stats.download.textContent = getFileSize(global.result.downloadSpeed);
-    aria2Stats.upload.textContent = getFileSize(global.result.uploadSpeed);
+    aria2Stats.get('download').textContent = getFileSize(global.result.downloadSpeed);
+    aria2Stats.get('upload').textContent = getFileSize(global.result.uploadSpeed);
 }
 
 function taskQueueChange(task, gid, status) {
-    let queue = aria2Queue[status];
+    let queue = aria2Queue.get(status);
     let group = queue.dataset.tid;
-    if (!aria2Tasks[group][gid]) {
-        aria2Tasks[group][gid] = task;
-        aria2Stats[group].textContent ++;
+    let tasks = aria2Tasks.get(group);
+    if (!tasks.has(gid)) {
+        tasks.set(gid, task);
+        aria2Stats.get(group).textContent ++;
     }
     queue.appendChild(task);
     task.status = status;
@@ -117,7 +123,7 @@ async function taskElementRefresh(gid) {
 }
 
 function taskElementUpdate({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
-    let task = aria2Tasks[gid] ??= taskElementCreate(gid, status, bittorrent, files);
+    let task = aria2Tasks.get(gid) ?? taskElementCreate(gid, status, bittorrent, files);
     let time = (totalLength - completedLength) / downloadSpeed;
     let days = time / 86400 | 0;
     let hours = time / 3600 - days * 24 | 0;
@@ -165,9 +171,9 @@ async function taskEventRemove(task, gid, method, group) {
     await aria2RPC.call({method, params: [gid]});
     if (group) {
         task.remove();
-        delete aria2Tasks[gid];
-        delete aria2Tasks[group][gid];
-        aria2Stats[group].textContent --;
+        aria2Tasks.delete(gid);
+        aria2Tasks.get(group).delete(gid);
+        aria2Stats.get(group).textContent --;
     }
 }
 
@@ -208,9 +214,9 @@ async function taskEventRetry(task, gid) {
     let [added] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options.result]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
     taskElementRefresh(added.result);
     task.remove();
-    delete aria2Tasks[gid];
-    delete aria2Tasks.stopped[gid];
-    aria2Stats.stopped.textContent --;
+    aria2Tasks.delete(gid);
+    aria2Tasks.get('stopped').delete(gid);
+    aria2Stats.get('stopped').textContent --;
 }
 
 async function taskEventPause(task, gid, method, status) {
@@ -230,7 +236,7 @@ async function taskEventPause(task, gid, method, status) {
     };
     if (method) {
         await aria2RPC.call({method, params: [gid]});
-        aria2Queue[status].appendChild(task);
+        aria2Queue.get(status).appendChild(task);
         task.status = status;
     }
 }
@@ -322,6 +328,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
         });
     });
     taskQueueChange(task, gid, status);
+    aria2Tasks.set(gid, task);
     return task;
 }
 
