@@ -71,32 +71,29 @@ metaImport.addEventListener('change', (event) => {
     metaFileDownload(event.target.files)
 });
 
-function promiseFileReader(file) {
+async function metaFileHandler(method, file, name, ...args) {
     return new Promise((resolve) => {
         let reader = new FileReader();
-        reader.onload = (event) => resolve(reader.result.slice(reader.result.indexOf(',') + 1));
+        reader.onload = (event) => {
+            let body = reader.result.slice(reader.result.indexOf(',') + 1);
+            let params = [body, ...args];
+            resolve({name, data: {method, params}});
+        };
         reader.readAsDataURL(file);
     });
 }
 
-async function metaFileHandler(type, file, name, ...data) {
-    let body = await promiseFileReader(file);
-    let method = 'aria2.add' + type;
-    let params = [body, ...data];
-    return {name, data: {method, params}};
-}
-
 async function metaFileDownload(files) {
     let options = {...aria2Config, out: null, referer: null, 'user-agent': null};
-    let datas = [...files].map(async (file) => {
+    let datas = [...files].map((file) => {
         let {name} = file;
         let type = name.slice(name.lastIndexOf('.') + 1);
         switch (type) {
             case 'torrent':
-                return metaFileHandler('Torrent', file, name, [], options);
+                return metaFileHandler('aria2.addTorrent', file, name, [], options);
             case 'metalink':
             case 'meta4':
-                return metaFileHandler('Metalink', file, name, options);
+                return metaFileHandler('aria2.addMetalink', file, name, options);
         };
     })
     let params = (await Promise.all(datas)).filter((data) => data);
