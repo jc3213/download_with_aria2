@@ -1,14 +1,14 @@
 class Aria2 {
     constructor (...args) {
         let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
-        if (!path) { this.#error('parameters', args); }
+        if (!path) { this.#error('parameters', args.join('", "')); }
         this.scheme = path[1];
         this.url = path[2];
         this.secret = path[3];
     }
     version = '1.0';
-    #error (error, args) {
-        throw new Error(`Unsupported ${error}: "${args.join('", "')}"`);
+    #error (type, text) {
+        throw new Error(`Unsupported ${type}: "${text}"`);
     }
     #alive;
     get alive () {
@@ -16,7 +16,7 @@ class Aria2 {
     }
     set scheme (scheme) {
         let type = scheme.match(/^(http|ws)(s)?$/);
-        if (!type) { this.#error('scheme', [scheme]); }
+        if (!type) { this.#error('scheme', scheme); }
         this.method = type[1];
         this.ssl = type[2];
     }
@@ -25,7 +25,7 @@ class Aria2 {
     }
     #method;
     set method (method) {
-        this.call = method === "http" ? this.#post : method === "ws" ? this.#send : this.#error('method', [method]);
+        this.call = method === "http" ? this.#post : method === "ws" ? this.#send : this.#error('method', method);
         this.#method = method;
     }
     get method () {
@@ -49,7 +49,7 @@ class Aria2 {
     }
     #secret;
     set secret (secret) {
-        this.#secret = 'token:'　+ secret;
+        this.#secret = `token:${secret}`;
     }
     get secret () {
         return this.#secret.slice(6);
@@ -93,9 +93,8 @@ class Aria2 {
     #wsa;
     #tries;
     #path () {
-        let path = this.#ssl + '://' + this.#url;
-        this.#xml = 'http' + path;
-        this.#wsa = 'ws' + path;
+        this.#xml = `http${this.#ssl}://${this.#url}`;
+        this.#wsa = `ws${this.#ssl}://${this.#url}`;
         this.#tries = 0;
     }
     #onreceive = null;
