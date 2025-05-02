@@ -47,19 +47,19 @@ document.addEventListener('keydown', (event) => {
 });
 
 purgeBtn.addEventListener('click', async (event) => {
-    let stopped = aria2Tasks.get('stopped');
     await aria2RPC.call({method: 'aria2.purgeDownloadResult'});
     [...aria2Queue.values()].slice(3).forEach((queue) => queue.innerHTML = '');
-    aria2Stats.get('stopped').textContent = '0';
-    stopped.keys().forEach((gid) => aria2Tasks.delete(gid));
+    let stopped = aria2Tasks.get('stopped');
+    stopped.forEach((gid) => aria2Tasks.delete(gid));
     stopped.clear();
+    aria2Stats.get('stopped').textContent = '0';
 });
 
 async function aria2ClientOpened() {
     clearInterval(aria2Interval);
-    aria2Tasks.set('active', new Map());
-    aria2Tasks.set('waiting', new Map());
-    aria2Tasks.set('stopped', new Map());
+    aria2Tasks.set('active', new Set());
+    aria2Tasks.set('waiting', new Set());
+    aria2Tasks.set('stopped', new Set());
     let [global, active, waiting, stopped] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]} );
     [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementUpdate);
     aria2Stats.get('download').textContent = getFileSize(global.result.downloadSpeed);
@@ -76,10 +76,8 @@ function aria2ClientClosed() {
 
 function messageHandler(gid, group) {
     let tasks = aria2Tasks.get(group);
-    if (tasks.has(gid)) {
-        tasks.delete(gid);
-        aria2Stats.get(group).textContent --;
-    }
+    tasks.delete(gid);
+    aria2Stats.get(group).textContent = tasks.size;
     taskElementRefresh(gid);
 }
 
@@ -108,10 +106,8 @@ function taskQueueChange(task, gid, status) {
     let queue = aria2Queue.get(status);
     let group = queue.dataset.tid;
     let tasks = aria2Tasks.get(group);
-    if (!tasks.has(gid)) {
-        tasks.set(gid, task);
-        aria2Stats.get(group).textContent ++;
-    }
+    tasks.add(gid);
+    aria2Stats.get(group).textContent = tasks.size;
     queue.appendChild(task);
     task.status = status;
 }
