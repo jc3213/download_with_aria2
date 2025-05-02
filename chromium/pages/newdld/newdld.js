@@ -15,18 +15,23 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-const shortcutHandlers = {
-    'Enter': submitBtn
-};
+function shortcutHandler(event, ctrlKey, button) {
+    if (ctrlKey) {
+        event.preventDefault();
+        button.click();
+    }
+}
 
 document.addEventListener('keydown', (event) => {
-    let handler = shortcutHandlers[event.key];
-    if (event.ctrlKey && handler) {
-        event.preventDefault();
-        handler.click();
-    } else if (event.key === 'Escape') {
-        close();
-    }
+    let {key, ctrlKey} = event;
+    switch (key) {
+        case 'Enter':
+            shortcutHandler(event, ctrlKey, submitBtn);
+            break;
+        case 'Escape':
+            close();
+            break;
+    };
 });
 
 document.addEventListener('click', (event) => {
@@ -66,40 +71,36 @@ metaImport.addEventListener('change', (event) => {
     metaFileDownload(event.target.files)
 });
 
-const metaFiles = {
-    'torrent': {
-        method: 'aria2.addTorrent',
-        params: (body, options) => [body, [], options]
-    },
-    'metalink': {
-        method: 'aria2.addMetalink',
-        params: (body, options) => [body, options]
-    }
-}
-metaFiles['meta4'] = metaFiles['metalink'];
-
-async function metaFileDownload(files) {
-    let options = {...aria2Config, out: null, referer: null, 'user-agent': null};
-    let datas = [...files].map(async (file) => {
-        let {name} = file;
-        let type = name.slice(name.lastIndexOf('.') + 1);
-        let data = metaFiles[type];
-        if (data) {
-            let body = await promiseFileReader(file);
-            data.params = data.params(body, options);
-            return { name, data };
-        }
-    })
-    let params = (await Promise.all(datas)).filter((data) => data);
-    chrome.runtime.sendMessage({ action: 'jsonrpc_metadata', params }, close);
-}
-
 function promiseFileReader(file) {
     return new Promise((resolve) => {
         let reader = new FileReader();
         reader.onload = (event) => resolve(reader.result.slice(reader.result.indexOf(',') + 1));
         reader.readAsDataURL(file);
     });
+}
+
+async function metaFileHandler(type, file, name, ...data) {
+    let body = await promiseFileReader(file);
+    let method = 'aria2.add' + type;
+    let params = [body, ...data];
+    return {name, data: {method, params}};
+}
+
+async function metaFileDownload(files) {
+    let options = {...aria2Config, out: null, referer: null, 'user-agent': null};
+    let datas = [...files].map(async (file) => {
+        let {name} = file;
+        let type = name.slice(name.lastIndexOf('.') + 1);
+        switch (type) {
+            case 'torrent':
+                return metaFileHandler('Torrent', file, name, [], options);
+            case 'metalink':
+            case 'meta4':
+                return metaFileHandler('Metalink', file, name, options);
+        };
+    })
+    let params = (await Promise.all(datas)).filter((data) => data);
+    chrome.runtime.sendMessage({ action: 'jsonrpc_metadata', params }, close);
 }
 
 jsonrpcPane.addEventListener('change', (event) => {

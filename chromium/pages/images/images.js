@@ -15,22 +15,35 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-const shortcutHandlers = {
-    'a': selectAll,
-    'e': selectNone,
-    'f': selectFlip,
-    's': optionsBtn,
-    'Enter': submitBtn
-};
+function shortcutHandler(event, ctrlKey, button) {
+    if (ctrlKey) {
+        event.preventDefault();
+        button.click();
+    }
+}
 
 document.addEventListener('keydown', (event) => {
-    let handler = shortcutHandlers[event.key];
-    if (event.ctrlKey && handler) {
-        event.preventDefault();
-        handler.click();
-    } else if (event.key === 'Escape') {
-        close();
-    }
+    let {key, ctrlKey} = event;
+    switch (key) {
+        case 'a':
+            shortcutHandler(event, ctrlKey, selectAll);
+            break;
+        case 'e':
+            shortcutHandler(event, ctrlKey, selectNone);
+            break;
+        case 'f':
+            shortcutHandler(event, ctrlKey, selectFlip);
+            break;
+        case 's':
+            shortcutHandler(event, ctrlKey, optionsBtn);
+            break;
+        case 'Enter':
+            shortcutHandler(event, ctrlKey, submitBtn);
+            break;
+        case 'Escape':
+            close();
+            break;
+    };
 });
 
 galleryPane.addEventListener('click', (event) => {
@@ -51,14 +64,6 @@ galleryPane.addEventListener('load', (event) => {
     img.alt = name  + '_' + img.alt + '_' + img.naturalWidth + 'x' + img.naturalHeight + ext;
 }, true);
 
-const menuEventHandlers = {
-    'select_all': () => aria2Images.forEach((img) => img.classList.add('checked')),
-    'select_none': () => aria2Images.forEach((img) => img.classList.remove('checked')),
-    'select_flip': () => aria2Images.forEach((img) => img.classList.toggle('checked')),
-    'common_submit': menuEventSubmit,
-    'popup_options': () => document.body.classList.toggle('extra')
-};
-
 function menuEventSubmit() {
     let params = [];
     aria2Images.forEach(({src, alt, header, classList}) => {
@@ -70,10 +75,23 @@ function menuEventSubmit() {
 }
 
 menuPane.addEventListener('click', (event) => {
-    let handler = menuEventHandlers[event.target.getAttribute('i18n')];
-    if (handler) {
-        handler();
-    }
+    switch (event.target.getAttribute('i18n')) {
+        case 'select_all':
+            aria2Images.forEach((img) => img.classList.add('checked'));
+            break;
+        case 'select_none':
+            aria2Images.forEach((img) => img.classList.remove('checked'));
+            break;
+        case 'select_flip':
+            aria2Images.forEach((img) => img.classList.toggle('checked'));
+            break;
+        case 'common_submit':
+            menuEventSubmit();
+            break;
+        case 'popup_options':
+            document.body.classList.toggle('extra');
+            break;
+    };
 });
 
 jsonrpcPane.addEventListener('change', (event) => {

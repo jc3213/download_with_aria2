@@ -28,18 +28,26 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-const shortcutHandlers = {
-    's': saveBtn,
-    'z': undoBtn,
-    'y': redoBtn
-};
+function shortcutHandler(event, ctrlKey, button) {
+    if (ctrlKey) {
+        event.preventDefault();
+        button.click();
+    }
+}
 
 document.addEventListener('keydown', (event) => {
-    let handler = shortcutHandlers[event.key];
-    if (event.ctrlKey && handler) {
-        event.preventDefault();
-        handler.click();
-    }
+    let {key, ctrlKey} = event;
+    switch (key) {
+        case 's':
+            shortcutHandler(event, ctrlKey, saveBtn);
+            break;
+        case 'y':
+            shortcutHandler(event, ctrlKey, redoBtn);
+            break;
+        case 'z':
+            shortcutHandler(event, ctrlKey, undoBtn);
+            break;
+    };
 });
 
 function optionsHistoryAdd(id, new_value, undo) {
@@ -78,14 +86,6 @@ jsonrpcPane.addEventListener('change', (event) => {
     let {name, value} = event.target;
     optionsHistoryAdd(name, value, {old_value: updated[name], type: 'text', entry});
 });
-
-const menuEventHandlers = {
-    'common_save': menuEventSave,
-    'option_undo': menuEventUndo,
-    'option_redo': menuEventRedo,
-    'option_export': menuEventExport,
-    'option_import': menuEventImport
-};
 
 function menuEventSave() {
     saveBtn.disabled = true;
@@ -175,10 +175,23 @@ function menuEventImport() {
 }
 
 menuPane.addEventListener('click', (event) => {
-    let handler = menuEventHandlers[event.target.getAttribute('i18n')];
-    if (handler) {
-        handler();
-    }
+    switch (event.target.getAttribute('i18n')) {
+        case 'common_save':
+            menuEventSave();
+            break;
+        case 'option_undo':
+            menuEventUndo();
+            break;
+        case 'option_redo':
+            menuEventRedo();
+            break;
+        case 'option_export':
+            menuEventExport();
+            break;
+        case 'option_import':
+            menuEventImport();
+            break;
+    };
 });
 
 jsonFile.addEventListener('change', async (event) => {
@@ -243,12 +256,6 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
     extension.remove('jsonrpc');
 });
 
-const matchEventHandlers = {
-    'tips_match_addnew': matchEventAddNew,
-    'tips_match_resort': matchEventResort,
-    'tips_match_remove': matchEventRemove
-};
-
 function matchEventAddNew(id, list, entry) {
     let old_value = updated[id];
     let new_value = [...old_value];
@@ -274,8 +281,7 @@ function matchEventResort(id, list) {
     optionsHistoryAdd(id, new_value, {old_value, type: 'resort', resort: {list, new_order, old_order}});
 }
 
-function matchEventRemove(id, list, entry, event) {
-    let rule = event.target.parentNode;
+function matchEventRemove(id, list, rule) {
     let value = rule.title;
     let old_value = updated[id];
     let new_value = [...old_value];
@@ -291,10 +297,17 @@ optionsMatches.forEach((match) => {
     let entry = menu.children[1];
     match.list = list;
     match.addEventListener('click', (event) => {
-        let handler = matchEventHandlers[event.target.getAttribute('i18n-tips')];
-        if (handler) {
-            handler(id, list, entry, event);
-        }
+        switch (event.target.getAttribute('i18n-tips')) {
+            case 'tips_match_addnew':
+                matchEventAddNew(id, list, entry);
+                break;
+            case 'tips_match_resort':
+                matchEventResort(id, list);
+                break;
+            case 'tips_match_remove':
+                matchEventRemove(id, list, event.target.parentNode);
+                break;
+        };
     });
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
