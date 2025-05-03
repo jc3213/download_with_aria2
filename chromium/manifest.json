@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.15.4.3371",
+    "version": "4.16.0.3384",
     "manifest_version": 2,
     "permissions": [
         "contextMenus",
@@ -52,7 +52,7 @@
     "commands": {
         "_execute_browser_action": {
             "suggested_key": {
-                "default": "Alt+Shift+2"
+                "default": "Alt+Shift+A"
             }
         },
         "open_options": {
