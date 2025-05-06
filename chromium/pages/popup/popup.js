@@ -3,6 +3,14 @@ let aria2Tasks = new Map();
 let aria2Queue = new Map();
 let aria2Stats = new Map();
 let aria2Filter = new Set(localStorage.getItem('queues')?.match(/[^;]+/g) ?? []);
+let aria2Types = {
+    active: 'active',
+    paused: 'waiting',
+    waiting: 'waiting',
+    complete: 'stopped',
+    removed: 'stopped',
+    error: 'stopped'
+};
 let aria2Proxy;
 let aria2Delay;
 let aria2Interval;
@@ -101,9 +109,9 @@ function taskRemoved(gid, group) {
     aria2Stats.get(group).textContent = tasks.size;
 }
 
-function taskQueueChange(task, gid, status) {
+function taskUpdated(task, gid, status) {
     let queue = aria2Queue.get(status);
-    let group = queue.dataset.tid;
+    let group = aria2Types[status];
     let tasks = aria2Tasks.get(group);
     tasks.add(gid);
     aria2Stats.get(group).textContent = tasks.size;
@@ -114,7 +122,7 @@ function taskQueueChange(task, gid, status) {
 async function taskElementRefresh(gid) {
     let [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
     let task = taskElementUpdate(session.result);
-    taskQueueChange(task, gid, session.result.status);
+    taskUpdated(task, gid, session.result.status);
 }
 
 function taskElementUpdate({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
@@ -146,28 +154,28 @@ function taskElementUpdate({gid, status, files, bittorrent, completedLength, tot
     return task;
 }
 
-async function taskEventRemove(task, gid, method, group) {
+function removeHandler(task, gid, group) {
+    task.remove();
+    aria2Tasks.delete(gid);
+    taskRemoved(gid, group);
+}
+
+async function taskEventRemove(task, gid) {
     switch (task.status) {
         case 'active':
-            method = 'aria2.forceRemove';
+            aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
             break;
         case 'waiting':
         case 'paused':
-            method = 'aria2.forceRemove';
-            group = 'waiting';
+            await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
+            removeHandler(task, gid, 'waiting');
             break;
         case 'complete':
         case 'removed':
         case 'error':
-            method = 'aria2.removeDownloadResult';
-            group = 'stopped';
+            await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
+            removeHandler(task, gid, 'stopped');
             break;
-    }
-    await aria2RPC.call({method, params: [gid]});
-    if (group) {
-        task.remove();
-        aria2Tasks.delete(gid);
-        taskRemoved(gid, group);
     }
 }
 
@@ -212,26 +220,24 @@ async function taskEventRetry(task, gid) {
     taskRemoved(gid, 'stopped');
 }
 
-async function taskEventPause(task, gid, method, status) {
+async function pauseHandler(task, gid, method, status) {
+    await aria2RPC.call({method, params: [gid]});
+    aria2Queue.get(status).appendChild(task);
+    task.status = status;
+}
+
+function taskEventPause(task, gid, method, status) {
     switch (task.status) {
         case 'active':
-            method = 'aria2.forcePause';
-            status = 'paused';
+            pauseHandler(task, gid, 'aria2.forcePause', 'paused');
             break;
         case 'waiting':
-            method = 'aria2.forcePause';
-            status = 'paused';
+            pauseHandler(task, gid, 'aria2.forcePause', 'paused');
             break;
         case 'paused':
-            method = 'aria2.unpause';
-            status = 'waiting';
+            pauseHandler(task, gid, 'aria2.unpause', 'waiting');
             break;
     };
-    if (method) {
-        await aria2RPC.call({method, params: [gid]});
-        aria2Queue.get(status).appendChild(task);
-        task.status = status;
-    }
 }
 
 async function taskEventProxy(task, gid) {
@@ -320,7 +326,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
             task[uri] ??= taskUriElement(task, uri);
         });
     });
-    taskQueueChange(task, gid, status);
+    taskUpdated(task, gid, status);
     aria2Tasks.set(gid, task);
     return task;
 }
