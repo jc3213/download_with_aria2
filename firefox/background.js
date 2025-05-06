@@ -18,7 +18,7 @@ function aria2CaptureSwitch() {
 }
 
 async function aria2CaptureDownloads({id, url, referrer, filename, fileSize}) {
-    if (!aria2RPC.alive || url.startsWith('data') || url.startsWith('blob')) {
+    if (!aria2Version || url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
     let hostname = getHostname(referrer);
@@ -32,7 +32,7 @@ async function aria2CaptureDownloads({id, url, referrer, filename, fileSize}) {
 }
 
 async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeaders, tabId}) {
-    if (!aria2RPC.alive || statusCode !== 200) {
+    if (!aria2Version || statusCode !== 200) {
         return;
     }
     let result = {};

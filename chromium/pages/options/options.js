@@ -240,8 +240,8 @@ function optionsHistoryFlush() {
 }
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
-    chrome.runtime.sendMessage({action: 'jsonrpc_query'}, ({alive, options, version}) => {
-        if (alive) {
+    chrome.runtime.sendMessage({action: 'system_runtime'}, ({options, version}) => {
+        if (options && version) {
             optionsHistoryFlush();
             aria2ConfigSetup(options);
             tellVer.textContent = tellUA.textContent = version;
@@ -348,7 +348,7 @@ function aria2StorageUpdate() {
     chrome.runtime.sendMessage({action: 'storage_update', params: updated});
 }
 
-chrome.runtime.sendMessage({action: 'storage_query'}, ({storage, manifest}) => {
+chrome.runtime.sendMessage({action: 'system_runtime'}, ({storage, manifest}) => {
     aria2Storage = storage;
     aria2Version = manifest.version;
     aria2StorageSetup();

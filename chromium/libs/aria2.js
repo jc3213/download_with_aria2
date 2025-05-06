@@ -1,35 +1,23 @@
 class Aria2 {
     constructor (...args) {
-        let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
-        if (!path) { this.#error('parameters', args.join('", "')); }
-        this.scheme = path[1];
+        let path = args.join('#').match(/^ws(s)?(?:#|:\/\/)([^#]+)#?(.*)$/);
+        if (!path) { throw new Error(`Unsupported parameters: "${args.join('", "')}"`); }
+        this.ssl = path[1];
         this.url = path[2];
         this.secret = path[3];
     }
     version = '1.0';
-    #error (type, text) {
-        throw new Error(`Unsupported ${type}: "${text}"`);
-    }
-    #alive;
-    get alive () {
-        return this.#alive;
+    #status;
+    get status () {
+        return this.#status;
     }
     set scheme (scheme) {
-        let type = scheme.match(/^(http|ws)(s)?$/);
-        if (!type) { this.#error('scheme', scheme); }
-        this.method = type[1];
-        this.ssl = type[2];
+        let test = scheme.match(/^ws(s)?$/);
+        if (!test) { throw new Error(`Unsupported scheme: "${args.join('", "')}"`); }
+        this.ssl = test[1];
     }
     get scheme () {
-        return this.#method + this.#ssl;
-    }
-    #method;
-    set method (method) {
-        this.call = method === "http" ? this.#post : method === "ws" ? this.#send : this.#error('method', method);
-        this.#method = method;
-    }
-    get method () {
-        return this.#method;
+        return `ws${this.#ssl}`;
     }
     #ssl;
     set ssl (ssl) {
@@ -48,8 +36,8 @@ class Aria2 {
         return this.#url;
     }
     #secret;
-    set secret (secret) {
-        this.#secret = `token:${secret}`;
+    set secret (text) {
+        this.#secret = `token:${text}`;
     }
     get secret () {
         return this.#secret.slice(6);
@@ -89,38 +77,32 @@ class Aria2 {
     get onclose () {
         return this.#onclose;
     }
-    #xml;
     #wsa;
     #tries;
     #path () {
-        this.#xml = `http${this.#ssl}://${this.#url}`;
         this.#wsa = `ws${this.#ssl}://${this.#url}`;
         this.#tries = 0;
-    }
-    #onreceive = null;
-    #send (...args) {
-        return new Promise((resolve, reject) => {
-            this.#onreceive = resolve;
-            this.#ws.onerror = reject;
-            this.#ws.send(this.#json(args));
-        });
-    }
-    #post (...args) {
-        return fetch(this.#xml, {method: 'POST', body: this.#json(args)}).then((response) => {
-            if (response.ok) { return response.json(); }
-            throw new Error(response.statusText);
-        });
     }
     #json (args) {
         let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [this.#secret, ...params] }) );
         return JSON.stringify(json);
     }
+    #onreceive = null;
+    #send (...args) {
+        let body = this.#json(args);
+        return new Promise((resolve, reject) => {
+            this.#onreceive = resolve;
+            this.#ws.onerror = reject;
+            this.#ws.send(body);
+        });
+    }
     #ws;
     connect () {
         this.#ws = new WebSocket(this.#wsa);
-        this.#ws.onopen = (event) => {
-            this.#alive = true;
-            if (this.#onopen) { this.#onopen(event); }
+        this.#ws.onopen = async (event) => {
+            let [stats, version, options, active, waiting, stopped] = await this.#send({method: 'aria2.getGlobalStat'}, {method: 'aria2.getVersion'}, {method: 'aria2.getGlobalOption'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]});
+            this.#status = {stats, version, options, active, waiting, stopped};
+            if (this.#onopen) { this.#onopen(this.#status); }
         };
         this.#ws.onmessage = (event) => {
             let response = JSON.parse(event.data);
@@ -128,7 +110,7 @@ class Aria2 {
             else if (this.#onmessage) { this.#onmessage(response); }
         };
         this.#ws.onclose = (event) => {
-            this.#alive = false;
+            this.#status = null;
             if (!event.wasClean && this.#tries++ < this.#retries) { setTimeout(() => this.connect(), this.#timeout); }
             if (this.#onclose) { this.#onclose(event); }
         };
@@ -136,4 +118,5 @@ class Aria2 {
     disconnect () {
         this.#ws.close();
     }
+    call = this.#send;
 }

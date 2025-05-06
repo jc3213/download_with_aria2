@@ -62,23 +62,25 @@ purgeBtn.addEventListener('click', async (event) => {
     aria2Stats.get('stopped').textContent = '0';
 });
 
-async function aria2ClientOpened() {
+function updateManager(tasks, {downloadSpeed, uploadSpeed}) {
+    tasks.forEach(taskElementUpdate);
+    aria2Stats.get('download').textContent = getFileSize(downloadSpeed);
+    aria2Stats.get('upload').textContent = getFileSize(uploadSpeed);
+}
+
+async function aria2ClientOpened({stats, active, waiting, stopped}) {
     clearInterval(aria2Interval);
     aria2Tasks.set('active', new Set());
     aria2Tasks.set('waiting', new Set());
     aria2Tasks.set('stopped', new Set());
-    let [global, active, waiting, stopped] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]} );
     [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementUpdate);
-    aria2Stats.get('download').textContent = getFileSize(global.result.downloadSpeed);
-    aria2Stats.get('upload').textContent = getFileSize(global.result.uploadSpeed);
+    updateManager([...active.result, ...waiting.result, ...stopped.result], stats.result);
     aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
 }
 
-function aria2ClientClosed() {
-    clearInterval(aria2Interval);
-    aria2Tasks.clear();
-    aria2Stats.values().forEach((stat) => stat.textContent = '0');
-    aria2Queue.values().forEach((queue) => queue.innerHTML = '');
+async function aria2ClientUpdate() {
+    let [stats, active] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'} );
+    updateManager(active.result, stats.result);
 }
 
 function aria2ClientMessage({method, params}) {
@@ -96,11 +98,11 @@ function aria2ClientMessage({method, params}) {
     };
 }
 
-async function aria2ClientUpdate() {
-    let [global, active] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'} );
-    active.result.forEach(taskElementUpdate);
-    aria2Stats.get('download').textContent = getFileSize(global.result.downloadSpeed);
-    aria2Stats.get('upload').textContent = getFileSize(global.result.uploadSpeed);
+function aria2ClientClosed() {
+    clearInterval(aria2Interval);
+    aria2Tasks.clear();
+    aria2Stats.values().forEach((stat) => stat.textContent = '0');
+    aria2Queue.values().forEach((queue) => queue.innerHTML = '');
 }
 
 function taskRemoved(gid, group) {
