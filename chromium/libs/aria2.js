@@ -1,8 +1,8 @@
 class Aria2 {
     constructor (...args) {
-        let path = args.join('#').match(/^ws(s)?(?:#|:\/\/)([^#]+)#?(.*)$/);
+        let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
         if (!path) { throw new Error(`Unsupported parameters: "${args.join('", "')}"`); }
-        this.ssl = path[1];
+        this.scheme = path[1];
         this.url = path[2];
         this.secret = path[3];
     }
@@ -11,21 +11,18 @@ class Aria2 {
     get status () {
         return this.#status;
     }
-    set scheme (scheme) {
-        let test = scheme.match(/^ws(s)?$/);
-        if (!test) { throw new Error(`Unsupported scheme: "${args.join('", "')}"`); }
-        this.ssl = test[1];
-    }
-    get scheme () {
-        return `ws${this.#ssl}`;
-    }
+    #scheme;
     #ssl;
-    set ssl (ssl) {
-        this.#ssl = ssl ? 's' : '';
+    set scheme (scheme) {
+        let method = scheme.match(/^(http|ws)(s)?$/);
+        if (!method) { throw new Error(`Unsupported scheme: "${scheme}"`); }
+        this.#scheme = scheme;
+        this.#ssl = method[2] ?? '';
+        this.call = method[1] === 'http' ? this.#post : this.#send;
         this.#path();
     }
-    get ssl () {
-        return !!this.#ssl;
+    get scheme () {
+        return this.#scheme;
     }
     #url;
     set url (url) {
@@ -36,8 +33,8 @@ class Aria2 {
         return this.#url;
     }
     #secret;
-    set secret (text) {
-        this.#secret = `token:${text}`;
+    set secret (secret) {
+        this.#secret = `token:${secret}`;
     }
     get secret () {
         return this.#secret.slice(6);
@@ -77,24 +74,31 @@ class Aria2 {
     get onclose () {
         return this.#onclose;
     }
+    #xml;
     #wsa;
     #tries;
     #path () {
+        this.#xml = `http${this.#ssl}://${this.#url}`;
         this.#wsa = `ws${this.#ssl}://${this.#url}`;
         this.#tries = 0;
+    }
+    #onreceive = null;
+    #send (...args) {
+        return new Promise((resolve, reject) => {
+            this.#onreceive = resolve;
+            this.#ws.onerror = reject;
+            this.#ws.send(this.#json(args));
+        });
+    }
+    #post (...args) {
+        return fetch(this.#xml, {method: 'POST', body: this.#json(args)}).then((response) => {
+            if (response.ok) { return response.json(); }
+            throw new Error(response.statusText);
+        });
     }
     #json (args) {
         let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [this.#secret, ...params] }) );
         return JSON.stringify(json);
-    }
-    #onreceive = null;
-    #send (...args) {
-        let body = this.#json(args);
-        return new Promise((resolve, reject) => {
-            this.#onreceive = resolve;
-            this.#ws.onerror = reject;
-            this.#ws.send(body);
-        });
     }
     #ws;
     connect () {
@@ -118,5 +122,4 @@ class Aria2 {
     disconnect () {
         this.#ws.close();
     }
-    call = this.#send;
 }

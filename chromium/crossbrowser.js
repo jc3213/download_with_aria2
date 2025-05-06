@@ -62,8 +62,8 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
     aria2WhenStart(url);
 }
 
-function aria2ImagesPrompt(referer, id) {
-    aria2Detect = {referer, id};
+function aria2ImagesPrompt(referer, tabId) {
+    aria2Detect = {referer, tabId};
     openPopupWindow('/pages/images/images.html', 680);
 }
 
@@ -96,12 +96,13 @@ chrome.commands.onCommand.addListener((command) => {
     };
 });
 
-function aria2StorageQuery(response) {
-    response({
+function aria2SystemRuntime() {
+    return {
         storage: aria2Storage,
         options: aria2Config,
+        version: aria2Version,
         manifest: aria2Manifest
-    })
+    };
 }
 
 function aria2StorageChanged(json) {
@@ -111,14 +112,6 @@ function aria2StorageChanged(json) {
     aria2RPC.secret = json['jsonrpc_secret'];
     aria2StorageUpdate(json);
     chrome.storage.sync.set(aria2Storage);
-}
-
-function aria2ConfigQuery(response) {
-    response({
-        alive: aria2RPC.alive,
-        options: aria2Config,
-        version: aria2Version
-    })
 }
 
 function aria2ConfigChanged(options) {
@@ -147,28 +140,23 @@ async function aria2DownloadFiles(files) {
 }
 
 function aria2DetectedImages(response) {
-    let tab = aria2Inspect[aria2Detect.id];
-    response({
-        referer: aria2Detect.referer,
-        tabId: aria2Popup,
-        images: tab ? [...tab.images.values()] : [],
-        manifest: aria2Manifest,
-        request: aria2Request,
-        storage: aria2Storage,
-        options: aria2Config
-    });
+    let {tabId, referer} = aria2Detect;
+    let tab = aria2Inspect[tabId];
+    let result = aria2SystemRuntime();
+    result.referer = aria2Detect.referer;
+    result.tabId = aria2Popup;
+    result.images = tab ? [...tab.images.values()] : [];
+    result.request = aria2Request;
+    return result;
 }
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
     switch (action) {
-        case 'storage_query':
-            aria2StorageQuery(response);
+        case 'system_runtime':
+            response(aria2SystemRuntime());
             break;
         case 'storage_update':
             aria2StorageChanged(params);
-            break;
-        case 'jsonrpc_query':
-            aria2ConfigQuery(response);
             break;
         case 'jsonrpc_update':
             aria2ConfigChanged(params);
@@ -180,7 +168,7 @@ chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
             aria2DownloadFiles(params);
             break;
         case 'open_all_images':
-            aria2DetectedImages(response);
+            response(aria2DetectedImages());
             break;
         case 'open_new_download':
             aria2DownloadPrompt();
@@ -280,8 +268,7 @@ function aria2StorageUpdate(json) {
     }
 }
 
-async function aria2ClientOpened() {
-    let [options, version, active] = await aria2RPC.call( {method: 'aria2.getGlobalOption'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'} );
+async function aria2ClientOpened({options, version, active}) {
     aria2Config = options.result;
     aria2Version = version.result.version;
     aria2Config['disk-cache'] = getFileSize(aria2Config['disk-cache']);
@@ -296,6 +283,7 @@ async function aria2ClientOpened() {
 }
 
 function aria2ClientClosed() {
+    aria2Active = aria2Config = aria2Version = null;
     chrome.action.setBadgeBackgroundColor({color: '#D33A26'});
     chrome.action.setBadgeText({text: 'E'});
 }
