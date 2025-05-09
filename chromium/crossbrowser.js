@@ -142,12 +142,12 @@ async function aria2DownloadFiles(files) {
 function aria2DetectedImages(response) {
     let {tabId, referer} = aria2Detect;
     let tab = aria2Inspect[tabId];
-    let result = aria2SystemRuntime();
-    result.referer = aria2Detect.referer;
-    result.tabId = aria2Popup;
-    result.images = tab ? [...tab.images.values()] : [];
-    result.request = aria2Request;
-    return result;
+    let json = aria2SystemRuntime();
+    json.referer = aria2Detect.referer;
+    json.tabId = aria2Popup;
+    json.images = tab ? [...tab.images.values()] : [];
+    json.request = aria2Request;
+    return json;
 }
 
 chrome.runtime.onMessage.addListener(({action, params}, sender, response) => {
