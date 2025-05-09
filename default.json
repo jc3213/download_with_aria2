@@ -17,7 +17,7 @@
     "headers_useragent": "Transmission/4.0.0",
     "jsonrpc_host": "localhost:6800",
     "jsonrpc_retries":, -1,
-    "jsonrpc_scheme": "http",
+    "jsonrpc_scheme": "ws",
     "jsonrpc_secret": "",
     "jsonrpc_timeout":, 10,
     "manager_interval": 10,
