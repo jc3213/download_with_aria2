@@ -143,7 +143,7 @@ function aria2DetectedImages(response) {
     let {tabId, referer} = aria2Detect;
     let tab = aria2Inspect[tabId];
     let json = aria2SystemRuntime();
-    json.referer = aria2Detect.referer;
+    json.referer = referer;
     json.tabId = aria2Popup;
     json.images = tab ? [...tab.images.values()] : [];
     json.request = aria2Request;
