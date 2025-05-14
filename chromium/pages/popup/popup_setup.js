@@ -88,6 +88,11 @@ body {
     flex: 1;
 }
 
+#system > ::before {
+    width: auto;
+    margin: 0px 12px 0px 0px;
+}
+
 #filter {
     display: none;
     position: fixed;
