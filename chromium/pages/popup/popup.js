@@ -18,7 +18,7 @@ let aria2Interval;
 let manager = document.body.classList;
 let [menuPane, filterPane, statusPane, queuePane, template] = document.body.children;
 let [downBtn, purgeBtn, optionsBtn] = menuPane.children;
-let [verEntry, ...statEntries] = statusPane.children;
+let [i18nEntry, verEntry, ...statEntries] = statusPane.children;
 let [sessionLET, fileLET, uriLET] = template.children;
 
 [...queuePane.children].forEach((queue) => aria2Queue.set(queue.id, queue));

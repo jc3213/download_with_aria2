@@ -52,6 +52,10 @@ body > ::before {
     width: 44%;
 }
 
+#locale {
+    text-align: center;
+}
+
 #filter > :hover {
     filter: contrast(80%);
 }
