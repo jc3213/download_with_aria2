@@ -46,14 +46,10 @@ body > ::before {
     padding: 5px;
 }
 
-#system > * {
-    flex: 1;
-}
-
 #system > *::before {
     display: inline-block;
-    margin: 0px 4px;
-    width: 42%;
+    margin: 0px 8px;
+    width: 44%;
 }
 
 #filter > :hover {

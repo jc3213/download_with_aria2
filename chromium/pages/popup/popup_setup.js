@@ -84,6 +84,10 @@ body {
     grid-area: 1 / 1 / 2 / 3;
 }
 
+#system > div {
+    flex: 1;
+}
+
 #filter {
     display: none;
     position: fixed;
