@@ -299,6 +299,12 @@
     "popup_queue": {
         "message": "任务队列"
     },
+    "popup_status": {
+        "message": "运行状态"
+    },
+    "popup_version": {
+        "message": "版本"
+    },
     "popup_active_queue": {
         "message": "正在下载"
     },

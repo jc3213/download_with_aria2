@@ -32,7 +32,7 @@ body > ::before {
     display: none;
 }
 
-#menu, #filter {
+#menu, #filter, #system {
     border-style: solid;
     border-width: 1px;
     display: flex;
@@ -41,16 +41,19 @@ body > ::before {
     padding: 8px;
 }
 
-#menu > div,
-#filter > div {
-    flex: 1;
+#filter > div,
+#system > div {
     padding: 5px;
 }
 
-#menu > div::before {
+#system > * {
+    flex: 1;
+}
+
+#system > *::before {
     display: inline-block;
-    margin: 0px 8px;
-    width: 40%;
+    margin: 0px 4px;
+    width: 42%;
 }
 
 #filter > :hover {
@@ -131,6 +134,14 @@ body > ::before {
 
 #filter::before {
     content: "__MSG_popup_queue__";
+}
+
+#system::before {
+    content: "__MSG_popup_status__";
+}
+
+#version::before {
+    content: "__MSG_popup_version__";
 }
 
 [data-sid="download"]::before {

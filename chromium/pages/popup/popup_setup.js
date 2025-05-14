@@ -67,33 +67,21 @@ body {
 }
 
 #menu::before,
-#filter::before {
+#filter::before,
+#system::before,
+#version,
+#system > :nth-child(n+4) {
     display: none;
 }
 
-#menu {
-    border-radius: 0px;
-    border-width: 0px 0px 2px;
+#menu, #system {
+    border-width: 0px;
     flex-direction: row;
+    padding: 0px;
+}
+
+#system {
     grid-area: 1 / 1 / 2 / 3;
-    padding: 0px 4px 4px;
-}
-
-#menu > button {
-    order: 9;
-}
-
-#menu > div::before {
-    margin-left: 0px;
-    width: auto;
-}
-
-#menu > div {
-    padding: 3px 5px 0px 0px;
-}
-
-#menu > div:nth-child(n+6) {
-    display: none;
 }
 
 #filter {
@@ -103,7 +91,11 @@ body {
 }
 
 #queue {
-    grid-area: 2 / 1 / 4 / 3;
+    border-radius: 0px;
+    border-width: 2px 0px 0px;
+    padding-top: 4px;
+    border-style: solid;
+    grid-area: 2 / 1 / 3 / 4;
     height: 540px;
     overflow-y: auto;
 }

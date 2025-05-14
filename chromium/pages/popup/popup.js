@@ -16,8 +16,9 @@ let aria2Delay;
 let aria2Interval;
 
 let manager = document.body.classList;
-let [menuPane, filterPane, queuePane, template] = document.body.children;
-let [downBtn, purgeBtn, optionsBtn, ...statEntries] = menuPane.children;
+let [menuPane, filterPane, statusPane, queuePane, template] = document.body.children;
+let [downBtn, purgeBtn, optionsBtn] = menuPane.children;
+let [verEntry, ...statEntries] = statusPane.children;
 let [sessionLET, fileLET, uriLET] = template.children;
 
 [...queuePane.children].forEach((queue) => aria2Queue.set(queue.id, queue));
@@ -68,13 +69,14 @@ function updateManager(tasks, {downloadSpeed, uploadSpeed}) {
     aria2Stats.get('upload').textContent = getFileSize(uploadSpeed);
 }
 
-async function aria2ClientOpened({stats, active, waiting, stopped}) {
+async function aria2ClientOpened({stats, active, waiting, stopped, version}) {
     clearInterval(aria2Interval);
     aria2Tasks.set('active', new Set());
     aria2Tasks.set('waiting', new Set());
     aria2Tasks.set('stopped', new Set());
     [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementUpdate);
     updateManager([...active.result, ...waiting.result, ...stopped.result], stats.result);
+    verEntry.textContent = version.result.version;
     aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
 }
 
@@ -103,6 +105,7 @@ function aria2ClientClosed() {
     aria2Tasks.clear();
     aria2Stats.values().forEach((stat) => stat.textContent = '0');
     aria2Queue.values().forEach((queue) => queue.innerHTML = '');
+    verEntry.textContent = 'NA';
 }
 
 function taskRemoved(gid, group) {

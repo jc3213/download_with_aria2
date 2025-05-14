@@ -299,6 +299,12 @@
     "popup_queue": {
         "message": "Task Queue"
     },
+    "popup_status": {
+        "message": "System Status"
+    },
+    "popup_version": {
+        "message": "Version"
+    },
     "popup_active_queue": {
         "message": "Downloading"
     },
