@@ -11,8 +11,8 @@ let aria2Types = {
     removed: 'stopped',
     error: 'stopped'
 };
-let aria2Proxy;
-let aria2Delay;
+let aria2Proxy = '';
+let aria2Delay = 'http://127.0.0.1:1230/';
 let aria2Interval;
 
 let manager = document.body.classList;
@@ -63,14 +63,22 @@ purgeBtn.addEventListener('click', async (event) => {
     aria2Stats.get('stopped').textContent = '0';
 });
 
+function aria2ClientSetup(scheme, jsonrpc, secret) {
+    aria2RPC = new Aria2(scheme, jsonrpc, secret);
+    aria2RPC.onopen = aria2ClientOpened;
+    aria2RPC.onclose = aria2ClientClosed;
+    aria2RPC.onmessage = aria2ClientMessage;
+}
+
 function updateManager(tasks, {downloadSpeed, uploadSpeed}) {
     tasks.forEach(taskElementUpdate);
     aria2Stats.get('download').textContent = getFileSize(downloadSpeed);
     aria2Stats.get('upload').textContent = getFileSize(uploadSpeed);
 }
 
-async function aria2ClientOpened({stats, active, waiting, stopped, version}) {
+async function aria2ClientOpened() {
     clearInterval(aria2Interval);
+    let [stats, version, active, waiting, stopped] = await aria2RPC.call({method: 'aria2.getGlobalStat'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]});
     aria2Tasks.set('active', new Set());
     aria2Tasks.set('waiting', new Set());
     aria2Tasks.set('stopped', new Set());

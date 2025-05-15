@@ -41,10 +41,7 @@ function aria2StorageChanged(json) {
 }
 
 chrome.runtime.sendMessage({action: 'system_runtime'}, ({storage, manifest}) => {
-    aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
-    aria2RPC.onopen = aria2ClientOpened;
-    aria2RPC.onclose = aria2ClientClosed;
-    aria2RPC.onmessage = aria2ClientMessage;
+    aria2ClientSetup(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
     aria2StorageChanged(storage);
     i18nEntry.value = manifest.current_locale;
     i18nEntry.disabled = true;

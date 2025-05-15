@@ -268,7 +268,8 @@ function aria2StorageUpdate(json) {
     }
 }
 
-async function aria2ClientOpened({options, version, active}) {
+async function aria2ClientOpened() {
+    let [version, options, active] = await aria2RPC.call({method: 'aria2.getVersion'}, {method: 'aria2.getGlobalOption'}, {method: 'aria2.tellActive'});
     aria2Config = options.result;
     aria2Version = version.result.version;
     aria2Config['disk-cache'] = getFileSize(aria2Config['disk-cache']);
