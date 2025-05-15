@@ -7,6 +7,14 @@ class Aria2 {
         this.secret = path[3];
     }
     version = '0.10';
+    #xml;
+    #wsa;
+    #tries;
+    #path () {
+        this.#xml = `http${this.#ssl}://${this.#url}`;
+        this.#wsa = `ws${this.#ssl}://${this.#url}`;
+        this.#tries = 0;
+    }
     #scheme;
     #ssl;
     set scheme (scheme) {
@@ -70,14 +78,6 @@ class Aria2 {
     get onclose () {
         return this.#onclose;
     }
-    #xml;
-    #wsa;
-    #tries;
-    #path () {
-        this.#xml = `http${this.#ssl}://${this.#url}`;
-        this.#wsa = `ws${this.#ssl}://${this.#url}`;
-        this.#tries = 0;
-    }
     #onreceive = null;
     #send (...args) {
         return new Promise((resolve, reject) => {
@@ -99,9 +99,7 @@ class Aria2 {
     #ws;
     connect () {
         this.#ws = new WebSocket(this.#wsa);
-        this.#ws.onopen = (event) => {
-            if (this.#onopen) { this.#onopen(event); }
-        };
+        this.#ws.onopen = this.#onopen;
         this.#ws.onmessage = (event) => {
             let response = JSON.parse(event.data);
             if (!response.method) { this.#onreceive(response); }
