@@ -68,8 +68,7 @@ body {
 #menu::before,
 #filter::before,
 #system::before,
-#version::before,
-#locale,
+#locale, #version,
 #system > :nth-child(n+5) {
     display: none;
 }
@@ -84,17 +83,12 @@ body {
     grid-area: 1 / 1 / 2 / 3;
 }
 
-#version {
-    flex: 1 !important;
-}
-
 #system > div {
-    flex: 2;
+    flex: 1;
 }
 
 #system > ::before {
-    width: auto;
-    margin: 0px 12px 0px 0px;
+    margin: 0px;
 }
 
 #filter {

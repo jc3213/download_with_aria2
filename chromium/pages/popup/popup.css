@@ -59,19 +59,14 @@ body > ::before {
     margin-right: 5px;
 }
 
-#system > *::before {
-    margin: 0px 8px;
-    width: 44%;
+#system > ::before {
+    display: inline-block;
+    margin: 0px 12px;
+    width: 40%;
 }
 
 #locale {
     text-align: center;
-}
-
-#version:empty::after {
-    background-color: #D44B31;
-    content: "Offline";
-    color: #FFFFFF;
 }
 
 #queue {

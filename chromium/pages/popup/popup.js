@@ -113,7 +113,7 @@ function aria2ClientClosed() {
     aria2Tasks.clear();
     aria2Stats.values().forEach((stat) => stat.textContent = '0');
     aria2Queue.values().forEach((queue) => queue.innerHTML = '');
-    verEntry.textContent = '';
+    verEntry.textContent = 'N/A';
 }
 
 function taskRemoved(gid, group) {
