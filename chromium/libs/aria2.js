@@ -6,7 +6,7 @@ class Aria2 {
         this.url = path[2];
         this.secret = path[3];
     }
-    version = '0.10';
+    version = '1.0';
     #xml;
     #wsa;
     #tries;
@@ -99,7 +99,9 @@ class Aria2 {
     #ws;
     connect () {
         this.#ws = new WebSocket(this.#wsa);
-        this.#ws.onopen = this.#onopen;
+        this.#ws.onopen = (event) => {
+            if (this.#onopen) { this.#onopen(event); }
+        };
         this.#ws.onmessage = (event) => {
             let response = JSON.parse(event.data);
             if (!response.method) { this.#onreceive(response); }

@@ -46,16 +46,6 @@ body > ::before {
     padding: 5px;
 }
 
-#system > *::before {
-    display: inline-block;
-    margin: 0px 8px;
-    width: 44%;
-}
-
-#locale {
-    text-align: center;
-}
-
 #filter > :hover {
     filter: contrast(80%);
 }
@@ -67,6 +57,21 @@ body > ::before {
 #filter > ::before {
     content: "✔️";
     margin-right: 5px;
+}
+
+#system > *::before {
+    margin: 0px 8px;
+    width: 44%;
+}
+
+#locale {
+    text-align: center;
+}
+
+#version:empty::after {
+    background-color: #D44B31;
+    content: "Offline";
+    color: #FFFFFF;
 }
 
 #queue {

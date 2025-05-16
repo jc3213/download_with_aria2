@@ -309,7 +309,7 @@
         "message": "Downloading"
     },
     "popup_waiting_queue": {
-        "message": "Wait in Queue"
+        "message": "Waiting in Queue"
     },
     "popup_paused_queue": {
         "message": "Download Paused"
