@@ -175,7 +175,11 @@ function menuEventImport() {
 }
 
 menuPane.addEventListener('click', (event) => {
-    switch (event.target.getAttribute('i18n')) {
+    let button = event.target.getAttribute('i18n');
+    if (!button) {
+        return;
+    }
+    switch (button) {
         case 'common_save':
             menuEventSave();
             break;
@@ -297,7 +301,11 @@ optionsMatches.forEach((match) => {
     let entry = menu.children[1];
     match.list = list;
     match.addEventListener('click', (event) => {
-        switch (event.target.getAttribute('i18n-tips')) {
+        let button = event.target.getAttribute('i18n-tips');
+        if (!button) {
+            return;
+        }
+        switch (button) {
             case 'tips_match_addnew':
                 matchEventAddNew(id, list, entry);
                 break;

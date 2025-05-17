@@ -294,7 +294,11 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', (event) => {
-        switch (event.target.getAttribute('i18n-tips')) {
+        let button = event.target.getAttribute('i18n-tips');
+        if (!button) {
+            return;
+        }
+        switch (button) {
             case 'tips_task_remove': 
                 taskEventRemove(task, gid);
                 break;

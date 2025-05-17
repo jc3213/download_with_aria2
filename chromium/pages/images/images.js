@@ -75,7 +75,11 @@ function menuEventSubmit() {
 }
 
 menuPane.addEventListener('click', (event) => {
-    switch (event.target.getAttribute('i18n')) {
+    let button = event.target.getAttribute('i18n');
+    if (!button) {
+        return;
+    }
+    switch (button) {
         case 'select_all':
             aria2Images.forEach((img) => img.classList.add('checked'));
             break;

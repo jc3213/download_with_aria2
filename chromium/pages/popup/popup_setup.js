@@ -61,8 +61,8 @@ function aria2ToolbarSetup() {
     document.head.appendChild(toolbar);
     toolbar.textContent = `
 body {
-    width: 680px;
     margin: 4px 0px 0px;
+    width: 680px;
 }
 
 #menu::before,
@@ -99,12 +99,12 @@ body {
 
 #queue {
     border-radius: 0px;
-    border-width: 2px 0px 0px;
-    padding-top: 4px;
     border-style: solid;
+    border-width: 2px 0px 0px;
     grid-area: 2 / 1 / 3 / 4;
     height: 540px;
     overflow-y: auto;
+    padding-top: 4px;
 }
 `;
 }
