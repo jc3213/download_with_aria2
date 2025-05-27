@@ -1,6 +1,6 @@
 let aria2Storage = {};
 let aria2Config = {};
-let aria2Referer = [];
+let aria2Referer = new Map();
 
 let [menuPane, downEntry, metaPane, metaImport, jsonrpcPane] = document.body.children;
 let [, downMode, submitBtn] = menuPane.children;
@@ -105,8 +105,20 @@ jsonrpcPane.addEventListener('change', (event) => {
 });
 
 refererEntry.addEventListener('click', (event) => {
-    refererModalPopup();
-    refererPane.style.display = 'block';
+    chrome.tabs.query({}, (tabs) => {
+        refererPane.innerHTML = '';
+        aria2Referer.clear();
+        tabs.forEach(({url}) => {
+            if (!aria2Referer.has(url) && url.startsWith('http')) {
+                let referer = document.createElement('div');
+                referer.title = referer.textContent = url;
+                aria2Referer.set(url, referer);
+                refererPane.appendChild(referer);
+            }
+        });
+        refererModalPopup();
+        refererPane.style.display = 'block';
+    });
 });
 
 refererEntry.addEventListener('input', (event) => {
@@ -116,7 +128,7 @@ refererEntry.addEventListener('input', (event) => {
 function refererModalPopup() {
     let entry = refererEntry.value;
     let regexp = new RegExp(entry.replace(/[.?/]/g, '\\$&'), 'gi');
-    aria2Referer.forEach((referer) => {
+    aria2Referer.values().forEach((referer) => {
         if (referer.title.includes(entry)) {
             referer.style.display = '';
             referer.innerHTML = referer.title.replace(regexp, '<mark>$&</mark>');
@@ -133,17 +145,6 @@ refererPane.addEventListener('click', (event) => {
 
 document.getElementById('proxy').addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
-});
-
-chrome.tabs.query({}, (tabs) => {
-    tabs.forEach(({url}) => {
-        if (url.startsWith('http')) {
-            let referer = document.createElement('div');
-            referer.title = referer.textContent = url;
-            aria2Referer.push(referer);
-            refererPane.appendChild(referer);
-        }
-    });
 });
 
 chrome.runtime.sendMessage({action: 'system_runtime'}, ({storage, options}) => {
