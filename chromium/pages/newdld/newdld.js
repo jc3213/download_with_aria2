@@ -105,20 +105,8 @@ jsonrpcPane.addEventListener('change', (event) => {
 });
 
 refererEntry.addEventListener('click', (event) => {
-    chrome.tabs.query({}, (tabs) => {
-        refererPane.innerHTML = '';
-        aria2Referer.clear();
-        tabs.forEach(({url}) => {
-            if (!aria2Referer.has(url) && url.startsWith('http')) {
-                let referer = document.createElement('div');
-                referer.title = referer.textContent = url;
-                aria2Referer.set(url, referer);
-                refererPane.appendChild(referer);
-            }
-        });
-        refererModalPopup();
-        refererPane.style.display = 'block';
-    });
+    refererModalPopup();
+    refererPane.style.display = 'block';
 });
 
 refererEntry.addEventListener('input', (event) => {
@@ -146,6 +134,41 @@ refererPane.addEventListener('click', (event) => {
 document.getElementById('proxy').addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
+
+
+function refererModalList(id, url) {
+    if (!url.startsWith('http')) {
+        return;
+    }
+    let referer = aria2Referer.get(id);
+    if (!referer) {
+        referer = document.createElement('div');
+        refererPane.appendChild(referer);
+        aria2Referer.set(id, referer);
+    }
+    referer.title = referer.textContent = url;
+}
+
+chrome.tabs.query({}, (tabs) => {
+    tabs.forEach(({id, url}) => {
+        refererModalList(id, url);
+    });
+});
+
+chrome.tabs.onUpdated.addListener((tabId, {url}) => {
+    if (url) {
+        refererModalList(tabId, url);
+    }
+});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+    let referer = aria2Referer.get(tabId);
+    if (referer) {
+        referer.remove();
+        aria2Referer.delete(tabId);
+    }
+});
+
 
 chrome.runtime.sendMessage({action: 'system_runtime'}, ({storage, options}) => {
     aria2Storage = storage;
