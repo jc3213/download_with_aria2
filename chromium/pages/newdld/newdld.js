@@ -135,11 +135,11 @@ document.getElementById('proxy').addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
 
-chrome.tabs.query({currentWindow: false}, (tabs) => {
-    tabs.forEach((tab) => {
-        if (tab.url.startsWith('http')) {
+chrome.tabs.query({}, (tabs) => {
+    tabs.forEach(({url}) => {
+        if (url.startsWith('http')) {
             let referer = document.createElement('div');
-            referer.title = referer.textContent = tab.url;
+            referer.title = referer.textContent = url;
             aria2Referer.push(referer);
             refererPane.appendChild(referer);
         }
