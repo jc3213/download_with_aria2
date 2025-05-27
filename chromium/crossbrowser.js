@@ -37,6 +37,7 @@ let aria2Config = {};
 let aria2Active;
 let aria2Manager = 0;
 let aria2Popup = 0;
+let aria2Tabs = new Set();
 let aria2Inspect = {};
 let aria2Detect = {};
 let aria2Manifest = chrome.runtime.getManifest();
@@ -180,17 +181,14 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
 });
 
-chrome.webNavigation.onBeforeNavigate.addListener(({tabId, url, frameId}) => {
-    if (frameId === 0) {
+chrome.tabs.onUpdated.addListener((tabId, {status}, {url}) => {
+    if (status === 'loading' && url.startsWith('http') && !aria2Tabs.has(tabId)) {
+        aria2Tabs.add(tabId);
         aria2Inspect[tabId] = { images: new Map(), url };
+    } else if (status === 'complete') {
+        aria2Tabs.delete(tabId);
     }
-}, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
-
-chrome.webNavigation.onHistoryStateUpdated.addListener(({tabId, url}) => {
-    if (aria2Inspect[tabId]?.url !== url) {
-        aria2Inspect[tabId] = { images: new Map(), url };
-    }
-}, {url: [ {urlPrefix: 'http://'}, {urlPrefix: 'https://'} ]});
+});
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
     if (tabId === aria2Popup) {
