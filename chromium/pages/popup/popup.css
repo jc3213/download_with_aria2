@@ -212,7 +212,7 @@ body > ::before {
     content: "⏲️ ";
 }
 
-.filesize::before {
+.fulllength::before {
     content: "📦 ";
 }
 

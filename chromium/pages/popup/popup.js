@@ -154,7 +154,7 @@ function taskElementUpdate({gid, status, files, bittorrent, completedLength, tot
     task.hour.textContent = hours || '';
     task.minute.textContent = minutes || '';
     task.second.textContent = seconds || '';
-    task.network.textContent = bittorrent ? numSeeders + '(' + connections + ')' : connections;
+    task.network.textContent = bittorrent ? connections + '(' + numSeeders + ')' : connections;
     task.download.textContent = getFileSize(downloadSpeed);
     task.upload.textContent = getFileSize(uploadSpeed);
     task.ratio.textContent = percent;
