@@ -37,6 +37,7 @@ let aria2Config = {};
 let aria2Active;
 let aria2Manager = 0;
 let aria2Popup = 0;
+let aria2Tabs = new Set();
 let aria2Inspect = {};
 let aria2Detect = {};
 let aria2Manifest = chrome.runtime.getManifest();
@@ -181,17 +182,24 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, {status}, {url}) => {
-    let referer = aria2Inspect[tabId]?.url;
-    if (status === 'loading' && url.startsWith('http') && referer !== url) {
-        aria2Inspect[tabId] = { images: new Map(), url };
-    }
+    switch (status) {
+        case 'loading':
+            if (url.startsWith('http') && !aria2Tabs.has(tabId)) {
+                aria2Tabs.add(tabId);
+                aria2Inspect[tabId] = { images: new Map(), url };
+            }
+            break;
+        case 'complete':
+            aria2Tabs.delete(tabId);
+            break;
+    };
 });
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
     if (tabId === aria2Popup) {
         return;
     }
-    let tab = aria2Inspect[tabId] ??= { images: new Map(), url };
+    let tab = aria2Inspect[tabId] ??= { images: new Map() };
     if (type === 'image') {
         let index = url.indexOf('?');
         let uri = index !== -1 ? url.slice(0, index) : url;
