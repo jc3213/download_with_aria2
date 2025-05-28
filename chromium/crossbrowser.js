@@ -199,7 +199,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
     if (tabId === aria2Popup) {
         return;
     }
-    let tab = aria2Inspect[tabId] ??= { images: new Map() };
+    let tab = aria2Inspect[tabId] ??= { images: new Map(), url };
     if (type === 'image') {
         let index = url.indexOf('?');
         let uri = index !== -1 ? url.slice(0, index) : url;
