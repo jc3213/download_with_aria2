@@ -45,7 +45,7 @@ class Aria2 {
     }
     #retries = 10;
     set retries (number) {
-        this.#retries = isNaN(number) || number < 0 ? Infinity : number;
+        this.#retries = Number.isInteger(number) || number >= 0 ? number : Infinity;
     }
     get retries () {
         return this.#retries;
