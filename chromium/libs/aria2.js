@@ -22,7 +22,6 @@ class Aria2 {
         if (!method) { throw new Error(`Unsupported scheme: "${scheme}"`); }
         this.#scheme = scheme;
         this.#ssl = method[2] ?? '';
-        this.call = method[1] === 'http' ? this.#post : this.#send;
         this.#path();
     }
     get scheme () {
@@ -78,24 +77,6 @@ class Aria2 {
     get onclose () {
         return this.#onclose;
     }
-    #onreceive = null;
-    #send (...args) {
-        return new Promise((resolve, reject) => {
-            this.#onreceive = resolve;
-            this.#ws.onerror = reject;
-            this.#ws.send(this.#json(args));
-        });
-    }
-    #post (...args) {
-        return fetch(this.#xml, {method: 'POST', body: this.#json(args)}).then((response) => {
-            if (response.ok) { return response.json(); }
-            throw new Error(response.statusText);
-        });
-    }
-    #json (args) {
-        let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [this.#secret, ...params] }) );
-        return JSON.stringify(json);
-    }
     #ws;
     connect () {
         this.#ws = new WebSocket(this.#wsa);
@@ -104,8 +85,7 @@ class Aria2 {
         };
         this.#ws.onmessage = (event) => {
             let response = JSON.parse(event.data);
-            if (!response.method) { this.#onreceive(response); }
-            else if (this.#onmessage) { this.#onmessage(response); }
+            if (response.method && this.#onmessage) { this.#onmessage(response); }
         };
         this.#ws.onclose = (event) => {
             if (!event.wasClean && this.#tries++ < this.#retries) { setTimeout(() => this.connect(), this.#timeout); }
@@ -114,5 +94,12 @@ class Aria2 {
     }
     disconnect () {
         this.#ws.close();
+    }
+    call (...args) {
+        let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [this.#secret, ...params] }) );
+        return fetch(this.#xml, { method: 'POST', body: JSON.stringify(json) }).then((response) => {
+            if (response.ok) { return response.json(); }
+            throw new Error(response.statusText);
+        });
     }
 }
