@@ -22,6 +22,7 @@ class Aria2 {
         if (!method) { throw new Error(`Unsupported scheme: "${scheme}"`); }
         this.#scheme = scheme;
         this.#ssl = method[2] ?? '';
+        this.call = method[1] === 'http' ? this.#post : this.#send;
         this.#path();
     }
     get scheme () {
@@ -77,6 +78,25 @@ class Aria2 {
     get onclose () {
         return this.#onclose;
     }
+    #send (...args) {
+        return new Promise((resolve, reject) => {
+            let {id, body} = this.#json(args);
+            this[id] = resolve;
+            this.#ws.onerror = reject;
+            this.#ws.send(body);
+        });
+    }
+    #post (...args) {
+        return fetch(this.#xml, {method: 'POST', body: this.#json(args).body}).then((response) => {
+            if (response.ok) { return response.json(); }
+            throw new Error(response.statusText);
+        });
+    }
+    #json (args) {
+        let id = `${Date.now()}`;
+        let body = JSON.stringify( args.map( ({ method, params = [] }) => ({ id, jsonrpc: '2.0', method, params: [this.#secret, ...params] }) ) );
+        return {id, body};
+    }
     #ws;
     connect () {
         this.#ws = new WebSocket(this.#wsa);
@@ -85,7 +105,8 @@ class Aria2 {
         };
         this.#ws.onmessage = (event) => {
             let response = JSON.parse(event.data);
-            if (response.method && this.#onmessage) { this.#onmessage(response); }
+            if (response.method) { if(this.#onmessage) { this.#onmessage(response); } }
+            else { let {id} = response[0]; this[id](response); delete this[id]; }
         };
         this.#ws.onclose = (event) => {
             if (!event.wasClean && this.#tries++ < this.#retries) { setTimeout(() => this.connect(), this.#timeout); }
@@ -94,12 +115,5 @@ class Aria2 {
     }
     disconnect () {
         this.#ws.close();
-    }
-    call (...args) {
-        let json = args.map( ({ method, params = [] }) => ({ id: '', jsonrpc: '2.0', method, params: [this.#secret, ...params] }) );
-        return fetch(this.#xml, { method: 'POST', body: JSON.stringify(json) }).then((response) => {
-            if (response.ok) { return response.json(); }
-            throw new Error(response.statusText);
-        });
     }
 }
