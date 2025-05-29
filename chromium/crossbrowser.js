@@ -1,5 +1,5 @@
 let aria2Default = {
-    'jsonrpc_scheme': 'ws',
+    'jsonrpc_scheme': 'http',
     'jsonrpc_url': 'localhost:6800/jsonrpc',
     'jsonrpc_secret': '',
     'jsonrpc_retries': -1,
