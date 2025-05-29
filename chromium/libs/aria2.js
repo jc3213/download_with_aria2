@@ -81,7 +81,7 @@ class Aria2 {
     #send (...args) {
         return new Promise((resolve, reject) => {
             let {id, body} = this.#json(args);
-            this[id] = resolve; this.#ws.onerror = reject;this.#ws.send(body);
+            this[id] = resolve; this.#ws.onerror = reject; this.#ws.send(body);
         });
     }
     #post (...args) {
