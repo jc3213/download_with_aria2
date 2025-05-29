@@ -52,7 +52,7 @@ class Aria2 {
     }
     #timeout = 10000;
     set timeout (number) {
-        this.#timeout = isNaN(number) ? 10000 : number * 1000;
+        this.#timeout = isNaN(number) || number <= 0 ? 10000 : number * 1000;
     }
     get timeout () {
         return this.#timeout / 1000;
