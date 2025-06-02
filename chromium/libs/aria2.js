@@ -45,14 +45,14 @@ class Aria2 {
     }
     #retries = 10;
     set retries (number) {
-        this.#retries = Number.isInteger(number) || number >= 0 ? number : Infinity;
+        this.#retries = Number.isInteger(number) && number >= 0 ? number : Infinity;
     }
     get retries () {
         return this.#retries;
     }
     #timeout = 10000;
     set timeout (number) {
-        this.#timeout = isNaN(number) || number <= 0 ? 10000 : number * 1000;
+        this.#timeout = Number.isFinite(number) && number > 0 ? number * 1000 : 10000;
     }
     get timeout () {
         return this.#timeout / 1000;
