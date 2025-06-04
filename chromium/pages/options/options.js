@@ -9,7 +9,7 @@ let redoes = [];
 
 let extension = document.body.classList;
 let [menuPane, optionsPane, jsonrpcPane, template] = document.body.children;
-let [saveBtn, undoBtn, redoBtn, tellVer, exportBtn, importBtn, jsonFile, confFile, exporter] = menuPane.children;
+let [saveBtn, undoBtn, redoBtn, tellVer, importBtn, exportBtn, jsonFile, confFile, exporter] = menuPane.children;
 let tellUA = document.getElementById('useragent');
 let optionsEntries = optionsPane.querySelectorAll('[name]');
 let optionsMatches = optionsPane.querySelectorAll('.matches div[id]');
