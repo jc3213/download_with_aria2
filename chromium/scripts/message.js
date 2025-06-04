@@ -10,6 +10,9 @@ function aria2CallHandler (args) {
 
 window.addEventListener('message', (event) => {
     let {aria2c, params} = event.data;
+    if (!aria2c) {
+        return;
+    }
     switch (aria2c) {
         case 'aria2c_jsonrpc_echo':
             aria2EchoResponse();
