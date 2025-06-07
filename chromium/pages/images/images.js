@@ -60,9 +60,9 @@ galleryPane.addEventListener('mouseover', (event) => {
 
 galleryPane.addEventListener('load', (event) => {
     let img = event.target;
-    let {naturalWidth, naturalHeight, src} = img;
-    let [, name, ext = '.jpg'] = src.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
-    img.alt = name + '_' + img.alt + '_' + naturalWidth + 'x' + naturalHeight + ext;
+    let {alt, naturalHeight, naturalWidth, src} = img;
+    let [, name, type = '.jpg'] = src.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
+    img.alt = name + '_' + alt + '_' + naturalWidth + 'x' + naturalHeight + type;
 }, true);
 
 function menuEventSubmit() {
