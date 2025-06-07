@@ -101,7 +101,7 @@ function aria2SystemRuntime() {
     return {
         storage: aria2Storage,
         options: aria2Config,
-        version: aria2Version,
+        version: aria2Version.version,
         manifest: aria2Manifest
     };
 }
@@ -274,7 +274,7 @@ function aria2StorageUpdate(json) {
 async function aria2ClientOpened() {
     let [version, options, active] = await aria2RPC.call({method: 'aria2.getVersion'}, {method: 'aria2.getGlobalOption'}, {method: 'aria2.tellActive'});
     aria2Config = options.result;
-    aria2Version = version.result.version;
+    aria2Version = version.result;
     aria2Config['disk-cache'] = getFileSize(aria2Config['disk-cache']);
     aria2Config['min-split-size'] = getFileSize(aria2Config['min-split-size']);
     aria2Config['max-download-limit'] = getFileSize(aria2Config['max-download-limit']);
