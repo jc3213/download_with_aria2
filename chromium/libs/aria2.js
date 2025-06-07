@@ -91,7 +91,7 @@ class Aria2 {
         });
     }
     #json (args) {
-        let id = `${Date.now()}`;
+        let id = String(Date.now());
         let body = JSON.stringify( args.map( ({ method, params = [] }) => ({ id, jsonrpc: '2.0', method, params: [this.#secret, ...params] }) ) );
         return {id, body};
     }
