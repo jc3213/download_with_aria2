@@ -49,7 +49,7 @@
 
 ### Task Manager
 ![Task Manager - Popup](https://github.com/user-attachments/assets/991c3b4c-1fd1-492d-8f55-7196ab5c1f0a)
-![Task Manager - Open In Tab](https://github.com/user-attachments/assets/0b21aa61-fe61-4638-9143-600bc0d1d67f)
+![Task Manager - Open In Tab](https://github.com/user-attachments/assets/ae9f6bf4-b29f-4d6a-9619-905960ecb704)
 
 ### New Download
 ![New Download - URLs](https://github.com/user-attachments/assets/f6487cd0-a9bc-4536-a5f3-cadd4d6a017f)
