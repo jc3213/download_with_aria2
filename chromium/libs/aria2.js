@@ -84,26 +84,24 @@ class Aria2 {
     }
     #send (...args) {
         return new Promise((resolve, reject) => {
-            let body = this.#json(args);
-            let [{ id }] = body;
+            let id = String(Date.now());
             this[id] = resolve;
             this.#ws.onerror = reject;
-            this.#ws.send(JSON.stringify(body));
+            this.#ws.send(this.#json(args, id));
         });
     }
     #post (...args) {
-        return fetch(this.#xml, { method: 'POST', body: JSON.stringify(this.#json(args)) }).then((response) => {
+        return fetch(this.#xml, { method: 'POST', body: this.#json(args) }).then((response) => {
             if (response.ok) {
                 return response.json();
             }
             throw new Error(response.statusText);
         });
     }
-    #json (args) {
-        let id = String(Date.now());
-        return args.map(({ method, params = [] }) => {
+    #json (args, id = '') {
+        return JSON.stringify(args.map(({ method, params = [] }) => {
             return { id, jsonrpc: '2.0', method, params: [this.#secret, ...params] };
-        });
+        }));
     }
     #ws;
     connect () {
