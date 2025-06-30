@@ -85,6 +85,7 @@ body {
 
 #system > div {
     flex: 1;
+    padding: 3px;
 }
 
 #system > ::before {
