@@ -222,46 +222,46 @@
         "message": "Request Headers"
     },
     "tips_option_headers_exclude": {
-        "message": "Don't forward request headers for downloads from these hosts"
+        "message": "Don't forward request headers for downloads from hosts below"
     },
     "option_headers_override": {
         "message": "Override User Agent"
     },
     "tips_option_headers_override": {
-        "message": "Override \"User-Agent\" in request headers for new downloads"
+        "message": "Override request header \"User-Agent\" to preset useragent"
     },
     "option_headers_useragent": {
         "message": "User Agent"
     },
     "tips_option_headers_useragent": {
-        "message": "Set your preferred \"User-Agent\""
+        "message": "Set preset useragent"
     },
     "option_folder": {
         "message": "Download Directory"
     },
     "tips_option_folder": {
-        "message": "Set your preferred download directory"
+        "message": "Set preset download directory"
     },
     "option_folder_enabled": {
         "message": "Use Download Directory"
     },
     "tips_option_folder_enabled": {
-        "message": "Save new downloads into preferred download directory"
+        "message": "Save new downloads into preset download directory"
     },
     "option_folder_firefox": {
         "message": "Follow Browser Behavior"
     },
     "tips_option_folder_firefox": {
-        "message": "Save downloads into the directory follow browser dialog window"
+        "message": "Save downloads into Firefox's download directory\nThis will ignore preset download directory"
     },
     "option_proxy": {
         "message": "Proxy Server"
     },
     "tips_option_proxy": {
-        "message": "Set the preset proxy server for downloads"
+        "message": "Set preset proxy server"
     },
     "tips_option_proxy_include": {
-        "message": "Add proxy server for new downloads from these hosts"
+        "message": "Add preset proxy server to new downloads from hosts below"
     },
     "option_capture": {
         "message": "Capture Browser Downloads"
@@ -285,13 +285,13 @@
         "message": "Ignore browser downloads those are below the size"
     },
     "tips_option_capture_host_exclude": {
-        "message": "Ignore browser downloads from these hosts"
+        "message": "Ignore browser downloads from hosts below"
     },
     "option_capture_type_exclude": {
         "message": "Exclude File Extensions"
     },
     "tips_option_capture_type_exclude": {
-        "message": "Ignore browser downloads with these file extensions"
+        "message": "Ignore browser downloads with file extensions below"
     },
     "popup_menu": {
         "message": "Main Menu"

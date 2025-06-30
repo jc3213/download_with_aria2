@@ -33,7 +33,7 @@
                     <input name="jsonrpc_secret" type="text" placeholder="$$secret$$">
                 </div>
             </div>
-            <div class="flex align">
+            <div class="flex padtop">
                 <button id="goto-jsonrpc" i18n="option_aria2"></button>
                 <div class="flex" i18n-tips="tips_option_jsonrpc_retries">
                     <h4 i18n="option_jsonrpc_retries"></h4>
@@ -57,7 +57,7 @@
             </div>
             <h1 i18n="option_context"></h1>
             <div class="groupitem" i18n-tips="tips_option_context_enabled">
-                <input id="context_enabled" name="context_enabled" type="checkbox" data-key="true">
+                <input id="context_enabled" name="context_enabled" type="checkbox" data-css="true">
                 <label for="context_enabled" i18n="option_context_enabled"></label>
             </div>
             <div class="groupitem" i18n-tips="tips_option_context_cascade" data-rel="context_enabled">
@@ -91,13 +91,13 @@
             </div>
             <h1 i18n="option_headers"></h1>
             <div class="groupitem" i18n-tips="tips_option_headers_override">
-                <input id="headers_override" name="headers_override" type="checkbox" data-key="true">
+                <input id="headers_override" name="headers_override" type="checkbox" data-css="true">
                 <label for="headers_override" i18n="option_headers_override"></label>
             </div>
             <div class="groupitem" i18n-tips="tips_option_headers_useragent" data-rel="headers_override">
                 <input name="headers_useragent" type="text">
             </div>
-            <div class="matches align">
+            <div class="matches padtop">
                 <div id="headers_exclude" i18n-tips="tips_option_headers_exclude">
                     <div class="flexmenu">
                         <h4 i18n="option_match_exclude"></h4>
@@ -109,22 +109,22 @@
                 </div>
             </div>
             <h1 i18n="option_folder"></h1>
-            <div i18n-tips="tips_option_folder">
+            <div class="paddown" i18n-tips="tips_option_folder" data-exc="folder_firefox">
                 <input name="folder_defined" type="text">
             </div>
-            <div class="groupitem align" i18n-tips="tips_option_folder_enabled">
-                <input id="folder_enabled" name="folder_enabled" type="checkbox" data-key="true">
+            <div class="groupitem" i18n-tips="tips_option_folder_enabled">
+                <input id="folder_enabled" name="folder_enabled" type="checkbox" data-css="true">
                 <label for="folder_enabled" i18n="option_folder_enabled"></label>
             </div>
-            <div class="groupitem align" i18n-tips="tips_option_folder_firefox" data-app="firefox" data-rel="folder_enabled" data-exc="capture_enabled, capture_webrequest">
-                <input id="folder_firefox" name="folder_firefox" type="checkbox">
+            <div class="groupitem" i18n-tips="tips_option_folder_firefox" data-app="firefox" data-rel="folder_enabled" data-exc="capture_enabled, capture_webrequest">
+                <input id="folder_firefox" name="folder_firefox" type="checkbox" data-css="true">
                 <label for="folder_firefox" i18n="option_folder_firefox"></label>
             </div>
             <h1 i18n="option_proxy"></h1>
-            <div i18n-tips="tips_option_proxy">
+            <div class="paddown" i18n-tips="tips_option_proxy">
                 <input name="proxy_server" type="text" placeholder="http://127.0.0.1:1280/">
             </div>
-            <div class="matches align">
+            <div class="matches">
                 <div id="proxy_include" i18n-tips="tips_option_proxy_include">
                     <div class="flexmenu">
                         <h4 i18n="option_match_include"></h4>
@@ -137,15 +137,15 @@
             </div>
             <h1 i18n="option_capture"></h1>
             <div class="groupitem" i18n-tips="tips_option_capture_enabled">
-                <input id="capture_enabled" name="capture_enabled" type="checkbox" data-key="true">
+                <input id="capture_enabled" name="capture_enabled" type="checkbox" data-css="true">
                 <label for="capture_enabled" i18n="option_capture_enabled"></label>
             </div>
             <div class="groupitem" i18n-tips="tips_option_capture_webrequest" data-app="firefox" data-rel="capture_enabled">
-                <input id="capture_webrequest" name="capture_webrequest" type="checkbox" data-key="true">
+                <input id="capture_webrequest" name="capture_webrequest" type="checkbox" data-css="true">
                 <label for="capture_webrequest" i18n="option_capture_webrequest"></label>
             </div>
-            <div class="matches align group" data-rel="capture_enabled">
-                <div i18n-tips="tips_option_capture_size_exclude">
+            <div class="matches padtop group" data-rel="capture_enabled">
+                <div class="flex fixed" i18n-tips="tips_option_capture_size_exclude">
                     <h4 i18n="option_capture_size_exclude"></h4>
                     <div>
                         <input name="capture_size_exclude" type="number" min="0">
@@ -153,7 +153,7 @@
                     </div>
                     <i class="disabled">0</i>
                 </div>
-                <div id="capture_host_exclude" class="align" i18n-tips="tips_option_capture_host_exclude">
+                <div id="capture_host_exclude" class="padtop" i18n-tips="tips_option_capture_host_exclude">
                     <div class="flexmenu">
                         <h4 i18n="option_match_exclude"></h4>
                         <input type="text">
@@ -162,7 +162,7 @@
                     </div>
                     <div class="list"></div>
                 </div>
-                <div id="capture_type_exclude" class="align" i18n-tips="tips_option_capture_type_exclude">
+                <div id="capture_type_exclude" class="padtop" i18n-tips="tips_option_capture_type_exclude">
                     <div class="flexmenu">
                         <h4 i18n="option_capture_type_exclude"></h4>
                         <input type="text">
@@ -175,7 +175,7 @@
         </div>
         <div id="jsonrpc" class="group" data-rel="jsonrpc">
             <h1 i18n="aria2_options"></h1>
-            <div class="groupitem align">
+            <div class="groupitem padtop">
                 <button id="goto-options" i18n="option_back"></button>
             </div>
             <div class="groupitem" i18n-tips="tips_option_aria2_com_dir">

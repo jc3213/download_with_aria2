@@ -105,7 +105,7 @@
         "message": "修改 bit-torrent 文件"
     },
     "tips_proxy_server": {
-        "message": "设置预设代理服务器"
+        "message": "设置预设的代理服务器"
     },
     "option_undo": {
         "message": "撤销"
@@ -228,40 +228,40 @@
         "message": "覆盖用户代理"
     },
     "tips_option_headers_override": {
-        "message": "覆盖所转发请求偷中的\"User-Agent\"的值"
+        "message": "将请求头中\"User-Agent\"的值修改为预设的User Agent"
     },
     "option_headers_useragent": {
-        "message": "用户代理"
+        "message": "User Agent"
     },
     "tips_option_headers_useragent": {
-        "message": "设置首选的\"User-Agent\""
+        "message": "设置预设的User Agent"
     },
     "option_folder": {
-        "message": "下载文件夹"
+        "message": "下载路径"
     },
     "tips_option_folder": {
-        "message": "所有扩展新建的下载任务将使用此下载文件夹"
+        "message": "设置预设的下载路径"
     },
     "option_folder_enabled": {
-        "message": "使用下载文件夹"
+        "message": "启用下载路径"
     },
     "tips_option_folder_enabled": {
-        "message": "将新建下载保存到首选的下载文件夹中"
+        "message": "将新建下载保存至预设的下载路径中"
     },
     "option_folder_firefox": {
         "message": "遵循浏览器行为"
     },
     "tips_option_folder_firefox": {
-        "message": "将新建下载保存到浏览器对话框选中的文件夹中"
+        "message": "将新建下载保存至浏览器的下载路径中\n此设置会忽略掉预设的下载路径"
     },
     "option_proxy": {
         "message": "代理服务器"
     },
     "tips_option_proxy": {
-        "message": "设置下载用的预设代理服务器"
+        "message": "设置预设的代理服务器"
     },
     "tips_option_proxy_include": {
-        "message": "为所设置域名的下载添加代理服务器"
+        "message": "为来自下表中域名的下载添加预设的代理服务器"
     },
     "option_capture": {
         "message": "捕获浏览器下载"

@@ -73,7 +73,7 @@ optionsPane.addEventListener('change', (event) => {
             break;
         case 'checkbox':
             value = checked;
-            if (entry.dataset.key) {
+            if (entry.dataset.css) {
                 extension.toggle(name);
             }
             break;
@@ -121,7 +121,7 @@ function optionsHistoryLoad(action, value, {id, type, entry, add, remove, resort
             entry.value = value;
             break;
         case 'checkbox':
-            if (entry.dataset.key) {
+            if (entry.dataset.css) {
                 extension.toggle(id);
             }
             entry.checked = value;
@@ -337,7 +337,7 @@ function aria2StorageSetup() {
     optionsEntries.forEach((entry) => {
         let {name, type, value, checked} = entry;
         if (type === 'checkbox') {
-            if (entry.dataset.key) {
+            if (entry.dataset.css) {
                 updated[name] ? extension.add(name) : extension.remove(name);
             }
             entry.checked = updated[name];

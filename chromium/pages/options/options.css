@@ -10,6 +10,7 @@ body:not(.headers_override) [data-rel="headers_override"],
 body:not(.firefox) [data-app="firefox"],
 body:not(.folder_enabled) [data-rel="folder_enabled"],
 body:not(.capture_enabled) [data-rel="capture_enabled"],
+body.folder_firefox [data-exc="folder_firefox"],
 body.capture_webrequest [data-exc*="capture_webrequest"] {
     display: none;
 }
@@ -48,8 +49,12 @@ input[type="checkbox"] + label {
     content: "aria2/";
 }
 
-.align {
-    margin: 22px 0px 8px;
+.padtop {
+    margin: 22px 0px 0px;
+}
+
+.paddown {
+    margin: 0px 0px 22px;
 }
 
 .group {
