@@ -87,18 +87,18 @@ class Aria2 {
             let id = String(Date.now());
             this[id] = resolve;
             this.#ws.onerror = reject;
-            this.#ws.send(this.#json(args, id));
+            this.#ws.send(this.#json(id, args));
         });
     }
     #post (...args) {
-        return fetch(this.#xml, { method: 'POST', body: this.#json(args) }).then((response) => {
+        return fetch(this.#xml, { method: 'POST', body: this.#json('', args) }).then((response) => {
             if (response.ok) {
                 return response.json();
             }
             throw new Error(response.statusText);
         });
     }
-    #json (args, id = '') {
+    #json (id, args) {
         return JSON.stringify(args.map(({ method, params = [] }) => {
             return { id, jsonrpc: '2.0', method, params: [this.#secret, ...params] };
         }));
