@@ -144,7 +144,7 @@
         "message": "Max Retries"
     },
     "tips_option_jsonrpc_retries": {
-        "message": "Set the retries when JSON-RPC is unreachable\n\nSet \"0\" for no retries\n\nSet \"-1\" for unlimited retries"
+        "message": "Set the max retries when JSON-RPC is unreachable\n\nSet \"0\" for no retries\n\nSet \"-1\" for unlimited retries"
     },
     "option_jsonrpc_timeout": {
         "message": "Retry Interval"
@@ -246,13 +246,13 @@
         "message": "Use Download Directory"
     },
     "tips_option_folder_enabled": {
-        "message": "Save new downloads into preset download directory"
+        "message": "Save new downloads into the preset download directory"
     },
     "option_folder_firefox": {
         "message": "Follow Browser Behavior"
     },
     "tips_option_folder_firefox": {
-        "message": "Save downloads into Firefox's download directory\nThis will ignore preset download directory"
+        "message": "Save downloads into Firefox's download directory\n\nThis will ignore the preset download directory"
     },
     "option_proxy": {
         "message": "Proxy Server"

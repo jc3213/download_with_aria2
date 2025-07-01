@@ -252,7 +252,7 @@
         "message": "遵循浏览器行为"
     },
     "tips_option_folder_firefox": {
-        "message": "将新建下载保存至浏览器的下载路径中\n此设置会忽略掉预设的下载路径"
+        "message": "将新建下载保存至浏览器的下载路径中\n\n此设置会忽略掉预设的下载路径"
     },
     "option_proxy": {
         "message": "代理服务器"
