@@ -243,7 +243,7 @@
         "message": "设置预设的下载路径"
     },
     "option_folder_enabled": {
-        "message": "启用下载路径"
+        "message": "管理下载路径"
     },
     "tips_option_folder_enabled": {
         "message": "将新建下载保存至预设的下载路径中"
