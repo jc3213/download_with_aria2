@@ -26,7 +26,7 @@ async function aria2CaptureDownloads({id, url, referrer, filename, fileSize}) {
     if (captured) {
         browser.downloads.cancel(id).then(async () => {
             browser.downloads.erase({id});
-            aria2DownloadHandler(url, referrer, await getFirefoxOptions(filename));
+            aria2DownloadHandler(url, referrer, getFirefoxOptions(filename));
         }).catch(error => aria2WhenComplete(url));
     }
 }
@@ -54,19 +54,15 @@ async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeade
     }
 }
 
-async function getFirefoxOptions(filename) {
-    let {os} = await browser.runtime.getPlatformInfo();
-    let idx = os === 'win' ? filename.lastIndexOf('\\') : filename.lastIndexOf('/');
-    let out = filename.slice(idx + 1);
-    if (aria2Storage['folder_enabled']) {
-        if (aria2Storage['folder_firefox']) {
-            return {out, dir: filename.slice(0, idx + 1)};
-        }
-        if (aria2Storage['folder_defined']) {
-            return {out, dir: aria2Storage['folder_defined']};
-        }
+function getFirefoxOptions(filename) {
+    let [, dir, out] = filename.match(/^((?:[A-Z]:\\|\/)?(?:[^\\/]+[\\/])*)([^\\/]+\.\w+)$/);
+    if (!aria2Storage['folder_enabled']) {
+        return { out };
     }
-    return {out};
+    if (aria2Storage['folder_firefox']) {
+        return { out, dir };
+    }
+    return { out, dir: aria2Storage['folder_defined'] || null };
 }
 
 function decodeFileName(disposition) {
