@@ -48,8 +48,8 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
     if (aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
-    if (!options['dir'] && aria2Storage['folder_enabled'] && aria2Storage['folder_defined']) {
-        options['dir'] = aria2Storage['folder_defined'];
+    if (aria2Storage['folder_enabled']) {
+        options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
     if (!aria2Updated['headers_exclude'].test(hostname)) {
         let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
