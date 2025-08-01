@@ -55,7 +55,7 @@ async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeade
 }
 
 function getFirefoxOptions(filename) {
-    let [, dir, out] = filename.match(/^((?:[A-Z]:\\|\/)?(?:[^\\/]+[\\/])*)([^\\/]+\.\w+)$/);
+    let [, dir, out] = filename.match(/^((?:[A-Z]:)?(?:[\\/][^\\/]+)+)[\\/]([^\\/]+)$/);
     if (!aria2Storage['folder_enabled']) {
         return { out };
     }
