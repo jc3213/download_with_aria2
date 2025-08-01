@@ -167,7 +167,7 @@ function taskElementUpdate({gid, status, files, bittorrent, completedLength, tot
     return task;
 }
 
-function removeHandler(task, gid, group) {
+function taskRemoveHandler(task, gid, group) {
     task.remove();
     aria2Tasks.delete(gid);
     taskRemoved(gid, group);
@@ -181,13 +181,13 @@ async function taskEventRemove(task, gid) {
         case 'waiting':
         case 'paused':
             await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
-            removeHandler(task, gid, 'waiting');
+            taskRemoveHandler(task, gid, 'waiting');
             break;
         case 'complete':
         case 'removed':
         case 'error':
             await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
-            removeHandler(task, gid, 'stopped');
+            taskRemoveHandler(task, gid, 'stopped');
             break;
     }
 }
@@ -198,7 +198,7 @@ async function taskEventDetail(task, gid) {
         task.change.style.display = '';
     } else {
         task.opened = true;
-        task.config ??= await taskEventDetailGetter(gid);
+        task.config ??= await taskDetailOptions(gid);
         task.entries.forEach((entry) => {
             entry.value = task.config[entry.name] ?? '';
         });
@@ -209,7 +209,7 @@ async function taskEventDetail(task, gid) {
     task.classList.toggle('expand');
 }
 
-async function taskEventDetailGetter(gid) {
+async function taskDetailOptions(gid) {
     let [{result}] = await aria2RPC.call( {method: 'aria2.getOption', params: [gid]} );
     result['min-split-size'] = getFileSize(result['min-split-size']);
     result['max-download-limit'] = getFileSize(result['max-download-limit']);
@@ -233,7 +233,7 @@ async function taskEventRetry(task, gid) {
     taskRemoved(gid, 'stopped');
 }
 
-async function pauseHandler(task, gid, method, status) {
+async function taskPauseHandler(task, gid, method, status) {
     await aria2RPC.call({method, params: [gid]});
     aria2Queue.get(status).appendChild(task);
     task.status = status;
@@ -242,13 +242,13 @@ async function pauseHandler(task, gid, method, status) {
 function taskEventPause(task, gid, method, status) {
     switch (task.status) {
         case 'active':
-            pauseHandler(task, gid, 'aria2.forcePause', 'paused');
+            taskPauseHandler(task, gid, 'aria2.forcePause', 'paused');
             break;
         case 'waiting':
-            pauseHandler(task, gid, 'aria2.forcePause', 'paused');
+            taskPauseHandler(task, gid, 'aria2.forcePause', 'paused');
             break;
         case 'paused':
-            pauseHandler(task, gid, 'aria2.unpause', 'waiting');
+            taskPauseHandler(task, gid, 'aria2.unpause', 'waiting');
             break;
     };
 }
@@ -257,9 +257,10 @@ async function taskEventProxy(task, gid) {
     task.config['all-proxy'] = aria2Proxy;
     await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2Proxy}]});
     task.proxy.value = aria2Proxy;
+    task.scrollIntoView({ block: 'start', inline: 'nearest' });
 }
 
-async function taskEventSelect(task, gid) {
+async function taskEventSelectFiles(task, gid) {
     let selected = [];
     task.checks.forEach((check) => {
         let label = check.labels[0].textContent;
@@ -270,6 +271,7 @@ async function taskEventSelect(task, gid) {
     });
     await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, {'select-file': selected.join()}] });
     task.change.style.display = '';
+    task.scrollIntoView({ block: 'start', inline: 'nearest' });
 }
 
 async function taskEventAddUri(task, gid) {
@@ -315,7 +317,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
                 taskEventProxy(task, gid);
                 break;
             case 'tips_select_file':
-                taskEventSelect(task, gid);
+                taskEventSelectFiles(task, gid);
                 break;
             case 'tips_task_adduri':
                 taskEventAddUri(task, gid);
