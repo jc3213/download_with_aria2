@@ -26,6 +26,10 @@ input[type="checkbox"] + label {
     font-weight: bold;
 }
 
+i {
+    padding: 1px;
+}
+
 #menu {
     border-style: solid;
     border-width: 0px 1px 1px;
