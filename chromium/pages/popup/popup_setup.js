@@ -61,7 +61,7 @@ function aria2ToolbarSetup() {
     document.head.appendChild(toolbar);
     toolbar.textContent = `
 body {
-    margin: 4px 0px 0px;
+    margin: 4px;
     width: 680px;
 }
 
