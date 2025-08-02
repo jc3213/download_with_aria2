@@ -207,6 +207,7 @@ async function taskEventDetail(task, gid) {
         });
     }
     task.classList.toggle('expand');
+    task.scrollIntoView({ block: 'start', inline: 'nearest' });
 }
 
 async function taskDetailOptions(gid) {
