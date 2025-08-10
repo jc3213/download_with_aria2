@@ -132,13 +132,13 @@ function taskUpdated(task, gid, status) {
 }
 
 async function taskElementRefresh(gid) {
-    let [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-    let task = taskElementUpdate(session.result);
+    let [{ result }] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
+    let task = taskElementUpdate(result);
     if (aria2Focus.has(gid)) {
         task.scrollIntoView({ block: 'start', inline: 'nearest' });
         aria2Focus.delete(gid);
     }
-    taskUpdated(task, gid, session.result.status);
+    taskUpdated(task, gid, result.status);
 }
 
 function taskElementUpdate({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
@@ -171,10 +171,11 @@ function taskElementUpdate({gid, status, files, bittorrent, completedLength, tot
     return task;
 }
 
-function taskRemoveHandler(task, gid, group) {
+async function taskRemoveHandler(task, gid, method, group) {
+    await aria2RPC.call({method, params: [gid]});
     task.remove();
-    aria2Tasks.delete(gid);
     taskRemoved(gid, group);
+    aria2Tasks.delete(gid);
 }
 
 async function taskEventRemove(task, gid) {
@@ -184,14 +185,12 @@ async function taskEventRemove(task, gid) {
             break;
         case 'waiting':
         case 'paused':
-            await aria2RPC.call({method: 'aria2.forceRemove', params: [gid]});
-            taskRemoveHandler(task, gid, 'waiting');
+            taskRemoveHandler(task, gid, 'aria2.forceRemove', 'waiting');
             break;
         case 'complete':
         case 'removed':
         case 'error':
-            await aria2RPC.call({method: 'aria2.removeDownloadResult', params: [gid]});
-            taskRemoveHandler(task, gid, 'stopped');
+            taskRemoveHandler(task, gid, 'aria2.removeDownloadResult', 'stopped');
             break;
     }
 }
@@ -215,7 +214,7 @@ async function taskEventDetail(task, gid) {
 }
 
 async function taskDetailOptions(gid) {
-    let [{result}] = await aria2RPC.call( {method: 'aria2.getOption', params: [gid]} );
+    let [{ result }] = await aria2RPC.call( {method: 'aria2.getOption', params: [gid]} );
     result['min-split-size'] = getFileSize(result['min-split-size']);
     result['max-download-limit'] = getFileSize(result['max-download-limit']);
     result['max-upload-limit'] = getFileSize(result['max-upload-limit']);
@@ -225,12 +224,12 @@ async function taskDetailOptions(gid) {
 async function taskEventRetry(task, gid) {
     let { uris, path, options } = task;
     let url = [...uris];
-    let [, dir, out ] = path.match(/(^(?:[A-Z]:)?(?:\/[^/]*))\/([^/]+)$/) ?? [];
+    let [ , dir, out ] = path.match(/(^(?:[A-Z]:)?(?:\/[^/]*))\/([^/]+)$/) ?? [];
     options ??= await taskDetailOptions(gid);
     options.dir = dir || null;
     options.out = out || null;
-    let [added] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options.result]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
-    taskElementRefresh(added.result);
+    let [{ result }] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
+    taskElementRefresh(result);
     task.remove();
     aria2Tasks.delete(gid);
     taskRemoved(gid, 'stopped');
