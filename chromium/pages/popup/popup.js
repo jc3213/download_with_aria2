@@ -3,6 +3,7 @@ let aria2Tasks = new Map();
 let aria2Queue = new Map();
 let aria2Stats = new Map();
 let aria2Filter = new Set(localStorage.getItem('queues')?.match(/[^;]+/g) ?? []);
+let aria2Focus = new Set();
 let aria2Types = {
     active: 'active',
     paused: 'waiting',
@@ -135,6 +136,10 @@ function taskUpdated(task, gid, status) {
 async function taskElementRefresh(gid) {
     let [session] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
     let task = taskElementUpdate(session.result);
+    if (aria2Focus.has(gid)) {
+        task.scrollIntoView({ block: 'start', inline: 'nearest' });
+        aria2Focus.delete(gid);
+    }
     taskUpdated(task, gid, session.result.status);
 }
 
@@ -207,7 +212,6 @@ async function taskEventDetail(task, gid) {
         });
     }
     task.classList.toggle('expand');
-    task.scrollIntoView({ block: 'start', inline: 'nearest' });
 }
 
 async function taskDetailOptions(gid) {
@@ -258,7 +262,6 @@ async function taskEventProxy(task, gid) {
     task.config['all-proxy'] = aria2Proxy;
     await aria2RPC.call({method: 'aria2.changeOption', params: [gid, {'all-proxy': aria2Proxy}]});
     task.proxy.value = aria2Proxy;
-    task.scrollIntoView({ block: 'start', inline: 'nearest' });
 }
 
 async function taskEventSelectFiles(task, gid) {
@@ -272,7 +275,6 @@ async function taskEventSelectFiles(task, gid) {
     });
     await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, {'select-file': selected.join()}] });
     task.change.style.display = '';
-    task.scrollIntoView({ block: 'start', inline: 'nearest' });
 }
 
 async function taskEventAddUri(task, gid) {
@@ -301,6 +303,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
         if (!button) {
             return;
         }
+        aria2Focus.add(gid);
         switch (button) {
             case 'tips_task_remove': 
                 taskEventRemove(task, gid);
@@ -333,10 +336,12 @@ function taskElementCreate(gid, status, bittorrent, files) {
     });
     newuri.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
+            aria2Focus.add(gid);
             taskEventAddUri(task, gid);
         }
     });
     options.addEventListener('change', (event) => {
+        aria2Focus.add(gid);
         task.config[event.target.name] = event.target.value;
         aria2RPC.call({ method: 'aria2.changeOption', params: [gid, task.config] });
     });
