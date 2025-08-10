@@ -95,14 +95,14 @@
     "tips_task_detail": {
         "message": "显示下载详情"
     },
+    "tips_task_apply": {
+        "message": "应用已修改的选项"
+    },
     "tips_task_retry": {
         "message": "重启此下载"
     },
     "tips_task_adduri": {
         "message": "添加新的链接"
-    },
-    "tips_select_file": {
-        "message": "修改 bit-torrent 文件"
     },
     "tips_proxy_server": {
         "message": "设置预设的代理服务器"

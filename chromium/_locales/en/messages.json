@@ -95,14 +95,14 @@
     "tips_task_detail": {
         "message": "Show task details"
     },
+    "tips_task_apply": {
+        "message": "Apply all modified options"
+    },
     "tips_task_retry": {
         "message": "Restart this task"
     },
     "tips_task_adduri": {
         "message": "Add new download uri"
-    },
-    "tips_select_file": {
-        "message": "Modify bit-torrent files"
     },
     "tips_proxy_server": {
         "message": "Set the preset proxy server"
