@@ -34,9 +34,9 @@ filterPane.addEventListener('click', (event) => {
 });
 
 const shortcutMap = {
-    'r': purgeBtn,
+    'e': purgeBtn,
     'd': downBtn,
-    's': optionsBtn
+    'q': optionsBtn
 };
 
 document.addEventListener('keydown', (event) => {
@@ -296,6 +296,12 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.addEventListener('click', (event) => {
         let tag = event.target.getAttribute('i18n-tips');
         taskEventMap[tag]?.(task, gid, event);
+    });
+    task.addEventListener('keydown', (event) => {
+        if (event.ctrlKey && event.key === 's') {
+            event.preventDefault();
+            apply.click();
+        }
     });
     newuri.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
