@@ -15,30 +15,29 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-function shortcutHandler(event, ctrlKey, button) {
-    if (ctrlKey) {
+function shortcutHandler(event, button) {
+    if (event.ctrlKey) {
         event.preventDefault();
         button.click();
     }
 }
 
 document.addEventListener('keydown', (event) => {
-    let {key, ctrlKey} = event;
-    switch (key) {
+    switch (event.key) {
         case 'a':
-            shortcutHandler(event, ctrlKey, selectAll);
+            shortcutHandler(event, selectAll);
             break;
         case 'e':
-            shortcutHandler(event, ctrlKey, selectNone);
+            shortcutHandler(event, selectNone);
             break;
         case 'f':
-            shortcutHandler(event, ctrlKey, selectFlip);
+            shortcutHandler(event, selectFlip);
             break;
         case 's':
-            shortcutHandler(event, ctrlKey, optionsBtn);
+            shortcutHandler(event, optionsBtn);
             break;
         case 'Enter':
-            shortcutHandler(event, ctrlKey, submitBtn);
+            shortcutHandler(event, submitBtn);
             break;
         case 'Escape':
             close();

@@ -15,18 +15,17 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-function shortcutHandler(event, ctrlKey, button) {
-    if (ctrlKey) {
+function shortcutHandler(event, button) {
+    if (event.ctrlKey) {
         event.preventDefault();
         button.click();
     }
 }
 
 document.addEventListener('keydown', (event) => {
-    let {key, ctrlKey} = event;
-    switch (key) {
+    switch (event.key) {
         case 'Enter':
-            shortcutHandler(event, ctrlKey, submitBtn);
+            shortcutHandler(event, submitBtn);
             break;
         case 'Escape':
             close();

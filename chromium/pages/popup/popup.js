@@ -33,24 +33,23 @@ filterPane.addEventListener('click', (event) => {
     localStorage.setItem('queues', [...aria2Filter].join(';'));
 });
 
-function shortcutHandler(event, ctrlKey, button) {
-    if (ctrlKey) {
+function shortcutHandler(event, button) {
+    if (event.ctrlKey) {
         event.preventDefault();
         button.click();
     }
 }
 
 document.addEventListener('keydown', (event) => {
-    let {key, ctrlKey} = event;
-    switch (key) {
+    switch (event.key) {
         case 'r':
-            shortcutHandler(event, ctrlKey, purgeBtn);
+            shortcutHandler(event, purgeBtn);
             break;
         case 'd':
-            shortcutHandler(event, ctrlKey, downBtn);
+            shortcutHandler(event, downBtn);
             break;
         case 's':
-            shortcutHandler(event, ctrlKey, optionsBtn);
+            shortcutHandler(event, optionsBtn);
             break;
     };
 });
