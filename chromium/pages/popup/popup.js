@@ -40,10 +40,10 @@ const shortcutMap = {
 };
 
 document.addEventListener('keydown', (event) => {
-    let button = shortcutMap[event.key];
-    if (button && event.ctrlKey) {
+    let key = shortcutMap[event.key];
+    if (key && event.ctrlKey) {
         event.preventDefault();
-        button.click();
+        key.click();
     }
 });
 

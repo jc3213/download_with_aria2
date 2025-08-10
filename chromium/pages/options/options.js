@@ -35,18 +35,18 @@ function shortcutHandler(event, button) {
     }
 }
 
+const shortcutMap = {
+    's': saveBtn,
+    'y': redoBtn,
+    'z': undoBtn
+};
+
 document.addEventListener('keydown', (event) => {
-    switch (event.key) {
-        case 's':
-            shortcutHandler(event, saveBtn);
-            break;
-        case 'y':
-            shortcutHandler(event, redoBtn);
-            break;
-        case 'z':
-            shortcutHandler(event, undoBtn);
-            break;
-    };
+    let key = shortcutMap[event.key];
+    if (key && event.ctrlKey) {
+        event.preventDefault();
+        key.click();
+    }
 });
 
 function optionsHistoryAdd(id, new_value, undo) {
@@ -173,28 +173,17 @@ function menuEventImport() {
     extension.contains('jsonrpc') ? confFile.click() : jsonFile.click();
 }
 
+const menuEventMap = {
+    'common_save': menuEventSave,
+    'option_undo': menuEventUndo,
+    'option_redo': menuEventRedo,
+    'option_export': menuEventExport,
+    'option_import': menuEventImport,
+};
+
 menuPane.addEventListener('click', (event) => {
-    let button = event.target.getAttribute('i18n');
-    if (!button) {
-        return;
-    }
-    switch (button) {
-        case 'common_save':
-            menuEventSave();
-            break;
-        case 'option_undo':
-            menuEventUndo();
-            break;
-        case 'option_redo':
-            menuEventRedo();
-            break;
-        case 'option_export':
-            menuEventExport();
-            break;
-        case 'option_import':
-            menuEventImport();
-            break;
-    };
+    let menu = menuEventMap[event.target.getAttribute('i18n')];
+    menu?.();
 });
 
 jsonFile.addEventListener('change', async (event) => {
@@ -294,31 +283,24 @@ function matchEventRemove(id, list, rule) {
     optionsHistoryAdd(id, new_value, {old_value, type: 'matches', remove: [{list, index, rule}]});
 }
 
+const matchEventMap = {
+    'tips_match_addnew': (id, list, entry) => matchEventAddNew(id, list, entry),
+    'tips_match_resort': (id, list) => matchEventResort(id, list),
+    'tips_match_remove': (id, list, entry, event) => matchEventRemove(id, list, event.target.parentNode),
+};
+
 optionsMatches.forEach((match) => {
-    let id = match.id;
+    let { id } = match;
     let [menu, list] = match.children;
     let entry = menu.children[1];
     match.list = list;
     match.addEventListener('click', (event) => {
-        let button = event.target.getAttribute('i18n-tips');
-        if (!button) {
-            return;
-        }
-        switch (button) {
-            case 'tips_match_addnew':
-                matchEventAddNew(id, list, entry);
-                break;
-            case 'tips_match_resort':
-                matchEventResort(id, list);
-                break;
-            case 'tips_match_remove':
-                matchEventRemove(id, list, event.target.parentNode);
-                break;
-        };
+        let action = matchEventMap[event.target.getAttribute('i18n-tips')];
+        action?.(id, list, entry, event);
     });
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            matchEventAddNew(id, list, entry, event);
+            matchEventAddNew(id, list, entry);
         }
     });
 });
