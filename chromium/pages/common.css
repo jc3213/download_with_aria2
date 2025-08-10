@@ -116,7 +116,7 @@ h4 {
     padding: 3px 0px;
 }
 
-.template {
+.hidden, .template {
     display: none;
 }
 
