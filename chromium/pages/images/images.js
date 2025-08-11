@@ -19,7 +19,7 @@ const shortcutMap = {
     'a': selectAll,
     'e': selectNone,
     'f': selectFlip,
-    's': optionsBtn,
+    'q': optionsBtn,
     'Enter': submitBtn,
     'Escape': close
 };

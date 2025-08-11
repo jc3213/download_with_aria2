@@ -17,6 +17,7 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
 
 const shortcutMap = {
     'Enter': submitBtn,
+    'Tab': downMode,
     'Escape': close
 }
 
