@@ -237,6 +237,9 @@ async function taskEventApply(task, gid) {
     aria2Focus.add(gid);
     await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, config] });
     task.options = config;
+    task.checks.forEach((value, check) => {
+        check.checked = files.has(check.index);
+    });
     task.apply.classList.add('hidden');
 }
 
@@ -329,7 +332,7 @@ function taskFileElement(task, gid, index, selected, path, length) {
     let value = selected === 'true';
     check.id = gid + '_' + index;
     check.checked = value;
-    label.textContent = index;
+    label.textContent = check.index = index;
     label.setAttribute('for', check.id);
     name.textContent = path.slice(path.lastIndexOf('/') + 1);
     name.title = path;
