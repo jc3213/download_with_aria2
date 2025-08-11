@@ -294,8 +294,8 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', (event) => {
-        let tag = event.target.getAttribute('i18n-tips');
-        taskEventMap[tag]?.(task, gid, event);
+        let menu = taskEventMap[event.target.getAttribute('i18n-tips')];
+        menu?.(task, gid, event);
     });
     task.addEventListener('keydown', (event) => {
         if (event.ctrlKey && event.key === 's') {
