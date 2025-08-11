@@ -55,7 +55,7 @@ function optionHistoryApply(id, new_value, old_value, type, props) {
 
 optionsPane.addEventListener('change', (event) => {
     let entry = event.target;
-    let { name, type } = entry;
+    let { name, type, value, checked } = entry;
     if (!name) {
         return;
     }
