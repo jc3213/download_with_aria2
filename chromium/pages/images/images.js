@@ -58,7 +58,7 @@ galleryPane.addEventListener('load', (event) => {
 
 function menuEventSubmit() {
     let params = [];
-    aria2Images.forEach(({src, alt, header, classList}) => {
+    aria2Images.forEach(({ src, alt, header, classList }) => {
         if (classList.contains('checked')) {
             params.push({ url: src, options: {...aria2Config, out: alt} });
         }
@@ -67,9 +67,9 @@ function menuEventSubmit() {
 }
 
 const menuEventMap = {
-    'select_all': () => aria2Images.forEach(img => img.classList.add('checked')),
-    'select_none': () => aria2Images.forEach(img => img.classList.remove('checked')),
-    'select_flip': () => aria2Images.forEach(img => img.classList.toggle('checked')),
+    'select_all': () => aria2Images.forEach((img) => img.classList.add('checked')),
+    'select_none': () => aria2Images.forEach((img) => img.classList.remove('checked')),
+    'select_flip': () => aria2Images.forEach((img) => img.classList.toggle('checked')),
     'common_submit': () => menuEventSubmit(),
     'popup_options': () => document.body.classList.toggle('extra')
 };
