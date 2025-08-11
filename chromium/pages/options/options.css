@@ -87,8 +87,8 @@ i {
     display: grid;
     grid-auto-rows: 25px;
     grid-template-columns: repeat(3, 33.33%);
-    max-height: 118px;
-    min-height: 59px;
+    max-height: 130px;
+    min-height: 52px;
     overflow-y: scroll;
 }
 
