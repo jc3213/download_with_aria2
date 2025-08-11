@@ -53,23 +53,25 @@ function optionHistoryApply(id, new_value, old_value, type, props) {
     }
 }
 
+const valueHandlers = {
+    'string': (entry) => entry.value,
+    'number': (entry) => entry.value | 0,
+    'checkbox': (entry, name) => {
+        if (entry.hasAttribute('data-css')) {
+            extension.toggle(name);
+        }
+        return entry.checked;
+    }
+}
+
 optionsPane.addEventListener('change', (event) => {
     let entry = event.target;
-    let { name, type, value, checked } = entry;
+    let { name, type } = entry;
     if (!name) {
         return;
     }
-    switch (type) {
-        case 'number': 
-            value = value | 0;
-            break;
-        case 'checkbox':
-            value = checked;
-            if (entry.hasAttribute('data-css')) {
-                extension.toggle(name);
-            }
-            break;
-    };
+    let handler = valueHandlers[type] ?? valueHandlers['string'];
+    let value = handler(entry, name);
     optionHistoryApply(name, value, updated[name], type, { entry });
 });
 
