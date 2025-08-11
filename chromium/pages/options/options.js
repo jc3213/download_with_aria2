@@ -87,7 +87,7 @@ function menuEventSave() {
 function menuEventUndo() {
     let undo = undoes.pop();
     redoes.push(undo);
-    optionHistoryLoad('undo', undo.old_value, undo);
+    optionHistoryLoad('undo', 'old_value', undo);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
     if (undoes.length === 0) {
@@ -98,50 +98,40 @@ function menuEventUndo() {
 function menuEventRedo() {
     let redo = redoes.pop();
     undoes.push(redo);
-    optionHistoryLoad('redo', redo.new_value, redo);
+    optionHistoryLoad('redo', 'new_value', redo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
     }
 }
 
-function optionHistoryLoad(action, value, {id, type, entry, add, remove, resort}) {
+const optionHandlers = {
+    'string': ({ entry, value }) => entry.value = value,
+    'checkbox': ({ entry, value }) => {
+        if (entry.hasAttribute('data-css')) {
+            extension.toggle(id);
+        }
+        entry.checked = value;
+    },
+    'matches': ({ add, remove }, action) => {
+        if (action === 'undo') {
+            add?.forEach(({rule}) => rule.remove());
+            remove?.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
+        } else {
+            add?.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
+            remove?.forEach(({rule}) => rule.remove());
+        }
+    },
+    'resort': ({ list, old_order, new_order }, action) => {
+        action === 'undo' ? list.append(...old_order) : list.append(...new_order);
+    }
+};
+
+function optionHistoryLoad(action, key, {id, type, ...props}) {
+    let value = props.value = props[key];
+    let handler = optionHandlers[type] ?? optionHandlers['string'];
+    handler(props, action);
     updated[id] = value;
-    switch (type) {
-        case 'checkbox':
-            if (entry.hasAttribute('data-css')) {
-                extension.toggle(id);
-            }
-            entry.checked = value;
-            break;
-        case 'matches':
-            self[action + 'MatchPattern'](add, remove);
-            break;
-        case 'resort':
-            self[action + 'Resort'](resort);
-            break;
-        default:
-            entry.value = value;
-            break;
-    };
-}
-
-function undoResort({list, old_order}) {
-    list.append(...old_order);
-}
-
-function redoResort({list, new_order}) {
-    list.append(...new_order);
-}
-
-function undoMatchPattern(add, remove) {
-    add?.forEach(({rule}) => rule.remove());
-    remove?.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
-}
-
-function redoMatchPattern(add, remove) {
-    add?.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
-    remove?.forEach(({rule}) => rule.remove());
 }
 
 function menuEventExport() {
@@ -262,7 +252,7 @@ function matchEventResort(id, list) {
     let old_order = [...list.children];
     let new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    optionHistoryApply(id, new_value, old_value, 'resort', { resort: {list, new_order, old_order} });
+    optionHistoryApply(id, new_value, old_value, 'resort', { list, new_order, old_order });
 }
 
 function matchEventRemove(id, list, rule) {
