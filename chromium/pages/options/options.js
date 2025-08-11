@@ -62,7 +62,7 @@ function optionsHistoryAdd(id, new_value, undo) {
 
 optionsPane.addEventListener('change', (event) => {
     let entry = event.target;
-    let {name, value, type, checked} = entry;
+    let { name, type, value, checked } = entry;
     if (!name) {
         return;
     }
@@ -72,7 +72,7 @@ optionsPane.addEventListener('change', (event) => {
             break;
         case 'checkbox':
             value = checked;
-            if (entry.dataset.css) {
+            if (entry.hasAttribute('data-css')) {
                 extension.toggle(name);
             }
             break;
@@ -115,12 +115,8 @@ function menuEventRedo() {
 function optionsHistoryLoad(action, value, {id, type, entry, add, remove, resort}) {
     updated[id] = value;
     switch (type) {
-        case 'text':
-        case 'number':
-            entry.value = value;
-            break;
         case 'checkbox':
-            if (entry.dataset.css) {
+            if (entry.hasAttribute('data-css')) {
                 extension.toggle(id);
             }
             entry.checked = value;
@@ -130,6 +126,9 @@ function optionsHistoryLoad(action, value, {id, type, entry, add, remove, resort
             break;
         case 'resort':
             self[action + 'Resort'](resort);
+            break;
+        default:
+            entry.value = value;
             break;
     };
 }
@@ -316,14 +315,15 @@ function aria2StorageSetup() {
     updated = {...aria2Storage};
     tellVer.textContent = aria2Version;
     optionsEntries.forEach((entry) => {
-        let {name, type, value, checked} = entry;
+        let { name, type } = entry;
+        let value = updated[name];
         if (type === 'checkbox') {
-            if (entry.dataset.css) {
-                updated[name] ? extension.add(name) : extension.remove(name);
+            if (entry.hasAttribute('data-css')) {
+                value ? extension.add(name) : extension.remove(name);
             }
-            entry.checked = updated[name];
+            entry.checked = value;
         } else {
-            entry.value = updated[name];
+            entry.value = value;
         }
     });
     optionsMatches.forEach(({id, list}) => {
@@ -357,3 +357,4 @@ function firefoxExclusive() {
         }
     });
 }
+
