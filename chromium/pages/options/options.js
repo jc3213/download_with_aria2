@@ -28,13 +28,6 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-function shortcutHandler(event, button) {
-    if (event.ctrlKey) {
-        event.preventDefault();
-        button.click();
-    }
-}
-
 const shortcutMap = {
     's': saveBtn,
     'y': redoBtn,

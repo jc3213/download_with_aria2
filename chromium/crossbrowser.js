@@ -147,7 +147,7 @@ function aria2DetectedImages(response) {
     return json;
 }
 
-const messagesMap = {
+const messageHandlers = {
     'system_runtime': (response) => response(aria2SystemRuntime()),
     'storage_update': (response, params) => aria2StorageChanged(params),
     'jsonrpc_update': (response, params) => aria2ConfigChanged(params),
@@ -158,7 +158,7 @@ const messagesMap = {
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
-    let message = messagesMap[action];
+    let message = messageHandlers[action];
     message?.(response, params);
 });
 

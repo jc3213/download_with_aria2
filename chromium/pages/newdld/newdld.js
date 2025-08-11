@@ -15,22 +15,22 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-function shortcutHandler(event, button) {
-    if (event.ctrlKey) {
-        event.preventDefault();
-        button.click();
-    }
+const shortcutMap = {
+    'Enter': submitBtn,
+    'Escape': close
 }
 
 document.addEventListener('keydown', (event) => {
-    switch (event.key) {
-        case 'Enter':
-            shortcutHandler(event, submitBtn);
-            break;
-        case 'Escape':
-            close();
-            break;
-    };
+    let key = shortcutMap[event.key];
+    if (!key) {
+        return;
+    }
+    if (event.ctrlKey) {
+        event.preventDefault();
+        key.click();
+    } else {
+        key();
+    }
 });
 
 document.addEventListener('click', (event) => {
@@ -85,16 +85,15 @@ async function metaFileHandler(method, file, name, ...args) {
 async function metaFileDownload(files) {
     let options = {...aria2Config, out: null, referer: null, 'user-agent': null};
     let datas = [...files].map((file) => {
-        let {name} = file;
+        let { name } = file;
         let type = name.slice(name.lastIndexOf('.') + 1);
-        switch (type) {
-            case 'torrent':
-                return metaFileHandler('aria2.addTorrent', file, name, [], options);
-            case 'metalink':
-            case 'meta4':
-                return metaFileHandler('aria2.addMetalink', file, name, options);
-        };
-    })
+        if (type === 'torrent') {
+            return metaFileHandler('aria2.addTorrent', file, name, [], options);
+        }
+        if (type === 'metalink' || type === 'meta4') {
+            return metaFileHandler('aria2.addMetalink', file, name, options);
+        }
+    });
     let params = (await Promise.all(datas)).filter((data) => data);
     chrome.runtime.sendMessage({ action: 'jsonrpc_metadata', params }, close);
 }

@@ -15,34 +15,26 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-function shortcutHandler(event, button) {
-    if (event.ctrlKey) {
-        event.preventDefault();
-        button.click();
-    }
-}
+const shortcutMap = {
+    'a': selectAll,
+    'e': selectNone,
+    'f': selectFlip,
+    's': optionsBtn,
+    'Enter': submitBtn,
+    'Escape': close
+};
 
 document.addEventListener('keydown', (event) => {
-    switch (event.key) {
-        case 'a':
-            shortcutHandler(event, selectAll);
-            break;
-        case 'e':
-            shortcutHandler(event, selectNone);
-            break;
-        case 'f':
-            shortcutHandler(event, selectFlip);
-            break;
-        case 's':
-            shortcutHandler(event, optionsBtn);
-            break;
-        case 'Enter':
-            shortcutHandler(event, submitBtn);
-            break;
-        case 'Escape':
-            close();
-            break;
-    };
+    let key = shortcutMap[event.key];
+    if (!key) {
+        return;
+    }
+    if (event.ctrlKey) {
+        event.preventDefault();
+        key.click();
+    } else {
+        key();
+    }
 });
 
 galleryPane.addEventListener('click', (event) => {
@@ -74,28 +66,17 @@ function menuEventSubmit() {
     chrome.runtime.sendMessage({action: 'jsonrpc_download', params}, close);
 }
 
+const menuEventMap = {
+    'select_all': () => aria2Images.forEach(img => img.classList.add('checked')),
+    'select_none': () => aria2Images.forEach(img => img.classList.remove('checked')),
+    'select_flip': () => aria2Images.forEach(img => img.classList.toggle('checked')),
+    'common_submit': () => menuEventSubmit(),
+    'popup_options': () => document.body.classList.toggle('extra')
+};
+
 menuPane.addEventListener('click', (event) => {
-    let button = event.target.getAttribute('i18n');
-    if (!button) {
-        return;
-    }
-    switch (button) {
-        case 'select_all':
-            aria2Images.forEach((img) => img.classList.add('checked'));
-            break;
-        case 'select_none':
-            aria2Images.forEach((img) => img.classList.remove('checked'));
-            break;
-        case 'select_flip':
-            aria2Images.forEach((img) => img.classList.toggle('checked'));
-            break;
-        case 'common_submit':
-            menuEventSubmit();
-            break;
-        case 'popup_options':
-            document.body.classList.toggle('extra');
-            break;
-    };
+    let menu = menuEventMap[event.target.getAttribute('i18n')];
+    menu?.();
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
