@@ -49,9 +49,9 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-function optionsHistoryAdd(id, new_value, undo) {
+function optionHistoryApply(id, new_value, old_value, type, props) {
     updated[id] = new_value;
-    undoes.push({id, new_value, ...undo});
+    undoes.push({ ...props, id, new_value, old_value, type });
     saveBtn.disabled = undoBtn.disabled = false;
     if (undone) {
         redoes = [];
@@ -62,7 +62,7 @@ function optionsHistoryAdd(id, new_value, undo) {
 
 optionsPane.addEventListener('change', (event) => {
     let entry = event.target;
-    let { name, type, value, checked } = entry;
+    let { name, type } = entry;
     if (!name) {
         return;
     }
@@ -76,14 +76,14 @@ optionsPane.addEventListener('change', (event) => {
                 extension.toggle(name);
             }
             break;
-    }
-    optionsHistoryAdd(name, value, {old_value: updated[name], type, entry});
+    };
+    optionHistoryApply(name, value, updated[name], type, { entry });
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
     let entry = event.target;
     let {name, value} = event.target;
-    optionsHistoryAdd(name, value, {old_value: updated[name], type: 'text', entry});
+    optionHistoryApply(name, value, updated[name], 'text', { entry });
 });
 
 function menuEventSave() {
@@ -94,7 +94,7 @@ function menuEventSave() {
 function menuEventUndo() {
     let undo = undoes.pop();
     redoes.push(undo);
-    optionsHistoryLoad('undo', undo.old_value, undo);
+    optionHistoryLoad('undo', undo.old_value, undo);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
     if (undoes.length === 0) {
@@ -105,14 +105,14 @@ function menuEventUndo() {
 function menuEventRedo() {
     let redo = redoes.pop();
     undoes.push(redo);
-    optionsHistoryLoad('redo', redo.new_value, redo);
+    optionHistoryLoad('redo', redo.new_value, redo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
     }
 }
 
-function optionsHistoryLoad(action, value, {id, type, entry, add, remove, resort}) {
+function optionHistoryLoad(action, value, {id, type, entry, add, remove, resort}) {
     updated[id] = value;
     switch (type) {
         case 'checkbox':
@@ -186,7 +186,7 @@ menuPane.addEventListener('click', (event) => {
 });
 
 jsonFile.addEventListener('change', async (event) => {
-    optionsHistoryFlush();
+    optionHistoryFlush();
     let file = await promiseFileReader(event.target.files[0]);
     updated = JSON.parse(file);
     aria2StorageUpdate();
@@ -195,7 +195,7 @@ jsonFile.addEventListener('change', async (event) => {
 });
 
 confFile.addEventListener('change', async (event) => {
-    optionsHistoryFlush();
+    optionHistoryFlush();
     let file = await promiseFileReader(event.target.files[0]);
     let params = {};
     file.split('\n').forEach((line) => {
@@ -224,7 +224,7 @@ function aria2ConfigSetup(json) {
     updated = {...aria2Config};
 }
 
-function optionsHistoryFlush() {
+function optionHistoryFlush() {
     undoes = [];
     redoes = [];
     saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
@@ -233,7 +233,7 @@ function optionsHistoryFlush() {
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
     chrome.runtime.sendMessage({action: 'system_runtime'}, ({options, version}) => {
         if (options && version) {
-            optionsHistoryFlush();
+            optionHistoryFlush();
             aria2ConfigSetup(options);
             tellVer.textContent = tellUA.textContent = version;
             extension.add('jsonrpc');
@@ -242,7 +242,7 @@ document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
 });
 
 document.getElementById('goto-options').addEventListener('click', (event) => {
-    optionsHistoryFlush();
+    optionHistoryFlush();
     aria2StorageSetup();
     extension.remove('jsonrpc');
 });
@@ -260,7 +260,7 @@ function matchEventAddNew(id, list, entry) {
     });
     entry.value = '';
     list.scrollTop = list.scrollHeight;
-    optionsHistoryAdd(id, new_value, {old_value, type: 'matches', add});
+    optionHistoryApply(id, new_value, old_value, 'matches', { add });
 }
 
 function matchEventResort(id, list) {
@@ -269,7 +269,7 @@ function matchEventResort(id, list) {
     let old_order = [...list.children];
     let new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    optionsHistoryAdd(id, new_value, {old_value, type: 'resort', resort: {list, new_order, old_order}});
+    optionHistoryApply(id, new_value, old_value, 'resort', { resort: {list, new_order, old_order} });
 }
 
 function matchEventRemove(id, list, rule) {
@@ -279,7 +279,7 @@ function matchEventRemove(id, list, rule) {
     let index = old_value.indexOf(value);
     new_value.splice(index, 1);
     rule.remove();
-    optionsHistoryAdd(id, new_value, {old_value, type: 'matches', remove: [{list, index, rule}]});
+    optionHistoryApply(id, new_value, old_value, 'matches', { remove: [{list, index, rule}] });
 }
 
 const matchEventMap = {
@@ -357,4 +357,3 @@ function firefoxExclusive() {
         }
     });
 }
-
