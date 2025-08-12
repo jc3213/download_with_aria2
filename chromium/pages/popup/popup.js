@@ -63,10 +63,11 @@ function aria2ClientSetup(scheme, jsonrpc, secret) {
     aria2RPC.onmessage = aria2ClientMessage;
 }
 
-function updateManager(tasks, {downloadSpeed, uploadSpeed}) {
-    tasks.forEach(taskElementUpdate);
+function updateManager(stats, active) {
+    let { downloadSpeed, uploadSpeed } = stats.result;
     aria2Stats.get('download').textContent = getFileSize(downloadSpeed);
     aria2Stats.get('upload').textContent = getFileSize(uploadSpeed);
+    active.result.forEach(taskElementUpdate);
 }
 
 async function aria2ClientOpened() {
@@ -75,14 +76,16 @@ async function aria2ClientOpened() {
     aria2Tasks.set('active', new Set());
     aria2Tasks.set('waiting', new Set());
     aria2Tasks.set('stopped', new Set());
-    updateManager([...active.result, ...waiting.result, ...stopped.result], stats.result);
+    updateManager(stats, active);
+    waiting.result.forEach(taskElementUpdate);
+    stopped.result.forEach(taskElementUpdate);
     verEntry.textContent = version.result.version;
     aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
 }
 
 async function aria2ClientUpdate() {
     let [stats, active] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'} );
-    updateManager(active.result, stats.result);
+    updateManager(stats, active);
 }
 
 const clientHandlers = {
