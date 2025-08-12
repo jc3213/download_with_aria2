@@ -166,8 +166,8 @@ const menuEventMap = {
 };
 
 menuPane.addEventListener('click', (event) => {
-    let menu = menuEventMap[event.target.getAttribute('i18n')];
-    menu?.();
+    let menu = event.target.getAttribute('i18n');
+    menuEventMap[menu]?.();
 });
 
 jsonFile.addEventListener('change', async (event) => {
@@ -267,7 +267,7 @@ function matchEventRemove(id, list, rule) {
     optionHistoryApply(id, new_value, old_value, 'matches', { remove: [{list, index, rule}] });
 }
 
-const matchEventMap = {
+const listEventMap = {
     'tips_match_addnew': (id, list, entry) => matchEventAddNew(id, list, entry),
     'tips_match_resort': (id, list) => matchEventResort(id, list),
     'tips_match_remove': (id, list, entry, event) => matchEventRemove(id, list, event.target.parentNode),
@@ -279,8 +279,8 @@ optionsMatches.forEach((match) => {
     let entry = menu.children[1];
     match.list = list;
     match.addEventListener('click', (event) => {
-        let action = matchEventMap[event.target.getAttribute('i18n-tips')];
-        action?.(id, list, entry, event);
+        let menu = event.target.getAttribute('i18n-tips');
+        listEventMap[menu]?.(id, list, entry, event);
     });
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {

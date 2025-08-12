@@ -64,7 +64,7 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
 }
 
 function aria2ImagesPrompt(referer, tabId) {
-    aria2Detect = {referer, tabId};
+    aria2Detect = { referer, tabId };
     openPopupWindow('/pages/images/images.html', 680);
 }
 
@@ -75,8 +75,7 @@ const ctxMenusMap = {
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    let menu = ctxMenusMap[info.menuItemId];
-    menu?.(tab, info);
+    ctxMenusMap[info.menuItemId]?.(tab, info);
 });
 
 function aria2DownloadPrompt() {
@@ -89,8 +88,7 @@ const commandsMap = {
 };
 
 chrome.commands.onCommand.addListener((command) => {
-    let handler = commandsMap[command];
-    handler?.();
+    commandsMap[command]?.();
 });
 
 function aria2SystemRuntime() {
@@ -158,8 +156,7 @@ const messageHandlers = {
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
-    let message = messageHandlers[action];
-    message?.(response, params);
+    messageHandlers[action]?.(response, params);
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {

@@ -75,8 +75,8 @@ const menuEventMap = {
 };
 
 menuPane.addEventListener('click', (event) => {
-    let menu = menuEventMap[event.target.getAttribute('i18n')];
-    menu?.();
+    let menu = event.target.getAttribute('i18n');
+    menuEventMap[menu]?.();
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
