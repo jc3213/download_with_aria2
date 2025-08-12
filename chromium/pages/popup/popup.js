@@ -269,7 +269,7 @@ const taskEventMap = {
     'tips_task_retry': taskEventRetry,
     'tips_task_pause': (task, gid) => taskPauseMap[task.status]?.(task, gid),
     'tips_task_adduri': taskEventAddUri,
-    'tips_task_copy': (task, gid, event) => navigator.clipboard.writeText(event.target.title),
+    'tips_task_copy': ($, _, event) => navigator.clipboard.writeText(event.target.title),
     'tips_proxy_server': taskEventProxy,
     'tips_task_fileid': (task) => task.apply.classList.remove('hidden')
 };
