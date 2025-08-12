@@ -25,7 +25,7 @@ function shortcutHandler(event, button) {
 const shortcutMap = {
     'Enter': (event) => shortcutHandler(event, submitBtn),
     'Tab': (event) => shortcutHandler(event, downMode),
-    'Escape': close
+    'Escape': () => close()
 };
 
 document.addEventListener('keydown', (event) => {

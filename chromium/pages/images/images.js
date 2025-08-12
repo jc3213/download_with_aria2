@@ -28,10 +28,13 @@ const shortcutMap = {
     'f': (event) => shortcutHandler(event, selectFlip),
     'q': (event) => shortcutHandler(event, optionsBtn),
     'Enter': (event) => shortcutHandler(event, submitBtn),
-    'Escape': close
+    'Escape': () => close()
 };
 
 document.addEventListener('keydown', (event) => {
+    console.log(shortcutMap[event.key]);
+    shortcutMap[event.key]()
+    return;
     shortcutMap[event.key]?.(event);
 });
 
@@ -70,7 +73,7 @@ const menuEventMap = {
     'select_all': () => aria2Images.forEach((img) => img.classList.add('checked')),
     'select_none': () => aria2Images.forEach((img) => img.classList.remove('checked')),
     'select_flip': () => aria2Images.forEach((img) => img.classList.toggle('checked')),
-    'common_submit': () => menuEventSubmit(),
+    'common_submit': menuEventSubmit,
     'popup_options': () => document.body.classList.toggle('extra')
 };
 
