@@ -193,13 +193,16 @@ async function taskEventDetail(task, gid) {
         task.apply.classList.add('hidden');
     } else {
         let { files, options } = await taskDetailHandler(gid);
+        let { checks, entries } = task;
+        let config = {};
         files.forEach(({index, selected}) => {
-            task.checks.get(index).checked = selected === 'true';
+            checks.get(index).checked = selected === 'true';
         });
-        task.entries.forEach((entry) => {
+        entries.forEach((entry) => {
             let { name } = entry;
-            entry.value = task.config[name] = options[name] ?? '';
+            entry.value = config[name] = options[name] ?? '';
         });
+        task.config = config;
     }
     task.classList.toggle('expand');
 }
@@ -208,9 +211,9 @@ async function taskEventRetry(task, gid) {
     let { files, options } = await taskDetailHandler(gid);
     let [{ path, uris }] = files;
     let url = new Set(uris.map(({ uri }) => uri));
-    let [ , dir, out ] = path.match(/(^(?:[A-Z]:)?(?:\/[^/]*))\/([^/]+)$/) ?? [];
-    options.dir = dir || null;
-    options.out = out || null;
+    let [ , dir, out ] = path?.match(/(^(?:[A-Z]:)?(?:\/[^/]*))\/([^/]+)$/) ?? [];
+    options.dir = dir ?? null;
+    options.out = out ?? null;
     let [{ result }] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
     taskElementRefresh(result);
     task.remove();
@@ -281,7 +284,6 @@ function taskElementCreate(gid, status, bittorrent, files) {
     Object.assign(task, { name, current, day, hour, minute, second, total, network, download, upload, ratio, apply, flist, ulist, newuri });
     task.entries = options.querySelectorAll('[name]');
     task.proxy = task.entries[2];
-    task.config = {};
     task.checks = new Map();
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
@@ -320,7 +322,7 @@ function taskFileElement(task, gid, index, selected, path, length) {
     let [check, label, name, size, ratio] = file.children;
     check.id = gid + '_' + index;
     check.checked = selected === 'true';
-    label.textContent = check.index = index;
+    label.textContent = index;
     label.setAttribute('for', check.id);
     name.textContent = path.slice(path.lastIndexOf('/') + 1);
     name.title = path;
