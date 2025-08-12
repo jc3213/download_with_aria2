@@ -261,7 +261,7 @@ function matchEventRemove(id, list, rule) {
     let value = rule.title;
     let old_value = updated[id];
     let new_value = [...old_value];
-    let index = old_value.indexOf(value);
+    let index = new_value.indexOf(value);
     new_value.splice(index, 1);
     rule.remove();
     optionHistoryApply(id, new_value, old_value, 'matches', { remove: [{list, index, rule}] });
