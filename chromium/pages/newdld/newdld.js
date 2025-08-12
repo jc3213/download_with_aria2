@@ -71,29 +71,29 @@ metaImport.addEventListener('change', (event) => {
     metaFileDownload(event.target.files)
 });
 
-async function metaFileHandler(method, file, name, ...args) {
+async function metafileHandler(file, method, ...params) {
     return new Promise((resolve) => {
         let reader = new FileReader();
         reader.onload = (event) => {
             let body = reader.result.slice(reader.result.indexOf(',') + 1);
-            let params = [body, ...args];
-            resolve({name, data: {method, params}});
+            params.unshift(body);
+            resolve({ name: file.name, data: { method, params } });
         };
         reader.readAsDataURL(file);
     });
 }
 
+const metafileMap = {
+    'torrent': (file, options) => metafileHandler(file, 'aria2.addTorrent', [], options),
+    'meta4': (file, options) => metafileHandler(file, 'aria2.addMetalink', options),
+    'metalink': (file, options) => metafileHandler(file, 'aria2.addMetalink', options)
+};
+
 async function metaFileDownload(files) {
     let options = {...aria2Config, out: null, referer: null, 'user-agent': null};
     let datas = [...files].map((file) => {
-        let { name } = file;
-        let type = name.slice(name.lastIndexOf('.') + 1);
-        if (type === 'torrent') {
-            return metaFileHandler('aria2.addTorrent', file, name, [], options);
-        }
-        if (type === 'metalink' || type === 'meta4') {
-            return metaFileHandler('aria2.addMetalink', file, name, options);
-        }
+        let [ type ] = file.name.match(/[^.]+$/);
+        return metafileMap[type]?.(file, options);
     });
     let params = (await Promise.all(datas)).filter((data) => data);
     chrome.runtime.sendMessage({ action: 'jsonrpc_metadata', params }, close);
