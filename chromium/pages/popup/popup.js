@@ -95,7 +95,7 @@ const clientHandlers = {
 };
 
 function aria2ClientMessage({method, params}) {
-    let { gid } = params[0];
+    let [{ gid }] = params;
     let handler = clientHandlers[method] ?? clientHandlers['fallback'];
     taskElementRefresh(gid);
     handler(gid);
