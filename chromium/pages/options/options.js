@@ -257,20 +257,21 @@ function matchEventResort(id, list) {
     optionHistoryApply(id, new_value, old_value, 'resort', { list, new_order, old_order });
 }
 
-function matchEventRemove(id, list, rule) {
+function matchEventRemove(id, list, _, event) {
+    let rule = event.target.parentNode;
     let value = rule.title;
     let old_value = updated[id];
     let new_value = [...old_value];
     let index = new_value.indexOf(value);
     new_value.splice(index, 1);
     rule.remove();
-    optionHistoryApply(id, new_value, old_value, 'matches', { remove: [{list, index, rule}] });
+    optionHistoryApply(id, new_value, old_value, 'matches', { remove: [{ list, index, rule }] });
 }
 
 const listEventMap = {
-    'tips_match_addnew': (id, list, entry) => matchEventAddNew(id, list, entry),
-    'tips_match_resort': (id, list) => matchEventResort(id, list),
-    'tips_match_remove': (id, list, entry, event) => matchEventRemove(id, list, event.target.parentNode),
+    'tips_match_addnew': matchEventAddNew,
+    'tips_match_resort': matchEventResort,
+    'tips_match_remove': matchEventRemove,
 };
 
 optionsMatches.forEach((match) => {
