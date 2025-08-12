@@ -84,7 +84,7 @@ function aria2DownloadPrompt() {
 
 const commandMap = {
     'open_options': () => chrome.runtime.openOptionsPage(),
-    'open_new_download': () => aria2DownloadPrompt()
+    'open_new_download': aria2DownloadPrompt
 };
 
 chrome.commands.onCommand.addListener((command) => {
@@ -152,7 +152,7 @@ const msgHandlers = {
     'jsonrpc_download': (response, params) => aria2DownloadUrls(params),
     'jsonrpc_metadata': (response, params) => aria2DownloadFiles(params),
     'open_all_images': (response) => response(aria2DetectedImages()),
-    'open_new_download': (response) => aria2DownloadPrompt()
+    'open_new_download': aria2DownloadPrompt
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
@@ -276,7 +276,7 @@ function aria2ClientClosed() {
 
 const clientHandlers = {
     'aria2.onDownloadStart': (gid) => aria2Active.add(gid),
-    'aria2.onBtDownloadComplete': (gid) => null,
+    'aria2.onBtDownloadComplete': () => {},
     'aria2.onDownloadComplete': (gid) => {
         aria2WhenComplete(gid);
         aria2Active.delete(gid);
