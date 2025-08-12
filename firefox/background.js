@@ -1,8 +1,4 @@
-let aria2WebRequest = {
-    'content-disposition': true,
-    'content-type': true,
-    'content-length': true
-};
+let aria2WebRequest = new Set([ 'content-disposition', 'content-type', 'content-length' ]);
 
 function aria2CaptureSwitch() {
     if (!aria2Storage['capture_enabled']) {
@@ -38,11 +34,11 @@ async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeade
     let result = {};
     responseHeaders.forEach(({name, value}) => {
         name = name.toLowerCase();
-        if (aria2WebRequest[name]) {
+        if (aria2WebRequest.has(name)) {
             result[name] = value;
         }
     });
-    if (!result['content-type'].startsWith('application')) {
+    if (!result['content-type']?.startsWith('application')) {
         return;
     }
     let out = decodeFileName(result['content-disposition']);
