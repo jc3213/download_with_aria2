@@ -32,7 +32,7 @@ const shortcutMap = {
 };
 
 document.addEventListener('keydown', (event) => {
-    hortcutMap[event.key]?.(event);
+    shortcutMap[event.key]?.(event);
 });
 
 galleryPane.addEventListener('click', (event) => {
