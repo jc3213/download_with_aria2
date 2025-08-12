@@ -32,9 +32,6 @@ const shortcutMap = {
 };
 
 document.addEventListener('keydown', (event) => {
-    console.log(shortcutMap[event.key]);
-    shortcutMap[event.key]()
-    return;
     shortcutMap[event.key]?.(event);
 });
 
