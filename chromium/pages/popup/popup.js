@@ -156,7 +156,6 @@ function taskElementUpdate({gid, status, files, bittorrent, completedLength, tot
     task.ratio.style.width = percent + '%';
     files.forEach(({index, length, path, completedLength}) => {
         let { name, ratio } = task[index];
-        task.path ||= path;
         name.textContent ||= path?.slice(path.lastIndexOf('/') + 1);
         ratio.textContent = (completedLength / length * 10000 | 0) / 100;
     });
@@ -179,37 +178,35 @@ const taskRemoveMap = {
     'error': (task, gid) => taskRemoveHandler(task, gid, 'aria2.removeDownloadResult', 'stopped'),
 };
 
+async function taskDetailHandler(gid) {
+    let [ { result: files }, { result: options }] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
+    options['min-split-size'] = getFileSize(options['min-split-size']);
+    options['max-download-limit'] = getFileSize(options['max-download-limit']);
+    options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
+    return { files, options };
+}
+
 async function taskEventDetail(task, gid) {
-    if (task.opened) {
+    if (task.classList.contains('expand')) {
         task.apply.classList.add('hidden');
-        task.opened = false;
     } else {
-        task.options ??= await taskDetailOptions(gid);
+        let { files, options } = await taskDetailHandler(gid);
+        files.forEach(({index, selected}) => {
+            task.checks.get(index).checked = selected === 'true';
+        });
         task.entries.forEach((entry) => {
             let { name } = entry;
-            entry.value = task.config[name] = task.options[name] ?? '';
+            entry.value = task.config[name] = options[name] ?? '';
         });
-        task.checks.forEach((value, check) => {
-            check.checked = value;
-        });
-        task.opened = true;
     }
     task.classList.toggle('expand');
 }
 
-async function taskDetailOptions(gid) {
-    let [{ result }] = await aria2RPC.call( {method: 'aria2.getOption', params: [gid]} );
-    result['min-split-size'] = getFileSize(result['min-split-size']);
-    result['max-download-limit'] = getFileSize(result['max-download-limit']);
-    result['max-upload-limit'] = getFileSize(result['max-upload-limit']);
-    return result;
-}
-
 async function taskEventRetry(task, gid) {
-    let { uris, path, options } = task;
-    let url = [...uris];
+    let { files, options } = await taskDetailHandler(gid);
+    let [{ path, uris }] = files;
+    let url = new Set(uris.map(({ uri }) => uri));
     let [ , dir, out ] = path.match(/(^(?:[A-Z]:)?(?:\/[^/]*))\/([^/]+)$/) ?? [];
-    options ??= await taskDetailOptions(gid);
     options.dir = dir || null;
     options.out = out || null;
     let [{ result }] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
@@ -232,14 +229,16 @@ const taskPauseMap = {
 };
 
 async function taskEventApply(task, gid) {
-    let { files, config } = task;
-    config['select-file'] = [...files];
+    let { checks, config } = task;
+    let selected = [];
+    checks.forEach((check, index) => {
+        if (check.checked) {
+            selected.push(index);
+        }
+    });
+    config['select-file'] = selected;
     aria2Focus.add(gid);
     await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, config] });
-    task.options = config;
-    task.checks.forEach((value, check) => {
-        check.checked = files.has(check.index);
-    });
     task.apply.classList.add('hidden');
 }
 
@@ -253,18 +252,8 @@ async function taskEventAddUri(task, gid) {
     task.newuri.value = '';
 }
 
-function taskEventProxy(task, gid) {
+function taskEventProxy(task) {
     task.config['all-proxy'] = task.proxy.value = aria2Proxy;
-    task.apply.classList.remove('hidden');
-}
-
-function taskEventFiles(task, gid, event) {
-    let index = event.target.textContent;
-    if (task.files.has(index)) {
-        task.files.delete(index);
-    } else {
-       task.files.add(index);
-    }
     task.apply.classList.remove('hidden');
 }
 
@@ -277,7 +266,7 @@ const taskEventMap = {
     'tips_task_adduri': taskEventAddUri,
     'tips_task_copy': (task, gid, event) => navigator.clipboard.writeText(event.target.title),
     'tips_proxy_server': taskEventProxy,
-    'tips_task_fileid': taskEventFiles
+    'tips_task_fileid': (task) => task.apply.classList.remove('hidden')
 };
 
 function taskElementCreate(gid, status, bittorrent, files) {
@@ -291,9 +280,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.entries = options.querySelectorAll('[name]');
     task.proxy = task.entries[2];
     task.config = {};
-    task.files = new Set();
     task.checks = new Map();
-    task.uris = new Set()
     task.id = gid;
     task.classList.add(bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', (event) => {
@@ -329,26 +316,21 @@ function taskElementCreate(gid, status, bittorrent, files) {
 function taskFileElement(task, gid, index, selected, path, length) {
     let file = fileLET.cloneNode(true);
     let [check, label, name, size, ratio] = file.children;
-    let value = selected === 'true';
     check.id = gid + '_' + index;
-    check.checked = value;
+    check.checked = selected === 'true';
     label.textContent = check.index = index;
     label.setAttribute('for', check.id);
     name.textContent = path.slice(path.lastIndexOf('/') + 1);
     name.title = path;
     size.textContent = getFileSize(length);
-    task.checks.set(check, value);
+    task.checks.set(index, check);
     task.flist.appendChild(file);
-    if (value) {
-        task.files.add(index);
-    }
     return { name, ratio };
 }
 
 function taskUriElement(task, uri) {
     let url = uriLET.cloneNode(true);
     url.title = url.textContent = uri;
-    task.uris.add(uri);
     task.ulist.appendChild(url);
     return true;
 }
