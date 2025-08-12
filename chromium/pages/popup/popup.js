@@ -75,7 +75,6 @@ async function aria2ClientOpened() {
     aria2Tasks.set('active', new Set());
     aria2Tasks.set('waiting', new Set());
     aria2Tasks.set('stopped', new Set());
-    [...active.result, ...waiting.result, ...stopped.result].forEach(taskElementUpdate);
     updateManager([...active.result, ...waiting.result, ...stopped.result], stats.result);
     verEntry.textContent = version.result.version;
     aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
