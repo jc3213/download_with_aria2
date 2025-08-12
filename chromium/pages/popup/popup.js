@@ -166,9 +166,9 @@ function taskElementUpdate({gid, status, files, bittorrent, completedLength, tot
 
 async function taskRemoveHandler(task, gid, method, group) {
     await aria2RPC.call({method, params: [gid]});
-    task.remove();
     taskRemoved(gid, group);
     aria2Tasks.delete(gid);
+    task.remove();
 }
 
 const taskRemoveMap = {
@@ -210,15 +210,17 @@ async function taskEventDetail(task, gid) {
 async function taskEventRetry(task, gid) {
     let { files, options } = await taskDetailHandler(gid);
     let [{ path, uris }] = files;
-    let url = new Set(uris.map(({ uri }) => uri));
-    let [ , dir, out ] = path?.match(/(^(?:[A-Z]:)?(?:\/[^/]*))\/([^/]+)$/) ?? [];
-    options.dir = dir ?? null;
-    options.out = out ?? null;
+    let url = uris.map(({ uri }) => uri);
+    let match = path?.match(/^((?:[A-Z]:)?(?:\/[^/]+)*)\/([^/]+)$/);
+    if (match) {
+        options['dir'] = match[1];
+        options['out'] = match[2];
+    }
     let [{ result }] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
     taskElementRefresh(result);
-    task.remove();
-    aria2Tasks.delete(gid);
     taskRemoved(gid, 'stopped');
+    aria2Tasks.delete(gid);
+    task.remove();
 }
 
 async function taskPauseHandler(task, gid, method, status) {
