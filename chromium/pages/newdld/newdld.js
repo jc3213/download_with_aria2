@@ -91,7 +91,7 @@ const metafileMap = {
 
 async function metaFileDownload(files) {
     let options = aria2Config;
-    options['out'] = options['referer'] options['user-agent'] = null};
+    options['out'] = options['referer'] = options['user-agent'] = null;
     let datas = [...files].map((file) => {
         let [ type ] = file.name.match(/[^.]+$/);
         return metafileMap[type]?.(file, options);

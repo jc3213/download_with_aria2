@@ -390,22 +390,20 @@ function showNotification(title, message) {
     });
 }
 
-function openPopupWindow(url, height) {
+function openPopupWindow(url, winSize) {
     chrome.windows.getAll({windowTypes: ['normal']}, (windows) => {
-        let window = windows[0];
-        let where = {
-            top: (window.top + window.height - height) / 2 | 0,
-            left: (window.left + window.width - 710) / 2 | 0,
-            height,
-            width: 698
-        };
+        let [{ top, left, height, width }] = windows;
+        top = (top + height - winSize) / 2 | 0;
+        left = (left + width - 710) / 2 | 0;
+        height = winSize;
+        width = 698;
         chrome.tabs.get(aria2Popup, (tab) => {
             if (chrome.runtime.lastError) {
-                chrome.windows.create({ url, type: 'popup', ...where }, (popup) => {
+                chrome.windows.create({ url, type: 'popup', left, width, top, height }, (popup) => {
                     aria2Popup = popup.tabs[0].id;
                 });
             } else {
-                chrome.windows.update(tab.windowId, { focused: true, ...where });
+                chrome.windows.update(tab.windowId, { focused: true, left, width, top, height });
                 chrome.tabs.update(aria2Popup, { url: tab.url.endsWith(url) ? null : url, active: true });
             }
         });
