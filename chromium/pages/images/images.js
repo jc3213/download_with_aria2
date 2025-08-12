@@ -51,16 +51,18 @@ galleryPane.addEventListener('mouseover', (event) => {
 
 galleryPane.addEventListener('load', (event) => {
     let img = event.target;
-    let {alt, naturalHeight, naturalWidth, src} = img;
-    let [, name, type = '.jpg'] = src.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
+    let { alt, naturalHeight, naturalWidth, src } = img;
+    let [ , name, type = '.jpg' ] = src.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
     img.alt = name + '_' + alt + '_' + naturalWidth + 'x' + naturalHeight + type;
 }, true);
 
 function menuEventSubmit() {
     let params = [];
+    let options = aria2Config;
     aria2Images.forEach(({ src, alt, header, classList }) => {
         if (classList.contains('checked')) {
-            params.push({ url: src, options: {...aria2Config, out: alt} });
+            options['out'] = alt;
+            params.push({ url: src, options });
         }
     });
     chrome.runtime.sendMessage({action: 'jsonrpc_download', params}, close);
@@ -103,10 +105,11 @@ chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, imag
 });
 
 function aria2HeadersMV2(value, tabId, request) {
+    request.unshift('blocking');
     chrome.webRequest.onBeforeSendHeaders.addListener(({requestHeaders}) => {
         requestHeaders.push({ name: 'Referer', value });;
         return {requestHeaders};
-    }, {urls: ['http://*/*', 'https://*/*'], tabId, types: ['image']}, ['blocking', ...request]);
+    }, {urls: ['http://*/*', 'https://*/*'], tabId, types: ['image']}, request);
 }
 
 function aria2HeadersMV3(value, tabId) {
