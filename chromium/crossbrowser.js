@@ -68,27 +68,27 @@ function aria2ImagesPrompt(referer, tabId) {
     openPopupWindow('/pages/images/images.html', 680);
 }
 
-const ctxMenusMap = {
+const ctxMenuMap = {
     'aria2c_this_url': ({ id, url }, { linkUrl }) => aria2DownloadHandler(linkUrl, url, {}, id),
     'aria2c_this_image': ({ id, url }, { srcUrl }) => aria2DownloadHandler(srcUrl, url, {}, id),
     'aria2c_all_images': ({ id, url }) => aria2ImagesPrompt(url, id)
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    ctxMenusMap[info.menuItemId]?.(tab, info);
+    ctxMenuMap[info.menuItemId]?.(tab, info);
 });
 
 function aria2DownloadPrompt() {
     openPopupWindow('/pages/newdld/newdld.html', 462);
 }
 
-const commandsMap = {
+const commandMap = {
     'open_options': () => chrome.runtime.openOptionsPage(),
     'open_new_download': () => aria2DownloadPrompt()
 };
 
 chrome.commands.onCommand.addListener((command) => {
-    commandsMap[command]?.();
+    commandMap[command]?.();
 });
 
 function aria2SystemRuntime() {
@@ -145,7 +145,7 @@ function aria2DetectedImages(response) {
     return json;
 }
 
-const messageHandlers = {
+const msgHandlers = {
     'system_runtime': (response) => response(aria2SystemRuntime()),
     'storage_update': (response, params) => aria2StorageChanged(params),
     'jsonrpc_update': (response, params) => aria2ConfigChanged(params),
@@ -156,14 +156,14 @@ const messageHandlers = {
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
-    messageHandlers[action]?.(response, params);
+    msgHandlers[action]?.(response, params);
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
 });
 
-const tabsHandlers = {
+const tabHandlers = {
     'loading': (tabId, url) => {
         if (url?.startsWith('http') && !aria2Tabs.has(tabId)) {
             aria2Tabs.add(tabId);
@@ -176,7 +176,7 @@ const tabsHandlers = {
 };
 
 chrome.tabs.onUpdated.addListener((tabId, { status }, { url }) => {
-    tabsHandlers[status]?.(tabId, url);
+    tabHandlers[status]?.(tabId, url);
 });
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
@@ -276,7 +276,7 @@ function aria2ClientClosed() {
     chrome.action.setBadgeText({text: 'E'});
 }
 
-const clientEventMap = {
+const clientHandlers = {
     'aria2.onDownloadStart': (gid) => aria2Active.add(gid),
     'aria2.onBtDownloadComplete': (gid) => null,
     'aria2.onDownloadComplete': (gid) => {
@@ -288,7 +288,7 @@ const clientEventMap = {
 
 function aria2ClientMessage({method, params}) {
     let { gid } = params[0];
-    let handler = clientEventMap[method] ?? clientEventMap['fallback'];
+    let handler = clientHandlers[method] ?? clientHandlers['fallback'];
     handler(gid);
     setIndicator();
 }

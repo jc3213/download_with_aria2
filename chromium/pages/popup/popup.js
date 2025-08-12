@@ -86,7 +86,7 @@ async function aria2ClientUpdate() {
     updateManager(active.result, stats.result);
 }
 
-const clientEventMap = {
+const clientHandlers = {
     'aria2.onDownloadStart': (gid) => taskRemoved(gid, 'waiting'),
     'aria2.onBtDownloadComplete': (gid) => null,
     'fallback': (gid) => taskRemoved(gid, 'active')
@@ -94,7 +94,7 @@ const clientEventMap = {
 
 function aria2ClientMessage({method, params}) {
     let { gid } = params[0];
-    let handler = clientEventMap[method] ?? clientEventMap['fallback'];
+    let handler = clientHandlers[method] ?? clientHandlers['fallback'];
     taskElementRefresh(gid);
     handler(gid);
 }
