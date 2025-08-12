@@ -90,7 +90,7 @@ async function aria2ClientUpdate() {
 
 const clientHandlers = {
     'aria2.onDownloadStart': (gid) => taskRemoved(gid, 'waiting'),
-    'aria2.onBtDownloadComplete': (gid) => null,
+    'aria2.onBtDownloadComplete': () => {},
     'fallback': (gid) => taskRemoved(gid, 'active')
 };
 
