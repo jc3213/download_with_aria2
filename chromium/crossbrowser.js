@@ -135,7 +135,7 @@ async function aria2DownloadFiles(files) {
 }
 
 function aria2DetectedImages(response) {
-    let {tabId, referer} = aria2Detect;
+    let { tabId, referer } = aria2Detect;
     let tab = aria2Inspect[tabId];
     let json = aria2SystemRuntime();
     json.referer = referer;
@@ -170,9 +170,7 @@ const tabHandlers = {
             aria2Inspect[tabId] = { images: new Map(), url };
         }
     },
-    'complete': (tabId) => {
-        aria2Tabs.delete(tabId);
-    }
+    'complete': (tabId) => aria2Tabs.delete(tabId)
 };
 
 chrome.tabs.onUpdated.addListener((tabId, { status }, { url }) => {
