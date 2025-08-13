@@ -97,7 +97,6 @@ async function metaFileDownload(files) {
         let [ type ] = file.name.match(/[^.]+$/);
         return metafileMap[type]?.(file, options);
     });
-    let result = await Promise.all(datas);
     let params = (await Promise.all(datas)).filter((data) => data);
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 }
