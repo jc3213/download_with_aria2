@@ -55,12 +55,8 @@ submitBtn.addEventListener('click', (event) => {
     if (urls.length > 1) {
         delete aria2Config['out'];
     }
-    let notification = [];
-    let session = urls.map((url) => {
-        notification.push(url);
-        return { method: 'aria2.addUri', params: [[url], aria2Config] };
-    });
-    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params: { session, notification }}, close);
+    let params = urls.map((url) => ({ method: 'aria2.addUri', params: [[url], aria2Config] }));
+    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 });
 
 metaPane.addEventListener('dragover', (event) => {
@@ -82,7 +78,7 @@ async function metafileHandler(file, method, ...params) {
         reader.onload = (event) => {
             let body = reader.result.slice(reader.result.indexOf(',') + 1);
             params.unshift(body);
-            resolve({ name: file.name, method, params });
+            resolve({ method, params });
         };
         reader.readAsDataURL(file);
     });
@@ -102,19 +98,8 @@ async function metaFileDownload(files) {
         return metafileMap[type]?.(file, options);
     });
     let result = await Promise.all(datas);
-    let session = [];
-    let notification = [];
-    result.forEach((data) => {
-        if (!data) {
-            return;
-        }
-        let { name, method, params } = data;
-        notification.push(name);
-        session.push({ method, params });
-    });
-    if (session.length !== 0) {
-        chrome.runtime.sendMessage({ action: 'jsonrpc_download', params: { session, notification }}, close);
-    }
+    let params = (await Promise.all(datas)).filter((data) => data);
+    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params: { session, notification }}, close);
 }
 
 jsonrpcPane.addEventListener('change', (event) => {

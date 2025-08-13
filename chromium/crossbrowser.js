@@ -59,7 +59,7 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
         }
         options['header'] = headers.map((header) => header.name + ': ' + header.value);
     }
-    await aria2RPC.call({method: 'aria2.addUri', params: [[url], options]});
+    await aria2RPC.call({ method: 'aria2.addUri', params: [[url], options] });
     aria2WhenStart(url);
 }
 
@@ -110,10 +110,9 @@ function aria2ConfigChanged(response, options) {
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
-async function aria2RemoteDownload(response, { session, notification }) {
-    let result = await aria2RPC.call(...session);
+async function aria2RemoteDownload(response, sessions, sender) {
+    let result = await aria2RPC.call(...sessions);
     response(result);
-    aria2WhenStart(notification.join('\n'));
 }
 
 function aria2DetectedImages(response) {
@@ -137,7 +136,7 @@ const msgHandlers = {
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
-    msgHandlers[action]?.(response, params);
+    msgHandlers[action]?.(response, params, sender);
     return true;
 });
 
