@@ -52,7 +52,7 @@ submitBtn.addEventListener('click', (event) => {
     if (urls.length !== 1) {
         delete aria2Config['out'];
     }
-    let params = urls.map((url) => ({ method: 'aria2.addUri', params: [[url], aria2Config] }));
+    let params = urls.map((url) => ({ notify: url, session: { method: 'aria2.addUri', params: [[url], aria2Config] } }));
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 });
 
@@ -75,7 +75,7 @@ async function metafileHandler(file, method, ...params) {
         reader.onload = (event) => {
             let body = reader.result.slice(reader.result.indexOf(',') + 1);
             params.unshift(body);
-            resolve({ method, params });
+            resolve({ notify: file.name, session: { method, params } });
         };
         reader.readAsDataURL(file);
     });
