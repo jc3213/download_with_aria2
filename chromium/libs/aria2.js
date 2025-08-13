@@ -84,7 +84,7 @@ class Aria2 {
     }
     #send (...args) {
         return new Promise((resolve, reject) => {
-            let id = String(Date.now());
+            let id = crypto.randomUUID();
             this[id] = resolve;
             this.#ws.onerror = reject;
             this.#ws.send(this.#json(id, args));
