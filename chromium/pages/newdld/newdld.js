@@ -57,7 +57,7 @@ submitBtn.addEventListener('click', (event) => {
     }
     let notification = [];
     let session = urls.map((url) => {
-        notification.push(url);;
+        notification.push(url);
         return { method: 'aria2.addUri', params: [[url], aria2Config] };
     });
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params: { session, notification }}, close);

@@ -110,14 +110,10 @@ function aria2ConfigChanged(response, options) {
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
-async function aria2RemoteCall(response, params) {
-    let result = await aria2RPC.call(...params);
-    response(result);
-}
-
 async function aria2RemoteDownload(response, { session, notification }) {
-    await aria2RemoteCall(response, session);
-    await aria2WhenStart(notification.join('\n'));
+    let result = await aria2RPC.call(...session);
+    response(result);
+    aria2WhenStart(notification.join('\n'));
 }
 
 function aria2DetectedImages(response) {
