@@ -262,7 +262,7 @@ async function aria2ClientOpened() {
 function aria2ClientClosed() {
     aria2Active = aria2Config = aria2Version = null;
     chrome.action.setBadgeBackgroundColor({color: '#D33A26'});
-    chrome.action.setBadgeText({name:  'E'});
+    chrome.action.setBadgeText({ text: 'E' });
 }
 
 const clientHandlers = {
@@ -367,7 +367,7 @@ function setContextMenu(id, i18n, contexts, parentId) {
 
 function setIndicator() {
     let number = aria2Active.size;
-    chrome.action.setBadgeText({name:  !number ? '' : String(number)});
+    chrome.action.setBadgeText({ text: !number ? '' : String(number) });
 }
 
 function showNotification(title, message) {
