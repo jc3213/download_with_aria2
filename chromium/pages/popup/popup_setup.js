@@ -19,7 +19,7 @@ optionsBtn.addEventListener('click', (event) => {
 });
 
 chrome.runtime.onMessage.addListener(({action, params}) => {
-    if (action !== 'storage_update') {
+    if (action !== 'options_storage') {
         return;
     }
     if (!params['manager_newtab']) {
