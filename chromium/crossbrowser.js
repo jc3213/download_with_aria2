@@ -110,8 +110,18 @@ function aria2ConfigChanged(response, options) {
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
-async function aria2RemoteDownload(response, sessions, sender) {
+async function aria2RemoteDownload(response, params) {
+    if (params.length === 0) {
+        return;
+    }
+    let sessions = [];
+    let messages = [];
+    params.forEach(({ session, message }) => {
+        sessions.push(session);
+        messages.push(message);
+    });
     let result = await aria2RPC.call(...sessions);
+    await aria2WhenStart(message.join(', '));
     response(result);
 }
 
@@ -136,7 +146,7 @@ const msgHandlers = {
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
-    msgHandlers[action]?.(response, params, sender);
+    msgHandlers[action]?.(response, params);
     return true;
 });
 
