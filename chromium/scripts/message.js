@@ -1,16 +1,15 @@
 const messageHandlers = {
-    'aria2c_jsonrpc_echo': () => {
-        let {name, version} = chrome.runtime.getManifest();
-        window.postMessage({ aria2c: 'aria2c_response_echo', name, version });
+    'aria2c_status': (id) => {
+        let result = chrome.runtime.getManifest();
+        window.postMessage({ aria2c: 'aria2c_response', id, result });
     },
-    'aria2c_jsonrpc_call': (arg) => {
-        let params = ( Array.isArray(arg) ? arg : [arg] ).filter( (entry) => entry?.url );
-        chrome.runtime.sendMessage({ action: 'download_urls', params });
+    'aria2c_download': (id, args) => {
+        let params = ( Array.isArray(args) ? args : [args] ).filter( (arg) => arg?.url );
+        chrome.runtime.sendMessage({ action: 'jsonrpc_download', params });
     }
 };
 
 window.addEventListener('message', (event) => {
-    let {aria2c, params} = event.data;
-    let handler = messageHandlers[aria2c];
-    handler?.(params);
+    let {aria2c, id, params} = event.data;
+    messageHandlers[aria2c]?.(id, params);
 });
