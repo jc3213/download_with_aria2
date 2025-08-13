@@ -99,7 +99,7 @@ async function metaFileDownload(files) {
     });
     let result = await Promise.all(datas);
     let params = (await Promise.all(datas)).filter((data) => data);
-    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params: { session, notification }}, close);
+    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 }
 
 jsonrpcPane.addEventListener('change', (event) => {
