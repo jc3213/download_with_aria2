@@ -114,14 +114,14 @@ async function aria2RemoteDownload(response, params) {
     if (params.length === 0) {
         return;
     }
-    let sessions = [];
-    let messages = [];
-    params.forEach(({ session, message }) => {
-        sessions.push(session);
-        messages.push(message);
+    let tasks = [];
+    let names = [];
+    params.forEach(({ task, name }) => {
+        tasks.push(task);
+        names.push(name);
     });
-    let result = await aria2RPC.call(...sessions);
-    await aria2WhenStart(message.join(', '));
+    let result = await aria2RPC.call(...tasks);
+    await aria2WhenStart(names.join(', '));
     response(result);
 }
 
@@ -262,7 +262,7 @@ async function aria2ClientOpened() {
 function aria2ClientClosed() {
     aria2Active = aria2Config = aria2Version = null;
     chrome.action.setBadgeBackgroundColor({color: '#D33A26'});
-    chrome.action.setBadgeText({text: 'E'});
+    chrome.action.setBadgeText({name:  'E'});
 }
 
 const clientHandlers = {
@@ -367,7 +367,7 @@ function setContextMenu(id, i18n, contexts, parentId) {
 
 function setIndicator() {
     let number = aria2Active.size;
-    chrome.action.setBadgeText({text: !number ? '' : String(number)});
+    chrome.action.setBadgeText({name:  !number ? '' : String(number)});
 }
 
 function showNotification(title, message) {
