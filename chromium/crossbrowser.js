@@ -39,7 +39,7 @@ let aria2Manager = 0;
 let aria2Popup = 0;
 let aria2Tabs = new Set();
 let aria2Inspect = {};
-let aria2Detect = {};
+let aria2Detect;
 let aria2Manifest = chrome.runtime.getManifest();
 let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
@@ -110,24 +110,14 @@ function aria2ConfigChanged(response, options) {
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
-function aria2DownloadUrls(response, urls) {
-    let message = '';
-    let session = urls.map(({url, options = {}}) => {
-        message += url + '\n';
-        return { method: 'aria2.addUri', params: [ [url], options ] };
-    });
-    aria2RPC.call(...session);
-    aria2WhenStart(message);
+async function aria2RemoteCall(response, params) {
+    let result = await aria2RPC.call(...params);
+    response(result);
 }
 
-async function aria2DownloadFiles(response, files) {
-    let message = '';
-    let session = files.map(({name, data}) => {
-        message += name + '\n';
-        return data;
-    });
-    aria2RPC.call(...session);
-    aria2WhenStart(message);
+async function aria2RemoteDownload(response, { session, notification }) {
+    await aria2RemoteCall(response, session);
+    await aria2WhenStart(notification.join('\n'));
 }
 
 function aria2DetectedImages(response) {
@@ -143,16 +133,16 @@ function aria2DetectedImages(response) {
 
 const msgHandlers = {
     'system_runtime': (response) => response(aria2SystemRuntime()),
-    'storage_update': aria2StorageChanged,
-    'jsonrpc_update': aria2ConfigChanged,
-    'download_urls': aria2DownloadUrls,
-    'download_files': aria2DownloadFiles,
+    'jsonrpc_download': aria2RemoteDownload,
+    'options_storage': aria2StorageChanged,
+    'options_jsonrpc': aria2ConfigChanged,
     'open_all_images': (response) => response(aria2DetectedImages()),
     'open_new_download': () => openPopupWindow('/pages/newdld/newdld.html', 462)
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
     msgHandlers[action]?.(response, params);
+    return true;
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {

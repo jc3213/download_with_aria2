@@ -48,12 +48,19 @@ downMode.addEventListener('mousedown', (event) => {
 });
 
 submitBtn.addEventListener('click', (event) => {
-    let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
-    if (urls.length !== 1) {
+    let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
+    if (!urls) {
+        return close();
+    }
+    if (urls.length > 1) {
         delete aria2Config['out'];
     }
-    let params = urls.map((url) => ({ url, options: aria2Config }));
-    chrome.runtime.sendMessage({ action: 'download_urls', params }, close);
+    let notification = [];
+    let session = urls.map((url) => {
+        notification.push(url);;
+        return { method: 'aria2.addUri', params: [[url], aria2Config] };
+    });
+    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params: { session, notification }}, close);
 });
 
 metaPane.addEventListener('dragover', (event) => {
@@ -75,7 +82,7 @@ async function metafileHandler(file, method, ...params) {
         reader.onload = (event) => {
             let body = reader.result.slice(reader.result.indexOf(',') + 1);
             params.unshift(body);
-            resolve({ name: file.name, data: { method, params } });
+            resolve({ name: file.name, method, params });
         };
         reader.readAsDataURL(file);
     });
@@ -94,8 +101,20 @@ async function metaFileDownload(files) {
         let [ type ] = file.name.match(/[^.]+$/);
         return metafileMap[type]?.(file, options);
     });
-    let params = (await Promise.all(datas)).filter((data) => data);
-    chrome.runtime.sendMessage({ action: 'download_files', params }, close);
+    let result = await Promise.all(datas);
+    let session = [];
+    let notification = [];
+    result.forEach((data) => {
+        if (!data) {
+            return;
+        }
+        let { name, method, params } = data;
+        notification.push(name);
+        session.push({ method, params });
+    });
+    if (session.length !== 0) {
+        chrome.runtime.sendMessage({ action: 'jsonrpc_download', params: { session, notification }}, close);
+    }
 }
 
 jsonrpcPane.addEventListener('change', (event) => {

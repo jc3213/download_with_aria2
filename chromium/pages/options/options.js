@@ -83,7 +83,7 @@ jsonrpcPane.addEventListener('change', (event) => {
 
 function menuEventSave() {
     saveBtn.disabled = true;
-    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'jsonrpc_update', params: updated}) : aria2StorageUpdate();
+    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({action: 'options_jsonrpc', params: updated}) : aria2StorageUpdate();
 }
 
 function menuEventUndo() {
@@ -189,7 +189,7 @@ confFile.addEventListener('change', async (event) => {
             params[key] = value;
         }
     });
-    chrome.runtime.sendMessage({action: 'jsonrpc_update', params});
+    chrome.runtime.sendMessage({action: 'options_jsonrpc', params});
     aria2ConfigSetup(params);
     event.target.value = '';
 });
@@ -320,7 +320,7 @@ function aria2StorageSetup() {
 
 function aria2StorageUpdate() {
     aria2Storage = {...updated};
-    chrome.runtime.sendMessage({action: 'storage_update', params: updated});
+    chrome.runtime.sendMessage({action: 'options_storage', params: updated});
 }
 
 chrome.runtime.sendMessage({action: 'system_runtime'}, ({storage, manifest}) => {
