@@ -1,5 +1,5 @@
 const messageHandlers = {
-    'aria2c_status': (id) => {
+    'aria2c_manifest': (id) => {
         let result = chrome.runtime.getManifest();
         window.postMessage({ aria2c: 'aria2c_response', id, result });
     },
