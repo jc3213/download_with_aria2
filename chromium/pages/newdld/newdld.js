@@ -48,11 +48,8 @@ downMode.addEventListener('mousedown', (event) => {
 });
 
 submitBtn.addEventListener('click', (event) => {
-    let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    if (!urls) {
-        return close();
-    }
-    if (urls.length > 1) {
+    let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
+    if (urls.length !== 1) {
         delete aria2Config['out'];
     }
     let params = urls.map((url) => ({ method: 'aria2.addUri', params: [[url], aria2Config] }));
