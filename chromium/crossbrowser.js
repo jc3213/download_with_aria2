@@ -78,13 +78,9 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     ctxMenuMap[info.menuItemId]?.(tab, info);
 });
 
-function aria2DownloadPrompt() {
-    openPopupWindow('/pages/newdld/newdld.html', 462);
-}
-
 const commandMap = {
     'open_options': () => chrome.runtime.openOptionsPage(),
-    'open_new_download': aria2DownloadPrompt
+    'open_new_download': () => openPopupWindow('/pages/newdld/newdld.html', 462)
 };
 
 chrome.commands.onCommand.addListener((command) => {
@@ -100,7 +96,7 @@ function aria2SystemRuntime() {
     };
 }
 
-function aria2StorageChanged(json) {
+function aria2StorageChanged(response, json) {
     aria2RPC.disconnect();
     aria2RPC.scheme = json['jsonrpc_scheme'];
     aria2RPC.url = json['jsonrpc_url'];
@@ -109,12 +105,12 @@ function aria2StorageChanged(json) {
     chrome.storage.sync.set(aria2Storage);
 }
 
-function aria2ConfigChanged(options) {
+function aria2ConfigChanged(response, options) {
     aria2Config = {...aria2Config, ...options};
     aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
 }
 
-function aria2DownloadUrls(urls) {
+function aria2DownloadUrls(response, urls) {
     let message = '';
     let session = urls.map(({url, options = {}}) => {
         message += url + '\n';
@@ -124,7 +120,7 @@ function aria2DownloadUrls(urls) {
     aria2WhenStart(message);
 }
 
-async function aria2DownloadFiles(files) {
+async function aria2DownloadFiles(response, files) {
     let message = '';
     let session = files.map(({name, data}) => {
         message += name + '\n';
@@ -147,12 +143,12 @@ function aria2DetectedImages(response) {
 
 const msgHandlers = {
     'system_runtime': (response) => response(aria2SystemRuntime()),
-    'storage_update': (response, params) => aria2StorageChanged(params),
-    'jsonrpc_update': (response, params) => aria2ConfigChanged(params),
-    'jsonrpc_download': (response, params) => aria2DownloadUrls(params),
-    'jsonrpc_metadata': (response, params) => aria2DownloadFiles(params),
+    'storage_update': aria2StorageChanged,
+    'jsonrpc_update': aria2ConfigChanged,
+    'download_urls': aria2DownloadUrls,
+    'download_files': aria2DownloadFiles,
     'open_all_images': (response) => response(aria2DetectedImages()),
-    'open_new_download': aria2DownloadPrompt
+    'open_new_download': () => openPopupWindow('/pages/newdld/newdld.html', 462)
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {

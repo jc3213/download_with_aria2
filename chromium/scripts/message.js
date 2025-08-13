@@ -5,7 +5,7 @@ const messageHandlers = {
     },
     'aria2c_jsonrpc_call': (arg) => {
         let params = ( Array.isArray(arg) ? arg : [arg] ).filter( (entry) => entry?.url );
-        chrome.runtime.sendMessage({ action: 'jsonrpc_download', params });
+        chrome.runtime.sendMessage({ action: 'download_urls', params });
     }
 };
 
