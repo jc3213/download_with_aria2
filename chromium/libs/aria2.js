@@ -100,7 +100,8 @@ class Aria2 {
     }
     #json (id, args) {
         return JSON.stringify(args.map(({ method, params = [] }) => {
-            return { id, jsonrpc: '2.0', method, params: [this.#secret, ...params] };
+            params.unshift(this.#secret)
+            return { id, jsonrpc: '2.0', method, params };
         }));
     }
     #ws;

@@ -63,7 +63,7 @@ function menuEventSubmit() {
             params.push({ url: src, options });
         }
     });
-    chrome.runtime.sendMessage({action: 'download_urls', params}, close);
+    chrome.runtime.sendMessage({action: 'jsonrpc_download', params}, close);
 }
 
 const menuEventMap = {
