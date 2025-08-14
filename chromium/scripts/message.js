@@ -1,7 +1,8 @@
 const messageHandlers = {
-    'aria2c_manifest': (id) => {
-        let result = chrome.runtime.getManifest();
-        window.postMessage({ aria2c: 'aria2c_response', id, result });
+    'aria2c_status': (id) => {
+        chrome.runtime.sendMessage({ action: 'system_runtime', params }, (result) => {
+            window.postMessage({ aria2c: 'aria2c_response', id, result });
+        });
     },
     'aria2c_download': (id, args) => {
         let params = args.filter((arg) => arg?.url)
