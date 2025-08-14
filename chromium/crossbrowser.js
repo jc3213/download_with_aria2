@@ -112,7 +112,7 @@ function aria2ConfigChanged(response, options) {
 
 async function aria2RemoteDownload(response, params) {
     if (params.length === 0) {
-        return;
+        return response();
     }
     let tasks = [];
     let names = [];
