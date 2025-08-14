@@ -47,23 +47,16 @@ galleryPane.addEventListener('mouseover', (event) => {
     }
 });
 
-galleryPane.addEventListener('load', (event) => {
-    let img = event.target;
-    let { alt, naturalHeight, naturalWidth, src } = img;
-    let [ , name, type = '.jpg' ] = src.match(/(?:[@!])?(?:([\w-]+)(\.\w+)?)(?:\?.+)?$/);
-    img.alt = name + '_' + alt + '_' + naturalWidth + 'x' + naturalHeight + type;
-}, true);
-
 function menuEventSubmit() {
     let params = [];
     let options = aria2Config;
-    aria2Images.forEach(({ src, alt, header, classList }) => {
+    aria2Images.forEach(({ src, alt, classList }) => {
         if (classList.contains('checked')) {
             options['out'] = alt;
-            params.push({ url: src, options });
+            params.push({ name: src, task: { method: 'aria2.addUri', params: [[src], options] } });
         }
     });
-    chrome.runtime.sendMessage({action: 'jsonrpc_download', params}, close);
+    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 }
 
 const menuEventMap = {
@@ -88,14 +81,15 @@ document.getElementById('proxy').addEventListener('click', (event) => {
 });
 
 chrome.runtime.sendMessage({action: 'open_all_images'}, ({storage, options, images, referer, tabId, manifest, request}) => {
-    aria2Storage = storage;
-    options['referer'] = referer;
     manifest.manifest_version === 2 ? aria2HeadersMV2(referer, tabId, request) : aria2HeadersMV3(referer, tabId);
+    aria2Storage = storage;
+    aria2Config['referer'] = referer;
     jsonrpcEntries.forEach((entry) => {
         entry.value = aria2Config[entry.name] = options[entry.name] ?? '';
     });
     images.forEach((url) => {
         let img = document.createElement('img');
+        img.alt = url.match(/\/([^/@?]+)([@?][^@?]*)?$/)[1];
         img.src = img.title = url;
         aria2Images.push(img);
         galleryPane.appendChild(img);
