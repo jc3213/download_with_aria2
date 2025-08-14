@@ -1,6 +1,6 @@
 const messageHandlers = {
     'aria2c_status': (id) => {
-        chrome.runtime.sendMessage({ action: 'system_runtime', params }, (result) => {
+        chrome.runtime.sendMessage({ action: 'system_runtime' }, (result) => {
             window.postMessage({ aria2c: 'aria2c_response', id, result });
         });
     },
