@@ -49,10 +49,9 @@ galleryPane.addEventListener('mouseover', (event) => {
 
 function menuEventSubmit() {
     let params = [];
-    let options = aria2Config;
     aria2Images.forEach(({ src, alt, classList }) => {
         if (classList.contains('checked')) {
-            options['out'] = alt;
+            let options = { ...aria2Config, out: alt };
             params.push({ name: src, task: { method: 'aria2.addUri', params: [[src], options] } });
         }
     });
