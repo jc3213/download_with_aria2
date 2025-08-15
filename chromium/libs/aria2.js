@@ -99,9 +99,11 @@ class Aria2 {
         });
     }
     #json (id, args) {
-        return JSON.stringify(args.map(({ method, params = [] }) => {
-            params.unshift(this.#secret);
-            return { id, jsonrpc: '2.0', method, params };
+        return JSON.stringify(args.map((arg) => {
+            arg.jsonrpc = '2.0';
+            arg.id = id;
+            ( arg.params ??= [] ).unshift(this.#secret);
+            return arg;
         }));
     }
     #ws;
