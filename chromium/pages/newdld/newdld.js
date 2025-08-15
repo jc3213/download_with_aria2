@@ -88,11 +88,10 @@ const metafileMap = {
 };
 
 async function metaFileDownload(files) {
-    let options = aria2Config;
-    options['out'] = options['referer'] = options['user-agent'] = null;
+    aria2Config['out'] = aria2Config['referer'] = aria2Config['user-agent'] = null;
     let datas = [...files].map((file) => {
         let [ type ] = file.name.match(/[^.]+$/);
-        return metafileMap[type]?.(file, options);
+        return metafileMap[type]?.(file, aria2Config);
     });
     let params = (await Promise.all(datas)).filter((data) => data);
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
