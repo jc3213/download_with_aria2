@@ -392,7 +392,7 @@ function openPopupWindow(url, winSize) {
                 });
             } else {
                 chrome.windows.update(tab.windowId, { focused: true, left, width, top, height });
-                chrome.tabs.update(aria2Popup, { url: tab.url.endsWith(url) ? null : url, active: true });
+                chrome.tabs.update(aria2Popup, { url, active: true });
             }
         });
     });
