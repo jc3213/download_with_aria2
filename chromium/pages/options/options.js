@@ -220,7 +220,7 @@ document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
         if (options && version) {
             optionHistoryFlush();
             aria2ConfigSetup(options);
-            tellVer.textContent = tellUA.textContent = version.version;
+            tellVer.textContent = tellUA.textContent = version;
             extension.add('jsonrpc');
         }
     });
