@@ -167,7 +167,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 });
 
 
-chrome.runtime.sendMessage({action: 'system_runtime'}, ({storage, options}) => {
+chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage, options }) => {
     aria2Storage = storage;
     jsonrpcEntries.forEach((entry) => {
         entry.value = aria2Config[entry.name] = options[entry.name] ?? '';

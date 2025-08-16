@@ -91,7 +91,7 @@ function aria2SystemRuntime() {
     return {
         storage: aria2Storage,
         options: aria2Config,
-        version: aria2Version?.version,
+        version: aria2Version,
         manifest: aria2Manifest
     };
 }
