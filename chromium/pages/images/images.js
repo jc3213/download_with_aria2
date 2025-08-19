@@ -100,7 +100,7 @@ function aria2HeadersMV2(value, tabId, request) {
     chrome.webRequest.onBeforeSendHeaders.addListener(({requestHeaders}) => {
         requestHeaders.push({ name: 'Referer', value });;
         return {requestHeaders};
-    }, {urls: ['http://*/*', 'https://*/*'], tabId, types: ['image']}, request);
+    }, { urls: ['http://*/*', 'https://*/*'], tabId, types: ['image'] }, request);
 }
 
 function aria2HeadersMV3(value, tabId) {
