@@ -52,9 +52,9 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
         options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
     if (!aria2Updated['headers_exclude'].test(hostname)) {
-        let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{name: 'User-Agent', value: navigator.userAgent}, {name: 'Referer', value: referer}];
+        let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{ name: 'User-Agent', value: navigator.userAgent }, { name: 'Referer', value: referer }];
         if (aria2Storage['headers_override']) {
-            let ua = headers.findIndex(({name}) => name.toLowerCase() === 'user-agent');
+            let ua = headers.findIndex(({ name }) => name.toLowerCase() === 'user-agent');
             headers[ua].value = aria2Storage['headers_useragent'];
         }
         options['header'] = headers.map((header) => header.name + ': ' + header.value);
@@ -254,13 +254,13 @@ async function aria2ClientOpened() {
     aria2Config['max-overall-download-limit'] = getFileSize(aria2Config['max-overall-download-limit']);
     aria2Config['max-overall-upload-limit'] = getFileSize(aria2Config['max-overall-upload-limit']);
     aria2Active = new Set(active.result.map(({ gid }) => gid));
-    chrome.action.setBadgeBackgroundColor({color: '#1C4CD4'});
+    chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
     setIndicator();
 }
 
 function aria2ClientClosed() {
     aria2Active = aria2Config = aria2Version = null;
-    chrome.action.setBadgeBackgroundColor({color: '#D33A26'});
+    chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
     chrome.action.setBadgeText({ text: 'E' });
 }
 
@@ -308,8 +308,8 @@ function aria2WhenStart(message) {
 
 async function aria2WhenComplete(gid) {
     if (aria2Storage['notify_complete']) {
-        let response = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-        let {bittorrent, files: [{path}]} = response[0].result;
+        let [{ result }] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
+        let { bittorrent, files: [{ path }] } = result;
         let name = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1);
         let title = chrome.i18n.getMessage('download_complete');
         showNotification(title, name);
