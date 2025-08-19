@@ -129,7 +129,7 @@ const optionHandlers = {
     }
 };
 
-function optionHistoryLoad(action, key, {id, type, ...props}) {
+function optionHistoryLoad(action, key, { id, type, ...props }) {
     let value = props.value = props[key];
     let handler = optionHandlers[type] ?? optionHandlers['string'];
     handler(props, action);

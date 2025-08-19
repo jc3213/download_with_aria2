@@ -69,7 +69,7 @@ metaImport.addEventListener('change', (event) => {
     metaFileDownload(event.target.files)
 });
 
-async function metafileHandler(file, method, ...params) {
+async function metafileHandler(file, method, params) {
     return new Promise((resolve) => {
         let reader = new FileReader();
         reader.onload = (event) => {
@@ -82,9 +82,9 @@ async function metafileHandler(file, method, ...params) {
 }
 
 const metafileMap = {
-    'torrent': (file, options) => metafileHandler(file, 'aria2.addTorrent', [], options),
-    'meta4': (file, options) => metafileHandler(file, 'aria2.addMetalink', options),
-    'metalink': (file, options) => metafileHandler(file, 'aria2.addMetalink', options)
+    'torrent': (file, options) => metafileHandler(file, 'aria2.addTorrent', [ [], options ]),
+    'meta4': (file, options) => metafileHandler(file, 'aria2.addMetalink', [ options ]),
+    'metalink': (file, options) => metafileHandler(file, 'aria2.addMetalink', [ options ])
 };
 
 async function metaFileDownload(files) {
@@ -152,7 +152,7 @@ chrome.tabs.query({}, (tabs) => {
     });
 });
 
-chrome.tabs.onUpdated.addListener((tabId, {url}) => {
+chrome.tabs.onUpdated.addListener((tabId, { url }) => {
     if (url) {
         refererModalList(tabId, url);
     }
