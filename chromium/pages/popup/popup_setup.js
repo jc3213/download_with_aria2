@@ -18,7 +18,7 @@ optionsBtn.addEventListener('click', (event) => {
     chrome.runtime.openOptionsPage();
 });
 
-chrome.runtime.onMessage.addListener(({action, params}) => {
+chrome.runtime.onMessage.addListener(({ action, params }) => {
     if (action !== 'options_storage') {
         return;
     }
@@ -40,7 +40,7 @@ function aria2StorageChanged(json) {
     aria2Proxy = json['proxy_server'];
 }
 
-chrome.runtime.sendMessage({action: 'system_runtime'}, ({storage, manifest}) => {
+chrome.runtime.sendMessage({action: 'system_runtime'}, ({ storage, manifest }) => {
     aria2ClientSetup(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
     aria2StorageChanged(storage);
     i18nEntry.value = manifest.current_locale;

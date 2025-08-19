@@ -126,7 +126,7 @@ function taskUpdated(task, gid, status) {
 }
 
 async function taskElementRefresh(gid) {
-    let [{ result }] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
+    let [{ result }] = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
     let task = taskElementUpdate(result);
     if (aria2Focus.has(gid)) {
         task.scrollIntoView({ block: 'start', inline: 'nearest' });
@@ -135,7 +135,7 @@ async function taskElementRefresh(gid) {
     taskUpdated(task, gid, result.status);
 }
 
-function taskElementUpdate({gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders}) {
+function taskElementUpdate({ gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders }) {
     let task = aria2Tasks.get(gid) ?? taskElementCreate(gid, status, bittorrent, files);
     let time = (totalLength - completedLength) / downloadSpeed;
     let days = time / 86400 | 0;
@@ -165,7 +165,7 @@ function taskElementUpdate({gid, status, files, bittorrent, completedLength, tot
 }
 
 async function taskRemoveHandler(task, gid, method, group) {
-    await aria2RPC.call({method, params: [gid]});
+    await aria2RPC.call({ method, params: [gid] });
     taskRemoved(gid, group);
     aria2Tasks.delete(gid);
     task.remove();
@@ -181,7 +181,7 @@ const taskRemoveMap = {
 };
 
 async function taskDetailHandler(gid) {
-    let [ { result: files }, { result: options }] = await aria2RPC.call( {method: 'aria2.getFiles', params: [gid]}, {method: 'aria2.getOption', params: [gid]} );
+    let [{ result: files }, { result: options }] = await aria2RPC.call({ method: 'aria2.getFiles', params: [gid] }, { method: 'aria2.getOption', params: [gid] });
     options['min-split-size'] = getFileSize(options['min-split-size']);
     options['max-download-limit'] = getFileSize(options['max-download-limit']);
     options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
@@ -195,7 +195,7 @@ async function taskEventDetail(task, gid) {
         let { files, options } = await taskDetailHandler(gid);
         let { checks, entries } = task;
         let config = {};
-        files.forEach(({index, selected}) => {
+        files.forEach(({ index, selected }) => {
             checks.get(index).checked = selected === 'true';
         });
         entries.forEach((entry) => {
@@ -216,7 +216,7 @@ async function taskEventRetry(task, gid) {
         options['dir'] = match[1];
         options['out'] = match[2];
     }
-    let [{ result }] = await aria2RPC.call( {method: 'aria2.addUri', params: [url, options]}, {method: 'aria2.removeDownloadResult', params: [gid]} );
+    let [{ result }] = await aria2RPC.call({ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] });
     taskElementRefresh(result);
     taskRemoved(gid, 'stopped');
     aria2Tasks.delete(gid);
