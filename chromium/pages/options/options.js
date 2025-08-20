@@ -170,29 +170,11 @@ menuPane.addEventListener('click', (event) => {
     menuEventMap[menu]?.();
 });
 
-jsonFile.addEventListener('change', async (event) => {
-    optionHistoryFlush();
-    let file = await promiseFileReader(event.target.files[0]);
-    updated = JSON.parse(file);
-    aria2StorageUpdate();
-    aria2StorageSetup();
-    event.target.value = '';
-});
-
-confFile.addEventListener('change', async (event) => {
-    optionHistoryFlush();
-    let file = await promiseFileReader(event.target.files[0]);
-    let params = {};
-    file.split('\n').forEach((line) => {
-        if (line[0] !== '#') {
-            let [key, value] = line.split('=');
-            params[key] = value;
-        }
-    });
-    chrome.runtime.sendMessage({ action: 'options_jsonrpc', params });
-    aria2ConfigSetup(params);
-    event.target.value = '';
-});
+function optionHistoryFlush() {
+    undoes = [];
+    redoes = [];
+    saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
+}
 
 function promiseFileReader(file) {
     return new Promise((resolve) => {
@@ -202,6 +184,12 @@ function promiseFileReader(file) {
     });
 }
 
+function importFileJson(file) {
+    updated = JSON.parse(file);
+    aria2StorageUpdate();
+    aria2StorageSetup();
+}
+
 function aria2ConfigSetup(json) {
     jsonrpcEntries.forEach((entry) => {
         entry.value = aria2Config[entry.name] = json[entry.name] ?? '';
@@ -209,11 +197,24 @@ function aria2ConfigSetup(json) {
     updated = {...aria2Config};
 }
 
-function optionHistoryFlush() {
-    undoes = [];
-    redoes = [];
-    saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
+function importFileConf(file) {
+    let params = {};
+    file.split('\n').forEach((line) => {
+        if (line[0] !== '#') {
+            let [key, value] = line.split('=');
+            params[key] = value;
+        }
+    });
+    chrome.runtime.sendMessage({ action: 'options_jsonrpc', params });
+    aria2ConfigSetup(params);
 }
+
+menuPane.addEventListener('change', async (event) => {
+    let file = await promiseFileReader(event.target.files[0]);
+    optionHistoryFlush();
+    extension.contains('jsonrpc') ? importFileConf(file) : importFileJson(file);
+    event.target.value = '';
+});
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
     chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ options, version }) => {
