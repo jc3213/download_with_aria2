@@ -117,11 +117,11 @@ const optionHandlers = {
     },
     'matches': ({ add, remove }, action) => {
         if (action === 'undo') {
-            add?.forEach(({rule}) => rule.remove());
-            remove?.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
+            add?.forEach(({ rule }) => rule.remove());
+            remove?.forEach(({ list, index, rule }) => list.insertBefore(rule, list.children[index]));
         } else {
-            add?.forEach(({list, index, rule}) => list.insertBefore(rule, list.children[index]));
-            remove?.forEach(({rule}) => rule.remove());
+            add?.forEach(({ list, index, rule }) => list.insertBefore(rule, list.children[index]));
+            remove?.forEach(({ rule }) => rule.remove());
         }
     },
     'resort': ({ list, old_order, new_order }, action) => {
@@ -317,7 +317,7 @@ function aria2StorageSetup() {
             entry.value = value;
         }
     });
-    optionsMatches.forEach(({id, list}) => {
+    optionsMatches.forEach(({ id, list }) => {
         list.innerHTML = '';
         updated[id].forEach((value) => printMatchPattern(list, id, value));
     });
