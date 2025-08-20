@@ -139,7 +139,7 @@ function optionHistoryLoad(action, key, { id, type, ...props }) {
 function menuEventExport() {
     let name;
     let body;
-    let time = new Date().toLocaleString('ja').replace(/[\/\s:]/g, '_');
+    let time = new Date().toLocaleString('ja').replace(/[/: ]/g, '_');
     if (extension.contains('jsonrpc')) {
         name = 'aria2_jsonrpc-' + time + '.conf';
         body = Object.keys(aria2Config).map((key) => (key + '=' + aria2Config[key] + '\n'));
@@ -238,7 +238,7 @@ function matchEventAddNew(id, list, entry) {
     let add = [];
     entry.value.match(/[^\s;]+/g)?.forEach((value) => {
         if (value && !new_value.includes(value)) {
-            let rule = createMatchPattern(list, id, value);
+            let rule = printMatchPattern(list, id, value);
             add.push({list, index: new_value.length, rule});
             new_value.push(value);
         }
@@ -290,9 +290,14 @@ optionsMatches.forEach((match) => {
     });
 });
 
-function createMatchPattern(list, id, value) {
+function createMatchPattern(value) {
     let rule = matchLET.cloneNode(true);
     rule.title = rule.children[0].textContent = value;
+    return rule;
+}
+
+function printMatchPattern(list, id, value) {
+    let rule = list[value] ??= createMatchPattern(value);
     list.appendChild(rule);
     return rule;
 }
@@ -314,7 +319,7 @@ function aria2StorageSetup() {
     });
     optionsMatches.forEach(({id, list}) => {
         list.innerHTML = '';
-        updated[id].forEach((value) => createMatchPattern(list, id, value));
+        updated[id].forEach((value) => printMatchPattern(list, id, value));
     });
 }
 
