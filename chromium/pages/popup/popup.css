@@ -111,6 +111,7 @@ body.error > #queue > .error {
 
 .session:is(.complete, .removed, .error) > :is(.group, .files, .uris) button,
 .session:is(.active, .waiting, .pased, .p2p) > .menu > :nth-child(4),
+.session:not(.expand) > :is(.group, .files, .uris),
 .session.http [data-p2p],
 .session.p2p [data-http] {
     display: none;
@@ -145,8 +146,7 @@ body.error > #queue > .error {
     background-color: #D44B31;
 }
 
-.session:is(.active, .waiting, .paused) > .meter:active,
-.session.active > .meter > .ratio:active,
+.session:is(.active, .waiting, .paused) > .meter:is(:active, > .ratio:active),
 .session.p2p > .files > .file > label:active,
 .session > .uris > .uri:active {
     filter: contrast(60%);
@@ -302,10 +302,6 @@ body.error > #queue > .error {
 
 .session > .uris {
     grid-area: 7 / 1 / 8 / 5;
-}
-
-.session:not(.expand) > :is(.group, .files, .uris) {
-    display: none;
 }
 
 .expand > .menu > :nth-child(2) {
