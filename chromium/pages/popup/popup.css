@@ -109,7 +109,7 @@ body.error > #queue > .error {
     pointer-events: none;
 }
 
-.session:is(.complete, .removed, .error) > :nth-last-child(-n+3) button,
+.session:is(.complete, .removed, .error) > :is(.group, .files, .uris) button,
 .session:is(.active, .waiting, .pased, .p2p) > .menu > :nth-child(4),
 .session.http [data-p2p],
 .session.p2p [data-http] {
@@ -304,7 +304,7 @@ body.error > #queue > .error {
     grid-area: 7 / 1 / 8 / 5;
 }
 
-.session:not(.expand) > :nth-last-child(-n+3) {
+.session:not(.expand) > :is(.group, .files, .uris) {
     display: none;
 }
 
