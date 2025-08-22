@@ -1,10 +1,10 @@
 let aria2RPC;
 let aria2Tasks = new Map();
-let aria2Queue = new Map();
 let aria2Stats = new Map();
 let aria2Filter = new Set(localStorage.getItem('queues')?.match(/[^;]+/g) ?? []);
 let aria2Focus = new Set();
-let aria2Types = {
+let aria2Queue = {};
+let aria2Group = {
     active: 'active',
     paused: 'waiting',
     waiting: 'waiting',
@@ -22,7 +22,6 @@ let [downBtn, purgeBtn, optionsBtn] = menuPane.children;
 let [i18nEntry, verEntry, ...statEntries] = statusPane.children;
 let [sessionLET, fileLET, uriLET] = template.children;
 
-[...queuePane.children].forEach((queue) => aria2Queue.set(queue.id, queue));
 statEntries.forEach((stat) => aria2Stats.set(stat.getAttribute('data-sid'), stat));
 manager.add(...aria2Filter);
 
@@ -49,9 +48,11 @@ document.addEventListener('keydown', (event) => {
 
 purgeBtn.addEventListener('click', async (event) => {
     await aria2RPC.call({method: 'aria2.purgeDownloadResult'});
-    [...aria2Queue.values()].slice(3).forEach((queue) => queue.innerHTML = '');
-    let stopped = aria2Tasks.get('stopped');
-    stopped.forEach((gid) => aria2Tasks.delete(gid));
+    let { stopped } = aria2Queue;
+    stopped.forEach((gid) => {
+        aria2Tasks.get(gid).remove();
+        aria2Tasks.delete(gid);
+    });
     stopped.clear();
     aria2Stats.get('stopped').textContent = '0';
 });
@@ -73,9 +74,9 @@ function updateManager(stats, active) {
 async function aria2ClientOpened() {
     clearInterval(aria2Interval);
     let [stats, version, active, waiting, stopped] = await aria2RPC.call({method: 'aria2.getGlobalStat'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]});
-    aria2Tasks.set('active', new Set());
-    aria2Tasks.set('waiting', new Set());
-    aria2Tasks.set('stopped', new Set());
+    aria2Queue.active  = new Set();
+    aria2Queue.waiting = new Set();
+    aria2Queue.stopped = new Set();
     updateManager(stats, active);
     waiting.result.forEach(taskElementUpdate);
     stopped.result.forEach(taskElementUpdate);
@@ -105,24 +106,24 @@ function aria2ClientClosed() {
     clearInterval(aria2Interval);
     aria2Tasks.clear();
     aria2Stats.values().forEach((stat) => stat.textContent = '0');
-    aria2Queue.values().forEach((queue) => queue.innerHTML = '');
+    queuePane.innerHTML = '';
     verEntry.textContent = 'N/A';
 }
 
 function taskRemoved(gid, group) {
-    let tasks = aria2Tasks.get(group);
-    tasks.delete(gid);
-    aria2Stats.get(group).textContent = tasks.size;
+    let queue = aria2Queue[group];
+    queue.delete(gid);
+    aria2Stats.get(group).textContent = queue.size;
 }
 
 function taskUpdated(task, gid, status) {
-    let queue = aria2Queue.get(status);
-    let group = aria2Types[status];
-    let tasks = aria2Tasks.get(group);
-    tasks.add(gid);
-    aria2Stats.get(group).textContent = tasks.size;
-    queue.appendChild(task);
+    let group = aria2Group[status];
+    let queue = aria2Queue[group];
+    queue.add(gid);
+    aria2Stats.get(group).textContent = queue.size;
+    task.classList.replace(task.status, status);
     task.status = status;
+    queuePane.appendChild(task);
 }
 
 async function taskElementRefresh(gid) {
@@ -223,16 +224,10 @@ async function taskEventRetry(task, gid) {
     task.remove();
 }
 
-async function taskPauseHandler(task, gid, method, status) {
-    await aria2RPC.call({method, params: [gid]});
-    aria2Queue.get(status).appendChild(task);
-    task.status = status;
-}
-
 const taskPauseMap = {
-    'active': (task, gid) => taskPauseHandler(task, gid, 'aria2.forcePause', 'paused'),
-    'waiting': (task, gid) => taskPauseHandler(task, gid, 'aria2.forcePause', 'paused'),
-    'paused': (task, gid) => taskPauseHandler(task, gid, 'aria2.unpause', 'waiting')
+    'active': (task, gid) => aria2RPC.call({ 'method': 'aria2.forcePause', 'params': [gid] }),
+    'waiting': (task, gid) => aria2RPC.call({ 'method': 'aria2.forcePause', 'params': [gid] }),
+    'paused': (task, gid) => aria2RPC.call({ 'method': 'aria2.unpause', 'params': [gid] })
 };
 
 async function taskEventApply(task, gid) {
@@ -303,7 +298,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
     task.proxy = entries[2];
     task.checks = new Map();
     task.id = gid;
-    task.classList.add(bittorrent ? 'p2p' : 'http');
+    task.classList.add(status, bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', (event) => {
         let menu = event.target.getAttribute('i18n-tips');
         taskEventMap[menu]?.(task, gid, event);

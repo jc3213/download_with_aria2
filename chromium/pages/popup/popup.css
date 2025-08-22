@@ -14,21 +14,21 @@ body > ::before {
     text-align: center;
 }
 
-.active [data-fid="active"]::before,
-.waiting [data-fid="waiting"]::before,
-.paused [data-fid="paused"]::before,
-.complete [data-fid="complete"]::before,
-.removed [data-fid="removed"]::before,
-.error [data-fid="error"]::before {
+body.active > #filter > [data-fid="active"]::before,
+body.waiting > #filter > [data-fid="waiting"]::before,
+body.paused > #filter > [data-fid="paused"]::before,
+body.complete > #filter > [data-fid="complete"]::before,
+body.removed > #filter > [data-fid="removed"]::before,
+body.error > #filter > [data-fid="error"]::before {
     visibility: hidden;
 }
 
-.active > #queue > #active,
-.waiting > #queue > #waiting,
-.paused > #queue > #paused,
-.complete > #queue > #complete,
-.removed > #queue > #removed,
-.error > #queue > #error {
+body.active > #queue > .active,
+body.waiting > #queue > .waiting,
+body.paused > #queue > .paused,
+body.complete > #queue > .complete,
+body.removed > #queue > .removed,
+body.error > #queue > .error {
     display: none;
 }
 
@@ -70,61 +70,85 @@ body > ::before {
 }
 
 #queue {
+    display: flex;
+    flex-direction: column;
     grid-area: 1 / 2 / 5 / 3;
 }
 
-#queue > :nth-child(n+4) input,
-#queue > :nth-child(n+4) select {
+.session.active   {
+    order: 1;
+}
+
+.session.waiting  {
+    order: 2;
+}
+
+.session.paused   {
+    order: 3;
+}
+
+.session.complete {
+    order: 4;
+}
+
+.session.removed  {
+    order: 5;
+}
+
+.session.error    {
+    order: 6;
+}
+
+.session:is(.complete, .removed, .error) input,
+.session:is(.complete, .removed, .error) select {
     pointer-events: none;
     filter: contrast(40%);
 }
 
-#queue > :nth-child(n+4) label,
-.session.http label {
+.session:is(.complete, .removed, .error, .http) label {
     pointer-events: none;
 }
 
-#queue > :nth-child(n+4) > * > :nth-last-child(-n+3) button,
-#queue > :nth-child(-n+3) > * > .menu > :nth-child(4),
-#queue > :nth-child(n+4) > .p2p > .menu > :nth-child(4),
+.session:is(.complete, .removed, .error) > :nth-last-child(-n+3) button,
+.session:is(.active, .waiting, .pased, .p2p) > .menu > :nth-child(4),
 .session.http [data-p2p],
 .session.p2p [data-http] {
     display: none;
 }
 
-#queue .meter {
+.session > .meter {
     background-color: #3C3C3C;
 }
 
-#queue .meter > .ratio,
-#queue .file > :checked + label {
+.session > .meter > .ratio,
+.session > .files > .file > :checked + label {
     background-color: #59A8FF;
     color: #ffffff;
 }
 
-#queue > #active .name::before {
+.session.active > .name::before {
     background-color: #59A8FF;
 }
 
-#queue > :nth-child(n+2):nth-child(-n+3) .name::before,
-#queue > #paused .meter > .ratio {
+.session:is(.waiting, .paused) > .name::before,
+.session.paused > .meter > .ratio {
     background-color: #E9C769;
 }
 
-#queue > #complete .name::before,
-#queue > #complete .meter > .ratio {
+.session.complete > .name::before,
+.session.complete > .meter > .ratio {
     background-color: #2C7D2C;
 }
 
-#queue > :nth-child(n+5) .name::before,
-#queue > #error .meter > .ratio {
+.session:is(.removed, .error) > .name::before,
+.session.error > .meter > .ratio {
     background-color: #D44B31;
 }
 
-#queue > :nth-child(-n+3) .meter:active,
-#queue > :nth-child(-n+3) .meter > .ratio:active,
-#queue .p2p .file > label:active,
-#queue .uri:active {
+.session:is(.active, .waiting, .paused) > .meter:active,
+.session.active > .meter > .ratio:active,
+.session.p2p > .files > .file > label:active,
+.session > .uris > .uri:active {
     filter: contrast(60%);
 }
 
