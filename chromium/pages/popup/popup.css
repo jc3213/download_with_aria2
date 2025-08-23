@@ -56,7 +56,7 @@ body.error > #queue > .error {
 
 #filter > ::before {
     content: "✔️";
-    margin-right: 5px;
+    margin: 5px;
 }
 
 #system > ::before {
