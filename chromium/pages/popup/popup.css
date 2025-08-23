@@ -14,12 +14,12 @@ body > ::before {
     text-align: center;
 }
 
-body.active > #filter > [data-fid="active"]::before,
-body.waiting > #filter > [data-fid="waiting"]::before,
-body.paused > #filter > [data-fid="paused"]::before,
-body.complete > #filter > [data-fid="complete"]::before,
-body.removed > #filter > [data-fid="removed"]::before,
-body.error > #filter > [data-fid="error"]::before {
+body.active > #filter > #x-active::before,
+body.waiting > #filter > #x-waiting::before,
+body.paused > #filter > #x-paused::before,
+body.complete > #filter > #x-complete::before,
+body.removed > #filter > #x-removed::before,
+body.error > #filter > #x-error::before {
     visibility: hidden;
 }
 
@@ -91,23 +91,23 @@ body.error > #queue > .error {
     content: "__MSG_popup_version__";
 }
 
-[data-sid="download"]::before {
+#download::before {
     content: "__MSG_popup_download__";
 }
 
-[data-sid="upload"]::before {
+#upload::before {
     content: "__MSG_popup_upload__";
 }
 
-[data-sid="active"]::before {
+#active::before {
     content: "__MSG_popup_active__";
 }
 
-[data-sid="waiting"]::before {
+#waiting::before {
     content: "__MSG_popup_waiting__";
 }
 
-[data-sid="stopped"]::before {
+#stopped::before {
     content: "__MSG_popup_stopped__";
 }
 

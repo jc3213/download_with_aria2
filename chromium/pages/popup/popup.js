@@ -22,11 +22,11 @@ let [downBtn, purgeBtn, optionsBtn] = menuPane.children;
 let [i18nEntry, verEntry, ...statEntries] = statusPane.children;
 let [sessionLET, fileLET, uriLET] = template.children;
 
-statEntries.forEach((stat) => aria2Stats.set(stat.getAttribute('data-sid'), stat));
+statEntries.forEach((stat) => aria2Stats.set(stat.id, stat));
 manager.add(...aria2Filter);
 
 filterPane.addEventListener('click', (event) => {
-    let id = event.target.getAttribute('data-fid');
+    let id = event.target.id.slice(2);
     manager.toggle(id);
     aria2Filter.has(id) ? aria2Filter.delete(id) : aria2Filter.add(id);
     localStorage.setItem('queues', [...aria2Filter].join(';'));
