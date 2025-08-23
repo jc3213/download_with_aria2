@@ -12,7 +12,7 @@
         "message": "扩展升级"
     },
     "extension_version": {
-        "message": "已安装版本v{version}！"
+        "message": "已安装版本{version}！"
     },
     "shortcut_options": {
         "message": "打开设置"
@@ -306,22 +306,22 @@
         "message": "版本"
     },
     "popup_active_queue": {
-        "message": "正在下载"
+        "message": "下载队列"
     },
     "popup_waiting_queue": {
-        "message": "等待队列"
+        "message": "等候队列"
     },
     "popup_paused_queue": {
-        "message": "下载暂停"
+        "message": "暂停队列"
     },
     "popup_complete_queue": {
-        "message": "已经完成"
+        "message": "完成队列"
     },
     "popup_removed_queue": {
-        "message": "下载停止"
+        "message": "停止队列"
     },
     "popup_error_queue": {
-        "message": "发生错误"
+        "message": "异常队列"
     },
     "popup_newdld": {
         "message": "新下载"
