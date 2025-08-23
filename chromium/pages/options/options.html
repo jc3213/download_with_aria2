@@ -18,7 +18,7 @@
             <input id="config" type="file" accept=".conf">
             <a></a>
         </div>
-        <div id="options" class="group" data-exc="jsonrpc">
+        <div id="options" class="group">
             <h1>JSON-RPC</h1>
             <div i18n-tips="tips_option_jsonrpc">
                 <h4 i18n="option_jsonrpc"></h4>
@@ -60,19 +60,22 @@
                 <input id="context_enabled" name="context_enabled" type="checkbox" data-css>
                 <label for="context_enabled" i18n="option_context_enabled"></label>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_context_cascade" data-rel="context_enabled">
+            <div class="groupitem e-context-enabled" i18n-tips="tips_option_context_cascade">
                 <input id="context_cascade" name="context_cascade" type="checkbox">
                 <label for="context_cascade" i18n="option_context_cascade"></label>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_context_thisurl" data-rel="context_enabled">
+
+            <div class="groupitem e-context-enabled" i18n-tips="tips_option_context_thisurl">
                 <input id="context_thisurl" name="context_thisurl" type="checkbox">
                 <label for="context_thisurl" i18n="contextmenu_thisurl"></label>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_context_thisimage" data-rel="context_enabled">
+
+            <div class="groupitem e-context-enabled" i18n-tips="tips_option_context_thisimage">
                 <input id="context_thisimage" name="context_thisimage" type="checkbox">
                 <label for="context_thisimage" i18n="contextmenu_thisimage"></label>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_context_allimages" data-rel="context_enabled">
+
+            <div class="groupitem e-context-enabled" i18n-tips="tips_option_context_allimages">
                 <input id="context_allimages" name="context_allimages" type="checkbox">
                 <label for="context_allimages" i18n="contextmenu_allimages"></label>
             </div>
@@ -94,7 +97,7 @@
                 <input id="headers_override" name="headers_override" type="checkbox" data-css>
                 <label for="headers_override" i18n="option_headers_override"></label>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_headers_useragent" data-rel="headers_override">
+            <div class="groupitem e-headers-override" i18n-tips="tips_option_headers_useragent">
                 <input name="headers_useragent" type="text">
             </div>
             <div class="matches padtop">
@@ -113,11 +116,11 @@
                 <input id="folder_enabled" name="folder_enabled" type="checkbox" data-css>
                 <label for="folder_enabled" i18n="option_folder_enabled"></label>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_folder_firefox" data-app="firefox" data-rel="folder_enabled capture_enabled" data-exc="capture_webrequest">
+            <div class="groupitem e-firefox e-folder-enabled e-capture-enabled x-capture-webrequest" i18n-tips="tips_option_folder_firefox">
                 <input id="folder_firefox" name="folder_firefox" type="checkbox" data-css>
                 <label for="folder_firefox" i18n="option_folder_firefox"></label>
             </div>
-            <div class="padtop" i18n-tips="tips_option_folder" data-rel="folder_enabled" data-exc="folder_firefox">
+            <div class="padtop e-folder-enabled x-folder-firefox" i18n-tips="tips_option_folder">
                 <input name="folder_defined" type="text">
             </div>
             <h1 i18n="option_proxy"></h1>
@@ -140,11 +143,11 @@
                 <input id="capture_enabled" name="capture_enabled" type="checkbox" data-css>
                 <label for="capture_enabled" i18n="option_capture_enabled"></label>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_capture_webrequest" data-app="firefox" data-rel="capture_enabled">
+            <div class="groupitem e-firefox e-capture-enabled" i18n-tips="tips_option_capture_webrequest">
                 <input id="capture_webrequest" name="capture_webrequest" type="checkbox" data-css>
                 <label for="capture_webrequest" i18n="option_capture_webrequest"></label>
             </div>
-            <div class="matches padtop group" data-rel="capture_enabled">
+            <div class="matches padtop group e-capture-enabled">
                 <div class="flex" i18n-tips="tips_option_capture_size_exclude">
                     <h4 i18n="option_capture_size_exclude"></h4>
                     <div>
@@ -173,7 +176,7 @@
                 </div>
             </div>
         </div>
-        <div id="jsonrpc" class="group" data-rel="jsonrpc">
+        <div id="jsonrpc" class="group">
             <h1 i18n="aria2_options"></h1>
             <div class="groupitem padtop">
                 <button id="goto-options" i18n="option_back"></button>
