@@ -12,7 +12,7 @@
         "message": "Extension Update"
     },
     "extension_version": {
-        "message": "The v{version} has been installed!"
+        "message": "v{version} has been installed!"
     },
     "shortcut_options": {
         "message": "Open options"
