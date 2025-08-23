@@ -306,22 +306,22 @@
         "message": "版本"
     },
     "popup_active_queue": {
-        "message": "下载队列"
+        "message": "正在下载"
     },
     "popup_waiting_queue": {
-        "message": "等候队列"
+        "message": "等待队列"
     },
     "popup_paused_queue": {
-        "message": "暂停队列"
+        "message": "用户暂停"
     },
     "popup_complete_queue": {
-        "message": "完成队列"
+        "message": "下载完成"
     },
     "popup_removed_queue": {
-        "message": "停止队列"
+        "message": "用户停止"
     },
     "popup_error_queue": {
-        "message": "异常队列"
+        "message": "异常错误"
     },
     "popup_newdld": {
         "message": "新下载"

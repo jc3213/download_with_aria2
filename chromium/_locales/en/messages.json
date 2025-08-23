@@ -312,13 +312,13 @@
         "message": "Waiting in Queue"
     },
     "popup_paused_queue": {
-        "message": "Download Paused"
+        "message": "User Paused"
     },
     "popup_complete_queue": {
         "message": "Completed"
     },
     "popup_removed_queue": {
-        "message": "Download Stopped"
+        "message": "User Stopped"
     },
     "popup_error_queue": {
         "message": "Error Occured"
