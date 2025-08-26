@@ -12,16 +12,6 @@
     }
 }
 
-body, div {
-    color: var(--color-text);
-    background-color: var(--color-body);
-}
-
-button, input, textarea, select, option {
-    color: var(--color-text);
-    background-color: var(--color-child);
-}
-
 * {
     border-color: #AAB0B6;
     border-radius: 3px;
@@ -32,7 +22,14 @@ body, button, input, textarea, select {
     font-size: 16px;
 }
 
+button, input, textarea, select, option {
+    color: var(--color-text);
+    background-color: var(--color-child);
+}
+
 body, div {
+    color: var(--color-text);
+    background-color: var(--color-body);
     user-select: none;
     position: relative;
 }
