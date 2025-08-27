@@ -62,7 +62,7 @@ body.error > #queue > .error {
 #system > ::before {
     display: inline-block;
     margin: 0px 8px;
-    width: 50%;
+    width: 40%;
 }
 
 #locale {
