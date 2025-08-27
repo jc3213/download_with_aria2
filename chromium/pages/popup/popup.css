@@ -56,13 +56,13 @@ body.error > #queue > .error {
 
 #filter > ::before {
     content: "✔️";
-    margin: 5px;
+    margin-right: 5px;
 }
 
 #system > ::before {
     display: inline-block;
-    margin: 0px 12px;
-    width: 40%;
+    margin: 0px 8px;
+    width: 50%;
 }
 
 #locale {
