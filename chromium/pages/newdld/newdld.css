@@ -60,7 +60,7 @@ label:active {
     filter: contrast(60%);
 }
 
-.meta [data-exc="meta"] {
+.meta .x-meta {
     display: none;
 }
 

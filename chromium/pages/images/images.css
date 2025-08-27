@@ -7,10 +7,6 @@ img.checked {
     filter: contrast(45%);
 }
 
-body:not(.extra) #jsonrpc {
-    display: none;
-}
-
 .extra > #menu > :last-child {
     border-style: inset;
 }

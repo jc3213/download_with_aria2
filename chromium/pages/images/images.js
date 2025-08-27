@@ -63,7 +63,7 @@ const menuEventMap = {
     'select_none': () => aria2Images.forEach((img) => img.classList.remove('checked')),
     'select_flip': () => aria2Images.forEach((img) => img.classList.toggle('checked')),
     'common_submit': menuEventSubmit,
-    'popup_options': () => document.body.classList.toggle('extra')
+    'popup_options': () => jsonrpcPane.classList.toggle('hidden')
 };
 
 menuPane.addEventListener('click', (event) => {

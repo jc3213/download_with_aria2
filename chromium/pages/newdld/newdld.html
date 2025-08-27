@@ -13,20 +13,20 @@
                 <option value="link" i18n="task_add_urls"></option>
                 <option value="meta" i18n="task_add_files"></option>
             </select>
-            <button i18n="common_submit" data-exc="meta"></button>
+            <button class="x-meta" i18n="common_submit"></button>
         </div>
-        <textarea rows="5" i18n-tips="task_tips_urls" data-exc="meta"></textarea>
+        <textarea class="x-meta" rows="5" i18n-tips="task_tips_urls"></textarea>
         <label for="uploader" i18n="task_tips_files"></label>
         <input id="uploader" type="file" accept=".torrent,.meta4,.metalink">
         <div class="group">
-            <div i18n-tips="tips_task_referer" data-exc="meta">
+            <div class="x-meta" i18n-tips="tips_task_referer">
                 <h4 i18n="task_referer"></h4>
                 <div>
                     <input name="referer" type="text">
                     <div id="referer"></div>
                 </div>
             </div>
-            <div class="groupitem" i18n-tips="tips_task_name" data-exc="meta">
+            <div class="groupitem x-meta" i18n-tips="tips_task_name">
                 <h4 i18n="task_name"></h4>
                 <input name="out" type="text">
             </div>
@@ -34,7 +34,7 @@
                 <h4 i18n="aria2_com_dir"></h4>
                 <input name="dir" type="text">
             </div>
-            <div class="groupitem" i18n-tips="tips_aria2_http_ua" data-exc="meta">
+            <div class="groupitem x-meta" i18n-tips="tips_aria2_http_ua">
                 <h4 i18n="aria2_http_ua"></h4>
                 <input name="user-agent" type="text">
             </div>

@@ -222,8 +222,8 @@ body.error > #queue > .error {
 .session:is(.complete, .removed, .error) > :is(.group, .files, .uris) button,
 .session:is(.active, .waiting, .pased, .p2p) > .menu > :nth-child(4),
 .session:not(.expand) > :is(.group, .files, .uris),
-.session.http [data-p2p],
-.session.p2p [data-http] {
+.session.http .e-p2p,
+.session.p2p .e-http {
     display: none;
 }
 

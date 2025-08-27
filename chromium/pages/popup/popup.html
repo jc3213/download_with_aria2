@@ -41,7 +41,7 @@
                 <div class="fulllength filesize"></div>
                 <div class="network"></div>
                 <div class="download speed"></div>
-                <div class="upload speed" data-p2p></div>
+                <div class="upload speed e-p2p"></div>
                 <div class="menu">
                     <button i18n-tips="tips_task_remove">❌</button>
                     <button i18n-tips="tips_task_detail">⚙️</button>
@@ -59,7 +59,7 @@
                             <span>B/s</span>
                         </div>
                     </div>
-                    <div class="groupitem" i18n-tips="tips_task_upload" data-p2p>
+                    <div class="groupitem e-p2p" i18n-tips="tips_task_upload">
                         <h4 i18n="task_upload"></h4>
                         <div>
                             <input name="max-upload-limit" type="text">
@@ -73,29 +73,29 @@
                             <button i18n-tips="tips_proxy_server">⚡️</button>
                         </div>
                     </div>
-                    <div class="groupitem" i18n-tips="tips_aria2_http_split" data-http>
+                    <div class="groupitem e-http" i18n-tips="tips_aria2_http_split">
                         <h4 i18n="aria2_http_split"></h4>
                         <input name="split" type="number">
                     </div>
-                    <div class="groupitem" i18n-tips="tips_aria2_http_size" data-http>
+                    <div class="groupitem e-http" i18n-tips="tips_aria2_http_size">
                         <h4 i18n="aria2_http_size"></h4>
                         <div>
                             <input name="min-split-size" type="text">
                             <span>B</span>
                         </div>
                     </div>
-                    <div class="groupitem" i18n-tips="tips_aria2_bt_remove" data-p2p>
+                    <div class="groupitem e-p2p" i18n-tips="tips_aria2_bt_remove">
                         <h4 i18n="aria2_bt_remove"></h4>
                         <select name="bt-remove-unselected-file">
                             <option value="true" i18n="common_true"></option>
                             <option value="false" i18n="common_false"></option>
                         </select>
                     </div>
-                    <div class="groupitem" i18n-tips="tips_aria2_bt_ratio" data-p2p>
+                    <div class="groupitem e-p2p" i18n-tips="tips_aria2_bt_ratio">
                         <h4 i18n="aria2_bt_ratio"></h4>
                         <input name="seed-ratio" type="number" min="0" step="0.1">
                     </div>
-                    <div class="groupitem" i18n-tips="tips_aria2_bt_seed" data-p2p>
+                    <div class="groupitem e-p2p" i18n-tips="tips_aria2_bt_seed">
                         <h4 i18n="aria2_bt_seed"></h4>
                         <div>
                             <input name="seed-time" type="number">
@@ -108,7 +108,7 @@
                         <h4 i18n="task_files"></h4>
                     </div>
                 </div>
-                <div class="uris" i18n-tips="tips_task_urls" data-http>
+                <div class="uris e-http" i18n-tips="tips_task_urls">
                     <div class="flexmenu">
                         <h4 i18n="task_urls"></h4>
                         <input type="text">
