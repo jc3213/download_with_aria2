@@ -1,4 +1,4 @@
-name: build
+name: Build and Release
 
 on:
   push:
@@ -10,8 +10,12 @@ on:
       - 'firefox/manifest.json'
 
 jobs:
-  chromium:
+  build-and-release:
     runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -19,70 +23,42 @@ jobs:
       - name: Install tools
         run: sudo apt-get install -y zip jq
 
-      - name: Package Chromium
-        shell: bash
+      - name: Extract version
+        id: version
         run: |
           VERSION=$(jq -r .version chromium/manifest.json)
-          ZIP_NAME="chromium-${VERSION}.zip"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Package Chromium
+        run: |
+          ZIP_NAME="chromium-${{ steps.version.outputs.version }}.zip"
           (cd chromium && zip -r "../$ZIP_NAME" .)
 
-      - name: Upload Chromium ZIP
-        uses: actions/upload-artifact@v4
-        with:
-          name: chromium-${{ env.VERSION }}
-          path: chromium-${{ env.VERSION }}.zip
-
-  chromium_mv3:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Install tools
-        run: sudo apt-get install -y zip jq
-
       - name: Package Chromium MV3
-        shell: bash
         run: |
-          VERSION=$(jq -r .version chromium_mv3/manifest.json)
-          ZIP_NAME="chromium_mv3-${VERSION}.zip"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          ZIP_NAME="chromium_mv3-${{ steps.version.outputs.version }}.zip"
           mkdir -p build_mv3
           cp -r chromium/* build_mv3/
           cp -r chromium_mv3/* build_mv3/
           (cd build_mv3 && zip -r "../$ZIP_NAME" .)
           rm -rf build_mv3
 
-      - name: Upload Chromium MV3 ZIP
-        uses: actions/upload-artifact@v4
-        with:
-          name: chromium_mv3-${{ env.VERSION }}
-          path: chromium_mv3-${{ env.VERSION }}.zip
-
-  firefox:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Install tools
-        run: sudo apt-get install -y zip jq
-
       - name: Package Firefox
-        shell: bash
         run: |
-          VERSION=$(jq -r .version firefox/manifest.json)
-          ZIP_NAME="firefox-${VERSION}.zip"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          ZIP_NAME="firefox-${{ steps.version.outputs.version }}.zip"
           mkdir -p build_firefox
           cp -r chromium/* build_firefox/
           cp -r firefox/* build_firefox/
           (cd build_firefox && zip -r "../$ZIP_NAME" .)
           rm -rf build_firefox
 
-      - name: Upload Firefox ZIP
-        uses: actions/upload-artifact@v4
-        with:
-          name: firefox-${{ env.VERSION }}
-          path: firefox-${{ env.VERSION }}.zip
+      - name: Create GitHub Release
+        run: |
+          TAG="${{ steps.version.outputs.version }}"
+          TITLE="v${TAG}"
+          gh release create "$TAG" \
+            "chromium-${TAG}.zip" \
+            "chromium_mv3-${TAG}.zip" \
+            "firefox-${TAG}.zip" \
+            --title "$TITLE" \
+            --notes "Auto-packaged extensions for version $TITLE"
