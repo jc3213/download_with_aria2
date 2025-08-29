@@ -17,7 +17,7 @@ let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let matchLET = template.children[0];
 
 if (typeof browser !== 'undefined') {
-    firefoxExclusive();
+    extension.add('firefox');
 }
 
 document.querySelectorAll('[i18n]').forEach((node) => {
@@ -334,18 +334,3 @@ chrome.runtime.sendMessage({ action: 'system_runtime'}, ({ storage, manifest }) 
     aria2Version = manifest.version;
     aria2StorageSetup();
 });
-
-function firefoxExclusive() {
-    extension.add('firefox');
-    let [folderff, captureen, captureff] = optionsPane.querySelectorAll('#folder_firefox, #capture_enabled, #capture_webrequest');
-    captureen.addEventListener('change', (event) => {
-        if (!captureen.checked) {
-            folderff.checked = updated['folder_firefox'] = false;
-        }
-    });
-    captureff.addEventListener('change', (event) => {
-        if (captureff.checked) {
-            folderff.checked = updated['folder_firefox'] = false;
-        }
-    });
-}
