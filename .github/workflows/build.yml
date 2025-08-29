@@ -24,7 +24,6 @@ jobs:
         run: |
           VERSION=$(jq -r .version chromium/manifest.json)
           ZIP_NAME="chromium-${VERSION}.zip"
-          rm -f "$ZIP_NAME"
           (cd chromium && zip -r "../$ZIP_NAME" .)
 
       - name: Upload Chromium ZIP
@@ -47,9 +46,11 @@ jobs:
         run: |
           VERSION=$(jq -r .version chromium_mv3/manifest.json)
           ZIP_NAME="chromium_mv3-${VERSION}.zip"
-          rm -f "$ZIP_NAME"
-          (cd chromium && zip -r "../$ZIP_NAME" .)
-          (cd chromium_mv3 && zip -ur "../$ZIP_NAME" .)
+          mkdir -p build_mv3
+          cp -r chromium/* build_mv3/
+          cp -r chromium_mv3/* build_mv3/
+          (cd build_mv3 && zip -r "../$ZIP_NAME" .)
+          rm -rf build_mv3
 
       - name: Upload Chromium MV3 ZIP
         uses: actions/upload-artifact@v4
@@ -71,9 +72,11 @@ jobs:
         run: |
           VERSION=$(jq -r .version firefox/manifest.json)
           ZIP_NAME="firefox-${VERSION}.zip"
-          rm -f "$ZIP_NAME"
-          (cd chromium && zip -r "../$ZIP_NAME" .)
-          (cd firefox && zip -ur "../$ZIP_NAME" .)
+          mkdir -p build_firefox
+          cp -r chromium/* build_firefox/
+          cp -r firefox/* build_firefox/
+          (cd build_firefox && zip -r "../$ZIP_NAME" .)
+          rm -rf build_firefox
 
       - name: Upload Firefox ZIP
         uses: actions/upload-artifact@v4
