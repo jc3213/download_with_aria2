@@ -20,9 +20,12 @@ jobs:
         run: sudo apt-get install -y zip jq
 
       - name: Package Chromium
+        shell: bash
         run: |
           VERSION=$(jq -r .version chromium/manifest.json)
-          zip -r "chromium-${VERSION}.zip" chromium/
+          cd chromium
+          zip -r "../chromium-${VERSION}.zip" ./*
+          cd ..
 
       - name: Upload Chromium ZIP
         uses: actions/upload-artifact@v4
@@ -40,10 +43,14 @@ jobs:
         run: sudo apt-get install -y zip jq
 
       - name: Package Chromium MV3
+        shell: bash
         run: |
           VERSION=$(jq -r .version chromium_mv3/manifest.json)
-          zip -r "chromium_mv3-${VERSION}.zip" chromium/
-          zip -ur "chromium_mv3-${VERSION}.zip" chromium_mv3/
+          cd chromium
+          zip -r "../chromium_mv3-${VERSION}.zip" ./*
+          cd ../chromium_mv3
+          zip -ur "../chromium_mv3-${VERSION}.zip" ./*
+          cd ..
 
       - name: Upload Chromium MV3 ZIP
         uses: actions/upload-artifact@v4
@@ -61,10 +68,14 @@ jobs:
         run: sudo apt-get install -y zip jq
 
       - name: Package Firefox
+        shell: bash
         run: |
           VERSION=$(jq -r .version firefox/manifest.json)
-          zip -r "firefox-${VERSION}.zip" chromium/
-          zip -ur "firefox-${VERSION}.zip" firefox/
+          cd chromium
+          zip -r "../firefox-${VERSION}.zip" ./*
+          cd ../firefox
+          zip -ur "../firefox-${VERSION}.zip" ./*
+          cd ..
 
       - name: Upload Firefox ZIP
         uses: actions/upload-artifact@v4
