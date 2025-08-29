@@ -1,0 +1,73 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'chromium/manifest.json'
+      - 'chromium_mv3/manifest.json'
+      - 'firefox/manifest.json'
+
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: sudo apt-get install -y zip jq
+
+      - name: Package Chromium
+        run: |
+          VERSION=$(jq -r .version chromium/manifest.json)
+          zip -r "chromium-${VERSION}.zip" chromium/
+
+      - name: Upload Chromium ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: chromium
+          path: chromium-*.zip
+
+  chromium_mv3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: sudo apt-get install -y zip jq
+
+      - name: Package Chromium MV3
+        run: |
+          VERSION=$(jq -r .version chromium_mv3/manifest.json)
+          zip -r "chromium_mv3-${VERSION}.zip" chromium/
+          zip -ur "chromium_mv3-${VERSION}.zip" chromium_mv3/
+
+      - name: Upload Chromium MV3 ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: chromium_mv3
+          path: chromium_mv3-*.zip
+
+  firefox:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: sudo apt-get install -y zip jq
+
+      - name: Package Firefox
+        run: |
+          VERSION=$(jq -r .version firefox/manifest.json)
+          zip -r "firefox-${VERSION}.zip" chromium/
+          zip -ur "firefox-${VERSION}.zip" firefox/
+
+      - name: Upload Firefox ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox
+          path: firefox-*.zip
