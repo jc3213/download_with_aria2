@@ -23,9 +23,9 @@ jobs:
         shell: bash
         run: |
           VERSION=$(jq -r .version chromium/manifest.json)
-          cd chromium
-          zip -r "../chromium-${VERSION}.zip" ./*
-          cd ..
+          ZIP_NAME="chromium-${VERSION}.zip"
+          rm -f "$ZIP_NAME"
+          (cd chromium && zip -r "../$ZIP_NAME" .)
 
       - name: Upload Chromium ZIP
         uses: actions/upload-artifact@v4
@@ -46,11 +46,10 @@ jobs:
         shell: bash
         run: |
           VERSION=$(jq -r .version chromium_mv3/manifest.json)
-          cd chromium
-          zip -r "../chromium_mv3-${VERSION}.zip" ./*
-          cd ../chromium_mv3
-          zip -ur "../chromium_mv3-${VERSION}.zip" ./*
-          cd ..
+          ZIP_NAME="chromium_mv3-${VERSION}.zip"
+          rm -f "$ZIP_NAME"
+          (cd chromium && zip -r "../$ZIP_NAME" .)
+          (cd chromium_mv3 && zip -ur "../$ZIP_NAME" .)
 
       - name: Upload Chromium MV3 ZIP
         uses: actions/upload-artifact@v4
@@ -71,11 +70,10 @@ jobs:
         shell: bash
         run: |
           VERSION=$(jq -r .version firefox/manifest.json)
-          cd chromium
-          zip -r "../firefox-${VERSION}.zip" ./*
-          cd ../firefox
-          zip -ur "../firefox-${VERSION}.zip" ./*
-          cd ..
+          ZIP_NAME="firefox-${VERSION}.zip"
+          rm -f "$ZIP_NAME"
+          (cd chromium && zip -r "../$ZIP_NAME" .)
+          (cd firefox && zip -ur "../$ZIP_NAME" .)
 
       - name: Upload Firefox ZIP
         uses: actions/upload-artifact@v4
