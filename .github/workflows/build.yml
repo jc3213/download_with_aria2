@@ -21,7 +21,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install tools
-        run: sudo apt-get install -y zip jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip jq nodejs npm
+          npm install -g terser
 
       - name: Extract versions
         id: versions
@@ -37,23 +40,11 @@ jobs:
           HIGHEST=$(printf "%s\n%s\n%s" "$V_CHROMIUM" "$V_MV3" "$V_FIREFOX" | sort -V | tail -n 1)
           echo "release_version=$HIGHEST" >> $GITHUB_OUTPUT
 
-      - name: Minify Chromium
-        uses: devatherock/minify-js@v3.1.0
-        with:
-          directory: 'chromium'
-          add_suffix: false
-
-      - name: Minify Chromium MV3
-        uses: devatherock/minify-js@v3.1.0
-        with:
-          directory: 'chromium_mv3'
-          add_suffix: false
-
-      - name: Minify Firefox
-        uses: devatherock/minify-js@v3.1.0
-        with:
-          directory: 'firefox'
-          add_suffix: false
+      - name: Minify JS with Terser
+        run: |
+          find chromium -type f -name "*.js" -exec terser {} -c -m -o {} \;
+          find chromium_mv3 -type f -name "*.js" -exec terser {} -c -m -o {} \;
+          find firefox -type f -name "*.js" -exec terser {} -c -m -o {} \;
 
       - name: Package Chromium
         run: |
@@ -66,7 +57,9 @@ jobs:
           mkdir -p build_mv3
           cp -r chromium/* build_mv3/
           cp -r chromium_mv3/* build_mv3/
-          (cd build_mv3 && zip -r "../$ZIP_NAME" .)
+          cd build_mv3
+          zip -r "../$ZIP_NAME" .
+          cd ..
           rm -rf build_mv3
 
       - name: Package Firefox
@@ -75,7 +68,9 @@ jobs:
           mkdir -p build_firefox
           cp -r chromium/* build_firefox/
           cp -r firefox/* build_firefox/
-          (cd build_firefox && zip -r "../$ZIP_NAME" .)
+          cd build_firefox
+          zip -r "../$ZIP_NAME" .
+          cd ..
           rm -rf build_firefox
 
       - name: Create GitHub Release
