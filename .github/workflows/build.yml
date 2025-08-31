@@ -23,19 +23,19 @@ jobs:
       - name: Install tools
         run: sudo apt-get install -y zip jq
 
-      - name: Extract highest version
-        id: version
+      - name: Extract versions
+        id: versions
         run: |
-          V1=$(jq -r .version chromium/manifest.json)
-          V2=$(jq -r .version chromium_mv3/manifest.json)
-          V3=$(jq -r .version firefox/manifest.json)
+          V_CHROMIUM=$(jq -r .version chromium/manifest.json)
+          V_MV3=$(jq -r .version chromium_mv3/manifest.json)
+          V_FIREFOX=$(jq -r .version firefox/manifest.json)
 
-          echo "Found versions: $V1, $V2, $V3"
+          echo "chromium_version=$V_CHROMIUM" >> $GITHUB_OUTPUT
+          echo "mv3_version=$V_MV3" >> $GITHUB_OUTPUT
+          echo "firefox_version=$V_FIREFOX" >> $GITHUB_OUTPUT
 
-          HIGHEST=$(printf "%s\n%s\n%s" "$V1" "$V2" "$V3" | sort -V | tail -n 1)
-
-          echo "Selected highest version: $HIGHEST"
-          echo "version=$HIGHEST" >> $GITHUB_OUTPUT
+          HIGHEST=$(printf "%s\n%s\n%s" "$V_CHROMIUM" "$V_MV3" "$V_FIREFOX" | sort -V | tail -n 1)
+          echo "release_version=$HIGHEST" >> $GITHUB_OUTPUT
 
       - name: Minify Chromium
         uses: devatherock/minify-js@v3.1.0
@@ -57,12 +57,12 @@ jobs:
 
       - name: Package Chromium
         run: |
-          ZIP_NAME="chromium-${{ steps.version.outputs.version }}.zip"
+          ZIP_NAME="chromium-${{ steps.versions.outputs.chromium_version }}.zip"
           (cd chromium && zip -r "../$ZIP_NAME" .)
 
       - name: Package Chromium MV3
         run: |
-          ZIP_NAME="chromium_mv3-${{ steps.version.outputs.version }}.zip"
+          ZIP_NAME="chromium_mv3-${{ steps.versions.outputs.mv3_version }}.zip"
           mkdir -p build_mv3
           cp -r chromium/* build_mv3/
           cp -r chromium_mv3/* build_mv3/
@@ -71,7 +71,7 @@ jobs:
 
       - name: Package Firefox
         run: |
-          ZIP_NAME="firefox-${{ steps.version.outputs.version }}.zip"
+          ZIP_NAME="firefox-${{ steps.versions.outputs.firefox_version }}.zip"
           mkdir -p build_firefox
           cp -r chromium/* build_firefox/
           cp -r firefox/* build_firefox/
@@ -80,11 +80,11 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          TAG="${{ steps.version.outputs.version }}"
+          TAG="${{ steps.versions.outputs.release_version }}"
           TITLE="v${TAG}"
           gh release create "$TAG" \
-            "chromium-${TAG}.zip" \
-            "chromium_mv3-${TAG}.zip" \
-            "firefox-${TAG}.zip" \
+            "chromium-${{ steps.versions.outputs.chromium_version }}.zip" \
+            "chromium_mv3-${{ steps.versions.outputs.mv3_version }}.zip" \
+            "firefox-${{ steps.versions.outputs.firefox_version }}.zip" \
             --title "$TITLE" \
             --notes "Auto-packaged extensions for version $TITLE"
