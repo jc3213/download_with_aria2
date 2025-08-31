@@ -21,65 +21,49 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install tools
+        run: sudo apt-get install -y zip jq
+
+      - name: Extract and define versions
         run: |
-          sudo apt-get update
-          sudo apt-get install -y zip jq nodejs npm
-          npm install -g terser
+          get_version() { jq -r .version "$1/manifest.json"; }
 
-      - name: Extract versions
-        id: versions
+          MV2_VERSION=$(get_version chromium)
+          MV3_VERSION=$(get_version chromium_mv3)
+          FF_VERSION=$(get_version firefox)
+
+          echo "MV2_VERSION=$MV2_VERSION" >> $GITHUB_ENV
+          echo "MV3_VERSION=$MV3_VERSION" >> $GITHUB_ENV
+          echo "FF_VERSION=$FF_VERSION" >> $GITHUB_ENV
+
+          RELEASE_VERSION=$(printf "%s\n%s\n%s" "$MV2_VERSION" "$MV3_VERSION" "$FF_VERSION" | sort -V | tail -n 1)
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+
+      - name: Package Extensions
         run: |
-          V_CHROMIUM=$(jq -r .version chromium/manifest.json)
-          V_MV3=$(jq -r .version chromium_mv3/manifest.json)
-          V_FIREFOX=$(jq -r .version firefox/manifest.json)
+          package() {
+            SRC1="$1"
+            SRC2="$2"
+            BUILD_DIR="$3"
+            ZIP_NAME="$4"
 
-          echo "chromium_version=$V_CHROMIUM" >> $GITHUB_OUTPUT
-          echo "mv3_version=$V_MV3" >> $GITHUB_OUTPUT
-          echo "firefox_version=$V_FIREFOX" >> $GITHUB_OUTPUT
+            mkdir -p "$BUILD_DIR"
+            cp -r "$SRC1"/* "$BUILD_DIR/"
+            [ -n "$SRC2" ] && cp -r "$SRC2"/* "$BUILD_DIR/"
+            cd "$BUILD_DIR"
+            zip -r "../$ZIP_NAME" .
+            cd ..
+            rm -rf "$BUILD_DIR"
+          }
 
-          HIGHEST=$(printf "%s\n%s\n%s" "$V_CHROMIUM" "$V_MV3" "$V_FIREFOX" | sort -V | tail -n 1)
-          echo "release_version=$HIGHEST" >> $GITHUB_OUTPUT
-
-      - name: Minify JS with Terser
-        run: |
-          find chromium -type f -name "*.js" -exec terser {} -c -m -o {} \;
-          find chromium_mv3 -type f -name "*.js" -exec terser {} -c -m -o {} \;
-          find firefox -type f -name "*.js" -exec terser {} -c -m -o {} \;
-
-      - name: Package Chromium
-        run: |
-          ZIP_NAME="chromium-${{ steps.versions.outputs.chromium_version }}.zip"
-          (cd chromium && zip -r "../$ZIP_NAME" .)
-
-      - name: Package Chromium MV3
-        run: |
-          ZIP_NAME="chromium_mv3-${{ steps.versions.outputs.mv3_version }}.zip"
-          mkdir -p build_mv3
-          cp -r chromium/* build_mv3/
-          cp -r chromium_mv3/* build_mv3/
-          cd build_mv3
-          zip -r "../$ZIP_NAME" .
-          cd ..
-          rm -rf build_mv3
-
-      - name: Package Firefox
-        run: |
-          ZIP_NAME="firefox-${{ steps.versions.outputs.firefox_version }}.zip"
-          mkdir -p build_firefox
-          cp -r chromium/* build_firefox/
-          cp -r firefox/* build_firefox/
-          cd build_firefox
-          zip -r "../$ZIP_NAME" .
-          cd ..
-          rm -rf build_firefox
+          package "chromium" "" "build_mv2" "chromium-${MV2_VERSION}.zip"
+          package "chromium" "chromium_mv3" "build_mv3" "chromium_mv3-${MV3_VERSION}.zip"
+          package "chromium" "firefox" "build_firefox" "firefox-${FF_VERSION}.zip"
 
       - name: Create GitHub Release
         run: |
-          TAG="${{ steps.versions.outputs.release_version }}"
-          TITLE="v${TAG}"
-          gh release create "$TAG" \
-            "chromium-${{ steps.versions.outputs.chromium_version }}.zip" \
-            "chromium_mv3-${{ steps.versions.outputs.mv3_version }}.zip" \
-            "firefox-${{ steps.versions.outputs.firefox_version }}.zip" \
-            --title "$TITLE" \
-            --notes "Auto-packaged extensions for version $TITLE"
+          gh release create "v${RELEASE_VERSION}" \
+            "chromium-${MV2_VERSION}.zip" \
+            "chromium_mv3-${MV3_VERSION}.zip" \
+            "firefox-${FF_VERSION}.zip" \
+            --title "v${RELEASE_VERSION}" \
+            --notes "Auto-packaged extensions for version v${RELEASE_VERSION}"
