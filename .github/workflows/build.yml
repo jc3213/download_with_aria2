@@ -23,11 +23,37 @@ jobs:
       - name: Install tools
         run: sudo apt-get install -y zip jq
 
-      - name: Extract version
+      - name: Extract highest version
         id: version
         run: |
-          VERSION=$(jq -r .version chromium/manifest.json)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          V1=$(jq -r .version chromium/manifest.json)
+          V2=$(jq -r .version chromium_mv3/manifest.json)
+          V3=$(jq -r .version firefox/manifest.json)
+
+          echo "Found versions: $V1, $V2, $V3"
+
+          HIGHEST=$(printf "%s\n%s\n%s" "$V1" "$V2" "$V3" | sort -V | tail -n 1)
+
+          echo "Selected highest version: $HIGHEST"
+          echo "version=$HIGHEST" >> $GITHUB_OUTPUT
+
+      - name: Minify Chromium
+        uses: devatherock/minify-js@v3.1.0
+        with:
+          directory: 'chromium'
+          add_suffix: false
+
+      - name: Minify Chromium MV3
+        uses: devatherock/minify-js@v3.1.0
+        with:
+          directory: 'chromium_mv3'
+          add_suffix: false
+
+      - name: Minify Firefox
+        uses: devatherock/minify-js@v3.1.0
+        with:
+          directory: 'firefox'
+          add_suffix: false
 
       - name: Package Chromium
         run: |
