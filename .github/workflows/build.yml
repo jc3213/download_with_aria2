@@ -1,4 +1,4 @@
-name: Build and Release
+name: build-and-release
 
 on:
   push:
@@ -8,6 +8,10 @@ on:
       - 'chromium/manifest.json'
       - 'chromium_mv3/manifest.json'
       - 'firefox/manifest.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build-and-release:
