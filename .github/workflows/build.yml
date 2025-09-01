@@ -61,7 +61,7 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          gh release create "v${RELEASE_VERSION}" \
+          gh release create "${RELEASE_VERSION}" \
             "chromium-${MV2_VERSION}.zip" \
             "chromium_mv3-${MV3_VERSION}.zip" \
             "firefox-${FF_VERSION}.zip" \
