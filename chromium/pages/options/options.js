@@ -237,10 +237,10 @@ function matchEventAddNew(id, list, entry) {
     let old_value = updated[id];
     let new_value = [...old_value];
     let add = [];
-    entry.value.match(/[^\s;]+/g)?.forEach((value) => {
+    entry.value.match(/[^; ]+/g)?.forEach((value) => {
         if (value && !new_value.includes(value)) {
             let rule = printMatchPattern(list, id, value);
-            add.push({list, index: new_value.length, rule});
+            add.push({ list, index: new_value.length, rule });
             new_value.push(value);
         }
     });
