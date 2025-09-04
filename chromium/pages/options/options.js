@@ -117,11 +117,11 @@ const optionHandlers = {
     },
     'matches': ({ add, remove }, action) => {
         if (action === 'undo') {
-            add?.forEach(({ rule }) => rule.remove());
-            remove?.forEach(({ list, index, rule }) => list.insertBefore(rule, list.children[index]));
+            add?.rule?.remove();
+            remove?.list?.insertBefore(remove.rule, remove.list.children[remove.index]);
         } else {
-            add?.forEach(({ list, index, rule }) => list.insertBefore(rule, list.children[index]));
-            remove?.forEach(({ rule }) => rule.remove());
+            add?.list?.insertBefore(add.rule, add.list.children[add.index]);
+            remove?.rule?.remove();
         }
     },
     'resort': ({ list, old_order, new_order }, action) => {
@@ -235,18 +235,15 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
 
 function matchEventAddNew(id, list, entry) {
     let old_value = updated[id];
-    let new_value = [...old_value];
-    let add = [];
-    entry.value.match(/[^; ]+/g)?.forEach((value) => {
-        if (value && !new_value.includes(value)) {
-            let rule = printMatchPattern(list, id, value);
-            add.push({ list, index: new_value.length, rule });
-            new_value.push(value);
-        }
+    let value = entry.value.match(/([^.]+\.)+[^.]+/)?.[0];
+    if (value && !old_value.includes(value)) {
+        let new_value = [...old_value];
+        let rule = printMatchPattern(list, id, value);
+        new_value.push(value);
+        list.scrollTop = list.scrollHeight;
+        optionHistoryApply(id, new_value, old_value, 'matches', { add: { list, index: new_value.length, rule } });
     });
     entry.value = '';
-    list.scrollTop = list.scrollHeight;
-    optionHistoryApply(id, new_value, old_value, 'matches', { add });
 }
 
 function matchEventResort(id, list) {
@@ -266,7 +263,7 @@ function matchEventRemove(id, list, _, event) {
     let index = new_value.indexOf(value);
     new_value.splice(index, 1);
     rule.remove();
-    optionHistoryApply(id, new_value, old_value, 'matches', { remove: [{ list, index, rule }] });
+    optionHistoryApply(id, new_value, old_value, 'matches', { remove: { list, index, rule } });
 }
 
 const listEventMap = {
