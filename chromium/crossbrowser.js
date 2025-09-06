@@ -189,6 +189,8 @@ chrome.action.onClicked.addListener(() => {
         if (tab) {
             chrome.tabs.update(tab.id, { active: true });
             chrome.windows.update(tab.windowId, { focused: true });
+        } else {
+            chrome.tabs.create({ url: aria2Manager, active: true });
         }
     });
 });
