@@ -137,19 +137,13 @@ function optionHistoryLoad(action, key, { id, type, ...props }) {
 }
 
 function menuEventExport() {
-    let name;
-    let body;
+    let [ name, type, body ] = extension.contains('jsonrpc')
+        ? [ 'aria2_jsonrpc-', '.conf', Object.keys(aria2Config).map( (key) => key + '=' + aria2Config[key] + '\n' ) ]
+        : [ 'downwitharia2-', '.json', [ JSON.stringify(aria2Storage, null, 4) ] ];
     let time = new Date().toLocaleString('ja').replace(/[/: ]/g, '_');
-    if (extension.contains('jsonrpc')) {
-        name = 'aria2_jsonrpc-' + time + '.conf';
-        body = Object.keys(aria2Config).map((key) => (key + '=' + aria2Config[key] + '\n'));
-    } else {
-        name = 'downwitharia2-' + time + '.json';
-        body = [JSON.stringify(aria2Storage, null, 4)];
-    }
     let blob = new Blob(body);
     exporter.href = URL.createObjectURL(blob);
-    exporter.download = name;
+    exporter.download = name + time + type;
     exporter.click();
 }
 
@@ -242,7 +236,7 @@ function matchEventAddNew(id, list, entry) {
         new_value.push(value);
         list.scrollTop = list.scrollHeight;
         optionHistoryApply(id, new_value, old_value, 'matches', { add: { list, index: new_value.length, rule } });
-    });
+    }
     entry.value = '';
 }
 
