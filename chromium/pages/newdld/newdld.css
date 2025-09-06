@@ -24,7 +24,7 @@ label:active {
 }
 
 body:not(.meta) .e-meta,
-.meta .x-meta {
+body.meta .x-meta {
     display: none;
 }
 
