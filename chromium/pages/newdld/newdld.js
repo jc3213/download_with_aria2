@@ -33,8 +33,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('click', (event) => {
-    if (event.target !== refererEntry && refererPane.style.display === 'block') {
-        refererPane.style.display = ''; 
+    if (event.target !== refererEntry && !refererPane.classList.contains('hidden')) {
+        refererPane.classList.add('hidden'); 
     }
 });
 
@@ -103,7 +103,7 @@ jsonrpcPane.addEventListener('change', (event) => {
 
 refererEntry.addEventListener('click', (event) => {
     refererModalPopup();
-    refererPane.style.display = 'block';
+    refererPane.classList.remove('hidden');
 });
 
 refererEntry.addEventListener('input', (event) => {
@@ -115,10 +115,10 @@ function refererModalPopup() {
     let regexp = new RegExp(entry.replace(/[.?/]/g, '\\$&'), 'gi');
     aria2Referer.values().forEach((referer) => {
         if (referer.title.includes(entry)) {
-            referer.style.display = '';
+            referer.classList.remove('hidden');
             referer.innerHTML = referer.title.replace(regexp, '<mark>$&</mark>');
         } else {
-            referer.style.display = 'none';
+            referer.classList.add('hidden');
             referer.textContent = referer.title;
         }
     });
@@ -134,7 +134,7 @@ document.getElementById('proxy').addEventListener('click', (event) => {
 
 
 function refererModalList(id, url) {
-    if (!url.startsWith('http')) {
+    if (!url?.startsWith('http')) {
         return;
     }
     let referer = aria2Referer.get(id);
@@ -147,25 +147,21 @@ function refererModalList(id, url) {
 }
 
 chrome.tabs.query({}, (tabs) => {
-    tabs.forEach(({id, url}) => {
+    tabs.forEach(({ id, url }) => {
         refererModalList(id, url);
     });
 });
 
 chrome.tabs.onUpdated.addListener((tabId, { url }) => {
-    if (url) {
-        refererModalList(tabId, url);
-    }
+    refererModalList(tabId, url);
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-    let referer = aria2Referer.get(tabId);
-    if (referer) {
-        referer.remove();
+    if (aria2Referer.has(tabId)) {
+        aria2Referer.get(tabId).remove();
         aria2Referer.delete(tabId);
     }
 });
-
 
 chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage, options }) => {
     aria2Storage = storage;

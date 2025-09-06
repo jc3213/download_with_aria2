@@ -23,13 +23,13 @@ body, button, input, textarea, select {
 }
 
 button, input, textarea, select, option {
-    color: var(--color-text);
     background-color: var(--color-child);
+    color: var(--color-text);
 }
 
 body, div {
-    color: var(--color-text);
     background-color: var(--color-body);
+    color: var(--color-text);
     user-select: none;
     position: relative;
 }
