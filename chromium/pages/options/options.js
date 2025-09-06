@@ -83,7 +83,9 @@ jsonrpcPane.addEventListener('change', (event) => {
 
 function menuEventSave() {
     saveBtn.disabled = true;
-    extension.contains('jsonrpc') ? chrome.runtime.sendMessage({ action: 'options_jsonrpc', params: updated }) : aria2StorageUpdate();
+    extension.contains('jsonrpc')
+        ? chrome.runtime.sendMessage({ action: 'options_jsonrpc', params: updated })
+        : aria2StorageUpdate();
 }
 
 function menuEventUndo() {
@@ -136,15 +138,19 @@ function optionHistoryLoad(action, key, { id, type, ...props }) {
     updated[id] = value;
 }
 
-function menuEventExport() {
-    let [ name, type, body ] = extension.contains('jsonrpc')
-        ? [ 'aria2_jsonrpc-', '.conf', Object.keys(aria2Config).map( (key) => key + '=' + aria2Config[key] + '\n' ) ]
-        : [ 'downwitharia2-', '.json', [ JSON.stringify(aria2Storage, null, 4) ] ];
+function exportHandler(name, type, body) {
     let time = new Date().toLocaleString('ja').replace(/[/: ]/g, '_');
     let blob = new Blob(body);
     exporter.href = URL.createObjectURL(blob);
     exporter.download = name + time + type;
     exporter.click();
+}
+
+function menuEventExport() {
+    extension.contains('jsonrpc')
+        ? exportHandler('aria2_jsonrpc-', '.conf', Object.keys(aria2Config).map( (key) => key + '=' + aria2Config[key] + '\n' ))
+        : exportHandler('downwitharia2-', '.json', [JSON.stringify(aria2Storage, null, 4)]);
+
 }
 
 function menuEventImport() {
@@ -205,9 +211,9 @@ function importFileConf(file) {
 
 menuPane.addEventListener('change', async (event) => {
     let file = await promiseFileReader(event.target.files[0]);
+    event.target.value = '';
     optionHistoryFlush();
     extension.contains('jsonrpc') ? importFileConf(file) : importFileJson(file);
-    event.target.value = '';
 });
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
