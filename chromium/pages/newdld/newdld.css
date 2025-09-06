@@ -28,6 +28,16 @@ body.meta .x-meta {
     display: none;
 }
 
+.meta > label {
+    display: flex;
+}
+
+#menu > button {
+    margin-left: auto;
+    padding: 1px 5px;
+    width: auto;
+}
+
 #referer {
     border-style: solid;
     border-width: 2px;
@@ -53,12 +63,3 @@ body.meta .x-meta {
     filter: contrast(60%);
 }
 
-.meta label {
-    display: flex;
-}
-
-.flexmenu > button {
-    margin-left: auto;
-    padding: 1px 5px;
-    width: auto;
-}
