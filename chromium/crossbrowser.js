@@ -107,7 +107,7 @@ function aria2StorageChanged(response, json) {
 
 function aria2ConfigChanged(response, options) {
     aria2Config = {...aria2Config, ...options};
-    aria2RPC.call({method: 'aria2.changeGlobalOption', params: [options]});
+    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] });
 }
 
 async function aria2RemoteDownload(response, params) {
@@ -184,11 +184,10 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHea
 chrome.action ??= chrome.browserAction;
 
 chrome.action.onClicked.addListener(() => {
-    chrome.tabs.query({}, (tabs) => {
+    chrome.tabs.query({ currentWindow: true }, (tabs) => {
         let tab = tabs.find(({ url }) => url.startsWith(aria2Manager));
         if (tab) {
             chrome.tabs.update(tab.id, { active: true });
-            chrome.windows.update(tab.windowId, { focused: true });
         } else {
             chrome.tabs.create({ url: aria2Manager, active: true });
         }
@@ -243,7 +242,7 @@ function aria2StorageUpdate(json) {
 }
 
 async function aria2ClientOpened() {
-    let [version, options, active] = await aria2RPC.call({method: 'aria2.getVersion'}, {method: 'aria2.getGlobalOption'}, {method: 'aria2.tellActive'});
+    let [version, options, active] = await aria2RPC.call({ method: 'aria2.getVersion' }, { method: 'aria2.getGlobalOption' }, { method: 'aria2.tellActive' });
     aria2Config = options.result;
     aria2Version = version.result;
     aria2Config['disk-cache'] = getFileSize(aria2Config['disk-cache']);
