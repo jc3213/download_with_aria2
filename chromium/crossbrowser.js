@@ -185,7 +185,7 @@ chrome.action ??= chrome.browserAction;
 
 chrome.action.onClicked.addListener(() => {
     chrome.tabs.query({}, (tabs) => {
-        let tab = tabs.find(({ url }) => url === aria2Manager);
+        let tab = tabs.find(({ url }) => url.startsWith(aria2Manager));
         if (tab) {
             chrome.tabs.update(tab.id, { active: true });
             chrome.windows.update(tab.windowId, { focused: true });
