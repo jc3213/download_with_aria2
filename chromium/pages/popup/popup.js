@@ -89,19 +89,14 @@ async function aria2ClientUpdate() {
     updateManager(stats, active);
 }
 
-const clientHandlers = {
-    'aria2.onDownloadStart': (gid) => taskRemoved(gid, 'waiting'),
-    'fallback': (gid) => taskRemoved(gid, 'active')
-};
-
 function aria2ClientMessage({ method, params }) {
     if (method === 'aria2.onBtDownloadComplete') {
         return;
     }
     let [{ gid }] = params;
-    let handler = clientHandlers[method] ?? clientHandlers['fallback'];
+    let group = method === 'aria2.onDownloadStart' ? 'waiting' : 'active';
     taskElementRefresh(gid);
-    handler(gid);
+    taskRemoved(gid, group);
 }
 
 function aria2ClientClosed() {
