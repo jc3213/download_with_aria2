@@ -265,8 +265,8 @@ function aria2ClientClosed() {
 const clientHandlers = {
     'aria2.onDownloadStart': (gid) => aria2Active.add(gid),
     'aria2.onDownloadComplete': (gid) => {
-        aria2WhenComplete(gid);
         aria2Active.delete(gid);
+        aria2WhenComplete(gid);
     },
     'fallback': (gid) => aria2Active.delete(gid)
 };
