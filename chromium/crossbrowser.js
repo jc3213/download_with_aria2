@@ -264,7 +264,6 @@ function aria2ClientClosed() {
 
 const clientHandlers = {
     'aria2.onDownloadStart': (gid) => aria2Active.add(gid),
-    'aria2.onBtDownloadComplete': () => {},
     'aria2.onDownloadComplete': (gid) => {
         aria2WhenComplete(gid);
         aria2Active.delete(gid);
@@ -273,6 +272,9 @@ const clientHandlers = {
 };
 
 function aria2ClientMessage({ method, params }) {
+    if (method === 'aria2.onBtDownloadComplete') {
+        return;
+    }
     let [{ gid }] = params;
     let handler = clientHandlers[method] ?? clientHandlers['fallback'];
     handler(gid);
