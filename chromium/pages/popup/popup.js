@@ -91,11 +91,13 @@ async function aria2ClientUpdate() {
 
 const clientHandlers = {
     'aria2.onDownloadStart': (gid) => taskRemoved(gid, 'waiting'),
-    'aria2.onBtDownloadComplete': () => {},
     'fallback': (gid) => taskRemoved(gid, 'active')
 };
 
-function aria2ClientMessage({method, params}) {
+function aria2ClientMessage({ method, params }) {
+    if (method === 'aria2.onBtDownloadComplete') {
+        return;
+    }
     let [{ gid }] = params;
     let handler = clientHandlers[method] ?? clientHandlers['fallback'];
     taskElementRefresh(gid);
