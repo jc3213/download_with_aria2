@@ -106,7 +106,7 @@ function aria2StorageChanged(response, json) {
 }
 
 function aria2ConfigChanged(response, options) {
-    aria2Config = {...aria2Config, ...options};
+    aria2Config = { ...aria2Config, ...options };
     aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] });
 }
 
@@ -194,12 +194,12 @@ chrome.action.onClicked.addListener(() => {
     });
 });
 
-chrome.runtime.onInstalled.addListener(({reason}) => {
+chrome.runtime.onInstalled.addListener(({ reason }) => {
     aria2WhenInstall(reason);
 });
 
 chrome.storage.sync.get(null, (json) => {
-    let storage = {...aria2Default, ...json};
+    let storage = { ...aria2Default, ...json };
     aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
     aria2RPC.onopen = aria2ClientOpened;
     aria2RPC.onclose = aria2ClientClosed;
@@ -272,7 +272,7 @@ const clientHandlers = {
     'fallback': (gid) => aria2Active.delete(gid)
 };
 
-function aria2ClientMessage({method, params}) {
+function aria2ClientMessage({ method, params }) {
     let [{ gid }] = params;
     let handler = clientHandlers[method] ?? clientHandlers['fallback'];
     handler(gid);
@@ -377,8 +377,8 @@ function showNotification(title, message) {
 }
 
 function openPopupWindow(url, winSize) {
-    chrome.windows.getAll({windowTypes: ['normal']}, (windows) => {
-        let [{ top, left, height, width }] = windows;
+    chrome.windows.getCurrent((win) => {
+        let { top, left, height, width } = win;
         top = (top + height - winSize) / 2 | 0;
         left = (left + width - 710) / 2 | 0;
         height = winSize;
