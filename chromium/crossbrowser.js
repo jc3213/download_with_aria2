@@ -110,16 +110,7 @@ function aria2ConfigChanged(response, options) {
 }
 
 async function aria2RemoteDownload(response, params) {
-    if (params.length === 0) {
-        return response();
-    }
-    let tasks = [];
-    let names = [];
-    params.forEach(({ task, name }) => {
-        tasks.push(task);
-        names.push(name);
-    });
-    let result = await aria2RPC.call(...tasks);
+    let result = await aria2RPC.call(...params);
     response(result);
 }
 
