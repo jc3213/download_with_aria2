@@ -369,8 +369,7 @@ function showNotification(title, message) {
 }
 
 function openPopupWindow(url, winSize) {
-    chrome.windows.getCurrent((win) => {
-        let { top, left, height, width } = win;
+    chrome.windows.getCurrent(({ top, left, height, width }) => {
         top = (top + height - winSize) / 2 | 0;
         left = (left + width - 710) / 2 | 0;
         height = winSize;
