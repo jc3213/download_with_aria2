@@ -264,7 +264,7 @@ function aria2ClientClosed() {
     chrome.action.setBadgeText({ text: 'E' });
 }
 
-async function whenNotification(gid, type) {
+async function whenNotify(gid, type) {
     if (!aria2Storage['notify_' + type]) {
         return;
     }
@@ -281,12 +281,12 @@ function whenStarted(gid) {
         return;
     }
     aria2Active.add(gid);
-    whenNotification(gid, 'start');
+    whenNotify(gid, 'start');
 }
 
 function whenCompleted(gid) {
     aria2Active.delete(gid);
-    whenNotification(gid, 'complete');
+    whenNotify(gid, 'complete');
 }
 
 const clientHandlers = {
