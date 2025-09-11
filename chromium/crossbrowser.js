@@ -59,8 +59,7 @@ async function aria2DownloadHandler(url, referer, options, tabId) {
         }
         options['header'] = headers.map((header) => header.name + ': ' + header.value);
     }
-    await aria2RPC.call({ method: 'aria2.addUri', params: [[url], options] });
-    aria2WhenStart(url);
+    aria2RPC.call({ method: 'aria2.addUri', params: [[url], options] });
 }
 
 function aria2ImagesPrompt(referer, tabId) {
@@ -121,7 +120,6 @@ async function aria2RemoteDownload(response, params) {
         names.push(name);
     });
     let result = await aria2RPC.call(...tasks);
-    await aria2WhenStart(names.join(', '));
     response(result);
 }
 
@@ -266,19 +264,34 @@ function aria2ClientClosed() {
     chrome.action.setBadgeText({ text: 'E' });
 }
 
-async function whenCompleted(gid) {
-    aria2Active.delete(gid);
-    if (aria2Storage['notify_complete']) {
-        let [{ result }] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-        let { bittorrent, files: [{ path }] } = result;
-        let name = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1);
-        let title = chrome.i18n.getMessage('download_complete');
-        showNotification(title, name);
+async function whenNotification(gid, type) {
+    if (!aria2Storage['notify_' + type]) {
+        return;
     }
+    let [{ result }] = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
+    let { bittorrent, files } = result;
+    let [{ path, uris }] = files;
+    let [{ uri }] = uris;
+    let title = chrome.i18n.getMessage('download_' + type);
+    let message = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1) ?? uri;
+    showNotification(title, message);
+}
+
+function whenStarted(gid) {
+    if (aria2Active.has(gid)) {
+        return;
+    }
+    aria2Active.add(gid);
+    whenNotification(gid, 'start');
+}
+
+function whenCompleted(gid) {
+    aria2Active.delete(gid);
+    whenNotification(gid, 'complete');
 }
 
 const clientHandlers = {
-    'aria2.onDownloadStart': (gid) => aria2Active.add(gid),
+    'aria2.onDownloadStart': whenStarted,
     'aria2.onDownloadComplete': whenCompleted,
     'fallback': (gid) => aria2Active.delete(gid)
 };
@@ -301,13 +314,6 @@ function aria2CaptureResult(hostname, filename, filesize) {
         return false;
     }
     return true;
-}
-
-function aria2WhenStart(message) {
-    if (aria2Storage['notify_start']) {
-        let title = chrome.i18n.getMessage('download_start');
-        showNotification(title, message);
-    }
 }
 
 function getFileSize(bytes) {
