@@ -61,8 +61,12 @@ i {
     margin: 0px 0px 22px;
 }
 
-.group {
+.config {
     margin: 28px 0px;
+}
+
+.cfg-right {
+    grid-column: 2;
 }
 
 .flex > .flex:first-of-type {

@@ -18,7 +18,7 @@
             <input id="config" type="file" accept=".conf">
             <a></a>
         </div>
-        <div id="options" class="group">
+        <div id="options" class="config">
             <h1>JSON-RPC</h1>
             <div i18n-tips="tips_option_jsonrpc">
                 <h4 i18n="option_jsonrpc"></h4>
@@ -46,61 +46,55 @@
                 </div>
             </div>
             <h1 i18n="option_task_manager"></h1>
-            <div class="groupitem" i18n-tips="tips_option_manager_newtab">
+            <div class="cfg-item" i18n-tips="tips_option_manager_newtab">
                 <input id="manager-newtab" name="manager_newtab" type="checkbox">
                 <label for="manager-newtab" i18n="option_manager_newtab"></label>
             </div>
-            <div class="groupitem flex" i18n-tips="tips_option_manager_interval">
+            <div class="cfg-item flex" i18n-tips="tips_option_manager_interval">
                 <h4 i18n="option_manager_interval"></h4>
                 <input name="manager_interval" type="number" min="5" max="30" step="1">
                 <span i18n="time_second_full"></span>
             </div>
             <h1 i18n="option_context"></h1>
-            <div class="groupitem">
-                <div i18n-tips="tips_option_context_enabled">
-                    <input id="context-enabled" name="context_enabled" type="checkbox" data-css>
-                    <label for="context-enabled" i18n="option_context_enabled"></label>
-                </div>
-                <div class="e-context-enabled" i18n-tips="tips_option_context_cascade">
-                    <input id="context-cascade" name="context_cascade" type="checkbox">
-                    <label for="context-cascade" i18n="option_context_cascade"></label>
-                </div>
+            <div class="cfg-item" i18n-tips="tips_option_context_enabled">
+                <input id="context-enabled" name="context_enabled" type="checkbox" data-css>
+                <label for="context-enabled" i18n="option_context_enabled"></label>
             </div>
-            <div class="groupitem e-context-enabled">
-                <div i18n-tips="tips_option_context_thisurl">
-                    <input id="context-thisurl" name="context_thisurl" type="checkbox">
-                    <label for="context-thisurl" i18n="contextmenu_thisurl"></label>
-                </div>
-                <div i18n-tips="tips_option_context_thisimage">
-                    <input id="context-thisimage" name="context_thisimage" type="checkbox">
-                    <label for="context-thisimage" i18n="contextmenu_thisimage"></label>
-                </div>
-                <div i18n-tips="tips_option_context_allimages">
-                    <input id="context-allimages" name="context_allimages" type="checkbox">
-                    <label for="context-allimages" i18n="contextmenu_allimages"></label>
-                </div>
+            <div class="cfg-item e-context-enabled" i18n-tips="tips_option_context_thisurl">
+                <input id="context-thisurl" name="context_thisurl" type="checkbox">
+                <label for="context-thisurl" i18n="contextmenu_thisurl"></label>
+            </div>
+            <div class="cfg-item e-context-enabled" i18n-tips="tips_option_context_cascade">
+                <input id="context-cascade" name="context_cascade" type="checkbox">
+                <label for="context-cascade" i18n="option_context_cascade"></label>
+            </div>
+            <div class="cfg-item e-context-enabled" i18n-tips="tips_option_context_thisimage">
+                <input id="context-thisimage" name="context_thisimage" type="checkbox">
+                <label for="context-thisimage" i18n="contextmenu_thisimage"></label>
+            </div>
+            <div class="cfg-item cfg-right e-context-enabled" i18n-tips="tips_option_context_allimages">
+                <input id="context-allimages" name="context_allimages" type="checkbox">
+                <label for="context-allimages" i18n="contextmenu_allimages"></label>
             </div>
             <h1 i18n="option_notification"></h1>
-            <div class="groupitem">
-                <div class="groupitem" i18n-tips="tips_option_notify_start">
-                    <input id="notify-start" name="notify_start" type="checkbox">
-                    <label for="notify-start" i18n="option_notify_start"></label>
-                </div>
-                <div class="groupitem" i18n-tips="tips_option_notify_complete">
-                    <input id="notify-complete" name="notify_complete" type="checkbox">
-                    <label for="notify-complete" i18n="option_notify_complete"></label>
-                </div>
+            <div class="cfg-item" i18n-tips="tips_option_notify_start">
+                <input id="notify-start" name="notify_start" type="checkbox">
+                <label for="notify-start" i18n="option_notify_start"></label>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_notify_install">
+            <div class="cfg-item" i18n-tips="tips_option_notify_install">
                 <input id="notify-install" name="notify_install" type="checkbox">
                 <label for="notify-install" i18n="option_notify_install"></label>
             </div>
+            <div class="cfg-item" i18n-tips="tips_option_notify_complete">
+                <input id="notify-complete" name="notify_complete" type="checkbox">
+                <label for="notify-complete" i18n="option_notify_complete"></label>
+            </div>
             <h1 i18n="option_headers"></h1>
-            <div class="groupitem" i18n-tips="tips_option_headers_override">
+            <div class="cfg-item" i18n-tips="tips_option_headers_override">
                 <input id="headers-override" name="headers_override" type="checkbox" data-css>
                 <label for="headers-override" i18n="option_headers_override"></label>
             </div>
-            <div class="groupitem e-headers-override" i18n-tips="tips_option_headers_useragent">
+            <div class="cfg-item e-headers-override" i18n-tips="tips_option_headers_useragent">
                 <input name="headers_useragent" type="text">
             </div>
             <div class="matches padtop">
@@ -115,11 +109,11 @@
                 </div>
             </div>
             <h1 i18n="option_folder"></h1>
-            <div class="groupitem" i18n-tips="tips_option_folder_enabled">
+            <div class="cfg-item" i18n-tips="tips_option_folder_enabled">
                 <input id="folder-enabled" name="folder_enabled" type="checkbox" data-css>
                 <label for="folder-enabled" i18n="option_folder_enabled"></label>
             </div>
-            <div class="groupitem e-firefox e-folder-enabled e-capture-enabled x-capture-webrequest" i18n-tips="tips_option_folder_firefox">
+            <div class="cfg-item e-firefox e-folder-enabled e-capture-enabled x-capture-webrequest" i18n-tips="tips_option_folder_firefox">
                 <input id="folder-firefox" name="folder_firefox" type="checkbox" data-css>
                 <label for="folder-firefox" i18n="option_folder_firefox"></label>
             </div>
@@ -142,15 +136,15 @@
                 </div>
             </div>
             <h1 i18n="option_capture"></h1>
-            <div class="groupitem" i18n-tips="tips_option_capture_enabled">
+            <div class="cfg-item" i18n-tips="tips_option_capture_enabled">
                 <input id="capture-enabled" name="capture_enabled" type="checkbox" data-css>
                 <label for="capture-enabled" i18n="option_capture_enabled"></label>
             </div>
-            <div class="groupitem e-firefox e-capture-enabled" i18n-tips="tips_option_capture_webrequest">
+            <div class="cfg-item e-firefox e-capture-enabled" i18n-tips="tips_option_capture_webrequest">
                 <input id="capture-webrequest" name="capture_webrequest" type="checkbox" data-css>
                 <label for="capture-webrequest" i18n="option_capture_webrequest"></label>
             </div>
-            <div class="matches padtop group e-capture-enabled">
+            <div class="matches padtop e-capture-enabled">
                 <div class="flex" i18n-tips="tips_option_capture_size_exclude">
                     <h4 i18n="option_capture_size_exclude"></h4>
                     <div>
@@ -179,17 +173,17 @@
                 </div>
             </div>
         </div>
-        <div id="jsonrpc" class="group">
+        <div id="jsonrpc" class="config">
             <h1 i18n="aria2_options"></h1>
-            <div class="groupitem padtop">
+            <div class="cfg-item padtop">
                 <button id="goto-options" i18n="option_back"></button>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_com_dir">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_com_dir">
                 <h4 i18n="aria2_com_dir"></h4>
                 <input name="dir" type="text">
                 <i class="sample" title="&quot;C:\Aria2\Download&quot; (Windows)&#10;&#10;&quot;/home/aria2/download&quot; (Linux)"></i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_com_cache">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_com_cache">
                 <h4 i18n="aria2_com_cache"></h4>
                 <div>
                     <input name="disk-cache" type="text">
@@ -197,12 +191,12 @@
                 </div>
                 <i class="default">16M</i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_max_concurrent">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_max_concurrent">
                 <h4 i18n="aria2_max_concurrent"></h4>
                 <input name="max-concurrent-downloads" type="number">
                 <i class="default">5</i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_max_download">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_max_download">
                 <h4 i18n="aria2_max_download"></h4>
                 <div>
                     <input name="max-overall-download-limit" type="text">
@@ -210,7 +204,7 @@
                 </div>
                 <i class="disabled">0</i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_max_upload">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_max_upload">
                 <h4 i18n="aria2_max_upload"></h4>
                 <div>
                     <input name="max-overall-upload-limit" type="text">
@@ -219,12 +213,12 @@
                 <i class="disabled">0</i>
             </div>
             <h1>HTTP/FTP</h1>
-            <div class="groupitem" i18n-tips="tips_option_aria2_http_retry">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_http_retry">
                 <h4 i18n="aria2_http_retry"></h4>
                 <input name="max-tries" type="number">
                 <i class="default">5</i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_http_wait">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_http_wait">
                 <h4 i18n="aria2_http_wait"></h4>
                 <div>
                     <input name="retry-wait" type="number">
@@ -232,12 +226,12 @@
                 </div>
                 <i class="default">0</i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_http_split">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_http_split">
                 <h4 i18n="aria2_http_split"></h4>
                 <input name="split" type="number">
                 <i class="default">5</i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_http_size">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_http_size">
                 <h4 i18n="aria2_http_size"></h4>
                 <div>
                     <input name="min-split-size" type="text">
@@ -245,28 +239,28 @@
                 </div>
                 <i class="default">20M</i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_max_connection">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_max_connection">
                 <h4 i18n="aria2_max_connection"></h4>
                 <input name="max-connection-per-server" type="number">
                 <i class="default">1</i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_http_ua">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_http_ua">
                 <h4 i18n="aria2_http_ua"></h4>
                 <input name="user-agent" type="text">
                 <i id="useragent" class="default"></i>
             </div>
             <h1>BitTorrent</h1>
-            <div class="groupitem" i18n-tips="tips_option_aria2_bt_port">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_bt_port">
                 <h4 i18n="aria2_bt_port"></h4>
                 <input name="listen-port" type="text">
                 <i class="default">6881-6999</i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_bt_peers">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_bt_peers">
                 <h4 i18n="aria2_bt_peers"></h4>
                 <input name="bt-max-peers" type="number">
                 <i class="default">55</i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_bt_follow">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_bt_follow">
                 <h4 i18n="aria2_bt_follow"></h4>
                 <select name="follow-torrent">
                     <option value="true" i18n="common_true"></option>
@@ -274,7 +268,7 @@
                 </select>
                 <i class="default" i18n="common_true"></i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_bt_remove">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_bt_remove">
                 <h4 i18n="aria2_bt_remove"></h4>
                 <select name="bt-remove-unselected-file">
                     <option value="true" i18n="common_true"></option>
@@ -282,12 +276,12 @@
                 </select>
                 <i class="default" i18n="common_false"></i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_bt_ratio">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_bt_ratio">
                 <h4 i18n="aria2_bt_ratio"></h4>
                 <input name="seed-ratio" type="number" min="0" step="0.1">
                 <i class="default">1.0</i>
             </div>
-            <div class="groupitem" i18n-tips="tips_option_aria2_bt_seed">
+            <div class="cfg-item" i18n-tips="tips_option_aria2_bt_seed">
                 <h4 i18n="aria2_bt_seed"></h4>
                 <div>
                     <input name="seed-time" type="number">

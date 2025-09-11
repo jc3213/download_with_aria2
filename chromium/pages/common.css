@@ -113,17 +113,17 @@ h4 {
     display: none;
 }
 
-.group {
+.config {
     display: grid;
     grid-column-gap: 5px;
     grid-template-columns: repeat(2, 1fr);
 }
 
-.group > :not(.groupitem) {
+.config > :not(.cfg-item) {
     grid-column: span 2;
 }
 
-.groupitem > select {
+.cfg-item > select {
     width: 100%;
 }
 

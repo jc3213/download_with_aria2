@@ -219,9 +219,9 @@ body.error > #queue > .error {
     pointer-events: none;
 }
 
-.session:is(.complete, .removed, .error) > :is(.group, .files, .uris) button,
+.session:is(.complete, .removed, .error) > :is(.config, .files, .uris) button,
 .session:is(.active, .waiting, .pased, .p2p) > .menu > :nth-child(4),
-.session:not(.expand) > :is(.group, .files, .uris),
+.session:not(.expand) > :is(.config, .files, .uris),
 .session.http .e-p2p,
 .session.p2p .e-http {
     display: none;
@@ -292,7 +292,7 @@ body.error > #queue > .error {
     text-align: center;
 }
 
-.session > .group {
+.session > .config {
     grid-area: 5 / 1 / 6 / 5;
 }
 
