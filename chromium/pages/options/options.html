@@ -56,38 +56,44 @@
                 <span i18n="time_second_full"></span>
             </div>
             <h1 i18n="option_context"></h1>
-            <div class="groupitem" i18n-tips="tips_option_context_enabled">
-                <input id="context-enabled" name="context_enabled" type="checkbox" data-css>
-                <label for="context-enabled" i18n="option_context_enabled"></label>
+            <div class="groupitem">
+                <div i18n-tips="tips_option_context_enabled">
+                    <input id="context-enabled" name="context_enabled" type="checkbox" data-css>
+                    <label for="context-enabled" i18n="option_context_enabled"></label>
+                </div>
+                <div class="e-context-enabled" i18n-tips="tips_option_context_cascade">
+                    <input id="context-cascade" name="context_cascade" type="checkbox">
+                    <label for="context-cascade" i18n="option_context_cascade"></label>
+                </div>
             </div>
-            <div class="groupitem e-context-enabled" i18n-tips="tips_option_context_cascade">
-                <input id="context-cascade" name="context_cascade" type="checkbox">
-                <label for="context-cascade" i18n="option_context_cascade"></label>
-            </div>
-            <div class="groupitem e-context-enabled" i18n-tips="tips_option_context_thisurl">
-                <input id="context-thisurl" name="context_thisurl" type="checkbox">
-                <label for="context-thisurl" i18n="contextmenu_thisurl"></label>
-            </div>
-            <div class="groupitem e-context-enabled" i18n-tips="tips_option_context_thisimage">
-                <input id="context-thisimage" name="context_thisimage" type="checkbox">
-                <label for="context-thisimage" i18n="contextmenu_thisimage"></label>
-            </div>
-            <div class="groupitem e-context-enabled" i18n-tips="tips_option_context_allimages">
-                <input id="context-allimages" name="context_allimages" type="checkbox">
-                <label for="context-allimages" i18n="contextmenu_allimages"></label>
+            <div class="groupitem e-context-enabled">
+                <div i18n-tips="tips_option_context_thisurl">
+                    <input id="context-thisurl" name="context_thisurl" type="checkbox">
+                    <label for="context-thisurl" i18n="contextmenu_thisurl"></label>
+                </div>
+                <div i18n-tips="tips_option_context_thisimage">
+                    <input id="context-thisimage" name="context_thisimage" type="checkbox">
+                    <label for="context-thisimage" i18n="contextmenu_thisimage"></label>
+                </div>
+                <div i18n-tips="tips_option_context_allimages">
+                    <input id="context-allimages" name="context_allimages" type="checkbox">
+                    <label for="context-allimages" i18n="contextmenu_allimages"></label>
+                </div>
             </div>
             <h1 i18n="option_notification"></h1>
-            <div i18n-tips="tips_option_notify_install">
+            <div class="groupitem">
+                <div class="groupitem" i18n-tips="tips_option_notify_start">
+                    <input id="notify-start" name="notify_start" type="checkbox">
+                    <label for="notify-start" i18n="option_notify_start"></label>
+                </div>
+                <div class="groupitem" i18n-tips="tips_option_notify_complete">
+                    <input id="notify-complete" name="notify_complete" type="checkbox">
+                    <label for="notify-complete" i18n="option_notify_complete"></label>
+                </div>
+            </div>
+            <div class="groupitem" i18n-tips="tips_option_notify_install">
                 <input id="notify-install" name="notify_install" type="checkbox">
                 <label for="notify-install" i18n="option_notify_install"></label>
-            </div>
-            <div class="groupitem" i18n-tips="tips_option_notify_start">
-                <input id="notify-start" name="notify_start" type="checkbox">
-                <label for="notify-start" i18n="option_notify_start"></label>
-            </div>
-            <div class="groupitem" i18n-tips="tips_option_notify_complete">
-                <input id="notify-complete" name="notify_complete" type="checkbox">
-                <label for="notify-complete" i18n="option_notify_complete"></label>
             </div>
             <h1 i18n="option_headers"></h1>
             <div class="groupitem" i18n-tips="tips_option_headers_override">
