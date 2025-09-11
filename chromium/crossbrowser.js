@@ -271,9 +271,8 @@ async function whenNotification(gid, type) {
     let [{ result }] = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
     let { bittorrent, files } = result;
     let [{ path, uris }] = files;
-    let [{ uri }] = uris;
     let title = chrome.i18n.getMessage('download_' + type);
-    let message = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1) ?? uri;
+    let message = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1) ?? uris?.[0]?.uri ?? gid;
     showNotification(title, message);
 }
 
