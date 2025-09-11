@@ -52,7 +52,7 @@ submitBtn.addEventListener('click', (event) => {
     if (urls.length !== 1) {
         delete aria2Config['out'];
     }
-    let params = urls.map((url) => ({ name: url, task: { method: 'aria2.addUri', params: [[url], aria2Config] } }));
+    let params = urls.map((url) => ({ method: 'aria2.addUri', params: [[url], aria2Config] }));
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 });
 
@@ -69,22 +69,23 @@ metaImport.addEventListener('change', (event) => {
     metaFileDownload(event.target.files)
 });
 
-async function metafileHandler(file, method, params) {
+async function metafileHandler(method, file, params) {
     return new Promise((resolve) => {
         let reader = new FileReader();
         reader.onload = (event) => {
-            let body = reader.result.slice(reader.result.indexOf(',') + 1);
+            let { result } = event.target;
+            let body = result.slice(result.indexOf(',') + 1);
             params.unshift(body);
-            resolve({ name: file.name, task: { method, params } });
+            resolve({ method, params });
         };
         reader.readAsDataURL(file);
     });
 }
 
 const metafileMap = {
-    'torrent': (file, options) => metafileHandler(file, 'aria2.addTorrent', [ [], options ]),
-    'meta4': (file, options) => metafileHandler(file, 'aria2.addMetalink', [ options ]),
-    'metalink': (file, options) => metafileHandler(file, 'aria2.addMetalink', [ options ])
+    'torrent': (file, options) => metafileHandler('aria2.addTorrent', file, [ [], options ]),
+    'meta4': (file, options) => metafileHandler('aria2.addMetalink', file, [ options ]),
+    'metalink': (file, options) => metafileHandler('aria2.addMetalink', file, [ options ])
 };
 
 async function metaFileDownload(files) {
