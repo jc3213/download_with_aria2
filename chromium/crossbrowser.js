@@ -195,7 +195,11 @@ chrome.action.onClicked.addListener(() => {
 });
 
 chrome.runtime.onInstalled.addListener(({ reason }) => {
-    aria2WhenInstall(reason);
+    if (aria2Storage['notify_install']) {
+        let title = chrome.i18n.getMessage('extension_' + reason);
+        let message = chrome.i18n.getMessage('extension_version').replace('{version}', aria2Manifest.version);
+        showNotification(title, message);
+    }
 });
 
 chrome.storage.sync.get(null, (json) => {
@@ -289,14 +293,6 @@ function aria2CaptureResult(hostname, filename, filesize) {
         return false;
     }
     return true;
-}
-
-function aria2WhenInstall(reason) {
-    if (aria2Storage['notify_install']) {
-        let title = chrome.i18n.getMessage('extension_' + reason);
-        let message = chrome.i18n.getMessage('extension_version').replace('{version}', aria2Manifest.version);
-        showNotification(title, message);
-    }
 }
 
 function aria2WhenStart(message) {
