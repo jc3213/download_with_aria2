@@ -69,5 +69,5 @@ jobs:
             "chromium-${MV2_VERSION}.zip" \
             "chromium_mv3-${MV3_VERSION}.zip" \
             "firefox-${FF_VERSION}.zip" \
-            --title "v${RELEASE_VERSION}" \
+            --title "${RELEASE_VERSION}" \
             --notes "Auto-packaged extensions for version v${RELEASE_VERSION}"
