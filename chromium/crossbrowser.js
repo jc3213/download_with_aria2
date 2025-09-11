@@ -266,12 +266,20 @@ function aria2ClientClosed() {
     chrome.action.setBadgeText({ text: 'E' });
 }
 
+async function whenCompleted(gid) {
+    aria2Active.delete(gid);
+    if (aria2Storage['notify_complete']) {
+        let [{ result }] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
+        let { bittorrent, files: [{ path }] } = result;
+        let name = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1);
+        let title = chrome.i18n.getMessage('download_complete');
+        showNotification(title, name);
+    }
+}
+
 const clientHandlers = {
     'aria2.onDownloadStart': (gid) => aria2Active.add(gid),
-    'aria2.onDownloadComplete': (gid) => {
-        aria2Active.delete(gid);
-        aria2WhenComplete(gid);
-    },
+    'aria2.onDownloadComplete': whenCompleted,
     'fallback': (gid) => aria2Active.delete(gid)
 };
 
@@ -299,16 +307,6 @@ function aria2WhenStart(message) {
     if (aria2Storage['notify_start']) {
         let title = chrome.i18n.getMessage('download_start');
         showNotification(title, message);
-    }
-}
-
-async function aria2WhenComplete(gid) {
-    if (aria2Storage['notify_complete']) {
-        let [{ result }] = await aria2RPC.call({method: 'aria2.tellStatus', params: [gid]});
-        let { bittorrent, files: [{ path }] } = result;
-        let name = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1);
-        let title = chrome.i18n.getMessage('download_complete');
-        showNotification(title, name);
     }
 }
 
