@@ -109,11 +109,6 @@ function aria2ConfigChanged(response, options) {
     aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] });
 }
 
-async function aria2RemoteDownload(response, params) {
-    let result = await aria2RPC.call(...params);
-    response(result);
-}
-
 function aria2DetectedImages(response) {
     let { tabId, referer } = aria2Detect;
     let tab = aria2Inspect[tabId];
@@ -127,7 +122,7 @@ function aria2DetectedImages(response) {
 
 const msgHandlers = {
     'system_runtime': (response) => response(aria2SystemRuntime()),
-    'jsonrpc_download': aria2RemoteDownload,
+    'jsonrpc_download': (response, params) => aria2RPC.call(...params).then(response).catch(response),
     'options_storage': aria2StorageChanged,
     'options_jsonrpc': aria2ConfigChanged,
     'open_all_images': (response) => response(aria2DetectedImages()),
