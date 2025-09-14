@@ -141,8 +141,8 @@ function taskElementUpdate({ gid, status, files, bittorrent, completedLength, to
     let minutes = time / 60 - days * 1440 - hours * 60 | 0;
     let seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
     let percent = (completedLength / totalLength * 10000 | 0) / 100;
-    let {path} = files[0];
-    task.name.textContent ||= bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1);
+    let [{ path, uris }] = files;
+    task.name.textContent ||= bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
     task.current.textContent = getFileSize(completedLength);
     task.total.textContent = getFileSize(totalLength);
     task.day.textContent = days || '';
