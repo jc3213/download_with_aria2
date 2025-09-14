@@ -244,9 +244,9 @@ async function taskEventApply(task, gid) {
 async function taskEventAddUri(task, gid) {
     let uri = task.newuri.value;
     task.newuri.value = '';
-    if (/^(http|ftp)s?:\/\/[^/]+\/.*$/.test(uri)) {
+    let [{ result }] = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [uri]] });
+    if (result?.[1] === 1) {
         aria2Focus.add(gid);
-        await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [uri]] });
         task[uri] ??= taskUriElement(task, uri);
     }
 }
