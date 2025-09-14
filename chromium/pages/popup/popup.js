@@ -47,7 +47,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 purgeBtn.addEventListener('click', async (event) => {
-    await aria2RPC.call({method: 'aria2.purgeDownloadResult'});
+    await aria2RPC.call({ method: 'aria2.purgeDownloadResult' });
     let { stopped } = aria2Queue;
     stopped.forEach((gid) => {
         aria2Tasks.get(gid).remove();
@@ -73,7 +73,7 @@ function updateManager(stats, active) {
 
 async function aria2ClientOpened() {
     clearInterval(aria2Interval);
-    let [stats, version, active, waiting, stopped] = await aria2RPC.call({method: 'aria2.getGlobalStat'}, {method: 'aria2.getVersion'}, {method: 'aria2.tellActive'}, {method: 'aria2.tellWaiting', params: [0, 999]}, {method: 'aria2.tellStopped', params: [0, 999]});
+    let [stats, version, active, waiting, stopped] = await aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }, { method: 'aria2.tellWaiting', params: [0, 999] }, { method: 'aria2.tellStopped', params: [0, 999] });
     aria2Queue.active  = new Set();
     aria2Queue.waiting = new Set();
     aria2Queue.stopped = new Set();
@@ -85,7 +85,7 @@ async function aria2ClientOpened() {
 }
 
 async function aria2ClientUpdate() {
-    let [stats, active] = await aria2RPC.call( {method: 'aria2.getGlobalStat'}, {method: 'aria2.tellActive'} );
+    let [stats, active] = await aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' });
     updateManager(stats, active);
 }
 
@@ -243,12 +243,12 @@ async function taskEventApply(task, gid) {
 
 async function taskEventAddUri(task, gid) {
     let uri = task.newuri.value;
+    task.newuri.value = '';
     if (/^(http|ftp)s?:\/\/[^/]+\/.*$/.test(uri)) {
         aria2Focus.add(gid);
-        await aria2RPC.call({method: 'aria2.changeUri', params: [gid, 1, [], [uri]]});
+        await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [uri]] });
         task[uri] ??= taskUriElement(task, uri);
     }
-    task.newuri.value = '';
 }
 
 function taskEventProxy(task) {
@@ -315,7 +315,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
         task.config[event.target.name] = event.target.value;
         apply.classList.remove('hidden');
     });
-    files.forEach(({index, length, path, selected, uris}) => {
+    files.forEach(({ index, length, path, selected, uris }) => {
         task[index] ??= taskFileElement(task, gid, index, selected, path, length);
         uris.forEach(({uri, status}) => {
             task[uri] ??= taskUriElement(task, uri);
