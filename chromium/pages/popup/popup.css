@@ -1,7 +1,6 @@
 body {
     display: grid;
     grid-template-columns: 200px 1fr;
-    grid-template-rows: auto auto auto 1fr;
     gap: 3px;
     margin: 8px auto;
     width: 1280px;
@@ -70,9 +69,9 @@ body.error > #queue > .error {
 }
 
 #queue {
-    display: flex;
-    flex-direction: column;
     grid-area: 1 / 2 / 5 / 3;
+    height: calc(100vh - 16px);
+    overflow-y: auto;
 }
 
 #menu::before {

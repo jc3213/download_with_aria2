@@ -104,7 +104,6 @@ body {
     border-width: 2px 0px 0px;
     grid-area: 2 / 1 / 3 / 4;
     height: 540px;
-    overflow-y: auto;
     padding-top: 4px;
 }
 `;
