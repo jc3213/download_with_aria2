@@ -69,6 +69,9 @@ body.error > #queue > .error {
 }
 
 #queue {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     grid-area: 1 / 2 / 5 / 3;
     height: calc(100vh - 16px);
     overflow-y: auto;
@@ -179,7 +182,6 @@ body.error > #queue > .error {
     border-width: 1px;
     display: grid;
     padding: 3px;
-    margin-bottom: 5px;
     gap: 3px;
     grid-template-columns: repeat(3, 1fr) auto;
 }
