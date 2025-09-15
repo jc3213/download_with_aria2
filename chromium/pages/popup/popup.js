@@ -178,6 +178,12 @@ const taskRemoveMap = {
     'error': (task, gid) => taskRemoveHandler(task, gid, 'aria2.removeDownloadResult', 'stopped'),
 };
 
+const taskPauseMap = {
+    'active': (task, gid) => aria2RPC.call({ 'method': 'aria2.forcePause', 'params': [gid] }),
+    'waiting': (task, gid) => aria2RPC.call({ 'method': 'aria2.forcePause', 'params': [gid] }),
+    'paused': (task, gid) => aria2RPC.call({ 'method': 'aria2.unpause', 'params': [gid] })
+};
+
 async function taskDetailHandler(gid) {
     let [{ result: files }, { result: options }] = await aria2RPC.call({ method: 'aria2.getFiles', params: [gid] }, { method: 'aria2.getOption', params: [gid] });
     options['min-split-size'] = getFileSize(options['min-split-size']);
@@ -205,6 +211,20 @@ async function taskEventDetail(task, gid) {
     task.classList.toggle('expand');
 }
 
+async function taskEventApply(task, gid) {
+    let { checks, config } = task;
+    let selected = [];
+    checks.forEach((check, index) => {
+        if (check.checked) {
+            selected.push(index);
+        }
+    });
+    config['select-file'] = selected;
+    aria2Focus.add(gid);
+    await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, config] });
+    task.apply.classList.add('hidden');
+}
+
 async function taskEventRetry(task, gid) {
     let { files, options } = await taskDetailHandler(gid);
     let [{ path, uris }] = files;
@@ -221,24 +241,9 @@ async function taskEventRetry(task, gid) {
     task.remove();
 }
 
-const taskPauseMap = {
-    'active': (task, gid) => aria2RPC.call({ 'method': 'aria2.forcePause', 'params': [gid] }),
-    'waiting': (task, gid) => aria2RPC.call({ 'method': 'aria2.forcePause', 'params': [gid] }),
-    'paused': (task, gid) => aria2RPC.call({ 'method': 'aria2.unpause', 'params': [gid] })
-};
-
-async function taskEventApply(task, gid) {
-    let { checks, config } = task;
-    let selected = [];
-    checks.forEach((check, index) => {
-        if (check.checked) {
-            selected.push(index);
-        }
-    });
-    config['select-file'] = selected;
-    aria2Focus.add(gid);
-    await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, config] });
-    task.apply.classList.add('hidden');
+function taskEventProxy(task) {
+    task.config['all-proxy'] = task.proxy.value = aria2Proxy;
+    task.apply.classList.remove('hidden');
 }
 
 async function taskEventAddUri(task, gid) {
@@ -251,21 +256,16 @@ async function taskEventAddUri(task, gid) {
     }
 }
 
-function taskEventProxy(task) {
-    task.config['all-proxy'] = task.proxy.value = aria2Proxy;
-    task.apply.classList.remove('hidden');
-}
-
 const taskEventMap = {
     'tips_task_remove': (task, gid) => taskRemoveMap[task.status]?.(task, gid),
+    'tips_task_pause': (task, gid) => taskPauseMap[task.status]?.(task, gid),
     'tips_task_detail': taskEventDetail,
     'tips_task_apply': taskEventApply,
     'tips_task_retry': taskEventRetry,
-    'tips_task_pause': (task, gid) => taskPauseMap[task.status]?.(task, gid),
-    'tips_task_adduri': taskEventAddUri,
-    'tips_task_copy': ($, _, event) => navigator.clipboard.writeText(event.target.title),
     'tips_proxy_server': taskEventProxy,
-    'tips_task_fileid': (task) => task.apply.classList.remove('hidden')
+    'tips_uri_add': taskEventAddUri,
+    'tips_uri_copy': ($, _, event) => navigator.clipboard.writeText(event.target.title),
+    'tips_file_index': (task) => task.apply.classList.remove('hidden')
 };
 
 function taskElementCreate(gid, status, bittorrent, files) {
