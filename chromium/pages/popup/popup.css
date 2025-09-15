@@ -220,7 +220,7 @@ body.error > #queue > .error {
 }
 
 .session:is(.complete, .removed, .error) > :is(.config, .files, .uris) button,
-.session:is(.active, .waiting, .pased, .p2p) > .menu > :nth-child(4),
+.session:is(.active, .waiting, .paused, .p2p) > .menu > :nth-child(4),
 .session:not(.expand) > :is(.config, .files, .uris),
 .session.http .e-p2p,
 .session.p2p .e-http {
