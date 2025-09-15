@@ -154,7 +154,7 @@ function taskElementUpdate({ gid, status, files, bittorrent, completedLength, to
     task.upload.textContent = getFileSize(uploadSpeed);
     task.ratio.textContent = percent;
     task.ratio.style.width = percent + '%';
-    files.forEach(({index, length, path, completedLength}) => {
+    files.forEach(({ index, length, path, completedLength }) => {
         let { name, ratio } = task[index];
         name.textContent ||= path?.slice(path.lastIndexOf('/') + 1);
         ratio.textContent = (completedLength / length * 10000 | 0) / 100;
@@ -193,11 +193,11 @@ async function taskDetailHandler(gid) {
 }
 
 async function taskEventDetail(task, gid) {
-    if (task.classList.contains('expand')) {
-        task.apply.classList.add('hidden');
+    let { classList, checks, entries, apply } = task;
+    if (classList.contains('expand')) {
+        apply.classList.add('hidden');
     } else {
         let { files, options } = await taskDetailHandler(gid);
-        let { checks, entries } = task;
         let config = {};
         files.forEach(({ index, selected }) => {
             checks.get(index).checked = selected === 'true';
@@ -208,11 +208,11 @@ async function taskEventDetail(task, gid) {
         });
         task.config = config;
     }
-    task.classList.toggle('expand');
+    classList.toggle('expand');
 }
 
 async function taskEventApply(task, gid) {
-    let { checks, config } = task;
+    let { checks, config, apply } = task;
     let selected = [];
     checks.forEach((check, index) => {
         if (check.checked) {
@@ -222,7 +222,7 @@ async function taskEventApply(task, gid) {
     config['select-file'] = selected;
     aria2Focus.add(gid);
     await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, config] });
-    task.apply.classList.add('hidden');
+    apply.classList.add('hidden');
 }
 
 async function taskEventRetry(task, gid) {
@@ -317,7 +317,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
     });
     files.forEach(({ index, length, path, selected, uris }) => {
         task[index] ??= taskFileElement(task, gid, index, selected, path, length);
-        uris.forEach(({uri, status}) => {
+        uris.forEach(({ uri, status }) => {
             task[uri] ??= taskUriElement(task, uri);
         });
     });
