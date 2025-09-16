@@ -196,6 +196,7 @@ async function taskEventDetail(task, gid) {
     let { classList, checks, entries, apply } = task;
     if (classList.contains('expand')) {
         apply.classList.add('hidden');
+        classList.remove('expand');
     } else {
         let { files, options } = await taskDetailHandler(gid);
         let config = {};
@@ -207,8 +208,8 @@ async function taskEventDetail(task, gid) {
             entry.value = config[name] = options[name] ?? '';
         });
         task.config = config;
+        classList.add('expand');
     }
-    classList.toggle('expand');
 }
 
 async function taskEventApply(task, gid) {
