@@ -111,9 +111,9 @@ function menuEventRedo() {
 
 const optionHandlers = {
     'string': ({ entry, value }) => entry.value = value,
-    'checkbox': ({ entry, value }) => {
+    'checkbox': ({ entry, id, value }) => {
         if (entry.hasAttribute('data-css')) {
-            extension.toggle(entry.name);
+            extension.toggle(id);
         }
         entry.checked = value;
     },
@@ -131,7 +131,8 @@ const optionHandlers = {
     }
 };
 
-function optionHistoryLoad(action, key, { id, type, ...props }) {
+function optionHistoryLoad(action, key, props) {
+    let { id, type } = props;
     let value = props.value = props[key];
     let handler = optionHandlers[type] ?? optionHandlers['string'];
     handler(props, action);
@@ -192,7 +193,8 @@ function importFileJson(file) {
 
 function aria2ConfigSetup(json) {
     jsonrpcEntries.forEach((entry) => {
-        entry.value = aria2Config[entry.name] = json[entry.name] ?? '';
+        let { name } = entry;
+        entry.value = aria2Config[name] = json[name] ?? '';
     });
     updated = {...aria2Config};
 }
