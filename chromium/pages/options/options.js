@@ -113,7 +113,7 @@ const optionHandlers = {
     'string': ({ entry, value }) => entry.value = value,
     'checkbox': ({ entry, value }) => {
         if (entry.hasAttribute('data-css')) {
-            extension.toggle(id);
+            extension.toggle(entry.name);
         }
         entry.checked = value;
     },
