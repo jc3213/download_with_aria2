@@ -115,7 +115,7 @@ h4 {
 
 .config {
     display: grid;
-    grid-column-gap: 5px;
+    gap: 0px 5px;
     grid-template-columns: repeat(2, 1fr);
 }
 
