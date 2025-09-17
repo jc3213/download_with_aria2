@@ -133,10 +133,9 @@ const optionHandlers = {
 
 function optionHistoryLoad(action, key, props) {
     let { id, type } = props;
-    let value = props.value = props[key];
     let handler = optionHandlers[type] ?? optionHandlers['string'];
+    updated[id] = props.value = props[key];
     handler(props, action);
-    updated[id] = value;
 }
 
 function exportHandler(name, type, body) {
