@@ -17,7 +17,7 @@ body.capture_webrequest .x-capture-webrequest {
 
 input[type="checkbox"] {
     accent-color: #006cbe;
-    transform: scale(1.5);
+    transform: scale(1.5) translateY(1px);
     width: auto;
 }
 
@@ -72,7 +72,6 @@ i {
 .cfg-right {
     grid-column: 2;
 }
-
 
 .flex > .flex:nth-child(3),
 .flex > input {
