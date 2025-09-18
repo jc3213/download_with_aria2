@@ -43,13 +43,13 @@ span, label {
 }
 
 select {
-    padding: 1px 5px;
+    padding: 0px 5px;
 }
 
 input {
     border-style: inset;
     border-width: 1px;
-    padding: 2px 5px;
+    padding: 1px 5px;
     resize: none;
     width: calc(100% - 12px);
 }
@@ -115,7 +115,7 @@ h4 {
 
 .config {
     display: grid;
-    grid-column-gap: 5px;
+    gap: 0px 5px;
     grid-template-columns: repeat(2, 1fr);
 }
 
