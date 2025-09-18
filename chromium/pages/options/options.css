@@ -26,6 +26,10 @@ input[type="checkbox"] + label {
     font-weight: bold;
 }
 
+input.fl-1 {
+    height: 21px;
+}
+
 i {
     padding: 1px;
 }
@@ -71,12 +75,6 @@ i {
 
 .cfg-right {
     grid-column: 2;
-}
-
-.flex > .flex:nth-child(3),
-.flex > input {
-    flex: 1;
-    height: 23px;
 }
 
 .matches {
