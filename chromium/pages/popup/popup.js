@@ -227,8 +227,7 @@ async function taskEventApply(task, gid) {
 }
 
 async function taskEventRetry(task, gid) {
-    let { files, options } = await taskDetailHandler(gid);
-    let [{ path, uris }] = files;
+    let { files: [{ path, uris }], options } = await taskDetailHandler(gid);
     let url = uris.map(({ uri }) => uri);
     let match = path?.match(/^((?:[A-Z]:)?(?:\/[^/]+)*)\/([^/]+)$/);
     if (match) {
@@ -247,13 +246,25 @@ function taskEventProxy(task) {
     task.apply.classList.remove('hidden');
 }
 
-async function taskEventAddUri(task, gid) {
-    let uri = task.newuri.value;
+async function taskUriAdded(task, gid) {
+    let url = task.newuri.value;
     task.newuri.value = '';
-    let [{ result }] = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [uri]] });
+    let [{ result }] = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [url]] });
     if (result?.[1] === 1) {
         aria2Focus.add(gid);
-        task[uri] ??= taskUriElement(task, uri);
+        task[url] ??= taskUriElement(task, url);
+    }
+}
+
+async function taskUriRemoved(task, gid, event) {
+    let { files: [{ uris }] } = await taskDetailHandler(gid);
+    let url = event.target.previousElementSibling.textContent;
+    let removed = uris.filter(({ uri }) => uri === url).map(({ uri }) => uri);
+    let [{ result }] = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, removed, []] });
+    if (result?.[0] === removed.length) {
+        aria2Focus.add(gid);
+        delete task[url];
+        event.target.parentNode.remove();
     }
 }
 
@@ -264,8 +275,9 @@ const taskEventMap = {
     'tips_task_apply': taskEventApply,
     'tips_task_retry': taskEventRetry,
     'tips_proxy_server': taskEventProxy,
-    'tips_uri_add': taskEventAddUri,
-    'tips_uri_copy': ($, _, event) => navigator.clipboard.writeText(event.target.title),
+    'tips_uri_add': taskUriAdded,
+    'tips_uri_copy': ($, _, event) => navigator.clipboard.writeText(event.target.textContent),
+    'tips_uri_remove': taskUriRemoved,
     'tips_file_index': (task) => task.apply.classList.remove('hidden')
 };
 
@@ -309,7 +321,7 @@ function taskElementCreate(gid, status, bittorrent, files) {
     });
     newuri.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            taskEventAddUri(task, gid);
+            taskUriAdded(task, gid);
         }
     });
     options.addEventListener('change', (event) => {
@@ -344,7 +356,8 @@ function taskFileElement(task, gid, index, selected, path, length) {
 
 function taskUriElement(task, uri) {
     let url = uriLET.cloneNode(true);
-    url.title = url.textContent = uri;
+    let [copy, remove] = url.children;
+    url.title = copy.textContent = uri;
     task.ulist.appendChild(url);
     return true;
 }

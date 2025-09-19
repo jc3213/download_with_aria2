@@ -182,7 +182,7 @@ body.error > #queue > .error {
     border-width: 1px;
     display: grid;
     padding: 3px;
-    gap: 3px;
+    gap: 5px;
     grid-template-columns: repeat(3, 1fr) auto;
 }
 
@@ -259,7 +259,7 @@ body.error > #queue > .error {
 
 .session:is(.active, .waiting, .paused) > .meter:is(:active, > .ratio:active),
 .session.p2p > .files > .file > label:active,
-.session > .uris > .uri:active {
+.session > .uris > .uri > div:active {
     filter: contrast(60%);
 }
 
@@ -315,20 +315,24 @@ body.error > #queue > .error {
 }
 
 .file > *,
-.uri {
+.uri > div {
     border-style: solid;
     border-width: 1px;
-    height: 21px;
     overflow: hidden;
-    padding: 3px;
+    padding: 1px;
     white-space: nowrap;
 }
 
 .file {
     display: grid;
-    grid-template-columns: 0px 40px auto 80px 60px;
+    grid-template-columns: 0px 40px 1fr 80px 60px;
 }
 
 .file > :not(:nth-child(3)) {
     text-align: center;
+}
+
+.uri {
+    display: grid;
+    grid-template-columns: 1fr auto;
 }
