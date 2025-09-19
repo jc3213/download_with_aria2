@@ -291,7 +291,7 @@ optionsMatches.forEach((match) => {
 
 function createMatchPattern(value) {
     let rule = matchLET.cloneNode(true);
-    rule.children[0].textContent = value;
+    rule.title = rule.children[0].textContent = value;
     return rule;
 }
 
