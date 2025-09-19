@@ -235,8 +235,9 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
 });
 
 function matchEventAddNew(id, list, entry) {
+    let { value } = entry;
     let old_value = updated[id];
-    let value = entry.value.match(/([^.]+\.)+[^.]+/)?.[0];
+    entry.value = '';
     if (value && !old_value.includes(value)) {
         let new_value = [...old_value];
         let rule = printMatchPattern(list, id, value);
@@ -244,7 +245,6 @@ function matchEventAddNew(id, list, entry) {
         list.scrollTop = list.scrollHeight;
         optionHistoryApply(id, new_value, old_value, 'matches', { add: { list, index: new_value.length, rule } });
     }
-    entry.value = '';
 }
 
 function matchEventResort(id, list) {
@@ -291,7 +291,7 @@ optionsMatches.forEach((match) => {
 
 function createMatchPattern(value) {
     let rule = matchLET.cloneNode(true);
-    rule.title = rule.children[0].textContent = value;
+    rule.children[0].textContent = value;
     return rule;
 }
 

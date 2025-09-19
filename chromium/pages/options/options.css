@@ -88,14 +88,14 @@ i {
     border-width: 1px;
     display: grid;
     grid-auto-rows: 25px;
-    grid-template-columns: repeat(3, 33.33%);
-    max-height: 130px;
-    min-height: 52px;
+    grid-template-columns: repeat(2, 1fr);
+    max-height: 125px;
+    min-height: 50px;
     overflow-y: scroll;
 }
 
 .listx {
-    grid-template-columns: repeat(5, 20%);
+    grid-template-columns: repeat(5, 1fr);
     height: 59px;
 }
 
