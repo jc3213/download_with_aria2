@@ -356,8 +356,7 @@ function taskFileElement(task, gid, index, selected, path, length) {
 
 function taskUriElement(task, uri) {
     let url = uriLET.cloneNode(true);
-    let [copy, remove] = url.children;
-    url.title = copy.textContent = uri;
+    url.children[0].textContent = uri;
     task.ulist.appendChild(url);
     return true;
 }
