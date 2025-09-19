@@ -227,7 +227,8 @@ async function taskEventApply(task, gid) {
 }
 
 async function taskEventRetry(task, gid) {
-    let { files: [{ path, uris }], options } = await taskDetailHandler(gid);
+    let { files, options } = await taskDetailHandler(gid);
+    let [{ path, uris }] = files;
     let url = uris.map(({ uri }) => uri);
     let match = path?.match(/^((?:[A-Z]:)?(?:\/[^/]+)*)\/([^/]+)$/);
     if (match) {
@@ -257,7 +258,8 @@ async function taskUriAdded(task, gid) {
 }
 
 async function taskUriRemoved(task, gid, event) {
-    let { files: [{ uris }] } = await taskDetailHandler(gid);
+    let { files } = await taskDetailHandler(gid);
+    let [{ uris }] = files;
     let url = event.target.previousElementSibling.textContent;
     let removed = uris.filter(({ uri }) => uri === url).map(({ uri }) => uri);
     let [{ result }] = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, removed, []] });
