@@ -81,12 +81,10 @@ async function aria2ClientOpened() {
     waiting.result.forEach(taskElementUpdate);
     stopped.result.forEach(taskElementUpdate);
     verEntry.textContent = version.result.version;
-    aria2Interval = setInterval(aria2ClientUpdate, aria2Delay);
-}
-
-async function aria2ClientUpdate() {
-    let [stats, active] = await aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' });
-    updateManager(stats, active);
+    aria2Interval = setInterval(async () => {
+        let [stats, active] = await aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' });
+        updateManager(stats, active);
+    }, aria2Delay);
 }
 
 function aria2ClientMessage({ method, params }) {
