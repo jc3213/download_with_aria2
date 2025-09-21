@@ -52,7 +52,7 @@ function menuEventSubmit() {
     aria2Images.forEach(({ src, alt, classList }) => {
         if (classList.contains('checked')) {
             let options = { ...aria2Config, out: alt };
-            params.push({ name: src, task: { method: 'aria2.addUri', params: [[src], options] } });
+            params.push({ method: 'aria2.addUri', params: [[src], options] });
         }
     });
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
