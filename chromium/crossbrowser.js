@@ -226,25 +226,22 @@ function aria2StorageUpdate(json) {
 }
 
 function aria2ClientOpened() {
-    aria2RPC.call({ method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' })
-        .then(([{ result: options, error }, { result: version }, { result: active }]) => {
-            if (error) {
-                return aria2ClientClosed();
-            }
-            options['disk-cache'] = getFileSize(options['disk-cache']);
-            options['min-split-size'] = getFileSize(options['min-split-size']);
-            options['max-download-limit'] = getFileSize(options['max-download-limit']);
-            options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
-            options['max-overall-download-limit'] = getFileSize(options['max-overall-download-limit']);
-            options['max-overall-upload-limit'] = getFileSize(options['max-overall-upload-limit']);
-            aria2Config = options;
-            aria2Version = version;
-            aria2CaptureHooking();
-            aria2Active = new Set(active.map(({ gid }) => gid));
-            chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
-            setIndicator();
-        });
-
+    aria2RPC.call(
+        { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
+    ).then(([{ result: options }, { result: version }, { result: active }]) => {
+        options['disk-cache'] = getFileSize(options['disk-cache']);
+        options['min-split-size'] = getFileSize(options['min-split-size']);
+        options['max-download-limit'] = getFileSize(options['max-download-limit']);
+        options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
+        options['max-overall-download-limit'] = getFileSize(options['max-overall-download-limit']);
+        options['max-overall-upload-limit'] = getFileSize(options['max-overall-upload-limit']);
+        aria2Config = options;
+        aria2Version = version;
+        aria2CaptureHooking();
+        aria2Active = new Set(active.map(({ gid }) => gid));
+        chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
+        setIndicator();
+    }).catch(aria2ClientClosed);
 }
 
 function aria2ClientClosed() {
