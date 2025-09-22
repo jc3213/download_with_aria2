@@ -33,14 +33,14 @@ chrome.runtime.onMessage.addListener(({ action, params }) => {
 });
 
 function aria2StorageChanged(json) {
+    aria2Delay = json['manager_interval'] * 1000;
+    aria2Proxy = json['proxy_server'];
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
-    aria2Delay = json['manager_interval'] * 1000;
-    aria2Proxy = json['proxy_server'];
 }
 
-chrome.runtime.sendMessage({action: 'system_runtime'}, ({ storage }) => {
+chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage }) => {
     aria2ClientSetup(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
     aria2StorageChanged(storage);
     i18nEntry.value = chrome.i18n.getMessage('extension_locale');
