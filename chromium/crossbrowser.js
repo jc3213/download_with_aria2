@@ -106,7 +106,7 @@ function storageChanged(response, json) {
 
 function optionsChanged(response, options) {
     aria2Config = { ...aria2Config, ...options };
-    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [config] });
+    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] });
 }
 
 function detectedImages(response) {
