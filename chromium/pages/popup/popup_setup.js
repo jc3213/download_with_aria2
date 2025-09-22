@@ -40,10 +40,10 @@ function aria2StorageChanged(json) {
     aria2Proxy = json['proxy_server'];
 }
 
-chrome.runtime.sendMessage({action: 'system_runtime'}, ({ storage, manifest }) => {
+chrome.runtime.sendMessage({action: 'system_storage'}, ({ storage }) => {
     aria2ClientSetup(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
     aria2StorageChanged(storage);
-    i18nEntry.value = manifest.current_locale;
+    i18nEntry.value = chrome.i18n.getMessage('extension_locale');
     i18nEntry.disabled = true;
 });
 
