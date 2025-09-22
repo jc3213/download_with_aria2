@@ -240,7 +240,7 @@ function aria2ClientOpened() {
             aria2Config = options;
             aria2Version = version;
             aria2CaptureHooking();
-            aria2Active = new Set(result.map(({ gid }) => gid));
+            aria2Active = new Set(active.map(({ gid }) => gid));
             chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
             setIndicator();
         });
