@@ -105,7 +105,7 @@ function storageChanged(response, json) {
 }
 
 function optionsChanged(response, options) {
-    let config = { ...aria2Config, ...options };
+    aria2Config = { ...aria2Config, ...options };
     aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [config] });
 }
 
@@ -249,7 +249,7 @@ function aria2ClientOpened() {
 
 function aria2ClientClosed() {
     aria2CaptureDisabled();
-    aria2Config = aria2Version = null;
+    aria2Active = aria2Config = aria2Version = null;
     chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
     chrome.action.setBadgeText({ text: 'E' });
 }
