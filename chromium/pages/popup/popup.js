@@ -73,18 +73,22 @@ function updateManager(stats, active) {
 
 async function aria2ClientOpened() {
     clearInterval(aria2Interval);
-    let [stats, version, active, waiting, stopped] = await aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }, { method: 'aria2.tellWaiting', params: [0, 999] }, { method: 'aria2.tellStopped', params: [0, 999] });
-    aria2Queue.active  = new Set();
-    aria2Queue.waiting = new Set();
-    aria2Queue.stopped = new Set();
-    updateManager(stats, active);
-    waiting.result.forEach(taskElementUpdate);
-    stopped.result.forEach(taskElementUpdate);
-    verEntry.textContent = version.result.version;
-    aria2Interval = setInterval(async () => {
-        let [stats, active] = await aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' });
+    aria2RPC.call(
+        { method: 'aria2.getGlobalStat' }, { method: 'aria2.getVersion' },
+        { method: 'aria2.tellActive' }, { method: 'aria2.tellWaiting', params: [0, 999] }, { method: 'aria2.tellStopped', params: [0, 999] }
+    ).then(([stats, version, active, waiting, stopped]) => {
+        aria2Queue.active  = new Set();
+        aria2Queue.waiting = new Set();
+        aria2Queue.stopped = new Set();
         updateManager(stats, active);
-    }, aria2Delay);
+        waiting.result.forEach(taskElementUpdate);
+        stopped.result.forEach(taskElementUpdate);
+        verEntry.textContent = version.result.version;
+        aria2Interval = setInterval(async () => {
+            let [stats, active] = await aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' });
+            updateManager(stats, active);
+        }, aria2Delay);
+    }).catch(aria2ClientClosed);
 }
 
 function aria2ClientMessage({ method, params }) {
