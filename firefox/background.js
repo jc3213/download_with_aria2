@@ -1,16 +1,20 @@
 let aria2WebRequest = new Set([ 'content-disposition', 'content-type', 'content-length' ]);
 
-function aria2CaptureSwitch() {
+function aria2CaptureHooking() {
     if (!aria2Storage['capture_enabled']) {
-        browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
-        browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
+        aria2CaptureDisabled();
     } else if (aria2Storage['capture_webrequest']) {
-        browser.webRequest.onHeadersReceived.addListener(aria2CaptureWebRequest, {urls: [ 'http://*/*', 'https://*/*' ], types: ['main_frame', 'sub_frame']}, ['blocking', 'responseHeaders']);
+        browser.webRequest.onHeadersReceived.addListener(aria2CaptureWebRequest, { urls: ['http://*/*', 'https://*/*'], types: ['main_frame', 'sub_frame'] }, ['blocking', 'responseHeaders']);
         browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
     } else {
         browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
         browser.downloads.onCreated.addListener(aria2CaptureDownloads);
     }
+}
+
+function aria2CaptureDisabled() {
+    browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
+    browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
 }
 
 async function aria2CaptureDownloads({id, url, referrer, filename, fileSize}) {

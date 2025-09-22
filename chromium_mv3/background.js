@@ -12,12 +12,14 @@ function aria2CaptureFilename({id, finalUrl, referrer, filename, fileSize}) {
     }
 }
 
-function aria2CaptureSwitch() {
-    if (aria2Storage['capture_enabled']) {
-        chrome.downloads.onDeterminingFilename.addListener(aria2CaptureFilename);
-    } else {
-        chrome.downloads.onDeterminingFilename.removeListener(aria2CaptureFilename);
-    }
+function aria2CaptureHooking() {
+    aria2Storage['capture_enabled']
+        ? chrome.downloads.onDeterminingFilename.addListener(aria2CaptureFilename)
+        : aria2CaptureDisabled();
+}
+
+function aria2CaptureDisabled() {
+    chrome.downloads.onDeterminingFilename.removeListener(aria2CaptureFilename);
 }
 
 chrome.runtime.onStartup.addListener(chrome.runtime.getPlatformInfo);
