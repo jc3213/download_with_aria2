@@ -231,12 +231,18 @@ function aria2StorageUpdate(json) {
     }
 }
 
-async function aria2ClientOpened() {
-    aria2CaptureHooking();
-    let [{ result }] = await aria2RPC.call({ method: 'aria2.tellActive' });
-    aria2Active = new Set(result.map(({ gid }) => gid));
-    chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
-    setIndicator();
+function aria2ClientOpened() {
+    aria2RPC.call({ method: 'aria2.tellActive' }).then(([{ result, error }]) => {
+        if (error) {
+            aria2ClientClosed();
+        } else {
+            aria2CaptureHooking();
+            aria2Active = new Set(result.map(({ gid }) => gid));
+            chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
+            setIndicator();
+        }
+    });
+
 }
 
 function aria2ClientClosed() {

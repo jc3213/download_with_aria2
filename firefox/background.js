@@ -24,10 +24,10 @@ async function aria2CaptureDownloads({ id, url, referrer, filename, fileSize }) 
     let hostname = getHostname(referrer);
     let captured = aria2CaptureResult(hostname, filename, fileSize);
     if (captured) {
-        browser.downloads.cancel(id).then(async () => {
+        browser.downloads.cancel(id).then(() => {
             browser.downloads.erase({id});
             aria2DownloadHandler(url, referrer, getFirefoxOptions(filename));
-        }).catch(error => aria2WhenComplete(url));
+        });
     }
 }
 
