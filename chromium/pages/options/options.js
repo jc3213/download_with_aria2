@@ -327,7 +327,7 @@ function aria2StorageUpdate() {
     chrome.runtime.sendMessage({ action: 'options_storage', params: updated });
 }
 
-chrome.runtime.sendMessage({ action: 'system_storage'}, ({ storage, manifest }) => {
+chrome.runtime.sendMessage({ action: 'system_runtime'}, ({ storage, manifest }) => {
     aria2Storage = storage;
     aria2Version = manifest.version;
     aria2StorageSetup();

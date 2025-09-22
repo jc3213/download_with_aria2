@@ -32,6 +32,8 @@ let aria2Default = {
 let aria2RPC;
 let aria2Storage = {};
 let aria2Updated = {};
+let aria2Config;
+let aria2Version;
 let aria2Active;
 let aria2Manager = chrome.runtime.getURL('/pages/popup/popup.html');
 let aria2Popup = 0;
@@ -84,22 +86,13 @@ chrome.commands.onCommand.addListener((command) => {
     commandMap[command]?.();
 });
 
-function systemRuntime(response, params = {}) {
-    params.storage = aria2Storage;
-    params.manifest = aria2Manifest;
-    aria2RPC.call({ method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' })
-        .then(([{ result: options }, { result: version }]) => {
-            options['disk-cache'] = getFileSize(options['disk-cache']);
-            options['min-split-size'] = getFileSize(options['min-split-size']);
-            options['max-download-limit'] = getFileSize(options['max-download-limit']);
-            options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
-            options['max-overall-download-limit'] = getFileSize(options['max-overall-download-limit']);
-            options['max-overall-upload-limit'] = getFileSize(options['max-overall-upload-limit']);
-            params.options = options;
-            params.version = version;
-            response(params);
-        })
-        .catch(() => response(params));
+function systemRuntime() {
+    return {
+        storage: aria2Storage,
+        manifest: aria2Manifest,
+        options: aria2Config,
+        version: aria2Version
+    };
 }
 
 function storageChanged(response, json) {
@@ -112,21 +105,23 @@ function storageChanged(response, json) {
 }
 
 function optionsChanged(response, options) {
-    options = { ...options, ...options };
-    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] });
+    let config = { ...aria2Config, ...options };
+    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [config] });
 }
 
 function detectedImages(response) {
     let { tabId, referer } = aria2Detect;
     let tab = aria2Inspect[tabId];
-    let images = tab ? [...tab.images.values()] : [];
-    let params = { images, referer, request: aria2Request, tabId: aria2Popup };
-    systemRuntime(response, params);
+    let json = systemRuntime();
+    json.referer = referer;
+    json.images = tab ? [...tab.images.values()] : [];
+    json.request = aria2Request;
+    json.tabId = aria2Popup;
+    response(json);
 }
 
 const msgHandlers = {
-    'system_storage': (response) => response({ storage: aria2Storage, manifest: aria2Manifest }),
-    'system_runtime': systemRuntime,
+    'system_runtime': (response) => response(systemRuntime()),
     'jsonrpc_download': (response, params) => aria2RPC.call(...params).then(response).catch(response),
     'options_storage': storageChanged,
     'options_jsonrpc': optionsChanged,
@@ -175,8 +170,7 @@ chrome.action ??= chrome.browserAction;
 chrome.action.onClicked.addListener(() => {
     chrome.tabs.query({ currentWindow: true }, (tabs) => {
         let tab = tabs.find(({ url }) => url.startsWith(aria2Manager));
-        tab
-            ? chrome.tabs.update(tab.id, { active: true })
+        tab ? chrome.tabs.update(tab.id, { active: true })
             : chrome.tabs.create({ url: aria2Manager, active: true });
     });
 });
@@ -232,21 +226,30 @@ function aria2StorageUpdate(json) {
 }
 
 function aria2ClientOpened() {
-    aria2RPC.call({ method: 'aria2.tellActive' }).then(([{ result, error }]) => {
-        if (error) {
-            aria2ClientClosed();
-        } else {
+    aria2RPC.call({ method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' })
+        .then(([{ result: options, error }, { result: version }, { result: active }]) => {
+            if (error) {
+                return aria2ClientClosed();
+            }
+            options['disk-cache'] = getFileSize(options['disk-cache']);
+            options['min-split-size'] = getFileSize(options['min-split-size']);
+            options['max-download-limit'] = getFileSize(options['max-download-limit']);
+            options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
+            options['max-overall-download-limit'] = getFileSize(options['max-overall-download-limit']);
+            options['max-overall-upload-limit'] = getFileSize(options['max-overall-upload-limit']);
+            aria2Config = options;
+            aria2Version = version;
             aria2CaptureHooking();
             aria2Active = new Set(result.map(({ gid }) => gid));
             chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
             setIndicator();
-        }
-    });
+        });
 
 }
 
 function aria2ClientClosed() {
     aria2CaptureDisabled();
+    aria2Config = aria2Version = null;
     chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
     chrome.action.setBadgeText({ text: 'E' });
 }
