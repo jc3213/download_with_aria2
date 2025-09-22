@@ -1,14 +1,14 @@
 importScripts('libs/aria2.js', 'crossbrowser.js');
 
-function aria2CaptureFilename({id, finalUrl, referrer, filename, fileSize}) {
-    if (!aria2Version || finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
+function aria2CaptureFilename({ id, finalUrl, referrer, filename, fileSize }) {
+    if (finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
         return;
     }
     let hostname = getHostname(referrer || finalUrl);
     let captured = aria2CaptureResult(hostname, filename, fileSize);
     if (captured) {
         chrome.downloads.erase({id});
-        aria2DownloadHandler(finalUrl, referrer, {out: filename});
+        aria2DownloadHandler(finalUrl, referrer, { out: filename });
     }
 }
 

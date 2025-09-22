@@ -1,4 +1,4 @@
-function aria2CaptureFilename({id, finalUrl, referrer, filename, fileSize}) {
+function aria2CaptureFilename({ id, finalUrl, referrer, filename, fileSize }) {
     if (finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
         return;
     }
@@ -6,7 +6,7 @@ function aria2CaptureFilename({id, finalUrl, referrer, filename, fileSize}) {
     let captured = aria2CaptureResult(hostname, filename, fileSize);
     if (captured) {
         chrome.downloads.erase({id});
-        aria2DownloadHandler(finalUrl, referrer, {out: filename});
+        aria2DownloadHandler(finalUrl, referrer, { out: filename });
     }
 }
 

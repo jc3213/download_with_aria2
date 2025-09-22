@@ -17,8 +17,8 @@ function aria2CaptureDisabled() {
     browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
 }
 
-async function aria2CaptureDownloads({id, url, referrer, filename, fileSize}) {
-    if (!aria2Version || url.startsWith('data') || url.startsWith('blob')) {
+async function aria2CaptureDownloads({ id, url, referrer, filename, fileSize }) {
+    if (url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
     let hostname = getHostname(referrer);
@@ -31,12 +31,12 @@ async function aria2CaptureDownloads({id, url, referrer, filename, fileSize}) {
     }
 }
 
-async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeaders, tabId}) {
-    if (!aria2Version || statusCode !== 200) {
+async function aria2CaptureWebRequest({ statusCode, url, originUrl, responseHeaders, tabId }) {
+    if (statusCode !== 200) {
         return;
     }
     let result = {};
-    responseHeaders.forEach(({name, value}) => {
+    responseHeaders.forEach(({ name, value }) => {
         name = name.toLowerCase();
         if (aria2WebRequest.has(name)) {
             result[name] = value;
@@ -49,8 +49,8 @@ async function aria2CaptureWebRequest({statusCode, url, originUrl, responseHeade
     let hostname = getHostname(originUrl);
     let captured = aria2CaptureResult(hostname, out, result['content-length'] | 0);
     if (captured) {
-        aria2DownloadHandler(url, originUrl, {out}, tabId);
-        return {cancel: true};
+        aria2DownloadHandler(url, originUrl, { out }, tabId);
+        return { cancel: true };
     }
 }
 
