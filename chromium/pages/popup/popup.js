@@ -91,6 +91,14 @@ async function aria2ClientOpened() {
     }).catch(aria2ClientClosed);
 }
 
+function aria2ClientClosed() {
+    clearInterval(aria2Interval);
+    aria2Tasks.clear();
+    aria2Stats.values().forEach((stat) => stat.textContent = '0');
+    queuePane.innerHTML = '';
+    verEntry.textContent = 'N/A';
+}
+
 function aria2ClientMessage({ method, params }) {
     if (method === 'aria2.onBtDownloadComplete') {
         return;
@@ -99,14 +107,6 @@ function aria2ClientMessage({ method, params }) {
     let group = method === 'aria2.onDownloadStart' ? 'waiting' : 'active';
     taskElementRefresh(gid);
     taskRemoved(gid, group);
-}
-
-function aria2ClientClosed() {
-    clearInterval(aria2Interval);
-    aria2Tasks.clear();
-    aria2Stats.values().forEach((stat) => stat.textContent = '0');
-    queuePane.innerHTML = '';
-    verEntry.textContent = 'N/A';
 }
 
 function taskRemoved(gid, group) {
