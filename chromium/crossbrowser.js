@@ -85,6 +85,8 @@ chrome.commands.onCommand.addListener((command) => {
 });
 
 function systemRuntime(response, params = {}) {
+    params.storage = aria2Storage;
+    params.manifest = aria2Manifest;
     aria2RPC.call({ method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' })
         .then(([{ result: options }, { result: version }]) => {
             options['disk-cache'] = getFileSize(options['disk-cache']);
@@ -95,11 +97,9 @@ function systemRuntime(response, params = {}) {
             options['max-overall-upload-limit'] = getFileSize(options['max-overall-upload-limit']);
             params.options = options;
             params.version = version;
-            params.storage = aria2Storage;
-            params.manifest = aria2Manifest;
             response(params);
         })
-        .catch(response);
+        .catch(() => response(params));
 }
 
 function storageChanged(response, json) {
