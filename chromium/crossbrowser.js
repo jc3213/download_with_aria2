@@ -30,7 +30,6 @@ let aria2Default = {
 };
 
 let aria2RPC;
-let aria2Opened;
 let aria2Storage = {};
 let aria2Updated = {};
 let aria2Active;
@@ -85,19 +84,22 @@ chrome.commands.onCommand.addListener((command) => {
     commandMap[command]?.();
 });
 
-async function systemRuntime(response, params = {}) {
-    let [{ result: options }, { result: version }] = await aria2RPC.call({ method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' });
-    options['disk-cache'] = getFileSize(options['disk-cache']);
-    options['min-split-size'] = getFileSize(options['min-split-size']);
-    options['max-download-limit'] = getFileSize(options['max-download-limit']);
-    options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
-    options['max-overall-download-limit'] = getFileSize(options['max-overall-download-limit']);
-    options['max-overall-upload-limit'] = getFileSize(options['max-overall-upload-limit']);
-    params.options = options;
-    params.version = version;
-    params.storage = aria2Storage;
-    params.manifest = aria2Manifest;
-    response(params);
+function systemRuntime(response, params = {}) {
+    aria2RPC.call({ method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' })
+        .then(([{ result: options }, { result: version }]) => {
+            options['disk-cache'] = getFileSize(options['disk-cache']);
+            options['min-split-size'] = getFileSize(options['min-split-size']);
+            options['max-download-limit'] = getFileSize(options['max-download-limit']);
+            options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
+            options['max-overall-download-limit'] = getFileSize(options['max-overall-download-limit']);
+            options['max-overall-upload-limit'] = getFileSize(options['max-overall-upload-limit']);
+            params.options = options;
+            params.version = version;
+            params.storage = aria2Storage;
+            params.manifest = aria2Manifest;
+            response(params);
+        })
+        .catch(response);
 }
 
 function storageChanged(response, json) {
@@ -173,11 +175,9 @@ chrome.action ??= chrome.browserAction;
 chrome.action.onClicked.addListener(() => {
     chrome.tabs.query({ currentWindow: true }, (tabs) => {
         let tab = tabs.find(({ url }) => url.startsWith(aria2Manager));
-        if (tab) {
-            chrome.tabs.update(tab.id, { active: true });
-        } else {
-            chrome.tabs.create({ url: aria2Manager, active: true });
-        }
+        tab
+            ? chrome.tabs.update(tab.id, { active: true })
+            : chrome.tabs.create({ url: aria2Manager, active: true });
     });
 });
 
@@ -232,9 +232,9 @@ function aria2StorageUpdate(json) {
 }
 
 async function aria2ClientOpened() {
+    aria2CaptureHooking();
     let [{ result }] = await aria2RPC.call({ method: 'aria2.tellActive' });
     aria2Active = new Set(result.map(({ gid }) => gid));
-    aria2CaptureHooking();
     chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
     setIndicator();
 }
