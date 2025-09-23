@@ -45,7 +45,9 @@ chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage }) => {
     storage['manager_filter'] ??= JSON.parse(localStorage.getItem('queue')) ?? [];
     localStorage.removeItem('queue');
 //
-    taskFilters(storage['manager_filter'], (params) => chrome.runtime.sendMessage({ action: 'manager_update', params }));
+    taskFilters(storage['manager_filter'], (params) => {
+        chrome.runtime.sendMessage({ action: 'storage_update', params: { changes: ['manager_filter'], 'manager_filter': array } });
+    });
     i18nEntry.value = chrome.i18n.getMessage('extension_locale');
     i18nEntry.disabled = true;
     aria2ClientSetup(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
