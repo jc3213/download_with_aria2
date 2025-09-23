@@ -2,7 +2,7 @@ let aria2Storage = {};
 let aria2Config = {};
 let aria2Version;
 
-let updated = {};
+let updated;
 let undoes = [];
 let undone = false;
 let redoes = [];
@@ -42,9 +42,10 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-function optionHistoryApply(id, new_value, old_value, type, props) {
+function optionHistoryApply(props) {
+    let { id, new_value } = props;
     updated[id] = new_value;
-    undoes.push({ ...props, id, new_value, old_value, type });
+    undoes.push(props);
     saveBtn.disabled = undoBtn.disabled = false;
     if (undone) {
         redoes = [];
@@ -66,26 +67,42 @@ const valueHandlers = {
 
 optionsPane.addEventListener('change', (event) => {
     let entry = event.target;
-    let { name, type } = entry;
-    if (!name) {
+    let { name: id, type } = entry;
+    if (!id) {
         return;
     }
     let handler = valueHandlers[type] ?? valueHandlers['string'];
-    let value = handler(entry, name);
-    optionHistoryApply(name, value, updated[name], type, { entry });
+    let new_value = handler(entry, id);
+    optionHistoryApply({ id, new_value, old_value: aria2Storage[id], type, entry });
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
     let entry = event.target;
-    let {name, value} = event.target;
-    optionHistoryApply(name, value, updated[name], 'text', { entry });
+    let { name: id, value: new_value, type } = event.target;
+    optionHistoryApply({ id, new_value, old_value: aria2Config[id], type, entry });
 });
+
+function saveHandler(action, origin) {
+    let params = {};
+    let changes = Object.keys(updated).filter((key) => {
+        let old_value = origin[key];
+        if (old_value === undefined) {
+            return false;
+        }
+        let new_value = updated[key];
+        if (Array.isArray(old_value) ? JSON.stringify(old_value) === JSON.stringify(new_value) : old_value === new_value) {
+            return false;
+        }
+        origin[key] = params[key] = updated[key];
+        return true;
+    });
+    params.changes = changes;
+    chrome.runtime.sendMessage({ action, params });
+}
 
 function menuEventSave() {
     saveBtn.disabled = true;
-    extension.contains('jsonrpc')
-        ? chrome.runtime.sendMessage({ action: 'jsonrpc_update', params: updated })
-        : aria2StorageUpdate();
+    extension.contains('jsonrpc') ? saveHandler('jsonrpc_update', aria2Config) : saveHandler('storage_update', aria2Storage);
 }
 
 function menuEventUndo() {
@@ -150,7 +167,6 @@ function menuEventExport() {
     extension.contains('jsonrpc')
         ? exportHandler('aria2_jsonrpc-', '.conf', Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key] + '\n' ))
         : exportHandler('downwitharia2-', '.json', [ JSON.stringify(aria2Storage, null, 4) ]);
-
 }
 
 function menuEventImport() {
@@ -186,42 +202,49 @@ function promiseFileReader(file) {
 
 function importFileJson(file) {
     updated = JSON.parse(file);
-    aria2StorageUpdate();
-    aria2StorageSetup();
+    menuEventSave();
+    initStorageTab();
 }
 
-function aria2ConfigSetup(json) {
+function importFileConf(file) {
+    updated = {};
+    file.split('\n').forEach((line) => {
+        if (line[0] !== '#') {
+            let [key, value] = line.split('=');
+            updated[key] = value;
+        }
+    });
+    menuEventSave();
+    initJsonrpcTab(updated);
+}
+
+const importHandler = {
+    '.json': importFileJson,
+    '.conf': importFileConf
+};
+
+menuPane.addEventListener('change', async (event) => {
+    let input = event.target;
+    let { files, accept } = input;
+    let file = await promiseFileReader(files[0]);
+    input.value = '';
+    importHandler[accept](file);
+    optionHistoryFlush();
+});
+
+function initJsonrpcTab(json) {
     jsonrpcEntries.forEach((entry) => {
         let { name } = entry;
         entry.value = aria2Config[name] = json[name] ?? '';
     });
-    updated = {...aria2Config};
+    updated = {};
 }
-
-function importFileConf(file) {
-    let params = {};
-    file.split('\n').forEach((line) => {
-        if (line[0] !== '#') {
-            let [key, value] = line.split('=');
-            params[key] = value;
-        }
-    });
-    chrome.runtime.sendMessage({ action: 'jsonrpc_update', params });
-    aria2ConfigSetup(params);
-}
-
-menuPane.addEventListener('change', async (event) => {
-    let file = await promiseFileReader(event.target.files[0]);
-    event.target.value = '';
-    optionHistoryFlush();
-    extension.contains('jsonrpc') ? importFileConf(file) : importFileJson(file);
-});
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
     chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ options, version }) => {
         if (options && version) {
             optionHistoryFlush();
-            aria2ConfigSetup(options);
+            initJsonrpcTab(options);
             tellVer.textContent = tellUA.textContent = version.version;
             extension.add('jsonrpc');
         }
@@ -230,41 +253,41 @@ document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
 
 document.getElementById('goto-options').addEventListener('click', (event) => {
     optionHistoryFlush();
-    aria2StorageSetup();
+    initStorageTab();
     extension.remove('jsonrpc');
 });
 
 function matchEventAddNew(id, list, entry) {
     let value = entry.value.match(/^(\*|[a-zA-Z0-9-]+)(\.(\*|[a-zA-Z0-9-]+))*$/)?.[0];
-    let old_value = updated[id];
+    let old_value = aria2Storage[id];
     entry.value = '';
     if (value && !old_value.includes(value)) {
         let new_value = [...old_value];
         let rule = printMatchPattern(list, id, value);
         new_value.push(value);
         list.scrollTop = list.scrollHeight;
-        optionHistoryApply(id, new_value, old_value, 'matches', { add: { list, index: new_value.length, rule } });
+        optionHistoryApply({ id, new_value, old_value, type: 'matches', add: { list, index: new_value.length, rule } });
     }
 }
 
 function matchEventResort(id, list) {
-    let old_value = updated[id];
+    let old_value = aria2Storage[id];
     let new_value = [...old_value].sort();
     let old_order = [...list.children];
     let new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    optionHistoryApply(id, new_value, old_value, 'resort', { list, new_order, old_order });
+    optionHistoryApply({ id, new_value, old_value, type: 'resort', list, new_order, old_order });
 }
 
 function matchEventRemove(id, list, _, event) {
     let rule = event.target.parentNode;
     let value = rule.title;
-    let old_value = updated[id];
+    let old_value = aria2Storage[id];
     let new_value = [...old_value];
     let index = new_value.indexOf(value);
     new_value.splice(index, 1);
     rule.remove();
-    optionHistoryApply(id, new_value, old_value, 'matches', { remove: { list, index, rule } });
+    optionHistoryApply({ id, new_value, old_value, type: 'matches', remove: { list, index, rule } });
 }
 
 const listEventMap = {
@@ -301,12 +324,12 @@ function printMatchPattern(list, id, value) {
     return rule;
 }
 
-function aria2StorageSetup() {
-    updated = { ...aria2Storage };
+function initStorageTab() {
+    updated = {};
     tellVer.textContent = aria2Version;
     optionsEntries.forEach((entry) => {
         let { name, type } = entry;
-        let value = updated[name];
+        let value = aria2Storage[name];
         if (type === 'checkbox') {
             if (entry.hasAttribute('data-css')) {
                 value ? extension.add(name) : extension.remove(name);
@@ -318,17 +341,12 @@ function aria2StorageSetup() {
     });
     optionsMatches.forEach(({ id, list }) => {
         list.innerHTML = '';
-        updated[id].forEach((value) => printMatchPattern(list, id, value));
+        aria2Storage[id].forEach((value) => printMatchPattern(list, id, value));
     });
-}
-
-function aria2StorageUpdate() {
-    aria2Storage = { ...updated };
-    chrome.runtime.sendMessage({ action: 'storage_update', params: updated });
 }
 
 chrome.runtime.sendMessage({ action: 'system_runtime'}, ({ storage, manifest }) => {
     aria2Storage = storage;
     aria2Version = manifest.version;
-    aria2StorageSetup();
+    initStorageTab();
 });
