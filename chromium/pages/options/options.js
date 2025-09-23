@@ -68,11 +68,11 @@ const valueHandlers = {
 optionsPane.addEventListener('change', (event) => {
     let entry = event.target;
     let { name: id, type } = entry;
-    if (!name) {
+    if (!id) {
         return;
     }
     let handler = valueHandlers[type] ?? valueHandlers['string'];
-    let new_value = handler(entry, name);
+    let new_value = handler(entry, id);
     optionHistoryApply({ id, new_value, old_value: updated[id], type, entry });
 });
 
@@ -132,11 +132,11 @@ const optionHandlers = {
     }
 };
 
-function optionHistoryLoad(action, key, props) {
-    let { id, type } = props;
+function optionHistoryLoad(action, key, json) {
+    let { id, type } = json;
     let handler = optionHandlers[type] ?? optionHandlers['string'];
-    updated[id] = props.value = props[key];
-    handler(props, action);
+    updated[id] = json.value = json[key];
+    handler(json, action);
 }
 
 function exportHandler(name, type, body) {
