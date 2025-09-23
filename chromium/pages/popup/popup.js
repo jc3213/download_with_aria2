@@ -61,17 +61,19 @@ filterPane.addEventListener('click', (event) => {
 // convert storage from "string;string;string" to stringified array
 function hotfix() {
     try {
-        let filter = JSON.parse(localStorage.getItem('filter'));
-        if (!filter) throw null;
-        return filter;
+        let queue = JSON.parse(localStorage.getItem('queue'));
+        if (!queue) throw null;
+        return queue;
     } catch {
-        return localStorage.getItem('queues')?.match(/[^;]+/g);
+        let old_one = localStorage.getItem('queues')?.match(/[^;]+/g);
+        localStorage.removeItem('queues');
+        return old_one;
     }
 }
 
 taskFilters(
     hotfix(),
-    (array) => localStorage.setItem('filter', JSON.stringify(array))
+    (array) => localStorage.setItem('queue', JSON.stringify(array))
 );
 
 purgeBtn.addEventListener('click', async (event) => {
