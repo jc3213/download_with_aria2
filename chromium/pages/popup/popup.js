@@ -72,7 +72,6 @@ function updateManager(stats, active) {
 }
 
 async function aria2ClientOpened() {
-    clearInterval(aria2Interval);
     aria2RPC.call(
         { method: 'aria2.getGlobalStat' }, { method: 'aria2.getVersion' },
         { method: 'aria2.tellActive' }, { method: 'aria2.tellWaiting', params: [0, 999] }, { method: 'aria2.tellStopped', params: [0, 999] }
@@ -84,10 +83,8 @@ async function aria2ClientOpened() {
         waiting.result.forEach(taskElementUpdate);
         stopped.result.forEach(taskElementUpdate);
         verEntry.textContent = version.result.version;
-        aria2Interval = setInterval(async () => {
-            let [stats, active] = await aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' });
-            updateManager(stats, active);
-        }, aria2Delay);
+        aria2Interval = setInterval(() => aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' })
+            .then(([stats, active]) => updateManager(stats, active)), aria2Delay);
     }).catch(aria2ClientClosed);
 }
 
