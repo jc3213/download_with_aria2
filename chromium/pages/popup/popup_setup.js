@@ -11,7 +11,7 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
 });
 
 downBtn.addEventListener('click', (event) => {
-    chrome.runtime.sendMessage({action: 'open_new_download'});
+    chrome.runtime.sendMessage({ action: 'open_new_download' });
 });
 
 optionsBtn.addEventListener('click', (event) => {
@@ -19,7 +19,7 @@ optionsBtn.addEventListener('click', (event) => {
 });
 
 chrome.runtime.onMessage.addListener(({ action, params }) => {
-    if (action !== 'storage_update') {
+    if (action !== 'options_storage') {
         return;
     }
     if (!params['manager_newtab']) {
@@ -40,18 +40,16 @@ function aria2StorageChanged(json) {
     aria2RPC.connect();
 }
 
+taskFilters(
+    JSON.parse(localStorage.getItem('queue')),
+    (array) => localStorage.setItem('queue', JSON.stringify(array))
+);
+
 chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage }) => {
-// remove old filter rule
-    storage['manager_filter'] ??= JSON.parse(localStorage.getItem('queue')) ?? [];
-    localStorage.removeItem('queue');
-//
-    taskFilters(storage['manager_filter'], (params) => {
-        chrome.runtime.sendMessage({ action: 'storage_update', params: { changes: ['manager_filter'], 'manager_filter': array } });
-    });
-    i18nEntry.value = chrome.i18n.getMessage('extension_locale');
-    i18nEntry.disabled = true;
     aria2ClientSetup(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
     aria2StorageChanged(storage);
+    i18nEntry.value = chrome.i18n.getMessage('extension_locale');
+    i18nEntry.disabled = true;
 });
 
 function aria2ToolbarSetup() {
