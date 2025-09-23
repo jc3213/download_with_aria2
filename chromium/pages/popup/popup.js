@@ -1,7 +1,6 @@
 let aria2RPC;
 let aria2Tasks = new Map();
 let aria2Stats = new Map();
-let aria2Filter = new Set(localStorage.getItem('queues')?.match(/[^;]+/g) ?? []);
 let aria2Focus = new Set();
 let aria2Queue = {};
 let aria2Group = {
@@ -12,29 +11,42 @@ let aria2Group = {
     removed: 'stopped',
     error: 'stopped'
 };
+let aria2Filter;
 let aria2Proxy = '';
 let aria2Delay = 'http://127.0.0.1:1230/';
 let aria2Interval;
 
-let manager = document.body.classList;
 let [menuPane, filterPane, statusPane, queuePane, template] = document.body.children;
 let [downBtn, purgeBtn, optionsBtn] = menuPane.children;
 let [i18nEntry, verEntry, ...statEntries] = statusPane.children;
 let [sessionLET, fileLET, uriLET] = template.children;
 
 statEntries.forEach((stat) => aria2Stats.set(stat.id, stat));
-manager.add(...aria2Filter);
+
+taskFilters(
+    localStorage.getItem('queues')?.match(/[^;]+/g),
+    (queues) => localStorage.setItem('queues', queues.join(';'))
+);
+
+function taskFilters(array, saveFn) {
+    let filters = new Set(Array.isArray(array) ? array : []);
+    let manager = document.body.classList;
+    manager.add(...filters);
+    aria2Filter = (id) => {
+        if (filters.has(id)) {
+            filters.delete(id);
+            manager.remove(id);
+        } else {
+            filters.add(id);
+            manager.add(id);
+        }
+        saveFn?.([...filters]);
+    };
+}
 
 filterPane.addEventListener('click', (event) => {
     let id = event.target.id.slice(2);
-    if (aria2Filter.has(id)) {
-        aria2Filter.delete(id);
-        manager.remove(id);
-    } else {
-        aria2Filter.add(id);
-        manager.add(id);
-    }
-    localStorage.setItem('queues', [...aria2Filter].join(';'));
+    aria2Filter?.(id);
 });
 
 const shortcutMap = {
