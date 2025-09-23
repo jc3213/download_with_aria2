@@ -23,10 +23,19 @@ let [sessionLET, fileLET, uriLET] = template.children;
 
 statEntries.forEach((stat) => aria2Stats.set(stat.id, stat));
 
-taskFilters(
-    localStorage.getItem('queues')?.match(/[^;]+/g),
-    (queues) => localStorage.setItem('queues', queues.join(';'))
-);
+const shortcutMap = {
+    'e': purgeBtn,
+    'd': downBtn,
+    'q': optionsBtn
+};
+
+document.addEventListener('keydown', (event) => {
+    let key = shortcutMap[event.key];
+    if (key && event.ctrlKey) {
+        event.preventDefault();
+        key.click();
+    }
+});
 
 function taskFilters(array, saveFn) {
     let filters = new Set(Array.isArray(array) ? array : []);
@@ -49,19 +58,21 @@ filterPane.addEventListener('click', (event) => {
     aria2Filter?.(id);
 });
 
-const shortcutMap = {
-    'e': purgeBtn,
-    'd': downBtn,
-    'q': optionsBtn
-};
-
-document.addEventListener('keydown', (event) => {
-    let key = shortcutMap[event.key];
-    if (key && event.ctrlKey) {
-        event.preventDefault();
-        key.click();
+// convert storage from "string;string;string" to stringified array
+function hotfix() {
+    try {
+        let filter = JSON.parse(localStorage.getItem('filter'));
+        if (!filter) throw null;
+        return filter;
+    } catch {
+        return localStorage.getItem('queues')?.match(/[^;]+/g);
     }
-});
+}
+
+taskFilters(
+    hotfix(),
+    (array) => localStorage.setItem('filter', JSON.stringify(array))
+);
 
 purgeBtn.addEventListener('click', async (event) => {
     await aria2RPC.call({ method: 'aria2.purgeDownloadResult' });
