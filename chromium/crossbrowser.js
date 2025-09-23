@@ -96,21 +96,15 @@ function systemRuntime() {
 }
 
 function storageChanged(response, json) {
-    json.changes.forEach((key) => {
-        aria2Storage[key] = json[key];
-    });
+    let { changes } = json;
+    delete json.changes;
+    aria2Storage = { ...aria2Storage, ...json };
     aria2RPC.disconnect();
     aria2RPC.scheme = aria2Storage['jsonrpc_scheme'];
     aria2RPC.url = aria2Storage['jsonrpc_url'];
     aria2RPC.secret = aria2Storage['jsonrpc_secret'];
     aria2StorageUpdate();
     chrome.storage.sync.set(aria2Storage);
-}
-
-function managerChanged(response, array) {
-    aria2Storage['manager_filter'] = array;
-    chrome.storage.sync.set({ 'manager_filter': array }, response);
-    console.log(array);
 }
 
 function optionsChanged(response, options) {
@@ -132,7 +126,6 @@ function detectedImages(response) {
 const msgHandlers = {
     'system_runtime': (response) => response(systemRuntime()),
     'storage_update': storageChanged,
-    'manager_update': managerChanged,
     'jsonrpc_update': optionsChanged,
     'jsonrpc_download': (response, params) => aria2RPC.call(...params).then(response).catch(response),
     'inspect_images': detectedImages,
