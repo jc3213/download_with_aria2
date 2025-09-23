@@ -101,12 +101,12 @@ function storageChanged(response, json) {
     aria2RPC.url = json['jsonrpc_url'];
     aria2RPC.secret = json['jsonrpc_secret'];
     aria2StorageUpdate(json);
-    chrome.storage.sync.set(aria2Storage, response);
+    chrome.storage.sync.set(aria2Storage);
 }
 
 function optionsChanged(response, options) {
     aria2Config = { ...aria2Config, ...options };
-    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] }).then(response).catch(response);
+    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] });
 }
 
 function detectedImages(response) {
@@ -237,7 +237,7 @@ function aria2ClientOpened() {
         options['max-overall-upload-limit'] = getFileSize(options['max-overall-upload-limit']);
         aria2Config = options;
         aria2Version = version;
-        aria2CaptureHooking();
+        captureHooking();
         aria2Active = new Set(active.map(({ gid }) => gid));
         chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
         setIndicator();
@@ -245,7 +245,7 @@ function aria2ClientOpened() {
 }
 
 function aria2ClientClosed() {
-    aria2CaptureDisabled();
+    captureDisabled();
     aria2Active = aria2Config = aria2Version = null;
     chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
     chrome.action.setBadgeText({ text: 'E' });

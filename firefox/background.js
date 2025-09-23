@@ -1,23 +1,23 @@
 let aria2WebRequest = new Set([ 'content-disposition', 'content-type', 'content-length' ]);
 
-function aria2CaptureHooking() {
+function captureHooking() {
     if (!aria2Storage['capture_enabled']) {
-        aria2CaptureDisabled();
+        captureDisabled();
     } else if (aria2Storage['capture_webrequest']) {
-        browser.webRequest.onHeadersReceived.addListener(aria2CaptureWebRequest, { urls: ['http://*/*', 'https://*/*'], types: ['main_frame', 'sub_frame'] }, ['blocking', 'responseHeaders']);
-        browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
+        browser.webRequest.onHeadersReceived.addListener(captureWebRequest, { urls: ['http://*/*', 'https://*/*'], types: ['main_frame', 'sub_frame'] }, ['blocking', 'responseHeaders']);
+        browser.downloads.onCreated.removeListener(captureDownloads);
     } else {
-        browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
-        browser.downloads.onCreated.addListener(aria2CaptureDownloads);
+        browser.webRequest.onHeadersReceived.removeListener(captureWebRequest);
+        browser.downloads.onCreated.addListener(captureDownloads);
     }
 }
 
-function aria2CaptureDisabled() {
-    browser.downloads.onCreated.removeListener(aria2CaptureDownloads);
-    browser.webRequest.onHeadersReceived.removeListener(aria2CaptureWebRequest);
+function captureDisabled() {
+    browser.downloads.onCreated.removeListener(captureDownloads);
+    browser.webRequest.onHeadersReceived.removeListener(captureWebRequest);
 }
 
-async function aria2CaptureDownloads({ id, url, referrer, filename, fileSize }) {
+async function captureDownloads({ id, url, referrer, filename, fileSize }) {
     if (url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
@@ -31,7 +31,7 @@ async function aria2CaptureDownloads({ id, url, referrer, filename, fileSize }) 
     }
 }
 
-async function aria2CaptureWebRequest({ statusCode, url, originUrl, responseHeaders, tabId }) {
+async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, tabId }) {
     if (statusCode !== 200) {
         return;
     }

@@ -12,13 +12,13 @@ function aria2CaptureFilename({ id, finalUrl, referrer, filename, fileSize }) {
     }
 }
 
-function aria2CaptureHooking() {
+function captureHooking() {
     aria2Storage['capture_enabled']
         ? chrome.downloads.onDeterminingFilename.addListener(aria2CaptureFilename)
-        : aria2CaptureDisabled();
+        : captureDisabled();
 }
 
-function aria2CaptureDisabled() {
+function captureDisabled() {
     chrome.downloads.onDeterminingFilename.removeListener(aria2CaptureFilename);
 }
 
