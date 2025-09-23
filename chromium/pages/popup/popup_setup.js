@@ -45,11 +45,11 @@ chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage }) => {
     storage['manager_filter'] ??= JSON.parse(localStorage.getItem('queue')) ?? [];
     localStorage.removeItem('queue');
 //
-    aria2ClientSetup(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
-    aria2StorageChanged(storage);
     taskFilters(storage['manager_filter'], (params) => chrome.runtime.sendMessage({ action: 'manager_update', params }));
     i18nEntry.value = chrome.i18n.getMessage('extension_locale');
     i18nEntry.disabled = true;
+    aria2ClientSetup(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
+    aria2StorageChanged(storage);
 });
 
 function aria2ToolbarSetup() {
