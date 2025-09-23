@@ -151,7 +151,6 @@ function menuEventExport() {
     extension.contains('jsonrpc')
         ? exportHandler('aria2_jsonrpc-', '.conf', Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key] + '\n' ))
         : exportHandler('downwitharia2-', '.json', [ JSON.stringify(aria2Storage, null, 4) ]);
-
 }
 
 function menuEventImport() {
@@ -196,7 +195,7 @@ function aria2ConfigSetup(json) {
         let { name } = entry;
         entry.value = aria2Config[name] = json[name] ?? '';
     });
-    updated = {...aria2Config};
+    updated = { ...aria2Config };
 }
 
 function importFileConf(file) {
