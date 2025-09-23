@@ -139,7 +139,7 @@ function optionHistoryLoad(action, key, props) {
 }
 
 function exportHandler(name, type, body) {
-    let time = new Date().toLocaleString('ja').replace(/[/: ]/g, '_');
+    let time = new Date().toLocaleString('ja').replace(/[: /]/g, '_');
     let blob = new Blob(body);
     exporter.href = URL.createObjectURL(blob);
     exporter.download = name + time + type;
@@ -148,8 +148,8 @@ function exportHandler(name, type, body) {
 
 function menuEventExport() {
     extension.contains('jsonrpc')
-        ? exportHandler('aria2_jsonrpc-', '.conf', Object.keys(aria2Config).map( (key) => key + '=' + aria2Config[key] + '\n' ))
-        : exportHandler('downwitharia2-', '.json', [JSON.stringify(aria2Storage, null, 4)]);
+        ? exportHandler('aria2_jsonrpc-', '.conf', Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key] + '\n' ))
+        : exportHandler('downwitharia2-', '.json', [ JSON.stringify(aria2Storage, null, 4) ]);
 
 }
 
@@ -302,7 +302,7 @@ function printMatchPattern(list, id, value) {
 }
 
 function aria2StorageSetup() {
-    updated = {...aria2Storage};
+    updated = { ...aria2Storage };
     tellVer.textContent = aria2Version;
     optionsEntries.forEach((entry) => {
         let { name, type } = entry;
@@ -323,7 +323,7 @@ function aria2StorageSetup() {
 }
 
 function aria2StorageUpdate() {
-    aria2Storage = {...updated};
+    aria2Storage = { ...updated };
     chrome.runtime.sendMessage({ action: 'options_storage', params: updated });
 }
 
