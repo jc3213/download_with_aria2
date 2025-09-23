@@ -96,14 +96,11 @@ function systemRuntime() {
 }
 
 function storageChanged(response, json) {
-    let { changes } = json;
-    delete json.changes;
-    aria2Storage = { ...aria2Storage, ...json };
     aria2RPC.disconnect();
-    aria2RPC.scheme = aria2Storage['jsonrpc_scheme'];
-    aria2RPC.url = aria2Storage['jsonrpc_url'];
-    aria2RPC.secret = aria2Storage['jsonrpc_secret'];
-    aria2StorageUpdate();
+    aria2RPC.scheme = json['jsonrpc_scheme'];
+    aria2RPC.url = json['jsonrpc_url'];
+    aria2RPC.secret = json['jsonrpc_secret'];
+    aria2StorageUpdate(json);
     chrome.storage.sync.set(aria2Storage);
 }
 
@@ -125,9 +122,9 @@ function detectedImages(response) {
 
 const msgHandlers = {
     'system_runtime': (response) => response(systemRuntime()),
-    'storage_update': storageChanged,
-    'jsonrpc_update': optionsChanged,
     'jsonrpc_download': (response, params) => aria2RPC.call(...params).then(response).catch(response),
+    'options_storage': storageChanged,
+    'options_jsonrpc': optionsChanged,
     'inspect_images': detectedImages,
     'open_new_download': () => openPopupWindow('/pages/newdld/newdld.html', 462)
 };
@@ -187,42 +184,43 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
 });
 
 chrome.storage.sync.get(null, (json) => {
-    aria2Storage = { ...aria2Default, ...json };
-    aria2RPC = new Aria2(aria2Storage['jsonrpc_scheme'], aria2Storage['jsonrpc_url'], aria2Storage['jsonrpc_secret']);
+    let storage = { ...aria2Default, ...json };
+    aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
     aria2RPC.onopen = aria2ClientOpened;
     aria2RPC.onclose = aria2ClientClosed;
     aria2RPC.onmessage = aria2ClientMessage;
-    aria2StorageUpdate();
+    aria2StorageUpdate(storage);
 });
 
-function aria2StorageUpdate() {
+function aria2StorageUpdate(json) {
     let menuId;
-    let popup = aria2Storage['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
-    aria2RPC.retries = aria2Storage['jsonrpc_retries'];
-    aria2RPC.timeout = aria2Storage['jsonrpc_timeout'];
+    let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
+    aria2Storage = json;
+    aria2RPC.retries = json['jsonrpc_retries'];
+    aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
-    aria2Updated['manager_interval'] = aria2Storage['manager_interval'] * 1000;
-    aria2Updated['headers_exclude'] = getMatchPattern(aria2Storage['headers_exclude']);
-    aria2Updated['proxy_include'] = getMatchPattern(aria2Storage['proxy_include']);
-    aria2Updated['capture_host_exclude'] = getMatchPattern(aria2Storage['capture_host_exclude']);
-    aria2Updated['capture_type_exclude'] = getMatchPattern(aria2Storage['capture_type_exclude'], true);
-    aria2Updated['capture_size_exclude'] = aria2Storage['capture_size_exclude'] * 1048576;
+    aria2Updated['manager_interval'] = json['manager_interval'] * 1000;
+    aria2Updated['headers_exclude'] = getMatchPattern(json['headers_exclude']);
+    aria2Updated['proxy_include'] = getMatchPattern(json['proxy_include']);
+    aria2Updated['capture_host_exclude'] = getMatchPattern(json['capture_host_exclude']);
+    aria2Updated['capture_type_exclude'] = getMatchPattern(json['capture_type_exclude'], true);
+    aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
-    if (!aria2Storage['context_enabled']) {
+    if (!json['context_enabled']) {
         return;
     }
-    if (aria2Storage['context_cascade']) {
+    if (json['context_cascade']) {
         menuId = 'aria2c_contextmenu';
         setContextMenu(menuId, 'extension_name', ['link', 'image', 'page']);
     }
-    if (aria2Storage['context_thisurl']) {
+    if (json['context_thisurl']) {
         setContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], menuId);
     }
-    if (aria2Storage['context_thisimage']) {
+    if (json['context_thisimage']) {
         setContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], menuId);
     }
-    if (aria2Storage['context_allimages']) {
+    if (json['context_allimages']) {
         setContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], menuId);
     }
 }
@@ -231,7 +229,6 @@ function aria2ClientOpened() {
     aria2RPC.call(
         { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
     ).then(([{ result: options }, { result: version }, { result: active }]) => {
-        captureHooking();
         options['disk-cache'] = getFileSize(options['disk-cache']);
         options['min-split-size'] = getFileSize(options['min-split-size']);
         options['max-download-limit'] = getFileSize(options['max-download-limit']);
@@ -240,6 +237,7 @@ function aria2ClientOpened() {
         options['max-overall-upload-limit'] = getFileSize(options['max-overall-upload-limit']);
         aria2Config = options;
         aria2Version = version;
+        captureHooking();
         aria2Active = new Set(active.map(({ gid }) => gid));
         chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
         setIndicator();

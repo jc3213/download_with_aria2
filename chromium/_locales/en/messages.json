@@ -5,15 +5,6 @@
     "extension_description": {
         "message": "The browser extenson for aria2 download utility over JSON-RPC"
     },
-    "extension_install": {
-        "message": "Extension Install"
-    },
-    "extension_update": {
-        "message": "Extension Update"
-    },
-    "extension_version": {
-        "message": "v{version} has been installed!"
-    },
     "extension_locale": {
         "message": "en-US"
     },
@@ -196,12 +187,6 @@
     },
     "option_notification": {
         "message": "Notifications"
-    },
-    "option_notify_install": {
-        "message": "When Installed or Updated"
-    },
-    "tips_option_notify_install": {
-        "message": "Show notification when extension has been installed or updated"
     },
     "option_notify_start": {
         "message": "When Download Start"

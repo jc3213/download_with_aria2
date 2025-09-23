@@ -5,15 +5,6 @@
     "extension_description": {
         "message": "基于 JSON-RPC 的 aria2 下载器专用浏览器扩展"
     },
-    "extension_install": {
-        "message": "扩展安装"
-    },
-    "extension_update": {
-        "message": "扩展升级"
-    },
-    "extension_version": {
-        "message": "已安装版本{version}！"
-    },
     "extension_locale": {
         "message": "zh-CN"
     },
@@ -196,12 +187,6 @@
     },
     "option_notification": {
         "message": "通知"
-    },
-    "option_notify_install": {
-        "message": "扩展安装／更新时"
-    },
-    "tips_option_notify_install": {
-        "message": "当安装／更新扩展时弹出通知"
     },
     "option_notify_start": {
         "message": "下载开始时"
