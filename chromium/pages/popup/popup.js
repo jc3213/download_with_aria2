@@ -27,8 +27,13 @@ manager.add(...aria2Filter);
 
 filterPane.addEventListener('click', (event) => {
     let id = event.target.id.slice(2);
-    manager.toggle(id);
-    aria2Filter.has(id) ? aria2Filter.delete(id) : aria2Filter.add(id);
+    if (aria2Filter.has(id)) {
+        aria2Filter.delete(id);
+        manager.remove(id);
+    } else {
+        aria2Filter.add(id);
+        manager.add(id);
+    }
     localStorage.setItem('queues', [...aria2Filter].join(';'));
 });
 
