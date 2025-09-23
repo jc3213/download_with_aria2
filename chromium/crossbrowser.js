@@ -104,6 +104,12 @@ function storageChanged(response, json) {
     chrome.storage.sync.set(aria2Storage);
 }
 
+function managerChanged(response, array) {
+    aria2Storage['manager_filter'] = array;
+    chrome.storage.sync.set({ 'manager_filter': array }, response);
+    console.log(array);
+}
+
 function optionsChanged(response, options) {
     aria2Config = { ...aria2Config, ...options };
     aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] });
@@ -122,9 +128,10 @@ function detectedImages(response) {
 
 const msgHandlers = {
     'system_runtime': (response) => response(systemRuntime()),
+    'storage_update': storageChanged,
+    'manager_update': managerChanged,
+    'jsonrpc_update': optionsChanged,
     'jsonrpc_download': (response, params) => aria2RPC.call(...params).then(response).catch(response),
-    'options_storage': storageChanged,
-    'options_jsonrpc': optionsChanged,
     'inspect_images': detectedImages,
     'open_new_download': () => openPopupWindow('/pages/newdld/newdld.html', 462)
 };

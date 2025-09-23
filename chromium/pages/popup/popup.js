@@ -58,11 +58,6 @@ filterPane.addEventListener('click', (event) => {
     aria2Filter?.(id);
 });
 
-taskFilters(
-     JSON.parse(localStorage.getItem('queue')),
-    (array) => localStorage.setItem('queue', JSON.stringify(array))
-);
-
 purgeBtn.addEventListener('click', async (event) => {
     await aria2RPC.call({ method: 'aria2.purgeDownloadResult' });
     let { stopped } = aria2Queue;

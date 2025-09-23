@@ -19,7 +19,7 @@ optionsBtn.addEventListener('click', (event) => {
 });
 
 chrome.runtime.onMessage.addListener(({ action, params }) => {
-    if (action !== 'options_storage') {
+    if (action !== 'storage_update') {
         return;
     }
     if (!params['manager_newtab']) {
@@ -41,8 +41,13 @@ function aria2StorageChanged(json) {
 }
 
 chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage }) => {
+// remove old filter rule
+    storage['manager_filter'] ??= JSON.parse(localStorage.getItem('queue')) ?? [];
+    localStorage.removeItem('queue');
+//
     aria2ClientSetup(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
     aria2StorageChanged(storage);
+    taskFilters(storage['manager_filter'], (params) => chrome.runtime.sendMessage({ action: 'manager_update', params }));
     i18nEntry.value = chrome.i18n.getMessage('extension_locale');
     i18nEntry.disabled = true;
 });
