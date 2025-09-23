@@ -101,12 +101,12 @@ function storageChanged(response, json) {
     aria2RPC.url = json['jsonrpc_url'];
     aria2RPC.secret = json['jsonrpc_secret'];
     aria2StorageUpdate(json);
-    chrome.storage.sync.set(aria2Storage);
+    chrome.storage.sync.set(aria2Storage, response);
 }
 
 function optionsChanged(response, options) {
     aria2Config = { ...aria2Config, ...options };
-    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] });
+    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] }).then(response).catch(response);
 }
 
 function detectedImages(response) {
