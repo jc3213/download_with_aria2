@@ -229,6 +229,7 @@ function aria2ClientOpened() {
     aria2RPC.call(
         { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
     ).then(([{ result: options }, { result: version }, { result: active }]) => {
+        captureHooking();
         options['disk-cache'] = getFileSize(options['disk-cache']);
         options['min-split-size'] = getFileSize(options['min-split-size']);
         options['max-download-limit'] = getFileSize(options['max-download-limit']);
@@ -237,7 +238,6 @@ function aria2ClientOpened() {
         options['max-overall-upload-limit'] = getFileSize(options['max-overall-upload-limit']);
         aria2Config = options;
         aria2Version = version;
-        captureHooking();
         aria2Active = new Set(active.map(({ gid }) => gid));
         chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
         setIndicator();

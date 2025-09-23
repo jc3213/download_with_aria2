@@ -58,21 +58,8 @@ filterPane.addEventListener('click', (event) => {
     aria2Filter?.(id);
 });
 
-// convert storage from "string;string;string" to stringified array
-function hotfix() {
-    try {
-        let queue = JSON.parse(localStorage.getItem('queue'));
-        if (!queue) throw null;
-        return queue;
-    } catch {
-        let old_one = localStorage.getItem('queues')?.match(/[^;]+/g);
-        localStorage.removeItem('queues');
-        return old_one;
-    }
-}
-
 taskFilters(
-    hotfix(),
+     JSON.parse(localStorage.getItem('queue')),
     (array) => localStorage.setItem('queue', JSON.stringify(array))
 );
 
