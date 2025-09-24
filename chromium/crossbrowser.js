@@ -233,8 +233,8 @@ function RawToSize(bytes) {
 }
 
 function aria2ConfigUpdate(json) {
-    RawData.forEach((key) => aria2Config[key] = options[key]);
-    SizeData.forEach((key) => aria2Config[key] = RawToSize(options[key]));
+    RawData.forEach((key) => aria2Config[key] = json[key]);
+    SizeData.forEach((key) => aria2Config[key] = RawToSize(json[key]));
 }
 
 function aria2ClientOpened() {
