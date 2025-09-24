@@ -6,6 +6,7 @@ let [menuPane, downEntry, metaPane, metaImport, jsonrpcPane] = document.body.chi
 let [, downMode, submitBtn] = menuPane.children;
 let refererPane = document.getElementById('referer');
 let [refererEntry, ...jsonrpcEntries] = jsonrpcPane.querySelectorAll('[name]');
+let limitEntry = jsonrpcEntries.pop();
 
 document.querySelectorAll('[i18n]').forEach((node) => {
     node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
@@ -133,7 +134,6 @@ document.getElementById('proxy').addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
 
-
 function refererModalList(id, url) {
     if (!url?.startsWith('http')) {
         return;
@@ -167,6 +167,8 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage, options }) => {
     aria2Storage = storage;
     jsonrpcEntries.forEach((entry) => {
-        entry.value = aria2Config[entry.name] = options[entry.name] ?? '';
+        let { name } = entry;
+        entry.value = aria2Config[name] = options[name] ?? '';
     });
+    limitEntry.value = aria2Config['max-download-limit'] = '0';
 });
