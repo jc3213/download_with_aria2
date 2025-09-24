@@ -79,7 +79,7 @@ document.getElementById('proxy').addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
 
-chrome.runtime.sendMessage({action: 'inspect_images'}, ({ storage, options, images, referer, tabId, manifest, request }) => {
+chrome.runtime.sendMessage({ action: 'inspect_images' }, ({ storage, options, images, referer, tabId, manifest, request }) => {
     manifest.manifest_version === 2 ? aria2HeadersMV2(referer, tabId, request) : aria2HeadersMV3(referer, tabId);
     aria2Storage = storage;
     aria2Config['referer'] = referer;
@@ -97,9 +97,9 @@ chrome.runtime.sendMessage({action: 'inspect_images'}, ({ storage, options, imag
 
 function aria2HeadersMV2(value, tabId, request) {
     request.unshift('blocking');
-    chrome.webRequest.onBeforeSendHeaders.addListener(({requestHeaders}) => {
+    chrome.webRequest.onBeforeSendHeaders.addListener(({ requestHeaders }) => {
         requestHeaders.push({ name: 'Referer', value });;
-        return {requestHeaders};
+        return { requestHeaders };
     }, { urls: ['http://*/*', 'https://*/*'], tabId, types: ['image'] }, request);
 }
 
