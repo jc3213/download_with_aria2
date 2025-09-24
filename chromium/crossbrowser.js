@@ -152,7 +152,7 @@ chrome.tabs.onUpdated.addListener((tabId, { status }, { url }) => {
     tabHandlers[status]?.(tabId, url);
 });
 
-chrome.webRequest.onBeforeSendHeaders.addListener(({tabId, url, type, requestHeaders}) => {
+chrome.webRequest.onBeforeSendHeaders.addListener(({ tabId, url, type, requestHeaders }) => {
     if (tabId === aria2Popup) {
         return;
     }
@@ -173,14 +173,6 @@ chrome.action.onClicked.addListener(() => {
         tab ? chrome.tabs.update(tab.id, { active: true })
             : chrome.tabs.create({ url: aria2Manager, active: true });
     });
-});
-
-chrome.runtime.onInstalled.addListener(({ reason }) => {
-    if (aria2Storage['notify_install']) {
-        let title = chrome.i18n.getMessage('extension_' + reason);
-        let message = chrome.i18n.getMessage('extension_version').replace('{version}', aria2Manifest.version);
-        showNotification(title, message);
-    }
 });
 
 chrome.storage.sync.get(null, (json) => {
