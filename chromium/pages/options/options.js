@@ -170,12 +170,6 @@ menuPane.addEventListener('click', (event) => {
     menuEventMap[menu]?.();
 });
 
-function optionHistoryFlush() {
-    undoes = [];
-    redoes = [];
-    saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
-}
-
 function promiseFileReader(file) {
     return new Promise((resolve) => {
         let reader = new FileReader();
@@ -184,21 +178,13 @@ function promiseFileReader(file) {
     });
 }
 
-function importFileJson(file) {
+function importJson(file) {
     updated = JSON.parse(file);
     aria2StorageUpdate();
     aria2StorageSetup();
 }
 
-function aria2ConfigSetup(json) {
-    jsonrpcEntries.forEach((entry) => {
-        let { name } = entry;
-        entry.value = aria2Config[name] = json[name] ?? '';
-    });
-    updated = { ...aria2Config };
-}
-
-function importFileConf(file) {
+function importConf(file) {
     let params = {};
     file.split('\n').forEach((line) => {
         if (line[0] !== '#') {
@@ -214,8 +200,22 @@ menuPane.addEventListener('change', async (event) => {
     let file = await promiseFileReader(event.target.files[0]);
     event.target.value = '';
     optionHistoryFlush();
-    extension.contains('jsonrpc') ? importFileConf(file) : importFileJson(file);
+    extension.contains('jsonrpc') ? importConf(file) : importJson(file);
 });
+
+function aria2ConfigSetup(json) {
+    jsonrpcEntries.forEach((entry) => {
+        let { name } = entry;
+        entry.value = aria2Config[name] = json[name] ?? '';
+    });
+    updated = { ...aria2Config };
+}
+
+function optionHistoryFlush() {
+    undoes = [];
+    redoes = [];
+    saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
+}
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
     chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ options, version }) => {
@@ -239,11 +239,10 @@ function matchEventAddNew(id, list, entry) {
     let old_value = updated[id];
     entry.value = '';
     if (value && !old_value.includes(value)) {
-        let new_value = [...old_value];
+        let new_value = [...old_value, value];
         let rule = printMatchPattern(list, id, value);
-        new_value.push(value);
         list.scrollTop = list.scrollHeight;
-        optionHistoryApply({ id, new_value, old_value, type: 'matches', add: { list, index: new_value.length, rule } });
+        optionHistoryApply({ id, new_value, old_value, type: 'matches', add: { list, index: old_value.length, rule } });
     }
 }
 
@@ -260,9 +259,8 @@ function matchEventRemove(id, list, _, event) {
     let rule = event.target.parentNode;
     let value = rule.title;
     let old_value = updated[id];
-    let new_value = [...old_value];
-    let index = new_value.indexOf(value);
-    new_value.splice(index, 1);
+    let index = old_value.indexOf(value);
+    let new_value = old_value.filter((val) => val !== value);
     rule.remove();
     optionHistoryApply({ id, new_value, old_value, type: 'matches', remove: { list, index, rule } });
 }
