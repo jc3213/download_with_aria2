@@ -42,11 +42,6 @@ let aria2Detect;
 let aria2Manifest = chrome.runtime.getManifest();
 let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
-// Hotfix for removing
-chrome.storage.sync.remove('notify_install', () => {
-    console.log('Removed storage "notify_install"');
-});
-
 async function aria2DownloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
     if (aria2Updated['proxy_include'].test(hostname)) {
@@ -228,22 +223,13 @@ const RawData = [
 const SizeData = ['disk-cache', 'min-split-size'];
 
 function RawToSize(bytes) {
-    if (isNaN(bytes)) {
-        return '??';
-    }
     if (bytes < 1024) {
         return bytes;
     }
     if (bytes < 1048576) {
         return (bytes / 10.24 | 0) / 100 + 'K';
     }
-    if (bytes < 1073741824) {
-        return (bytes / 10485.76 | 0) / 100 + 'M';
-    }
-    if (bytes < 1099511627776) {
-        return (bytes / 10737418.24 | 0) / 100 + 'G';
-    }
-    return (bytes / 10995116277.76 | 0) / 100 + 'T';
+    return (bytes / 10485.76 | 0) / 100 + 'M';
 }
 
 function aria2ConfigUpdate(json) {
