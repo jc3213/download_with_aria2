@@ -11,7 +11,6 @@ let aria2Default = {
     'context_thisurl': true,
     'context_thisimage': true,
     'context_allimages': true,
-    'notify_install': true,
     'notify_start': false,
     'notify_complete': false,
     'headers_override': false,
@@ -42,6 +41,11 @@ let aria2Inspect = {};
 let aria2Detect;
 let aria2Manifest = chrome.runtime.getManifest();
 let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
+
+// Hotfix for removing
+chrome.storage.sync.remove('notify_install', () => {
+    console.log('Removed storage "notify_install"');
+});
 
 async function aria2DownloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
