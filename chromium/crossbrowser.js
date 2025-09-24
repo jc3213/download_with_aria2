@@ -31,7 +31,7 @@ let aria2Default = {
 let aria2RPC;
 let aria2Storage = {};
 let aria2Updated = {};
-let aria2Config;
+let aria2Config = {};
 let aria2Version;
 let aria2Active;
 let aria2Manager = chrome.runtime.getURL('/pages/popup/popup.html');
@@ -105,12 +105,12 @@ function storageChanged(response, json) {
     aria2RPC.url = json['jsonrpc_url'];
     aria2RPC.secret = json['jsonrpc_secret'];
     aria2StorageUpdate(json);
-    chrome.storage.sync.set(aria2Storage);
+    chrome.storage.sync.set(aria2Storage, response);
 }
 
 function optionsChanged(response, options) {
-    aria2Config = { ...aria2Config, ...options };
-    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] });
+    aria2ConfigUpdate(options);
+    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] }).then(response).catch(response);
 }
 
 function detectedImages(response) {
@@ -179,15 +179,6 @@ chrome.action.onClicked.addListener(() => {
     });
 });
 
-chrome.storage.sync.get(null, (json) => {
-    let storage = { ...aria2Default, ...json };
-    aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
-    aria2RPC.onopen = aria2ClientOpened;
-    aria2RPC.onclose = aria2ClientClosed;
-    aria2RPC.onmessage = aria2ClientMessage;
-    aria2StorageUpdate(storage);
-});
-
 function aria2StorageUpdate(json) {
     let menuId;
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
@@ -221,18 +212,51 @@ function aria2StorageUpdate(json) {
     }
 }
 
+chrome.storage.sync.get(null, (json) => {
+    let storage = { ...aria2Default, ...json };
+    aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
+    aria2RPC.onopen = aria2ClientOpened;
+    aria2RPC.onclose = aria2ClientClosed;
+    aria2RPC.onmessage = aria2ClientMessage;
+    aria2StorageUpdate(storage);
+});
+
+const RawData = [
+    'dir', 'max-concurrent-downloads', 'max-overall-download-limit', 'max-overall-upload-limit',
+    'max-tries', 'retry-wait', 'split', 'max-connection-per-server', 'user-agent',
+    'listen-port', 'bt-max-peers', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'];
+const SizeData = ['disk-cache', 'min-split-size'];
+
+function RawToSize(bytes) {
+    if (isNaN(bytes)) {
+        return '??';
+    }
+    if (bytes < 1024) {
+        return bytes;
+    }
+    if (bytes < 1048576) {
+        return (bytes / 10.24 | 0) / 100 + 'K';
+    }
+    if (bytes < 1073741824) {
+        return (bytes / 10485.76 | 0) / 100 + 'M';
+    }
+    if (bytes < 1099511627776) {
+        return (bytes / 10737418.24 | 0) / 100 + 'G';
+    }
+    return (bytes / 10995116277.76 | 0) / 100 + 'T';
+}
+
+function aria2ConfigUpdate(json) {
+    RawData.forEach((key) => aria2Config[key] = options[key]);
+    SizeData.forEach((key) => aria2Config[key] = RawToSize(options[key]));
+}
+
 function aria2ClientOpened() {
     aria2RPC.call(
         { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
     ).then(([{ result: options }, { result: version }, { result: active }]) => {
         captureHooking();
-        options['disk-cache'] = getFileSize(options['disk-cache']);
-        options['min-split-size'] = getFileSize(options['min-split-size']);
-        options['max-download-limit'] = getFileSize(options['max-download-limit']);
-        options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
-        options['max-overall-download-limit'] = getFileSize(options['max-overall-download-limit']);
-        options['max-overall-upload-limit'] = getFileSize(options['max-overall-upload-limit']);
-        aria2Config = options;
+        aria2ConfigUpdate(options);
         aria2Version = version;
         aria2Active = new Set(active.map(({ gid }) => gid));
         chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
@@ -296,25 +320,6 @@ function aria2CaptureResult(hostname, filename, filesize) {
         return false;
     }
     return true;
-}
-
-function getFileSize(bytes) {
-    if (isNaN(bytes)) {
-        return '??';
-    }
-    if (bytes < 1024) {
-        return bytes;
-    }
-    if (bytes < 1048576) {
-        return (bytes / 10.24 | 0) / 100 + 'K';
-    }
-    if (bytes < 1073741824) {
-        return (bytes / 10485.76 | 0) / 100 + 'M';
-    }
-    if (bytes < 1099511627776) {
-        return (bytes / 10737418.24 | 0) / 100 + 'G';
-    }
-    return (bytes / 10995116277.76 | 0) / 100 + 'T';
 }
 
 function getHostname(url) {
