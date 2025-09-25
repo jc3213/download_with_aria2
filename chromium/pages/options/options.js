@@ -185,15 +185,15 @@ function importJson(file) {
 }
 
 function importConf(file) {
-    let params = {};
+    let json = {};
     file.split('\n').forEach((line) => {
         if (line[0] !== '#') {
             let [key, value] = line.split('=');
-            params[key] = value;
+            json[key] = value;
         }
     });
-    chrome.runtime.sendMessage({ action: 'options_jsonrpc', params });
-    aria2ConfigSetup(params);
+    aria2ConfigSetup(json);
+    chrome.runtime.sendMessage({ action: 'options_jsonrpc', params: updated });
 }
 
 menuPane.addEventListener('change', async (event) => {
@@ -219,7 +219,7 @@ function optionHistoryFlush() {
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
     chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ options, version }) => {
-        if (options && version) {
+        if (version) {
             optionHistoryFlush();
             aria2ConfigSetup(options);
             tellVer.textContent = tellUA.textContent = version.version;
