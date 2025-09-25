@@ -252,7 +252,7 @@ function aria2ClientOpened() {
 
 function aria2ClientClosed() {
     captureDisabled();
-    aria2Active = aria2Config = aria2Version = null;
+    aria2Active = aria2Version = null;
     chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
     chrome.action.setBadgeText({ text: 'E' });
 }
