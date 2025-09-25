@@ -28,7 +28,6 @@ let aria2Default = {
     'capture_size_exclude': 0
 };
 
-let aria2RPC;
 let aria2Storage = {};
 let aria2Updated = {};
 let aria2Config = {};
@@ -41,6 +40,87 @@ let aria2Inspect = {};
 let aria2Detect;
 let aria2Manifest = chrome.runtime.getManifest();
 let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
+
+const aria2RPC = new Aria2();
+aria2RPC.onopen = () => {
+    aria2RPC.call(
+        { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
+    ).then(([{ result: options }, { result: version }, { result: active }]) => {
+        captureHooking();
+        aria2ConfigUpdate(options);
+        aria2Version = version;
+        aria2Active = new Set(active.map(({ gid }) => gid));
+        chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
+        setIndicator();
+    }).catch(aria2RPC.onclose);
+};
+aria2RPC.onclose = () => {
+    captureDisabled();
+    aria2Active = aria2Version = null;
+    chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
+    chrome.action.setBadgeText({ text: 'E' });
+};
+aria2RPC.onmessage = ({ method, params }) => {
+    if (method === 'aria2.onBtDownloadComplete') {
+        return;
+    }
+    let [{ gid }] = params;
+    let handler = clientMessage[method] ?? clientMessage['fallback'];
+    handler(gid);
+    setIndicator();
+};
+
+const clientMessage = {
+    'aria2.onDownloadStart': whenStarted,
+    'aria2.onDownloadComplete': whenCompleted,
+    'fallback': (gid) => aria2Active.delete(gid)
+};
+
+async function whenNotify(gid, type) {
+    if (!aria2Storage['notify_' + type]) {
+        return;
+    }
+    let [{ result }] = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
+    let { bittorrent, files } = result;
+    let [{ path, uris }] = files;
+    let title = chrome.i18n.getMessage('download_' + type);
+    let message = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
+    showNotification(title, message);
+}
+
+function whenStarted(gid) {
+    if (aria2Active.has(gid)) {
+        return;
+    }
+    aria2Active.add(gid);
+    whenNotify(gid, 'start');
+}
+
+function whenCompleted(gid) {
+    aria2Active.delete(gid);
+    whenNotify(gid, 'complete');
+}
+
+const RawData = [
+    'dir', 'max-concurrent-downloads', 'max-overall-download-limit', 'max-overall-upload-limit',
+    'max-tries', 'retry-wait', 'split', 'max-connection-per-server', 'user-agent',
+    'listen-port', 'bt-max-peers', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'];
+const SizeData = ['disk-cache', 'min-split-size'];
+
+function RawToSize(bytes) {
+    if (bytes < 1024) {
+        return bytes;
+    }
+    if (bytes < 1048576) {
+        return (bytes / 10.24 | 0) / 100 + 'K';
+    }
+    return (bytes / 10485.76 | 0) / 100 + 'M';
+}
+
+function aria2ConfigUpdate(json) {
+    RawData.forEach((key) => aria2Config[key] = json[key]);
+    SizeData.forEach((key) => aria2Config[key] = RawToSize(json[key]));
+}
 
 async function aria2DownloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
@@ -96,9 +176,6 @@ function systemRuntime() {
 
 function storageChanged(response, json) {
     aria2RPC.disconnect();
-    aria2RPC.scheme = json['jsonrpc_scheme'];
-    aria2RPC.url = json['jsonrpc_url'];
-    aria2RPC.secret = json['jsonrpc_secret'];
     aria2StorageUpdate(json);
     chrome.storage.sync.set(aria2Storage, response);
 }
@@ -178,6 +255,9 @@ function aria2StorageUpdate(json) {
     let menuId;
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     aria2Storage = json;
+    aria2RPC.scheme = json['jsonrpc_scheme'];
+    aria2RPC.url = json['jsonrpc_url'];
+    aria2RPC.secret = json['jsonrpc_secret'];
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
@@ -209,94 +289,8 @@ function aria2StorageUpdate(json) {
 
 chrome.storage.sync.get(null, (json) => {
     let storage = { ...aria2Default, ...json };
-    aria2RPC = new Aria2(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
-    aria2RPC.onopen = aria2ClientOpened;
-    aria2RPC.onclose = aria2ClientClosed;
-    aria2RPC.onmessage = aria2ClientMessage;
     aria2StorageUpdate(storage);
 });
-
-const RawData = [
-    'dir', 'max-concurrent-downloads', 'max-overall-download-limit', 'max-overall-upload-limit',
-    'max-tries', 'retry-wait', 'split', 'max-connection-per-server', 'user-agent',
-    'listen-port', 'bt-max-peers', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'];
-const SizeData = ['disk-cache', 'min-split-size'];
-
-function RawToSize(bytes) {
-    if (bytes < 1024) {
-        return bytes;
-    }
-    if (bytes < 1048576) {
-        return (bytes / 10.24 | 0) / 100 + 'K';
-    }
-    return (bytes / 10485.76 | 0) / 100 + 'M';
-}
-
-function aria2ConfigUpdate(json) {
-    RawData.forEach((key) => aria2Config[key] = json[key]);
-    SizeData.forEach((key) => aria2Config[key] = RawToSize(json[key]));
-}
-
-function aria2ClientOpened() {
-    aria2RPC.call(
-        { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
-    ).then(([{ result: options }, { result: version }, { result: active }]) => {
-        captureHooking();
-        aria2ConfigUpdate(options);
-        aria2Version = version;
-        aria2Active = new Set(active.map(({ gid }) => gid));
-        chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
-        setIndicator();
-    }).catch(aria2ClientClosed);
-}
-
-function aria2ClientClosed() {
-    captureDisabled();
-    aria2Active = aria2Version = null;
-    chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
-    chrome.action.setBadgeText({ text: 'E' });
-}
-
-async function whenNotify(gid, type) {
-    if (!aria2Storage['notify_' + type]) {
-        return;
-    }
-    let [{ result }] = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
-    let { bittorrent, files } = result;
-    let [{ path, uris }] = files;
-    let title = chrome.i18n.getMessage('download_' + type);
-    let message = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
-    showNotification(title, message);
-}
-
-function whenStarted(gid) {
-    if (aria2Active.has(gid)) {
-        return;
-    }
-    aria2Active.add(gid);
-    whenNotify(gid, 'start');
-}
-
-function whenCompleted(gid) {
-    aria2Active.delete(gid);
-    whenNotify(gid, 'complete');
-}
-
-const clientHandlers = {
-    'aria2.onDownloadStart': whenStarted,
-    'aria2.onDownloadComplete': whenCompleted,
-    'fallback': (gid) => aria2Active.delete(gid)
-};
-
-function aria2ClientMessage({ method, params }) {
-    if (method === 'aria2.onBtDownloadComplete') {
-        return;
-    }
-    let [{ gid }] = params;
-    let handler = clientHandlers[method] ?? clientHandlers['fallback'];
-    handler(gid);
-    setIndicator();
-}
 
 function aria2CaptureResult(hostname, filename, filesize) {
     if (aria2Updated['capture_host_exclude'].test(hostname) ||

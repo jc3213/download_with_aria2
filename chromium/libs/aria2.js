@@ -1,9 +1,6 @@
 class Aria2 {
     constructor (...args) {
-        let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/);
-        if (!path) {
-            throw new Error(`Unsupported parameters: "${args.join('", "')}"`);
-        }
+        let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/) ?? [, 'http', 'localhost:6800/jsonrpc', ''];
         this.scheme = path[1];
         this.url = path[2];
         this.secret = path[3];
