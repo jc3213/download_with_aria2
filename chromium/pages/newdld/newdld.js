@@ -166,9 +166,9 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage, options }) => {
     aria2Storage = storage;
+    limitEntry.value = '0';
     jsonrpcEntries.forEach((entry) => {
         let { name } = entry;
         entry.value = aria2Config[name] = options[name] ?? '';
     });
-    limitEntry.value = aria2Config['max-download-limit'] = '0';
 });
