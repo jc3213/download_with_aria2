@@ -18,6 +18,9 @@ optionsBtn.addEventListener('click', (event) => {
     chrome.runtime.openOptionsPage();
 });
 
+i18nEntry.value = chrome.i18n.getMessage('extension_locale');
+i18nEntry.disabled = true;
+
 chrome.runtime.onMessage.addListener(({ action, params }) => {
     if (action !== 'options_storage') {
         return;
@@ -26,15 +29,15 @@ chrome.runtime.onMessage.addListener(({ action, params }) => {
         close();
     }
     aria2RPC.disconnect();
-    aria2RPC.scheme = params['jsonrpc_scheme'];
-    aria2RPC.url = params['jsonrpc_url'];
-    aria2RPC.secret = params['jsonrpc_secret'];
     aria2StorageChanged(params);
 });
 
 function aria2StorageChanged(json) {
     aria2Delay = json['manager_interval'] * 1000;
     aria2Proxy = json['proxy_server'];
+    aria2RPC.scheme = json['jsonrpc_scheme'];
+    aria2RPC.url = json['jsonrpc_url'];
+    aria2RPC.secret = json['jsonrpc_secret'];
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
@@ -46,10 +49,7 @@ taskFilters(
 );
 
 chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage }) => {
-    aria2ClientSetup(storage['jsonrpc_scheme'], storage['jsonrpc_url'], storage['jsonrpc_secret']);
     aria2StorageChanged(storage);
-    i18nEntry.value = chrome.i18n.getMessage('extension_locale');
-    i18nEntry.disabled = true;
 });
 
 function aria2ToolbarSetup() {

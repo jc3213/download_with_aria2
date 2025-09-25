@@ -1,4 +1,3 @@
-let aria2RPC;
 let aria2Tasks = new Map();
 let aria2Stats = new Map();
 let aria2Focus = new Set();
@@ -69,21 +68,8 @@ purgeBtn.addEventListener('click', async (event) => {
     aria2Stats.get('stopped').textContent = '0';
 });
 
-function aria2ClientSetup(scheme, jsonrpc, secret) {
-    aria2RPC = new Aria2(scheme, jsonrpc, secret);
-    aria2RPC.onopen = aria2ClientOpened;
-    aria2RPC.onclose = aria2ClientClosed;
-    aria2RPC.onmessage = aria2ClientMessage;
-}
-
-function updateManager(stats, active) {
-    let { downloadSpeed, uploadSpeed } = stats.result;
-    aria2Stats.get('download').textContent = getFileSize(downloadSpeed);
-    aria2Stats.get('upload').textContent = getFileSize(uploadSpeed);
-    active.result.forEach(taskElementUpdate);
-}
-
-async function aria2ClientOpened() {
+const aria2RPC = new Aria2();
+aria2RPC.onopen = () => {
     aria2RPC.call(
         { method: 'aria2.getGlobalStat' }, { method: 'aria2.getVersion' },
         { method: 'aria2.tellActive' }, { method: 'aria2.tellWaiting', params: [0, 999] }, { method: 'aria2.tellStopped', params: [0, 999] }
@@ -97,18 +83,16 @@ async function aria2ClientOpened() {
         verEntry.textContent = version.result.version;
         aria2Interval = setInterval(() => aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' })
             .then(([stats, active]) => updateManager(stats, active)), aria2Delay);
-    }).catch(aria2ClientClosed);
-}
-
-function aria2ClientClosed() {
+    }).catch(aria2RPC.onclose);
+};
+aria2RPC.onclose = () => {
     clearInterval(aria2Interval);
     aria2Tasks.clear();
     aria2Stats.values().forEach((stat) => stat.textContent = '0');
     queuePane.innerHTML = '';
     verEntry.textContent = 'N/A';
-}
-
-function aria2ClientMessage({ method, params }) {
+};
+aria2RPC.onmessage = ({ method, params }) => {
     if (method === 'aria2.onBtDownloadComplete') {
         return;
     }
@@ -116,6 +100,13 @@ function aria2ClientMessage({ method, params }) {
     let group = method === 'aria2.onDownloadStart' ? 'waiting' : 'active';
     taskElementRefresh(gid);
     taskRemoved(gid, group);
+};
+
+function updateManager(stats, active) {
+    let { downloadSpeed, uploadSpeed } = stats.result;
+    aria2Stats.get('download').textContent = getFileSize(downloadSpeed);
+    aria2Stats.get('upload').textContent = getFileSize(uploadSpeed);
+    active.result.forEach(taskElementUpdate);
 }
 
 function taskRemoved(gid, group) {
