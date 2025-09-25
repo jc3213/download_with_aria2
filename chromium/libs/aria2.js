@@ -110,6 +110,7 @@ class Aria2 {
     connect () {
         this.#ws = new WebSocket(this.#wsa);
         this.#ws.onopen = (event) => {
+            this.#tries = 0;
             this.#onopen?.(event);
         };
         this.#ws.onmessage = (event) => {
