@@ -263,10 +263,7 @@ function MatchData(key) {
 
 function MatchTest(key, string) {
     let { data, dataSet, empty, global } = aria2Updated[key];
-    if (empty) {
-        return false;
-    }
-    return global || dataSet.has(string) || data.some((i) => string.endsWith(`.${i}`));
+    return !empty && (global || dataSet.has(string) || data.some((i) => string.endsWith(`.${i}`)));
 }
 
 function aria2StorageUpdate(json) {
