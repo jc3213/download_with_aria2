@@ -254,14 +254,18 @@ chrome.action.onClicked.addListener(() => {
 const MatchKeys = ['headers_exclude', 'proxy_include', 'capture_host_exclude', 'capture_type_exclude'];
 
 function MatchData(key) {
-    let dataset = new Set(aria2Storage[key]);
-    let global = dataset.has('*');
-    aria2Updated[key] = { dataset, global };
+    let data = new Set(aria2Storage[key]);
+    let empty = data.size === 0;
+    let global = !empty && data.has('*');
+    aria2Updated[key] = { data, empty, global };
 }
 
 function MatchTest(key, string) {
-    let { dataset, global } = aria2Updated[key];
-    return global || dataset.has(string) || aria2Storage[key].some((i) => string.endsWith(`.${i}`));
+    let { data, empty, global } = aria2Updated[key];
+    if (empty) {
+        return false;
+    }
+    return global || data.has(string) || aria2Storage[key].some((i) => string.endsWith(`.${i}`));
 }
 
 function aria2StorageUpdate(json) {
