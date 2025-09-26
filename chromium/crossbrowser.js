@@ -288,12 +288,6 @@ function aria2StorageUpdate(json) {
 
 chrome.storage.sync.get(null, (json) => {
     let storage = { ...aria2Default, ...json };
-    // hotfix
-        storage['headers_exclude'] = storage['headers_exclude'].filter(i => !i.endsWith('.*')).map((i) => i.replace('*.', ''));
-        storage['proxy_include'] = storage['proxy_include'].filter(i => !i.endsWith('.*')).map((i) => i.replace('*.', ''));
-        storage['capture_host_exclude'] = storage['capture_host_exclude'].filter(i => !i.endsWith('.*')).map((i) => i.replace('*.', ''));
-        chrome.storage.sync.set(storage);
-    //
     aria2StorageUpdate(storage);
 });
 
