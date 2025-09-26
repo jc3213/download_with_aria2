@@ -29,6 +29,7 @@ let aria2Default = {
 };
 
 let aria2Storage = {};
+let aria2Updated = {};
 let aria2Config = {};
 let aria2Version;
 let aria2Active;
@@ -39,7 +40,6 @@ let aria2Inspect = {};
 let aria2Detect;
 let aria2Manifest = chrome.runtime.getManifest();
 let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
-let aria2ExcludeSize = 0;
 
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
@@ -124,13 +124,13 @@ function aria2ConfigUpdate(json) {
 
 async function aria2DownloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
-    if (aria2Storage['proxy_include'].some((i) => hostname === i || hostname.endsWith(`.${i}`))) {
+    if (MatchPattern('proxy_include', hostname) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (aria2Storage['folder_enabled']) {
         options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
-    if (!aria2Storage['headers_exclude'].some((i) => hostname === i || hostname.endsWith(`.${i}`))) {
+    if (!MatchPattern('headers_exclude', hostname) {
         let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{ name: 'User-Agent', value: navigator.userAgent }, { name: 'Referer', value: referer }];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({ name }) => name.toLowerCase() === 'user-agent');
@@ -255,13 +255,17 @@ function aria2StorageUpdate(json) {
     let menuId;
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     aria2Storage = json;
-    aria2ExcludeSize = json['capture_size_exclude'] * 1048576;
     aria2RPC.scheme = json['jsonrpc_scheme'];
     aria2RPC.url = json['jsonrpc_url'];
     aria2RPC.secret = json['jsonrpc_secret'];
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
+    aria2Updated['headers_exclude'] = new Set(json['headers_exclude']);
+    aria2Updated['proxy_include'] = new Set(json['proxy_include']);
+    aria2Updated['capture_host_exclude'] = new Set(json['capture_host_exclude']);
+    aria2Updated['capture_type_exclude'] = new Set(json['capture_type_exclude']);
+    aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
     if (!json['context_enabled']) {
@@ -294,10 +298,10 @@ chrome.storage.sync.get(null, (json) => {
 });
 
 function aria2CaptureResult(hostname, filename, fileSize) {
-    if (aria2Storage['capture_host_exclude'].some((i) => hostname === i || hostname.endsWith(`.${i}`)) ||
-        aria2Storage['capture_type_exclude'].some((i) => filename.endsWith(`.${i}`)) ||
-        aria2ExcludeSize > 0 &&
-        aria2ExcludeSize > fileSize) {
+    if (MatchPattern('capture_host_exclude', hostname) ||
+        MatchPattern('capture_type_exclude', filename, true)
+        aria2Updated['capture_size_exclude'] > 0 &&
+        aria2Updated['capture_size_exclude'] > fileSize) {
         return false;
     }
     return true;
@@ -307,6 +311,14 @@ function getHostname(url) {
     let path = url.slice(url.indexOf(':') + 3);
     let host = path.slice(0, path.indexOf('/'));
     return host.slice(host.indexOf('@') + 1);
+}
+
+function MatchPattern(key, string, is) {
+    if (aria2Updated[key].has('*')) {
+        return true;
+    }
+    let test = is ? (i) => string.endsWith(`.${i}`) : (i) => string === i || string.endsWith(`.${i}`);
+    return aria2Storage[key].some(test);
 }
 
 function setContextMenu(id, i18n, contexts, parentId) {
