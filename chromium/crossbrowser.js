@@ -261,10 +261,10 @@ function aria2StorageUpdate(json) {
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
-    aria2Updated['headers_exclude'] = new Set(json['headers_exclude']);
-    aria2Updated['proxy_include'] = new Set(json['proxy_include']);
-    aria2Updated['capture_host_exclude'] = new Set(json['capture_host_exclude']);
-    aria2Updated['capture_type_exclude'] = new Set(json['capture_type_exclude']);
+    aria2Updated['headers_exclude'] = json['headers_exclude'].includes('*');
+    aria2Updated['proxy_include'] = json['proxy_include'].includes('*');
+    aria2Updated['capture_host_exclude'] = json['capture_host_exclude'].includes('*');
+    aria2Updated['capture_type_exclude'] = json['capture_type_exclude'].includes('*');
     aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
@@ -314,11 +314,9 @@ function getHostname(url) {
 }
 
 function MatchPattern(key, string, is) {
-    if (aria2Updated[key].has('*')) {
-        return true;
-    }
-    let test = is ? (i) => string.endsWith(`.${i}`) : (i) => string === i || string.endsWith(`.${i}`);
-    return aria2Storage[key].some(test);
+    return aria2Updated[key] || aria2Storage[key].some(
+        is ? (i) => string.endsWith(`.${i}`) : (i) => string === i || string.endsWith(`.${i}`)
+    );
 }
 
 function setContextMenu(id, i18n, contexts, parentId) {
