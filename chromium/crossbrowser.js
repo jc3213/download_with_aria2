@@ -124,13 +124,13 @@ function aria2ConfigUpdate(json) {
 
 async function aria2DownloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
-    if (MatchPattern('proxy_include', hostname)) {
+    if (MatchTest('proxy_include', hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (aria2Storage['folder_enabled']) {
         options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
-    if (!MatchPattern('headers_exclude', hostname)) {
+    if (!MatchTest('headers_exclude', hostname)) {
         let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{ name: 'User-Agent', value: navigator.userAgent }, { name: 'Referer', value: referer }];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({ name }) => name.toLowerCase() === 'user-agent');
@@ -251,6 +251,19 @@ chrome.action.onClicked.addListener(() => {
     });
 });
 
+const MatchKeys = ['headers_exclude', 'proxy_include', 'capture_host_exclude', 'capture_type_exclude'];
+
+function MatchData(key) {
+    let dataset = new Set(aria2Storage[key]);
+    let global = dataset.has('*');
+    aria2Updated[key] = { dataset, global };
+}
+
+function MatchTest(key, string) {
+    let { dataset, global } = aria2Updated[key];
+    return global || dataset.has(string) || aria2Storage[key].some((i) => string.endsWith(`.${i}`));
+}
+
 function aria2StorageUpdate(json) {
     let menuId;
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
@@ -261,11 +274,8 @@ function aria2StorageUpdate(json) {
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
-    aria2Updated['headers_exclude'] = json['headers_exclude'].includes('*');
-    aria2Updated['proxy_include'] = json['proxy_include'].includes('*');
-    aria2Updated['capture_host_exclude'] = json['capture_host_exclude'].includes('*');
-    aria2Updated['capture_type_exclude'] = json['capture_type_exclude'].includes('*');
     aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
+    MatchKeys.forEach(MatchData);
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
     if (!json['context_enabled']) {
@@ -292,8 +302,8 @@ chrome.storage.sync.get(null, (json) => {
 });
 
 function aria2CaptureResult(hostname, filename, fileSize) {
-    if (MatchPattern('capture_host_exclude', hostname) ||
-        MatchPattern('capture_type_exclude', filename, true) ||
+    if (MatchTest('capture_host_exclude', hostname) ||
+        MatchTest('capture_type_exclude', filename) ||
         aria2Updated['capture_size_exclude'] > 0 &&
         aria2Updated['capture_size_exclude'] > fileSize) {
         return false;
@@ -305,12 +315,6 @@ function getHostname(url) {
     let path = url.slice(url.indexOf(':') + 3);
     let host = path.slice(0, path.indexOf('/'));
     return host.slice(host.indexOf('@') + 1);
-}
-
-function MatchPattern(key, string, is) {
-    return aria2Updated[key] || aria2Storage[key].some(
-        is ? (i) => string.endsWith(`.${i}`) : (i) => string === i || string.endsWith(`.${i}`)
-    );
 }
 
 function setContextMenu(id, i18n, contexts, parentId) {
