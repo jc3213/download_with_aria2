@@ -124,13 +124,13 @@ function aria2ConfigUpdate(json) {
 
 async function aria2DownloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
-    if (MatchPattern('proxy_include', hostname) {
+    if (MatchPattern('proxy_include', hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (aria2Storage['folder_enabled']) {
         options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
-    if (!MatchPattern('headers_exclude', hostname) {
+    if (!MatchPattern('headers_exclude', hostname)) {
         let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{ name: 'User-Agent', value: navigator.userAgent }, { name: 'Referer', value: referer }];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({ name }) => name.toLowerCase() === 'user-agent');
@@ -299,7 +299,7 @@ chrome.storage.sync.get(null, (json) => {
 
 function aria2CaptureResult(hostname, filename, fileSize) {
     if (MatchPattern('capture_host_exclude', hostname) ||
-        MatchPattern('capture_type_exclude', filename, true)
+        MatchPattern('capture_type_exclude', filename, true) ||
         aria2Updated['capture_size_exclude'] > 0 &&
         aria2Updated['capture_size_exclude'] > fileSize) {
         return false;
