@@ -254,6 +254,9 @@ chrome.action.onClicked.addListener(() => {
 const MatchKeys = ['headers_exclude', 'proxy_include', 'capture_host_exclude', 'capture_type_exclude'];
 
 function MatchData(key) {
+    // hotfix
+        aria2Storage[key] = aria2Storage[key].filter(i => !i.endsWith('.*')).map(i => i.replace('*.', ''))
+    //
     let data = aria2Storage[key];
     let dataSet = new Set(data);
     let empty = data.length === 0;
@@ -301,6 +304,9 @@ function aria2StorageUpdate(json) {
 chrome.storage.sync.get(null, (json) => {
     let storage = { ...aria2Default, ...json };
     aria2StorageUpdate(storage);
+    // hotfix-1
+        chrome.storage.sync.set(aria2Storage);
+    //
 });
 
 function aria2CaptureResult(hostname, filename, fileSize) {
