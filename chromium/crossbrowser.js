@@ -309,19 +309,6 @@ function getHostname(url) {
     return host.slice(host.indexOf('@') + 1);
 }
 
-function getMatchPattern(array, isFile) {
-    if (array.length === 0) {
-        return /!/;
-    }
-    if (array.includes('*')) {
-        return /.*/;
-    }
-    if (isFile) {
-        return new RegExp('^.*\\.(' + array.join('|') + ')$');
-    }
-    return new RegExp('^(' + array.join('|').replace(/\./g, '\\.').replace(/\*\\\./g, '([^.]+\\.)*').replace(/\\\.\*/g, '(\\.[^.]+)*') + ')$');
-}
-
 function setContextMenu(id, i18n, contexts, parentId) {
     chrome.contextMenus.create({
         id,
