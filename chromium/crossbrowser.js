@@ -257,7 +257,7 @@ function MatchData(key) {
     let data = aria2Storage[key];
     let dataSet = new Set(data);
     let empty = data.length === 0;
-    let global = !empty && data.has('*');
+    let global = !empty && dataSet.has('*');
     aria2Updated[key] = { data, dataSet, empty, global };
 }
 
