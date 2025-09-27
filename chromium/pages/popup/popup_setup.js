@@ -22,7 +22,7 @@ i18nEntry.value = chrome.i18n.getMessage('extension_locale');
 i18nEntry.disabled = true;
 
 chrome.runtime.onMessage.addListener(({ action, params }) => {
-    if (action !== 'options_storage') {
+    if (action !== 'storage_update') {
         return;
     }
     if (!params['manager_newtab']) {

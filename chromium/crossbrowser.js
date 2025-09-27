@@ -47,7 +47,7 @@ aria2RPC.onopen = () => {
         { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
     ).then(([{ result: options }, { result: version }, { result: active }]) => {
         captureHooking();
-        aria2ConfigUpdate(options);
+        optionsSanitize(options);
         aria2Version = version;
         aria2Active = new Set(active.map(({ gid }) => gid));
         chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
@@ -117,7 +117,7 @@ function RawToSize(bytes) {
     return (bytes / 10485.76 | 0) / 100 + 'M';
 }
 
-function aria2ConfigUpdate(json) {
+function optionsSanitize(json) {
     RawData.forEach((key) => aria2Config[key] = json[key]);
     SizeData.forEach((key) => aria2Config[key] = RawToSize(json[key]));
 }
@@ -176,12 +176,12 @@ function systemRuntime() {
 
 function storageChanged(response, json) {
     aria2RPC.disconnect();
-    aria2StorageUpdate(json);
+    storageDispatch(json);
     chrome.storage.sync.set(aria2Storage, response);
 }
 
 function optionsChanged(response, options) {
-    aria2ConfigUpdate(options);
+    optionsSanitize(options);
     aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] }).then(response).catch(response);
 }
 
@@ -198,10 +198,10 @@ function detectedImages(response) {
 
 const msgHandlers = {
     'system_runtime': (response) => response(systemRuntime()),
-    'jsonrpc_download': (response, params) => aria2RPC.call(...params).then(response).catch(response),
-    'options_storage': storageChanged,
-    'options_jsonrpc': optionsChanged,
+    'storage_update': storageChanged,
+    'jsonrpc_update': optionsChanged,
     'inspect_images': detectedImages,
+    'jsonrpc_download': (response, params) => aria2RPC.call(...params).then(response).catch(response),
     'open_new_download': () => openPopupWindow('/pages/newdld/newdld.html', 462)
 };
 
@@ -268,7 +268,7 @@ function MatchTest(key, string) {
     return global || dataSet.has(string) || data.some((i) => string.endsWith(`.${i}`));
 }
 
-function aria2StorageUpdate(json) {
+function storageDispatch(json) {
     let menuId;
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     aria2Storage = json;
@@ -302,7 +302,7 @@ function aria2StorageUpdate(json) {
 
 chrome.storage.sync.get(null, (json) => {
     let storage = { ...aria2Default, ...json };
-    aria2StorageUpdate(storage);
+    storageDispatch(storage);
     // hotfix-1
         chrome.storage.sync.set(aria2Storage);
     //
