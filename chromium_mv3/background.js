@@ -24,4 +24,4 @@ function captureDisabled() {
 
 chrome.runtime.onStartup.addListener(chrome.runtime.getPlatformInfo);
 
-let aria2Persistent = setInterval(chrome.runtime.getPlatformInfo, 28000);
+let persistent = setInterval(chrome.runtime.getPlatformInfo, 28000);
