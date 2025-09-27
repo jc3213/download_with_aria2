@@ -122,7 +122,7 @@ function optionsSanitize(json) {
     SizeData.forEach((key) => aria2Config[key] = RawToSize(json[key]));
 }
 
-async function aria2DownloadHandler(url, referer, options, tabId) {
+async function downloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
     if (MatchTest('proxy_include', hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
@@ -147,8 +147,8 @@ function aria2ImagesPrompt(referer, tabId) {
 }
 
 const ctxMenuMap = {
-    'aria2c_this_url': ({ id, url }, { linkUrl }) => aria2DownloadHandler(linkUrl, url, {}, id),
-    'aria2c_this_image': ({ id, url }, { srcUrl }) => aria2DownloadHandler(srcUrl, url, {}, id),
+    'aria2c_this_url': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, {}, id),
+    'aria2c_this_image': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, {}, id),
     'aria2c_all_images': ({ id, url }) => aria2ImagesPrompt(url, id)
 };
 
@@ -308,7 +308,11 @@ chrome.storage.sync.get(null, (json) => {
     //
 });
 
-function aria2CaptureResult(hostname, filename, fileSize) {
+function captureHooking() {
+    aria2Storage['capture_enabled'] ? captureEnabled() : captureDisabled()
+}
+
+function captureEvaluate(hostname, filename, fileSize) {
     return !(
         MatchTest('capture_host_exclude', hostname) ||
         MatchTest('capture_type_exclude', filename) ||

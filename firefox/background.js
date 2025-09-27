@@ -1,9 +1,16 @@
-let aria2WebRequest = new Set([ 'content-disposition', 'content-type', 'content-length' ]);
+let aria2Headers = new Set([ 'content-disposition', 'content-type', 'content-length' ]);
 
-function captureHooking() {
-    if (!aria2Storage['capture_enabled']) {
-        captureDisabled();
-    } else if (aria2Storage['capture_webrequest']) {
+function captrueEnabled() {
+    captureWebRequest();
+}
+
+function captureDisabled() {
+    browser.downloads.onCreated.removeListener(captureDownloads);
+    browser.webRequest.onHeadersReceived.removeListener(captureWebRequest);
+}
+
+function captureWebRequest() {
+    if (aria2Storage['capture_webrequest']) {
         browser.webRequest.onHeadersReceived.addListener(captureWebRequest, { urls: ['http://*/*', 'https://*/*'], types: ['main_frame', 'sub_frame'] }, ['blocking', 'responseHeaders']);
         browser.downloads.onCreated.removeListener(captureDownloads);
     } else {
@@ -12,21 +19,16 @@ function captureHooking() {
     }
 }
 
-function captureDisabled() {
-    browser.downloads.onCreated.removeListener(captureDownloads);
-    browser.webRequest.onHeadersReceived.removeListener(captureWebRequest);
-}
-
 async function captureDownloads({ id, url, referrer, filename, fileSize }) {
     if (url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
     let hostname = getHostname(referrer);
-    let captured = aria2CaptureResult(hostname, filename, fileSize);
+    let captured = captureEvaluate(hostname, filename, fileSize);
     if (captured) {
         browser.downloads.cancel(id).then(() => {
             browser.downloads.erase({ id });
-            aria2DownloadHandler(url, referrer, getFirefoxOptions(filename));
+            downloadHandler(url, referrer, getFirefoxOptions(filename));
         });
     }
 }
@@ -38,7 +40,7 @@ async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, 
     let result = {};
     responseHeaders.forEach(({ name, value }) => {
         name = name.toLowerCase();
-        if (aria2WebRequest.has(name)) {
+        if (aria2Headers.has(name)) {
             result[name] = value;
         }
     });
@@ -47,9 +49,9 @@ async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, 
     }
     let out = decodeFileName(result['content-disposition']);
     let hostname = getHostname(originUrl);
-    let captured = aria2CaptureResult(hostname, out, result['content-length'] | 0);
+    let captured = captureEvaluate(hostname, out, result['content-length'] | 0);
     if (captured) {
-        aria2DownloadHandler(url, originUrl, { out }, tabId);
+        downloadHandler(url, originUrl, { out }, tabId);
         return { cancel: true };
     }
 }

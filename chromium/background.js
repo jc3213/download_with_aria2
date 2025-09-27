@@ -1,21 +1,19 @@
-function aria2CaptureFilename({ id, finalUrl, referrer, filename, fileSize }) {
+function captureDownloads({ id, finalUrl, referrer, filename, fileSize }) {
     if (finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
         return;
     }
     let hostname = getHostname(referrer || finalUrl);
-    let captured = aria2CaptureResult(hostname, filename, fileSize);
+    let captured = captureEvaluate(hostname, filename, fileSize);
     if (captured) {
         chrome.downloads.erase({ id });
-        aria2DownloadHandler(finalUrl, referrer, { out: filename });
+        downloadHandler(finalUrl, referrer, { out: filename });
     }
 }
 
-function captureHooking() {
-    aria2Storage['capture_enabled']
-        ? chrome.downloads.onDeterminingFilename.addListener(aria2CaptureFilename)
-        : captureDisabled();
+function captureEnabled() {
+    chrome.downloads.onDeterminingFilename.addListener(captureDownloads)
 }
 
 function captureDisabled() {
-    chrome.downloads.onDeterminingFilename.removeListener(aria2CaptureFilename);
+    chrome.downloads.onDeterminingFilename.removeListener(captureDownloads);
 }
