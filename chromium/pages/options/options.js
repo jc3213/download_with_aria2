@@ -42,7 +42,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-function optionHistoryApply(json) {
+function optionHistorySave(json) {
     let { id, new_value } = json;
     updated[id] = new_value;
     undoes.push(json);
@@ -73,20 +73,20 @@ optionsPane.addEventListener('change', (event) => {
     }
     let handler = valueHandlers[type] ?? valueHandlers['string'];
     let new_value = handler(entry, id);
-    optionHistoryApply({ id, new_value, old_value: updated[id], type, entry });
+    optionHistorySave({ id, new_value, old_value: updated[id], type, entry });
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
     let entry = event.target;
     let { name: id, value: new_value } = event.target;
-    optionHistoryApply({ id, new_value, old_value: updated[id], type: 'text', entry });
+    optionHistorySave({ id, new_value, old_value: updated[id], type: 'text', entry });
 });
 
 function menuEventSave() {
     saveBtn.disabled = true;
     extension.contains('jsonrpc')
         ? chrome.runtime.sendMessage({ action: 'jsonrpc_update', params: updated })
-        : aria2StorageUpdate();
+        : storageUpdate();
 }
 
 function menuEventUndo() {
@@ -180,8 +180,8 @@ function promiseFileReader(file) {
 
 function importJson(file) {
     updated = JSON.parse(file);
-    aria2StorageUpdate();
-    aria2StorageSetup();
+    storageUpdate();
+    storageDispatch();
 }
 
 function importConf(file) {
@@ -192,7 +192,7 @@ function importConf(file) {
             json[key] = value;
         }
     });
-    aria2ConfigSetup(json);
+    optionsDispatch(json);
     chrome.runtime.sendMessage({ action: 'jsonrpc_update', params: updated });
 }
 
@@ -203,7 +203,7 @@ menuPane.addEventListener('change', async (event) => {
     extension.contains('jsonrpc') ? importConf(file) : importJson(file);
 });
 
-function aria2ConfigSetup(json) {
+function optionsDispatch(json) {
     jsonrpcEntries.forEach((entry) => {
         let { name } = entry;
         entry.value = aria2Config[name] = json[name] ?? '';
@@ -221,7 +221,7 @@ document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
     chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ options, version }) => {
         if (version) {
             optionHistoryFlush();
-            aria2ConfigSetup(options);
+            optionsDispatch(options);
             tellVer.textContent = tellUA.textContent = version.version;
             extension.add('jsonrpc');
         }
@@ -230,7 +230,7 @@ document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
 
 document.getElementById('goto-options').addEventListener('click', (event) => {
     optionHistoryFlush();
-    aria2StorageSetup();
+    storageDispatch();
     extension.remove('jsonrpc');
 });
 
@@ -242,7 +242,7 @@ function matchEventAddNew(id, list, entry) {
         let new_value = [...old_value, value];
         let rule = printMatchPattern(list, id, value);
         list.scrollTop = list.scrollHeight;
-        optionHistoryApply({ id, new_value, old_value, type: 'matches', add: { list, index: old_value.length, rule } });
+        optionHistorySave({ id, new_value, old_value, type: 'matches', add: { list, index: old_value.length, rule } });
     }
 }
 
@@ -252,7 +252,7 @@ function matchEventResort(id, list) {
     let old_order = [...list.children];
     let new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    optionHistoryApply({ id, new_value, old_value, type: 'resort', list, new_order, old_order });
+    optionHistorySave({ id, new_value, old_value, type: 'resort', list, new_order, old_order });
 }
 
 function matchEventRemove(id, list, _, event) {
@@ -262,7 +262,7 @@ function matchEventRemove(id, list, _, event) {
     let index = old_value.indexOf(value);
     let new_value = old_value.filter((val) => val !== value);
     rule.remove();
-    optionHistoryApply({ id, new_value, old_value, type: 'matches', remove: { list, index, rule } });
+    optionHistorySave({ id, new_value, old_value, type: 'matches', remove: { list, index, rule } });
 }
 
 const listEventMap = {
@@ -299,7 +299,7 @@ function printMatchPattern(list, id, value) {
     return rule;
 }
 
-function aria2StorageSetup() {
+function storageDispatch() {
     updated = { ...aria2Storage };
     tellVer.textContent = aria2Version;
     optionsEntries.forEach((entry) => {
@@ -320,7 +320,7 @@ function aria2StorageSetup() {
     });
 }
 
-function aria2StorageUpdate() {
+function storageUpdate() {
     aria2Storage = { ...updated };
     chrome.runtime.sendMessage({ action: 'storage_update', params: updated });
 }
@@ -328,5 +328,5 @@ function aria2StorageUpdate() {
 chrome.runtime.sendMessage({ action: 'system_runtime'}, ({ storage, manifest }) => {
     aria2Storage = storage;
     aria2Version = manifest.version;
-    aria2StorageSetup();
+    storageDispatch();
 });
