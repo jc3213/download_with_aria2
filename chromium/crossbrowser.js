@@ -124,13 +124,13 @@ function optionsSanitize(json) {
 
 async function aria2DownloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
-    if (MatchTest('proxy_include', hostname)) {
+    if (aria2Updated['proxy_include'].test(hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (aria2Storage['folder_enabled']) {
         options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
-    if (!MatchTest('headers_exclude', hostname)) {
+    if (!aria2Updated['headers_exclude'].test(hostname)) {
         let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{ name: 'User-Agent', value: navigator.userAgent }, { name: 'Referer', value: referer }];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({ name }) => name.toLowerCase() === 'user-agent');
@@ -251,22 +251,21 @@ chrome.action.onClicked.addListener(() => {
     });
 });
 
+class MatchPattern {
+    constructor (array) {
+        this.#data = array.filter((i) => !i.endsWith('.*')).map((i) => i.replace('*.', ''));
+        this.#dataSet = new Set(array);
+        this.#global = this.#dataSet.has('*');
+    }
+    #data;
+    #dataSet;
+    #global;
+    test (string) {
+        return this.#global || this.#dataSet.has(string) || this.#data.some((i) => string.endsWith(`.${i}`));
+    }
+}
+
 const MatchKeys = ['headers_exclude', 'proxy_include', 'capture_host_exclude', 'capture_type_exclude'];
-
-function MatchData(key) {
-    // hotfix
-        aria2Storage[key] = aria2Storage[key].filter(i => !i.endsWith('.*')).map(i => i.replace('*.', ''))
-    //
-    let data = aria2Storage[key];
-    let dataSet = new Set(data);
-    let global = dataSet.has('*');
-    aria2Updated[key] = { data, dataSet, global };
-}
-
-function MatchTest(key, string) {
-    let { data, dataSet, global } = aria2Updated[key];
-    return global || dataSet.has(string) || data.some((i) => string.endsWith(`.${i}`));
-}
 
 function storageDispatch(json) {
     let menuId;
@@ -279,7 +278,7 @@ function storageDispatch(json) {
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
     aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
-    MatchKeys.forEach(MatchData);
+    MatchKeys.forEach((key) => aria2Updated[key] = new MatchPattern(json[key]));
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
     if (!json['context_enabled']) {
@@ -310,8 +309,8 @@ chrome.storage.sync.get(null, (json) => {
 
 function aria2CaptureResult(hostname, filename, fileSize) {
     return !(
-        MatchTest('capture_host_exclude', hostname) ||
-        MatchTest('capture_type_exclude', filename) ||
+        aria2Updated['capture_host_exclude'].test(hostname) ||
+        aria2Updated['capture_type_exclude'].test(filename) ||
         aria2Updated['capture_size_exclude'] > 0 &&
         aria2Updated['capture_size_exclude'] > fileSize
     );
