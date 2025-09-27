@@ -310,13 +310,12 @@ chrome.storage.sync.get(null, (json) => {
 });
 
 function aria2CaptureResult(hostname, filename, fileSize) {
-    if (MatchTest('capture_host_exclude', hostname) ||
+    return !(
+        MatchTest('capture_host_exclude', hostname) ||
         MatchTest('capture_type_exclude', filename) ||
         aria2Updated['capture_size_exclude'] > 0 &&
-        aria2Updated['capture_size_exclude'] > fileSize) {
-        return false;
-    }
-    return true;
+        aria2Updated['capture_size_exclude'] > fileSize
+    );
 }
 
 function getHostname(url) {
