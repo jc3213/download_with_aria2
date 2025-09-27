@@ -259,14 +259,13 @@ function MatchData(key) {
     //
     let data = aria2Storage[key];
     let dataSet = new Set(data);
-    let empty = data.length === 0;
-    let global = !empty && dataSet.has('*');
-    aria2Updated[key] = { data, dataSet, empty, global };
+    let global = dataSet.has('*');
+    aria2Updated[key] = { data, dataSet, global };
 }
 
 function MatchTest(key, string) {
-    let { data, dataSet, empty, global } = aria2Updated[key];
-    return !empty && (global || dataSet.has(string) || data.some((i) => string.endsWith(`.${i}`)));
+    let { data, dataSet, global } = aria2Updated[key];
+    return global || dataSet.has(string) || data.some((i) => string.endsWith(`.${i}`));
 }
 
 function aria2StorageUpdate(json) {
