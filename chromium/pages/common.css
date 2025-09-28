@@ -1,7 +1,7 @@
 :root {
     --color-body: #FFFFFF;
     --color-text: #000000;
-    --color-tree-item: #F3F3F3;
+    --color-item: #F3F3F3;
     --item-hover: brightness(1.1) contrast(0.8);
     --item-active: brightness(0.9) contrast(0.8);
     --item-disabled: brightness(0.8) contrast(0.8) opacity(0.8);
@@ -10,7 +10,7 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --color-body: #202124;
-        --color-tree-item: #56585D;
+        --color-item: #56585D;
         --color-text: #FFFFFF;
     }
 }
@@ -26,7 +26,7 @@ body, button, input, textarea, select {
 }
 
 button, input, textarea, select, option {
-    background-color: var(--color-tree-item);
+    background-color: var(--color-item);
     color: var(--color-text);
 }
 
