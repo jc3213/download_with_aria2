@@ -1,6 +1,6 @@
 let aria2Headers = new Set([ 'content-disposition', 'content-type', 'content-length' ]);
 
-function captrueEnabled() {
+function captrueHooking() {
     if (!aria2Storage['capture_enabled']) {
         captureDisabled();
     } else if (aria2Storage['capture_webrequest']) {
