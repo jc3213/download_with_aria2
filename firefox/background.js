@@ -55,14 +55,14 @@ async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, 
 }
 
 function getFirefoxOptions(filename) {
-    let [, dir, out] = filename.match(/^((?:[A-Z]:)?(?:[\\/][^\\/]+)+)[\\/]([^\\/]+)$/);
+    let [, dir, out] = filename.match(/^((?:[A-Z]:\\|\/)(?:[^\\\/]+[\\\/])*)([^\\\/]+)$/);
     if (!aria2Storage['folder_enabled']) {
         return { out };
     }
-    if (aria2Storage['folder_firefox']) {
-        return { out, dir };
+    if (!aria2Storage['folder_firefox']) {
+        dir = aria2Storage['folder_defined'] || null;
     }
-    return { out, dir: aria2Storage['folder_defined'] || null };
+    return { out, dir };
 }
 
 function decodeFileName(disposition) {
