@@ -20,13 +20,13 @@
     "download_complete": {
         "message": "下载完成"
     },
-    "context_thisurl": {
+    "ctxmenu_thisurl": {
         "message": "下载此链接"
     },
-    "context_thisimage": {
+    "ctxmenu_thisimage": {
         "message": "下载此图像"
     },
-    "context_allimages": {
+    "ctxmenu_allimages": {
         "message": "下载此页面的所有图像"
     },
     "plugins_options": {
@@ -164,25 +164,25 @@
     "option_context": {
         "message": "右键菜单"
     },
-    "option_context_enabled": {
+    "option_ctxmenu_enabled": {
         "message": "启用上下文菜单"
     },
-    "tips_option_context_enabled": {
+    "tips_option_ctxmenu_enabled": {
         "message": "启用此扩展的右键菜单"
     },
-    "option_context_cascade": {
+    "option_ctxmenu_cascade": {
         "message": "层叠式菜单"
     },
-    "tips_option_context_cascade": {
+    "tips_option_ctxmenu_cascade": {
         "message": "启用层叠式上下文菜单"
     },
-    "tips_option_context_thisurl": {
+    "tips_option_ctxmenu_thisurl": {
         "message": "启用上下文菜单「下载此链接」"
     },
-    "tips_option_context_thisimage": {
+    "tips_option_ctxmenu_thisimage": {
         "message": "启用上下文菜单「下载此图像」"
     },
-    "tips_option_context_allimages": {
+    "tips_option_ctxmenu_allimages": {
         "message": "启用上下文菜单「下载此页面的所有图像」"
     },
     "option_notification": {

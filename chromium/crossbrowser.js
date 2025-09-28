@@ -6,11 +6,11 @@ let aria2Default = {
     'jsonrpc_timeout': 10,
     'manager_newtab': false,
     'manager_interval': 10,
-    'context_enabled': true,
-    'context_cascade': true,
-    'context_thisurl': true,
-    'context_thisimage': true,
-    'context_allimages': true,
+    'ctxmenu_enabled': true,
+    'ctxmenu_cascade': true,
+    'ctxmenu_thisurl': true,
+    'ctxmenu_thisimage': true,
+    'ctxmenu_allimages': true,
     'notify_start': false,
     'notify_complete': false,
     'headers_override': false,
@@ -254,6 +254,9 @@ chrome.action.onClicked.addListener(() => {
 const MatchKeys = ['headers_exclude', 'proxy_include', 'capture_host_exclude', 'capture_type_exclude'];
 
 function MatchData(key) {
+    // hotfix
+        aria2Storage[key] = aria2Storage[key].filter(i => !i.endsWith('.*')).map(i => i.replace('*.', ''))
+    //
     let data = aria2Storage[key];
     let dataSet = new Set(data);
     let global = dataSet.has('*');
@@ -279,27 +282,40 @@ function storageDispatch(json) {
     MatchKeys.forEach(MatchData);
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
-    if (!json['context_enabled']) {
+    if (!json['ctxmenu_enabled']) {
         return;
     }
-    if (json['context_cascade']) {
+    if (json['ctxmenu_cascade']) {
         menuId = 'aria2c_contextmenu';
         setContextMenu(menuId, 'extension_name', ['link', 'image', 'page']);
     }
-    if (json['context_thisurl']) {
-        setContextMenu('aria2c_this_url', 'context_thisurl', ['link'], menuId);
+    if (json['ctxmenu_thisurl']) {
+        setContextMenu('aria2c_this_url', 'ctxmenu_thisurl', ['link'], menuId);
     }
-    if (json['context_thisimage']) {
-        setContextMenu('aria2c_this_image', 'context_thisimage', ['image'], menuId);
+    if (json['ctxmenu_thisimage']) {
+        setContextMenu('aria2c_this_image', 'ctxmenu_thisimage', ['image'], menuId);
     }
-    if (json['context_allimages']) {
-        setContextMenu('aria2c_all_images', 'context_allimages', ['page'], menuId);
+    if (json['ctxmenu_allimages']) {
+        setContextMenu('aria2c_all_images', 'ctxmenu_allimages', ['page'], menuId);
     }
 }
 
 chrome.storage.sync.get(null, (json) => {
     let storage = { ...aria2Default, ...json };
+    // hotfix-2
+        ['context_allimages','context_cascade','context_enabled','context_thisimage','context_thisurl'].forEach((key) => {
+            let value = storage[key];
+            if (value !== undefined) {
+                let newkey = key.replace('context_', 'ctxmenu_');
+                storage[newkey] = storage[key];
+                delete storage[key];
+            }
+        });
+    //
     storageDispatch(storage);
+    // hotfix-1
+        chrome.storage.sync.set(aria2Storage);
+    //
 });
 
 function captureEvaluate(hostname, filename, fileSize) {

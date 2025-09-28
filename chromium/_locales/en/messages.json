@@ -20,13 +20,13 @@
     "download_complete": {
         "message": "Download Complete"
     },
-    "context_thisurl": {
+    "ctxmenu_thisurl": {
         "message": "Download this link"
     },
-    "context_thisimage": {
+    "ctxmenu_thisimage": {
         "message": "Download this image"
     },
-    "context_allimages": {
+    "ctxmenu_allimages": {
         "message": "Download all images on this page"
     },
     "plugins_options": {
@@ -164,25 +164,25 @@
     "option_context": {
         "message": "Context Menus"
     },
-    "option_context_enabled": {
+    "option_ctxmenu_enabled": {
         "message": "Enable Context Menus"
     },
-    "tips_option_context_enabled": {
+    "tips_option_ctxmenu_enabled": {
         "message": "Enable context menus for this extension"
     },
-    "option_context_cascade": {
+    "option_ctxmenu_cascade": {
         "message": "Cascaded Context Menus"
     },
-    "tips_option_context_cascade": {
+    "tips_option_ctxmenu_cascade": {
         "message": "Enable cascaded context menus"
     },
-    "tips_option_context_thisurl": {
+    "tips_option_ctxmenu_thisurl": {
         "message": "Enable context menu 「Download this link」"
     },
-    "tips_option_context_thisimage": {
+    "tips_option_ctxmenu_thisimage": {
         "message": "Enable context menu 「Download this image」"
     },
-    "tips_option_context_allimages": {
+    "tips_option_ctxmenu_allimages": {
         "message": "Enable context menu 「Download all images on this page」"
     },
     "option_notification": {
