@@ -1,7 +1,9 @@
 let aria2Headers = new Set([ 'content-disposition', 'content-type', 'content-length' ]);
 
 function captrueEnabled() {
-    if (aria2Storage['capture_webrequest']) {
+    if (!aria2Storage['capture_enabled']) {
+        captureDisabled();
+    } else if (aria2Storage['capture_webrequest']) {
         browser.webRequest.onHeadersReceived.addListener(captureWebRequest, { urls: ['http://*/*', 'https://*/*'], types: ['main_frame', 'sub_frame'] }, ['blocking', 'responseHeaders']);
         browser.downloads.onCreated.removeListener(captureDownloads);
     } else {
