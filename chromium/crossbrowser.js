@@ -290,13 +290,13 @@ function storageDispatch(json) {
         setContextMenu(menuId, 'extension_name', ['link', 'image', 'page']);
     }
     if (json['context_thisurl']) {
-        setContextMenu('aria2c_this_url', 'contextmenu_thisurl', ['link'], menuId);
+        setContextMenu('aria2c_this_url', 'context_thisurl', ['link'], menuId);
     }
     if (json['context_thisimage']) {
-        setContextMenu('aria2c_this_image', 'contextmenu_thisimage', ['image'], menuId);
+        setContextMenu('aria2c_this_image', 'context_thisimage', ['image'], menuId);
     }
     if (json['context_allimages']) {
-        setContextMenu('aria2c_all_images', 'contextmenu_allimages', ['page'], menuId);
+        setContextMenu('aria2c_all_images', 'context_allimages', ['page'], menuId);
     }
 }
 

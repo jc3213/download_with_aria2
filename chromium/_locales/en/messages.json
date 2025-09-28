@@ -20,13 +20,13 @@
     "download_complete": {
         "message": "Download Complete"
     },
-    "contextmenu_thisurl": {
+    "context_thisurl": {
         "message": "Download this link"
     },
-    "contextmenu_thisimage": {
+    "context_thisimage": {
         "message": "Download this image"
     },
-    "contextmenu_allimages": {
+    "context_allimages": {
         "message": "Download all images on this page"
     },
     "plugins_options": {

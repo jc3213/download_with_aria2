@@ -20,13 +20,13 @@
     "download_complete": {
         "message": "下载完成"
     },
-    "contextmenu_thisurl": {
+    "context_thisurl": {
         "message": "下载此链接"
     },
-    "contextmenu_thisimage": {
+    "context_thisimage": {
         "message": "下载此图像"
     },
-    "contextmenu_allimages": {
+    "context_allimages": {
         "message": "下载此页面的所有图像"
     },
     "plugins_options": {
