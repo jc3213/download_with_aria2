@@ -5,7 +5,7 @@ body {
 
 body:not(.jsonrpc) #jsonrpc,
 body.jsonrpc #options,
-body:not(.ctxmenu_enabled) .e-context-enabled,
+body:not(.ctxmenu_enabled) .e-ctxmenu-enabled,
 body:not(.headers_override) .e-headers-override,
 body:not(.firefox) .e-firefox,
 body:not(.folder_enabled) .e-folder-enabled,
