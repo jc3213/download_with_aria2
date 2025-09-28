@@ -1,15 +1,6 @@
 let aria2Headers = new Set([ 'content-disposition', 'content-type', 'content-length' ]);
 
 function captrueEnabled() {
-    captureWebRequest();
-}
-
-function captureDisabled() {
-    browser.downloads.onCreated.removeListener(captureDownloads);
-    browser.webRequest.onHeadersReceived.removeListener(captureWebRequest);
-}
-
-function captureWebRequest() {
     if (aria2Storage['capture_webrequest']) {
         browser.webRequest.onHeadersReceived.addListener(captureWebRequest, { urls: ['http://*/*', 'https://*/*'], types: ['main_frame', 'sub_frame'] }, ['blocking', 'responseHeaders']);
         browser.downloads.onCreated.removeListener(captureDownloads);
@@ -17,6 +8,11 @@ function captureWebRequest() {
         browser.webRequest.onHeadersReceived.removeListener(captureWebRequest);
         browser.downloads.onCreated.addListener(captureDownloads);
     }
+}
+
+function captureDisabled() {
+    browser.downloads.onCreated.removeListener(captureDownloads);
+    browser.webRequest.onHeadersReceived.removeListener(captureWebRequest);
 }
 
 async function captureDownloads({ id, url, referrer, filename, fileSize }) {
