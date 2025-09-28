@@ -1,0 +1,509 @@
+{
+    "extension_name": {
+        "message": "通过 Aria2 下载"
+    },
+    "extension_description": {
+        "message": "基于 JSON-RPC 的 aria2 下载器专用浏览器扩展"
+    },
+    "extension_locale": {
+        "message": "zh-CN"
+    },
+    "shortcut_options": {
+        "message": "打开设置"
+    },
+    "shortcut_newdld": {
+        "message": "打开新下载"
+    },
+    "download_start": {
+        "message": "下载开始"
+    },
+    "download_complete": {
+        "message": "下载完成"
+    },
+    "ctxmenu_thisurl": {
+        "message": "下载此链接"
+    },
+    "ctxmenu_thisimage": {
+        "message": "下载此图像"
+    },
+    "ctxmenu_allimages": {
+        "message": "下载此页面的所有图像"
+    },
+    "plugins_options": {
+        "message": "设置 - 通过 Aria2 下载"
+    },
+    "plugins_popup": {
+        "message": "任务管理器 - 通过 Aria2 下载"
+    },
+    "plugins_newdld": {
+        "message": "新下载 - 通过 Aria2 下载"
+    },
+    "plugins_images": {
+        "message": "已探知图像 - 通过 Aria2 下载"
+    },
+    "time_day": {
+        "message": "天"
+    },
+    "time_hour": {
+        "message": "时"
+    },
+    "time_minute": {
+        "message": "分"
+    },
+    "time_second": {
+        "message": "秒"
+    },
+    "time_minute_full": {
+        "message": "分"
+    },
+    "time_second_full": {
+        "message": "秒"
+    },
+    "common_true": {
+        "message": "是"
+    },
+    "common_false": {
+        "message": "否"
+    },
+    "common_submit": {
+        "message": "确认"
+    },
+    "common_save": {
+        "message": "保存"
+    },
+    "tips_match_addnew": {
+        "message": "添加匹配规则"
+    },
+    "tips_match_resort": {
+        "message": "排序匹配规则"
+    },
+    "tips_match_remove": {
+        "message": "删除此匹配规则"
+    },
+    "tips_task_pause": {
+        "message": "暂停/继续此下载"
+    },
+    "tips_task_remove": {
+        "message": "移除此下载"
+    },
+    "tips_task_detail": {
+        "message": "显示下载详情"
+    },
+    "tips_task_apply": {
+        "message": "应用已修改的选项"
+    },
+    "tips_task_retry": {
+        "message": "重启此下载"
+    },
+    "tips_task_adduri": {
+        "message": "添加新的链接"
+    },
+    "tips_proxy_server": {
+        "message": "设置预设的代理服务器"
+    },
+    "option_undo": {
+        "message": "撤销"
+    },
+    "option_redo": {
+        "message": "恢复"
+    },
+    "option_export": {
+        "message": "导出"
+    },
+    "option_import": {
+        "message": "导入"
+    },
+    "option_default": {
+        "message": "默认"
+    },
+    "option_disabled": {
+        "message": "禁用"
+    },
+    "option_aria2": {
+        "message": "前往 JSON-RPC 设置"
+    },
+    "option_back": {
+        "message": "返回 扩展 设置"
+    },
+    "option_sample": {
+        "message": "样例"
+    },
+    "option_jsonrpc": {
+        "message": "JSON-RPC 服务器"
+    },
+    "tips_option_jsonrpc": {
+        "message": "设置 JSON-RPC 的协议、链接及密钥"
+    },
+    "option_jsonrpc_retries": {
+        "message": "重试次数"
+    },
+    "tips_option_jsonrpc_retries": {
+        "message": "设置无法访问 JSON-RPC 时的重试次数\n\n设为\"0\"则不重试\n\n设为\"-1\"则无限重试"
+    },
+    "option_jsonrpc_timeout": {
+        "message": "重试间隔"
+    },
+    "tips_option_jsonrpc_timeout": {
+        "message": "设置重试之间的时间间隔"
+    },
+    "option_task_manager": {
+        "message": "任务管理器"
+    },
+    "option_manager_newtab": {
+        "message": "新标签页打开"
+    },
+    "tips_option_manager_newtab": {
+        "message": "设置是否通过新标签页打开任务管理器"
+    },
+    "option_manager_interval": {
+        "message": "刷新间隔"
+    },
+    "tips_option_manager_interval": {
+        "message": "设置任务管理器刷新间隔"
+    },
+    "option_context": {
+        "message": "右键菜单"
+    },
+    "option_ctxmenu_enabled": {
+        "message": "启用上下文菜单"
+    },
+    "tips_option_ctxmenu_enabled": {
+        "message": "启用此扩展的右键菜单"
+    },
+    "option_ctxmenu_cascade": {
+        "message": "层叠式菜单"
+    },
+    "tips_option_ctxmenu_cascade": {
+        "message": "启用层叠式上下文菜单"
+    },
+    "tips_option_ctxmenu_thisurl": {
+        "message": "启用上下文菜单「下载此链接」"
+    },
+    "tips_option_ctxmenu_thisimage": {
+        "message": "启用上下文菜单「下载此图像」"
+    },
+    "tips_option_ctxmenu_allimages": {
+        "message": "启用上下文菜单「下载此页面的所有图像」"
+    },
+    "option_notification": {
+        "message": "通知"
+    },
+    "option_notify_start": {
+        "message": "下载开始时"
+    },
+    "tips_option_notify_start": {
+        "message": "当下载开始时弹出通知"
+    },
+    "option_notify_complete": {
+        "message": "下载完成时"
+    },
+    "tips_option_notify_complete": {
+        "message": "当下载完成时弹出通知"
+    },
+    "option_match_include": {
+        "message": "监视域名"
+    },
+    "option_match_exclude": {
+        "message": "例外域名"
+    },
+    "option_headers": {
+        "message": "转发请求头"
+    },
+    "tips_option_headers_exclude": {
+        "message": "停止为所设置域名的下载转发请求头"
+    },
+    "option_headers_override": {
+        "message": "覆盖用户代理"
+    },
+    "tips_option_headers_override": {
+        "message": "将请求头中\"User-Agent\"的值修改为预设的User Agent"
+    },
+    "option_headers_useragent": {
+        "message": "User Agent"
+    },
+    "tips_option_headers_useragent": {
+        "message": "设置预设的User Agent"
+    },
+    "option_folder": {
+        "message": "下载路径"
+    },
+    "tips_option_folder": {
+        "message": "设置预设的下载路径"
+    },
+    "option_folder_enabled": {
+        "message": "管理下载路径"
+    },
+    "tips_option_folder_enabled": {
+        "message": "将新建下载保存至预设的下载路径中"
+    },
+    "option_folder_firefox": {
+        "message": "遵循浏览器行为"
+    },
+    "tips_option_folder_firefox": {
+        "message": "将新建下载保存至浏览器的下载路径中\n\n此设置会忽略掉预设的下载路径"
+    },
+    "option_proxy": {
+        "message": "代理服务器"
+    },
+    "tips_option_proxy": {
+        "message": "设置预设的代理服务器"
+    },
+    "tips_option_proxy_include": {
+        "message": "为来自下表中域名的下载添加预设的代理服务器"
+    },
+    "option_capture": {
+        "message": "捕获浏览器下载"
+    },
+    "option_capture_enabled": {
+        "message": "启用捕获功能"
+    },
+    "tips_option_capture_enabled": {
+        "message": "启用捕获来自浏览器的下载"
+    },
+    "option_capture_webrequest": {
+        "message": "启用捕获网络请求"
+    },
+    "tips_option_capture_webrequest": {
+        "message": "捕获网络请求而非下载请求，可能存在问题"
+    },
+    "option_capture_size_exclude": {
+        "message": "忽略文件大小"
+    },
+    "tips_option_capture_size_exclude": {
+        "message": "忽略低于所设置文件大小的下载"
+    },
+    "tips_option_capture_host_exclude": {
+        "message": "忽略来自所设置域名的下载"
+    },
+    "option_capture_type_exclude": {
+        "message": "忽略文件后缀"
+    },
+    "tips_option_capture_type_exclude": {
+        "message": "忽略满足所设置文件后缀的下载"
+    },
+    "popup_menu": {
+        "message": "功能菜单"
+    },
+    "popup_queue": {
+        "message": "任务队列"
+    },
+    "popup_status": {
+        "message": "运行状态"
+    },
+    "popup_version": {
+        "message": "版本"
+    },
+    "popup_active_queue": {
+        "message": "正在下载"
+    },
+    "popup_waiting_queue": {
+        "message": "等待队列"
+    },
+    "popup_paused_queue": {
+        "message": "用户暂停"
+    },
+    "popup_complete_queue": {
+        "message": "下载完成"
+    },
+    "popup_removed_queue": {
+        "message": "用户停止"
+    },
+    "popup_error_queue": {
+        "message": "异常错误"
+    },
+    "popup_newdld": {
+        "message": "新下载"
+    },
+    "popup_purge": {
+        "message": "清理"
+    },
+    "popup_options": {
+        "message": "选项"
+    },
+    "popup_download": {
+        "message": "下载速度"
+    },
+    "popup_upload": {
+        "message": "上传速度"
+    },
+    "popup_active": {
+        "message": "活跃"
+    },
+    "popup_waiting": {
+        "message": "等待"
+    },
+    "popup_stopped": {
+        "message": "停止"
+    },
+    "task_add_mode": {
+        "message": "下载"
+    },
+    "task_add_urls": {
+        "message": "批量链接"
+    },
+    "task_add_files": {
+        "message": "分布式文件"
+    },
+    "task_tips_urls": {
+        "message": "可批量输入 \"http\", \"ftp\", 及 \"magnet\" 链接"
+    },
+    "task_tips_files": {
+        "message": "点此上传文件……\n拖拽\".torrent\", \".meta4\" 以及 \".metalink\" 文件到此处..."
+    },
+    "task_referer": {
+        "message": "引用页"
+    },
+    "tips_task_referer": {
+        "message": "为本次下载添加\"Referer\"请求头"
+    },
+    "task_name": {
+        "message": "文件名"
+    },
+    "tips_task_name": {
+        "message": "设置本次下载的文件名"
+    },
+    "task_proxy": {
+        "message": "代理服务器"
+    },
+    "tips_task_proxy": {
+        "message": "设置本次下载所使用的代理服务器"
+    },
+    "task_download": {
+        "message": "最大下载速度"
+    },
+    "tips_task_download": {
+        "message": "设置本次下载的最大下载速度"
+    },
+    "task_upload": {
+        "message": "最大上传速度"
+    },
+    "tips_task_upload": {
+        "message": "设置本次下载的最大上传速度"
+    },
+    "task_urls": {
+        "message": "下载中的链接"
+    },
+    "tips_task_urls": {
+        "message": "本次下载中正在使用的链接"
+    },
+    "task_files": {
+        "message": "下载中的文件"
+    },
+    "tips_task_files": {
+        "message": "本次下载中正在下载的文件"
+    },
+    "select_all": {
+        "message": "选择全部"
+    },
+    "select_none": {
+        "message": "取消全部"
+    },
+    "select_flip": {
+        "message": "反转选择"
+    },
+    "aria2_options": {
+        "message": "通用设置"
+    },
+    "aria2_com_dir": {
+        "message": "下载文件夹"
+    },
+    "tips_aria2_com_dir": {
+        "message": "设置用于保存下载文件的文件夹"
+    },
+    "aria2_com_cache": {
+        "message": "磁盘缓存"
+    },
+    "tips_aria2_com_cache": {
+        "message": "设置磁盘缓存以减少对磁盘的读写"
+    },
+    "aria2_max_concurrent": {
+        "message": "最大并行任务数"
+    },
+    "tips_aria2_max_concurrent": {
+        "message": "设置可同时进行下载的最大任务数"
+    },
+    "aria2_max_connection": {
+        "message": "每服务器最大连接数"
+    },
+    "tips_aria2_max_connection": {
+        "message": "设置每个服务器允许的最大连接数"
+    },
+    "aria2_max_download": {
+        "message": "全局下载速度"
+    },
+    "tips_aria2_max_download": {
+        "message": "设置所有进行中的任务所能达到的最大下载速度"
+    },
+    "aria2_max_upload": {
+        "message": "全局上传速度"
+    },
+    "tips_aria2_max_upload": {
+        "message": "设置所有进行中的任务所能达到的最大上传速度"
+    },
+    "aria2_http_retry": {
+        "message": "重试次数"
+    },
+    "tips_aria2_http_retry": {
+        "message": "设置最大重试次数"
+    },
+    "aria2_http_wait": {
+        "message": "重试间隔"
+    },
+    "tips_aria2_http_wait": {
+        "message": "设置两次重试之间的间隔 (秒)"
+    },
+    "aria2_http_split": {
+        "message": "多线程"
+    },
+    "tips_aria2_http_split": {
+        "message": "设置每个任务的最大线程数"
+    },
+    "aria2_http_size": {
+        "message": "线程容量"
+    },
+    "tips_aria2_http_size": {
+        "message": "设置每个线程的最小容量"
+    },
+    "aria2_http_ua": {
+        "message": "用户代理"
+    },
+    "tips_aria2_http_ua": {
+        "message": "设置 HTTP(S) 下载的用户代理"
+    },
+    "aria2_bt_port": {
+        "message": "监听端口"
+    },
+    "tips_aria2_bt_port": {
+        "message": "设置与 DHT 以及 UDP 服务器交互的端口"
+    },
+    "aria2_bt_peers": {
+        "message": "最大连接数"
+    },
+    "tips_aria2_bt_peers": {
+        "message": "设置每个 BT 任务的最大连接数"
+    },
+    "aria2_bt_follow": {
+        "message": "自动解析种子"
+    },
+    "tips_aria2_bt_follow": {
+        "message": "当完成 .torrent 文件下载后，自动开始 BT 下载"
+    },
+    "aria2_bt_remove": {
+        "message": "删除未选定文件"
+    },
+    "tips_aria2_bt_remove": {
+        "message": "当 BT 任务完成后删除未被选定的文件"
+    },
+    "aria2_bt_ratio": {
+        "message": "分享率"
+    },
+    "tips_aria2_bt_ratio": {
+        "message": "设置每个 BT 任务的分享率"
+    },
+    "aria2_bt_seed": {
+        "message": "分享时间"
+    },
+    "tips_aria2_bt_seed": {
+        "message": "设置每个 BT 任务的分享时间 (分)"
+    }
+}
