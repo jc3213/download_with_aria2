@@ -20,7 +20,7 @@ label {
 }
 
 label:active {
-    filter: contrast(60%);
+    filter: var(--item-active);
 }
 
 body:not(.meta) .e-meta,
@@ -56,10 +56,10 @@ body.meta .x-meta {
 }
 
 #referer > :hover {
-    filter: contrast(80%);
+    filter: var(--item-hover);
 }
 
 #referer > :active {
-    filter: contrast(60%);
+    filter: var(--item-active);
 }
 

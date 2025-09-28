@@ -46,11 +46,11 @@ body.error > #queue > .error {
 }
 
 #filter > :hover {
-    filter: contrast(80%);
+    filter: var(--item-hover);
 }
 
 #filter > :active {
-    filter: contrast(60%);
+    filter: var(--item-active);
 }
 
 #filter > ::before {
@@ -213,7 +213,7 @@ body.error > #queue > .error {
 .session:is(.complete, .removed, .error) input,
 .session:is(.complete, .removed, .error) select {
     pointer-events: none;
-    filter: contrast(40%);
+    filter: var(--item-disabled);
 }
 
 .session:is(.complete, .removed, .error, .http) label {
@@ -260,7 +260,7 @@ body.error > #queue > .error {
 .session:is(.active, .waiting, .paused) > .meter:is(:active, > .ratio:active),
 .session.p2p > .files > .file > label:active,
 .session > .uris > .uri > div:active {
-    filter: contrast(60%);
+    filter: var(--item-active);
 }
 
 .session > .name {
