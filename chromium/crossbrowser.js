@@ -268,9 +268,17 @@ function MatchTest(key, string) {
     return global || dataSet.has(string) || data.some((i) => string.endsWith(`.${i}`));
 }
 
+function ctxMenuCreate(id, contexts, parentId) {
+    chrome.contextMenus.create({
+        id,
+        title: chrome.i18n.getMessage(id),
+        contexts,
+        parentId,
+        documentUrlPatterns: ['http://*/*', 'https://*/*']
+    });
+}
+
 function storageDispatch(json) {
-    let menuId;
-    let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     aria2Storage = json;
     aria2RPC.scheme = json['jsonrpc_scheme'];
     aria2RPC.url = json['jsonrpc_url'];
@@ -280,23 +288,25 @@ function storageDispatch(json) {
     aria2RPC.connect();
     aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
     MatchKeys.forEach(MatchData);
+    let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
     if (!json['ctxmenu_enabled']) {
         return;
     }
+    let menuId;
     if (json['ctxmenu_cascade']) {
         menuId = 'extension_name';
-        setContextMenu('extension_name', ['link', 'image', 'page']);
+        ctxMenuCreate('extension_name', ['link', 'image', 'page']);
     }
     if (json['ctxmenu_thisurl']) {
-        setContextMenu('ctxmenu_thisurl', ['link'], menuId);
+        ctxMenuCreate('ctxmenu_thisurl', ['link'], menuId);
     }
     if (json['ctxmenu_thisimage']) {
-        setContextMenu('ctxmenu_thisimage', ['image'], menuId);
+        ctxMenuCreate('ctxmenu_thisimage', ['image'], menuId);
     }
     if (json['ctxmenu_allimages']) {
-        setContextMenu('ctxmenu_allimages', ['page'], menuId);
+        ctxMenuCreate('ctxmenu_allimages', ['page'], menuId);
     }
 }
 
@@ -331,16 +341,6 @@ function getHostname(url) {
     let path = url.slice(url.indexOf(':') + 3);
     let host = path.slice(0, path.indexOf('/'));
     return host.slice(host.indexOf('@') + 1);
-}
-
-function setContextMenu(id, contexts, parentId) {
-    chrome.contextMenus.create({
-        id,
-        title: chrome.i18n.getMessage(id),
-        contexts,
-        parentId,
-        documentUrlPatterns: ['http://*/*', 'https://*/*']
-    });
 }
 
 function setIndicator() {
