@@ -147,9 +147,9 @@ function aria2ImagesPrompt(referer, tabId) {
 }
 
 const ctxMenuMap = {
-    'aria2c_this_url': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, {}, id),
-    'aria2c_this_image': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, {}, id),
-    'aria2c_all_images': ({ id, url }) => aria2ImagesPrompt(url, id)
+    'ctxmenu_thisurl': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, {}, id),
+    'ctxmenu_thisimage': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, {}, id),
+    'ctxmenu_allimages': ({ id, url }) => aria2ImagesPrompt(url, id)
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -286,17 +286,17 @@ function storageDispatch(json) {
         return;
     }
     if (json['ctxmenu_cascade']) {
-        menuId = 'aria2c_contextmenu';
-        setContextMenu(menuId, 'extension_name', ['link', 'image', 'page']);
+        menuId = 'extension_name';
+        setContextMenu('extension_name', ['link', 'image', 'page']);
     }
     if (json['ctxmenu_thisurl']) {
-        setContextMenu('aria2c_this_url', 'ctxmenu_thisurl', ['link'], menuId);
+        setContextMenu('ctxmenu_thisurl', ['link'], menuId);
     }
     if (json['ctxmenu_thisimage']) {
-        setContextMenu('aria2c_this_image', 'ctxmenu_thisimage', ['image'], menuId);
+        setContextMenu('ctxmenu_thisimage', ['image'], menuId);
     }
     if (json['ctxmenu_allimages']) {
-        setContextMenu('aria2c_all_images', 'ctxmenu_allimages', ['page'], menuId);
+        setContextMenu('ctxmenu_allimages', ['page'], menuId);
     }
 }
 
@@ -333,10 +333,10 @@ function getHostname(url) {
     return host.slice(host.indexOf('@') + 1);
 }
 
-function setContextMenu(id, i18n, contexts, parentId) {
+function setContextMenu(id, contexts, parentId) {
     chrome.contextMenus.create({
         id,
-        title: chrome.i18n.getMessage(i18n),
+        title: chrome.i18n.getMessage(id),
         contexts,
         parentId,
         documentUrlPatterns: ['http://*/*', 'https://*/*']
