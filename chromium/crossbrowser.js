@@ -1,6 +1,5 @@
 let aria2Default = {
-    'jsonrpc_scheme': 'http',
-    'jsonrpc_url': 'localhost:6800/jsonrpc',
+    'jsonrpc_url': 'http://localhost:6800/jsonrpc',
     'jsonrpc_secret': '',
     'jsonrpc_retries': -1,
     'jsonrpc_timeout': 10,
@@ -286,7 +285,6 @@ function ctxMenuCreate(id, contexts, parentId) {
 
 function storageDispatch(json) {
     aria2Storage = json;
-    aria2RPC.scheme = json['jsonrpc_scheme'];
     aria2RPC.url = json['jsonrpc_url'];
     aria2RPC.secret = json['jsonrpc_secret'];
     aria2RPC.retries = json['jsonrpc_retries'];
@@ -327,6 +325,13 @@ chrome.storage.sync.get(null, (json) => {
                 delete storage[key];
             }
         });
+    //
+    // hotfix-3
+        if (storage['jsonrpc_scheme'] !== undefined) {
+            storage['jsonrpc_url'] = `${storage['jsonrpc_scheme']}://${storage['jsonrpc_url']}`;
+            delete storage['jsonrpc_scheme'];
+            chrome.storage.sync.remove('jsonrpc_scheme');
+        }
     //
     storageDispatch(storage);
     // hotfix-1

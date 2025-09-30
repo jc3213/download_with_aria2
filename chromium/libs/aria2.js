@@ -1,41 +1,24 @@
 class Aria2 {
     constructor (...args) {
-        let path = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/) ?? [, 'http', 'localhost:6800/jsonrpc', ''];
-        this.scheme = path[1];
-        this.url = path[2];
-        this.secret = path[3];
+        let [, scheme = 'http', url = 'localhost:6800/jsonrpc', secret = ''] = args.join('#').match(/^(https?|wss?)(?:#|:\/\/)([^#]+)#?(.*)$/) ?? [];
+        this.jsonrpc = `${scheme}://${url}`;
+        this.secret = secret;
     }
     version = '1.0';
     #xml;
     #wsa;
     #tries;
-    #path () {
-        this.#xml = `http${this.#ssl}://${this.#url}`;
-        this.#wsa = `ws${this.#ssl}://${this.#url}`;
+    #jsonrpc;
+    set jsonrpc (string) {
+        let [, scheme = 'http', ssl = '', url = 'localhost:6800/jsonrpc'] = string.match(/^(http|ws)(s)?(?:#|:\/\/)(.+)$/) ?? [];
+        this.#xml = `http${ssl}://${url}`;
+        this.#wsa = `ws${ssl}://${url}`;
+        this.#jsonrpc = `${scheme}${ssl}://${url}`;
         this.#tries = 0;
+        this.call = scheme === 'http' ? this.#post : this.#send;
     }
-    #scheme;
-    #ssl;
-    set scheme (scheme) {
-        let method = scheme.match(/^(http|ws)(s)?$/);
-        if (!method) {
-            throw new Error(`Unsupported scheme: "${scheme}"`);
-        }
-        this.#scheme = scheme;
-        this.#ssl = method[2] ?? '';
-        this.call = method[1] === 'http' ? this.#post : this.#send;
-        this.#path();
-    }
-    get scheme () {
-        return this.#scheme;
-    }
-    #url;
-    set url (url) {
-        this.#url = url;
-        this.#path();
-    }
-    get url () {
-        return this.#url;
+    get jsonrpc () {
+        return this.#xml;
     }
     #secret;
     set secret (secret) {
