@@ -29,7 +29,7 @@ let aria2Default = {
 };
 
 let aria2Storage = {};
-let aria2Updated = {};
+let aria2Capture = {};
 let aria2Config = {};
 let aria2Version;
 let aria2Active;
@@ -266,11 +266,11 @@ function MatchData(key) {
     let data = aria2Storage[key];
     let dataSet = new Set(data);
     let global = dataSet.has('*');
-    aria2Updated[key] = { data, dataSet, global };
+    aria2Capture[key] = { data, dataSet, global };
 }
 
 function MatchTest(key, string) {
-    let { data, dataSet, global } = aria2Updated[key];
+    let { data, dataSet, global } = aria2Capture[key];
     return global || dataSet.has(string) || data.some((i) => string.endsWith(`.${i}`));
 }
 
@@ -292,7 +292,7 @@ function storageDispatch(json) {
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
-    aria2Updated['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
+    aria2Capture['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
     MatchKeys.forEach(MatchData);
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
@@ -338,8 +338,8 @@ function captureEvaluate(hostname, filename, fileSize) {
     return !(
         MatchTest('capture_host_exclude', hostname) ||
         MatchTest('capture_type_exclude', filename) ||
-        aria2Updated['capture_size_exclude'] > 0 &&
-        aria2Updated['capture_size_exclude'] > fileSize
+        aria2Capture['capture_size_exclude'] > 0 &&
+        aria2Capture['capture_size_exclude'] > fileSize
     );
 }
 
