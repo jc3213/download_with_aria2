@@ -5,24 +5,24 @@ class Aria2 {
         this.secret = secret;
     }
     version = '1.0';
+    #url;
     #xml;
     #wsa;
     #tries;
-    #jsonrpc;
-    set jsonrpc (string) {
+    set url (string) {
         let [, scheme = 'http', ssl = '', url = '://localhost:6800/jsonrpc'] = string.match(/^(http|ws)(s)?(:\/\/.+)$/) ?? [];
+        this.#url = string;
         this.#xml = `http${ssl}${url}`;
         this.#wsa = `ws${ssl}${url}`;
-        this.#jsonrpc = `${scheme}${ssl}${url}`;
         this.#tries = 0;
         this.call = scheme === 'http' ? this.#post : this.#send;
     }
-    get jsonrpc () {
-        return this.#jsonrpc;
+    get url () {
+        return this.#url;
     }
     #secret;
-    set secret (secret) {
-        this.#secret = `token:${secret}`;
+    set secret (string) {
+        this.#secret = `token:${string}`;
     }
     get secret () {
         return this.#secret.slice(6);
