@@ -185,9 +185,9 @@ function optionsChanged(response, json) {
     aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [json] }).then(response).catch(response);
 }
 
-function managerChanged(response, json) {
-    aria2Storage['manager_queue'] = json['manager_queue'];
-    chrome.storage.sync.set(json, response);
+function managerChanged(response, array) {
+    aria2Storage['manager_queue'] = array;
+    chrome.storage.sync.set({ 'manager_queue': array }, response);
 }
 
 function detectedImages(response) {
