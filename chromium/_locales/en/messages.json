@@ -128,11 +128,17 @@
     "option_sample": {
         "message": "Sample"
     },
-    "option_jsonrpc": {
-        "message": "JSON-RPC Server"
+    "option_jsonrpc_url": {
+        "message": "RPC URL"
     },
-    "tips_option_jsonrpc": {
-        "message": "Set scheme, url, and secret token of the JSON-RPC"
+    "tips_option_jsonrpc_url": {
+        "message": "Set the URL of the JSON-RPC"
+    },
+    "option_jsonrpc_secret": {
+        "message": "Secret Token"
+    },
+    "tips_option_jsonrpc_secret": {
+        "message": "Set the token of the JSON-RPC"
     },
     "option_jsonrpc_retries": {
         "message": "Max Retries"

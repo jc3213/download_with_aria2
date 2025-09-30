@@ -128,11 +128,17 @@
     "option_sample": {
         "message": "样例"
     },
-    "option_jsonrpc": {
-        "message": "JSON-RPC 服务器"
+    "option_jsonrpc_url": {
+        "message": "RPC 地址"
     },
-    "tips_option_jsonrpc": {
-        "message": "设置 JSON-RPC 的协议、链接及密钥"
+    "tips_option_jsonrpc_url": {
+        "message": "设置 JSON-RPC 的服务地址"
+    },
+    "option_jsonrpc_secret": {
+        "message": "访问密钥"
+    },
+    "tips_option_jsonrpc_secret": {
+        "message": "设置 JSON-RPC 的访问密钥"
     },
     "option_jsonrpc_retries": {
         "message": "重试次数"
