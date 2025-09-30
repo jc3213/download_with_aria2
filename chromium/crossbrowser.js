@@ -262,15 +262,16 @@ function MatchData(key) {
     // hotfix
         aria2Storage[key] = aria2Storage[key].filter(i => !i.endsWith('.*')).map(i => i.replace('*.', ''))
     //
-    let data = aria2Storage[key];
-    let dataSet = new Set(data);
+    let temp = aria2Storage[key];
+    let data = temp.map((i) => `.${i}`);
+    let dataSet = new Set(temp);
     let global = dataSet.has('*');
     aria2Capture[key] = { data, dataSet, global };
 }
 
 function MatchTest(key, string) {
     let { data, dataSet, global } = aria2Capture[key];
-    return global || dataSet.has(string) || data.some((i) => string.endsWith(`.${i}`));
+    return global || dataSet.has(string) || data.some((i) => string.endsWith(i));
 }
 
 function ctxMenuCreate(id, contexts, parentId) {
