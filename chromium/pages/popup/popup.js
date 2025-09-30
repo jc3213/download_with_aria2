@@ -37,7 +37,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 function taskFilters(array, saveFn) {
-    let filters = new Set(Array.isArray(array) ? array : []);
+    let filters = new Set(array);
     let manager = document.body.classList;
     manager.add(...filters);
     aria2Filter = (id) => {
