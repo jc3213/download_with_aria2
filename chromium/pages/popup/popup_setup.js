@@ -35,7 +35,6 @@ chrome.runtime.onMessage.addListener(({ action, params }) => {
 function aria2StorageChanged(json) {
     aria2Delay = json['manager_interval'] * 1000;
     aria2Proxy = json['proxy_server'];
-    aria2RPC.scheme = json['jsonrpc_scheme'];
     aria2RPC.url = json['jsonrpc_url'];
     aria2RPC.secret = json['jsonrpc_secret'];
     aria2RPC.retries = json['jsonrpc_retries'];
@@ -118,3 +117,4 @@ body {
 }
 `;
 }
+
