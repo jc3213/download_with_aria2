@@ -43,11 +43,6 @@ function aria2StorageChanged(json) {
     aria2RPC.connect();
 }
 
-taskFilters(
-    JSON.parse(localStorage.getItem('queue')),
-    (array) => localStorage.setItem('queue', JSON.stringify(array))
-);
-
 chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage }) => {
     let array = storage['manager_queue'];
     if (!array) {
