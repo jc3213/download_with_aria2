@@ -303,7 +303,7 @@ function storageDispatch(json) {
     let menuId;
     if (json['ctxmenu_cascade']) {
         menuId = 'extension_name';
-        ctxMenuCreate('extension_name', ['link', 'image', 'page']);
+        ctxMenuCreate(menuId, ['link', 'image', 'page']);
     }
     if (json['ctxmenu_thisurl']) {
         ctxMenuCreate('ctxmenu_thisurl', ['link'], menuId);
