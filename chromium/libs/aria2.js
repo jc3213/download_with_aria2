@@ -18,7 +18,7 @@ class Aria2 {
         this.call = scheme === 'http' ? this.#post : this.#send;
     }
     get jsonrpc () {
-        return this.#xml;
+        return this.#jsonrpc;
     }
     #secret;
     set secret (secret) {
