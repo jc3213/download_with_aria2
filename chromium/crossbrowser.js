@@ -177,12 +177,17 @@ function systemRuntime() {
 function storageChanged(response, json) {
     aria2RPC.disconnect();
     storageDispatch(json);
-    chrome.storage.sync.set(aria2Storage, response);
+    chrome.storage.sync.set(json, response);
 }
 
-function optionsChanged(response, options) {
-    optionsSanitize(options);
-    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [options] }).then(response).catch(response);
+function optionsChanged(response, json) {
+    optionsSanitize(json);
+    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [json] }).then(response).catch(response);
+}
+
+function managerChanged(response, json) {
+    aria2Storage['manager_queue'] = json['manager_queue'];
+    chrome.storage.sync.set(json, response);
 }
 
 function detectedImages(response) {
@@ -200,6 +205,7 @@ const msgHandlers = {
     'system_runtime': (response) => response(systemRuntime()),
     'storage_update': storageChanged,
     'jsonrpc_update': optionsChanged,
+    'manager_update': managerChanged,
     'inspect_images': detectedImages,
     'jsonrpc_download': (response, params) => aria2RPC.call(...params).then(response).catch(response),
     'open_new_download': () => openPopupWindow('/pages/newdld/newdld.html', 462)
