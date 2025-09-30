@@ -10,10 +10,10 @@ class Aria2 {
     #tries;
     #jsonrpc;
     set jsonrpc (string) {
-        let [, scheme = 'http', ssl = '', url = 'localhost:6800/jsonrpc'] = string.match(/^(http|ws)(s)?(?:#|:\/\/)(.+)$/) ?? [];
-        this.#xml = `http${ssl}://${url}`;
-        this.#wsa = `ws${ssl}://${url}`;
-        this.#jsonrpc = `${scheme}${ssl}://${url}`;
+        let [, scheme = 'http', ssl = '', url = '://localhost:6800/jsonrpc'] = string.match(/^(http|ws)(s)?(:\/\/.+)$/) ?? [];
+        this.#xml = `http${ssl}${url}`;
+        this.#wsa = `ws${ssl}${url}`;
+        this.#jsonrpc = `${scheme}${ssl}${url}`;
         this.#tries = 0;
         this.call = scheme === 'http' ? this.#post : this.#send;
     }
