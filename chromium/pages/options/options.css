@@ -58,11 +58,15 @@ i {
 }
 
 .padtop {
-    margin: 22px 0px 0px;
+    margin-top: 22px;
 }
 
 .paddown {
-    margin: 0px 0px 22px;
+    margin-bottom: 22px;
+}
+
+.padleft {
+    margin-left: 22px;
 }
 
 .padpad {

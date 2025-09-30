@@ -20,10 +20,13 @@
         </div>
         <div id="options" class="config">
             <h1>JSON-RPC</h1>
-            <div i18n-tips="tips_option_jsonrpc">
-                <h4 i18n="option_jsonrpc"></h4>
-                <div class="flex">
+            <div class="flex">
+                <div class="cfg-item flex fl-1" i18n-tips="tips_option_jsonrpc_url">
+                    <h4 i18n="option_jsonrpc_url"></h4>
                     <input class="fl-1" name="jsonrpc_url" type="text" placeholder="$$hostname:port/jsonrpc$$">
+                </div>
+                <div class="cfg-item flex padleft" i18n-tips="tips_option_jsonrpc_secret">
+                    <h4 i18n="option_jsonrpc_secret"></h4>
                     <input class="fl-1" name="jsonrpc_secret" type="password" placeholder="$$secret$$">
                 </div>
             </div>
