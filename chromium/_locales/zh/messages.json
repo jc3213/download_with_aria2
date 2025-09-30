@@ -162,10 +162,10 @@
         "message": "设置是否通过新标签页打开任务管理器"
     },
     "option_manager_interval": {
-        "message": "刷新间隔"
+        "message": "更新间隔"
     },
     "tips_option_manager_interval": {
-        "message": "设置任务管理器刷新间隔"
+        "message": "设置任务管理器更新间隔"
     },
     "option_context": {
         "message": "右键菜单"
