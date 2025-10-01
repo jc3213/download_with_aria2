@@ -11,7 +11,7 @@ class Aria2 {
     #tries;
     set url (string) {
         let [, scheme = 'http', ssl = '', url = '://localhost:6800/jsonrpc'] = string.match(/^(http|ws)(s)?(:\/\/.+)$/) ?? [];
-        this.#url = string;
+        this.#url = `${scheme}${ssl}${url}`;
         this.#xml = `http${ssl}${url}`;
         this.#wsa = `ws${ssl}${url}`;
         this.#tries = 0;
