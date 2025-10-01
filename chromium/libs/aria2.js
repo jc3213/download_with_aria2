@@ -1,6 +1,6 @@
 class Aria2 {
     constructor (...args) {
-        let [, url = 'http://localhost:6800/jsonrpc', secret = ''] = args.join('#').match(/^((?:https?|wss?):\/\/[^#]+)#?(.*)$/) ?? [];
+        let [, url = 'http://localhost:6800/jsonrpc', secret = ''] = args.join('#').match(/^((?:http|ws)s?:\/\/[^#]+)#?(.*)$/) ?? [];
         this.url = url;
         this.secret = secret;
     }
