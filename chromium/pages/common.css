@@ -10,8 +10,8 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --color-body: #202124;
-        --color-item: #56585D;
         --color-text: #FFFFFF;
+        --color-item: #56585D;
     }
 }
 
