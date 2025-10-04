@@ -3,8 +3,8 @@
     --color-text: #000000;
     --color-item: #F3F3F3;
     --item-hover: brightness(1.1) contrast(0.8);
-    --item-active: brightness(0.9) contrast(0.8);
-    --item-disabled: brightness(0.8) contrast(0.8) opacity(0.8);
+    --item-active: brightness(1.0) contrast(0.8);
+    --item-disabled: brightness(0.9) contrast(0.8) opacity(0.8);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,7 +17,6 @@
 
 * {
     border-color: #AAB0B6;
-    border-radius: 3px;
 }
 
 body, button, input, textarea, select {
@@ -132,8 +131,11 @@ h4 {
 
 .flex, .flexmenu {
     display: flex;
-    gap: 3px;
     margin-bottom: 1px;
+}
+
+.flex {
+    gap: 3px;
 }
 
 .flex > .fl-1 {
