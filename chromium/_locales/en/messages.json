@@ -207,16 +207,16 @@
         "message": "Show notification when a download is completed"
     },
     "option_match_include": {
-        "message": "Include Hosts"
+        "message": "Include Domains"
     },
     "option_match_exclude": {
-        "message": "Exclude Hosts"
+        "message": "Exclude Domains"
     },
     "option_headers": {
         "message": "Request Headers"
     },
     "tips_option_headers_exclude": {
-        "message": "Don't forward request headers for downloads from hosts below"
+        "message": "Don't forward request headers for downloads from domains below"
     },
     "option_headers_override": {
         "message": "Override User Agent"
@@ -255,7 +255,7 @@
         "message": "Set preset proxy server"
     },
     "tips_option_proxy_include": {
-        "message": "Add preset proxy server to new downloads from hosts below"
+        "message": "Add preset proxy server to new downloads from domains below"
     },
     "option_capture": {
         "message": "Capture Browser Downloads"
@@ -279,7 +279,7 @@
         "message": "Ignore browser downloads those are below the size"
     },
     "tips_option_capture_domains": {
-        "message": "Ignore browser downloads from hosts below"
+        "message": "Ignore browser downloads from domains below"
     },
     "option_capture_extensions": {
         "message": "Exclude File Extensions"
