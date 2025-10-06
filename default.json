@@ -1,8 +1,8 @@
 {
     "capture_enabled": false,
-    "capture_host_exclude": [],
-    "capture_size_exclude": 0,
-    "capture_type_exclude": [],
+    "capture_domains": [],
+    "capture_extentions": [],
+    "capture_filesize": 0,
     "capture_webrequest": false,
     "ctxmenu_allimages": true,
     "ctxmenu_cascade": true,
