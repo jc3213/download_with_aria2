@@ -259,9 +259,6 @@ chrome.action.onClicked.addListener(() => {
 const MatchKeys = ['headers_exclude', 'proxy_include', 'capture_host_exclude', 'capture_type_exclude'];
 
 function MatchData(key) {
-    // hotfix
-        aria2Storage[key] = aria2Storage[key].filter(i => !i.endsWith('.*')).map(i => i.replace('*.', ''))
-    //
     let temp = aria2Storage[key];
     let data = temp.map((i) => `.${i}`);
     let dataSet = new Set(temp);
@@ -317,27 +314,7 @@ function storageDispatch(json) {
 
 chrome.storage.sync.get(null, (json) => {
     let storage = { ...aria2Default, ...json };
-    // hotfix-2
-        ['context_allimages','context_cascade','context_enabled','context_thisimage','context_thisurl'].forEach((key) => {
-            let value = storage[key];
-            if (value !== undefined) {
-                let newkey = key.replace('context_', 'ctxmenu_');
-                storage[newkey] = storage[key];
-                delete storage[key];
-            }
-        });
-    //
-    // hotfix-3
-        if (storage['jsonrpc_scheme'] !== undefined) {
-            storage['jsonrpc_url'] = `${storage['jsonrpc_scheme']}://${storage['jsonrpc_url']}`;
-            delete storage['jsonrpc_scheme'];
-            chrome.storage.sync.remove('jsonrpc_scheme');
-        }
-    //
     storageDispatch(storage);
-    // hotfix-1
-        chrome.storage.sync.set(aria2Storage);
-    //
 });
 
 function captureEvaluate(hostname, filename, fileSize) {
