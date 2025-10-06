@@ -357,7 +357,7 @@ chrome.storage.sync.get(null, (json) => {
         }
     //
     // hotfix-5
-        delete storage['notify_instal'];
+        delete storage['notify_install'];
         chrome.storage.sync.remove('notify_install');
     //
     storageDispatch(storage);
