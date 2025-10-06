@@ -215,7 +215,7 @@
     "option_headers": {
         "message": "转发请求头"
     },
-    "tips_option_headers_exclude": {
+    "tips_option_headers_domains": {
         "message": "停止为所设置域名的下载转发请求头"
     },
     "option_headers_override": {
@@ -254,7 +254,7 @@
     "tips_option_proxy": {
         "message": "设置预设的代理服务器"
     },
-    "tips_option_proxy_include": {
+    "tips_option_proxy_domains": {
         "message": "为来自下表中域名的下载添加预设的代理服务器"
     },
     "option_capture": {

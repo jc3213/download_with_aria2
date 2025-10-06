@@ -215,7 +215,7 @@
     "option_headers": {
         "message": "Request Headers"
     },
-    "tips_option_headers_exclude": {
+    "tips_option_headers_domains": {
         "message": "Don't forward request headers for downloads from domains below"
     },
     "option_headers_override": {
@@ -254,7 +254,7 @@
     "tips_option_proxy": {
         "message": "Set preset proxy server"
     },
-    "tips_option_proxy_include": {
+    "tips_option_proxy_domains": {
         "message": "Add preset proxy server to new downloads from domains below"
     },
     "option_capture": {

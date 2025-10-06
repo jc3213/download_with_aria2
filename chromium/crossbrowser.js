@@ -14,12 +14,12 @@ let aria2Default = {
     'notify_complete': false,
     'headers_override': false,
     'headers_useragent': 'Transmission/4.0.0',
-    'headers_exclude': [],
+    'headers_domains': [],
     'folder_defined': '',
     'folder_enabled': false,
     'folder_firefox': false,
     'proxy_server': '',
-    'proxy_include': [],
+    'proxy_domains': [],
     'capture_enabled': false,
     'capture_webrequest': false,
     'capture_domains': [],
@@ -123,13 +123,13 @@ function optionsSanitize(json) {
 
 async function downloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
-    if (MatchTest('proxy_include', hostname)) {
+    if (MatchTest('proxy_domains', hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (aria2Storage['folder_enabled']) {
         options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
-    if (!MatchTest('headers_exclude', hostname)) {
+    if (!MatchTest('headers_domains', hostname)) {
         let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{ name: 'User-Agent', value: navigator.userAgent }, { name: 'Referer', value: referer }];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({ name }) => name.toLowerCase() === 'user-agent');
@@ -256,7 +256,7 @@ chrome.action.onClicked.addListener(() => {
     });
 });
 
-const MatchKeys = ['headers_exclude', 'proxy_include', 'capture_domains', 'capture_extensions'];
+const MatchKeys = ['headers_domains', 'proxy_domains', 'capture_domains', 'capture_extensions'];
 
 function MatchData(key) {
     // hotfix
@@ -339,6 +339,14 @@ chrome.storage.sync.get(null, (json) => {
         if (storage['capture_size_exclude'] !== undefined) {
             storage['capture_filesize'] = storage['capture_size_exclude'];
             delete storage['capture_size_exclude'];
+        }
+        if (storage['proxy_include'] !== undefined) {
+            storage['proxy_domains'] = storage['proxy_include'];
+            delete storage['proxy_include'];
+        }
+        if (storage['headers_exclude'] !== undefined) {
+            storage['headers_domains'] = storage['headers_exclude'];
+            delete storage['headers_exclude'];
         }
     //
     // hotfix-3
