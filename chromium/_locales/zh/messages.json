@@ -272,19 +272,19 @@
     "tips_option_capture_webrequest": {
         "message": "捕获网络请求而非下载请求，可能存在问题"
     },
-    "option_capture_size_exclude": {
+    "option_capture_filesize": {
         "message": "忽略文件大小"
     },
-    "tips_option_capture_size_exclude": {
+    "tips_option_capture_filesize": {
         "message": "忽略低于所设置文件大小的下载"
     },
-    "tips_option_capture_host_exclude": {
+    "tips_option_capture_domains": {
         "message": "忽略来自所设置域名的下载"
     },
-    "option_capture_type_exclude": {
+    "option_capture_extensions": {
         "message": "忽略文件后缀"
     },
-    "tips_option_capture_type_exclude": {
+    "tips_option_capture_extensions": {
         "message": "忽略满足所设置文件后缀的下载"
     },
     "popup_menu": {

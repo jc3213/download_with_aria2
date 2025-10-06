@@ -22,9 +22,9 @@ let aria2Default = {
     'proxy_include': [],
     'capture_enabled': false,
     'capture_webrequest': false,
-    'capture_host_exclude': [],
-    'capture_type_exclude': [],
-    'capture_size_exclude': 0
+    'capture_domains': [],
+    'capture_extensions': [],
+    'capture_filesize': 0
 };
 
 let aria2Storage = {};
@@ -256,9 +256,12 @@ chrome.action.onClicked.addListener(() => {
     });
 });
 
-const MatchKeys = ['headers_exclude', 'proxy_include', 'capture_host_exclude', 'capture_type_exclude'];
+const MatchKeys = ['headers_exclude', 'proxy_include', 'capture_domains', 'capture_extensions'];
 
 function MatchData(key) {
+    // hotfix
+        aria2Storage[key] = aria2Storage[key].filter(i => !i.endsWith('.*')).map(i => i.replace('*.', ''))
+    //
     let temp = aria2Storage[key];
     let data = temp.map((i) => `.${i}`);
     let dataSet = new Set(temp);
@@ -288,7 +291,7 @@ function storageDispatch(json) {
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
-    aria2Capture['capture_size_exclude'] = json['capture_size_exclude'] * 1048576;
+    aria2Capture['capture_filesize'] = json['capture_filesize'] * 1048576;
     MatchKeys.forEach(MatchData);
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
@@ -314,15 +317,53 @@ function storageDispatch(json) {
 
 chrome.storage.sync.get(null, (json) => {
     let storage = { ...aria2Default, ...json };
+    // hotfix-2
+        ['context_allimages','context_cascade','context_enabled','context_thisimage','context_thisurl'].forEach((key) => {
+            let value = storage[key];
+            if (value !== undefined) {
+                let newkey = key.replace('context_', 'ctxmenu_');
+                storage[newkey] = storage[key];
+                delete storage[key];
+            }
+        });
+    //
+    // hotfix-4
+        if (storage['capture_host_exclude'] !== undefined) {
+            storage['capture_domains'] = storage['capture_host_exclude'];
+            delete storage['capture_host_exclude'];
+        }
+        if (storage['capture_type_exclude'] !== undefined) {
+            storage['capture_extensions'] = storage['capture_type_exclude'];
+            delete storage['capture_type_exclude'];
+        }
+        if (storage['capture_size_exclude'] !== undefined) {
+            storage['capture_filesize'] = storage['capture_size_exclude'];
+            delete storage['capture_size_exclude'];
+        }
+    //
+    // hotfix-3
+        if (storage['jsonrpc_scheme'] !== undefined) {
+            storage['jsonrpc_url'] = `${storage['jsonrpc_scheme']}://${storage['jsonrpc_url']}`;
+            delete storage['jsonrpc_scheme'];
+            chrome.storage.sync.remove('jsonrpc_scheme');
+        }
+    //
+    // hotfix-5
+        delete storage['notify_instal'];
+        chrome.storage.sync.remove('notify_install');
+    //
     storageDispatch(storage);
+    // hotfix-1
+        chrome.storage.sync.set(aria2Storage);
+    //
 });
 
 function captureEvaluate(hostname, filename, fileSize) {
     return !(
-        MatchTest('capture_host_exclude', hostname) ||
-        MatchTest('capture_type_exclude', filename) ||
-        aria2Capture['capture_size_exclude'] > 0 &&
-        aria2Capture['capture_size_exclude'] > fileSize
+        MatchTest('capture_domains', hostname) ||
+        MatchTest('capture_extensions', filename) ||
+        aria2Capture['capture_filesize'] > 0 &&
+        aria2Capture['capture_filesize'] > fileSize
     );
 }
 
