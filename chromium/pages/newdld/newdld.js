@@ -92,7 +92,8 @@ const metafileMap = {
 async function metaFileDownload(files) {
     aria2Config['out'] = aria2Config['referer'] = aria2Config['user-agent'] = null;
     let datas = [...files].map((file) => {
-        let type = file.name.split('.').pop();
+        let { name } = file;
+        let type = name.slice(name.lastIndexOf('.') + 1);
         return metafileMap[type]?.(file, aria2Config);
     });
     let params = (await Promise.all(datas)).filter((data) => data);
