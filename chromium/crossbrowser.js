@@ -377,7 +377,7 @@ function captureEvaluate(hostname, filename, fileSize) {
 
 function getHostname(url) {
     let host = url.split('/')[2];
-    return host.includes('@') ? host.split('@')[1] : host;
+    return host.includes('@') ? host.slice(host.indexOf('@') + 1) : host;
 }
 
 function setIndicator() {
