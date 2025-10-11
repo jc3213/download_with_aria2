@@ -88,7 +88,7 @@ chrome.runtime.sendMessage({ action: 'inspect_images' }, ({ storage, options, im
     });
     images.forEach((url) => {
         let img = document.createElement('img');
-        img.alt = url.match(/\/([^?@/]+)([?@][^?@]+)*$/)?.[1] ?? url.slice(url.lastIndexOf('/') + 1);
+        img.alt = url.slice(url.lastIndexOf('/') + 1).replace(/[?#@].*$/, '');
         img.src = img.title = url;
         aria2Images.push(img);
         galleryPane.appendChild(img);
