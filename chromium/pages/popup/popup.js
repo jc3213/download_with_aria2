@@ -11,7 +11,7 @@ let aria2Group = {
     error: 'stopped'
 };
 let aria2Proxy = '';
-let aria2Delay = 'http://127.0.0.1:1230/';
+let aria2Delay = 10000;
 let aria2Interval;
 
 let [menuPane, filterPane, statusPane, queuePane, template] = document.body.children;
@@ -78,8 +78,10 @@ aria2RPC.onopen = () => {
         waiting.result.forEach(taskElementUpdate);
         stopped.result.forEach(taskElementUpdate);
         verEntry.textContent = version.result.version;
-        aria2Interval = setInterval(() => aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' })
-            .then(([stats, active]) => updateManager(stats, active)), aria2Delay);
+        aria2Interval = setInterval(() => {
+            aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' })
+                .then(([stats, active]) => updateManager(stats, active))
+        }, aria2Delay);
     }).catch(aria2RPC.onclose);
 };
 aria2RPC.onclose = () => {
