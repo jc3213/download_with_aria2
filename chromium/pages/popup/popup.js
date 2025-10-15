@@ -10,7 +10,6 @@ let aria2Group = {
     removed: 'stopped',
     error: 'stopped'
 };
-let aria2Filter;
 let aria2Proxy = '';
 let aria2Delay = 'http://127.0.0.1:1230/';
 let aria2Interval;
@@ -36,11 +35,14 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-function taskFilters(array, saveFn) {
+function taskFilters(array, callback) {
     let filters = new Set(array);
     let manager = document.body.classList;
-    manager.add(...filters);
-    aria2Filter = (id) => {
+
+    manager.add(...array);
+
+    filterPane.addEventListener('click', (event) => {
+        let id = event.target.id.slice(2);
         if (filters.has(id)) {
             filters.delete(id);
             manager.remove(id);
@@ -48,14 +50,9 @@ function taskFilters(array, saveFn) {
             filters.add(id);
             manager.add(id);
         }
-        saveFn?.([...filters]);
-    };
+        callback?.([...filters]);
+    });
 }
-
-filterPane.addEventListener('click', (event) => {
-    let id = event.target.id.slice(2);
-    aria2Filter?.(id);
-});
 
 purgeBtn.addEventListener('click', async (event) => {
     await aria2RPC.call({ method: 'aria2.purgeDownloadResult' });
