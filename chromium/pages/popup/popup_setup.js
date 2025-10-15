@@ -43,16 +43,9 @@ function aria2StorageChanged(json) {
 }
 
 chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage }) => {
-    let array = storage['manager_queue'];
-    if (!array) {
-        array = JSON.parse(localStorage.getItem('queue')) ?? [];
-        localStorage.removeItem('queue');
-        chrome.runtime.sendMessage({ action: 'manager_update', params: array });
-    }
-    taskFilters(
-        array,
-        (params) => chrome.runtime.sendMessage({ action: 'manager_update', params })
-    );
+    taskFilters(storage['manager_queue'], (params) => {
+        chrome.runtime.sendMessage({ action: 'manager_update', params });
+    });
     aria2StorageChanged(storage);
 });
 
