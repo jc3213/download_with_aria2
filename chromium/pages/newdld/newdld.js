@@ -95,8 +95,8 @@ async function metaFileDownload(files) {
         let { name } = file;
         let type = name.slice(name.lastIndexOf('.') + 1);
         return metafileMap[type]?.(file, aria2Config);
-    });
-    let params = (await Promise.all(datas)).filter((data) => data);
+    }).filter(Boolean);
+    let params = await Promise.all(datas);
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 }
 
