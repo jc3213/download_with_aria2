@@ -170,14 +170,6 @@ menuPane.addEventListener('click', (event) => {
     menuEventMap[menu]?.();
 });
 
-function promiseFileReader(file) {
-    return new Promise((resolve) => {
-        let reader = new FileReader();
-        reader.onload = (event) => resolve(reader.result);
-        reader.readAsText(file);
-    });
-}
-
 function importJson(file) {
     updated = JSON.parse(file);
     storageUpdate();
@@ -197,10 +189,14 @@ function importConf(file) {
 }
 
 menuPane.addEventListener('change', async (event) => {
-    let file = await promiseFileReader(event.target.files[0]);
-    event.target.value = '';
-    optionHistoryFlush();
-    extension.contains('jsonrpc') ? importConf(file) : importJson(file);
+    let file = event.target.files[0];
+    let reader = new FileReader();
+    reader.onload = (event) => {
+        optionHistoryFlush();
+        file.name.endsWith('.json') ? importJson(file) : importConf(file);
+        event.target.value = '';
+    };
+    reader.readAsText(file);
 });
 
 function optionsDispatch(json) {
