@@ -259,9 +259,6 @@ chrome.action.onClicked.addListener(() => {
 const MatchKeys = ['headers_domains', 'proxy_domains', 'capture_domains', 'capture_extensions'];
 
 function MatchData(key) {
-    // hotfix
-        aria2Storage[key] = aria2Storage[key].filter(i => !i.endsWith('.*')).map(i => i.replace('*.', ''))
-    //
     let temp = aria2Storage[key];
     let data = temp.map((i) => `.${i}`);
     let dataSet = new Set(temp);
@@ -317,53 +314,7 @@ function storageDispatch(json) {
 
 chrome.storage.sync.get(null, (json) => {
     let storage = { ...aria2Default, ...json };
-    // hotfix-2
-        ['context_allimages','context_cascade','context_enabled','context_thisimage','context_thisurl'].forEach((key) => {
-            let value = storage[key];
-            if (value !== undefined) {
-                let newkey = key.replace('context_', 'ctxmenu_');
-                storage[newkey] = storage[key];
-                delete storage[key];
-            }
-        });
-    //
-    // hotfix-4
-        if (storage['capture_host_exclude'] !== undefined) {
-            storage['capture_domains'] = storage['capture_host_exclude'];
-            delete storage['capture_host_exclude'];
-        }
-        if (storage['capture_type_exclude'] !== undefined) {
-            storage['capture_extensions'] = storage['capture_type_exclude'];
-            delete storage['capture_type_exclude'];
-        }
-        if (storage['capture_size_exclude'] !== undefined) {
-            storage['capture_filesize'] = storage['capture_size_exclude'];
-            delete storage['capture_size_exclude'];
-        }
-        if (storage['proxy_include'] !== undefined) {
-            storage['proxy_domains'] = storage['proxy_include'];
-            delete storage['proxy_include'];
-        }
-        if (storage['headers_exclude'] !== undefined) {
-            storage['headers_domains'] = storage['headers_exclude'];
-            delete storage['headers_exclude'];
-        }
-    //
-    // hotfix-3
-        if (storage['jsonrpc_scheme'] !== undefined) {
-            storage['jsonrpc_url'] = `${storage['jsonrpc_scheme']}://${storage['jsonrpc_url']}`;
-            delete storage['jsonrpc_scheme'];
-            chrome.storage.sync.remove('jsonrpc_scheme');
-        }
-    //
-    // hotfix-5
-        delete storage['notify_install'];
-        chrome.storage.sync.remove(['context_allimages', 'context_cascade', 'context_enabled', 'context_thisimage', 'context_thisurl', 'headers_exclude', 'proxy_include', 'capture_host_exclude', 'capture_size_exclude', 'capture_type_exclude', 'notify_install']);
-    //
     storageDispatch(storage);
-    // hotfix-1
-        chrome.storage.sync.set(aria2Storage);
-    //
 });
 
 function captureEvaluate(hostname, filename, fileSize) {
