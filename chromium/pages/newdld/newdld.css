@@ -9,7 +9,7 @@ textarea {
 
 label {
     align-items: center;
-    background-color: var(--color-child);
+    background-color: var(--color-item);
     border-style: solid;
     border-width: 1px;
     color: var(--color-text);
