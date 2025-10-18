@@ -191,7 +191,7 @@ function importConf(file) {
     chrome.runtime.sendMessage({ action: 'jsonrpc_update', params: updated });
 }
 
-menuPane.addEventListener('change', async (event) => {
+menuPane.addEventListener('change', (event) => {
     let file = event.target.files[0];
     let reader = new FileReader();
     reader.onload = (event) => {
