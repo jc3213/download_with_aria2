@@ -189,10 +189,13 @@ function importConf(file) {
 }
 
 menuPane.addEventListener('change', async (event) => {
-    let file = await event.target.files[0].text();
-    optionHistoryFlush();
-    file.name.endsWith('.json') ? importJson(file) : importConf(file);
-    event.target.value = '';
+    let file = event.target.files[0];
+    let reader = new FileReader();
+    reader.onload = (event) => {
+        optionHistoryFlush();
+        file.name.endsWith('.json') ? importJson(file) : importConf(file);
+        event.target.value = '';
+    };
     reader.readAsText(file);
 });
 
