@@ -179,9 +179,12 @@ function importJson(file) {
 function importConf(file) {
     let json = {};
     file.split('\n').forEach((line) => {
-        if (line[0] !== '#') {
-            let [key, value] = line.split('=');
-            json[key] = value;
+        if (!line || line[0] === '#') {
+            return;
+        }
+        let [key, value] = line.split('=');
+        if (key && value !== undefined) {
+            json[key] = value.split('#')[0].trim();
         }
     });
     optionsDispatch(json);
