@@ -4,7 +4,6 @@ class Aria2 {
         this.url = url;
         this.secret = secret;
     }
-    version = '1.0';
     #url;
     #xml;
     #wsa;
