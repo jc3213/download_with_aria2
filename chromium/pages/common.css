@@ -1,7 +1,7 @@
 :root {
     --color-body: #FFFFFF;
-    --color-text: #000000;
     --color-item: #F3F3F3;
+    --color-text: #000000;
     --item-hover: brightness(1.1) contrast(0.8);
     --item-active: brightness(1.0) contrast(0.8);
     --item-disabled: brightness(0.9) contrast(0.8) opacity(0.8);
@@ -10,8 +10,8 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --color-body: #202124;
-        --color-text: #FFFFFF;
         --color-item: #56585D;
+        --color-text: #FFFFFF;
     }
 }
 
