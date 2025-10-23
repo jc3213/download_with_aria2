@@ -48,8 +48,13 @@ galleryPane.addEventListener('mouseover', (event) => {
 });
 
 function menuEventSubmit() {
-    let params = aria2Images.filter((img) => img.classList.contains('checked'))
-        .map(({ src, alt }) => ({ method: 'aria2.addUri', params: [[src], { ...aria2Config, out: alt }] }));
+    let params = [];
+    aria2Images.forEach(({ src, alt, classList }) => {
+        if (classList.contains('checked')) {
+            let options = { ...aria2Config, out: alt };
+            params.push({ method: 'aria2.addUri', params: [[src], options] });
+        }
+    });
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 }
 
@@ -79,7 +84,8 @@ chrome.runtime.sendMessage({ action: 'inspect_images' }, ({ storage, options, im
     aria2Storage = storage;
     aria2Config['referer'] = referer;
     jsonrpcEntries.forEach((entry) => {
-        entry.value = aria2Config[entry.name] = options[entry.name] ?? '';
+        let { name } = entry;
+        entry.value = aria2Config[name] = options[name] ?? '';
     });
     images.forEach((url) => {
         let img = document.createElement('img');
