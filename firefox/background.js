@@ -69,9 +69,9 @@ function decodeFileName(disposition) {
     if (!disposition?.startsWith('attachment')) {
         return null;
     }
-    let RFC2047 = disposition.match(/filename="?(=\?[^;]+\?=)/);
+    let RFC2047 = disposition.match(/=\?[^?]+\?[bqBQ]\?[^?]+\?=/g);
     if (RFC2047) {
-        return decodeRFC2047(RFC2047[1]);
+        return decodeRFC2047(RFC2047);
     }
     let RFC5987 = disposition.match(/filename\*="?([^;]+''[^";]+)/i);
     if (RFC5987) {
@@ -111,23 +111,15 @@ function decodeRFC5987(text) {
     return new TextDecoder(code).decode(Uint8Array.from(decode));
 }
 
-function decodeRFC2047(text) {
-    let result = '';
-    let decode;
-    text.match(/[^\s]+/g).forEach((s) => {
-        let [, code, b, q, data] = s.match(/=\?([^\?]+)\?(?:(b)|(q))\?([^\?]+)\?=/i);
-        if (b) {
-            decode = [...atob(data)].map(s => s.charCodeAt(0));
-        } else if (q) {
-            decode = data.match(/=[0-9a-fA-F]{2}|./g)?.map((v) => {
-                return v === '_' ? 0x20 : v.length === 3 ? parseInt(v.slice(1), 16) : v.charCodeAt(0);
-            });
-        }
-        if (decode) {
-            result += new TextDecoder(code).decode(Uint8Array.from(decode));
-        }
-    });
-    return result;
+function decodeRFC2047(array) {
+    let result = array.map((s) => {
+        let [, code, type, data] = s.split('?');
+        let bytes = type.toLowerCase() === 'b'
+            ? Uint8Array.from(atob(data), c => c.charCodeAt(0))
+            : data.match(/=[0-9a-fA-F]{2}|./g)?.map((v) => v === '_' ? 0x20 : v.length === 3 ? parseInt(v.slice(1), 16) : v.charCodeAt(0));
+        return new TextDecoder(code).decode(bytes);
+    }).join('');
+    return result || null;    
 }
 
 function decodeNonASCII(text) {
