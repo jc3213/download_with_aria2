@@ -70,7 +70,7 @@ function decodeRFC2047(array) {
         let [, code, type, data] = s.split('?');
         let bytes = type.toLowerCase() === 'b'
             ? Uint8Array.from(atob(data), c => c.charCodeAt(0))
-            : Uint8Array.from(data.match(/=[0-9a-fA-F]{2}|[^=]/g)?.map((q) => q === '_' ? 0x20 : q.length === 3 ? parseInt(q.slice(1), 16) : q.charCodeAt(0)));
+            : Uint8Array.from(data.match(/=[0-9a-fA-F]{2}|[^=]/g)?.map((q) => q.length === 3 ? parseInt(q.slice(1), 16) : q === '_' ? 0x20 : q.charCodeAt(0)));
         return new TextDecoder(code).decode(bytes);
     }).join('');
     console.log(result);
@@ -88,7 +88,7 @@ function decodeISO8859(code, text) {
 }
 
 function decodePlainText(code, text) {
-    let result = /[^\u0000-\u007f]/.test(text) ? decodeISO8859(code, text) : decodeURI(text);
+    let result = /[^\u0000-\u007f]/.test(text) ? decodeISO8859(code, text) : decodeURIComponent(text);
     console.log(result);
     return result;
 }
