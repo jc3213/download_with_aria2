@@ -19,3 +19,8 @@ function captureHooking() {
 function captureDisabled() {
     chrome.downloads.onDeterminingFilename.removeListener(captureDownloads);
 }
+
+if (chrome.runtime.getManifest().manifest_version === 3) {
+    importScripts('libs/aria2.js', 'crossbrowser.js');
+    setInterval(chrome.runtime.getPlatformInfo, 28000);
+}
