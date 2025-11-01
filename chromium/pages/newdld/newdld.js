@@ -16,21 +16,21 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-function shortcutHandler(event, button) {
+function hotkeyHandler(event, button) {
     if (event.ctrlKey) {
         event.preventDefault();
         button.click();
     }
 }
 
-const shortcutMap = {
-    'Enter': (event) => shortcutHandler(event, submitBtn),
-    'Tab': (event) => shortcutHandler(event, downMode),
+const hotkeyMap = {
+    'Enter': (event) => hotkeyHandler(event, submitBtn),
+    'Tab': (event) => hotkeyHandler(event, downMode),
     'Escape': () => close()
 };
 
 document.addEventListener('keydown', (event) => {
-    shortcutMap[event.key]?.(event);
+    hotkeyMap[event.key]?.(event);
 });
 
 document.addEventListener('click', (event) => {

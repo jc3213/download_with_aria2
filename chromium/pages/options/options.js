@@ -28,14 +28,14 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-const shortcutMap = {
+const hotkeyMap = {
     's': saveBtn,
     'y': redoBtn,
     'z': undoBtn
 };
 
 document.addEventListener('keydown', (event) => {
-    let key = shortcutMap[event.key];
+    let key = hotkeyMap[event.key];
     if (key && event.ctrlKey) {
         event.preventDefault();
         key.click();

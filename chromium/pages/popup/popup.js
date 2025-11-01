@@ -21,14 +21,14 @@ let [sessionLET, fileLET, uriLET] = template.children;
 
 statEntries.forEach((stat) => aria2Stats.set(stat.id, stat));
 
-const shortcutMap = {
+const hotkeyMap = {
     'e': purgeBtn,
     'd': downBtn,
     'q': optionsBtn
 };
 
 document.addEventListener('keydown', (event) => {
-    let key = shortcutMap[event.key];
+    let key = hotkeyMap[event.key];
     if (key && event.ctrlKey) {
         event.preventDefault();
         key.click();
