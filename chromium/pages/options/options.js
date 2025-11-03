@@ -195,9 +195,8 @@ menuPane.addEventListener('change', (event) => {
     let file = event.target.files[0];
     let reader = new FileReader();
     reader.onload = (event) => {
-        let { result } = reader;
         optionHistoryFlush();
-        file.name.endsWith('.json') ? importJson(result) : importConf(result);
+        file.name.endsWith('.json') ? importJson(reader.result) : importConf(reader.result);
         event.target.value = '';
     };
     reader.readAsText(file);
