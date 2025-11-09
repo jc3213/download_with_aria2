@@ -11,9 +11,9 @@ function captureDownloads({ id, finalUrl, referrer, filename, fileSize }) {
 }
 
 function captureHooking() {
-    aria2Storage['capture_enabled']
-        ? chrome.downloads.onDeterminingFilename.addListener(captureDownloads)
-        : captureDisabled();
+    if (aria2Storage['capture_enabled']) {
+        chrome.downloads.onDeterminingFilename.addListener(captureDownloads)
+    }
 }
 
 function captureDisabled() {
