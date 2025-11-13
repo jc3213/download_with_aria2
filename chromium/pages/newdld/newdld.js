@@ -50,7 +50,7 @@ downMode.addEventListener('mousedown', (event) => {
 
 submitBtn.addEventListener('click', (event) => {
     let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
-    if (urls.length !== 1) {
+    if (urls.length !== 1 || aria2Config['out'] === '') {
         delete aria2Config['out'];
     }
     let params = urls.map((url) => ({ method: 'aria2.addUri', params: [[url], aria2Config] }));
@@ -70,31 +70,28 @@ metaImport.addEventListener('change', (event) => {
     metaFileDownload(event.target.files)
 });
 
-async function metafileHandler(method, file, params) {
-    return new Promise((resolve) => {
-        let reader = new FileReader();
-        reader.onload = (event) => {
-            let { result } = event.target;
-            let body = result.slice(result.indexOf(',') + 1);
-            params.unshift(body);
-            resolve({ method, params });
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-const metafileMap = {
-    'torrent': (file, options) => metafileHandler('aria2.addTorrent', file, [ [], options ]),
-    'meta4': (file, options) => metafileHandler('aria2.addMetalink', file, [ options ]),
-    'metalink': (file, options) => metafileHandler('aria2.addMetalink', file, [ options ])
-};
+const metafileMap = new Set(['torrent', 'meta4', 'metalink']);
 
 async function metaFileDownload(files) {
     aria2Config['out'] = aria2Config['referer'] = aria2Config['user-agent'] = null;
     let datas = [...files].map((file) => {
         let { name } = file;
         let type = name.slice(name.lastIndexOf('.') + 1);
-        return metafileMap[type]?.(file, aria2Config);
+        if (!metafileMap.has(type)) {
+            return;
+        }
+        return new Promise((resolve) => {
+            let reader = new FileReader();
+            reader.onload = (event) => {
+                let { result } = reader;
+                let body = result.slice(result.indexOf(',') + 1);
+                let session = type === 'torrent'
+                    ? { method: 'aria2.addTorrent', params: [body, [], aria2Config] }
+                    : { method: 'aria2.addMetalink', params: [body, aria2Config] };
+                resolve(session);
+            };
+            reader.readAsDataURL(file);
+        });
     }).filter(Boolean);
     let params = await Promise.all(datas);
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
