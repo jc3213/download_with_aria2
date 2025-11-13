@@ -51,9 +51,10 @@ aria2RPC.onopen = () => {
         { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
     ).then(([{ result: options }, { result: version }, { result: active }]) => {
         captureHooking();
-        optionsSanitize(options);
         aria2Version = version;
         aria2Active = new Set(active.map(({ gid }) => gid));
+        RawData.forEach((key) => aria2Config[key] = options[key]);
+        SizeData.forEach((key) => aria2Config[key] = RawToSize(options[key]));
         chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
         setIndicator();
     }).catch(aria2RPC.onclose);
@@ -73,6 +74,23 @@ aria2RPC.onmessage = ({ method, params }) => {
     handler(gid);
     setIndicator();
 };
+
+function RawToSize(bytes) {
+    if (bytes < 1024) {
+        return bytes;
+    }
+    if (bytes < 1048576) {
+        return (bytes / 10.24 | 0) / 100 + 'K';
+    }
+    return (bytes / 10485.76 | 0) / 100 + 'M';
+}
+
+const RawData = [
+    'dir', 'max-concurrent-downloads', 'max-overall-download-limit', 'max-overall-upload-limit',
+    'max-tries', 'retry-wait', 'split', 'max-connection-per-server', 'user-agent',
+    'listen-port', 'bt-max-peers', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'
+];
+const SizeData = ['disk-cache', 'min-split-size'];
 
 const clientMessage = {
     'aria2.onDownloadStart': whenStarted,
@@ -103,27 +121,6 @@ function whenStarted(gid) {
 function whenCompleted(gid) {
     aria2Active.delete(gid);
     whenNotify(gid, 'complete');
-}
-
-const RawData = [
-    'dir', 'max-concurrent-downloads', 'max-overall-download-limit', 'max-overall-upload-limit',
-    'max-tries', 'retry-wait', 'split', 'max-connection-per-server', 'user-agent',
-    'listen-port', 'bt-max-peers', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'];
-const SizeData = ['disk-cache', 'min-split-size'];
-
-function RawToSize(bytes) {
-    if (bytes < 1024) {
-        return bytes;
-    }
-    if (bytes < 1048576) {
-        return (bytes / 10.24 | 0) / 100 + 'K';
-    }
-    return (bytes / 10485.76 | 0) / 100 + 'M';
-}
-
-function optionsSanitize(json) {
-    RawData.forEach((key) => aria2Config[key] = json[key]);
-    SizeData.forEach((key) => aria2Config[key] = RawToSize(json[key]));
 }
 
 async function downloadHandler(url, referer, options, tabId) {
@@ -185,7 +182,7 @@ function storageChanged(response, json) {
 }
 
 function optionsChanged(response, json) {
-    optionsSanitize(json);
+    [...RawData, ...SizeData].forEach((key) => aria2Config[key] = json[key]);
     aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [json] }).then(response).catch(response);
 }
 
