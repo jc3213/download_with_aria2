@@ -25,18 +25,18 @@
                     <h4 i18n="option_jsonrpc_url"></h4>
                     <input class="fl-1" name="jsonrpc_url" type="text" placeholder="$$hostname:port/jsonrpc$$">
                 </div>
-                <div class="cfg-item flex padleft" i18n-tips="tips_option_jsonrpc_secret">
+                <div class="cfg-item flex pad-l" i18n-tips="tips_option_jsonrpc_secret">
                     <h4 i18n="option_jsonrpc_secret"></h4>
                     <input class="fl-1" name="jsonrpc_secret" type="password" placeholder="$$secret$$">
                 </div>
             </div>
-            <div class="flex padtop">
+            <div class="flex pad-u">
                 <button id="goto-jsonrpc" i18n="option_aria2"></button>
-                <div class="flex padpad" i18n-tips="tips_option_jsonrpc_retries">
+                <div class="flex pad-l" i18n-tips="tips_option_jsonrpc_retries">
                     <h4 i18n="option_jsonrpc_retries"></h4>
                     <input class="fl-1" name="jsonrpc_retries" type="number" min="-1" max="30" setp="1">
                 </div>
-                <div class="flex fl-1" i18n-tips="tips_option_jsonrpc_timeout">
+                <div class="flex fl-1 pad-l" i18n-tips="tips_option_jsonrpc_timeout">
                     <h4 i18n="option_jsonrpc_timeout"></h4>
                     <input class="fl-1" name="jsonrpc_timeout" type="number" min="3" max="20" step="1">
                     <span i18n="time_second_full"></span>
@@ -90,7 +90,7 @@
             <div class="cfg-item e-headers-override" i18n-tips="tips_option_headers_useragent">
                 <input name="headers_useragent" type="text">
             </div>
-            <div class="matches padtop">
+            <div class="matches pad-u">
                 <div id="headers_domains" i18n-tips="tips_option_headers_domains">
                     <div class="flexmenu">
                         <h4 i18n="option_match_exclude"></h4>
@@ -110,11 +110,11 @@
                 <input id="folder-firefox" name="folder_firefox" type="checkbox" data-css>
                 <label for="folder-firefox" i18n="option_folder_firefox"></label>
             </div>
-            <div class="padtop e-folder-enabled x-folder-firefox" i18n-tips="tips_option_folder">
+            <div class="pad-u e-folder-enabled x-folder-firefox" i18n-tips="tips_option_folder">
                 <input name="folder_defined" type="text">
             </div>
             <h1 i18n="option_proxy"></h1>
-            <div class="paddown" i18n-tips="tips_option_proxy">
+            <div class="pad-d" i18n-tips="tips_option_proxy">
                 <input name="proxy_server" type="text" placeholder="http://127.0.0.1:1280/">
             </div>
             <div class="matches">
@@ -137,7 +137,7 @@
                 <input id="capture-webrequest" name="capture_webrequest" type="checkbox" data-css>
                 <label for="capture-webrequest" i18n="option_capture_webrequest"></label>
             </div>
-            <div class="matches padtop e-capture-enabled">
+            <div class="matches pad-u e-capture-enabled">
                 <div class="flex" i18n-tips="tips_option_capture_filesize">
                     <h4 i18n="option_capture_filesize"></h4>
                     <div>
@@ -146,7 +146,7 @@
                     </div>
                     <i class="disabled">0</i>
                 </div>
-                <div id="capture_domains" class="padtop" i18n-tips="tips_option_capture_domains">
+                <div id="capture_domains" class="pad-u" i18n-tips="tips_option_capture_domains">
                     <div class="flexmenu">
                         <h4 i18n="option_match_exclude"></h4>
                         <input type="text">
@@ -155,7 +155,7 @@
                     </div>
                     <div class="list"></div>
                 </div>
-                <div id="capture_extensions" class="padtop" i18n-tips="tips_option_capture_extensions">
+                <div id="capture_extensions" class="pad-u" i18n-tips="tips_option_capture_extensions">
                     <div class="flexmenu">
                         <h4 i18n="option_capture_extensions"></h4>
                         <input type="text">
@@ -168,7 +168,7 @@
         </div>
         <div id="jsonrpc" class="config">
             <h1 i18n="aria2_options"></h1>
-            <div class="cfg-item padtop">
+            <div class="cfg-item pad-u">
                 <button id="goto-options" i18n="option_back"></button>
             </div>
             <div class="cfg-item" i18n-tips="tips_aria2_com_dir">
@@ -194,11 +194,6 @@
                 </div>
                 <i class="default">16M</i>
             </div>
-            <div class="cfg-item" i18n-tips="tips_aria2_max_concurrent">
-                <h4 i18n="aria2_max_concurrent"></h4>
-                <input name="max-concurrent-downloads" type="number">
-                <i class="default">5</i>
-            </div>
             <div class="cfg-item" i18n-tips="tips_aria2_max_download">
                 <h4 i18n="aria2_max_download"></h4>
                 <div>
@@ -214,6 +209,11 @@
                     <span>B/s</span>
                 </div>
                 <i class="disabled">0</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_max_concurrent">
+                <h4 i18n="aria2_max_concurrent"></h4>
+                <input name="max-concurrent-downloads" type="number">
+                <i class="default">5</i>
             </div>
             <h1>HTTP/FTP</h1>
             <div class="cfg-item" i18n-tips="tips_aria2_http_retry">
