@@ -70,11 +70,8 @@ i {
 }
 
 .padpad {
-    margin: 0px 22px;
-}
-
-.config {
-    margin: 28px 0px;
+    margin-left: 22px;
+    margin-right: 22px;
 }
 
 .cfg-right {
