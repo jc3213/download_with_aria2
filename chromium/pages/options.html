@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title i18n="plugins_options"></title>
+        <link rel="stylesheet" href="/pages/common.css">
+        <link rel="stylesheet" href="options.css">
+    </head>
+    <body>
+        <div id="menu" class="flex">
+            <button i18n="common_save" disabled></button>
+            <button i18n="option_undo" disabled></button>
+            <button i18n="option_redo" disabled></button>
+            <div id="version"></div>
+            <button i18n="option_import"></button>
+            <button i18n="option_export"></button>
+            <input id="storage" type="file" accept=".json">
+            <input id="config" type="file" accept=".conf">
+            <a></a>
+        </div>
+        <div id="options" class="config">
+            <h1>JSON-RPC</h1>
+            <div class="flex">
+                <div class="cfg-item flex fl-1" i18n-tips="tips_option_jsonrpc_url">
+                    <h4 i18n="option_jsonrpc_url"></h4>
+                    <input class="fl-1" name="jsonrpc_url" type="text" placeholder="$$hostname:port/jsonrpc$$">
+                </div>
+                <div class="cfg-item flex padleft" i18n-tips="tips_option_jsonrpc_secret">
+                    <h4 i18n="option_jsonrpc_secret"></h4>
+                    <input class="fl-1" name="jsonrpc_secret" type="password" placeholder="$$secret$$">
+                </div>
+            </div>
+            <div class="flex padtop">
+                <button id="goto-jsonrpc" i18n="option_aria2"></button>
+                <div class="flex padpad" i18n-tips="tips_option_jsonrpc_retries">
+                    <h4 i18n="option_jsonrpc_retries"></h4>
+                    <input class="fl-1" name="jsonrpc_retries" type="number" min="-1" max="30" setp="1">
+                </div>
+                <div class="flex fl-1" i18n-tips="tips_option_jsonrpc_timeout">
+                    <h4 i18n="option_jsonrpc_timeout"></h4>
+                    <input class="fl-1" name="jsonrpc_timeout" type="number" min="3" max="20" step="1">
+                    <span i18n="time_second_full"></span>
+                </div>
+            </div>
+            <h1 i18n="option_task_manager"></h1>
+            <div class="cfg-item" i18n-tips="tips_option_manager_newtab">
+                <input id="manager-newtab" name="manager_newtab" type="checkbox">
+                <label for="manager-newtab" i18n="option_manager_newtab"></label>
+            </div>
+            <div class="cfg-item flex" i18n-tips="tips_option_manager_interval">
+                <h4 i18n="option_manager_interval"></h4>
+                <input class="fl-1" name="manager_interval" type="number" min="5" max="30" step="1">
+                <span i18n="time_second_full"></span>
+            </div>
+            <h1 i18n="option_context"></h1>
+            <div class="cfg-item" i18n-tips="tips_option_ctxmenu_enabled">
+                <input id="ctxmenu-enabled" name="ctxmenu_enabled" type="checkbox" data-css>
+                <label for="ctxmenu-enabled" i18n="option_ctxmenu_enabled"></label>
+            </div>
+            <div class="cfg-item e-ctxmenu-enabled" i18n-tips="tips_option_ctxmenu_thisurl">
+                <input id="ctxmenu-thisurl" name="ctxmenu_thisurl" type="checkbox">
+                <label for="ctxmenu-thisurl" i18n="ctxmenu_thisurl"></label>
+            </div>
+            <div class="cfg-item e-ctxmenu-enabled" i18n-tips="tips_option_ctxmenu_cascade">
+                <input id="ctxmenu-cascade" name="ctxmenu_cascade" type="checkbox">
+                <label for="ctxmenu-cascade" i18n="option_ctxmenu_cascade"></label>
+            </div>
+            <div class="cfg-item e-ctxmenu-enabled" i18n-tips="tips_option_ctxmenu_thisimage">
+                <input id="ctxmenu-thisimage" name="ctxmenu_thisimage" type="checkbox">
+                <label for="ctxmenu-thisimage" i18n="ctxmenu_thisimage"></label>
+            </div>
+            <div class="cfg-item cfg-right e-ctxmenu-enabled" i18n-tips="tips_option_ctxmenu_allimages">
+                <input id="ctxmenu-allimages" name="ctxmenu_allimages" type="checkbox">
+                <label for="ctxmenu-allimages" i18n="ctxmenu_allimages"></label>
+            </div>
+            <h1 i18n="option_notification"></h1>
+            <div class="cfg-item" i18n-tips="tips_option_notify_start">
+                <input id="notify-start" name="notify_start" type="checkbox">
+                <label for="notify-start" i18n="option_notify_start"></label>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_option_notify_complete">
+                <input id="notify-complete" name="notify_complete" type="checkbox">
+                <label for="notify-complete" i18n="option_notify_complete"></label>
+            </div>
+            <h1 i18n="option_headers"></h1>
+            <div class="cfg-item" i18n-tips="tips_option_headers_override">
+                <input id="headers-override" name="headers_override" type="checkbox" data-css>
+                <label for="headers-override" i18n="option_headers_override"></label>
+            </div>
+            <div class="cfg-item e-headers-override" i18n-tips="tips_option_headers_useragent">
+                <input name="headers_useragent" type="text">
+            </div>
+            <div class="matches padtop">
+                <div id="headers_domains" i18n-tips="tips_option_headers_domains">
+                    <div class="flexmenu">
+                        <h4 i18n="option_match_exclude"></h4>
+                        <input type="text">
+                        <button i18n-tips="tips_match_addnew">➕</button>
+                        <button i18n-tips="tips_match_resort">🧲</button>
+                    </div>
+                    <div class="list"></div>
+                </div>
+            </div>
+            <h1 i18n="option_folder"></h1>
+            <div class="cfg-item" i18n-tips="tips_option_folder_enabled">
+                <input id="folder-enabled" name="folder_enabled" type="checkbox" data-css>
+                <label for="folder-enabled" i18n="option_folder_enabled"></label>
+            </div>
+            <div class="cfg-item e-firefox e-folder-enabled e-capture-enabled x-capture-webrequest" i18n-tips="tips_option_folder_firefox">
+                <input id="folder-firefox" name="folder_firefox" type="checkbox" data-css>
+                <label for="folder-firefox" i18n="option_folder_firefox"></label>
+            </div>
+            <div class="padtop e-folder-enabled x-folder-firefox" i18n-tips="tips_option_folder">
+                <input name="folder_defined" type="text">
+            </div>
+            <h1 i18n="option_proxy"></h1>
+            <div class="paddown" i18n-tips="tips_option_proxy">
+                <input name="proxy_server" type="text" placeholder="http://127.0.0.1:1280/">
+            </div>
+            <div class="matches">
+                <div id="proxy_domains" i18n-tips="tips_option_proxy_domains">
+                    <div class="flexmenu">
+                        <h4 i18n="option_match_include"></h4>
+                        <input type="text">
+                        <button i18n-tips="tips_match_addnew">➕</button>
+                        <button i18n-tips="tips_match_resort">🧲</button>
+                    </div>
+                    <div class="list"></div>
+                </div>
+            </div>
+            <h1 i18n="option_capture"></h1>
+            <div class="cfg-item" i18n-tips="tips_option_capture_enabled">
+                <input id="capture-enabled" name="capture_enabled" type="checkbox" data-css>
+                <label for="capture-enabled" i18n="option_capture_enabled"></label>
+            </div>
+            <div class="cfg-item e-firefox e-capture-enabled" i18n-tips="tips_option_capture_webrequest">
+                <input id="capture-webrequest" name="capture_webrequest" type="checkbox" data-css>
+                <label for="capture-webrequest" i18n="option_capture_webrequest"></label>
+            </div>
+            <div class="matches padtop e-capture-enabled">
+                <div class="flex" i18n-tips="tips_option_capture_filesize">
+                    <h4 i18n="option_capture_filesize"></h4>
+                    <div>
+                        <input name="capture_filesize" type="number" min="0">
+                        <span>MB</span>
+                    </div>
+                    <i class="disabled">0</i>
+                </div>
+                <div id="capture_domains" class="padtop" i18n-tips="tips_option_capture_domains">
+                    <div class="flexmenu">
+                        <h4 i18n="option_match_exclude"></h4>
+                        <input type="text">
+                        <button i18n-tips="tips_match_addnew">➕</button>
+                        <button i18n-tips="tips_match_resort">🧲</button>
+                    </div>
+                    <div class="list"></div>
+                </div>
+                <div id="capture_extensions" class="padtop" i18n-tips="tips_option_capture_extensions">
+                    <div class="flexmenu">
+                        <h4 i18n="option_capture_extensions"></h4>
+                        <input type="text">
+                        <button i18n-tips="tips_match_addnew">➕</button>
+                        <button i18n-tips="tips_match_resort">🧲</button>
+                    </div>
+                    <div class="list listx"></div>
+                </div>
+            </div>
+        </div>
+        <div id="jsonrpc" class="config">
+            <h1 i18n="aria2_options"></h1>
+            <div class="cfg-item padtop">
+                <button id="goto-options" i18n="option_back"></button>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_com_dir">
+                <h4 i18n="aria2_com_dir"></h4>
+                <input name="dir" type="text">
+                <i class="sample" title="&quot;C:\Aria2\Download&quot; (Windows)&#10;&#10;&quot;/home/aria2/download&quot; (Linux)"></i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_com_alloc">
+                <h4 i18n="aria2_com_alloc"></h4>
+                <select name="file-allocation">
+                    <option value="none" i18n="option_disabled"></option>
+                    <option value="prealloc" i18n="aria2_alloc_pre"></option>
+                    <option value="falloc" i18n="aria2_alloc_fast"></option>
+                    <option value="trunc" i18n="aria2_alloc_trunc"></option>
+                </select>
+                <i class="default" i18n="aria2_alloc_pre"></i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_com_cache">
+                <h4 i18n="aria2_com_cache"></h4>
+                <div>
+                    <input name="disk-cache" type="text">
+                    <span>B</span>
+                </div>
+                <i class="default">16M</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_max_concurrent">
+                <h4 i18n="aria2_max_concurrent"></h4>
+                <input name="max-concurrent-downloads" type="number">
+                <i class="default">5</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_max_download">
+                <h4 i18n="aria2_max_download"></h4>
+                <div>
+                    <input name="max-overall-download-limit" type="text">
+                    <span>B/s</span>
+                </div>
+                <i class="disabled">0</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_max_upload">
+                <h4 i18n="aria2_max_upload"></h4>
+                <div>
+                    <input name="max-overall-upload-limit" type="text">
+                    <span>B/s</span>
+                </div>
+                <i class="disabled">0</i>
+            </div>
+            <h1>HTTP/FTP</h1>
+            <div class="cfg-item" i18n-tips="tips_aria2_http_retry">
+                <h4 i18n="aria2_http_retry"></h4>
+                <input name="max-tries" type="number">
+                <i class="default">5</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_http_wait">
+                <h4 i18n="aria2_http_wait"></h4>
+                <div>
+                    <input name="retry-wait" type="number">
+                    <span i18n="time_second_full"></span>
+                </div>
+                <i class="default">0</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_http_split">
+                <h4 i18n="aria2_http_split"></h4>
+                <input name="split" type="number">
+                <i class="default">5</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_http_size">
+                <h4 i18n="aria2_http_size"></h4>
+                <div>
+                    <input name="min-split-size" type="text">
+                    <span>B</span>
+                </div>
+                <i class="default">20M</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_max_connection">
+                <h4 i18n="aria2_max_connection"></h4>
+                <input name="max-connection-per-server" type="number">
+                <i class="default">1</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_http_ua">
+                <h4 i18n="aria2_http_ua"></h4>
+                <input name="user-agent" type="text">
+                <i id="useragent" class="default"></i>
+            </div>
+            <h1>BitTorrent</h1>
+            <div class="cfg-item" i18n-tips="tips_aria2_bt_port">
+                <h4 i18n="aria2_bt_port"></h4>
+                <input name="listen-port" type="text">
+                <i class="default">6881-6999</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_bt_peers">
+                <h4 i18n="aria2_bt_peers"></h4>
+                <input name="bt-max-peers" type="number">
+                <i class="default">55</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_bt_follow">
+                <h4 i18n="aria2_bt_follow"></h4>
+                <select name="follow-torrent">
+                    <option value="true" i18n="common_true"></option>
+                    <option value="false" i18n="common_false"></option>
+                </select>
+                <i class="default" i18n="common_true"></i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_bt_remove">
+                <h4 i18n="aria2_bt_remove"></h4>
+                <select name="bt-remove-unselected-file">
+                    <option value="true" i18n="common_true"></option>
+                    <option value="false" i18n="common_false"></option>
+                </select>
+                <i class="default" i18n="common_false"></i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_bt_ratio">
+                <h4 i18n="aria2_bt_ratio"></h4>
+                <input name="seed-ratio" type="number" min="0" step="0.1">
+                <i class="default">1.0</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_bt_seed">
+                <h4 i18n="aria2_bt_seed"></h4>
+                <div>
+                    <input name="seed-time" type="number">
+                    <span i18n="time_minute_full"></span>
+                </div>
+                <i class="default">30</i>
+            </div>
+        </div>
+        <div class="template">
+            <div class="rule">
+                <div></div>
+                <button i18n-tips="tips_match_remove">❌</button>
+            </div>
+        </div>
+        <script src="options.js"></script>
+    </body>
+</html>

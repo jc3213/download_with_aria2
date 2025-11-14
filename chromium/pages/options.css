@@ -1,0 +1,132 @@
+body {
+    margin: auto;
+    width: 680px;
+}
+
+body:not(.jsonrpc) #jsonrpc,
+body.jsonrpc #options,
+body:not(.ctxmenu_enabled) .e-ctxmenu-enabled,
+body:not(.headers_override) .e-headers-override,
+body:not(.firefox) .e-firefox,
+body:not(.folder_enabled) .e-folder-enabled,
+body:not(.capture_enabled) .e-capture-enabled,
+body.folder_firefox .x-folder-firefox,
+body.capture_webrequest .x-capture-webrequest {
+    display: none;
+}
+
+input[type="checkbox"] {
+    accent-color: #006cbe;
+    transform: scale(1.5) translateY(1px);
+    width: auto;
+}
+
+input[type="checkbox"] + label {
+    padding: 3px 0px;
+    font-weight: bold;
+}
+
+input.fl-1 {
+    height: 21px;
+}
+
+i {
+    padding: 1px;
+}
+
+#menu {
+    border-style: solid;
+    border-width: 0px 1px 1px;
+    padding: 8px;
+    position: fixed;
+    top: 0px;
+    width: 662px;
+    z-index: 999999;
+}
+
+#version {
+    margin-left: auto;
+    padding: 4px;
+}
+
+#version::before {
+    content: "v";
+}
+
+#aria2ua::before {
+    content: "aria2/";
+}
+
+.padtop {
+    margin-top: 22px;
+}
+
+.paddown {
+    margin-bottom: 22px;
+}
+
+.padleft {
+    margin-left: 22px;
+}
+
+.padpad {
+    margin: 0px 22px;
+}
+
+.config {
+    margin: 28px 0px;
+}
+
+.cfg-right {
+    grid-column: 2;
+}
+
+.matches {
+    border-style: inset;
+    border-width: 1px;
+    padding: 8px;
+}
+
+.list {
+    border-style: outset;
+    border-width: 1px;
+    display: grid;
+    grid-auto-rows: 25px;
+    grid-template-columns: repeat(3, 1fr);
+    max-height: 125px;
+    min-height: 50px;
+    overflow-y: scroll;
+}
+
+.listx {
+    grid-template-columns: repeat(5, 1fr);
+    height: 59px;
+}
+
+.rule {
+    border-style: outset;
+    border-width: 1px;
+    display: flex;
+}
+
+.rule > div {
+    flex: 1;
+    overflow: hidden;
+}
+
+.rule > button {
+    padding: 0px;
+}
+
+.sample::before {
+    content: "__MSG_option_sample__";
+    text-decoration: underline;
+}
+
+.default::before {
+    content: "__MSG_option_default__: ";
+}
+
+.disabled::before {
+    content: "__MSG_option_disabled__: ";
+}

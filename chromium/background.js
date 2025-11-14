@@ -86,7 +86,7 @@ function RawToSize(bytes) {
 }
 
 const RawData = [
-    'dir', 'max-concurrent-downloads', 'max-overall-download-limit', 'max-overall-upload-limit',
+    'dir', 'file-allocation', 'max-concurrent-downloads', 'max-overall-download-limit', 'max-overall-upload-limit',
     'max-tries', 'retry-wait', 'split', 'max-connection-per-server', 'user-agent',
     'listen-port', 'bt-max-peers', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'
 ];

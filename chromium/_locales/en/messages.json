@@ -416,6 +416,21 @@
     "tips_aria2_com_dir": {
         "message": "Set the directory to store the downloaded files"
     },
+    "aria2_com_alloc": {
+        "message": "File Allocation"
+    },
+    "tips_aria2_com_alloc": {
+        "message": "Pre-allocate disk space to reduce fragmentation (may slow down start-up)"
+    },
+    "aria2_alloc_pre": {
+        "message": "Full"
+    },
+    "aria2_alloc_fast": {
+        "message": "Fast"
+    },
+    "aria2_alloc_trunc": {
+        "message": "Truncate"
+    },
     "aria2_com_cache": {
         "message": "Disk Cache"
     },

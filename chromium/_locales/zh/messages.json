@@ -416,6 +416,21 @@
     "tips_aria2_com_dir": {
         "message": "设置用于保存下载文件的文件夹"
     },
+    "aria2_com_alloc": {
+        "message": "磁盘预分配"
+    },
+    "tips_aria2_com_alloc": {
+        "message": "预分配磁盘空间以减少碎片（可能降低启动速度）"
+    },
+    "aria2_alloc_pre": {
+        "message": "完整"
+    },
+    "aria2_alloc_fast": {
+        "message": "快速"
+    },
+    "aria2_alloc_trunc": {
+        "message": "仅标记"
+    },
     "aria2_com_cache": {
         "message": "磁盘缓存"
     },
