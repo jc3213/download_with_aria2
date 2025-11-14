@@ -221,7 +221,7 @@ async function taskEventApply(task, gid) {
             selected.push(index);
         }
     });
-    config['select-file'] = selected;
+    config['select-file'] = selected.join(',');
     aria2Focus.add(gid);
     await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, config] });
     apply.classList.add('hidden');
