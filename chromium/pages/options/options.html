@@ -176,6 +176,16 @@
                 <input name="dir" type="text">
                 <i class="sample" title="&quot;C:\Aria2\Download&quot; (Windows)&#10;&#10;&quot;/home/aria2/download&quot; (Linux)"></i>
             </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_com_alloc">
+                <h4 i18n="aria2_com_alloc"></h4>
+                <select name="file-allocation">
+                    <option value="none" i18n="option_disabled"></option>
+                    <option value="prealloc" i18n="aria2_alloc_pre"></option>
+                    <option value="falloc" i18n="aria2_alloc_fast"></option>
+                    <option value="trunc" i18n="aria2_alloc_trunc"></option>
+                </select>
+                <i class="default" i18n="aria2_alloc_pre"></i>
+            </div>
             <div class="cfg-item" i18n-tips="tips_aria2_com_cache">
                 <h4 i18n="aria2_com_cache"></h4>
                 <div>
