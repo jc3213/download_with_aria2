@@ -44,10 +44,6 @@ span, label {
     display: inline-block;
 }
 
-select {
-    padding: 0px 5px;
-}
-
 input {
     border-style: inset;
     border-width: 1px;
