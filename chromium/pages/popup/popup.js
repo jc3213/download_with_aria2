@@ -29,7 +29,7 @@ const hotkeyMap = {
 
 document.addEventListener('keydown', (event) => {
     let key = hotkeyMap[event.key];
-    if (key && event.ctrlKey) {
+    if (event.ctrlKey && key) {
         event.preventDefault();
         key.click();
     }

@@ -16,7 +16,7 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
     node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
 });
 
-function hotkeyHandler(event, button) {
+function ctrlHandler(event, button) {
     if (event.ctrlKey) {
         event.preventDefault();
         button.click();
@@ -24,8 +24,8 @@ function hotkeyHandler(event, button) {
 }
 
 const hotkeyMap = {
-    'Enter': (event) => hotkeyHandler(event, submitBtn),
-    'Tab': (event) => hotkeyHandler(event, downMode),
+    'Enter': (event) => ctrlHandler(event, submitBtn),
+    'Tab': (event) => ctrlHandler(event, downMode),
     'Escape': () => close()
 };
 
