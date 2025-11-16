@@ -34,7 +34,6 @@ let aria2Version;
 let aria2Active;
 let aria2Manager = chrome.runtime.getURL('/pages/popup/popup.html');
 let aria2Popup = 0;
-let aria2Tabs = new Set();
 let aria2Inspect = {};
 let aria2Detect;
 let aria2Manifest = chrome.runtime.getManifest();
@@ -135,7 +134,11 @@ async function downloadHandler(url, referer, options, tabId) {
         let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{ name: 'User-Agent', value: navigator.userAgent }, { name: 'Referer', value: referer }];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({ name }) => name.toLowerCase() === 'user-agent');
-            headers[ua].value = aria2Storage['headers_useragent'];
+            if (ua !== -1) {
+                headers[ua].value = aria2Storage['headers_useragent'];
+            } else {
+                headers.push({ name: 'User-Agent', value: aria2Storage['headers_useragent'] });
+            }
         }
         options['header'] = headers.map((header) => header.name + ': ' + header.value);
     }
@@ -221,25 +224,17 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     delete aria2Inspect[tabId];
 });
 
-const tabHandlers = {
-    'loading': (tabId, url) => {
-        if (url?.startsWith('http') && !aria2Tabs.has(tabId)) {
-            aria2Tabs.add(tabId);
-            aria2Inspect[tabId] = { images: new Map(), url };
-        }
-    },
-    'complete': (tabId) => aria2Tabs.delete(tabId)
-};
-
-chrome.tabs.onUpdated.addListener((tabId, { status }, { url }) => {
-    tabHandlers[status]?.(tabId, url);
+chrome.tabs.onUpdated.addListener((tabId, { url }) => {
+    if (url) {
+        delete aria2Inspect[tabId];
+    }
 });
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({ tabId, url, type, requestHeaders }) => {
     if (tabId === aria2Popup) {
         return;
     }
-    let tab = aria2Inspect[tabId] ??= { images: new Map(), url };
+    let tab = aria2Inspect[tabId] ??= { images: new Map() };
     if (type === 'image') {
         let uri = url.replace(/[?#@].*$/, '');
         tab.images.set(uri, url);
