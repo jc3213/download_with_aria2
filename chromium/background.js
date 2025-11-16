@@ -131,7 +131,7 @@ async function downloadHandler(url, referer, options, tabId) {
         options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
     if (!MatchTest('headers_domains', hostname)) {
-        let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{ name: 'User-Agent', value: navigator.userAgent }, { name: 'Referer', value: referer }];
+        let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{ name: 'Referer', value: referer }];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({ name }) => name.toLowerCase() === 'user-agent');
             if (ua !== -1) {
