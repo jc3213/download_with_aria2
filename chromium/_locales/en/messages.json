@@ -534,15 +534,15 @@
         "message": "Remove all unselected files when BitTorrent is completed"
     },
     "aria2_bt_ratio": {
-        "message": "Seeding Ratio"
+        "message": "Share Ratio"
     },
     "tips_aria2_bt_ratio": {
-        "message": "Set the share ratio of each torrent"
+        "message": "Set the share ratio of each BitTorrent download"
     },
     "aria2_bt_seed": {
         "message": "Seeding Time"
     },
     "tips_aria2_bt_seed": {
-        "message": "Set the share time of each torrent (MIN)"
+        "message": "Set the share time of each BitTorrent download (MIN)"
     }
 }

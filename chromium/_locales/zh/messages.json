@@ -540,9 +540,9 @@
         "message": "设置每个 BT 任务的分享率"
     },
     "aria2_bt_seed": {
-        "message": "分享时间"
+        "message": "做种时间"
     },
     "tips_aria2_bt_seed": {
-        "message": "设置每个 BT 任务的分享时间 (分)"
+        "message": "设置每个 BT 任务的做种时间 (分)"
     }
 }
