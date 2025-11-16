@@ -522,10 +522,10 @@
         "message": "为 BT 任务启用基于 IPv6 的 DHT 网路以获取更多节点"
     },
     "aria2_bt_follow": {
-        "message": "自动解析种子"
+        "message": "自动种子下载"
     },
     "tips_aria2_bt_follow": {
-        "message": "当完成 .torrent 文件下载后，自动开始 BT 下载"
+        "message": "当完成\".torrent\"文件下载后，自动开始 BT 下载"
     },
     "aria2_bt_remove": {
         "message": "删除未选定文件"

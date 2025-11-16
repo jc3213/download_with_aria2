@@ -507,7 +507,7 @@
         "message": "Max Peers"
     },
     "tips_aria2_bt_peers": {
-        "message": "Set the maximum peers of each torrent"
+        "message": "Set the maximum peers of each BitTorrent download"
     },
     "aria2_bt_dht": {
         "message": "Enable DHT"
@@ -522,10 +522,10 @@
         "message": "Enable the DHT network over IPv6 for peer discovery in BitTorrent downloads"
     },
     "aria2_bt_follow": {
-        "message": "Auto Process Torrent"
+        "message": "Auto Torrent Download"
     },
     "tips_aria2_bt_follow": {
-        "message": "When complete download a .torrent file, auto start BitTorrent download"
+        "message": "When a \".torrent\" file is downloaded, start the BitTorrent download automatically"
     },
     "aria2_bt_remove": {
         "message": "Remove Unselected Files"
