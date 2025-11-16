@@ -410,44 +410,44 @@
     "aria2_options": {
         "message": "Common Settings"
     },
-    "aria2_com_dir": {
+    "aria2_down_dir": {
         "message": "Download Directory"
     },
-    "tips_aria2_com_dir": {
+    "tips_aria2_down_dir": {
         "message": "Set the directory to store the downloaded files"
     },
-    "aria2_com_alloc": {
+    "aria2_file_alloc": {
         "message": "File Allocation"
     },
-    "tips_aria2_com_alloc": {
+    "tips_aria2_file_alloc": {
         "message": "Pre-allocate disk space to reduce fragmentation (may slow down start-up)"
     },
     "aria2_alloc_pre": {
-        "message": "Full"
+        "message": "Pre-alloc"
     },
     "aria2_alloc_fast": {
-        "message": "Fast"
+        "message": "Fast-alloc"
     },
     "aria2_alloc_trunc": {
         "message": "Truncate"
     },
-    "aria2_com_cache": {
+    "aria2_disk_cache": {
         "message": "Disk Cache"
     },
-    "tips_aria2_com_cache": {
+    "tips_aria2_disk_cache": {
         "message": "Set disk cache to reduce disk I/O"
+    },
+    "aria2_overwrite": {
+        "message": "Overwrite Existing Files"
+    },
+    "tips_aria2_overwrite": {
+        "message": "Allow new downloads to overwrite files that already exist"
     },
     "aria2_max_concurrent": {
         "message": "Max Concurrent Downloads"
     },
     "tips_aria2_max_concurrent": {
         "message": "Set the maximum number of parallel downloads for every queue item"
-    },
-    "aria2_max_connection": {
-        "message": "Max Connections per Server"
-    },
-    "tips_aria2_max_connection": {
-        "message": "Set the maximum number of connections to one server for each download."
     },
     "aria2_max_download": {
         "message": "Global Download Speed"
@@ -485,6 +485,12 @@
     "tips_aria2_http_size": {
         "message": "Set the minimum size of each download section"
     },
+    "aria2_http_connection": {
+        "message": "Max Connections per Server"
+    },
+    "tips_aria2_http_connection": {
+        "message": "Set the maximum number of connections to one server for each download."
+    },
     "aria2_http_ua": {
         "message": "User Agent"
     },
@@ -503,17 +509,29 @@
     "tips_aria2_bt_peers": {
         "message": "Set the maximum peers of each torrent"
     },
+    "aria2_bt_dht": {
+        "message": "Enable DHT"
+    },
+    "tips_aria2_bt_dht": {
+        "message": "Enable the DHT network for peer discovery in BitTorrent downloads"
+    },
+    "aria2_bt_dht6": {
+        "message": "Enable DHT IPv6"
+    },
+    "tips_aria2_bt_dht6": {
+        "message": "Enable the DHT network over IPv6 for peer discovery in BitTorrent downloads"
+    },
     "aria2_bt_follow": {
         "message": "Auto Process Torrent"
     },
     "tips_aria2_bt_follow": {
-        "message": "When complete download a .torrent file, auto start bittorrent download"
+        "message": "When complete download a .torrent file, auto start BitTorrent download"
     },
     "aria2_bt_remove": {
         "message": "Remove Unselected Files"
     },
     "tips_aria2_bt_remove": {
-        "message": "Remove the unselected files when bittorrent is completed"
+        "message": "Remove all unselected files when BitTorrent is completed"
     },
     "aria2_bt_ratio": {
         "message": "Seeding Ratio"

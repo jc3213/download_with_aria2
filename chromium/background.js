@@ -86,11 +86,11 @@ function RawToSize(bytes) {
 }
 
 const RawData = [
-    'dir', 'file-allocation', 'max-concurrent-downloads', 'max-overall-download-limit', 'max-overall-upload-limit',
+    'dir', 'file-allocation', 'allow-overwrite', 'max-concurrent-downloads',
     'max-tries', 'retry-wait', 'split', 'max-connection-per-server', 'user-agent',
-    'listen-port', 'bt-max-peers', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'
+    'listen-port', 'bt-max-peers', 'enable-dht', 'enable-dht6', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'
 ];
-const SizeData = ['disk-cache', 'min-split-size'];
+const SizeData = ['disk-cache', 'min-split-size', 'max-overall-download-limit', 'max-overall-upload-limit'];
 
 const clientMessage = {
     'aria2.onDownloadStart': whenStarted,

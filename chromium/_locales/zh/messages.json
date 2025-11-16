@@ -410,44 +410,44 @@
     "aria2_options": {
         "message": "通用设置"
     },
-    "aria2_com_dir": {
+    "aria2_down_dir": {
         "message": "下载文件夹"
     },
-    "tips_aria2_com_dir": {
+    "tips_aria2_down_dir": {
         "message": "设置用于保存下载文件的文件夹"
     },
-    "aria2_com_alloc": {
-        "message": "磁盘预分配"
+    "aria2_file_alloc": {
+        "message": "磁盘分配"
     },
-    "tips_aria2_com_alloc": {
+    "tips_aria2_file_alloc": {
         "message": "预分配磁盘空间以减少碎片（可能降低启动速度）"
     },
     "aria2_alloc_pre": {
-        "message": "完整"
+        "message": "预分配"
     },
     "aria2_alloc_fast": {
-        "message": "快速"
+        "message": "快速分配"
     },
     "aria2_alloc_trunc": {
         "message": "仅标记"
     },
-    "aria2_com_cache": {
+    "aria2_disk_cache": {
         "message": "磁盘缓存"
     },
-    "tips_aria2_com_cache": {
+    "tips_aria2_disk_cache": {
         "message": "设置磁盘缓存以减少对磁盘的读写"
+    },
+    "aria2_overwrite": {
+        "message": "覆盖已存在文件"
+    },
+    "tips_aria2_overwrite": {
+        "message": "允许下载时覆盖已存在的同名文件"
     },
     "aria2_max_concurrent": {
         "message": "最大并行任务数"
     },
     "tips_aria2_max_concurrent": {
         "message": "设置可同时进行下载的最大任务数"
-    },
-    "aria2_max_connection": {
-        "message": "每服务器最大连接数"
-    },
-    "tips_aria2_max_connection": {
-        "message": "设置每个服务器允许的最大连接数"
     },
     "aria2_max_download": {
         "message": "全局下载速度"
@@ -485,6 +485,12 @@
     "tips_aria2_http_size": {
         "message": "设置每个线程的最小容量"
     },
+    "aria2_http_connection": {
+        "message": "每服务器最大连接数"
+    },
+    "tips_aria2_http_connection": {
+        "message": "设置每个服务器允许的最大连接数"
+    },
     "aria2_http_ua": {
         "message": "用户代理"
     },
@@ -498,10 +504,22 @@
         "message": "设置与 DHT 以及 UDP 服务器交互的端口"
     },
     "aria2_bt_peers": {
-        "message": "最大连接数"
+        "message": "最大节点数"
     },
     "tips_aria2_bt_peers": {
-        "message": "设置每个 BT 任务的最大连接数"
+        "message": "设置每个 BT 任务允许的最大节点数"
+    },
+    "aria2_bt_dht": {
+        "message": "启用 DHT"
+    },
+    "tips_aria2_bt_dht": {
+        "message": "为 BT 任务启用 DHT 网路以获取更多节点"
+    },
+    "aria2_bt_dht6": {
+        "message": "启用 DHTv6"
+    },
+    "tips_aria2_bt_dht6": {
+        "message": "为 BT 任务启用基于 IPv6 的 DHT 网路以获取更多节点"
     },
     "aria2_bt_follow": {
         "message": "自动解析种子"

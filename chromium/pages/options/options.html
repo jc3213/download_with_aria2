@@ -171,13 +171,13 @@
             <div class="cfg-item pad-u">
                 <button id="goto-options" i18n="option_back"></button>
             </div>
-            <div class="cfg-item" i18n-tips="tips_aria2_com_dir">
-                <h4 i18n="aria2_com_dir"></h4>
+            <div class="cfg-item" i18n-tips="tips_aria2_down_dir">
+                <h4 i18n="aria2_down_dir"></h4>
                 <input name="dir" type="text">
                 <i class="sample" title="&quot;C:\Aria2\Download&quot; (Windows)&#10;&#10;&quot;/home/aria2/download&quot; (Linux)"></i>
             </div>
-            <div class="cfg-item" i18n-tips="tips_aria2_com_alloc">
-                <h4 i18n="aria2_com_alloc"></h4>
+            <div class="cfg-item" i18n-tips="tips_aria2_file_alloc">
+                <h4 i18n="aria2_file_alloc"></h4>
                 <select name="file-allocation">
                     <option value="none" i18n="option_disabled"></option>
                     <option value="prealloc" i18n="aria2_alloc_pre"></option>
@@ -186,13 +186,26 @@
                 </select>
                 <i class="default" i18n="aria2_alloc_pre"></i>
             </div>
-            <div class="cfg-item" i18n-tips="tips_aria2_com_cache">
-                <h4 i18n="aria2_com_cache"></h4>
+            <div class="cfg-item" i18n-tips="tips_aria2_disk_cache">
+                <h4 i18n="aria2_disk_cache"></h4>
                 <div>
                     <input name="disk-cache" type="text">
                     <span>B</span>
                 </div>
                 <i class="default">16M</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_overwrite">
+                <h4 i18n="aria2_overwrite"></h4>
+                <select name="allow-overwrite">
+                    <option value="true" i18n="common_true"></option>
+                    <option value="false" i18n="common_false"></option>
+                </select>
+                <i class="default" i18n="aria2_alloc_pre"></i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_max_concurrent">
+                <h4 i18n="aria2_max_concurrent"></h4>
+                <input name="max-concurrent-downloads" type="number">
+                <i class="default">5</i>
             </div>
             <div class="cfg-item" i18n-tips="tips_aria2_max_download">
                 <h4 i18n="aria2_max_download"></h4>
@@ -209,11 +222,6 @@
                     <span>B/s</span>
                 </div>
                 <i class="disabled">0</i>
-            </div>
-            <div class="cfg-item" i18n-tips="tips_aria2_max_concurrent">
-                <h4 i18n="aria2_max_concurrent"></h4>
-                <input name="max-concurrent-downloads" type="number">
-                <i class="default">5</i>
             </div>
             <h1>HTTP/FTP</h1>
             <div class="cfg-item" i18n-tips="tips_aria2_http_retry">
@@ -242,8 +250,8 @@
                 </div>
                 <i class="default">20M</i>
             </div>
-            <div class="cfg-item" i18n-tips="tips_aria2_max_connection">
-                <h4 i18n="aria2_max_connection"></h4>
+            <div class="cfg-item" i18n-tips="tips_aria2_http_connection">
+                <h4 i18n="aria2_http_connection"></h4>
                 <input name="max-connection-per-server" type="number">
                 <i class="default">1</i>
             </div>
@@ -262,6 +270,22 @@
                 <h4 i18n="aria2_bt_peers"></h4>
                 <input name="bt-max-peers" type="number">
                 <i class="default">55</i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_bt_dht">
+                <h4 i18n="aria2_bt_dht"></h4>
+                <select name="enable-dht">
+                    <option value="true" i18n="common_true"></option>
+                    <option value="false" i18n="common_false"></option>
+                </select>
+                <i class="default" i18n="common_true"></i>
+            </div>
+            <div class="cfg-item" i18n-tips="tips_aria2_bt_dht6">
+                <h4 i18n="aria2_bt_dht6"></h4>
+                <select name="enable-dht6">
+                    <option value="true" i18n="common_true"></option>
+                    <option value="false" i18n="common_false"></option>
+                </select>
+                <i class="default" i18n="common_false"></i>
             </div>
             <div class="cfg-item" i18n-tips="tips_aria2_bt_follow">
                 <h4 i18n="aria2_bt_follow"></h4>
