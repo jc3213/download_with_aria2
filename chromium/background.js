@@ -140,7 +140,7 @@ async function downloadHandler(url, referer, options, tabId) {
                 headers.push({ name: 'User-Agent', value: aria2Storage['headers_useragent'] });
             }
         }
-        options['header'] = headers.map((header) => header.name + ': ' + header.value);
+        options['header'] = headers.map(({ name, value }) => name + ': ' + value);
     }
     aria2RPC.call({ method: 'aria2.addUri', params: [[url], options] });
 }
