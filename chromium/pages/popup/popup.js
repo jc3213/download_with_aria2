@@ -73,13 +73,13 @@ aria2RPC.onopen = () => {
         aria2Queue.active  = new Set();
         aria2Queue.waiting = new Set();
         aria2Queue.stopped = new Set();
-        updateManager(stats, active);
-        waiting.result.forEach(taskElementUpdate);
-        stopped.result.forEach(taskElementUpdate);
+        updateTaskManager(stats, active);
+        waiting.result.forEach(updateTaskStats);
+        stopped.result.forEach(updateTaskStats);
         verEntry.textContent = version.result.version;
         aria2Interval = setInterval(() => {
             aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' })
-                .then(([stats, active]) => updateManager(stats, active))
+                .then(([stats, active]) => updateTaskManager(stats, active));
         }, aria2Delay);
     }).catch(aria2RPC.onclose);
 };
@@ -96,24 +96,24 @@ aria2RPC.onmessage = ({ method, params }) => {
     }
     let [{ gid }] = params;
     let group = method === 'aria2.onDownloadStart' ? 'waiting' : 'active';
-    taskElementRefresh(gid);
-    taskRemoved(gid, group);
+    updateTaskDetails(gid);
+    removeFromQueue(gid, group);
 };
 
-function updateManager(stats, active) {
+function updateTaskManager(stats, active) {
     let { downloadSpeed, uploadSpeed } = stats.result;
     aria2Stats['download'].textContent = getFileSize(downloadSpeed);
     aria2Stats['upload'].textContent = getFileSize(uploadSpeed);
-    active.result.forEach(taskElementUpdate);
+    active.result.forEach(updateTaskStats);
 }
 
-function taskRemoved(gid, group) {
+function removeFromQueue(gid, group) {
     let queue = aria2Queue[group];
     queue.delete(gid);
     aria2Stats[group].textContent = queue.size;
 }
 
-function taskUpdated(task, gid, status) {
+function addToQueue(task, gid, status) {
     let group = aria2Group[status];
     let queue = aria2Queue[group];
     queue.add(gid);
@@ -123,17 +123,17 @@ function taskUpdated(task, gid, status) {
     queuePane.appendChild(task);
 }
 
-async function taskElementRefresh(gid) {
+async function updateTaskDetails(gid) {
     let [{ result }] = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
-    let task = taskElementUpdate(result);
+    let task = updateTaskStats(result);
     if (task.align) {
         task.scrollIntoView({ block: 'start', inline: 'nearest' });
         delete task.align;
     }
-    taskUpdated(task, gid, result.status);
+    addToQueue(task, gid, result.status);
 }
 
-function taskElementUpdate({ gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders }) {
+function updateTaskStats({ gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders }) {
     let task = aria2Tasks[gid] ??= taskElementCreate(gid, status, bittorrent, files);
     let time = (totalLength - completedLength) / downloadSpeed;
     let days = time / 86400 | 0;
@@ -164,7 +164,7 @@ function taskElementUpdate({ gid, status, files, bittorrent, completedLength, to
 
 async function taskRemoveHandler(task, gid, method, group) {
     await aria2RPC.call({ method, params: [gid] });
-    taskRemoved(gid, group);
+    removeFromQueue(gid, group);
     delete aria2Tasks[gid];
     task.remove();
 }
@@ -236,8 +236,8 @@ async function taskEventRetry(task, gid) {
         options['out'] = match[2];
     }
     let [{ result }] = await aria2RPC.call({ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] });
-    taskElementRefresh(result);
-    taskRemoved(gid, 'stopped');
+    updateTaskDetails(result);
+    removeFromQueue(gid, 'stopped');
     delete aria2Tasks[gid];
     task.remove();
 }
@@ -253,7 +253,7 @@ async function taskUriAdded(task, gid) {
     let [{ result }] = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [url]] });
     if (result?.[1] === 1) {
         task.align = true;
-        task[url] ??= taskUriElement(task, url);
+        task[url] ??= updateTaskURI(task, url);
     }
 }
 
@@ -331,16 +331,16 @@ function taskElementCreate(gid, status, bittorrent, files) {
         apply.classList.remove('hidden');
     });
     files.forEach(({ index, length, path, selected, uris }) => {
-        task[index] ??= taskFileElement(task, gid, index, selected, path, length);
+        task[index] ??= updateTaskFile(task, gid, index, selected, path, length);
         uris.forEach(({ uri, status }) => {
-            task[uri] ??= taskUriElement(task, uri);
+            task[uri] ??= updateTaskURI(task, uri);
         });
     });
-    taskUpdated(task, gid, status);
+    addToQueue(task, gid, status);
     return task;
 }
 
-function taskFileElement(task, gid, index, selected, path, length) {
+function updateTaskFile(task, gid, index, selected, path, length) {
     let file = fileLET.cloneNode(true);
     let [check, label, name, size, ratio] = file.children;
     check.id = gid + '_' + index;
@@ -355,7 +355,7 @@ function taskFileElement(task, gid, index, selected, path, length) {
     return { name, ratio };
 }
 
-function taskUriElement(task, uri) {
+function updateTaskURI(task, uri) {
     let url = uriLET.cloneNode(true);
     url.children[0].textContent = uri;
     task.ulist.appendChild(url);
