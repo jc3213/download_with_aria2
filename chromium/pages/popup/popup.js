@@ -134,7 +134,7 @@ async function updateTaskDetails(gid) {
 }
 
 function updateTaskStats({ gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders }) {
-    let task = aria2Tasks[gid] ??= taskElementCreate(gid, status, bittorrent, files);
+    let task = aria2Tasks[gid] ??= createTaskBody(gid, status, bittorrent, files);
     let time = (totalLength - completedLength) / downloadSpeed;
     let days = time / 86400 | 0;
     let hours = time / 3600 - days * 24 | 0;
@@ -253,7 +253,7 @@ async function taskUriAdded(task, gid) {
     let [{ result }] = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [url]] });
     if (result?.[1] === 1) {
         task.align = true;
-        task[url] ??= updateTaskURI(task, url);
+        task[url] ??= createTaskUri(task, url);
     }
 }
 
@@ -283,7 +283,7 @@ const taskEventMap = {
     'tips_file_index': (task) => task.apply.classList.remove('hidden')
 };
 
-function taskElementCreate(gid, status, bittorrent, files) {
+function createTaskBody(gid, status, bittorrent, files) {
     let task = sessionLET.cloneNode(true);
     let [name, current, time, total, network, download, upload, menu, meter, options, flist, ulist] = task.children;
     let [day, hour, minute, second] = time.children;
@@ -331,16 +331,16 @@ function taskElementCreate(gid, status, bittorrent, files) {
         apply.classList.remove('hidden');
     });
     files.forEach(({ index, length, path, selected, uris }) => {
-        task[index] ??= updateTaskFile(task, gid, index, selected, path, length);
+        task[index] ??= createTaskFile(task, gid, index, selected, path, length);
         uris.forEach(({ uri, status }) => {
-            task[uri] ??= updateTaskURI(task, uri);
+            task[uri] ??= createTaskUri(task, uri);
         });
     });
     addToQueue(task, gid, status);
     return task;
 }
 
-function updateTaskFile(task, gid, index, selected, path, length) {
+function createTaskFile(task, gid, index, selected, path, length) {
     let file = fileLET.cloneNode(true);
     let [check, label, name, size, ratio] = file.children;
     check.id = gid + '_' + index;
@@ -355,7 +355,7 @@ function updateTaskFile(task, gid, index, selected, path, length) {
     return { name, ratio };
 }
 
-function updateTaskURI(task, uri) {
+function createTaskUri(task, uri) {
     let url = uriLET.cloneNode(true);
     url.children[0].textContent = uri;
     task.ulist.appendChild(url);
