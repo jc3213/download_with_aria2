@@ -1,6 +1,5 @@
-let aria2Tasks = new Map();
-let aria2Stats = new Map();
-let aria2Focus = new Set();
+let aria2Tasks = {};
+let aria2Stats = {};
 let aria2Queue = {};
 let aria2Group = {
     active: 'active',
@@ -19,7 +18,7 @@ let [downBtn, purgeBtn, optionsBtn] = menuPane.children;
 let [i18nEntry, verEntry, ...statEntries] = statusPane.children;
 let [sessionLET, fileLET, uriLET] = template.children;
 
-statEntries.forEach((stat) => aria2Stats.set(stat.id, stat));
+statEntries.forEach((stat) => aria2Stats[stat.id] = stat);
 
 const hotkeyMap = {
     'e': purgeBtn,
@@ -58,11 +57,11 @@ purgeBtn.addEventListener('click', async (event) => {
     await aria2RPC.call({ method: 'aria2.purgeDownloadResult' });
     let { stopped } = aria2Queue;
     stopped.forEach((gid) => {
-        aria2Tasks.get(gid).remove();
-        aria2Tasks.delete(gid);
+        aria2Tasks[gid].remove();
+        delete aria2Tasks[gid];
     });
     stopped.clear();
-    aria2Stats.get('stopped').textContent = '0';
+    aria2Stats['stopped'].textContent = '0';
 });
 
 const aria2RPC = new Aria2();
@@ -86,8 +85,8 @@ aria2RPC.onopen = () => {
 };
 aria2RPC.onclose = () => {
     clearInterval(aria2Interval);
-    aria2Tasks.clear();
-    aria2Stats.values().forEach((stat) => stat.textContent = '0');
+    aria2Tasks = {};
+    statEntries.forEach((stat) => stat.textContent = '0');
     queuePane.innerHTML = '';
     verEntry.textContent = 'N/A';
 };
@@ -103,22 +102,22 @@ aria2RPC.onmessage = ({ method, params }) => {
 
 function updateManager(stats, active) {
     let { downloadSpeed, uploadSpeed } = stats.result;
-    aria2Stats.get('download').textContent = getFileSize(downloadSpeed);
-    aria2Stats.get('upload').textContent = getFileSize(uploadSpeed);
+    aria2Stats['download'].textContent = getFileSize(downloadSpeed);
+    aria2Stats['upload'].textContent = getFileSize(uploadSpeed);
     active.result.forEach(taskElementUpdate);
 }
 
 function taskRemoved(gid, group) {
     let queue = aria2Queue[group];
     queue.delete(gid);
-    aria2Stats.get(group).textContent = queue.size;
+    aria2Stats[group].textContent = queue.size;
 }
 
 function taskUpdated(task, gid, status) {
     let group = aria2Group[status];
     let queue = aria2Queue[group];
     queue.add(gid);
-    aria2Stats.get(group).textContent = queue.size;
+    aria2Stats[group].textContent = queue.size;
     task.classList.replace(task.status, status);
     task.status = status;
     queuePane.appendChild(task);
@@ -127,15 +126,15 @@ function taskUpdated(task, gid, status) {
 async function taskElementRefresh(gid) {
     let [{ result }] = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
     let task = taskElementUpdate(result);
-    if (aria2Focus.has(gid)) {
+    if (task.align) {
         task.scrollIntoView({ block: 'start', inline: 'nearest' });
-        aria2Focus.delete(gid);
+        delete task.align;
     }
     taskUpdated(task, gid, result.status);
 }
 
 function taskElementUpdate({ gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders }) {
-    let task = aria2Tasks.get(gid) ?? taskElementCreate(gid, status, bittorrent, files);
+    let task = aria2Tasks[gid] ??= taskElementCreate(gid, status, bittorrent, files);
     let time = (totalLength - completedLength) / downloadSpeed;
     let days = time / 86400 | 0;
     let hours = time / 3600 - days * 24 | 0;
@@ -166,7 +165,7 @@ function taskElementUpdate({ gid, status, files, bittorrent, completedLength, to
 async function taskRemoveHandler(task, gid, method, group) {
     await aria2RPC.call({ method, params: [gid] });
     taskRemoved(gid, group);
-    aria2Tasks.delete(gid);
+    delete aria2Tasks[gid];
     task.remove();
 }
 
@@ -222,7 +221,7 @@ async function taskEventApply(task, gid) {
         }
     });
     config['select-file'] = selected.join(',');
-    aria2Focus.add(gid);
+    task.align = true;
     await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, config] });
     apply.classList.add('hidden');
 }
@@ -239,7 +238,7 @@ async function taskEventRetry(task, gid) {
     let [{ result }] = await aria2RPC.call({ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] });
     taskElementRefresh(result);
     taskRemoved(gid, 'stopped');
-    aria2Tasks.delete(gid);
+    delete aria2Tasks[gid];
     task.remove();
 }
 
@@ -253,7 +252,7 @@ async function taskUriAdded(task, gid) {
     task.newuri.value = '';
     let [{ result }] = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [url]] });
     if (result?.[1] === 1) {
-        aria2Focus.add(gid);
+        task.align = true;
         task[url] ??= taskUriElement(task, url);
     }
 }
@@ -265,7 +264,7 @@ async function taskUriRemoved(task, gid, event) {
     let removed = uris.filter(({ uri }) => uri === url).map(({ uri }) => uri);
     let [{ result }] = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, removed, []] });
     if (result?.[0] === removed.length) {
-        aria2Focus.add(gid);
+        task.align = true;
         delete task[url];
         event.target.parentNode.remove();
     }
@@ -338,7 +337,6 @@ function taskElementCreate(gid, status, bittorrent, files) {
         });
     });
     taskUpdated(task, gid, status);
-    aria2Tasks.set(gid, task);
     return task;
 }
 
