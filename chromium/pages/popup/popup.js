@@ -18,7 +18,9 @@ let [downBtn, purgeBtn, optionsBtn] = menuPane.children;
 let [i18nEntry, verEntry, ...statEntries] = statusPane.children;
 let [sessionLET, fileLET, uriLET] = template.children;
 
-statEntries.forEach((stat) => aria2Stats[stat.id] = stat);
+statEntries.forEach((stat) => {
+    aria2Stats[stat.id] = stat;
+});
 
 const hotkeyMap = {
     'e': purgeBtn,
@@ -86,9 +88,11 @@ aria2RPC.onopen = () => {
 aria2RPC.onclose = () => {
     clearInterval(aria2Interval);
     aria2Tasks = {};
-    statEntries.forEach((stat) => stat.textContent = '0');
-    queuePane.innerHTML = '';
     verEntry.textContent = 'N/A';
+    queuePane.innerHTML = '';
+    statEntries.forEach((stat) => {
+        stat.textContent = '0';
+    });
 };
 aria2RPC.onmessage = ({ method, params }) => {
     if (method === 'aria2.onBtDownloadComplete') {
@@ -136,10 +140,10 @@ async function updateTaskDetails(gid) {
 function updateTaskStats({ gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders }) {
     let task = aria2Tasks[gid] ??= createTaskBody(gid, status, bittorrent, files);
     let time = (totalLength - completedLength) / downloadSpeed;
-    let days = time / 86400 | 0;
-    let hours = time / 3600 - days * 24 | 0;
-    let minutes = time / 60 - days * 1440 - hours * 60 | 0;
-    let seconds = time - days * 86400 - hours * 3600 - minutes * 60 | 0;
+    let days = (time / 86400) | 0;
+    let hours = ((time % 86400) / 3600) | 0;
+    let minutes = ((time % 3600) / 60) | 0;
+    let seconds = time % 60 | 0;
     let percent = (completedLength / totalLength * 10000 | 0) / 100;
     let [{ path, uris }] = files;
     task.name.textContent ||= bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
