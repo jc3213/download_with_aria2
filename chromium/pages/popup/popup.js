@@ -106,8 +106,8 @@ aria2RPC.onmessage = ({ method, params }) => {
 
 function updateTaskManager(stats, active) {
     let { downloadSpeed, uploadSpeed } = stats.result;
-    aria2Stats['download'].textContent = getFileSize(downloadSpeed);
-    aria2Stats['upload'].textContent = getFileSize(uploadSpeed);
+    aria2Stats.download.textContent = getFileSize(downloadSpeed);
+    aria2Stats.upload.textContent = getFileSize(uploadSpeed);
     active.result.forEach(updateTaskStats);
 }
 
@@ -140,9 +140,9 @@ async function updateTaskDetails(gid) {
 function updateTaskStats({ gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders }) {
     let task = aria2Tasks[gid] ??= createTaskBody(gid, status, bittorrent, files);
     let time = (totalLength - completedLength) / downloadSpeed;
-    let days = (time / 86400) | 0;
-    let hours = ((time % 86400) / 3600) | 0;
-    let minutes = ((time % 3600) / 60) | 0;
+    let days = time / 86400 | 0;
+    let hours = time % 86400 / 3600 | 0;
+    let minutes = time % 3600 / 60 | 0;
     let seconds = time % 60 | 0;
     let percent = (completedLength / totalLength * 10000 | 0) / 100;
     let [{ path, uris }] = files;
