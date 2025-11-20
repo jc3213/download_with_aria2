@@ -30,7 +30,7 @@ const hotkeyMap = {
 };
 
 document.addEventListener('keydown', (event) => {
-    hotkeyMap[event.key]?.(event);
+    hotkeyMap[event.code]?.(event);
 });
 
 document.addEventListener('click', (event) => {
