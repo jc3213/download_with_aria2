@@ -23,16 +23,16 @@ function ctrlHandler(event, button) {
 }
 
 const hotkeyMap = {
-    'a': (event) => ctrlHandler(event, selectAll),
-    'e': (event) => ctrlHandler(event, selectNone),
-    'f': (event) => ctrlHandler(event, selectFlip),
-    'q': (event) => ctrlHandler(event, optionsBtn),
+    'KeyA': (event) => ctrlHandler(event, selectAll),
+    'KeyE': (event) => ctrlHandler(event, selectNone),
+    'KeyF': (event) => ctrlHandler(event, selectFlip),
+    'KeyQ': (event) => ctrlHandler(event, optionsBtn),
     'Enter': (event) => ctrlHandler(event, submitBtn),
     'Escape': () => close()
 };
 
 document.addEventListener('keydown', (event) => {
-    hotkeyMap[event.key]?.(event);
+    hotkeyMap[event.code]?.(event);
 });
 
 galleryPane.addEventListener('click', (event) => {
