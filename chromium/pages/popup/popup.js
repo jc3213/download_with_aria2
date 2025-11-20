@@ -23,13 +23,13 @@ statEntries.forEach((stat) => {
 });
 
 const hotkeyMap = {
-    'e': purgeBtn,
-    'd': downBtn,
-    'q': optionsBtn
+    'KeyE': purgeBtn,
+    'KeyD': downBtn,
+    'KeyQ': optionsBtn
 };
 
 document.addEventListener('keydown', (event) => {
-    let key = hotkeyMap[event.key];
+    let key = hotkeyMap[event.code];
     if (event.ctrlKey && key) {
         event.preventDefault();
         key.click();
@@ -320,7 +320,7 @@ function createTaskBody(gid, status, bittorrent, files) {
         taskEventMap[menu]?.(task, gid, event);
     });
     task.addEventListener('keydown', (event) => {
-        if (event.ctrlKey && event.key === 's') {
+        if (event.ctrlKey && event.code === 'KeyS') {
             event.preventDefault();
             apply.click();
         }
