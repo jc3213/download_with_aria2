@@ -29,13 +29,13 @@ document.querySelectorAll('[i18n-tips]').forEach((node) => {
 });
 
 const hotkeyMap = {
-    's': saveBtn,
-    'y': redoBtn,
-    'z': undoBtn
+    'KeyS': saveBtn,
+    'KeyY': redoBtn,
+    'KeyZ': undoBtn
 };
 
 document.addEventListener('keydown', (event) => {
-    let key = hotkeyMap[event.key];
+    let key = hotkeyMap[event.code];
     if (event.ctrlKey && key) {
         event.preventDefault();
         key.click();
