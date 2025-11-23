@@ -34,7 +34,7 @@ let aria2Version;
 let aria2Active;
 let aria2Manager = chrome.runtime.getURL('/pages/popup/popup.html');
 let aria2Popup = 0;
-let aria2Inspect = {};
+let aria2Inspect = new Map();
 let aria2Detect;
 let aria2Manifest = chrome.runtime.getManifest();
 let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
@@ -122,6 +122,15 @@ function whenCompleted(gid) {
     whenNotify(gid, 'complete');
 }
 
+function downloadHeaders(url) {
+    for (let tab of aria2Inspect.values()) {
+        let headers = tab[url];
+        if (headers) {
+            return headers;
+        }
+    }
+}
+
 async function downloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
     if (MatchTest('proxy_domains', hostname)) {
@@ -131,7 +140,7 @@ async function downloadHandler(url, referer, options, tabId) {
         options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
     if (!MatchTest('headers_domains', hostname)) {
-        let headers = aria2Inspect[tabId]?.[url] ?? Object.values(aria2Inspect).find((tab) => tab[url])?.[url] ?? [{ name: 'Referer', value: referer }];
+        let headers = aria2Inspect.get(tabId)?.[url] ?? downloadHeaders(url) ?? [{ name: 'referer', value: referer }];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({ name }) => name.toLowerCase() === 'user-agent');
             if (ua !== -1) {
@@ -196,7 +205,7 @@ function managerChanged(response, array) {
 
 function detectedImages(response) {
     let { tabId, referer } = aria2Detect;
-    let tab = aria2Inspect[tabId];
+    let tab = aria2Inspect.get(tabId);
     let json = systemRuntime();
     json.referer = referer;
     json.images = tab ? [...tab.images.values()] : [];
@@ -221,12 +230,12 @@ chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-    delete aria2Inspect[tabId];
+    aria2Inspect.delete(tabId);
 });
 
 chrome.tabs.onUpdated.addListener((tabId, { url }) => {
     if (url) {
-        delete aria2Inspect[tabId];
+        aria2Inspect.delete(tabId);
     }
 });
 
@@ -234,7 +243,11 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({ tabId, url, type, requestHe
     if (tabId === aria2Popup) {
         return;
     }
-    let tab = aria2Inspect[tabId] ??= { images: new Map() };
+    let tab = aria2Inspect.get(tabId);
+    if (!tab) {
+        tab = { images: new Map() };
+        aria2Inspect.set(tabId, tab);
+    }
     if (type === 'image') {
         let uri = url.replace(/[?#@].*$/, '');
         tab.images.set(uri, url);
