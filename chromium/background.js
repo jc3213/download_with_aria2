@@ -270,15 +270,18 @@ const MatchKeys = ['headers_domains', 'proxy_domains', 'capture_domains', 'captu
 
 function MatchData(key) {
     let temp = aria2Storage[key];
-    let data = temp.map((i) => `.${i}`);
     let dataSet = new Set(temp);
-    let global = dataSet.has('*');
-    aria2Capture[key] = { data, dataSet, global };
+    aria2Capture[key] = {
+        data: temp.map((i) => `.${i}`),
+        dataSet,
+        empty: temp.length === 0,
+        global: dataSet.has('*')
+    };
 }
 
 function MatchTest(key, string) {
-    let { data, dataSet, global } = aria2Capture[key];
-    return global || dataSet.has(string) || data.some((i) => string.endsWith(i));
+    let { data, dataSet, global, empty } = aria2Capture[key];
+    return !empty && (global || dataSet.has(string) || data.some((i) => string.endsWith(i)));
 }
 
 function ctxMenuCreate(id, contexts, parentId) {
