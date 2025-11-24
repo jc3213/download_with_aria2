@@ -146,7 +146,7 @@ async function downloadHandler(url, referer, options, tabId) {
             if (ua !== -1) {
                 headers[ua].value = aria2Storage['headers_useragent'];
             } else {
-                headers.push({ name: 'User-Agent', value: aria2Storage['headers_useragent'] });
+                headers.push({ name: 'user-agent', value: aria2Storage['headers_useragent'] });
             }
         }
         options['header'] = headers.map(({ name, value }) => name + ': ' + value);
