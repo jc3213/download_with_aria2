@@ -46,14 +46,14 @@ if (aria2Manifest.manifest_version === 3) {
 
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
-    aria2RPC.call(
+    aria2RPC.call([
         { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
-    ).then(([{ result: options }, { result: version }, { result: active }]) => {
+    ]).then(({ result: [[options], [version], [active]] }) => {
         captureHooking();
         aria2Version = version;
         aria2Active = new Set(active.map(({ gid }) => gid));
-        RawData.forEach((key) => aria2Config[key] = options[key]);
-        SizeData.forEach((key) => aria2Config[key] = RawToSize(options[key]));
+        RawKeys.forEach((key) => aria2Config[key] = options[key]);
+        SizeKeys.forEach((key) => aria2Config[key] = RawToSize(options[key]));
         chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
         setIndicator();
     }).catch(aria2RPC.onclose);
@@ -69,7 +69,7 @@ aria2RPC.onmessage = ({ method, params }) => {
         return;
     }
     let [{ gid }] = params;
-    let handler = clientMessage[method] ?? clientMessage['fallback'];
+    let handler = wsEventMap[method] ?? wsEventMap['fallback'];
     handler(gid);
     setIndicator();
 };
@@ -84,14 +84,14 @@ function RawToSize(bytes) {
     return (bytes / 10485.76 | 0) / 100 + 'M';
 }
 
-const RawData = [
+const RawKeys = [
     'dir', 'file-allocation', 'allow-overwrite', 'max-concurrent-downloads',
     'max-tries', 'retry-wait', 'split', 'max-connection-per-server', 'user-agent',
     'listen-port', 'bt-max-peers', 'enable-dht', 'enable-dht6', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'
 ];
-const SizeData = ['disk-cache', 'min-split-size', 'max-overall-download-limit', 'max-overall-upload-limit'];
+const SizeKeys = ['disk-cache', 'min-split-size', 'max-overall-download-limit', 'max-overall-upload-limit'];
 
-const clientMessage = {
+const wsEventMap = {
     'aria2.onDownloadStart': whenStarted,
     'aria2.onDownloadComplete': whenCompleted,
     'fallback': (gid) => aria2Active.delete(gid)
@@ -194,7 +194,7 @@ function storageChanged(response, json) {
 }
 
 function optionsChanged(response, json) {
-    [...RawData, ...SizeData].forEach((key) => aria2Config[key] = json[key]);
+    [...RawKeys, ...SizeKeys].forEach((key) => aria2Config[key] = json[key]);
     aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [json] }).then(response).catch(response);
 }
 
@@ -214,18 +214,18 @@ function detectedImages(response) {
     response(json);
 }
 
-const msgHandlers = {
+const messageDispatch = {
     'system_runtime': (response) => response(systemRuntime()),
     'storage_update': storageChanged,
     'jsonrpc_update': optionsChanged,
     'manager_update': managerChanged,
     'inspect_images': detectedImages,
-    'jsonrpc_download': (response, params) => aria2RPC.call(...params).then(response).catch(response),
+    'jsonrpc_download': (response, params) => aria2RPC.call(params).then(response).catch(response),
     'open_new_download': () => openPopupWindow('/pages/newdld/newdld.html', 462)
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
-    msgHandlers[action]?.(response, params);
+    messageDispatch[action]?.(response, params);
     return true;
 });
 

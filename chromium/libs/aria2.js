@@ -61,29 +61,37 @@ class Aria2 {
     get onclose () {
         return this.#onclose;
     }
-    #send (...args) {
+    #send (req) {
         return new Promise((resolve, reject) => {
             let id = crypto.randomUUID();
             this[id] = resolve;
             this.#ws.onerror = reject;
-            this.#ws.send(this.#json(id, args));
+            this.#ws.send(this.#json(id, req));
         });
     }
-    #post (...args) {
-        return fetch(this.#xml, { method: 'POST', body: this.#json('', args) }).then((response) => {
+    #post (req) {
+        return fetch(this.#xml, { method: 'POST', body: this.#json('', req) }).then((response) => {
             if (response.ok) {
                 return response.json();
             }
             throw new Error(response.statusText);
         });
     }
-    #json (id, args) {
-        return JSON.stringify(args.map((arg) => {
-            arg.jsonrpc = '2.0';
-            arg.id = id;
-            ( arg.params ??= [] ).unshift(this.#secret);
-            return arg;
-        }));
+    #json (id, req) {
+        if (Array.isArray(req)) {
+            req = {
+                method: 'system.multicall',
+                params: [ req.map(({ method, params = [] }) => {
+                    params.unshift(this.#secret);
+                    return { methodName: method, params };
+                }) ]
+            };
+        } else {
+            (req.params ??= []).unshift(this.#secret);
+        }
+        req.jsonrpc = '2.0';
+        req.id = id;
+        return JSON.stringify(req);
     }
     #ws;
     connect () {
@@ -97,7 +105,7 @@ class Aria2 {
             if (response.method) {
                 this.#onmessage?.(response);
             } else {
-                let [{ id }] = response;
+                let { id } = response;
                 this[id](response);
                 delete this[id];
             }

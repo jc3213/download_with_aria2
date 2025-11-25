@@ -68,20 +68,20 @@ purgeBtn.addEventListener('click', async (event) => {
 
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
-    aria2RPC.call(
+    aria2RPC.call([
         { method: 'aria2.getGlobalStat' }, { method: 'aria2.getVersion' },
         { method: 'aria2.tellActive' }, { method: 'aria2.tellWaiting', params: [0, 999] }, { method: 'aria2.tellStopped', params: [0, 999] }
-    ).then(([stats, version, active, waiting, stopped]) => {
+    ]).then(({ result: [[stats], [version], [active], [waiting], [stopped]] }) => {
         aria2Queue.active  = new Set();
         aria2Queue.waiting = new Set();
         aria2Queue.stopped = new Set();
         updateTaskManager(stats, active);
-        waiting.result.forEach(updateTaskStats);
-        stopped.result.forEach(updateTaskStats);
-        verEntry.textContent = version.result.version;
+        waiting.forEach(updateTaskStats);
+        stopped.forEach(updateTaskStats);
+        verEntry.textContent = version.version;
         aria2Interval = setInterval(() => {
-            aria2RPC.call({ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' })
-                .then(([stats, active]) => updateTaskManager(stats, active));
+            aria2RPC.call([{ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' }])
+                .then(({ result: [[stats], [active]] }) => updateTaskManager(stats, active));
         }, aria2Delay);
     }).catch(aria2RPC.onclose);
 };
@@ -104,11 +104,10 @@ aria2RPC.onmessage = ({ method, params }) => {
     removeFromQueue(gid, group);
 };
 
-function updateTaskManager(stats, active) {
-    let { downloadSpeed, uploadSpeed } = stats.result;
+function updateTaskManager({ downloadSpeed, uploadSpeed }, active) {
     aria2Stats.download.textContent = getFileSize(downloadSpeed);
     aria2Stats.upload.textContent = getFileSize(uploadSpeed);
-    active.result.forEach(updateTaskStats);
+    active.forEach(updateTaskStats);
 }
 
 function removeFromQueue(gid, group) {
@@ -128,7 +127,7 @@ function addToQueue(task, gid, status) {
 }
 
 async function updateTaskDetails(gid) {
-    let [{ result }] = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
+    let { result } = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
     let task = updateTaskStats(result);
     if (task.align) {
         task.scrollIntoView({ block: 'start', inline: 'nearest' });
@@ -189,7 +188,7 @@ const taskPauseMap = {
 };
 
 async function taskDetailHandler(gid) {
-    let [{ result: files }, { result: options }] = await aria2RPC.call({ method: 'aria2.getFiles', params: [gid] }, { method: 'aria2.getOption', params: [gid] });
+    let { result: [files, options] } = await aria2RPC.call({ method: 'aria2.getFiles', params: [gid] }, { method: 'aria2.getOption', params: [gid] });
     options['min-split-size'] = getFileSize(options['min-split-size']);
     options['max-download-limit'] = getFileSize(options['max-download-limit']);
     options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
@@ -239,7 +238,7 @@ async function taskEventRetry(task, gid) {
         options['dir'] = match[1];
         options['out'] = match[2];
     }
-    let [{ result }] = await aria2RPC.call({ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] });
+    let { result } = await aria2RPC.call({ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] });
     updateTaskDetails(result);
     removeFromQueue(gid, 'stopped');
     delete aria2Tasks[gid];
@@ -254,7 +253,7 @@ function taskEventProxy(task) {
 async function taskUriAdded(task, gid) {
     let url = task.newuri.value;
     task.newuri.value = '';
-    let [{ result }] = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [url]] });
+    let { result } = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [url]] });
     if (result?.[1] === 1) {
         task.align = true;
         task[url] ??= createTaskUri(task, url);
@@ -266,7 +265,7 @@ async function taskUriRemoved(task, gid, event) {
     let [{ uris }] = files;
     let url = event.target.previousElementSibling.textContent;
     let removed = uris.filter(({ uri }) => uri === url).map(({ uri }) => uri);
-    let [{ result }] = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, removed, []] });
+    let { result } = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, removed, []] });
     if (result?.[0] === removed.length) {
         task.align = true;
         delete task[url];
