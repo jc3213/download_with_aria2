@@ -188,7 +188,7 @@ const taskPauseMap = {
 };
 
 async function taskDetailHandler(gid) {
-    let { result: [files, options] } = await aria2RPC.call({ method: 'aria2.getFiles', params: [gid] }, { method: 'aria2.getOption', params: [gid] });
+    let { result: [[files], [options]] } = await aria2RPC.call([{ method: 'aria2.getFiles', params: [gid] }, { method: 'aria2.getOption', params: [gid] }]);
     options['min-split-size'] = getFileSize(options['min-split-size']);
     options['max-download-limit'] = getFileSize(options['max-download-limit']);
     options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
@@ -238,8 +238,8 @@ async function taskEventRetry(task, gid) {
         options['dir'] = match[1];
         options['out'] = match[2];
     }
-    let { result } = await aria2RPC.call({ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] });
-    updateTaskDetails(result);
+    let { result: [[add]] } = await aria2RPC.call([{ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] }]);
+    updateTaskDetails(add);
     removeFromQueue(gid, 'stopped');
     delete aria2Tasks[gid];
     task.remove();
