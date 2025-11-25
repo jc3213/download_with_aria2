@@ -61,37 +61,35 @@ class Aria2 {
     get onclose () {
         return this.#onclose;
     }
-    #send (req) {
+    #send (arg) {
         return new Promise((resolve, reject) => {
             let id = crypto.randomUUID();
             this[id] = resolve;
             this.#ws.onerror = reject;
-            this.#ws.send(this.#json(id, req));
+            this.#ws.send(this.#json(id, arg));
         });
     }
-    #post (req) {
-        return fetch(this.#xml, { method: 'POST', body: this.#json('', req) }).then((response) => {
+    #post (arg) {
+        return fetch(this.#xml, { method: 'POST', body: this.#json('', arg) }).then((response) => {
             if (response.ok) {
                 return response.json();
             }
             throw new Error(response.statusText);
         });
     }
-    #json (id, req) {
-        if (Array.isArray(req)) {
-            req = {
-                method: 'system.multicall',
-                params: [ req.map(({ method, params = [] }) => {
-                    params.unshift(this.#secret);
-                    return { methodName: method, params };
-                }) ]
-            };
+    #json (id, arg) {
+        if (Array.isArray(arg)) {
+            let params = [ arg.map(({ method, params = [] }) => {
+                params.unshift(this.#secret);
+                return { methodName: method, params };
+            }) ];
+            arg = { method: 'system.multicall', params };
         } else {
-            (req.params ??= []).unshift(this.#secret);
+            (arg.params ??= []).unshift(this.#secret);
         }
-        req.jsonrpc = '2.0';
-        req.id = id;
-        return JSON.stringify(req);
+        arg.jsonrpc = '2.0';
+        arg.id = id;
+        return JSON.stringify(arg);
     }
     #ws;
     connect () {
