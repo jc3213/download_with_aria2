@@ -44,6 +44,7 @@ class Aria2 {
     get retries() {
         return this.#retries;
     }
+
     set timeout(number) {
         this.#timeout = Number.isFinite(number) && number > 0 ? number * 1000 : 10000;
     }
