@@ -2,9 +2,9 @@ class Aria2 {
     #url;
     #xml;
     #wsa;
+    #secret;
     #ws;
     #tries;
-    #secret;
     #retries = 10;
     #timeout = 10000;
     #onopen = null;
