@@ -1,15 +1,26 @@
 class Aria2 {
-    constructor (...args) {
-        let [, url = 'http://localhost:6800/jsonrpc', secret = ''] = args.join('#').match(/^((?:http|ws)s?:\/\/[^#]+)#?(.*)$/) ?? [];
-        this.url = url;
-        this.secret = secret;
-    }
     #url;
     #xml;
     #wsa;
+    #ws;
     #tries;
+    #secret;
+    #retries = 10;
+    #timeout = 10000;
+    #onopen = null;
+    #onmessage = null;
+    #onclose = null;
+
+    constructor (...args) {
+        let [, url = 'http://localhost:6800/jsonrpc', secret = ''] =
+            args.join('#').match(/^((?:http|ws)s?:\/\/[^#]+)#?(.*)$/) ?? [];
+        this.url = url;
+        this.secret = secret;
+    }
+
     set url (string) {
-        let [, scheme = 'http', ssl = '', url = '://localhost:6800/jsonrpc'] = string.match(/^(http|ws)(s)?(:\/\/.+)$/) ?? [];
+        let [, scheme = 'http', ssl = '', url = '://localhost:6800/jsonrpc'] =
+            string.match(/^(http|ws)(s)?(:\/\/.+)$/) ?? [];
         this.#url = `${scheme}${ssl}${url}`;
         this.#xml = `http${ssl}${url}`;
         this.#wsa = `ws${ssl}${url}`;
@@ -19,47 +30,61 @@ class Aria2 {
     get url () {
         return this.#url;
     }
-    #secret;
+
     set secret (string) {
         this.#secret = `token:${string}`;
     }
     get secret () {
         return this.#secret.slice(6);
     }
-    #retries = 10;
+
     set retries (number) {
         this.#retries = Number.isInteger(number) && number >= 0 ? number : Infinity;
     }
     get retries () {
         return this.#retries;
     }
-    #timeout = 10000;
     set timeout (number) {
         this.#timeout = Number.isFinite(number) && number > 0 ? number * 1000 : 10000;
     }
     get timeout () {
         return this.#timeout / 1000;
     }
-    #onopen = null;
+
     set onopen (callback) {
         this.#onopen = typeof callback === 'function' ? callback : null;
     }
     get onopen () {
         return this.#onopen;
     }
-    #onmessage = null;
+
     set onmessage (callback) {
         this.#onmessage = typeof callback === 'function' ? callback : null;
     }
     get onmessage () {
         return this.#onmessage;
     }
-    #onclose = null;
+
     set onclose (callback) {
         this.#onclose = typeof callback === 'function' ? callback : null;
     }
     get onclose () {
         return this.#onclose;
+    }
+
+    #json (id, arg) {
+        if (Array.isArray(arg)) {
+            let params = [ arg.map(({ method, params = [] }) => {
+                params.unshift(this.#secret);
+                return { methodName: method, params };
+            }) ];
+            arg = { method: 'system.multicall', params };
+        } else {
+            (arg.params ??= []).unshift(this.#secret);
+        }
+        arg.jsonrpc = '2.0';
+        arg.id = id;
+        return JSON.stringify(arg);
     }
     #send (arg) {
         return new Promise((resolve, reject) => {
@@ -77,21 +102,7 @@ class Aria2 {
             throw new Error(response.statusText);
         });
     }
-    #json (id, arg) {
-        if (Array.isArray(arg)) {
-            let params = [ arg.map(({ method, params = [] }) => {
-                params.unshift(this.#secret);
-                return { methodName: method, params };
-            }) ];
-            arg = { method: 'system.multicall', params };
-        } else {
-            (arg.params ??= []).unshift(this.#secret);
-        }
-        arg.jsonrpc = '2.0';
-        arg.id = id;
-        return JSON.stringify(arg);
-    }
-    #ws;
+
     connect () {
         this.#ws = new WebSocket(this.#wsa);
         this.#ws.onopen = (event) => {
