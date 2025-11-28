@@ -50,9 +50,8 @@ downMode.addEventListener('mousedown', (event) => {
 
 submitBtn.addEventListener('click', (event) => {
     let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
-    if (urls.length !== 1 || aria2Config['out'] === '') {
-        delete aria2Config['out'];
-    }
+    let { out } = aria2Config;
+    aria2Config['out'] = urls.length !== 1 || !out ? null : out.replace(/[\\/:*?"<>|]/g, '_');
     let params = urls.map((url) => ({ method: 'aria2.addUri', params: [[url], aria2Config] }));
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 });
