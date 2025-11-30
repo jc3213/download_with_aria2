@@ -2,8 +2,8 @@ let aria2Storage = {};
 let aria2Config = {};
 let aria2Referer = new Map();
 
-let [menuPane, downEntry, metaPane, metaImport, jsonrpcPane] = document.body.children;
-let [, downMode, submitBtn] = menuPane.children;
+let [menuPane, downEntry, jsonrpcPane] = document.body.children;
+let [, uploadBtn, submitBtn, metaFiles] = menuPane.children;
 let refererPane = document.getElementById('referer');
 let [refererEntry, ...jsonrpcEntries] = jsonrpcPane.querySelectorAll('[name]');
 let limitEntry = jsonrpcEntries.pop();
@@ -25,7 +25,7 @@ function ctrlHandler(event, button) {
 
 const hotkeyMap = {
     'Enter': (event) => ctrlHandler(event, submitBtn),
-    'Tab': (event) => ctrlHandler(event, downMode),
+    'Backquote': (event) => ctrlHandler(event, uploadBtn),
     'Escape': () => close()
 };
 
@@ -39,44 +39,45 @@ document.addEventListener('click', (event) => {
     }
 });
 
-downMode.addEventListener('click', (event) => {
-    downMode.value = downMode.value === 'meta' ? 'link' : 'meta';
-    document.body.classList.toggle('meta');
-});
-
-downMode.addEventListener('mousedown', (event) => {
-    event.preventDefault();
-});
-
-submitBtn.addEventListener('click', (event) => {
+function menuSubmit() {
     let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
     let { out } = aria2Config;
     aria2Config['out'] = urls.length !== 1 || !out ? null : out.replace(/[\\/:*?"<>|]/g, '_');
     let params = urls.map((url) => ({ method: 'aria2.addUri', params: [[url], aria2Config] }));
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
+}
+
+const menuEventMap = {
+    'common_upload': () => metaFiles.click(),
+    'common_submit': menuSubmit
+};
+
+menuPane.addEventListener('click', (event) => {
+    let menu = event.target.getAttribute('i18n');
+    menuEventMap[menu]?.(event);
 });
 
-metaPane.addEventListener('dragover', (event) => {
+downEntry.addEventListener('dragover', (event) => {
     event.preventDefault();
 });
 
-metaPane.addEventListener('drop', (event) => {
+downEntry.addEventListener('drop', (event) => {
     event.preventDefault();
     metaFileDownload(event.dataTransfer.files);
 });
 
-metaImport.addEventListener('change', (event) => {
+metaFiles.addEventListener('change', (event) => {
     metaFileDownload(event.target.files)
 });
 
-const metafileMap = new Set(['torrent', 'meta4', 'metalink']);
+const metaMap = new Set(['torrent', 'meta4', 'metalink']);
 
 async function metaFileDownload(files) {
     aria2Config['out'] = aria2Config['referer'] = aria2Config['user-agent'] = null;
     let datas = [...files].map((file) => {
         let { name } = file;
         let type = name.slice(name.lastIndexOf('.') + 1);
-        if (!metafileMap.has(type)) {
+        if (!metaMap.has(type)) {
             return;
         }
         return new Promise((resolve) => {
@@ -97,7 +98,8 @@ async function metaFileDownload(files) {
 }
 
 jsonrpcPane.addEventListener('change', (event) => {
-    aria2Config[event.target.name] = event.target.value;
+    let { name, value } = event.target;
+    aria2Config[name] = value;
 });
 
 refererEntry.addEventListener('click', (event) => {

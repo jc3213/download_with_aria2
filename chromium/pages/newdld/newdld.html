@@ -8,25 +8,21 @@
     </head>
     <body>
         <div id="menu" class="flex">
-            <h4 i18n="task_add_mode"></h4>
-            <select>
-                <option value="link" i18n="task_add_urls"></option>
-                <option value="meta" i18n="task_add_files"></option>
-            </select>
-            <button class="x-meta" i18n="common_submit"></button>
+            <h4 i18n="task_entry"></h4>
+            <button i18n="common_upload"></button>
+            <button i18n="common_submit"></button>
+            <input id="uploader" type="file" accept=".torrent,.meta4,.metalink">
         </div>
-        <textarea class="x-meta" rows="5" i18n-tips="task_tips_urls"></textarea>
-        <label for="uploader" class="e-meta" i18n="task_tips_files"></label>
-        <input id="uploader" type="file" accept=".torrent,.meta4,.metalink">
+        <textarea rows="5" i18n-tips="tips_task_entry"></textarea>
         <div class="config">
-            <div class="x-meta" i18n-tips="tips_task_referer">
+            <div i18n-tips="tips_task_referer">
                 <h4 i18n="task_referer"></h4>
                 <div>
                     <input name="referer" type="text">
                     <div id="referer" class="hidden"></div>
                 </div>
             </div>
-            <div class="cfg-item x-meta" i18n-tips="tips_task_name">
+            <div class="cfg-item" i18n-tips="tips_task_name">
                 <h4 i18n="task_name"></h4>
                 <input name="out" type="text">
             </div>
@@ -34,7 +30,7 @@
                 <h4 i18n="aria2_down_dir"></h4>
                 <input name="dir" type="text">
             </div>
-            <div class="cfg-item x-meta" i18n-tips="tips_aria2_http_ua">
+            <div class="cfg-item" i18n-tips="tips_aria2_http_ua">
                 <h4 i18n="aria2_http_ua"></h4>
                 <input name="user-agent" type="text">
             </div>

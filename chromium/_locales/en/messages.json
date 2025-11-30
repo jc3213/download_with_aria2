@@ -68,6 +68,9 @@
     "common_submit": {
         "message": "Submit"
     },
+    "common_upload": {
+        "message": "Upload"
+    },
     "common_save": {
         "message": "Save"
     },
@@ -341,20 +344,11 @@
     "popup_stopped": {
         "message": "Stopped"
     },
-    "task_add_mode": {
-        "message": "Download"
+    "task_entry": {
+        "message": "Download Urls"
     },
-    "task_add_urls": {
-        "message": "URL Batch"
-    },
-    "task_add_files": {
-        "message": "Meta Files"
-    },
-    "task_tips_urls": {
-        "message": "Support multiple \"http\", \"ftp\", and \"magnet\" URLs"
-    },
-    "task_tips_files": {
-        "message": "Click here to add files...\nDrag and drop \".torrent\", \".meta4\" and \".metalink\" files here..."
+    "tips_task_entry": {
+        "message": "Batch process multi-line \"http\", \"ftp\", or \"magnet\" URLs\n\nYou can also drop \".torrent\", \".meta4\", or \".metalink\" files here..."
     },
     "task_referer": {
         "message": "Referer"
