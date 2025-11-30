@@ -12,20 +12,21 @@ class Aria2 {
     #onclose = null;
 
     constructor(...args) {
-        let [, url = 'http://localhost:6800/jsonrpc', secret = ''] =
-            args.join('#').match(/^((?:http|ws)s?:\/\/[^#]+)#?(.*)$/) ?? [];
-        this.url = url;
-        this.secret = secret;
+        let rpc = args.join('#').match(/^((?:http|ws)s?:\/\/[^#]+)#?(.*)$/);
+        this.url = rpc?.[1] ?? 'http://localhost:6800/jsonrpc';
+        this.secret = rpc?.[2] ?? '';
     }
 
     set url(string) {
-        let [, scheme = 'http', ssl = '', url = '://localhost:6800/jsonrpc'] =
-            string.match(/^(http|ws)(s)?(:\/\/.+)$/) ?? [];
-        this.#url = `${scheme}${ssl}${url}`;
-        this.#xml = `http${ssl}${url}`;
-        this.#wsa = `ws${ssl}${url}`;
+        let rpc = string.match(/^(http|ws)(s?:\/\/.*)$/);
+        if (!rpc) {
+            return;
+        }
+        this.#url = string;
+        this.#xml = `http${rpc[2]}`;
+        this.#wsa = `ws${rpc[2]}`;
         this.#tries = 0;
-        this.call = scheme === 'http' ? this.#post : this.#send;
+        this.call = rpc[1] === 'http' ? this.#post : this.#send;
     }
     get url() {
         return this.#url;
