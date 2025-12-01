@@ -11,16 +11,15 @@ class Aria2 {
     #onmessage = null;
     #onclose = null;
 
-    constructor(...args) {
-        let rpc = args.join('#').match(/^((?:http|ws)s?:\/\/[^#]+)#?(.*)$/);
-        this.url = rpc?.[1] ?? 'http://localhost:6800/jsonrpc';
-        this.secret = rpc?.[2] ?? '';
+    constructor() {
+        this.url = 'http://localhost:6800/jsonrpc';
+        this.secret = '';
     }
 
     set url(string) {
         let rpc = string.match(/^(http|ws)(s?:\/\/.*)$/);
         if (!rpc) {
-            Aria2.#error('be a URI starts with http or ws');
+            throw new TypeError('Parameter 1 must be a URI starting with "http(s)" or "ws(s)"');
         }
         this.#url = string;
         this.#xml = `http${rpc[2]}`;
@@ -33,9 +32,6 @@ class Aria2 {
     }
 
     set secret(string) {
-        if (typeof string !== 'string') {
-            Aria2.#error('be a string');
-        }
         this.#secret = `token:${string}`;
     }
     get secret() {
@@ -43,9 +39,6 @@ class Aria2 {
     }
 
     set retries(number) {
-        if (!Number.isInteger(number)) {
-            Aria2.#error('be an integer');
-        }
         this.#retries = number >= 0 ? number : Infinity;
     }
     get retries() {
@@ -53,9 +46,6 @@ class Aria2 {
     }
 
     set timeout(number) {
-        if (!Number.isInteger(number) || number <= 0) {
-            Aria2.#error('be a positive integer');
-        }
         this.#timeout = number * 1000;
     }
     get timeout() {
@@ -63,9 +53,6 @@ class Aria2 {
     }
 
     set onopen(callback) {
-        if (callback !== null && typeof callback !== 'function') {
-            Aria2.#error('be a function or null');
-        }
         this.#onopen = callback;
     }
     get onopen() {
@@ -73,9 +60,6 @@ class Aria2 {
     }
 
     set onmessage(callback) {
-        if (callback !== null && typeof callback !== 'function') {
-            Aria2.#error('be a function or null');
-        }
         this.#onmessage = callback;
     }
     get onmessage() {
@@ -83,9 +67,6 @@ class Aria2 {
     }
 
     set onclose(callback) {
-        if (callback !== null && typeof callback !== 'function') {
-            Aria2.#error('be a function or null');
-        }
         this.#onclose = callback;
     }
     get onclose() {
@@ -148,9 +129,5 @@ class Aria2 {
     }
     disconnect() {
         this.#ws.close();
-    }
-
-    static #error(string) {
-        throw new TypeError(`Parameter 1 must ${string}!`);
     }
 }
