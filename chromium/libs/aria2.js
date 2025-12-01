@@ -20,7 +20,7 @@ class Aria2 {
     set url(string) {
         let rpc = string.match(/^(http|ws)(s?:\/\/.*)$/);
         if (!rpc) {
-            return;
+            Aria2.#error('be a URI starts with http or ws');
         }
         this.#url = string;
         this.#xml = `http${rpc[2]}`;
@@ -33,6 +33,9 @@ class Aria2 {
     }
 
     set secret(string) {
+        if (typeof string !== 'string') {
+            Aria2.#error('be a string');
+        }
         this.#secret = `token:${string}`;
     }
     get secret() {
@@ -40,35 +43,50 @@ class Aria2 {
     }
 
     set retries(number) {
-        this.#retries = Number.isInteger(number) && number >= 0 ? number : Infinity;
+        if (!Number.isInteger(number)) {
+            Aria2.#error('be an integer');
+        }
+        this.#retries = number >= 0 ? number : Infinity;
     }
     get retries() {
         return this.#retries;
     }
 
     set timeout(number) {
-        this.#timeout = Number.isFinite(number) && number > 0 ? number * 1000 : 10000;
+        if (!Number.isInteger(number) || number <= 0) {
+            Aria2.#error('be a positive integer');
+        }
+        this.#timeout = number * 1000;
     }
     get timeout() {
         return this.#timeout / 1000;
     }
 
     set onopen(callback) {
-        this.#onopen = typeof callback === 'function' ? callback : null;
+        if (callback !== null && typeof callback !== 'function') {
+            Aria2.#error('be a function or null');
+        }
+        this.#onopen = callback;
     }
     get onopen() {
         return this.#onopen;
     }
 
     set onmessage(callback) {
-        this.#onmessage = typeof callback === 'function' ? callback : null;
+        if (callback !== null && typeof callback !== 'function') {
+            Aria2.#error('be a function or null');
+        }
+        this.#onmessage = callback;
     }
     get onmessage() {
         return this.#onmessage;
     }
 
     set onclose(callback) {
-        this.#onclose = typeof callback === 'function' ? callback : null;
+        if (callback !== null && typeof callback !== 'function') {
+            Aria2.#error('be a function or null');
+        }
+        this.#onclose = callback;
     }
     get onclose() {
         return this.#onclose;
@@ -112,12 +130,12 @@ class Aria2 {
             this.#onopen?.(event);
         };
         this.#ws.onmessage = (event) => {
-            let response = JSON.parse(event.data);
-            if (response.method) {
-                this.#onmessage?.(response);
+            let message = JSON.parse(event.data);
+            if (message.method) {
+                this.#onmessage?.(message);
             } else {
-                let { id } = response;
-                this[id](response);
+                let { id } = message;
+                this[id](message);
                 delete this[id];
             }
         };
@@ -130,5 +148,9 @@ class Aria2 {
     }
     disconnect() {
         this.#ws.close();
+    }
+
+    static #error(string) {
+        throw new TypeError(`Parameter 1 must ${string}!`);
     }
 }
