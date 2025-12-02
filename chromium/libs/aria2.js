@@ -11,15 +11,16 @@ class Aria2 {
     #onmessage = null;
     #onclose = null;
 
-    constructor() {
-        this.url = 'http://localhost:6800/jsonrpc';
-        this.secret = '';
+    constructor(...args) {
+        let rpc = args.join('#').match(/^((?:http|ws)s?:\/\/[^#]+)#?(.*)$/);
+        this.url = rpc?.[1] ?? 'http://localhost:6800/jsonrpc';
+        this.secret = rpc?.[2] ?? '';
     }
 
     set url(string) {
         let rpc = string.match(/^(http|ws)(s?:\/\/.*)$/);
         if (!rpc) {
-            throw new TypeError('Invalid url: expected a valid JSON-RPC endpoint (http:// or ws://).');
+            throw new TypeError('Invalid url: expected a valid JSON-RPC endpoint.');
         }
         this.#url = string;
         this.#xml = `http${rpc[2]}`;
@@ -39,35 +40,37 @@ class Aria2 {
     }
 
     set retries(number) {
-        this.#retries = number >= 0 ? number : Infinity;
+        let n = number | 0;
+        this.#retries = n >= 0 ? n : Infinity;
     }
     get retries() {
         return this.#retries;
     }
 
     set timeout(number) {
-        this.#timeout = number * 1000;
+        let n = number | 0;
+        this.#timeout = n <= 1 ? 1000 : n * 1000;
     }
     get timeout() {
         return this.#timeout / 1000;
     }
 
     set onopen(callback) {
-        this.#onopen = callback;
+        this.#onopen = typeof callback === 'function' ? callback : null;
     }
     get onopen() {
         return this.#onopen;
     }
 
     set onmessage(callback) {
-        this.#onmessage = callback;
+        this.#onmessage = typeof callback === 'function' ? callback : null;
     }
     get onmessage() {
         return this.#onmessage;
     }
 
     set onclose(callback) {
-        this.#onclose = callback;
+        this.#onclose = typeof callback === 'function' ? callback : null;
     }
     get onclose() {
         return this.#onclose;
@@ -87,6 +90,7 @@ class Aria2 {
         arg.id = id;
         return JSON.stringify(arg);
     }
+
     #send(arg) {
         return new Promise((resolve, reject) => {
             let id = crypto.randomUUID();
@@ -95,6 +99,7 @@ class Aria2 {
             this.#ws.send(this.#json(id, arg));
         });
     }
+
     #post(arg) {
         return fetch(this.#xml, { method: 'POST', body: this.#json('', arg) }).then((response) => {
             if (response.ok) {
@@ -127,6 +132,7 @@ class Aria2 {
             this.#onclose?.(event);
         };
     }
+
     disconnect() {
         this.#ws.close();
     }
