@@ -19,7 +19,7 @@ class Aria2 {
     set url(string) {
         let rpc = string.match(/^(http|ws)(s?:\/\/.*)$/);
         if (!rpc) {
-            throw new TypeError('The "url" must be a JSON-RPC endpoint URL!');
+            throw new TypeError('Invalid url: expected a valid JSON-RPC endpoint (http:// or ws://).');
         }
         this.#url = string;
         this.#xml = `http${rpc[2]}`;
@@ -100,7 +100,7 @@ class Aria2 {
             if (response.ok) {
                 return response.json();
             }
-            throw new Error(response.statusText);
+            throw new Error(`Network error: ${response.status} ${response.statusText}`);
         });
     }
 
