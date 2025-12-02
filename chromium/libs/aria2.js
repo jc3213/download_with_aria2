@@ -19,7 +19,7 @@ class Aria2 {
     set url(string) {
         let rpc = string.match(/^(http|ws)(s?:\/\/.*)$/);
         if (!rpc) {
-            throw new TypeError('Parameter 1 must be a URI starting with "http(s)" or "ws(s)"');
+            throw new TypeError('The "url" must be a JSON-RPC endpoint URL starting with "http(s)" or "ws(s)".');
         }
         this.#url = string;
         this.#xml = `http${rpc[2]}`;
