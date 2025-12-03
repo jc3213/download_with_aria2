@@ -269,18 +269,18 @@ chrome.action.onClicked.addListener(() => {
 const MatchKeys = ['headers_domains', 'proxy_domains', 'capture_domains', 'capture_extensions'];
 
 function MatchData(key) {
-    let temp = aria2Storage[key];
-    let data = {};
-    temp.forEach((i) => data[i] = true);
+    let data = aria2Storage[key];
+    let rules = {};
+    data.forEach((i) => rules[i] = true);
     aria2Match[key] = {
-        data,
-        global: Boolean(data['*']),
-        empty: temp.length === 0
+        rules,
+        global: Boolean(rules['*']),
+        empty: data.length === 0
     };
 }
 
 function MatchTest(key, host) {
-    let { data, global, empty } = aria2Match[key];
+    let { rules, global, empty } = aria2Match[key];
     if (empty) {
         return false;
     }
@@ -289,8 +289,8 @@ function MatchTest(key, host) {
     }
     let src = host;
     while (true) {
-        if (data[host]) {
-            data[src] = true;
+        if (rules[host]) {
+            rules[src] = true;
             return true;
         }
         let dot = host.indexOf('.');
