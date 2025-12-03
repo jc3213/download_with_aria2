@@ -28,8 +28,8 @@ let aria2Default = {
 };
 
 let aria2Storage = {};
-let aria2Capture = {};
 let aria2Config = {};
+let aria2Match = {};
 let aria2Version;
 let aria2Active;
 let aria2Manager = chrome.runtime.getURL('/pages/popup/popup.html');
@@ -272,7 +272,7 @@ function MatchData(key) {
     let temp = aria2Storage[key];
     let data = {};
     temp.forEach((i) => data[i] = true);
-    aria2Capture[key] = {
+    aria2Match[key] = {
         data,
         global: Boolean(data['*']),
         empty: temp.length === 0
@@ -280,7 +280,7 @@ function MatchData(key) {
 }
 
 function MatchTest(key, host) {
-    let { data, global, empty } = aria2Capture[key];
+    let { data, global, empty } = aria2Match[key];
     if (empty) {
         return false;
     }
@@ -319,7 +319,7 @@ function storageDispatch(json) {
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
-    aria2Capture['capture_filesize'] = json['capture_filesize'] * 1048576;
+    aria2Match['capture_filesize'] = json['capture_filesize'] * 1048576;
     MatchKeys.forEach(MatchData);
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
@@ -352,8 +352,8 @@ function captureEvaluate(hostname, filename, fileSize) {
     return !(
         MatchTest('capture_domains', hostname) ||
         MatchTest('capture_extensions', filename) ||
-        aria2Capture['capture_filesize'] > 0 &&
-        aria2Capture['capture_filesize'] > fileSize
+        aria2Match['capture_filesize'] > 0 &&
+        aria2Match['capture_filesize'] > fileSize
     );
 }
 
