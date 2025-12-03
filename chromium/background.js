@@ -270,18 +270,34 @@ const MatchKeys = ['headers_domains', 'proxy_domains', 'capture_domains', 'captu
 
 function MatchData(key) {
     let temp = aria2Storage[key];
-    let dataSet = new Set(temp);
-    aria2Capture[key] = {
-        data: temp.map((i) => `.${i}`),
-        dataSet,
-        empty: temp.length === 0,
-        global: dataSet.has('*')
-    };
+    let data = {};
+    temp.forEach((i) => data[i] = true);
+    let global = Boolean(data['*']);
+    delete data['*'];
+    aria2Capture[key] = { data, global, empty: temp.length === 0 };
 }
 
-function MatchTest(key, string) {
-    let { data, dataSet, global, empty } = aria2Capture[key];
-    return !empty && (global || dataSet.has(string) || data.some((i) => string.endsWith(i)));
+function MatchTest(key, host) {
+    let { data, global, empty } = aria2Capture[key];
+    if (empty) {
+        return false;
+    }
+    if (global) {
+        return true;
+    }
+    let src = host;
+    while (true) {
+        if (data[host]) {
+            data[src] = true;
+            return true;
+        }
+        let dot = host.indexOf('.');
+        if (dot < 0) {
+            break;
+        }
+        host = host.substring(dot + 1);
+    }
+    return false;
 }
 
 function ctxMenuCreate(id, contexts, parentId) {
