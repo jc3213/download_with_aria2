@@ -272,9 +272,11 @@ function MatchData(key) {
     let temp = aria2Storage[key];
     let data = {};
     temp.forEach((i) => data[i] = true);
-    let global = Boolean(data['*']);
-    delete data['*'];
-    aria2Capture[key] = { data, global, empty: temp.length === 0 };
+    aria2Capture[key] = {
+        data,
+        global: Boolean(data['*']),
+        empty: temp.length === 0
+    };
 }
 
 function MatchTest(key, host) {
