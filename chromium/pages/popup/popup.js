@@ -112,7 +112,7 @@ function updateTaskManager({ downloadSpeed, uploadSpeed }, active) {
 
 function removeFromQueue(gid, group) {
     let queue = aria2Queue[group];
-    queue.delete(gid);
+    delete queue[gid];
     aria2Stats[group].textContent = queue.size;
 }
 
