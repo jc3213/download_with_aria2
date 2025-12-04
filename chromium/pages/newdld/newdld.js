@@ -57,11 +57,11 @@ menuPane.addEventListener('click', (event) => {
     menuEventMap[menu]?.(event);
 });
 
-downEntry.addEventListener('dragover', (event) => {
+document.addEventListener('dragover', (event) => {
     event.preventDefault();
 });
 
-downEntry.addEventListener('drop', (event) => {
+document.addEventListener('drop', (event) => {
     event.preventDefault();
     metaFileDownload(event.dataTransfer.files);
 });
