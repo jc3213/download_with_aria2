@@ -348,7 +348,7 @@
         "message": "下载链接"
     },
     "tips_task_entry": {
-        "message": "可批量处理\"http\", \"ftp\", 或\"magnet\"链接\n\n也可拖拽\".torrent\", \".meta4\"或\".metalink\"文件到此…"
+        "message": "可批量处理\"http\", \"ftp\", 或\"magnet\"链接\n\n也可拖拽\".torrent\", \".meta4\"或\".metalink\"文件到本窗口"
     },
     "task_referer": {
         "message": "引用页"

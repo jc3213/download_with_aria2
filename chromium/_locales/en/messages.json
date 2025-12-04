@@ -348,7 +348,7 @@
         "message": "Download Urls"
     },
     "tips_task_entry": {
-        "message": "Batch process multi-line \"http\", \"ftp\", or \"magnet\" URLs\n\nYou can also drop \".torrent\", \".meta4\", or \".metalink\" files here..."
+        "message": "You can enter multiple \"http\", \"ftp\", or \"magnet\" URLs\n\nYou can also drop \".torrent\", \".meta4\", or \".metalink\" files into this window"
     },
     "task_referer": {
         "message": "Referer"
