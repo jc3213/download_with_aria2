@@ -270,29 +270,23 @@ function MatchHost(key) {
     let data = aria2Storage[key];
     let rules = {};
     data.forEach((i) => rules[i] = true);
-    let empty = data.length === 0;
-    let global = Boolean(rules['*']);
-    aria2Match[key] = (host) => {
-        if (empty) {
+    aria2Match[key] = data.length === 0 ? () => false
+        : rules['*'] ? () => true
+        : (host) => {
+            let src = host;
+            while (true) {
+                if (rules[host]) {
+                    rules[src] = true;
+                    return true;
+                }
+                let dot = host.indexOf('.');
+                if (dot < 0) {
+                    break;
+                }
+                host = host.substring(dot + 1);
+            }
             return false;
-        }
-        if (global) {
-            return true;
-        }
-        let src = host;
-        while (true) {
-            if (rules[host]) {
-                rules[src] = true;
-                return true;
-            }
-            let dot = host.indexOf('.');
-            if (dot < 0) {
-                break;
-            }
-            host = host.substring(dot + 1);
-        }
-        return false;
-    };
+        };
 }
 
 function MatchSize(key) {
