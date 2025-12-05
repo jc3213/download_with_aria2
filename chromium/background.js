@@ -266,32 +266,35 @@ chrome.action.onClicked.addListener(() => {
     });
 });
 
+const MatchKeys = ['headers_domains', 'proxy_domains', 'capture_domains', 'capture_extensions'];
+
 function MatchHost(key) {
     let data = aria2Storage[key];
     let rules = {};
     data.forEach((i) => rules[i] = true);
-    aria2Match[key] = data.length === 0 ? () => false
-        : rules['*'] ? () => true
-        : (host) => {
-            let src = host;
-            while (true) {
-                if (rules[host]) {
-                    rules[src] = true;
-                    return true;
-                }
-                let dot = host.indexOf('.');
-                if (dot < 0) {
-                    break;
-                }
-                host = host.substring(dot + 1);
-            }
+    let empty = data.length === 0;
+    let global = Boolean(rules['*']);
+    aria2Match[key] = (host) => {
+        if (empty) {
             return false;
-        };
-}
-
-function MatchSize(key) {
-    let data = aria2Storage[key] * 1048576;
-    aria2Match[key] = data > 0 ? (size) => size < data : () => false;
+        }
+        if (global) {
+            return true;
+        }
+        let src = host;
+        while (true) {
+            if (rules[host]) {
+                rules[src] = true;
+                return true;
+            }
+            let dot = host.indexOf('.');
+            if (dot < 0) {
+                break;
+            }
+            host = host.substring(dot + 1);
+        }
+        return false;
+    };
 }
 
 function ctxMenuCreate(id, contexts, parentId) {
@@ -311,11 +314,8 @@ function storageDispatch(json) {
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
-    MatchHost('headers_domains');
-    MatchHost('proxy_domains');
-    MatchHost('capture_domains');
-    MatchHost('capture_extensions');
-    MatchSize('capture_filesize');
+    aria2Match['capture_filesize'] = json['capture_filesize'] * 1048576;
+    MatchKeys.forEach(MatchHost);
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
@@ -347,7 +347,8 @@ function captureEvaluate(hostname, filename, fileSize) {
     return !(
         aria2Match['capture_domains'](hostname) ||
         aria2Match['capture_extensions'](filename) ||
-        aria2Match['capture_filesize'](fileSize)
+        aria2Match['capture_filesize'] > 0 &&
+        aria2Match['capture_filesize'] > fileSize
     );
 }
 
