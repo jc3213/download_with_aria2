@@ -266,9 +266,7 @@ chrome.action.onClicked.addListener(() => {
     });
 });
 
-const MatchKeys = ['headers_domains', 'proxy_domains', 'capture_domains', 'capture_extensions'];
-
-function MatchData(key) {
+function MatchHost(key) {
     let data = aria2Storage[key];
     let rules = {};
     data.forEach((i) => rules[i] = true);
@@ -297,6 +295,11 @@ function MatchData(key) {
     };
 }
 
+function MatchSize(key) {
+    let data = aria2Storage[key] * 1048576;
+    aria2Match[key] = data > 0 ? (size) => size < data : () => false;
+}
+
 function ctxMenuCreate(id, contexts, parentId) {
     chrome.contextMenus.create({
         id,
@@ -314,8 +317,11 @@ function storageDispatch(json) {
     aria2RPC.retries = json['jsonrpc_retries'];
     aria2RPC.timeout = json['jsonrpc_timeout'];
     aria2RPC.connect();
-    aria2Match['capture_filesize'] = json['capture_filesize'] * 1048576;
-    MatchKeys.forEach(MatchData);
+    MatchHost('headers_domains');
+    MatchHost('proxy_domains');
+    MatchHost('capture_domains');
+    MatchHost('capture_extensions');
+    MatchSize('capture_filesize');
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
@@ -347,8 +353,7 @@ function captureEvaluate(hostname, filename, fileSize) {
     return !(
         aria2Match['capture_domains'](hostname) ||
         aria2Match['capture_extensions'](filename) ||
-        aria2Match['capture_filesize'] > 0 &&
-        aria2Match['capture_filesize'] > fileSize
+        aria2Match['capture_filesize'](fileSize)
     );
 }
 
