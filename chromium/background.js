@@ -133,13 +133,13 @@ function downloadHeaders(url) {
 
 async function downloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
-    if (MatchTest('proxy_domains', hostname)) {
+    if (aria2Match['proxy_domains'](hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
     if (aria2Storage['folder_enabled']) {
         options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
-    if (!MatchTest('headers_domains', hostname)) {
+    if (!aria2Match['headers_domains'](hostname)) {
         let headers = aria2Inspect.get(tabId)?.[url] ?? downloadHeaders(url) ?? [{ name: 'referer', value: referer }];
         if (aria2Storage['headers_override']) {
             let ua = headers.findIndex(({ name }) => name.toLowerCase() === 'user-agent');
@@ -272,34 +272,29 @@ function MatchData(key) {
     let data = aria2Storage[key];
     let rules = {};
     data.forEach((i) => rules[i] = true);
-    aria2Match[key] = {
-        rules,
-        global: Boolean(rules['*']),
-        empty: data.length === 0
-    };
-}
-
-function MatchTest(key, host) {
-    let { rules, global, empty } = aria2Match[key];
-    if (empty) {
-        return false;
-    }
-    if (global) {
-        return true;
-    }
-    let src = host;
-    while (true) {
-        if (rules[host]) {
-            rules[src] = true;
+    let empty = data.length === 0;
+    let global = Boolean(rules['*']);
+    aria2Match[key] = (host) => {
+        if (empty) {
+            return false;
+        }
+        if (global) {
             return true;
         }
-        let dot = host.indexOf('.');
-        if (dot < 0) {
-            break;
+        let src = host;
+        while (true) {
+            if (rules[host]) {
+                rules[src] = true;
+                return true;
+            }
+            let dot = host.indexOf('.');
+            if (dot < 0) {
+                break;
+            }
+            host = host.substring(dot + 1);
         }
-        host = host.substring(dot + 1);
-    }
-    return false;
+        return false;
+    };
 }
 
 function ctxMenuCreate(id, contexts, parentId) {
@@ -350,8 +345,8 @@ chrome.storage.sync.get(null, (json) => {
 
 function captureEvaluate(hostname, filename, fileSize) {
     return !(
-        MatchTest('capture_domains', hostname) ||
-        MatchTest('capture_extensions', filename) ||
+        aria2Match['capture_domains'](hostname) ||
+        aria2Match['capture_extensions'](filename) ||
         aria2Match['capture_filesize'] > 0 &&
         aria2Match['capture_filesize'] > fileSize
     );
