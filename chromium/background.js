@@ -317,7 +317,8 @@ function storageDispatch(json) {
     MatchHost('capture_domains');
     MatchHost('capture_extensions');
     let MB = json['capture_filesize'] * 1048576;
-    aria2Match['capture_filesize'] = (size) => MB > 0 && MB > size;
+    let EN = MB > 0;
+    aria2Match['capture_filesize'] = (size) => EN && MB > size;
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
