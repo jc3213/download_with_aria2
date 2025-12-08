@@ -8,13 +8,13 @@ let refererPane = document.getElementById('referer');
 let [refererEntry, ...jsonrpcEntries] = jsonrpcPane.querySelectorAll('[name]');
 let limitEntry = jsonrpcEntries.pop();
 
-document.querySelectorAll('[i18n]').forEach((node) => {
-    node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
-});
+for (let i18n of document.querySelectorAll('[i18n]')) {
+    i18n.textContent = chrome.i18n.getMessage(i18n.getAttribute('i18n'));
+}
 
-document.querySelectorAll('[i18n-tips]').forEach((node) => {
-    node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
-});
+for (let i18n of document.querySelectorAll('[i18n-tips]')) {
+    i18n.title = chrome.i18n.getMessage(i18n.getAttribute('i18n-tips'));
+}
 
 function ctrlHandler(event, button) {
     if (event.ctrlKey) {
@@ -43,7 +43,10 @@ function menuSubmit() {
     let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
     let { out } = aria2Config;
     aria2Config['out'] = urls.length !== 1 || !out ? null : out.replace(/[\\/:*?"<>|]/g, '_');
-    let params = urls.map((url) => ({ method: 'aria2.addUri', params: [[url], aria2Config] }));
+    let params = [];
+    for (let url of urls) {
+        params.push({ method: 'aria2.addUri', params: [[url], aria2Config] });
+    }
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 }
 
@@ -74,25 +77,26 @@ const metaMap = new Set(['torrent', 'meta4', 'metalink']);
 
 async function metaFileDownload(files) {
     aria2Config['out'] = aria2Config['referer'] = aria2Config['user-agent'] = null;
-    let datas = [...files].map((file) => {
+    let datas = [];
+    for (let file of files) {
         let { name } = file;
-        let type = name.slice(name.lastIndexOf('.') + 1);
+        let type = name.substring(name.lastIndexOf('.') + 1);
         if (!metaMap.has(type)) {
-            return;
+            continue;
         }
-        return new Promise((resolve) => {
+        datas.push(new Promise((resolve) => {
             let reader = new FileReader();
             reader.onload = (event) => {
                 let { result } = reader;
-                let body = result.slice(result.indexOf(',') + 1);
+                let body = result.substring(result.indexOf(',') + 1);
                 let session = type === 'torrent'
                     ? { method: 'aria2.addTorrent', params: [body, [], aria2Config] }
                     : { method: 'aria2.addMetalink', params: [body, aria2Config] };
                 resolve(session);
             };
             reader.readAsDataURL(file);
-        });
-    }).filter(Boolean);
+        }));
+    }
     let params = await Promise.all(datas);
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 }
@@ -114,7 +118,7 @@ refererEntry.addEventListener('input', (event) => {
 function refererModalPopup() {
     let entry = refererEntry.value;
     let regexp = new RegExp(entry.replace(/[.?/]/g, '\\$&'), 'g');
-    aria2Referer.values().forEach((referer) => {
+    for (let referer of aria2Referer.values()) {
         if (referer.title.includes(entry)) {
             referer.classList.remove('hidden');
             referer.innerHTML = referer.title.replace(regexp, '<mark>$&</mark>');
@@ -122,7 +126,7 @@ function refererModalPopup() {
             referer.classList.add('hidden');
             referer.textContent = referer.title;
         }
-    });
+    }
 }
 
 refererPane.addEventListener('click', (event) => {
@@ -147,9 +151,9 @@ function refererModalList(id, url) {
 }
 
 chrome.tabs.query({}, (tabs) => {
-    tabs.forEach(({ id, url }) => {
+    for (let { id, url } of tabs) {
         refererModalList(id, url);
-    });
+    }
 });
 
 chrome.tabs.onUpdated.addListener((tabId, { url }) => {
@@ -166,8 +170,8 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage, options }) => {
     aria2Storage = storage;
     limitEntry.value = '0';
-    jsonrpcEntries.forEach((entry) => {
+    for (let entry of jsonrpcEntries) {
         let { name } = entry;
         entry.value = aria2Config[name] = options[name] ?? '';
-    });
+    }
 });
