@@ -71,9 +71,7 @@ aria2RPC.onopen = () => {
     aria2RPC.call([
         { method: 'aria2.getGlobalStat' }, { method: 'aria2.getVersion' },
         { method: 'aria2.tellActive' }, { method: 'aria2.tellWaiting', params: [0, 999] }, { method: 'aria2.tellStopped', params: [0, 999] }
-    ]).then((a) => {
-        console.log(a);
-        let { result: [[stats], [version], [active], [waiting], [stopped]] } = a;
+    ]).then(({ result: [[stats], [version], [active], [waiting], [stopped]] }) => {
         aria2Queue.active  = new Set();
         aria2Queue.waiting = new Set();
         aria2Queue.stopped = new Set();
