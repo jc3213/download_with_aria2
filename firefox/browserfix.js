@@ -62,15 +62,33 @@ function getFirefoxOptions(filename) {
 }
 
 function decodeRFC2047(array) {
-    let result = array.map((s) => {
+    let result = '';
+    for (let s of array) {
         let [, code, type, data] = s.split('?');
-        let bytes = type.toLowerCase() === 'b'
-            ? Uint8Array.from(atob(data), c => c.charCodeAt(0))
-            : Uint8Array.from(data.match(/=[0-9a-fA-F]{2}|[^=]/g)?.map((q) => q.length === 3 ? parseInt(q.substring(1), 16) : q === '_' ? 0x20 : q.charCodeAt(0)));
-        return new TextDecoder(code).decode(bytes);
-    }).join('');
+        let bytes;
+        if (type.toLowerCase() === 'b') {
+            bytes = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
+        } else {
+            let parts = data.match(/=[0-9a-fA-F]{2}|[^=]/g);
+            if (!parts) {
+                continue;
+            }
+            let tmp = [];
+            for (let q of parts) {
+                if (q.length === 3) {
+                    tmp.push(parseInt(q.substring(1), 16));
+                } else if (q === '_') {
+                    tmp.push(0x20);
+                } else {
+                    tmp.push(q.charCodeAt(0));
+                }
+            }
+            bytes = new Uint8Array(tmp);
+        }
+        result += new TextDecoder(code).decode(bytes);
+    }
     console.log(result);
-    return result;    
+    return result;
 }
 
 function decodeRFC5987(array) {
