@@ -7,13 +7,13 @@ let [selectAll, selectNone, selectFlip, submitBtn, optionsBtn] = menu.children;
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let preview = imagePane.children[0];
 
-document.querySelectorAll('[i18n]').forEach((node) => {
-    node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
-});
+for (let i18n of document.querySelectorAll('[i18n]')) {
+    i18n.textContent = chrome.i18n.getMessage(i18n.getAttribute('i18n'));
+}
 
-document.querySelectorAll('[i18n-tips]').forEach((node) => {
-    node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
-});
+for (let i18n of document.querySelectorAll('[i18n-tips]')) {
+    i18n.title = chrome.i18n.getMessage(i18n.getAttribute('i18n-tips'));
+}
 
 function ctrlHandler(event, button) {
     if (event.ctrlKey) {
