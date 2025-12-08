@@ -288,7 +288,7 @@ function MatchHost(key) {
 
 function MatchSize(key) {
     let data = aria2Storage[key] * 1048576;
-    let endabled = data > 0;
+    let enabled = data > 0;
     aria2Match[key] = (size) => enabled && data > size;
 }
 
