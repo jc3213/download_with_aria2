@@ -36,7 +36,7 @@ class Aria2 {
         this.#secret = `token:${string}`;
     }
     get secret() {
-        return this.#secret.slice(6);
+        return this.#secret.substring(6);
     }
 
     set retries(number) {

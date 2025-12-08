@@ -49,13 +49,17 @@ aria2RPC.onopen = () => {
     aria2RPC.call([
         { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
     ]).then(({ result: [[options], [version], [active]] }) => {
-        captureHooking();
+        for (let key of RawKeys) {
+            aria2Config[key] = options[key];
+        }
+        for (let key of SizeKeys) {
+            aria2Config[key] = RawToSize(options[key]);
+        }
         aria2Version = version;
         aria2Active = new Set(active.map(({ gid }) => gid));
-        RawKeys.forEach((key) => aria2Config[key] = options[key]);
-        SizeKeys.forEach((key) => aria2Config[key] = RawToSize(options[key]));
         chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
-        setIndicator();
+        captureHooking();
+        toolbarCounter();
     }).catch(aria2RPC.onclose);
 };
 aria2RPC.onclose = () => {
@@ -71,7 +75,7 @@ aria2RPC.onmessage = ({ method, params }) => {
     let [{ gid }] = params;
     let handler = wsEventMap[method] ?? wsEventMap['fallback'];
     handler(gid);
-    setIndicator();
+    toolbarCounter();
 };
 
 function RawToSize(bytes) {
@@ -105,7 +109,7 @@ async function whenNotify(gid, type) {
     let { bittorrent, files } = result;
     let [{ path, uris }] = files;
     let title = chrome.i18n.getMessage('download_' + type);
-    let message = bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
+    let message = bittorrent?.info?.name ?? path?.substring(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
     chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
 }
 
@@ -194,7 +198,12 @@ function storageChanged(response, json) {
 }
 
 function optionsChanged(response, json) {
-    [...RawKeys, ...SizeKeys].forEach((key) => aria2Config[key] = json[key]);
+    for (let key of RawKeys) {
+        aria2Config[key] = json[key];
+    }
+    for (let key of SizeKeys) {
+        aria2Config[key] = json[key];
+    }
     aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [json] }).then(response).catch(response);
 }
 
@@ -269,7 +278,9 @@ chrome.action.onClicked.addListener(() => {
 function MatchHost(key) {
     let data = aria2Storage[key];
     let rules = {};
-    data.forEach((i) => rules[i] = true);
+    for (let i in data) {
+        rules[i] = true;
+    }
     let empty = data.length === 0;
     let global = Boolean(rules['*']);
     aria2Match[key] = (host) => rules[host] ??= TestHost(empty, global, rules, host);
@@ -359,10 +370,10 @@ function captureEvaluate(hostname, filename, fileSize) {
 
 function getHostname(url) {
     let host = url.split('/')[2];
-    return host.includes('@') ? host.slice(host.indexOf('@') + 1) : host;
+    return host.includes('@') ? host.substring(host.indexOf('@') + 1) : host;
 }
 
-function setIndicator() {
+function toolbarCounter() {
     let number = aria2Active.size;
     chrome.action.setBadgeText({ text: !number ? '' : String(number) });
 }
