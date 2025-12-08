@@ -20,13 +20,13 @@ if (typeof browser !== 'undefined') {
     extension.add('firefox');
 }
 
-document.querySelectorAll('[i18n]').forEach((node) => {
-    node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
-});
+for (let i18n of document.querySelectorAll('[i18n]')) {
+    i18n.textContent = chrome.i18n.getMessage(i18n.getAttribute('i18n'));
+}
 
-document.querySelectorAll('[i18n-tips]').forEach((node) => {
-    node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
-});
+for (let i18n of document.querySelectorAll('[i18n-tips]')) {
+    i18n.title = chrome.i18n.getMessage(i18n.getAttribute('i18n-tips'));
+}
 
 const hotkeyMap = {
     'KeyS': saveBtn,
@@ -148,10 +148,17 @@ function exportHandler(name, type, body) {
 }
 
 function menuEventExport() {
-    extension.contains('jsonrpc')
-        ? exportHandler('aria2_jsonrpc-', '.conf', Object.keys(aria2Config).map((key) => key + '=' + aria2Config[key] + '\n' ))
-        : exportHandler('downwitharia2-', '.json', [ JSON.stringify(aria2Storage, null, 4) ]);
+    if (extension.contains('jsonrpc')) {
+        let lines = [];
+        for (let key of Object.keys(aria2Config)) {
+            lines.push(key + '=' + aria2Config[key] + '\n');
+        }
+        exportHandler('aria2_jsonrpc-', '.conf', lines);
+    } else {
+        exportHandler('downwitharia2-', '.json', [JSON.stringify(aria2Storage, null, 4)]);
+    }
 }
+
 
 function menuEventImport() {
     extension.contains('jsonrpc') ? confFile.click() : jsonFile.click();
@@ -178,7 +185,7 @@ function importJson(file) {
 
 function importConf(file) {
     let json = {};
-    file.split('\n').forEach((line) => {
+    for (let line of file.split('\n')) {
         if (!line || line[0] === '#') {
             return;
         }
@@ -186,7 +193,7 @@ function importConf(file) {
         if (key && value !== undefined) {
             json[key] = value.split('#')[0].trim();
         }
-    });
+    }
     optionsDispatch(json);
     chrome.runtime.sendMessage({ action: 'jsonrpc_update', params: updated });
 }
@@ -203,10 +210,10 @@ menuPane.addEventListener('change', (event) => {
 });
 
 function optionsDispatch(json) {
-    jsonrpcEntries.forEach((entry) => {
+    for (let entry of jsonrpcEntries) {
         let { name } = entry;
         entry.value = aria2Config[name] = json[name] ?? '';
-    });
+    }
     updated = { ...aria2Config };
 }
 
@@ -270,7 +277,7 @@ const listEventMap = {
     'tips_match_remove': matchEventRemove,
 };
 
-optionsMatches.forEach((match) => {
+for (let match of optionsMatches) {
     let { id } = match;
     let [menu, list] = match.children;
     let entry = menu.children[1];
@@ -284,7 +291,7 @@ optionsMatches.forEach((match) => {
             matchEventAddNew(id, list, entry);
         }
     });
-});
+}
 
 function createMatchPattern(value) {
     let rule = matchLET.cloneNode(true);
@@ -301,7 +308,7 @@ function printMatchPattern(list, id, value) {
 function storageDispatch() {
     updated = { ...aria2Storage };
     tellVer.textContent = aria2Version;
-    optionsEntries.forEach((entry) => {
+    for (let entry of optionsEntries) {
         let { name, type } = entry;
         let value = updated[name];
         if (type === 'checkbox') {
@@ -312,11 +319,13 @@ function storageDispatch() {
         } else {
             entry.value = value;
         }
-    });
-    optionsMatches.forEach(({ id, list }) => {
+    }
+    for (let { id, list } of optionsMatches) {
         list.innerHTML = '';
-        updated[id].forEach((value) => printMatchPattern(list, id, value));
-    });
+        for (let value of updated[id]) {
+            printMatchPattern(list, id, value);
+        }
+    }
 }
 
 function storageUpdate() {
