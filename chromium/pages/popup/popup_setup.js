@@ -1,14 +1,10 @@
-if (location.search === '?toolbar') {
-    aria2ToolbarSetup();
+for (let i18n of document.querySelectorAll('[i18n]')) {
+    i18n.textContent = chrome.i18n.getMessage(i18n.getAttribute('i18n'));
 }
 
-document.querySelectorAll('[i18n]').forEach((node) => {
-    node.textContent = chrome.i18n.getMessage(node.getAttribute('i18n'));
-});
-
-document.querySelectorAll('[i18n-tips]').forEach((node) => {
-    node.title = chrome.i18n.getMessage(node.getAttribute('i18n-tips'));
-});
+for (let i18n of document.querySelectorAll('[i18n-tips]')) {
+    i18n.title = chrome.i18n.getMessage(i18n.getAttribute('i18n-tips'));
+}
 
 downBtn.addEventListener('click', (event) => {
     chrome.runtime.sendMessage({ action: 'open_new_download' });
@@ -49,7 +45,7 @@ chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage }) => {
     aria2StorageChanged(storage);
 });
 
-function aria2ToolbarSetup() {
+if (location.search === '?toolbar') {
     queuePane.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         let css = event.clientX > 487 ? 'right: 0px;' : 'left: ' + event.clientX + 'px;';

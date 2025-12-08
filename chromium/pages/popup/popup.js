@@ -18,9 +18,9 @@ let [downBtn, purgeBtn, optionsBtn] = menuPane.children;
 let [i18nEntry, verEntry, ...statEntries] = statusPane.children;
 let [sessionLET, fileLET, uriLET] = template.children;
 
-statEntries.forEach((stat) => {
+for (let stat of statEntries) {
     aria2Stats[stat.id] = stat;
-});
+}
 
 const hotkeyMap = {
     'KeyE': purgeBtn,
@@ -43,7 +43,7 @@ function taskFilters(array, callback) {
     manager.add(...array);
 
     filterPane.addEventListener('click', (event) => {
-        let id = event.target.id.slice(2);
+        let id = event.target.id.substring(2);
         if (filters.has(id)) {
             filters.delete(id);
             manager.remove(id);
@@ -58,10 +58,10 @@ function taskFilters(array, callback) {
 purgeBtn.addEventListener('click', async (event) => {
     await aria2RPC.call({ method: 'aria2.purgeDownloadResult' });
     let { stopped } = aria2Queue;
-    stopped.forEach((gid) => {
+    for (let gid of stopped) {
         aria2Tasks[gid].remove();
         delete aria2Tasks[gid];
-    });
+    }
     stopped.clear();
     aria2Stats['stopped'].textContent = '0';
 });
@@ -71,13 +71,19 @@ aria2RPC.onopen = () => {
     aria2RPC.call([
         { method: 'aria2.getGlobalStat' }, { method: 'aria2.getVersion' },
         { method: 'aria2.tellActive' }, { method: 'aria2.tellWaiting', params: [0, 999] }, { method: 'aria2.tellStopped', params: [0, 999] }
-    ]).then(({ result: [[stats], [version], [active], [waiting], [stopped]] }) => {
+    ]).then((a) => {
+        console.log(a);
+        let { result: [[stats], [version], [active], [waiting], [stopped]] } = a;
         aria2Queue.active  = new Set();
         aria2Queue.waiting = new Set();
         aria2Queue.stopped = new Set();
         updateTaskManager(stats, active);
-        waiting.forEach(updateTaskStats);
-        stopped.forEach(updateTaskStats);
+        for (let result of waiting) {
+            updateTaskStats(result);
+        }
+        for (let result of stopped) {
+            updateTaskStats(result);
+        }
         verEntry.textContent = version.version;
         aria2Interval = setInterval(() => {
             aria2RPC.call([{ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' }])
@@ -85,14 +91,15 @@ aria2RPC.onopen = () => {
         }, aria2Delay);
     }).catch(aria2RPC.onclose);
 };
-aria2RPC.onclose = () => {
+aria2RPC.onclose = (e) => {
+    console.log(e)
     clearInterval(aria2Interval);
     aria2Tasks = {};
     verEntry.textContent = 'N/A';
     queuePane.innerHTML = '';
-    statEntries.forEach((stat) => {
+    for (let stat of statEntries) {
         stat.textContent = '0';
-    });
+    }
 };
 aria2RPC.onmessage = ({ method, params }) => {
     if (method === 'aria2.onBtDownloadComplete') {
@@ -107,12 +114,14 @@ aria2RPC.onmessage = ({ method, params }) => {
 function updateTaskManager({ downloadSpeed, uploadSpeed }, active) {
     aria2Stats.download.textContent = getFileSize(downloadSpeed);
     aria2Stats.upload.textContent = getFileSize(uploadSpeed);
-    active.forEach(updateTaskStats);
+    for (let result of active) {
+        updateTaskStats(result);
+    }
 }
 
 function removeFromQueue(gid, group) {
     let queue = aria2Queue[group];
-    delete queue[gid];
+    queue.delete(gid);
     aria2Stats[group].textContent = queue.size;
 }
 
@@ -145,7 +154,7 @@ function updateTaskStats({ gid, status, files, bittorrent, completedLength, tota
     let seconds = time % 60 | 0;
     let percent = (completedLength / totalLength * 10000 | 0) / 100;
     let [{ path, uris }] = files;
-    task.name.textContent ||= bittorrent?.info?.name ?? path?.slice(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
+    task.name.textContent ||= bittorrent?.info?.name ?? path?.substring(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
     task.current.textContent = getFileSize(completedLength);
     task.total.textContent = getFileSize(totalLength);
     task.day.textContent = days || '';
@@ -157,11 +166,11 @@ function updateTaskStats({ gid, status, files, bittorrent, completedLength, tota
     task.upload.textContent = getFileSize(uploadSpeed);
     task.ratio.textContent = percent;
     task.ratio.style.width = percent + '%';
-    files.forEach(({ index, length, path, completedLength }) => {
+    for (let { index, length, path, completedLength } of files) {
         let { name, ratio } = task[index];
-        name.textContent ||= path?.slice(path.lastIndexOf('/') + 1);
+        name.textContent ||= path?.substring(path.lastIndexOf('/') + 1);
         ratio.textContent = (completedLength / length * 10000 | 0) / 100;
-    });
+    }
     return task;
 }
 
@@ -203,13 +212,13 @@ async function taskEventDetail(task, gid) {
     } else {
         let { files, options } = await taskDetailHandler(gid);
         let config = {};
-        files.forEach(({ index, selected }) => {
+        for (let { index, selected } of files) {
             checks.get(index).checked = selected === 'true';
-        });
-        entries.forEach((entry) => {
+        }
+        for (let entry of entries) {
             let { name } = entry;
             entry.value = config[name] = options[name] ?? '';
-        });
+        }
         task.config = config;
         classList.add('expand');
     }
@@ -218,11 +227,11 @@ async function taskEventDetail(task, gid) {
 async function taskEventApply(task, gid) {
     let { checks, config, apply } = task;
     let selected = [];
-    checks.forEach((check, index) => {
+    for (let [check, index] of checks) {
         if (check.checked) {
             selected.push(index);
         }
-    });
+    }
     config['select-file'] = selected.join(',');
     task.align = true;
     await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, config] });
@@ -232,7 +241,10 @@ async function taskEventApply(task, gid) {
 async function taskEventRetry(task, gid) {
     let { files, options } = await taskDetailHandler(gid);
     let [{ path, uris }] = files;
-    let url = uris.map(({ uri }) => uri);
+    let url = [];
+    for (let { uri } of uris) {
+        url.push(uri);
+    }
     let match = path?.match(/^((?:[A-Z]:)?(?:\/[^/]+)*)\/([^/]+)$/);
     if (match) {
         options['dir'] = match[1];
@@ -264,7 +276,12 @@ async function taskUriRemoved(task, gid, event) {
     let { files } = await taskDetailHandler(gid);
     let [{ uris }] = files;
     let url = event.target.previousElementSibling.textContent;
-    let removed = uris.filter(({ uri }) => uri === url).map(({ uri }) => uri);
+    let removed = [];
+    for (let { uri } of uris) {
+        if (uri === url) {
+            removed.push(uri);
+        }
+    }
     let { result } = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, removed, []] });
     if (result?.[0] === removed.length) {
         task.align = true;
@@ -333,12 +350,12 @@ function createTaskBody(gid, status, bittorrent, files) {
         task.config[event.target.name] = event.target.value;
         apply.classList.remove('hidden');
     });
-    files.forEach(({ index, length, path, selected, uris }) => {
+    for (let { index, length, path, selected, uris } of files) {
         task[index] ??= createTaskFile(task, gid, index, selected, path, length);
-        uris.forEach(({ uri, status }) => {
+        for (let { uri, status } of uris) {
             task[uri] ??= createTaskUri(task, uri);
-        });
-    });
+        }
+    }
     addToQueue(task, gid, status);
     return task;
 }
@@ -350,7 +367,7 @@ function createTaskFile(task, gid, index, selected, path, length) {
     check.checked = selected === 'true';
     label.textContent = index;
     label.setAttribute('for', check.id);
-    name.textContent = path.slice(path.lastIndexOf('/') + 1);
+    name.textContent = path.substring(path.lastIndexOf('/') + 1);
     name.title = path;
     size.textContent = getFileSize(length);
     task.checks.set(index, check);
