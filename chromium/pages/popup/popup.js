@@ -89,8 +89,7 @@ aria2RPC.onopen = () => {
         }, aria2Delay);
     }).catch(aria2RPC.onclose);
 };
-aria2RPC.onclose = (e) => {
-    console.log(e)
+aria2RPC.onclose = () => {
     clearInterval(aria2Interval);
     aria2Tasks = {};
     verEntry.textContent = 'N/A';
@@ -225,7 +224,7 @@ async function taskEventDetail(task, gid) {
 async function taskEventApply(task, gid) {
     let { checks, config, apply } = task;
     let selected = [];
-    for (let [check, index] of checks) {
+    for (let [index, check] of checks) {
         if (check.checked) {
             selected.push(index);
         }
@@ -248,11 +247,13 @@ async function taskEventRetry(task, gid) {
         options['dir'] = match[1];
         options['out'] = match[2];
     }
-    let { result: [[add]] } = await aria2RPC.call([{ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] }]);
-    updateTaskDetails(add);
+    let { result: [add] } = await aria2RPC.call([{ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] }]);
     removeFromQueue(gid, 'stopped');
     delete aria2Tasks[gid];
     task.remove();
+    if (Array.isArray(add)) {
+        updateTaskDetails(add[0]);
+    }
 }
 
 function taskEventProxy(task) {
