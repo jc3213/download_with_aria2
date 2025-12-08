@@ -272,27 +272,34 @@ function MatchHost(key) {
     data.forEach((i) => rules[i] = true);
     let empty = data.length === 0;
     let global = Boolean(rules['*']);
-    aria2Match[key] = (host) => {
-        if (empty) {
-            return false;
-        }
-        if (global) {
+    aria2Match[key] = (host) => rules[host] ??= TestHost(empty, global, rules, host);
+}
+
+function MatchSize(key) {
+    let data = aria2Storage[key] * 1048576;
+    let endabled = data > 0;
+    aria2Match[key] = (size) => enabled && data > size;
+}
+
+function TestHost(empty, global, rules, host) {
+    if (empty) {
+        return false;
+    }
+    if (global) {
+        return true;
+    }
+    let src = host;
+    while (true) {
+        if (rules[host]) {
             return true;
         }
-        let src = host;
-        while (true) {
-            if (rules[host]) {
-                rules[src] = true;
-                return true;
-            }
-            let dot = host.indexOf('.');
-            if (dot < 0) {
-                break;
-            }
-            host = host.substring(dot + 1);
+        let dot = host.indexOf('.');
+        if (dot < 0) {
+            break;
         }
-        return false;
-    };
+        host = host.substring(dot + 1);
+    }
+    return false;
 }
 
 function ctxMenuCreate(id, contexts, parentId) {
@@ -316,9 +323,7 @@ function storageDispatch(json) {
     MatchHost('proxy_domains');
     MatchHost('capture_domains');
     MatchHost('capture_extensions');
-    let MB = json['capture_filesize'] * 1048576;
-    let EN = MB > 0;
-    aria2Match['capture_filesize'] = (size) => EN && MB > size;
+    MatchSize('capture_filesize');
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
