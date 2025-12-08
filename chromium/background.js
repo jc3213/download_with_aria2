@@ -278,7 +278,7 @@ chrome.action.onClicked.addListener(() => {
 function MatchHost(key) {
     let data = aria2Storage[key];
     let rules = {};
-    for (let i in data) {
+    for (let i of data) {
         rules[i] = true;
     }
     let empty = data.length === 0;
