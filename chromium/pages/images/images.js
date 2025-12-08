@@ -49,19 +49,31 @@ galleryPane.addEventListener('mouseover', (event) => {
 
 function menuEventSubmit() {
     let params = [];
-    aria2Images.forEach(({ src, alt, classList }) => {
+    for (let { src, alt, classList } of aria2Images ) {
         if (classList.contains('checked')) {
             let options = { ...aria2Config, out: alt };
             params.push({ method: 'aria2.addUri', params: [[src], options] });
         }
-    });
+    }
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 }
 
 const menuEventMap = {
-    'select_all': () => aria2Images.forEach((img) => img.classList.add('checked')),
-    'select_none': () => aria2Images.forEach((img) => img.classList.remove('checked')),
-    'select_flip': () => aria2Images.forEach((img) => img.classList.toggle('checked')),
+    'select_all': () => {
+        for (let img of aria2Images) {
+            img.classList.add('checked');
+        }
+    },
+    'select_none': () => {
+        for (let img of aria2Images) {
+            img.classList.remove('checked');
+        }
+    },
+    'select_flip': () => {
+        for (let img of aria2Images) {
+            img.classList.toggle('checked');
+        }
+    },
     'common_submit': menuEventSubmit,
     'popup_options': () => jsonrpcPane.classList.toggle('hidden')
 };
@@ -83,17 +95,17 @@ chrome.runtime.sendMessage({ action: 'inspect_images' }, ({ storage, options, im
     manifest.manifest_version === 2 ? aria2HeadersMV2(referer, tabId, request) : aria2HeadersMV3(referer, tabId);
     aria2Storage = storage;
     aria2Config['referer'] = referer;
-    jsonrpcEntries.forEach((entry) => {
+    for (let entry of jsonrpcEntries) {
         let { name } = entry;
         entry.value = aria2Config[name] = options[name] ?? '';
-    });
-    images.forEach((url) => {
+    }
+    for (let src of images) {
         let img = document.createElement('img');
-        img.alt = url.slice(url.lastIndexOf('/') + 1).replace(/[?#@].*$/, '');
-        img.src = img.title = url;
+        img.alt = src.substring(src.lastIndexOf('/') + 1).replace(/[?#@].*$/, '');
+        img.src = img.title = src;
         aria2Images.push(img);
         galleryPane.appendChild(img);
-    });
+    }
 });
 
 function aria2HeadersMV2(value, tabId, request) {
