@@ -319,7 +319,6 @@ function TestHost(empty, global, rules, host) {
     if (global) {
         return true;
     }
-    let src = host;
     while (true) {
         if (rules[host]) {
             return true;
