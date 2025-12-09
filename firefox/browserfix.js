@@ -97,7 +97,7 @@ function decodeRFC5987(array) {
 }
 
 function decodeISO8859(code, text) {
-    let bytes = Uint8Array.from([...text], (c) => c.charCodeAt(0));
+    let bytes = Uint8Array.from(test.split(''), (c) => c.charCodeAt(0));
     return new TextDecoder(code).decode(bytes);
 }
 
