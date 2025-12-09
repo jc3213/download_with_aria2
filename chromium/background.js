@@ -325,11 +325,10 @@ function TestHost(empty, global, rules, host) {
         }
         let dot = host.indexOf('.');
         if (dot < 0) {
-            break;
+            return false;
         }
         host = host.substring(dot + 1);
     }
-    return false;
 }
 
 function ctxMenuCreate(id, contexts, parentId) {
