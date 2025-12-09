@@ -285,9 +285,13 @@ chrome.action ??= chrome.browserAction;
 
 chrome.action.onClicked.addListener(() => {
     chrome.tabs.query({ currentWindow: true }, (tabs) => {
-        let tab = tabs.find(({ url }) => url.startsWith(aria2Manager));
-        tab ? chrome.tabs.update(tab.id, { active: true })
-            : chrome.tabs.create({ url: aria2Manager, active: true });
+        for (let { id, url } of tabs) {
+            if (url.startsWith(aria2Manager)) {
+                chrome.tabs.update(id, { active: true })
+                return;
+            }
+        }
+        chrome.tabs.create({ url: aria2Manager, active: true });
     });
 });
 
