@@ -31,7 +31,7 @@ let aria2Storage = {};
 let aria2Config = {};
 let aria2Match = {};
 let aria2Version;
-let aria2Active;
+let aria2Active = new Set();
 let aria2Manager = chrome.runtime.getURL('/pages/popup/popup.html');
 let aria2Popup = 0;
 let aria2Inspect = new Map();
@@ -56,17 +56,20 @@ aria2RPC.onopen = () => {
             aria2Config[key] = RawToSize(options[key]);
         }
         aria2Version = version;
-        aria2Active = new Set(active.map(({ gid }) => gid));
-        chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
+        for (let { gid } of active) {
+            aria2Active.add(gid);
+        }
         captureHooking();
         toolbarCounter();
+        chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
     }).catch(aria2RPC.onclose);
 };
 aria2RPC.onclose = () => {
+    aria2Version = null;
+    aria2Active = new Set();
     captureDisabled();
-    aria2Active = aria2Version = null;
-    chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
     chrome.action.setBadgeText({ text: 'E' });
+    chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
 };
 aria2RPC.onmessage = ({ method, params }) => {
     if (method === 'aria2.onBtDownloadComplete') {
@@ -126,14 +129,36 @@ function whenCompleted(gid) {
     whenNotify(gid, 'complete');
 }
 
-function downloadHeaders(url) {
-    for (let tab of aria2Inspect.values()) {
-        let headers = tab[url];
-        if (headers) {
-            return headers;
+function downloadHeaders(tabId, url, referer) {
+    let headers;
+    let oldUA;
+    let result = [];
+    if (aria2Inspect.has(tabId)) {
+        headers = aria2Inspect.get(tabId)[url];
+    } else {
+        for (let tab of aria2Inspect.values()) {
+            headers = tab[url];
+            if (headers) {
+                break;
+            }
         }
     }
+    if (!headers) {
+        headers = [{ name: 'referer', value: referer }];
+    }
+    for (let { name, value } of headers) {
+        let lower = name.toLowerCase();
+        if (lower === 'user-agent') {
+            oldUA = value;
+        } else {
+            result.push(name + ': ' + value);
+        }
+    }
+    let newUA = aria2Storage['headers_override'] ? aria2Storage['headers_useragent'] : (oldUA ?? navigator.userAgent);
+    result.push('User-Agent: ' + newUA);
+    return result;
 }
+
 
 async function downloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
@@ -144,17 +169,9 @@ async function downloadHandler(url, referer, options, tabId) {
         options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
     if (!aria2Match['headers_domains'](hostname)) {
-        let headers = aria2Inspect.get(tabId)?.[url] ?? downloadHeaders(url) ?? [{ name: 'referer', value: referer }];
-        if (aria2Storage['headers_override']) {
-            let ua = headers.findIndex(({ name }) => name.toLowerCase() === 'user-agent');
-            if (ua !== -1) {
-                headers[ua].value = aria2Storage['headers_useragent'];
-            } else {
-                headers.push({ name: 'user-agent', value: aria2Storage['headers_useragent'] });
-            }
-        }
-        options['header'] = headers.map(({ name, value }) => name + ': ' + value);
+        options['header'] = downloadHeaders(tabId, url, referer);
     }
+    console.log(options);
     aria2RPC.call({ method: 'aria2.addUri', params: [[url], options] });
 }
 

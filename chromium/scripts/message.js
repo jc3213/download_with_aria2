@@ -7,9 +7,11 @@ function messgeChannel(id, message) {
 function downloadHandler(id, args) {
     let params = [];
     for (let arg of args) {
-        if (arg?.url) {
-            let { url, options = {} } = arg;
-            params.push({ method: 'aria2.addUri', params: [[url], options] });
+        let otype = typeof arg;
+        if (otype === 'string') {
+            params.push({ method: 'aria2.addUri', params: [[arg]] });
+        } else if (otype === 'object' && arg.url) {
+            params.push({ method: 'aria2.addUri', params: [[arg.url], arg.options ?? {}] });
         }
     }
     messgeChannel(id, { action: 'jsonrpc_download', params });
