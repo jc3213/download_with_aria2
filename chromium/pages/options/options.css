@@ -10,7 +10,7 @@ body:not(.headers_override) .e-headers-override,
 body:not(.firefox) .e-firefox,
 body:not(.folder_enabled) .e-folder-enabled,
 body:not(.capture_enabled) .e-capture-enabled,
-body.folder_firefox .x-folder-firefox,
+body.folder_firefox:not(.capture_webrequest) .x-folder-firefox,
 body.capture_webrequest .x-capture-webrequest {
     display: none;
 }
