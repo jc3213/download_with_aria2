@@ -171,7 +171,6 @@ async function downloadHandler(url, referer, options, tabId) {
     if (!aria2Match['headers_domains'](hostname)) {
         options['header'] = downloadHeaders(tabId, url, referer);
     }
-    console.log(options);
     aria2RPC.call({ method: 'aria2.addUri', params: [[url], options] });
 }
 
