@@ -243,20 +243,21 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
 function matchEventAddNew(id, list, entry) {
     let value = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?=\/|$)/)?.[1];
     let old_value = updated[id];
-    entry.value = '';
     if (value && !old_value.includes(value)) {
-        let new_value = [...old_value, value];
+        let new_value = old_value.slice();
         let rule = printMatchPattern(list, id, value);
+        new_value.push(value);
         list.scrollTop = list.scrollHeight;
         optionHistorySave({ id, new_value, old_value, type: 'matches', add: { list, index: old_value.length, rule } });
+        entry.value = '';
     }
 }
 
 function matchEventResort(id, list) {
     let old_value = updated[id];
-    let new_value = [...old_value].sort();
+    let new_value = old_value.slice().sort();
     let old_order = [...list.children];
-    let new_order = [...old_order].sort((a, b) => a.textContent.localeCompare(b.textContent));
+    let new_order = old_order.slice().sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
     optionHistorySave({ id, new_value, old_value, type: 'resort', list, new_order, old_order });
 }
@@ -266,7 +267,8 @@ function matchEventRemove(id, list, _, event) {
     let value = rule.title;
     let old_value = updated[id];
     let index = old_value.indexOf(value);
-    let new_value = old_value.filter((val) => val !== value);
+    let new_value = old_value.slice();
+    new_value.splice(index, 1);
     rule.remove();
     optionHistorySave({ id, new_value, old_value, type: 'matches', remove: { list, index, rule } });
 }
