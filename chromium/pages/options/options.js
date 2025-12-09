@@ -187,7 +187,7 @@ function importConf(file) {
     let json = {};
     for (let line of file.split('\n')) {
         if (!line || line[0] === '#') {
-            return;
+            continue;
         }
         let [key, value] = line.split('=');
         if (key && value !== undefined) {

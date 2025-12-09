@@ -287,7 +287,7 @@ chrome.action.onClicked.addListener(() => {
     chrome.tabs.query({ currentWindow: true }, (tabs) => {
         for (let { id, url } of tabs) {
             if (url.startsWith(aria2Manager)) {
-                chrome.tabs.update(id, { active: true })
+                chrome.tabs.update(id, { active: true });
                 return;
             }
         }
