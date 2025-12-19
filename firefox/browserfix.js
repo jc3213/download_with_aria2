@@ -51,7 +51,9 @@ async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, 
 }
 
 function getFirefoxOptions(filename) {
-    let [, dir, out] = filename.match(/^((?:[A-Z]:\\|\/)(?:[^\\\/]+[\\\/])*)([^\\\/]+)$/);
+    let idx = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\')) + 1;
+    let dir = filename.substring(0, idx);
+    let out = filename.substring(idx);
     if (!aria2Storage['folder_enabled']) {
         return { out };
     }
