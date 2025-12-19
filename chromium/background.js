@@ -131,7 +131,7 @@ function whenCompleted(gid) {
 
 function downloadHeaders(tabId, url, referer) {
     let headers;
-    let oldUA;
+    let oldUA = navigator.userAgent;
     let result = [];
     if (aria2Inspect.has(tabId)) {
         headers = aria2Inspect.get(tabId)[url];
@@ -154,11 +154,10 @@ function downloadHeaders(tabId, url, referer) {
             result.push(name + ': ' + value);
         }
     }
-    let newUA = aria2Storage['headers_override'] ? aria2Storage['headers_useragent'] : (oldUA ?? navigator.userAgent);
+    let newUA = aria2Storage['headers_override'] ? aria2Storage['headers_useragent'] : oldUA;
     result.push('User-Agent: ' + newUA);
     return result;
 }
-
 
 async function downloadHandler(url, referer, options, tabId) {
     let hostname = getHostname(referer || url);
