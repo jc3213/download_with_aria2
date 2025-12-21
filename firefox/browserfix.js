@@ -22,7 +22,7 @@ async function captureDownloads({ id, url, referrer, filename, fileSize }) {
     if (captured) {
         browser.downloads.cancel(id).then(() => {
             browser.downloads.erase({ id });
-            downloadHandler(url, referrer, getFirefoxOptions(filename));
+            downloadHandler(url, referrer, filename, hostname);
         });
     }
 }
@@ -41,26 +41,13 @@ async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, 
     if (!result['content-type']?.startsWith('application')) {
         return;
     }
-    let out = decodeFileName(result['content-disposition']) || null;
+    let filename = decodeFileName(result['content-disposition']) || null;
     let hostname = getHostname(originUrl);
-    let captured = captureEvaluate(hostname, out, result['content-length'] | 0);
+    let captured = captureEvaluate(hostname, filename, result['content-length'] | 0);
     if (captured) {
-        downloadHandler(url, originUrl, { out }, tabId);
+        downloadHandler(url, originUrl, filename, hostname, tabId);
         return { cancel: true };
     }
-}
-
-function getFirefoxOptions(filename) {
-    let idx = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\')) + 1;
-    let dir = filename.substring(0, idx);
-    let out = filename.substring(idx);
-    if (!aria2Storage['folder_enabled']) {
-        return { out };
-    }
-    if (!aria2Storage['folder_firefox']) {
-        dir = aria2Storage['folder_defined'] || null;
-    }
-    return { out, dir };
 }
 
 function decodeRFC2047(array) {

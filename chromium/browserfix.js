@@ -6,7 +6,7 @@ function captureDownloads({ id, finalUrl, referrer, filename, fileSize }) {
     let captured = captureEvaluate(hostname, filename, fileSize);
     if (captured) {
         chrome.downloads.erase({ id });
-        downloadHandler(finalUrl, referrer, { out: filename });
+        downloadHandler(finalUrl, referrer, filename, hostname);
     }
 }
 

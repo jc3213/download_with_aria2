@@ -37,7 +37,8 @@ let aria2Popup = 0;
 let aria2Inspect = new Map();
 let aria2Detect;
 let aria2Manifest = chrome.runtime.getManifest();
-let aria2Request = typeof browser !== 'undefined' ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
+let aria2Firefox = aria2Manifest.browser_specific_settings;
+let aria2Request = aria2Firefox ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 
 if (aria2Manifest.manifest_version === 3) {
     importScripts('libs/aria2.js', 'browserfix.js');
@@ -118,9 +119,9 @@ const RawKeys = [
 const SizeKeys = ['disk-cache', 'min-split-size', 'max-overall-download-limit', 'max-overall-upload-limit'];
 
 function downloadHeaders(tabId, url, referer) {
+    let result = [];
     let headers;
     let oldUA = navigator.userAgent;
-    let result = [];
     if (aria2Inspect.has(tabId)) {
         headers = aria2Inspect.get(tabId)[url];
     } else {
@@ -131,9 +132,7 @@ function downloadHeaders(tabId, url, referer) {
             }
         }
     }
-    if (!headers) {
-        headers = [{ name: 'referer', value: referer }];
-    }
+    headers ??= [{ name: 'referer', value: referer }];
     for (let { name, value } of headers) {
         let lower = name.toLowerCase();
         if (lower === 'user-agent') {
@@ -147,13 +146,30 @@ function downloadHeaders(tabId, url, referer) {
     return result;
 }
 
-async function downloadHandler(url, referer, options, tabId) {
-    let hostname = getHostname(referer || url);
+function downloadDirectory(filename) {
+    let dir = null;
+    let out = filename;
+    let user = aria2Storage['folder_defined'];
+    if (out) {
+        let idx = Math.max(out.lastIndexOf('/'), out.lastIndexOf('\\')) + 1;
+        if (idx > 0) {
+            dir = filename.substring(0, idx);
+            out = filename.substring(idx);
+        }
+    }
+    if (aria2Storage['folder_enabled'] &&
+        !(aria2Firefox && aria2Storage['folder_firefox']) &&
+        user) {
+        dir = user;
+    }
+    return { dir, out };
+}
+
+function downloadHandler(url, referer, filename, hostname, tabId) {
+    let options = downloadDirectory(filename);
+    hostname ??= getHostname(referer || url);
     if (aria2Match['proxy_domains'](hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
-    }
-    if (aria2Storage['folder_enabled']) {
-        options['dir'] ??= aria2Storage['folder_defined'] || null;
     }
     if (!aria2Match['headers_domains'](hostname)) {
         options['header'] = downloadHeaders(tabId, url, referer);
@@ -161,15 +177,13 @@ async function downloadHandler(url, referer, options, tabId) {
     aria2RPC.call({ method: 'aria2.addUri', params: [[url], options] });
 }
 
-function aria2ImagesPrompt(referer, tabId) {
-    aria2Detect = { referer, tabId };
-    openPopupWindow('/pages/images/images.html', 680);
-}
-
 const ctxMenuMap = {
-    'ctxmenu_thisurl': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, {}, id),
-    'ctxmenu_thisimage': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, {}, id),
-    'ctxmenu_allimages': ({ id, url }) => aria2ImagesPrompt(url, id)
+    'ctxmenu_thisurl': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, null, null, id),
+    'ctxmenu_thisimage': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, null, null, id),
+    'ctxmenu_allimages': ({ id, url }) => {
+        aria2Detect = { referer, tabId };
+        openPopupWindow('/pages/images/images.html', 680);
+    }
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
