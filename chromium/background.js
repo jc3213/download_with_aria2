@@ -94,9 +94,7 @@ async function showNotify(gid, type) {
     if (!aria2Storage['notify_' + type]) {
         return;
     }
-    let [{ result }] = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
-    let { bittorrent, files } = result;
-    let [{ path, uris }] = files;
+    let { result: { bittorrent, files: [{ path, uris }] } } = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
     let title = chrome.i18n.getMessage('download_' + type);
     let message = bittorrent?.info?.name ?? path?.substring(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
     chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
