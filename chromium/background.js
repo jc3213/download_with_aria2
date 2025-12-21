@@ -167,7 +167,7 @@ function downloadDirectory(filename) {
 
 function downloadHandler(url, referer, filename, hostname, tabId) {
     let options = downloadDirectory(filename);
-    hostname ??= getHostname(referer || url);
+    hostname ??= getHostname(referer);
     if (aria2Match['proxy_domains'](hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
