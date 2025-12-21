@@ -76,10 +76,31 @@ aria2RPC.onmessage = ({ method, params }) => {
         return;
     }
     let [{ gid }] = params;
-    let handler = wsEventMap[method] ?? wsEventMap['fallback'];
-    handler(gid);
+    if (method === 'aria2.onDownloadStart') {
+        if (!aria2Active.has(gid)) {
+            aria2Active.add(gid);
+            showNotify(gid, 'start');
+        }
+    } else {
+        aria2Active.delete(gid);
+        if (method === 'aria2.onDownloadComplete') {
+            showNotify(gid, 'complete');
+        }
+    }
     toolbarCounter();
 };
+
+async function showNotify(gid, type) {
+    if (!aria2Storage['notify_' + type]) {
+        return;
+    }
+    let [{ result }] = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
+    let { bittorrent, files } = result;
+    let [{ path, uris }] = files;
+    let title = chrome.i18n.getMessage('download_' + type);
+    let message = bittorrent?.info?.name ?? path?.substring(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
+    chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
+}
 
 function RawToSize(bytes) {
     if (bytes < 1024) {
@@ -97,37 +118,6 @@ const RawKeys = [
     'listen-port', 'bt-max-peers', 'enable-dht', 'enable-dht6', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'
 ];
 const SizeKeys = ['disk-cache', 'min-split-size', 'max-overall-download-limit', 'max-overall-upload-limit'];
-
-const wsEventMap = {
-    'aria2.onDownloadStart': whenStarted,
-    'aria2.onDownloadComplete': whenCompleted,
-    'fallback': (gid) => aria2Active.delete(gid)
-};
-
-async function whenNotify(gid, type) {
-    if (!aria2Storage['notify_' + type]) {
-        return;
-    }
-    let [{ result }] = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
-    let { bittorrent, files } = result;
-    let [{ path, uris }] = files;
-    let title = chrome.i18n.getMessage('download_' + type);
-    let message = bittorrent?.info?.name ?? path?.substring(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
-    chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
-}
-
-function whenStarted(gid) {
-    if (aria2Active.has(gid)) {
-        return;
-    }
-    aria2Active.add(gid);
-    whenNotify(gid, 'start');
-}
-
-function whenCompleted(gid) {
-    aria2Active.delete(gid);
-    whenNotify(gid, 'complete');
-}
 
 function downloadHeaders(tabId, url, referer) {
     let headers;
