@@ -132,7 +132,7 @@ function downloadHeaders(tabId, url, referer) {
             }
         }
     }
-    headers ??= [{ name: 'referer', value: referer }];
+    headers ??= [{ name: 'Referer', value: referer }];
     for (let { name, value } of headers) {
         let lower = name.toLowerCase();
         if (lower === 'user-agent') {
@@ -180,8 +180,8 @@ function downloadHandler(url, referer, filename, hostname, tabId) {
 const ctxMenuMap = {
     'ctxmenu_thisurl': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, null, null, id),
     'ctxmenu_thisimage': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, null, null, id),
-    'ctxmenu_allimages': ({ id, url }) => {
-        aria2Detect = { referer, tabId };
+    'ctxmenu_allimages': (tab) => {
+        aria2Detect = tab;
         openPopupWindow('/pages/images/images.html', 680);
     }
 };
@@ -230,10 +230,10 @@ function managerChanged(response, array) {
 }
 
 function detectedImages(response) {
-    let { tabId, referer } = aria2Detect;
-    let tab = aria2Inspect.get(tabId);
+    let { id, url } = aria2Detect;
+    let tab = aria2Inspect.get(id);
     let json = systemRuntime();
-    json.referer = referer;
+    json.referer = url;
     json.images = tab ? [...tab.images.values()] : [];
     json.request = aria2Request;
     json.tabId = aria2Popup;
