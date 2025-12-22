@@ -16,10 +16,6 @@ let optionsMatches = optionsPane.querySelectorAll('.matches div[id]');
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let matchLET = template.children[0];
 
-if (typeof browser !== 'undefined') {
-    extension.add('firefox');
-}
-
 for (let i18n of document.querySelectorAll('[i18n]')) {
     i18n.textContent = chrome.i18n.getMessage(i18n.getAttribute('i18n'));
 }
@@ -339,4 +335,7 @@ chrome.runtime.sendMessage({ action: 'system_runtime'}, ({ storage, manifest }) 
     aria2Storage = storage;
     aria2Version = manifest.version;
     storageDispatch();
+    if (manifest.browser_specific_settings) {
+        extension.add('firefox');
+    }
 });
