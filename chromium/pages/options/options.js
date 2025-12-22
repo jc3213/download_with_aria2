@@ -334,8 +334,8 @@ function storageUpdate() {
 chrome.runtime.sendMessage({ action: 'system_runtime'}, ({ storage, manifest }) => {
     aria2Storage = storage;
     aria2Version = manifest.version;
-    storageDispatch();
     if (manifest.browser_specific_settings) {
         extension.add('firefox');
     }
+    storageDispatch();
 });
