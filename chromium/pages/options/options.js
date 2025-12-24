@@ -9,7 +9,7 @@ let redoes = [];
 
 let extension = document.body.classList;
 let [menuPane, optionsPane, jsonrpcPane, template] = document.body.children;
-let [saveBtn, undoBtn, redoBtn, tellVer, importBtn, exportBtn, jsonFile, confFile, exporter] = menuPane.children;
+let [saveBtn, undoBtn, redoBtn, tellVer, importBtn, exportBtn, fileEntry, exporter] = menuPane.children;
 let tellUA = document.getElementById('useragent');
 let optionsEntries = optionsPane.querySelectorAll('[name]');
 let optionsMatches = optionsPane.querySelectorAll('.matches div[id]');
@@ -38,7 +38,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-function optionHistorySave(json) {
+function changeHistorySave(json) {
     let { id, new_value } = json;
     updated[id] = new_value;
     undoes.push(json);
@@ -69,13 +69,13 @@ optionsPane.addEventListener('change', (event) => {
     }
     let handler = valueHandlers[type] ?? valueHandlers['string'];
     let new_value = handler(entry, id);
-    optionHistorySave({ id, new_value, old_value: updated[id], type, entry });
+    changeHistorySave({ id, new_value, old_value: updated[id], type, entry });
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
     let entry = event.target;
     let { name: id, value: new_value } = event.target;
-    optionHistorySave({ id, new_value, old_value: updated[id], type: 'text', entry });
+    changeHistorySave({ id, new_value, old_value: updated[id], type: 'text', entry });
 });
 
 function menuEventSave() {
@@ -88,7 +88,7 @@ function menuEventSave() {
 function menuEventUndo() {
     let undo = undoes.pop();
     redoes.push(undo);
-    optionHistoryLoad('undo', 'old_value', undo);
+    changeHistoryLoad('undo', 'old_value', undo);
     saveBtn.disabled = redoBtn.disabled = false;
     undone = true;
     if (undoes.length === 0) {
@@ -99,7 +99,7 @@ function menuEventUndo() {
 function menuEventRedo() {
     let redo = redoes.pop();
     undoes.push(redo);
-    optionHistoryLoad('redo', 'new_value', redo);
+    changeHistoryLoad('redo', 'new_value', redo);
     saveBtn.disabled = undoBtn.disabled = false;
     if (redoes.length === 0) {
         redoBtn.disabled = true;
@@ -128,7 +128,7 @@ const optionHandlers = {
     }
 };
 
-function optionHistoryLoad(action, key, json) {
+function changeHistoryLoad(action, key, json) {
     let { id, type } = json;
     let handler = optionHandlers[type] ?? optionHandlers['string'];
     updated[id] = json.value = json[key];
@@ -157,7 +157,8 @@ function menuEventExport() {
 
 
 function menuEventImport() {
-    extension.contains('jsonrpc') ? confFile.click() : jsonFile.click();
+    fileEntry.accept = extension.contains('jsonrpc') ? '.conf' : '.json';
+    fileEntry.click();
 }
 
 const menuEventMap = {
@@ -194,12 +195,12 @@ function importConf(file) {
     chrome.runtime.sendMessage({ action: 'jsonrpc_update', params: updated });
 }
 
-menuPane.addEventListener('change', (event) => {
+fileEntry.addEventListener('change', (event) => {
     let file = event.target.files[0];
     let reader = new FileReader();
-    reader.onload = (event) => {
-        optionHistoryFlush();
-        file.name.endsWith('.json') ? importJson(reader.result) : importConf(reader.result);
+    reader.onload = () => {
+        fileEntry.accept === '.json' ? importJson(reader.result) : importConf(reader.result);
+        changeHistoryFlush();
         event.target.value = '';
     };
     reader.readAsText(file);
@@ -213,7 +214,7 @@ function optionsDispatch(json) {
     updated = { ...aria2Config };
 }
 
-function optionHistoryFlush() {
+function changeHistoryFlush() {
     undoes = [];
     redoes = [];
     saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
@@ -222,17 +223,17 @@ function optionHistoryFlush() {
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
     chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ options, version }) => {
         if (version) {
-            optionHistoryFlush();
-            optionsDispatch(options);
             tellVer.textContent = tellUA.textContent = version.version;
+            optionsDispatch(options);
+            changeHistoryFlush();
             extension.add('jsonrpc');
         }
     });
 });
 
 document.getElementById('goto-options').addEventListener('click', (event) => {
-    optionHistoryFlush();
     storageDispatch();
+    changeHistoryFlush();
     extension.remove('jsonrpc');
 });
 
@@ -244,7 +245,7 @@ function matchEventAddNew(id, list, entry) {
         let rule = printMatchPattern(list, id, value);
         new_value.push(value);
         list.scrollTop = list.scrollHeight;
-        optionHistorySave({ id, new_value, old_value, type: 'matches', add: { list, index: old_value.length, rule } });
+        changeHistorySave({ id, new_value, old_value, type: 'matches', add: { list, index: old_value.length, rule } });
         entry.value = '';
     }
 }
@@ -255,7 +256,7 @@ function matchEventResort(id, list) {
     let old_order = [...list.children];
     let new_order = old_order.slice().sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    optionHistorySave({ id, new_value, old_value, type: 'resort', list, new_order, old_order });
+    changeHistorySave({ id, new_value, old_value, type: 'resort', list, new_order, old_order });
 }
 
 function matchEventRemove(id, list, _, event) {
@@ -266,7 +267,7 @@ function matchEventRemove(id, list, _, event) {
     let new_value = old_value.slice();
     new_value.splice(index, 1);
     rule.remove();
-    optionHistorySave({ id, new_value, old_value, type: 'matches', remove: { list, index, rule } });
+    changeHistorySave({ id, new_value, old_value, type: 'matches', remove: { list, index, rule } });
 }
 
 const listEventMap = {
