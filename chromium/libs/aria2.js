@@ -11,22 +11,25 @@ class Aria2 {
     #onmessage = null;
     #onclose = null;
 
-    constructor(...args) {
-        let rpc = args.join('#').match(/^((?:http|ws)s?:\/\/[^#]+)#?(.*)$/);
-        this.url = rpc?.[1] ?? 'http://localhost:6800/jsonrpc';
-        this.secret = rpc?.[2] ?? '';
+    constructor(url, secret) {
+        let rpc = url?.split('#');
+        this.url = rpc?.[0] ?? 'http://localhost:6800/jsonrpc';
+        this.secret = rpc?.[1] ?? secret ?? '';
     }
 
     set url(string) {
-        let rpc = string.match(/^(http|ws)(s?:\/\/.*)$/);
-        if (!rpc) {
-            throw new TypeError('Invalid url: expected a valid JSON-RPC endpoint.');
+        if (string.startsWith('http')) {
+            this.call = this.#post;
+            this.#url = this.#xml = string;
+            this.#wsa = string.replace('http', 'ws');
+        } else if (string.startsWith('ws')) {
+            this.call = this.#send;
+            this.#xml = string.replace('ws', 'http');
+            this.#url = this.#wsa = string;
+        } else {
+            throw new TypeError('Invalid JSON-RPC Endpoint: expected http(s):// or ws(s)://');
         }
-        this.#url = string;
-        this.#xml = `http${rpc[2]}`;
-        this.#wsa = `ws${rpc[2]}`;
         this.#tries = 0;
-        this.call = rpc[1] === 'http' ? this.#post : this.#send;
     }
     get url() {
         return this.#url;
