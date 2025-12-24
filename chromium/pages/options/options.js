@@ -4,7 +4,6 @@ let aria2Version;
 
 let updated = {};
 let undoes = [];
-let undone = false;
 let redoes = [];
 
 let extension = document.body.classList;
@@ -43,11 +42,8 @@ function changeHistorySave(json) {
     updated[id] = new_value;
     undoes.push(json);
     saveBtn.disabled = undoBtn.disabled = false;
-    if (undone) {
-        redoes = [];
-        undone = false;
-        redoBtn.disabled = true;
-    }
+    redoes = [];
+    redoBtn.disabled = true;
 }
 
 const valueHandlers = {
@@ -90,7 +86,6 @@ function menuEventUndo() {
     redoes.push(undo);
     changeHistoryLoad('undo', 'old_value', undo);
     saveBtn.disabled = redoBtn.disabled = false;
-    undone = true;
     if (undoes.length === 0) {
         undoBtn.disabled = true;
     }
@@ -107,7 +102,8 @@ function menuEventRedo() {
 }
 
 const optionHandlers = {
-    'string': ({ entry, value }) => entry.value = value,
+    'text': ({ entry, value }) => entry.value = value,
+    'number': ({ entry, value }) => entry.value = value,
     'checkbox': ({ entry, id, value }) => {
         if (entry.hasAttribute('data-css')) {
             extension.toggle(id);
@@ -130,7 +126,7 @@ const optionHandlers = {
 
 function changeHistoryLoad(action, key, json) {
     let { id, type } = json;
-    let handler = optionHandlers[type] ?? optionHandlers['string'];
+    let handler = optionHandlers[type];
     updated[id] = json.value = json[key];
     handler(json, action);
 }
@@ -166,7 +162,7 @@ const menuEventMap = {
     'option_undo': menuEventUndo,
     'option_redo': menuEventRedo,
     'option_export': menuEventExport,
-    'option_import': menuEventImport,
+    'option_import': menuEventImport
 };
 
 menuPane.addEventListener('click', (event) => {
