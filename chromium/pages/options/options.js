@@ -173,7 +173,7 @@ function importConf(file) {
             continue;
         }
         let [key, value] = line.split('=');
-        if (key && value !== undefined) {
+        if (key in aria2Config && value) {
             options[key] = value.split('#')[0].trim();
         }
     }
@@ -182,12 +182,12 @@ function importConf(file) {
 }
 
 fileEntry.addEventListener('change', (event) => {
-    let file = event.target.files[0];
+    let [file] = fileEntry.files;
     let reader = new FileReader();
     reader.onload = () => {
-        fileEntry.accept === '.json' ? importJson(reader.result) : importConf(reader.result);
         changeHistoryFlush();
-        event.target.value = '';
+        fileEntry.accept === '.json' ? importJson(reader.result) : importConf(reader.result);
+        fileEntry.value = '';
     };
     reader.readAsText(file);
 });
@@ -224,7 +224,7 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
 });
 
 function matchEventAddNew(id, list, entry) {
-    let value = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?=\/|$)/)?.[1];
+    let value = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|localhost|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?=\/|$)/)?.[1];
     let old_value = changes[id];
     if (value && !old_value.includes(value)) {
         let new_value = old_value.slice();
