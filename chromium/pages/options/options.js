@@ -81,27 +81,7 @@ function menuEventSave() {
         : storageUpdate();
 }
 
-function menuEventUndo() {
-    let undo = undoes.pop();
-    redoes.push(undo);
-    changeHistoryLoad('undo', 'old_value', undo);
-    saveBtn.disabled = redoBtn.disabled = false;
-    if (undoes.length === 0) {
-        undoBtn.disabled = true;
-    }
-}
-
-function menuEventRedo() {
-    let redo = redoes.pop();
-    undoes.push(redo);
-    changeHistoryLoad('redo', 'new_value', redo);
-    saveBtn.disabled = undoBtn.disabled = false;
-    if (redoes.length === 0) {
-        redoBtn.disabled = true;
-    }
-}
-
-const optionHandlers = {
+const changeDispatch = {
     'text': ({ entry, value }) => entry.value = value,
     'number': ({ entry, value }) => entry.value = value,
     'checkbox': ({ entry, id, value }) => {
@@ -124,17 +104,28 @@ const optionHandlers = {
     }
 };
 
-function changeHistoryLoad(action, key, change) {
+function changesHandler(loadList, saveList, loadButton, saveButton, key, action) {
+    let change = loadList.pop();
     let { id, type } = change;
-    let handler = optionHandlers[type];
     changes[id] = change.value = change[key];
-    handler(change, action);
+    changeDispatch[type](change, action);
+    saveList.push(change);
+    loadButton.disabled = loadList.length === 0;
+    saveButton.disabled = saveBtn.disabled = false;
+}
+
+function menuEventUndo() {
+    changesHandler(undoes, redoes, undoBtn, redoBtn, 'old_value', 'undo');
+}
+
+function menuEventRedo() {
+    changesHandler(redoes, undoes, redoBtn, undoBtn, 'new_value', 'redo');
 }
 
 function menuEventExport() {
     let name;
     let body;
-    let time = new Date().toLocaleString('ja').replace(/[: /]/g, '_');
+    let time = new Date().toLocaleString('ja').replace(/[/ :]/g, '_');
     if (extension.contains('jsonrpc')) {
         name = 'aria2_jsonrpc-' + time + '.conf';
         body = [];
