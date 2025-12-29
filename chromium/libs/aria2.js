@@ -3,6 +3,7 @@ class Aria2 {
     #xml;
     #wsa;
     #secret;
+    #id = 0;
     #ws;
     #tries;
     #retries = 10;
@@ -15,15 +16,14 @@ class Aria2 {
         let rpc = url?.split('#');
         this.url = rpc?.[0] ?? 'http://localhost:6800/jsonrpc';
         this.secret = rpc?.[1] ?? secret ?? '';
+        this.call = this.#post;
     }
 
     set url(string) {
-        if (string.startsWith('http')) {
-            this.call = this.#post;
+        if (string.startsWith('http://') || string.startsWith('https://')) {
             this.#url = this.#xml = string;
             this.#wsa = string.replace('http', 'ws');
-        } else if (string.startsWith('ws')) {
-            this.call = this.#send;
+        } else if (string.startsWith('ws://') || string.startsWith('wss://')) {
             this.#xml = string.replace('ws', 'http');
             this.#url = this.#wsa = string;
         } else {
@@ -79,7 +79,7 @@ class Aria2 {
         return this.#onclose;
     }
 
-    #json(id, arg) {
+    #json(arg) {
         if (Array.isArray(arg)) {
             let calls = [];
             for (let { method, params = [] } of arg) {
@@ -91,21 +91,21 @@ class Aria2 {
             (arg.params ??= []).unshift(this.#secret);
         }
         arg.jsonrpc = '2.0';
-        arg.id = id;
-        return JSON.stringify(arg);
+        arg.id = this.#id++;
+        return arg;
     }
 
     #send(arg) {
         return new Promise((resolve, reject) => {
-            let id = crypto.randomUUID();
-            this[id] = resolve;
+            let obj = this.#json(arg);
+            this[obj.id] = resolve;
             this.#ws.onerror = reject;
-            this.#ws.send(this.#json(id, arg));
+            this.#ws.send(JSON.stringify(obj));
         });
     }
 
     #post(arg) {
-        return fetch(this.#xml, { method: 'POST', body: this.#json('', arg) }).then((response) => {
+        return fetch(this.#xml, { method: 'POST', body: JSON.stringify(this.#json(arg)) }).then((response) => {
             if (response.ok) {
                 return response.json();
             }
@@ -116,24 +116,26 @@ class Aria2 {
     connect() {
         this.#ws = new WebSocket(this.#wsa);
         this.#ws.onopen = (event) => {
+            this.call = this.#send;
             this.#tries = 0;
             this.#onopen?.(event);
         };
         this.#ws.onmessage = (event) => {
-            let message = JSON.parse(event.data);
-            if (message.method) {
-                this.#onmessage?.(message);
+            let obj = JSON.parse(event.data);
+            if (obj.method) {
+                this.#onmessage?.(obj);
             } else {
-                let { id } = message;
-                this[id](message);
+                let { id } = obj;
+                this[id](obj);
                 delete this[id];
             }
         };
         this.#ws.onclose = (event) => {
+            this.call = this.#post;
+            this.#onclose?.(event);
             if (!event.wasClean && this.#tries++ < this.#retries) {
                 setTimeout(() => this.connect(), this.#timeout);
             }
-            this.#onclose?.(event);
         };
     }
 
