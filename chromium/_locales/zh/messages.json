@@ -83,6 +83,24 @@
     "tips_match_remove": {
         "message": "删除此匹配规则"
     },
+    "tips_task_completed": {
+        "message": "已下载"
+    },
+    "tips_task_estimated": {
+        "message": "剩余时间"
+    },
+    "tips_task_fulllength": {
+        "message": "文件大小"
+    },
+    "tips_task_network": {
+        "message": "连接数 (种子数）"
+    },
+    "tips_task_dlspeed": {
+        "message": "下载速度"
+    },
+    "tips_task_upspeed": {
+        "message": "上传速度"
+    },
     "tips_task_pause": {
         "message": "暂停/继续此下载"
     },

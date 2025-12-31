@@ -83,6 +83,24 @@
     "tips_match_remove": {
         "message": "Remove this match pattern"
     },
+    "tips_task_completed": {
+        "message": "Completed size"
+    },
+    "tips_task_estimated": {
+        "message": "Estimated time"
+    },
+    "tips_task_fulllength": {
+        "message": "Total filesize"
+    },
+    "tips_task_network": {
+        "message": "Connections (seeds)"
+    },
+    "tips_task_dlspeed": {
+        "message": "Download speed"
+    },
+    "tips_task_upspeed": {
+        "message": "Upload speed"
+    },
     "tips_task_pause": {
         "message": "Pause/resume this task"
     },
