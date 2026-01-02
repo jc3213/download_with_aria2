@@ -108,7 +108,7 @@ h4 {
 }
 
 .hidden, .template {
-    display: none;
+    display: none !important;
 }
 
 .config {
