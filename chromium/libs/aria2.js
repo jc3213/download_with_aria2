@@ -12,10 +12,10 @@ class Aria2 {
     #onmessage = null;
     #onclose = null;
 
-    constructor(url, secret) {
-        let rpc = url?.split('#');
-        this.url = rpc?.[0] ?? 'http://localhost:6800/jsonrpc';
-        this.secret = rpc?.[1] ?? secret ?? '';
+    constructor(url = 'http://localhost:6800/jsonrpc', secret = '') {
+        let rpc = url.split('#');
+        this.url = rpc[0];
+        this.secret = rpc[1] ?? secret;
         this.call = this.#post;
     }
 
