@@ -1,3 +1,7 @@
+let aria2Manifest = chrome.runtime.getManifest();
+let aria2Firefox = aria2Manifest.browser_specific_settings;
+let aria2Manager = chrome.runtime.getURL('/pages/popup/popup.html');
+let aria2Request = aria2Firefox ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
 let aria2Default = {
     'jsonrpc_url': 'ws://localhost:6800/jsonrpc',
     'jsonrpc_secret': '',
@@ -27,23 +31,19 @@ let aria2Default = {
     'capture_filesize': 0
 };
 
+if (aria2Manifest.manifest_version === 3) {
+    importScripts('libs/aria2.js', 'browserfix.js');
+    setInterval(chrome.runtime.getPlatformInfo, 28000);
+}
+
 let aria2Storage = {};
 let aria2Config = {};
 let aria2Match = {};
 let aria2Version;
 let aria2Active = new Set();
-let aria2Manager = chrome.runtime.getURL('/pages/popup/popup.html');
 let aria2Popup = 0;
 let aria2Inspect = new Map();
 let aria2Detect;
-let aria2Manifest = chrome.runtime.getManifest();
-let aria2Firefox = aria2Manifest.browser_specific_settings;
-let aria2Request = aria2Firefox ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
-
-if (aria2Manifest.manifest_version === 3) {
-    importScripts('libs/aria2.js', 'browserfix.js');
-    setInterval(chrome.runtime.getPlatformInfo, 28000);
-}
 
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
@@ -285,14 +285,12 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({ tabId, url, type, requestHe
 chrome.action ??= chrome.browserAction;
 
 chrome.action.onClicked.addListener(() => {
-    chrome.tabs.query({ currentWindow: true }, (tabs) => {
-        for (let { id, url } of tabs) {
-            if (url.startsWith(aria2Manager)) {
-                chrome.tabs.update(id, { active: true });
-                return;
-            }
+    chrome.tabs.query({ url: aria2Manager, currentWindow: true }, ([tab]) => {
+        if (tab) {
+            chrome.tabs.update(tab.id, { active: true });
+        } else {
+            chrome.tabs.create({ url: aria2Manager, active: true });
         }
-        chrome.tabs.create({ url: aria2Manager, active: true });
     });
 });
 
