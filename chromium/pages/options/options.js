@@ -46,26 +46,21 @@ function changeHistorySave(change) {
     redoBtn.disabled = true;
 }
 
-const valueHandlers = {
-    'string': (entry) => entry.value,
-    'number': (entry) => entry.value | 0,
-    'checkbox': (entry, name) => {
-        if (entry.hasAttribute('data-css')) {
-            extension.toggle(name);
-        }
-        return entry.checked;
-    }
-}
-
 storagePane.addEventListener('change', (event) => {
     let entry = event.target;
-    let { name: id, type } = entry;
+    let { name: id, type, value, checked } = entry;
     if (!id) {
         return;
     }
-    let handler = valueHandlers[type] ?? valueHandlers['string'];
-    let new_value = handler(entry, id);
-    changeHistorySave({ id, new_value, old_value: changes[id], type, entry });
+    if (type === 'number') {
+        value = value | 0;
+    } else if (value === 'checkbox') {
+        value = checked;
+        if (entry.hasAttribute('data-css')) {
+            extension.toggle(id);
+        }
+    }
+    changeHistorySave({ id, new_value: value, old_value: changes[id], type, entry });
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
