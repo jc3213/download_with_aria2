@@ -1,3 +1,7 @@
+const params = new URLSearchParams(location.search);
+const id = params.get('id') | 0;
+const referer = decodeURIComponent(params.get('referer'));
+
 let aria2Storage = {};
 let aria2Config = {};
 let aria2Images = [];
@@ -91,8 +95,12 @@ document.getElementById('proxy').addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
 });
 
-chrome.runtime.sendMessage({ action: 'inspect_images' }, ({ storage, options, images, referer, tabId, manifest, request }) => {
-    manifest.manifest_version === 2 ? aria2HeadersMV2(referer, tabId, request) : aria2HeadersMV3(referer, tabId);
+chrome.tabs.getCurrent((tab) => {
+    tabId = tab.id;
+});
+
+chrome.runtime.sendMessage({ action: 'inspect_images', params: id }, ({ storage, options, manifest, images, request }) => {
+    manifest.manifest_version === 2 ? aria2HeadersMV2(request) : aria2HeadersMV3();
     aria2Storage = storage;
     aria2Config['referer'] = referer;
     for (let entry of jsonrpcEntries) {
@@ -108,21 +116,21 @@ chrome.runtime.sendMessage({ action: 'inspect_images' }, ({ storage, options, im
     }
 });
 
-function aria2HeadersMV2(value, tabId, request) {
+function aria2HeadersMV2(request) {
     request.unshift('blocking');
     chrome.webRequest.onBeforeSendHeaders.addListener(({ requestHeaders }) => {
-        requestHeaders.push({ name: 'Referer', value });;
+        requestHeaders.push({ name: 'Referer', value: referer });;
         return { requestHeaders };
     }, { urls: ['http://*/*', 'https://*/*'], tabId, types: ['image'] }, request);
 }
 
-function aria2HeadersMV3(value, tabId) {
+function aria2HeadersMV3() {
     let addRules = [{
         id: 1,
         priority: 1,
         action: {
             type: 'modifyHeaders',
-            requestHeaders: [{ header: "Referer", operation: "set", value }]
+            requestHeaders: [{ header: "Referer", operation: "set", value: referer }]
         },
         condition: {
             tabIds: [tabId],

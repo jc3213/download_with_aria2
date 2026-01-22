@@ -43,7 +43,6 @@ let aria2Version;
 let aria2Active = new Set();
 let aria2Popup = 0;
 let aria2Inspect = new Map();
-let aria2Detect;
 
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
@@ -158,8 +157,7 @@ function downloadDirectory(filename) {
         }
     }
     if (aria2Storage['folder_enabled'] &&
-        !(aria2Firefox && aria2Storage['folder_firefox']) &&
-        user) {
+        !(aria2Firefox && aria2Storage['folder_firefox']) && user) {
         dir = user;
     }
     return { dir, out };
@@ -180,10 +178,7 @@ function downloadHandler(url, referer, filename, hostname, tabId) {
 const ctxMenuMap = {
     'ctxmenu_thisurl': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, null, null, id),
     'ctxmenu_thisimage': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, null, null, id),
-    'ctxmenu_allimages': (tab) => {
-        aria2Detect = tab;
-        openPopupWindow('/pages/images/images.html', 680);
-    }
+    'ctxmenu_allimages': ({ id, url }) => openPopupWindow(`/pages/images/images.html?id=${id}&referer=${encodeURIComponent(url)}`, 680)
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -229,14 +224,11 @@ function managerChanged(response, array) {
     chrome.storage.sync.set({ 'manager_queue': array }, response);
 }
 
-function detectedImages(response) {
-    let { id, url } = aria2Detect;
-    let tab = aria2Inspect.get(id);
+function detectedImages(response, id) {
     let json = systemRuntime();
-    json.referer = url;
+    let tab = aria2Inspect.get(id);
     json.images = tab ? [...tab.images.values()] : [];
     json.request = aria2Request;
-    json.tabId = aria2Popup;
     response(json);
 }
 
@@ -302,32 +294,30 @@ function MatchHost(key) {
     }
     let empty = data.length === 0;
     let global = Boolean(rules['*']);
-    aria2Match[key] = (host) => rules[host] ??= TestHost(empty, global, rules, host);
+    aria2Match[key] = (host) => {
+        if (empty) {
+            return false;
+        }
+        if (global) {
+            return true;
+        }
+        while (true) {
+            if (rules[host]) {
+                return true;
+            }
+            let dot = host.indexOf('.');
+            if (dot < 0) {
+                return false;
+            }
+            host = host.substring(dot + 1);
+        }
+    };
 }
 
 function MatchSize(key) {
     let data = aria2Storage[key] * 1048576;
     let enabled = data > 0;
     aria2Match[key] = (size) => enabled && data > size;
-}
-
-function TestHost(empty, global, rules, host) {
-    if (empty) {
-        return false;
-    }
-    if (global) {
-        return true;
-    }
-    while (true) {
-        if (rules[host]) {
-            return true;
-        }
-        let dot = host.indexOf('.');
-        if (dot < 0) {
-            return false;
-        }
-        host = host.substring(dot + 1);
-    }
 }
 
 function ctxMenuCreate(id, contexts, parentId) {
