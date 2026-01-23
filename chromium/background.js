@@ -157,7 +157,8 @@ function downloadDirectory(filename) {
         }
     }
     if (aria2Storage['folder_enabled'] &&
-        !(aria2Firefox && aria2Storage['folder_firefox']) && user) {
+        !(aria2Firefox && aria2Storage['folder_firefox']) &&
+        user) {
         dir = user;
     }
     return { dir, out };
@@ -377,7 +378,13 @@ function captureEvaluate(hostname, filename, fileSize) {
 
 function getHostname(url) {
     let host = url.split('/')[2];
-    return host.includes('@') ? host.substring(host.indexOf('@') + 1) : host;
+    if (host.includes('@')) {
+        host = host.substring(host.indexOf('@') + 1);
+    }
+    if (host.includes(':')) {
+        host = host.substring(0, host.indexOf(':'));
+    }
+    return host
 }
 
 function toolbarCounter() {
