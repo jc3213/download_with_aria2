@@ -3,9 +3,9 @@ class Aria2 {
     #xml;
     #wsa;
     #secret;
-    #id = 0;
     #ws;
-    #tries;
+    #id = 0;
+    #tries = 0;
     #retries = 10;
     #timeout = 10000;
     #onopen = null;
@@ -29,7 +29,6 @@ class Aria2 {
         } else {
             throw new TypeError('Invalid JSON-RPC Endpoint: expected http(s):// or ws(s)://');
         }
-        this.#tries = 0;
     }
     get url() {
         return this.#url;
