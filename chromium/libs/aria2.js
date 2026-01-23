@@ -133,13 +133,16 @@ class Aria2 {
         this.#ws.onclose = (event) => {
             this.call = this.#post;
             this.#onclose?.(event);
-            if (!event.wasClean && this.#tries++ < this.#retries) {
+            if (this.#tries++ < this.#retries) {
                 setTimeout(() => this.connect(), this.#timeout);
+            } else {
+                this.#tries = 0;
             }
         };
     }
 
     disconnect() {
+        this.#tries = Infinity;
         this.#ws.close();
     }
 }
