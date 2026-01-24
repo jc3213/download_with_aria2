@@ -399,7 +399,7 @@ function openPopupWindow(url, winSize) {
         chrome.tabs.query({ url }, ([tab]) => {
             if (tab) {
                 chrome.windows.update(tab.windowId, { focused: true, left, width, top, height });
-                chrome.tabs.update(tab.tabId, { url, active: true });
+                chrome.tabs.update(tab.id, { url, active: true });
             } else {
                 chrome.windows.create({ url, type: 'popup', left, width, top, height });
             }
