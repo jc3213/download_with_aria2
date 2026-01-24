@@ -397,7 +397,6 @@ function openPopupWindow(url, winSize) {
         height = winSize;
         width = 698;
         chrome.tabs.query({ url }, ([tab]) => {
-            console.log(tab);
             if (tab) {
                 chrome.windows.update(tab.windowId, { focused: true, left, width, top, height });
                 chrome.tabs.update(tab.tabId, { url, active: true });
