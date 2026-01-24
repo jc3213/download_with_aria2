@@ -1,8 +1,10 @@
-let aria2Manifest = chrome.runtime.getManifest();
-let aria2Firefox = aria2Manifest.browser_specific_settings;
-let aria2Manager = chrome.runtime.getURL('/pages/popup/popup.html');
-let aria2Request = aria2Firefox ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
-let aria2Default = {
+const addonManager = chrome.runtime.getURL('/pages/popup/popup.html');
+const addonImages = chrome.runtime.getURL('/pages/images/images.html');
+const addonDownload = chrome.runtime.getURL('/pages/newdld/newdld.html');
+const systemManifest = chrome.runtime.getManifest();
+const systemFirefox = systemManifest.browser_specific_settings;
+const systemHeaders = systemFirefox ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
+const systemStorage = {
     'jsonrpc_url': 'ws://localhost:6800/jsonrpc',
     'jsonrpc_secret': '',
     'jsonrpc_retries': -1,
@@ -31,7 +33,7 @@ let aria2Default = {
     'capture_filesize': 0
 };
 
-if (aria2Manifest.manifest_version === 3) {
+if (systemManifest.manifest_version === 3) {
     importScripts('libs/aria2.js', 'browserfix.js');
     setInterval(chrome.runtime.getPlatformInfo, 28000);
 }
@@ -41,7 +43,6 @@ let aria2Config = {};
 let aria2Match = {};
 let aria2Version;
 let aria2Active = new Set();
-let aria2Popup = 0;
 let aria2Inspect = new Map();
 
 const aria2RPC = new Aria2();
@@ -157,7 +158,7 @@ function downloadDirectory(filename) {
         }
     }
     if (aria2Storage['folder_enabled'] &&
-        !(aria2Firefox && aria2Storage['folder_firefox']) &&
+        !(systemFirefox && aria2Storage['folder_firefox']) &&
         user) {
         dir = user;
     }
@@ -179,7 +180,7 @@ function downloadHandler(url, referer, filename, hostname, tabId) {
 const ctxMenuMap = {
     'ctxmenu_thisurl': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, null, null, id),
     'ctxmenu_thisimage': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, null, null, id),
-    'ctxmenu_allimages': ({ id, url }) => openPopupWindow(`/pages/images/images.html?id=${id}&referer=${encodeURIComponent(url)}`, 680)
+    'ctxmenu_allimages': ({ id, url }) => openPopupWindow(addonImages + '?id=' + id + '&referer=' + encodeURIComponent(url), 680)
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -188,7 +189,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
 const commandMap = {
     'open_options': () => chrome.runtime.openOptionsPage(),
-    'open_new_download': () => openPopupWindow('/pages/newdld/newdld.html', 462)
+    'open_new_download': () => openPopupWindow(addonDownload, 462)
 };
 
 chrome.commands.onCommand.addListener((command) => {
@@ -198,7 +199,7 @@ chrome.commands.onCommand.addListener((command) => {
 function systemRuntime() {
     return {
         storage: aria2Storage,
-        manifest: aria2Manifest,
+        manifest: systemManifest,
         options: aria2Config,
         version: aria2Version
     };
@@ -229,7 +230,7 @@ function detectedImages(response, id) {
     let json = systemRuntime();
     let tab = aria2Inspect.get(id);
     json.images = tab ? [...tab.images.values()] : [];
-    json.request = aria2Request;
+    json.request = systemHeaders;
     response(json);
 }
 
@@ -240,7 +241,7 @@ const messageDispatch = {
     'manager_update': managerChanged,
     'inspect_images': detectedImages,
     'jsonrpc_download': (response, params) => aria2RPC.call(params).then(response).catch(response),
-    'open_new_download': () => openPopupWindow('/pages/newdld/newdld.html', 462)
+    'open_new_download': () => openPopupWindow(addonDownload, 462)
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
@@ -259,9 +260,6 @@ chrome.tabs.onUpdated.addListener((tabId, { url }) => {
 });
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({ tabId, url, type, requestHeaders }) => {
-    if (tabId === aria2Popup) {
-        return;
-    }
     let tab = aria2Inspect.get(tabId);
     if (!tab) {
         tab = { images: new Map() };
@@ -273,16 +271,16 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({ tabId, url, type, requestHe
     } else {
         tab[url] = requestHeaders;
     }
-}, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, aria2Request);
+}, { urls: [ 'http://*/*', 'https://*/*' ], types: [ 'main_frame', 'sub_frame', 'image', 'other' ] }, systemHeaders);
 
 chrome.action ??= chrome.browserAction;
 
 chrome.action.onClicked.addListener(() => {
-    chrome.tabs.query({ url: aria2Manager, currentWindow: true }, ([tab]) => {
+    chrome.tabs.query({ url: addonManager, currentWindow: true }, ([tab]) => {
         if (tab) {
             chrome.tabs.update(tab.id, { active: true });
         } else {
-            chrome.tabs.create({ url: aria2Manager, active: true });
+            chrome.tabs.create({ url: addonManager, active: true });
         }
     });
 });
@@ -366,7 +364,7 @@ function storageDispatch(json) {
 }
 
 chrome.storage.sync.get(null, (json) => {
-    let storage = { ...aria2Default, ...json };
+    let storage = { ...systemStorage, ...json };
     storageDispatch(storage);
 });
 
@@ -398,14 +396,13 @@ function openPopupWindow(url, winSize) {
         left = (left + width - 710) / 2 | 0;
         height = winSize;
         width = 698;
-        chrome.tabs.get(aria2Popup, (tab) => {
-            if (chrome.runtime.lastError) {
-                chrome.windows.create({ url, type: 'popup', left, width, top, height }, (popup) => {
-                    aria2Popup = popup.tabs[0].id;
-                });
-            } else {
+        chrome.tabs.query({ url }, ([tab]) => {
+            console.log(tab);
+            if (tab) {
                 chrome.windows.update(tab.windowId, { focused: true, left, width, top, height });
-                chrome.tabs.update(aria2Popup, { url, active: true });
+                chrome.tabs.update(tab.tabId, { url, active: true });
+            } else {
+                chrome.windows.create({ url, type: 'popup', left, width, top, height });
             }
         });
     });
