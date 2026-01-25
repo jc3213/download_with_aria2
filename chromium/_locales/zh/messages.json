@@ -62,9 +62,6 @@
     "common_submit": {
         "message": "确认"
     },
-    "common_upload": {
-        "message": "上传"
-    },
     "common_save": {
         "message": "保存"
     },
@@ -355,6 +352,9 @@
     },
     "popup_stopped": {
         "message": "停止"
+    },
+    "task_add_meta": {
+        "message": "添加文件"
     },
     "task_entry": {
         "message": "下载链接"
