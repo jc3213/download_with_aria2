@@ -51,7 +51,7 @@ function menuSubmit() {
 }
 
 const menuEventMap = {
-    'common_upload': () => metaFiles.click(),
+    'task_add_meta': () => metaFiles.click(),
     'common_submit': menuSubmit
 };
 
@@ -73,26 +73,27 @@ metaFiles.addEventListener('change', (event) => {
     metaFileDownload(event.target.files)
 });
 
-const metaMap = new Set(['torrent', 'meta4', 'metalink']);
-
 async function metaFileDownload(files) {
     aria2Config['out'] = aria2Config['referer'] = aria2Config['user-agent'] = null;
     let datas = [];
     for (let file of files) {
         let { name } = file;
-        let type = name.substring(name.lastIndexOf('.') + 1);
-        if (!metaMap.has(type)) {
+        let method;
+        let params = [aria2Config];
+        if (name.endsWith('.torrent')) {
+            method = 'aria2.addTorrent';
+            params.unshift([]);
+        } else if (name.endsWith('.meta4') || name.endsWith('.metalink')) {
+            method = 'aria2.addMetalink';
+        } else {
             continue;
         }
         datas.push(new Promise((resolve) => {
             let reader = new FileReader();
             reader.onload = (event) => {
                 let { result } = reader;
-                let body = result.substring(result.indexOf(',') + 1);
-                let session = type === 'torrent'
-                    ? { method: 'aria2.addTorrent', params: [body, [], aria2Config] }
-                    : { method: 'aria2.addMetalink', params: [body, aria2Config] };
-                resolve(session);
+                params.unshift(result.substring(result.indexOf(',') + 1));
+                resolve({ method: params });
             };
             reader.readAsDataURL(file);
         }));
