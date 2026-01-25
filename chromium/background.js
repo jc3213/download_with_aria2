@@ -196,15 +196,6 @@ chrome.commands.onCommand.addListener((command) => {
     commandMap[command]?.();
 });
 
-function systemRuntime() {
-    return {
-        storage: aria2Storage,
-        manifest: systemManifest,
-        options: aria2Config,
-        version: aria2Version
-    };
-}
-
 function storageChanged(response, json) {
     aria2RPC.disconnect();
     storageDispatch(json);
@@ -227,7 +218,7 @@ function managerChanged(response, array) {
 }
 
 function detectedImages(response, id) {
-    let json = systemRuntime();
+    let json = { manifest: systemManifest, storage: aria2Storage, options: aria2Config };
     let tab = aria2Inspect.get(id);
     json.images = tab ? [...tab.images.values()] : [];
     json.request = systemHeaders;
@@ -235,7 +226,7 @@ function detectedImages(response, id) {
 }
 
 const messageDispatch = {
-    'system_runtime': (response) => response(systemRuntime()),
+    'system_runtime': (response) => response({ manifest: systemManifest, storage: aria2Storage, options: aria2Config, version: aria2Version }),
     'storage_update': storageChanged,
     'jsonrpc_update': optionsChanged,
     'manager_update': managerChanged,
