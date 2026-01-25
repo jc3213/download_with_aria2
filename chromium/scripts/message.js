@@ -7,10 +7,9 @@ function messgeChannel(id, message) {
 function downloadHandler(id, args) {
     let params = [];
     for (let arg of args) {
-        let otype = typeof arg;
-        if (otype === 'string') {
+        if (typeof arg === 'string') {
             params.push({ method: 'aria2.addUri', params: [[arg]] });
-        } else if (otype === 'object' && arg.url) {
+        } else if (arg?.url) {
             params.push({ method: 'aria2.addUri', params: [[arg.url], arg.options ?? {}] });
         }
     }
