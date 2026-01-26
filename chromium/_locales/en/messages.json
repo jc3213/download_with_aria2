@@ -62,9 +62,6 @@
     "common_submit": {
         "message": "Submit"
     },
-    "common_save": {
-        "message": "Save"
-    },
     "tips_match_addnew": {
         "message": "Add new match patterns"
     },
@@ -112,6 +109,9 @@
     },
     "tips_proxy_server": {
         "message": "Set the preset proxy server"
+    },
+    "option_save": {
+        "message": "Save"
     },
     "option_undo": {
         "message": "Undo"

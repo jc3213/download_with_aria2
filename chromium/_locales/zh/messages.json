@@ -62,9 +62,6 @@
     "common_submit": {
         "message": "确认"
     },
-    "common_save": {
-        "message": "保存"
-    },
     "tips_match_addnew": {
         "message": "添加匹配规则"
     },
@@ -112,6 +109,9 @@
     },
     "tips_proxy_server": {
         "message": "设置预设的代理服务器"
+    },
+    "option_save": {
+        "message": "保存"
     },
     "option_undo": {
         "message": "撤销"
