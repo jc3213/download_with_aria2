@@ -54,7 +54,7 @@ storagePane.addEventListener('change', (event) => {
     }
     if (type === 'number') {
         value = value | 0;
-    } else if (value === 'checkbox') {
+    } else if (type === 'checkbox') {
         value = checked;
         if (entry.hasAttribute('data-css')) {
             extension.toggle(id);
@@ -71,9 +71,11 @@ jsonrpcPane.addEventListener('change', (event) => {
 
 function menuEventSave() {
     saveBtn.disabled = true;
-    extension.contains('jsonrpc')
-        ? chrome.runtime.sendMessage({ action: 'jsonrpc_update', params: changes })
-        : storageUpdate();
+    if (extension.contains('jsonrpc')) {
+        chrome.runtime.sendMessage({ action: 'jsonrpc_update', params: changes });
+    } else {
+        storageUpdate();
+    }
 }
 
 const changeDispatch = {
@@ -143,7 +145,7 @@ function menuEventImport() {
 }
 
 const menuEventMap = {
-    'common_save': menuEventSave,
+    'option_save': menuEventSave,
     'option_undo': menuEventUndo,
     'option_redo': menuEventRedo,
     'option_export': menuEventExport,
