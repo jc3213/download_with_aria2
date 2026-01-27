@@ -35,7 +35,7 @@ class Aria2 {
     }
 
     set secret(string) {
-        this.#secret = `token:${string}`;
+        this.#secret = 'token:' + string;
     }
     get secret() {
         return this.#secret.substring(6);
@@ -108,7 +108,7 @@ class Aria2 {
             if (response.ok) {
                 return response.json();
             }
-            throw new Error(`Network error: ${response.status} ${response.statusText}`);
+            throw new Error('Network error: ' + response.status + ' ' + response.statusText);
         });
     }
 

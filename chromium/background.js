@@ -218,11 +218,9 @@ function managerChanged(response, array) {
 }
 
 function detectedImages(response, id) {
-    let json = { manifest: systemManifest, storage: aria2Storage, options: aria2Config };
     let tab = aria2Inspect.get(id);
-    json.images = tab ? [...tab.images.values()] : [];
-    json.request = systemHeaders;
-    response(json);
+    let images = tab ? [...tab.images.values()] : [];
+    response({ manifest: systemManifest, request: systemHeaders, images, storage: aria2Storage, options: aria2Config });
 }
 
 const messageDispatch = {
@@ -378,7 +376,7 @@ function getHostname(url) {
 
 function toolbarCounter() {
     let number = aria2Active.size;
-    chrome.action.setBadgeText({ text: !number ? '' : String(number) });
+    chrome.action.setBadgeText({ text: !number ? '' : `${number}` });
 }
 
 function openPopupWindow(url, winSize) {
