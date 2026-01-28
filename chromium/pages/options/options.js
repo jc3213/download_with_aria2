@@ -78,16 +78,15 @@ function menuEventSave() {
     }
 }
 
-const changeDispatch = {
-    'text': ({ entry, value }) => entry.value = value,
-    'number': ({ entry, value }) => entry.value = value,
-    'checkbox': ({ entry, id, value }) => {
+function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, action) {
+    let change = loadList.pop();
+    let { id, type, [key]: value, entry, add, remove, list, old_order, new_order } = change;
+    if (type === 'checkbox') {
         if (entry.hasAttribute('data-css')) {
             extension.toggle(id);
         }
         entry.checked = value;
-    },
-    'matches': ({ add, remove }, action) => {
+    } else if (type === 'rules') {
         if (action === 'undo') {
             add?.rule?.remove();
             remove?.list?.insertBefore(remove.rule, remove.list.children[remove.index]);
@@ -95,28 +94,14 @@ const changeDispatch = {
             add?.list?.insertBefore(add.rule, add.list.children[add.index]);
             remove?.rule?.remove();
         }
-    },
-    'resort': ({ list, old_order, new_order }, action) => {
+    } else if (type === 'resort') {
         action === 'undo' ? list.append(...old_order) : list.append(...new_order);
+    } else {
+        entry.value = value;
     }
-};
-
-function changesHandler(loadList, saveList, loadButton, saveButton, key, action) {
-    let change = loadList.pop();
-    let { id, type } = change;
-    changes[id] = change.value = change[key];
-    changeDispatch[type](change, action);
     saveList.push(change);
     loadButton.disabled = loadList.length === 0;
     saveButton.disabled = saveBtn.disabled = false;
-}
-
-function menuEventUndo() {
-    changesHandler(undoes, redoes, undoBtn, redoBtn, 'old_value', 'undo');
-}
-
-function menuEventRedo() {
-    changesHandler(redoes, undoes, redoBtn, undoBtn, 'new_value', 'redo');
 }
 
 function menuEventExport() {
@@ -146,8 +131,8 @@ function menuEventImport() {
 
 const menuEventMap = {
     'option_save': menuEventSave,
-    'option_undo': menuEventUndo,
-    'option_redo': menuEventRedo,
+    'option_undo': () => changeHistoryLoad(undoes, redoes, undoBtn, redoBtn, 'old_value', 'undo'),
+    'option_redo': () => changeHistoryLoad(redoes, undoes, redoBtn, undoBtn, 'new_value', 'redo'),
     'option_export': menuEventExport,
     'option_import': menuEventImport
 };
@@ -228,7 +213,7 @@ function matchEventAddNew(id, list, entry) {
         let rule = printMatchPattern(list, id, value);
         new_value.push(value);
         list.scrollTop = list.scrollHeight;
-        changeHistorySave({ id, new_value, old_value, type: 'matches', add: { list, index: old_value.length, rule } });
+        changeHistorySave({ id, new_value, old_value, type: 'rules', add: { list, index: old_value.length, rule } });
         entry.value = '';
     }
 }
@@ -250,7 +235,7 @@ function matchEventRemove(id, list, _, event) {
     let new_value = old_value.slice();
     new_value.splice(index, 1);
     rule.remove();
-    changeHistorySave({ id, new_value, old_value, type: 'matches', remove: { list, index, rule } });
+    changeHistorySave({ id, new_value, old_value, type: 'rules', remove: { list, index, rule } });
 }
 
 const listEventMap = {
