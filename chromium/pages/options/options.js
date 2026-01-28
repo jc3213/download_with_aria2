@@ -80,7 +80,7 @@ function menuEventSave() {
 
 function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, action) {
     let change = loadList.pop();
-    let { id, type, [key]: value, entry, add, remove, list, old_order, new_order } = change;
+    let { id, type, [key]: value, entry, add, remove, sort } = change;
     if (type === 'checkbox') {
         if (entry.hasAttribute('data-css')) {
             extension.toggle(id);
@@ -95,7 +95,8 @@ function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, acti
             remove?.rule?.remove();
         }
     } else if (type === 'resort') {
-        action === 'undo' ? list.append(...old_order) : list.append(...new_order);
+        let order = action === 'undo' ? sort.old_order : sort.new_order;
+        sort.list.append(...order);
     } else {
         entry.value = value;
     }
@@ -224,7 +225,7 @@ function matchEventResort(id, list) {
     let old_order = [...list.children];
     let new_order = old_order.slice().sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    changeHistorySave({ id, new_value, old_value, type: 'resort', list, new_order, old_order });
+    changeHistorySave({ id, new_value, old_value, type: 'resort', sort: { list, new_order, old_order } });
 }
 
 function matchEventRemove(id, list, _, event) {
