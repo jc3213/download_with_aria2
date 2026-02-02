@@ -78,7 +78,7 @@ function menuEventSave() {
     }
 }
 
-function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, action) {
+function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, todo) {
     let change = loadList.pop();
     let { id, type, [key]: value, entry, add, remove, sort } = change;
     if (type === 'checkbox') {
@@ -87,7 +87,7 @@ function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, acti
         }
         entry.checked = value;
     } else if (type === 'rules') {
-        if (action === 'undo') {
+        if (todo === 'undo') {
             add?.rule?.remove();
             remove?.list?.insertBefore(remove.rule, remove.list.children[remove.index]);
         } else {
@@ -95,11 +95,12 @@ function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, acti
             remove?.rule?.remove();
         }
     } else if (type === 'resort') {
-        let order = action === 'undo' ? sort.old_order : sort.new_order;
+        let order = todo === 'undo' ? sort.old_order : sort.new_order;
         sort.list.append(...order);
     } else {
         entry.value = value;
     }
+    changes[id] = value;
     saveList.push(change);
     loadButton.disabled = loadList.length === 0;
     saveButton.disabled = saveBtn.disabled = false;
