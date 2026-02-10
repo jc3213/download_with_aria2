@@ -2,7 +2,7 @@ const params = new URLSearchParams(location.search);
 const id = params.get('id') | 0;
 const referer = decodeURIComponent(params.get('referer'));
 
-let aria2Storage = {};
+let aria2Proxy;
 let aria2Config = {};
 let aria2Images = [];
 
@@ -92,7 +92,7 @@ jsonrpcPane.addEventListener('change', (event) => {
 });
 
 document.getElementById('proxy').addEventListener('click', (event) => {
-    aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
+    aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Proxy;
 });
 
 chrome.tabs.getCurrent((tab) => {
@@ -101,7 +101,7 @@ chrome.tabs.getCurrent((tab) => {
 
 chrome.runtime.sendMessage({ action: 'inspect_images', params: id }, ({ storage, options, manifest, images, request }) => {
     manifest.manifest_version === 2 ? aria2HeadersMV2(request) : aria2HeadersMV3();
-    aria2Storage = storage;
+    aria2Proxy = storage['proxy_server'];
     aria2Config['referer'] = referer;
     for (let entry of jsonrpcEntries) {
         let { name } = entry;
