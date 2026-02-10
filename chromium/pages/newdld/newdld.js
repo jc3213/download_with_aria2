@@ -1,4 +1,4 @@
-let aria2Storage = {};
+let aria2Proxy;
 let aria2Config = {};
 let aria2Referer = new Map();
 
@@ -75,30 +75,31 @@ metaFiles.addEventListener('change', (event) => {
 
 async function metaFileDownload(files) {
     aria2Config['out'] = aria2Config['referer'] = aria2Config['user-agent'] = null;
-    let datas = [];
+    let tasks = [];
     for (let file of files) {
         let { name } = file;
         let method;
-        let params = [aria2Config];
+        let params;
         if (name.endsWith('.torrent')) {
             method = 'aria2.addTorrent';
-            params.unshift([]);
+            params = [[], aria2Config];
         } else if (name.endsWith('.meta4') || name.endsWith('.metalink')) {
             method = 'aria2.addMetalink';
+            params = [aria2Config];
         } else {
             continue;
         }
-        datas.push(new Promise((resolve) => {
+        tasks.push(new Promise((resolve) => {
             let reader = new FileReader();
             reader.onload = (event) => {
                 let { result } = reader;
                 params.unshift(result.substring(result.indexOf(',') + 1));
-                resolve({ method: params });
+                resolve({ method, params });
             };
             reader.readAsDataURL(file);
         }));
     }
-    let params = await Promise.all(datas);
+    let params = await Promise.all(tasks);
     chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
 }
 
@@ -135,7 +136,7 @@ refererPane.addEventListener('click', (event) => {
 });
 
 document.getElementById('proxy').addEventListener('click', (event) => {
-    aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Storage['proxy_server'];
+    aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Proxy;
 });
 
 function refererModalList(id, url) {
@@ -169,7 +170,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 });
 
 chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage, options }) => {
-    aria2Storage = storage;
+    aria2Proxy = storage['proxy_server'];
     limitEntry.value = '0';
     for (let entry of jsonrpcEntries) {
         let { name } = entry;
