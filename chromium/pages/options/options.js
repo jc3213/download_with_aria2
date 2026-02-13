@@ -208,7 +208,7 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
 });
 
 function matchEventAddNew(id, list, entry) {
-    let value = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|localhost|(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]{2,})(?=\/|$)/)?.[1];
+    let value = entry.value.match(/^(?:https?:\/\/|\/\/)?((?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]{2,})(?=\/|$)/)?.[1];
     let old_value = changes[id];
     if (value && !old_value.includes(value)) {
         let new_value = old_value.slice();
