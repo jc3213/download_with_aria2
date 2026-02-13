@@ -180,11 +180,11 @@ function downloadHandler(url, referer, filename, hostname, tabId) {
 const ctxMenuMap = {
     'ctxmenu_thisurl': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, null, null, id),
     'ctxmenu_thisimage': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, null, null, id),
-    'ctxmenu_allimages': ({ id, url }) => openPopupWindow(addonImages + '?id=' + id + '&referer=' + encodeURIComponent(url), 680)
+    'ctxmenu_allimages': (tab) => openPopupWindow(addonImages + '?' + tab.id, 680)
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    ctxMenuMap[info.menuItemId]?.(tab, info);
+    ctxMenuMap[info.menuItemId](tab, info);
 });
 
 const commandMap = {
@@ -193,7 +193,7 @@ const commandMap = {
 };
 
 chrome.commands.onCommand.addListener((command) => {
-    commandMap[command]?.();
+    commandMap[command]();
 });
 
 function storageChanged(response, json) {
@@ -234,7 +234,7 @@ const messageDispatch = {
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
-    messageDispatch[action]?.(response, params);
+    messageDispatch[action](response, params);
     return true;
 });
 

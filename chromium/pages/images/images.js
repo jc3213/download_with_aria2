@@ -1,6 +1,4 @@
-const params = new URLSearchParams(location.search);
-const id = params.get('id') | 0;
-const referer = decodeURIComponent(params.get('referer'));
+const id = location.search.substring(1) | 0;
 
 let aria2Proxy;
 let aria2Config = {};
@@ -93,6 +91,10 @@ jsonrpcPane.addEventListener('change', (event) => {
 
 document.getElementById('proxy').addEventListener('click', (event) => {
     aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Proxy;
+});
+
+chrome.tabs.get(id, (tab) => {
+    referer = tab.url;
 });
 
 chrome.tabs.getCurrent((tab) => {
