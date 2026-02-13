@@ -180,7 +180,7 @@ function downloadHandler(url, referer, filename, hostname, tabId) {
 const ctxMenuMap = {
     'ctxmenu_thisurl': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, null, null, id),
     'ctxmenu_thisimage': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, null, null, id),
-    'ctxmenu_allimages': (tab) => openPopupWindow(addonImages + '?' + tab.id, 680)
+    'ctxmenu_allimages': ({ id }) => openPopupWindow(addonImages + '?' + id, 680)
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
