@@ -356,6 +356,12 @@ function storageDispatch(json) {
 chrome.storage.sync.get(null, (json) => {
     let storage = { ...systemStorage, ...json };
     storageDispatch(storage);
+    if (storage['manager_queue']) {
+        storage['manager_filters'] = storage['manager_queue'];
+        delete storage['manager_queue'];
+        chrome.storage.sync.set(storage);
+        chrome.storage.sync.remove('manager_queue');
+    }
 });
 
 function captureEvaluate(hostname, filename, fileSize) {
