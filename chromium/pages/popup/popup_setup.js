@@ -39,7 +39,7 @@ function aria2StorageChanged(json) {
 }
 
 chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage }) => {
-    taskFilters(storage['manager_queue'], (params) => {
+    taskFilters(storage['manager_filters'], (params) => {
         chrome.runtime.sendMessage({ action: 'manager_update', params });
     });
     aria2StorageChanged(storage);

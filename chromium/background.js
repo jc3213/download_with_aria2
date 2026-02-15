@@ -11,6 +11,7 @@ const systemStorage = {
     'jsonrpc_timeout': 10,
     'manager_newtab': false,
     'manager_interval': 10,
+    'manager_filters': [],
     'ctxmenu_enabled': true,
     'ctxmenu_cascade': true,
     'ctxmenu_thisurl': true,

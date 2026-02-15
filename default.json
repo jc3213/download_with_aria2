@@ -19,6 +19,7 @@
     "jsonrpc_secret": "",
     "jsonrpc_timeout":, 10,
     "jsonrpc_url": "ws://localhost:6800/jsonrpc",
+    "manager_filters": [],
     "manager_interval": 10,
     "manager_newtab": false,
     "notify_complete": false,
