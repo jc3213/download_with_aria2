@@ -303,6 +303,17 @@ function MatchHost(key) {
     };
 }
 
+function MatchType(key) {
+    let rules = {};
+    for (let i of aria2Storage[key]) {
+        rules[i.toLowerCase()] = true;
+    }
+    aria2Match[key] = (name) => {
+        let type = name.substring(name.lastIndexOf('.') + 1);
+        return rules[type.toLowerCase()];
+    };
+}
+
 function MatchSize(key) {
     let data = aria2Storage[key] * 1048576;
     let enabled = data > 0;
@@ -329,7 +340,7 @@ function storageDispatch(json) {
     MatchHost('headers_domains');
     MatchHost('proxy_domains');
     MatchHost('capture_domains');
-    MatchHost('capture_extensions');
+    MatchType('capture_extensions');
     MatchSize('capture_filesize');
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
