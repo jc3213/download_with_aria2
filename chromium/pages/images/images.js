@@ -9,10 +9,6 @@ let [selectAll, selectNone, selectFlip, submitBtn, optionsBtn] = menu.children;
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let preview = imagePane.children[0];
 
-document.addEventListener('keydown', (event) => {
-    hotkeyMap[event.code]?.(event);
-});
-
 galleryPane.addEventListener('click', (event) => {
     if (event.target.localName === 'img') {
         event.target.classList.toggle('checked');
