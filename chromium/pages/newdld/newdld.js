@@ -16,21 +16,34 @@ for (let i18n of document.querySelectorAll('[i18n-tips]')) {
     i18n.title = chrome.i18n.getMessage(i18n.getAttribute('i18n-tips'));
 }
 
-function ctrlHandler(event, button) {
-    if (event.ctrlKey) {
-        event.preventDefault();
-        button.click();
-    }
+const hotkeys = {};
+
+for (let hotkey of document.querySelectorAll('[hotkey]')) {
+    let keys = hotkey.getAttribute('hotkey');
+    hotkeys[keys] = hotkey;
 }
 
-const hotkeyMap = {
-    'Enter': (event) => ctrlHandler(event, submitBtn),
-    'Backquote': (event) => ctrlHandler(event, uploadBtn),
-    'Escape': () => close()
-};
-
 document.addEventListener('keydown', (event) => {
-    hotkeyMap[event.code]?.(event);
+    let { ctrlKey, altKey, shiftKey, key } = event;
+    if (key === 'Escape') {
+        close();
+    }
+    let keys = [];
+    if (ctrlKey) {
+        keys.push('ctrl');
+    }
+    if (altKey) {
+        keys.push('alt');
+    }
+    if (shiftKey) {
+        keys.push('shift');
+    }
+    keys.push(key.toLowerCase());
+    let hotkey = hotkeys[keys.join('+')];
+    if (hotkey) {
+        event.preventDefault();
+        hotkey.click();
+    }
 });
 
 document.addEventListener('click', (event) => {
