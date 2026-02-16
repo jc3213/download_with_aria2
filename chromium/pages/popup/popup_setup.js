@@ -1,11 +1,3 @@
-for (let i18n of document.querySelectorAll('[i18n]')) {
-    i18n.textContent = chrome.i18n.getMessage(i18n.getAttribute('i18n'));
-}
-
-for (let i18n of document.querySelectorAll('[i18n-tips]')) {
-    i18n.title = chrome.i18n.getMessage(i18n.getAttribute('i18n-tips'));
-}
-
 downBtn.addEventListener('click', (event) => {
     chrome.runtime.sendMessage({ action: 'open_new_download' });
 });
