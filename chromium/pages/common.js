@@ -1,7 +1,7 @@
 const hotkeys = {};
 
 for (let el of document.querySelectorAll('[hotkey]')) {
-    let combo = el.getAttribute('hotkey');
+    let combo = el.getAttribute('hotkey').toLowerCase();
     hotkeys[combo] = el;
 }
 
