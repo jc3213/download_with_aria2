@@ -1,7 +1,7 @@
 {
     "capture_enabled": false,
     "capture_domains": [],
-    "capture_extentions": [],
+    "capture_filename": [],
     "capture_filesize": 0,
     "capture_webrequest": false,
     "ctxmenu_allimages": true,
