@@ -293,10 +293,10 @@
     "tips_option_capture_domains": {
         "message": "Ignore browser downloads from domains below"
     },
-    "option_capture_extensions": {
+    "option_capture_filename": {
         "message": "Exclude File Extensions"
     },
-    "tips_option_capture_extensions": {
+    "tips_option_capture_filename": {
         "message": "Ignore browser downloads with file extensions below"
     },
     "popup_menu": {

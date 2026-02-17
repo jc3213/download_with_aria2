@@ -30,7 +30,7 @@ const systemStorage = {
     'capture_enabled': false,
     'capture_webrequest': false,
     'capture_domains': [],
-    'capture_extensions': [],
+    'capture_filename': [],
     'capture_filesize': 0
 };
 
@@ -296,22 +296,11 @@ function MatchHost(key) {
                 return true;
             }
             let dot = host.indexOf('.');
-            if (dot < 0) {
+            if (dot === -1) {
                 return false;
             }
             host = host.substring(dot + 1);
         }
-    };
-}
-
-function MatchType(key) {
-    let rules = {};
-    for (let i of aria2Storage[key]) {
-        rules[i.toLowerCase()] = true;
-    }
-    aria2Match[key] = (name) => {
-        let type = name.substring(name.lastIndexOf('.') + 1);
-        return rules[type.toLowerCase()];
     };
 }
 
@@ -341,7 +330,7 @@ function storageDispatch(json) {
     MatchHost('headers_domains');
     MatchHost('proxy_domains');
     MatchHost('capture_domains');
-    MatchType('capture_extensions');
+    MatchHost('capture_filename');
     MatchSize('capture_filesize');
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
@@ -367,18 +356,24 @@ function storageDispatch(json) {
 
 chrome.storage.sync.get(null, (json) => {
     let storage = { ...systemStorage, ...json };
-    storageDispatch(storage);
     if (storage['manager_queue']) {
         storage['manager_filters'] = storage['manager_queue'];
         delete storage['manager_queue'];
         chrome.storage.sync.set(storage);
         chrome.storage.sync.remove('manager_queue');
     }
+    if (storage['capture_extensions']) {
+        storage['capture_filename'] = storage['capture_extensions'];
+        delete storage['capture_extensions'];
+        chrome.storage.sync.set(storage);
+        chrome.storage.sync.remove('capture_extensions');
+    }
+    storageDispatch(storage);
 });
 
 function captureEvaluate(hostname, filename, fileSize) {
     return !(aria2Match['capture_domains'](hostname)
-        || aria2Match['capture_extensions'](filename)
+        || aria2Match['capture_filename'](filename)
         || aria2Match['capture_filesize'](fileSize));
 }
 

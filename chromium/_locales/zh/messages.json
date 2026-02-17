@@ -293,10 +293,10 @@
     "tips_option_capture_domains": {
         "message": "忽略来自所设置域名的下载"
     },
-    "option_capture_extensions": {
+    "option_capture_filename": {
         "message": "忽略文件后缀"
     },
-    "tips_option_capture_extensions": {
+    "tips_option_capture_filename": {
         "message": "忽略满足所设置文件后缀的下载"
     },
     "popup_menu": {
