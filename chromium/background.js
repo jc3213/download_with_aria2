@@ -256,8 +256,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener(({ tabId, url, type, requestHe
         aria2Inspect.set(tabId, tab);
     }
     if (type === 'image') {
-        let uri = url.replace(/[?#@].*$/, '');
-        tab.images.set(uri, url);
+        let idx = url.search(/[?#@]/);
+        let img = idx === -1 ? url : url.substring(0, idx);
+        tab.images.set(img, url);
     } else {
         tab[url] = requestHeaders;
     }
@@ -382,12 +383,16 @@ function captureEvaluate(hostname, filename, fileSize) {
 }
 
 function getHostname(url) {
-    let host = url.split('/')[2];
-    if (host.includes('@')) {
-        host = host.substring(host.indexOf('@') + 1);
+    let start = url.indexOf('//') + 2;
+    let end = url.indexOf('/', start);
+    let host = url.substring(start, end);
+    let at = host.indexOf('@');
+    if (at !== -1) {
+        host = host.substring(at + 1);
     }
-    if (host.includes(':')) {
-        host = host.substring(0, host.indexOf(':'));
+    let colon = host.indexOf(':');
+    if (colon !== -1) {
+        host = host.substring(0, colon);
     }
     return host;
 }
