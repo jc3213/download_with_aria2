@@ -393,13 +393,13 @@
         "message": "设置本次下载的最大上传速度"
     },
     "task_urls": {
-        "message": "下载中的链接"
+        "message": "所有链接"
     },
     "tips_task_urls": {
         "message": "本次下载中正在使用的链接"
     },
     "task_files": {
-        "message": "下载中的文件"
+        "message": "所有文件"
     },
     "tips_task_files": {
         "message": "本次下载中正在下载的文件"

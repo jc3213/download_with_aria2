@@ -357,7 +357,7 @@
         "message": "Add Files"
     },
     "task_entry": {
-        "message": "Download Urls"
+        "message": "Download URLs"
     },
     "tips_task_entry": {
         "message": "You can enter multiple \"http\", \"ftp\", or \"magnet\" URLs\n\nYou can also drop \".torrent\", \".meta4\", or \".metalink\" files into this window"
@@ -393,13 +393,13 @@
         "message": "Set maximum upload speed for this download"
     },
     "task_urls": {
-        "message": "Download URLs"
+        "message": "Task URLs"
     },
     "tips_task_urls": {
         "message": "Urls that are used for this download"
     },
     "task_files": {
-        "message": "Download Files"
+        "message": "Task Files"
     },
     "tips_task_files": {
         "message": "Files that are selected for this download"
