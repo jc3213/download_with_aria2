@@ -1,9 +1,12 @@
 let aria2Headers = new Set([ 'content-disposition', 'content-type', 'content-length' ]);
 
 function captureHooking() {
+    if (!aria2Storage['capture_enabled']) {
+        return;
+    }
     if (aria2Storage['capture_webrequest']) {
         browser.webRequest.onHeadersReceived.addListener(captureWebRequest, { urls: ['http://*/*', 'https://*/*'], types: ['main_frame', 'sub_frame'] }, ['blocking', 'responseHeaders']);
-    } else if (aria2Storage['capture_enabled']) {
+    } else {
         browser.downloads.onCreated.addListener(captureDownloads);
     }
 }
