@@ -82,8 +82,10 @@ chrome.runtime.sendMessage({ action: 'inspect_images', params: id }, ({ storage,
         entry.value = aria2Config[name] = options[name] ?? '';
     }
     for (let src of images) {
+        let pth = src.substring(src.lastIndexOf('/') + 1);
+        let idx = pth.search(/[?#@]/);
         let img = document.createElement('img');
-        img.alt = src.substring(src.lastIndexOf('/') + 1).replace(/[?#@].*$/, '');
+        img.alt = idx === -1 ? pth : pth.substring(0, idx);
         img.src = img.title = src;
         aria2Images.push(img);
         galleryPane.appendChild(img);
