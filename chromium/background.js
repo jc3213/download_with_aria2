@@ -277,13 +277,9 @@ chrome.action.onClicked.addListener(() => {
 });
 
 function MatchHost(key) {
-    let data = aria2Storage[key];
-    let rules = {};
-    for (let i of data) {
-        rules[i] = true;
-    }
-    let empty = data.length === 0;
-    let global = Boolean(rules['*']);
+    let rules = new Set(aria2Storage[key]);
+    let empty = rules.size === 0;
+    let global = rules.has('*');
     aria2Match[key] = (host) => {
         if (empty) {
             return false;
@@ -292,7 +288,7 @@ function MatchHost(key) {
             return true;
         }
         while (true) {
-            if (rules[host]) {
+            if (rules.has(host)) {
                 return true;
             }
             let dot = host.indexOf('.');
@@ -355,20 +351,7 @@ function storageDispatch(json) {
 }
 
 chrome.storage.sync.get(null, (json) => {
-    let storage = { ...systemStorage, ...json };
-    if (storage['manager_queue']) {
-        storage['manager_filters'] = storage['manager_queue'];
-        delete storage['manager_queue'];
-        chrome.storage.sync.set(storage);
-        chrome.storage.sync.remove('manager_queue');
-    }
-    if (storage['capture_extensions']) {
-        storage['capture_filename'] = storage['capture_extensions'];
-        delete storage['capture_extensions'];
-        chrome.storage.sync.set(storage);
-        chrome.storage.sync.remove('capture_extensions');
-    }
-    storageDispatch(storage);
+    storageDispatch({ ...systemStorage, ...json });
 });
 
 function captureEvaluate(hostname, filename, fileSize) {
