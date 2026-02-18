@@ -351,6 +351,22 @@ function storageDispatch(json) {
 }
 
 chrome.storage.sync.get(null, (json) => {
+    let updated = false;
+    if (json['manager_queue']) {
+        json['manager_filters'] = json['manager_queue'];
+        delete json['manager_queue'];
+        updated = true;
+        chrome.storage.sync.remove('manager_queue');
+    }
+    if (json['capture_extensions']) {
+        json['capture_filename'] = json['capture_extensions'];
+        delete json['capture_extensions'];
+        updated = true;
+        chrome.storage.sync.remove('capture_extensions');
+    }
+    if (updated) {
+        chrome.storage.sync.set(json);
+    }
     storageDispatch({ ...systemStorage, ...json });
 });
 
