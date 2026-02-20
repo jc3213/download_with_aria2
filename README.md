@@ -21,15 +21,14 @@
         - *Chromium Limited*
     - Using [webRequest](//developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/webRequest) API
         - *Firefox only*
-    - Exclude rules based on on *file size*
-    - Exclude rules based on [hostname match patterns](//github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
-    - Exclude rules based on [file extension match patterns](//github.com/jc3213/download_with_aria2/wiki/MatchPattern#file-extension)
+    - Exclude rules for *file size*
+    - Exclude rules for hostname and filename based on [Wiki:Match Patterns](//github.com/jc3213/download_with_aria2/wiki/MatchPattern)
 - Forward browser `Request Headers` to bypass CORS checks
     - Better compatibility with `Capturing Browser Downloads`
     - Can override `User-Agent` as you like
-    - Exclude rules based on [hostname match patterns](//github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
+    - Exclude rules for hostname based on [Wiki:Match Patterns](//github.com/jc3213/download_with_aria2/wiki/MatchPattern)
 - Proxy server
-    - Include rules based on [hostname match patterns](//github.com/jc3213/download_with_aria2/wiki/MatchPattern#hostname)
+    - Include rules for hostname based on [Wiki:Match Patterns](//github.com/jc3213/download_with_aria2/wiki/MatchPattern)
 - Communicate seamlessly with this extension using messaging.
     - Try the demo [HERE](//jc3213.github.io/webware/html/test.html)
     - Read [Wiki: Message](//github.com/jc3213/download_with_aria2/wiki/Message) for detailed documentation
