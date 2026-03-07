@@ -121,7 +121,7 @@ const SizeKeys = ['disk-cache', 'min-split-size', 'max-overall-download-limit', 
 
 function downloadHeaders(tabId, url, referer) {
     let result = [];
-    let headers = [{ name: 'Referer', value: referer }];
+    let headers;
     let oldUA = navigator.userAgent;
     if (aria2Inspect.has(tabId)) {
         headers = aria2Inspect.get(tabId)[url];
@@ -133,6 +133,7 @@ function downloadHeaders(tabId, url, referer) {
             }
         }
     }
+    headers ??= [{ name: 'Referer', value: referer }];
     for (let { name, value } of headers) {
         let lower = name.toLowerCase();
         if (lower === 'user-agent') {
