@@ -14,6 +14,15 @@
     "shortcut_newdld": {
         "message": "打开新下载"
     },
+    "shortcut_capture": {
+        "message": "切换当前域名的下载捕获例外"
+    },
+    "shortcut_headers": {
+        "message": "切换当前域名的请求头转发例外"
+    },
+    "shortcut_proxy": {
+        "message": "切换当前域名的自动代理例外"
+    },
     "download_start": {
         "message": "下载开始"
     },
@@ -227,7 +236,7 @@
     "option_headers": {
         "message": "转发请求头"
     },
-    "tips_option_headers_domains": {
+    "tips_option_headers_hosts": {
         "message": "停止为所设置域名的下载转发请求头"
     },
     "option_headers_override": {
@@ -266,7 +275,7 @@
     "tips_option_proxy": {
         "message": "设置预设的代理服务器"
     },
-    "tips_option_proxy_domains": {
+    "tips_option_proxy_hosts": {
         "message": "为来自下表中域名的下载添加预设的代理服务器"
     },
     "option_capture": {
@@ -290,7 +299,7 @@
     "tips_option_capture_filesize": {
         "message": "忽略低于所设置文件大小的下载"
     },
-    "tips_option_capture_domains": {
+    "tips_option_capture_hosts": {
         "message": "忽略来自所设置域名的下载"
     },
     "option_capture_filename": {

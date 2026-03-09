@@ -1,14 +1,14 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.23.4.4008",
+    "version": "4.24.0.4016",
     "manifest_version": 2,
     "permissions": [
         "contextMenus",
         "downloads",
-        "tabs",
         "notifications",
         "storage",
+        "tabs",
         "webRequest",
         "webRequestBlocking",
         "http://*/*",
@@ -49,22 +49,20 @@
         "open_in_tab": true
     },
     "commands": {
-        "_execute_browser_action": {
-            "suggested_key": {
-                "default": "Alt+Shift+A"
-            }
-        },
         "open_options": {
-            "suggested_key": {
-                "default": "Alt+Shift+S"
-            },
             "description": "__MSG_shortcut_options__"
         },
         "open_new_download": {
-            "suggested_key": {
-                "default": "Alt+Shift+D"
-            },
             "description": "__MSG_shortcut_newdld__"
+        },
+        "toggle_capture": {
+            "description": "__MSG_shortcut_capture__"
+        },
+        "toggle_headers": {
+            "description": "__MSG_shortcut_headers__"
+        },
+        "toggle_proxy": {
+            "description": "__MSG_shortcut_proxy__"
         }
     },
     "browser_specific_settings": {

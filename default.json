@@ -1,8 +1,8 @@
 {
     "capture_enabled": false,
-    "capture_domains": [],
     "capture_filename": [],
     "capture_filesize": 0,
+    "capture_hosts": [],
     "capture_webrequest": false,
     "ctxmenu_allimages": true,
     "ctxmenu_cascade": true,
@@ -12,7 +12,7 @@
     "folder_defined": "",
     "folder_enabled": false,
     "folder_firefox": false,
-    "headers_domains": [],
+    "headers_hosts": [],
     "headers_override": false,
     "headers_useragent": "Transmission/4.0.0",
     "jsonrpc_retries":, -1,
@@ -24,6 +24,6 @@
     "manager_newtab": false,
     "notify_complete": false,
     "notify_start": false,
-    "proxy_domains": [],
+    "proxy_hosts": [],
     "proxy_server": ""
 }

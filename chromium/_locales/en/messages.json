@@ -14,6 +14,15 @@
     "shortcut_newdld": {
         "message": "Open new download"
     },
+    "shortcut_capture": {
+        "message": "Toggle download capture exception for current host"
+    },
+    "shortcut_headers": {
+        "message": "Toggle headers forwarding exception for current host"
+    },
+    "shortcut_proxy": {
+        "message": "Toggle auto-proxy exception for current host"
+    },
     "download_start": {
         "message": "Download Start"
     },
@@ -219,16 +228,16 @@
         "message": "Show notification when a download is completed"
     },
     "option_match_include": {
-        "message": "Include Domains"
+        "message": "Include hosts"
     },
     "option_match_exclude": {
-        "message": "Exclude Domains"
+        "message": "Exclude hosts"
     },
     "option_headers": {
         "message": "Request Headers"
     },
-    "tips_option_headers_domains": {
-        "message": "Don't forward request headers for downloads from domains below"
+    "tips_option_headers_hosts": {
+        "message": "Don't forward request headers for downloads from hosts below"
     },
     "option_headers_override": {
         "message": "Override User Agent"
@@ -266,8 +275,8 @@
     "tips_option_proxy": {
         "message": "Set preset proxy server"
     },
-    "tips_option_proxy_domains": {
-        "message": "Add preset proxy server to new downloads from domains below"
+    "tips_option_proxy_hosts": {
+        "message": "Add preset proxy server to new downloads from hosts below"
     },
     "option_capture": {
         "message": "Capture Browser Downloads"
@@ -290,8 +299,8 @@
     "tips_option_capture_filesize": {
         "message": "Ignore browser downloads those are below the size"
     },
-    "tips_option_capture_domains": {
-        "message": "Ignore browser downloads from domains below"
+    "tips_option_capture_hosts": {
+        "message": "Ignore browser downloads from hosts below"
     },
     "option_capture_filename": {
         "message": "Exclude File Extensions"
