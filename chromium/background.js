@@ -30,9 +30,7 @@ const systemStorage = {
     'proxy_hosts': [],
     'capture_enabled': false,
     'capture_webrequest': false,
-    'capture_hosts': [],
-    'capture_filename': [],
-    'capture_filesize': 0
+    'capture_hosts': []
 };
 
 if (systemManifest.manifest_version === 3) {
@@ -47,8 +45,6 @@ let aria2Active = new Set();
 let aria2Inspect = new Map();
 
 let captureHosts;
-let captureFilename;
-let captureFileSize;
 let proxyHosts;
 let headersHosts;
 
@@ -175,10 +171,10 @@ function downloadDirectory(filename) {
 function downloadHandler(url, referer, filename, hostname, tabId) {
     let options = downloadDirectory(filename);
     hostname ??= getHostname(referer);
-    if (MatchTest(proxyHosts, hostname)) {
+    if (matchHostname(proxyHosts, hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
-    if (!MatchTest(headersHosts, hostname)) {
+    if (!matchHostname(headersHosts, hostname)) {
         options['header'] = downloadHeaders(tabId, url, referer);
     }
     aria2RPC.call({ method: 'aria2.addUri', params: [[url], options] });
@@ -191,18 +187,26 @@ const ctxMenuMap = {
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    ctxMenuMap[info.menuItemId](tab, info);
+    ctxMenuMap[info.menuItemId]?.(tab, info);
 });
 
-function togglHostState(key, rules) {
+function togglHostState(id, rules) {
     chrome.tabs.query({ url: systemURLs, active: true, currentWindow: true }, ([tab]) => {
         if (!tab) {
             return;
         }
-        let host = getHostname(tab.url); 
-        rules.has(host) ? rules.delete(host) : rules.add(host);
-        let value = aria2Storage[key] = [...rules];
-        chrome.storage.sync.set({ [key]: value });
+        let host = getHostname(tab.url);
+        let options;
+        if (rules.has(host)) {
+            rules.delete(host);
+            options = 'match_remove';
+        } else {
+            rules.add(host);
+            options = 'match_add';
+        }
+        let value = aria2Storage[id] = [...rules];
+        chrome.storage.sync.set({ [id]: value });
+        chrome.runtime.sendMessage({ options, params: { id, host } });
     });
 }
 
@@ -215,7 +219,7 @@ const commandMap = {
 };
 
 chrome.commands.onCommand.addListener((command) => {
-    commandMap[command]();
+    commandMap[command]?.();
 });
 
 function storageChanged(response, json) {
@@ -256,7 +260,7 @@ const messageDispatch = {
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
-    messageDispatch[action](response, params);
+    messageDispatch[action]?.(response, params);
     return true;
 });
 
@@ -297,25 +301,6 @@ chrome.action.onClicked.addListener(() => {
     });
 });
 
-function MatchTest(rules, host) {
-    if (rules.size === 0) {
-        return false;
-    }
-    if (rules.has('*')) {
-        return true;
-    }
-    while (true) {
-        if (rules.has(host)) {
-            return true;
-        }
-        let dot = host.indexOf('.');
-        if (dot === -1) {
-            return false;
-        }
-        host = host.substring(dot + 1);
-    }
-}
-
 function ctxMenuCreate(id, contexts, parentId) {
     chrome.contextMenus.create({
         id,
@@ -336,8 +321,6 @@ function storageDispatch(json) {
     headersHosts = new Set(json['headers_hosts']);
     proxyHosts = new Set(json['proxy_hosts']);
     captureHosts = new Set(json['capture_hosts']);
-    captureFilename = new Set(json['capture_filename']);
-    captureFileSize = json['capture_filesize'] * 1048576;
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
@@ -360,53 +343,11 @@ function storageDispatch(json) {
     }
 }
 
+chrome.storage.sync.remove(['capture_filename', 'capture_filesize']);
+
 chrome.storage.sync.get(null, (json) => {
-    let updated = false;
-    let removed = [];
-    if (json['manager_queue']) {
-        json['manager_filters'] = json['manager_queue'];
-        delete json['manager_queue'];
-        updated = true;
-        removed.push('manager_queue');
-    }
-    if (json['capture_extensions']) {
-        json['capture_filename'] = json['capture_extensions'];
-        delete json['capture_extensions'];
-        updated = true;
-        removed.push('capture_extensions');
-    }
-    if (json['capture_domains']) {
-        json['capture_hosts'] = json['capture_domains'];
-        delete json['capture_domains'];
-        updated = true;
-        removed.push('capture_domains');
-    }
-    if (json['headers_domains']) {
-        json['headers_hosts'] = json['headers_domains'];
-        delete json['headers_domains'];
-        updated = true;
-        removed.push('headers_domains');
-    }
-    if (json['proxy_domains']) {
-        json['proxy_hosts'] = json['proxy_domains'];
-        delete json['proxy_domains'];
-        updated = true;
-        removed.push('proxy_domains');
-    }
-    if (updated) {
-        chrome.storage.sync.set(json);
-    }
-    if (removed.length !== 0) {
-        chrome.storage.sync.remove(removed);
-    }
     storageDispatch({ ...systemStorage, ...json });
 });
-
-function captureEvaluate(hostname, filename, fileSize) {
-    return !(MatchTest(captureHosts, hostname)
-        || MatchTest(captureFilename, filename)
-        || captureFileSize > 0 && captureFileSize > fileSize);
-}
 
 function getHostname(url) {
     let start = url.indexOf('//') + 2;
@@ -421,6 +362,25 @@ function getHostname(url) {
         host = host.substring(0, colon);
     }
     return host;
+}
+
+function matchHostname(rules, host) {
+    if (rules.size === 0) {
+        return false;
+    }
+    if (rules.has('*')) {
+        return true;
+    }
+    while (true) {
+        if (rules.has(host)) {
+            return true;
+        }
+        let dot = host.indexOf('.');
+        if (dot === -1) {
+            return false;
+        }
+        host = host.substring(dot + 1);
+    }
 }
 
 function toolbarCounter() {

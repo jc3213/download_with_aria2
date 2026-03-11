@@ -1,11 +1,11 @@
-let aria2Headers = new Set([ 'content-disposition', 'content-type', 'content-length' ]);
+const firefoxHeaders = new Set(['content-disposition', 'content-type']);
 
 function captureHooking() {
     if (!aria2Storage['capture_enabled']) {
         return;
     }
     if (aria2Storage['capture_webrequest']) {
-        browser.webRequest.onHeadersReceived.addListener(captureWebRequest, { urls: ['http://*/*', 'https://*/*'], types: ['main_frame', 'sub_frame'] }, ['blocking', 'responseHeaders']);
+        browser.webRequest.onHeadersReceived.addListener(captureWebRequest, { urls: systemURLs, types: ['main_frame', 'sub_frame'] }, ['blocking', 'responseHeaders']);
     } else {
         browser.downloads.onCreated.addListener(captureDownloads);
     }
@@ -16,13 +16,12 @@ function captureDisabled() {
     browser.webRequest.onHeadersReceived.removeListener(captureWebRequest);
 }
 
-async function captureDownloads({ id, url, referrer, filename, fileSize }) {
+async function captureDownloads({ id, url, referrer, filename }) {
     if (url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
     let hostname = getHostname(referrer);
-    let captured = captureEvaluate(hostname, filename, fileSize);
-    if (captured) {
+    if (!matchHostname(captureHosts, hostname)) {
         browser.downloads.cancel(id).then(() => {
             browser.downloads.erase({ id });
             downloadHandler(url, referrer, filename, hostname);
@@ -37,7 +36,7 @@ async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, 
     let result = {};
     for (let { name, value } of responseHeaders) {
         name = name.toLowerCase();
-        if (aria2Headers.has(name)) {
+        if (firefoxHeaders.has(name)) {
             result[name] = value;
         }
     }
@@ -46,8 +45,7 @@ async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, 
     }
     let filename = decodeFileName(result['content-disposition']) || null;
     let hostname = getHostname(originUrl);
-    let captured = captureEvaluate(hostname, filename, result['content-length'] | 0);
-    if (captured) {
+    if (!matchHostname(captureHosts, hostname)) {
         downloadHandler(url, originUrl, filename, hostname, tabId);
         return { cancel: true };
     }

@@ -1,24 +1,26 @@
-function messgeChannel(id, message) {
-    chrome.runtime.sendMessage(message, (result) => {
+function systemStatus(id) {
+    chrome.runtime.sendMessage({ action: 'system_runtime' } , (result) => {
         window.postMessage({ aria2c: 'aria2c_response', id, result });
     });
 }
 
-function downloadHandler(id, args) {
+function jsonrpcDownload(id, array) {
     let params = [];
-    for (let arg of args) {
-        if (typeof arg === 'string') {
-            params.push({ method: 'aria2.addUri', params: [[arg]] });
-        } else if (arg?.url) {
-            params.push({ method: 'aria2.addUri', params: [[arg.url], arg.options ?? {}] });
+    for (let i of array) {
+        if (typeof i === 'string') {
+            params.push({ method: 'aria2.addUri', params: [[i]] });
+        } else if (i?.url) {
+            params.push({ method: 'aria2.addUri', params: [[i.url], i.options ?? {}] });
         }
     }
-    messgeChannel(id, { action: 'jsonrpc_download', params });
+    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, (result) => {
+        window.postMessage({ aria2c: 'aria2c_response', id, result });
+    });
 }
 
 const messageDispatch = {
-    'aria2c_status': (id) => messgeChannel(id, { action: 'system_runtime' }),
-    'aria2c_download': downloadHandler
+    'aria2c_status': systemStatus,
+    'aria2c_download': jsonrpcDownload
 };
 
 window.addEventListener('message', (event) => {

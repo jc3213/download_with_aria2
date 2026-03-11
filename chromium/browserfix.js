@@ -1,10 +1,9 @@
-function captureDownloads({ id, finalUrl, referrer, filename, fileSize }) {
+function captureDownloads({ id, finalUrl, referrer, filename }) {
     if (finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
         return;
     }
     let hostname = getHostname(referrer || finalUrl);
-    let captured = captureEvaluate(hostname, filename, fileSize);
-    if (captured) {
+    if (!matchHostname(captureHosts, hostname)) {
         chrome.downloads.erase({ id });
         downloadHandler(finalUrl, referrer, filename, hostname);
     }

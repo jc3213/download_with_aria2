@@ -224,7 +224,7 @@ const matchEvents = {
     'tips_match_remove': matchEventRemove,
 };
 
-for (let match of storagePane.querySelectorAll('div[id].flexmenu')) {
+for (let match of storagePane.querySelectorAll('div.flexmenu')) {
     let { id } = match;
     let [h4, entry, b1, b2, list] = match.children;
     matchLists.set(id, { list, entry });
