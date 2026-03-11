@@ -1,6 +1,7 @@
 textarea {
     border-style: inset;
     border-width: 1px;
+    margin-top: 3px;
     overflow: hidden auto;
     padding: 3px;
     resize: none;

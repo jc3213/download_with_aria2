@@ -127,7 +127,6 @@ h4 {
 
 .flex, .flexmenu {
     display: flex;
-    margin-bottom: 1px;
 }
 
 .flex {
@@ -142,7 +141,7 @@ h4 {
     padding: 2px 0px;
 }
 
-.flexmenu > input:not(:first-child) {
+.flexmenu > h4 + input {
     margin-left: auto;
     width: 50%;
 }

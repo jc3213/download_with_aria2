@@ -61,10 +61,6 @@ i {
     margin-top: 22px;
 }
 
-.pad-d {
-    margin-bottom: 22px;
-}
-
 .pad-l {
     margin-left: 22px;
 }
@@ -77,18 +73,26 @@ i {
     grid-column: 2;
 }
 
-.matches {
-    border-style: inset;
-    border-width: 1px;
-    padding: 8px;
+.flexmenu {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 22px;
+}
+
+.flexmenu > input {
+    height: 21px;
+    margin-left: auto;
+    width: 50%;
 }
 
 .list {
     border-style: outset;
     border-width: 1px;
     display: grid;
+    flex-basis: 100%;
     grid-auto-rows: 25px;
     grid-template-columns: repeat(3, 33.33%);
+    margin-top: 3px;
     max-height: 125px;
     min-height: 50px;
     overflow-y: scroll;

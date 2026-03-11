@@ -2,6 +2,7 @@ let aria2Storage = {};
 let aria2Config = {};
 let aria2Version;
 
+let toggle = false;
 let changes = {};
 let undoes = [];
 let redoes = [];
@@ -11,7 +12,6 @@ let [menuPane, storagePane, jsonrpcPane, template] = document.body.children;
 let [saveBtn, undoBtn, redoBtn, tellVer, importBtn, exportBtn, fileEntry, exporter] = menuPane.children;
 let tellUA = document.getElementById('useragent');
 let storageEntries = storagePane.querySelectorAll('[name]');
-let storageMatches = storagePane.querySelectorAll('.matches div[id]');
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let matchLET = template.children[0];
 
@@ -47,9 +47,14 @@ jsonrpcPane.addEventListener('change', (event) => {
     changeHistorySave({ id, new_value, old_value: changes[id], type: 'text', entry });
 });
 
+function storageUpdate() {
+    aria2Storage = { ...changes };
+    chrome.runtime.sendMessage({ action: 'storage_update', params: changes });
+}
+
 function menuEventSave() {
     saveBtn.disabled = true;
-    if (extension.contains('jsonrpc')) {
+    if (toggle) {
         chrome.runtime.sendMessage({ action: 'jsonrpc_update', params: changes });
     } else {
         storageUpdate();
@@ -88,7 +93,7 @@ function menuEventExport() {
     let name;
     let body;
     let time = new Date().toLocaleString('ja').replace(/[/ :]/g, '_');
-    if (extension.contains('jsonrpc')) {
+    if (toggle) {
         name = 'aria2_jsonrpc-' + time + '.conf';
         body = [];
         for (let key of Object.keys(aria2Config)) {
@@ -105,7 +110,7 @@ function menuEventExport() {
 }
 
 function menuEventImport() {
-    fileEntry.accept = extension.contains('jsonrpc') ? '.conf' : '.json';
+    fileEntry.accept = toggle ? '.conf' : '.json';
     fileEntry.click();
 }
 
@@ -170,12 +175,14 @@ function changeHistoryFlush() {
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
     chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ options, version }) => {
-        if (version) {
-            tellVer.textContent = tellUA.textContent = version.version;
-            optionsDispatch(options);
-            changeHistoryFlush();
-            extension.add('jsonrpc');
+        if (!version) {
+            return;
         }
+        tellVer.textContent = tellUA.textContent = version.version;
+        optionsDispatch(options);
+        changeHistoryFlush();
+        extension.add('jsonrpc');
+        toggle = true;
     });
 });
 
@@ -183,22 +190,20 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
     storageDispatch();
     changeHistoryFlush();
     extension.remove('jsonrpc');
+    toggle = false;
 });
 
-function matchEventAddNew(id, list, entry) {
-    let value = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9]+)(?=\/|$)/)?.[1];
-    let old_value = changes[id];
-    if (value && !old_value.includes(value)) {
-        let new_value = old_value.slice();
-        let rule = printMatchPattern(list, id, value);
-        new_value.push(value);
-        list.scrollTop = list.scrollHeight;
-        changeHistorySave({ id, new_value, old_value, type: 'rules', add: { list, index: old_value.length, rule } });
-        entry.value = '';
+function matchEventAdd(id) {
+    let { entry } = matchLists.get(id);
+    let host = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9]+)(?=\/|$)/)?.[1];
+    entry.value = '';
+    if (host) {
+        matchAddToList({ id, host });
     }
 }
 
-function matchEventResort(id, list) {
+function matchEventResort(id) {
+    let { list } = matchLists.get(id);
     let old_value = changes[id];
     let new_value = old_value.slice().sort();
     let old_order = [...list.children];
@@ -207,35 +212,29 @@ function matchEventResort(id, list) {
     changeHistorySave({ id, new_value, old_value, type: 'resort', sort: { list, new_order, old_order } });
 }
 
-function matchEventRemove(id, list, _, event) {
-    let rule = event.target.parentNode;
-    let value = rule.title;
-    let old_value = changes[id];
-    let index = old_value.indexOf(value);
-    let new_value = old_value.slice();
-    new_value.splice(index, 1);
-    rule.remove();
-    changeHistorySave({ id, new_value, old_value, type: 'rules', remove: { list, index, rule } });
+function matchEventRemove(id, event) {
+    let host = event.target.parentNode.title;
+    matchRemoveFromList({ id, host });
 }
 
-const listEventMap = {
-    'tips_match_addnew': matchEventAddNew,
+const matchLists = new Map();
+const matchEvents = {
+    'tips_match_addnew': matchEventAdd,
     'tips_match_resort': matchEventResort,
     'tips_match_remove': matchEventRemove,
 };
 
-for (let match of storageMatches) {
+for (let match of storagePane.querySelectorAll('div[id].flexmenu')) {
     let { id } = match;
-    let [menu, list] = match.children;
-    let entry = menu.children[1];
-    match.list = list;
+    let [h4, entry, b1, b2, list] = match.children;
+    matchLists.set(id, { list, entry });
     match.addEventListener('click', (event) => {
         let menu = event.target.getAttribute('i18n-tips');
-        listEventMap[menu]?.(id, list, entry, event);
+        matchEvents[menu]?.(id, event);
     });
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            matchEventAddNew(id, list, entry);
+            matchEventAdd(id);
         }
     });
 }
@@ -262,7 +261,7 @@ function storageDispatch() {
             entry.value = value;
         }
     }
-    for (let { id, list } of storageMatches) {
+    for (let [id,  { list }] of matchLists) {
         list.innerHTML = '';
         for (let value of changes[id]) {
             printMatchPattern(list, id, value);
@@ -270,10 +269,46 @@ function storageDispatch() {
     }
 }
 
-function storageUpdate() {
-    aria2Storage = { ...changes };
-    chrome.runtime.sendMessage({ action: 'storage_update', params: changes });
+function matchAddToList(add) {
+    if (toggle) {
+        return;
+    }
+    let { id, host } = add;
+    let old_value = changes[id];
+    if (old_value.includes(host)) {
+        return;
+    }
+    let { list } = matchLists.get(id);
+    let new_value = old_value.slice();
+    let rule = printMatchPattern(list, id, host);
+    new_value.push(host);
+    list.scrollTop = list.scrollHeight;
+    changeHistorySave({ id, new_value, old_value, type: 'rules', add: { list, index: old_value.length, rule } });
 }
+
+function matchRemoveFromList(remove) {
+    if (toggle) {
+        return;
+    }
+    let { id, host } = remove;
+    let { list } = matchLists.get(id);
+    let old_value = changes[id];
+    let index = old_value.indexOf(host);
+    let new_value = old_value.slice();
+    let rule = list.querySelector('[title="' + host + '"]');
+    new_value.splice(index, 1);
+    rule.remove();
+    changeHistorySave({ id, new_value, old_value, type: 'rules', remove: { list, index, rule } });
+}
+
+const messageDispatch = {
+    'match_add': matchAddToList,
+    'match_remove': matchRemoveFromList
+};
+
+chrome.runtime.onMessage.addListener(({ options, params }) => {
+    messageDispatch[options]?.(params);
+});
 
 chrome.runtime.sendMessage({ action: 'system_runtime'}, ({ storage, manifest }) => {
     aria2Storage = storage;

@@ -89,16 +89,12 @@
             <div class="cfg-item e-headers-override" i18n-tips="tips_option_headers_useragent">
                 <input name="headers_useragent" type="text">
             </div>
-            <div class="matches pad-u">
-                <div id="headers_hosts" i18n-tips="tips_option_headers_hosts">
-                    <div class="flexmenu">
-                        <h4 i18n="option_match_exclude"></h4>
-                        <input type="text">
-                        <button i18n-tips="tips_match_addnew">➕</button>
-                        <button i18n-tips="tips_match_resort">🧲</button>
-                    </div>
-                    <div class="list"></div>
-                </div>
+            <div id="headers_hosts" class="flexmenu" i18n-tips="tips_option_headers_hosts">
+                <h4 i18n="option_match_exclude"></h4>
+                <input type="text">
+                <button i18n-tips="tips_match_addnew">➕</button>
+                <button i18n-tips="tips_match_resort">🧲</button>
+                <div class="list"></div>
             </div>
             <h1 i18n="option_folder"></h1>
             <div class="cfg-item" i18n-tips="tips_option_folder_enabled">
@@ -113,19 +109,15 @@
                 <input name="folder_defined" type="text">
             </div>
             <h1 i18n="option_proxy"></h1>
-            <div class="pad-d" i18n-tips="tips_option_proxy">
+            <div i18n-tips="tips_option_proxy">
                 <input name="proxy_server" type="text" placeholder="http://127.0.0.1:1280/">
             </div>
-            <div class="matches">
-                <div id="proxy_hosts" i18n-tips="tips_option_proxy_hosts">
-                    <div class="flexmenu">
-                        <h4 i18n="option_match_include"></h4>
-                        <input type="text">
-                        <button i18n-tips="tips_match_addnew">➕</button>
-                        <button i18n-tips="tips_match_resort">🧲</button>
-                    </div>
-                    <div class="list"></div>
-                </div>
+            <div id="proxy_hosts" class="flexmenu" i18n-tips="tips_option_proxy_hosts">
+                <h4 i18n="option_match_include"></h4>
+                <input type="text">
+                <button i18n-tips="tips_match_addnew">➕</button>
+                <button i18n-tips="tips_match_resort">🧲</button>
+                <div class="list"></div>
             </div>
             <h1 i18n="option_capture"></h1>
             <div class="cfg-item" i18n-tips="tips_option_capture_enabled">
@@ -136,33 +128,12 @@
                 <input id="capture-webrequest" name="capture_webrequest" type="checkbox" data-css>
                 <label for="capture-webrequest" i18n="option_capture_webrequest"></label>
             </div>
-            <div class="matches pad-u e-capture-enabled">
-                <div class="flex" i18n-tips="tips_option_capture_filesize">
-                    <h4 i18n="option_capture_filesize"></h4>
-                    <div>
-                        <input name="capture_filesize" type="number" min="0">
-                        <span>MB</span>
-                    </div>
-                    <i class="disabled">0</i>
-                </div>
-                <div id="capture_hosts" class="pad-u" i18n-tips="tips_option_capture_hosts">
-                    <div class="flexmenu">
-                        <h4 i18n="option_match_exclude"></h4>
-                        <input type="text">
-                        <button i18n-tips="tips_match_addnew">➕</button>
-                        <button i18n-tips="tips_match_resort">🧲</button>
-                    </div>
-                    <div class="list"></div>
-                </div>
-                <div id="capture_filename" class="pad-u" i18n-tips="tips_option_capture_filename">
-                    <div class="flexmenu">
-                        <h4 i18n="option_capture_filename"></h4>
-                        <input type="text">
-                        <button i18n-tips="tips_match_addnew">➕</button>
-                        <button i18n-tips="tips_match_resort">🧲</button>
-                    </div>
-                    <div class="list listx"></div>
-                </div>
+            <div id="capture_hosts" class="flexmenu e-capture-enabled" i18n-tips="tips_option_capture_hosts">
+                <h4 i18n="option_match_exclude"></h4>
+                <input type="text">
+                <button i18n-tips="tips_match_addnew">➕</button>
+                <button i18n-tips="tips_match_resort">🧲</button>
+                <div class="list"></div>
             </div>
         </div>
         <div id="jsonrpc" class="config">
