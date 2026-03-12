@@ -21,12 +21,12 @@ async function captureDownloads({ id, url, referrer, filename }) {
         return;
     }
     let hostname = getHostname(referrer);
-    if (!matchHostname(captureHosts, hostname)) {
-        browser.downloads.cancel(id).then(() => {
-            browser.downloads.erase({ id });
-            downloadHandler(url, referrer, filename, hostname);
-        });
+    if (matchHostname(captureHosts, hostname)) {
+        return;
     }
+    await browser.downloads.cancel(id);
+    await browser.downloads.erase({ id });
+    downloadHandler(url, referrer, filename, hostname);
 }
 
 async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, tabId }) {
@@ -45,10 +45,11 @@ async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, 
     }
     let filename = decodeFileName(result['content-disposition']) || null;
     let hostname = getHostname(originUrl);
-    if (!matchHostname(captureHosts, hostname)) {
-        downloadHandler(url, originUrl, filename, hostname, tabId);
-        return { cancel: true };
+    if (matchHostname(captureHosts, hostname)) {
+        return;
     }
+    downloadHandler(url, originUrl, filename, hostname, tabId);
+    return { cancel: true };
 }
 
 function decodeRFC2047(array) {

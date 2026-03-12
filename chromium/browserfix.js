@@ -3,10 +3,11 @@ function captureDownloads({ id, finalUrl, referrer, filename }) {
         return;
     }
     let hostname = getHostname(referrer || finalUrl);
-    if (!matchHostname(captureHosts, hostname)) {
-        chrome.downloads.erase({ id });
-        downloadHandler(finalUrl, referrer, filename, hostname);
+    if (matchHostname(captureHosts, hostname)) {
+        return;
     }
+    chrome.downloads.erase({ id });
+    downloadHandler(finalUrl, referrer, filename, hostname);
 }
 
 function captureHooking() {
