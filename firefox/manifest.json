@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.25.0.4023",
+    "version": "4.25.0.4024",
     "manifest_version": 2,
     "permissions": [
         "contextMenus",
@@ -49,7 +49,7 @@
         "open_in_tab": true
     },
     "commands": {
-        "_execute_browser_action",
+        "_execute_browser_action": {},
         "open_options": {
             "description": "__MSG_shortcut_options__"
         },
