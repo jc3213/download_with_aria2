@@ -33,6 +33,10 @@ async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, 
     if (statusCode !== 200) {
         return;
     }
+    let hostname = getHostname(originUrl);
+    if (matchHostname(captureHosts, hostname)) {
+        return;
+    }
     let result = {};
     for (let { name, value } of responseHeaders) {
         name = name.toLowerCase();
@@ -43,10 +47,9 @@ async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, 
     if (!result['content-type']?.startsWith('application')) {
         return;
     }
-    let filename = decodeFileName(result['content-disposition']) || null;
-    let hostname = getHostname(originUrl);
-    if (matchHostname(captureHosts, hostname)) {
-        return;
+    let filename = decodeFileName(result['content-disposition']);
+    if (!filename || filename.startsWith('attachment')) {
+        filename = null;
     }
     downloadHandler(url, originUrl, filename, hostname, tabId);
     return { cancel: true };
@@ -54,51 +57,52 @@ async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, 
 
 function decodeRFC2047(array) {
     let result = '';
-    for (let s of array) {
-        let [, code, type, data] = s.split('?');
-        let bytes;
+    for (let i of array) {
+        let bytes = [];
+        let [, charset, type, string] = i.split('?');
         if (type.toLowerCase() === 'b') {
-            bytes = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
+            for (let c of atob(string)) {
+                bytes.push(c.charCodeAt(0));
+            }
         } else {
-            let parts = data.match(/=[0-9a-fA-F]{2}|[^=]/g);
+            let parts = string.match(/=[0-9a-fA-F]{2}|[^=]/g);
             if (!parts) {
                 continue;
             }
-            let tmp = [];
             for (let q of parts) {
-                if (q.length === 3) {
-                    tmp.push(parseInt(q.substring(1), 16));
+                if (q.startsWith('=') && q.length === 3) {
+                    bytes.push(parseInt(q.substring(1), 16));
                 } else if (q === '_') {
-                    tmp.push(0x20);
+                    bytes.push(0x20);
                 } else {
-                    tmp.push(q.charCodeAt(0));
+                    bytes.push(q.charCodeAt(0));
                 }
             }
-            bytes = new Uint8Array(tmp);
         }
-        result += new TextDecoder(code).decode(bytes);
+        result += new TextDecoder(charset).decode(new Uint8Array(bytes));
     }
     console.log(result);
     return result;
 }
 
 function decodeRFC5987(array) {
-    let [, code, data] = array;
-    return decodePlainText(code, data);
+    let [, charset, string] = array;
+    return decodePlainText(charset, string);
 }
 
-function decodeISO8859(code, text) {
-    let bytes = Uint8Array.from(test.split(''), (c) => c.charCodeAt(0));
-    return new TextDecoder(code).decode(bytes);
+function decodeISO8859(charset, string) {
+    let bytes = Uint8Array.from(string.split(''), (c) => c.charCodeAt(0));
+    return new TextDecoder(charset).decode(bytes);
 }
 
-function decodePlainText(code, text) {
-    let result = /[^\u0000-\u007f]/.test(text) ? decodeISO8859(code, text) : decodeURIComponent(text);
+function decodePlainText(charset, string) {
+    let result = /[^\u0000-\u007f]/.test(string) ? decodeISO8859(charset, string) : decodeURIComponent(string);
     console.log(result);
     return result;
 }
 
 function decodeFileName(disposition) {
+    console.log(disposition);
     if (!disposition?.startsWith('attachment')) {
         return;
     }
@@ -110,6 +114,6 @@ function decodeFileName(disposition) {
     if (RFC5987) {
         return decodeRFC5987(RFC5987);
     }
-    let text = disposition.match(/filename="?([^";]+);?/)?.[1] ?? disposition;
-    return decodePlainText('UTF-8', text);
+    let string = disposition.match(/filename="?([^";]+);?/)?.[1] ?? disposition;
+    return decodePlainText('UTF-8', string);
 }
