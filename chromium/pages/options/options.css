@@ -98,11 +98,6 @@ i {
     overflow-y: scroll;
 }
 
-.listx {
-    grid-template-columns: repeat(5, 20%);
-    height: 59px;
-}
-
 .rule {
     border-style: outset;
     border-width: 1px;
