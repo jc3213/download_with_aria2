@@ -95,7 +95,7 @@ i {
     margin-top: 3px;
     max-height: 125px;
     min-height: 50px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .rule {
