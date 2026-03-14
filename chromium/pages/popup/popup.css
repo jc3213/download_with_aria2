@@ -284,7 +284,7 @@ body.error > #queue > .error {
 .session > .menu {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 3px;
     grid-area: 1 / 4 / 4 / 5;
 }
 
