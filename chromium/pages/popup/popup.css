@@ -320,6 +320,7 @@ body.error > #queue > .error {
     border-width: 1px;
     overflow: hidden;
     padding: 1px;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 

@@ -101,6 +101,7 @@ i {
 .rule {
     border-style: outset;
     border-width: 1px;
+    text-overflow: ellipsis;
     display: flex;
 }
 
