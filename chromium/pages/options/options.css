@@ -101,12 +101,12 @@ i {
 .rule {
     border-style: outset;
     border-width: 1px;
-    text-overflow: ellipsis;
     display: flex;
 }
 
 .rule > div {
     flex: 1;
+    text-overflow: ellipsis;
     overflow: hidden;
 }
 
