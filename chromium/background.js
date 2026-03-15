@@ -239,8 +239,8 @@ function optionsChanged(response, json) {
 }
 
 function managerChanged(response, array) {
-    aria2Storage['manager_queue'] = array;
-    chrome.storage.sync.set({ 'manager_queue': array }, response);
+    aria2Storage['manager_filters'] = array;
+    chrome.storage.sync.set({ 'manager_filters': array }, response);
 }
 
 function detectedImages(response, id) {
@@ -343,7 +343,7 @@ function storageDispatch(json) {
     }
 }
 
-chrome.storage.sync.remove(['capture_filename', 'capture_filesize']);
+chrome.storage.sync.remove(['capture_filename', 'capture_filesize', 'manager_queue']);
 
 chrome.storage.sync.get(null, (json) => {
     storageDispatch({ ...systemStorage, ...json });
