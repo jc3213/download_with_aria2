@@ -20,7 +20,7 @@ const systemStorage = {
     'ctxmenu_allimages': true,
     'notify_start': false,
     'notify_complete': false,
-    'notify_toggle': true,
+    'notify_shortcut': true,
     'headers_override': false,
     'headers_useragent': 'Transmission/4.0.0',
     'headers_hosts': [],
@@ -211,7 +211,7 @@ function togglHostState(type, rules) {
         let message = chrome.i18n.getMessage(options, host);
         chrome.storage.sync.set({ [id]: value });
         chrome.runtime.sendMessage({ options, params: { id, host } });
-        if (aria2Storage['notify_toggle']) {
+        if (aria2Storage['notify_shortcut']) {
             chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
         }
     });
