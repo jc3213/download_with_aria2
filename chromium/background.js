@@ -84,18 +84,18 @@ aria2RPC.onmessage = ({ method, params }) => {
     if (method === 'aria2.onDownloadStart') {
         if (!aria2Active.has(gid)) {
             aria2Active.add(gid);
-            showNotify(gid, 'start');
+            showNotify('start', gid);
         }
     } else {
         aria2Active.delete(gid);
         if (method === 'aria2.onDownloadComplete') {
-            showNotify(gid, 'complete');
+            showNotify('complete', gid);
         }
     }
     toolbarCounter();
 };
 
-async function showNotify(gid, type) {
+async function showNotify(type, gid) {
     if (!aria2Storage['notify_' + type]) {
         return;
     }
@@ -191,7 +191,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     ctxMenuMap[info.menuItemId]?.(tab, info);
 });
 
-function togglHostState(rules, type) {
+function togglHostState(type, rules) {
     chrome.tabs.query({ url: systemURLs, active: true, currentWindow: true }, ([tab]) => {
         if (!tab) {
             return;
@@ -220,9 +220,9 @@ function togglHostState(rules, type) {
 const commandMap = {
     'open_options': () => chrome.runtime.openOptionsPage(),
     'open_new_download': () => openPopupWindow(addonDownload, 462),
-    'toggle_capture': () => togglHostState(captureHosts, 'capture'),
-    'toggle_headers': () => togglHostState(headersHosts, 'headers'),
-    'toggle_proxy': () => togglHostState(proxyHosts, 'proxy')
+    'toggle_capture': () => togglHostState('capture', captureHosts),
+    'toggle_headers': () => togglHostState('headers', headersHosts),
+    'toggle_proxy': () => togglHostState('proxy', proxyHosts)
 };
 
 chrome.commands.onCommand.addListener((command) => {
