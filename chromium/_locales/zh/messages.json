@@ -77,7 +77,7 @@
     "common_submit": {
         "message": "确认"
     },
-    "tips_match_addnew": {
+    "tips_match_add": {
         "message": "添加匹配规则"
     },
     "tips_match_resort": {
