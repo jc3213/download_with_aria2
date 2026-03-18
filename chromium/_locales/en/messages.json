@@ -29,6 +29,12 @@
     "download_complete": {
         "message": "Download Complete"
     },
+    "match_add": {
+        "message": "Added \"$1\" to match patterns"
+    },
+    "match_remove": {
+        "message": "Removed \"$1\" from match patterns"
+    },
     "ctxmenu_thisurl": {
         "message": "Download this link"
     },

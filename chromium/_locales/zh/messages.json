@@ -29,6 +29,12 @@
     "download_complete": {
         "message": "下载完成"
     },
+    "match_add": {
+        "message": "已添加\"$1\"至匹配规则"
+    },
+    "match_remove": {
+        "message": "已从匹配规则中移除\"$1\""
+    },
     "ctxmenu_thisurl": {
         "message": "下载此链接"
     },

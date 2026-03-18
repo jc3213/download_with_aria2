@@ -20,6 +20,7 @@ const systemStorage = {
     'ctxmenu_allimages': true,
     'notify_start': false,
     'notify_complete': false,
+    'notify_toggle': true,
     'headers_override': false,
     'headers_useragent': 'Transmission/4.0.0',
     'headers_hosts': [],
@@ -99,7 +100,7 @@ async function showNotify(gid, type) {
         return;
     }
     let { result: { bittorrent, files: [{ path, uris }] } } = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
-    let title = chrome.i18n.getMessage('download_' + type);
+    let title = chrome.i18n.getMessage('notify_' + type);
     let message = bittorrent?.info?.name ?? path?.substring(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
     chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
 }
@@ -190,7 +191,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     ctxMenuMap[info.menuItemId]?.(tab, info);
 });
 
-function togglHostState(id, rules) {
+function togglHostState(rules, type) {
     chrome.tabs.query({ url: systemURLs, active: true, currentWindow: true }, ([tab]) => {
         if (!tab) {
             return;
@@ -204,18 +205,24 @@ function togglHostState(id, rules) {
             rules.add(host);
             options = 'match_add';
         }
+        let id = type + '_hosts';
         let value = aria2Storage[id] = [...rules];
+        let title = chrome.i18n.getMessage('option_' + type);
+        let message = chrome.i18n.getMessage(options, host);
         chrome.storage.sync.set({ [id]: value });
         chrome.runtime.sendMessage({ options, params: { id, host } });
+        if (aria2Storage['notify_toggle']) {
+            chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
+        }
     });
 }
 
 const commandMap = {
     'open_options': () => chrome.runtime.openOptionsPage(),
     'open_new_download': () => openPopupWindow(addonDownload, 462),
-    'toggle_capture': () => togglHostState('capture_hosts', captureHosts),
-    'toggle_headers': () => togglHostState('headers_hosts', headersHosts),
-    'toggle_proxy': () => togglHostState('proxy_hosts', proxyHosts)
+    'toggle_capture': () => togglHostState(captureHosts, 'capture'),
+    'toggle_headers': () => togglHostState(headersHosts, 'headers'),
+    'toggle_proxy': () => togglHostState(proxyHosts, 'proxy')
 };
 
 chrome.commands.onCommand.addListener((command) => {
