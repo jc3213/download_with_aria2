@@ -71,7 +71,7 @@
     "common_submit": {
         "message": "Submit"
     },
-    "tips_match_addnew": {
+    "tips_match_add": {
         "message": "Add new match pattern"
     },
     "tips_match_resort": {

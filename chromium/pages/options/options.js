@@ -219,7 +219,7 @@ function matchEventRemove(id, event) {
 
 const matchLists = new Map();
 const matchEvents = {
-    'tips_match_addnew': matchEventAdd,
+    'tips_match_add': matchEventAdd,
     'tips_match_resort': matchEventResort,
     'tips_match_remove': matchEventRemove,
 };
