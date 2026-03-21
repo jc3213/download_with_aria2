@@ -6,7 +6,9 @@ function captureDownloads({ id, finalUrl, referrer, filename }) {
     if (matchHostname(captureHosts, hostname)) {
         return;
     }
-    chrome.downloads.erase({ id });
+    chrome.downloads.search({ id }, () => {
+        chrome.downloads.erase({ id });
+    });
     downloadHandler(finalUrl, referrer, filename, hostname);
 }
 
