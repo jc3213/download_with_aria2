@@ -274,7 +274,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(({ tabId, frameId, url }) => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, { url }) => {
-    if (aria2Inspect.get(tabId)?.url !== url) {
+    if (url && url !== aria2Inspect.get(tabId)?.url) {
         aria2Inspect.set(tabId, { images: new Map(), url });
     }
 });
