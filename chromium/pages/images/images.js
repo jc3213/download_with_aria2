@@ -73,8 +73,8 @@ chrome.tabs.getCurrent((tab) => {
     tabId = tab.id;
 });
 
-chrome.runtime.sendMessage({ action: 'inspect_images', params: id }, ({ storage, options, manifest, images, request }) => {
-    manifest.manifest_version === 2 ? aria2HeadersMV2(request) : aria2HeadersMV3();
+chrome.runtime.sendMessage({ action: 'inspect_images', params: id }, ({ storage, options, manifest, images, headers }) => {
+    manifest.manifest_version === 2 ? antiLeechMV2(headers) : antiLeechMV3();
     aria2Proxy = storage['proxy_server'];
     aria2Config['referer'] = referer;
     for (let entry of jsonrpcEntries) {
@@ -92,15 +92,15 @@ chrome.runtime.sendMessage({ action: 'inspect_images', params: id }, ({ storage,
     }
 });
 
-function aria2HeadersMV2(request) {
-    request.unshift('blocking');
+function antiLeechMV2(headers) {
+    headers.unshift('blocking');
     chrome.webRequest.onBeforeSendHeaders.addListener(({ requestHeaders }) => {
         requestHeaders.push({ name: 'Referer', value: referer });;
         return { requestHeaders };
-    }, { urls: ['http://*/*', 'https://*/*'], tabId, types: ['image'] }, request);
+    }, { urls: ['http://*/*', 'https://*/*'], tabId, types: ['image'] }, headers);
 }
 
-function aria2HeadersMV3() {
+function antiLeechMV3() {
     let addRules = [{
         id: 1,
         priority: 1,
