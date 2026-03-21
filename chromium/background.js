@@ -83,18 +83,18 @@ aria2RPC.onmessage = ({ method, params }) => {
     if (method === 'aria2.onDownloadStart') {
         if (!aria2Active.has(gid)) {
             aria2Active.add(gid);
-            showNotify(gid, 'start');
+            showNotify('start', gid);
         }
     } else {
         aria2Active.delete(gid);
         if (method === 'aria2.onDownloadComplete') {
-            showNotify(gid, 'complete');
+            showNotify('complete', gid);
         }
     }
     toolbarCounter();
 };
 
-async function showNotify(gid, type) {
+async function showNotify(type, gid) {
     if (!aria2Storage['notify_' + type]) {
         return;
     }
