@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
-    "version": "4.25.0.4032",
+    "version": "4.25.1.4044",
     "manifest_version": 2,
     "permissions": [
         "contextMenus",
@@ -9,6 +9,7 @@
         "notifications",
         "storage",
         "tabs",
+        "webNavigation",
         "webRequest",
         "webRequestBlocking",
         "http://*/*",

@@ -267,13 +267,13 @@ chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
     return true;
 });
 
-chrome.webNavigation.onBeforeNavigate.addListener(({ tabId, frameId, url }) => {
+chrome.webNavigation.onBeforeNavigate.addListener(({ tabId, url, frameId }) => {
     if (frameId === 0) {
         aria2Inspect.set(tabId, { images: new Map(), url });
     }
 });
 
-chrome.tabs.onUpdated.addListener((tabId, { url }) => {
+chrome.tabs.onUpdated.addListener((tabId, { status, url }) => {
     if (url && url !== aria2Inspect.get(tabId)?.url) {
         aria2Inspect.set(tabId, { images: new Map(), url });
     }
@@ -286,7 +286,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 chrome.webRequest.onBeforeSendHeaders.addListener(({ tabId, url, type, requestHeaders }) => {
     let tab = aria2Inspect.get(tabId);
     if (!tab) {
-        tab = { images: new Map() };
+        tab = { images: new Map(), url };
         aria2Inspect.set(tabId, tab);
     }
     if (type === 'image') {
