@@ -124,19 +124,18 @@ const SizeKeys = ['disk-cache', 'min-split-size', 'max-overall-download-limit', 
 
 function downloadHeaders(tabId, url, referer) {
     let result = [];
-    let headers;
+    let headers = [{ name: 'Referer', value: referer }];
     let oldUA = navigator.userAgent;
     if (aria2Inspect.has(tabId)) {
         headers = aria2Inspect.get(tabId)[url];
     } else {
         for (let tab of aria2Inspect.values()) {
-            headers = tab[url];
-            if (headers) {
+            if (tab[url]) {
+                headers = tab[url];
                 break;
             }
         }
     }
-    headers ??= [{ name: 'Referer', value: referer }];
     for (let { name, value } of headers) {
         let lower = name.toLowerCase();
         if (lower === 'user-agent') {
@@ -275,20 +274,26 @@ chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
     return true;
 });
 
-chrome.tabs.onRemoved.addListener((tabId) => {
-    aria2Inspect.delete(tabId);
+chrome.webNavigation.onBeforeNavigate.addListener(({ tabId, frameId, url }) => {
+    if (frameId === 0) {
+        aria2Inspect.set(tabId, { images: new Map(), url });
+    }
 });
 
 chrome.tabs.onUpdated.addListener((tabId, { url }) => {
-    if (url) {
-        aria2Inspect.delete(tabId);
+    if (aria2Inspect.get(tabId)?.url !== url) {
+        aria2Inspect.set(tabId, { images: new Map(), url });
     }
+});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+    aria2Inspect.delete(tabId);
 });
 
 chrome.webRequest.onBeforeSendHeaders.addListener(({ tabId, url, type, requestHeaders }) => {
     let tab = aria2Inspect.get(tabId);
     if (!tab) {
-        tab = { images: new Map() };
+        tab = { images: new Map(), url };
         aria2Inspect.set(tabId, tab);
     }
     if (type === 'image') {
