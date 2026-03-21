@@ -215,7 +215,7 @@ function togglHostState(id, rules) {
 
 const commandMap = {
     'open_options': () => chrome.runtime.openOptionsPage(),
-    'newdld_window': () => openPopupWindow(addonDownload, 462),
+    'open_new_download': () => openPopupWindow(addonDownload, 462),
     'toggle_capture': () => togglHostState('capture_hosts', captureHosts),
     'toggle_headers': () => togglHostState('headers_hosts', headersHosts),
     'toggle_proxy': () => togglHostState('proxy_hosts', proxyHosts)
@@ -256,7 +256,7 @@ const messageDispatch = {
     'options_runtime': (response) => response({ manifest: systemManifest, storage: aria2Storage, options: aria2Config, version: aria2Version }),
     'options_storage': storageChanged,
     'options_jsonrpc': optionsChanged,
-    'popup_runtime': (response) => response({ storage, options, version }),
+    'popup_runtime': (response) => response({  storage: aria2Storage, options: aria2Config, version: aria2Version }),
     'popup_queues': queuesFiltered,
     'images_runtime': detectedImages,
     'newdld_window': () => openPopupWindow(addonDownload, 462),
