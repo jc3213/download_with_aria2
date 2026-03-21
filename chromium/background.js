@@ -210,7 +210,11 @@ function togglHostState(type, rules) {
         let title = chrome.i18n.getMessage('option_' + type);
         let message = chrome.i18n.getMessage(options, host);
         chrome.storage.sync.set({ [id]: value });
-        chrome.runtime.sendMessage({ options, params: { id, host } });
+        chrome.runtime.sendMessage({ options, params: { id, host } }, () => {
+            if (chrome.runtime.lastError) {
+                return;
+            }
+        });
         if (aria2Storage['notify_shortcut']) {
             chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
         }
