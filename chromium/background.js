@@ -256,7 +256,7 @@ function managerChanged(response, array) {
 function detectedImages(response, id) {
     let tab = aria2Inspect.get(id);
     let images = tab ? [...tab.images.values()] : [];
-    response({ manifest: systemManifest, request: systemHeaders, images, storage: aria2Storage, options: aria2Config });
+    response({ manifest: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
 }
 
 const messageDispatch = {
