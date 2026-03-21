@@ -49,13 +49,13 @@ jsonrpcPane.addEventListener('change', (event) => {
 
 function storageUpdate() {
     aria2Storage = { ...changes };
-    chrome.runtime.sendMessage({ action: 'storage_update', params: changes });
+    chrome.runtime.sendMessage({ action: 'options_storage', params: changes });
 }
 
 function menuEventSave() {
     saveBtn.disabled = true;
     if (toggle) {
-        chrome.runtime.sendMessage({ action: 'jsonrpc_update', params: changes });
+        chrome.runtime.sendMessage({ action: 'options_jsonrpc', params: changes });
     } else {
         storageUpdate();
     }
@@ -145,7 +145,7 @@ function importConf(file) {
         }
     }
     optionsDispatch(options);
-    chrome.runtime.sendMessage({ action: 'jsonrpc_update', params: changes });
+    chrome.runtime.sendMessage({ action: 'options_jsonrpc', params: changes });
 }
 
 fileEntry.addEventListener('change', (event) => {
@@ -174,7 +174,7 @@ function changeHistoryFlush() {
 }
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
-    chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ options, version }) => {
+    chrome.runtime.sendMessage({ action: 'options_runtime' }, ({ options, version }) => {
         if (!version) {
             return;
         }
@@ -310,7 +310,7 @@ chrome.runtime.onMessage.addListener(({ options, params }) => {
     messageDispatch[options]?.(params);
 });
 
-chrome.runtime.sendMessage({ action: 'system_runtime'}, ({ storage, manifest }) => {
+chrome.runtime.sendMessage({ action: 'options_runtime'}, ({ storage, manifest }) => {
     aria2Storage = storage;
     aria2Version = manifest.version;
     if (manifest.browser_specific_settings) {

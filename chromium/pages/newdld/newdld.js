@@ -144,7 +144,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     }
 });
 
-chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage, options }) => {
+chrome.runtime.sendMessage({ action: 'newdld_runtime' }, ({ storage, options }) => {
     aria2Proxy = storage['proxy_server'];
     limitEntry.value = '0';
     for (let entry of jsonrpcEntries) {

@@ -1,5 +1,5 @@
 downBtn.addEventListener('click', (event) => {
-    chrome.runtime.sendMessage({ action: 'open_new_download' });
+    chrome.runtime.sendMessage({ action: 'newdld_window' });
 });
 
 optionsBtn.addEventListener('click', (event) => {
@@ -10,7 +10,7 @@ i18nEntry.value = chrome.i18n.getMessage('extension_locale');
 i18nEntry.disabled = true;
 
 chrome.runtime.onMessage.addListener(({ action, params }) => {
-    if (action !== 'storage_update') {
+    if (action !== 'options_storage') {
         return;
     }
     if (!params['manager_newtab']) {
@@ -30,9 +30,9 @@ function aria2StorageChanged(json) {
     aria2RPC.connect();
 }
 
-chrome.runtime.sendMessage({ action: 'system_runtime' }, ({ storage }) => {
+chrome.runtime.sendMessage({ action: 'options_runtime' }, ({ storage }) => {
     taskFilters(storage['manager_filters'], (params) => {
-        chrome.runtime.sendMessage({ action: 'manager_update', params });
+        chrome.runtime.sendMessage({ action: 'popup_queues', params });
     });
     aria2StorageChanged(storage);
 });

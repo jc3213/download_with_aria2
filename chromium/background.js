@@ -215,7 +215,7 @@ function togglHostState(id, rules) {
 
 const commandMap = {
     'open_options': () => chrome.runtime.openOptionsPage(),
-    'open_new_download': () => openPopupWindow(addonDownload, 462),
+    'newdld_window': () => openPopupWindow(addonDownload, 462),
     'toggle_capture': () => togglHostState('capture_hosts', captureHosts),
     'toggle_headers': () => togglHostState('headers_hosts', headersHosts),
     'toggle_proxy': () => togglHostState('proxy_hosts', proxyHosts)
@@ -241,7 +241,7 @@ function optionsChanged(response, json) {
     aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [json] }).then(response).catch(response);
 }
 
-function managerChanged(response, array) {
+function queuesFiltered(response, array) {
     aria2Storage['manager_filters'] = array;
     chrome.storage.sync.set({ 'manager_filters': array }, response);
 }
@@ -253,13 +253,16 @@ function detectedImages(response, id) {
 }
 
 const messageDispatch = {
-    'system_runtime': (response) => response({ manifest: systemManifest, storage: aria2Storage, options: aria2Config, version: aria2Version }),
-    'storage_update': storageChanged,
-    'jsonrpc_update': optionsChanged,
-    'manager_update': managerChanged,
-    'inspect_images': detectedImages,
-    'jsonrpc_download': (response, params) => aria2RPC.call(params).then(response).catch(response),
-    'open_new_download': () => openPopupWindow(addonDownload, 462)
+    'options_runtime': (response) => response({ manifest: systemManifest, storage: aria2Storage, options: aria2Config, version: aria2Version }),
+    'options_storage': storageChanged,
+    'options_jsonrpc': optionsChanged,
+    'popup_runtime': (response) => response({ storage, options, version }),
+    'popup_queues': queuesFiltered,
+    'images_runtime': detectedImages,
+    'newdld_window': () => openPopupWindow(addonDownload, 462),
+    'newdld_runtime': (response) => response({ storage: aria2Storage, options: aria2Config }),
+    'remote_status': (response) => response(systemManifest),
+    'remote_download': (response, params) => aria2RPC.call(params).then(response).catch(response)
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
@@ -273,7 +276,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(({ tabId, url, frameId }) => {
     }
 });
 
-chrome.tabs.onUpdated.addListener((tabId, { status, url }) => {
+chrome.tabs.onUpdated.addListener((tabId, { url }) => {
     if (url && url !== aria2Inspect.get(tabId)?.url) {
         aria2Inspect.set(tabId, { images: new Map(), url });
     }

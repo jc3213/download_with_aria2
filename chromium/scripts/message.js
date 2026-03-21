@@ -1,5 +1,5 @@
 function systemStatus(id) {
-    chrome.runtime.sendMessage({ action: 'system_runtime' } , (result) => {
+    chrome.runtime.sendMessage({ action: 'jsonrpc_status' } , (result) => {
         window.postMessage({ aria2c: 'aria2c_response', id, result });
     });
 }

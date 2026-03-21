@@ -73,7 +73,7 @@ chrome.tabs.getCurrent((tab) => {
     tabId = tab.id;
 });
 
-chrome.runtime.sendMessage({ action: 'inspect_images', params: id }, ({ storage, options, manifest, images, headers }) => {
+chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, ({ storage, options, manifest, images, headers }) => {
     manifest.manifest_version === 2 ? antiLeechMV2(headers) : antiLeechMV3();
     aria2Proxy = storage['proxy_server'];
     aria2Config['referer'] = referer;
