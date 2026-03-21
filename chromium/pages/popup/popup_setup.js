@@ -30,7 +30,7 @@ function aria2StorageChanged(json) {
     aria2RPC.connect();
 }
 
-chrome.runtime.sendMessage({ action: 'options_runtime' }, ({ storage }) => {
+chrome.runtime.sendMessage({ action: 'popup_runtime' }, ({ storage }) => {
     taskFilters(storage['manager_filters'], (params) => {
         chrome.runtime.sendMessage({ action: 'popup_queues', params });
     });
