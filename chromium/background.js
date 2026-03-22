@@ -83,26 +83,23 @@ aria2RPC.onmessage = ({ method, params }) => {
     if (method === 'aria2.onDownloadStart') {
         if (!aria2Active.has(gid)) {
             aria2Active.add(gid);
-            showNotify('start', gid);
+            downloadNotify('start', gid);
         }
     } else {
         aria2Active.delete(gid);
         if (method === 'aria2.onDownloadComplete') {
-            showNotify('complete', gid);
+            downloadNotify('complete', gid);
         }
     }
     toolbarCounter();
 };
 
-async function showNotify(type, gid) {
-    if (!aria2Storage['notify_' + type]) {
-        return;
-    }
-    let { result: { bittorrent, files: [{ path, uris }] } } = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
-    let title = chrome.i18n.getMessage('download_' + type);
-    let message = bittorrent?.info?.name ?? path?.substring(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
-    chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
-}
+const RawKeys = [
+    'dir', 'file-allocation', 'allow-overwrite', 'max-concurrent-downloads',
+    'max-tries', 'retry-wait', 'split', 'max-connection-per-server', 'user-agent',
+    'listen-port', 'bt-max-peers', 'enable-dht', 'enable-dht6', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'
+];
+const SizeKeys = ['disk-cache', 'min-split-size', 'max-overall-download-limit', 'max-overall-upload-limit'];
 
 function RawToSize(bytes) {
     if (bytes < 1024) {
@@ -114,12 +111,15 @@ function RawToSize(bytes) {
     return (bytes / 10485.76 | 0) / 100 + 'M';
 }
 
-const RawKeys = [
-    'dir', 'file-allocation', 'allow-overwrite', 'max-concurrent-downloads',
-    'max-tries', 'retry-wait', 'split', 'max-connection-per-server', 'user-agent',
-    'listen-port', 'bt-max-peers', 'enable-dht', 'enable-dht6', 'follow-torrent', 'bt-remove-unselected-file', 'seed-ratio', 'seed-time'
-];
-const SizeKeys = ['disk-cache', 'min-split-size', 'max-overall-download-limit', 'max-overall-upload-limit'];
+async function downloadNotify(type, gid) {
+    if (!aria2Storage['notify_' + type]) {
+        return;
+    }
+    let { result: { bittorrent, files: [{ path, uris }] } } = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
+    let title = chrome.i18n.getMessage('download_' + type);
+    let message = bittorrent?.info?.name ?? path?.substring(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
+    chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
+}
 
 function searchHeaders(url, referer) {
     for (let tab of aria2Inspect.values()) {
