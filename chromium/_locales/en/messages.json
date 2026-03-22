@@ -38,16 +38,16 @@
     "ctxmenu_allimages": {
         "message": "Download all images on this page"
     },
-    "plugins_options": {
+    "addons_options": {
         "message": "Options - Download with Aria2"
     },
-    "plugins_popup": {
+    "addons_popup": {
         "message": "Task Manager - Download with Aria2"
     },
-    "plugins_newdld": {
+    "addons_newdld": {
         "message": "New Download - Download with Aria2"
     },
-    "plugins_images": {
+    "addons_images": {
         "message": "Detected Images - Download with Aria2"
     },
     "time_day": {
