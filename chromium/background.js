@@ -121,20 +121,20 @@ const RawKeys = [
 ];
 const SizeKeys = ['disk-cache', 'min-split-size', 'max-overall-download-limit', 'max-overall-upload-limit'];
 
-function downloadHeaders(tabId, url, referer) {
-    let result = [];
-    let headers = [{ name: 'Referer', value: referer }];
-    let oldUA = navigator.userAgent;
-    if (aria2Inspect.has(tabId)) {
-        headers = aria2Inspect.get(tabId)[url];
-    } else {
-        for (let tab of aria2Inspect.values()) {
-            if (tab[url]) {
-                headers = tab[url];
-                break;
-            }
+function searchHeaders(url, referer) {
+    for (let tab of aria2Inspect.values()) {
+        let headers = tab[url];
+        if (headers) {
+            return headers;
         }
     }
+    return [{ name: 'Referer', value: referer }];
+}
+
+function downloadHeaders(tabId, url, referer) {
+    let result = [];
+    let headers = aria2Inspect.get(tabId)?.[url] ?? searchHeaders(url, referer);
+    let oldUA = navigator.userAgent;
     for (let { name, value } of headers) {
         let lower = name.toLowerCase();
         if (lower === 'user-agent') {
@@ -205,11 +205,7 @@ function togglHostState(id, rules) {
         }
         let value = aria2Storage[id] = [...rules];
         chrome.storage.sync.set({ [id]: value });
-        chrome.runtime.sendMessage({ options, params: { id, host } }, () => {
-            if (chrome.runtime.lastError) {
-                return;
-            }
-        });
+        chrome.runtime.sendMessage({ options, params: { id, host } }, () => chrome.runtime.lastError);
     });
 }
 
@@ -225,13 +221,13 @@ chrome.commands.onCommand.addListener((command) => {
     commandMap[command]?.();
 });
 
-function storageChanged(response, json) {
+function optionsStorage(response, json) {
     aria2RPC.disconnect();
     storageDispatch(json);
     chrome.storage.sync.set(json, response);
 }
 
-function optionsChanged(response, json) {
+function optionsJsonrpc(response, json) {
     for (let key of RawKeys) {
         aria2Config[key] = json[key];
     }
@@ -254,8 +250,8 @@ function detectedImages(response, id) {
 
 const messageDispatch = {
     'options_runtime': (response) => response({ manifest: systemManifest, storage: aria2Storage, options: aria2Config, version: aria2Version }),
-    'options_storage': storageChanged,
-    'options_jsonrpc': optionsChanged,
+    'options_storage': optionsStorage,
+    'options_jsonrpc': optionsJsonrpc,
     'popup_runtime': (response) => response({ storage: aria2Storage, options: aria2Config, version: aria2Version }),
     'popup_queues': queuesFiltered,
     'images_runtime': detectedImages,
