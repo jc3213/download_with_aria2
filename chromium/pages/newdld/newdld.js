@@ -22,7 +22,7 @@ function menuSubmit() {
     for (let url of urls) {
         params.push({ method: 'aria2.addUri', params: [[url], aria2Config] });
     }
-    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
+    chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
 
 const menuEventMap = {
@@ -75,7 +75,7 @@ async function metaFileDownload(files) {
         }));
     }
     let params = await Promise.all(tasks);
-    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
+    chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
 
 jsonrpcPane.addEventListener('change', (event) => {

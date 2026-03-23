@@ -13,7 +13,7 @@ function jsonrpcDownload(id, array) {
             params.push({ method: 'aria2.addUri', params: [[i.url], i.options ?? {}] });
         }
     }
-    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, (result) => {
+    chrome.runtime.sendMessage({ action: 'remote_download', params }, (result) => {
         window.postMessage({ aria2c: 'aria2c_response', id, result });
     });
 }
