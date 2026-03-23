@@ -205,7 +205,6 @@ function togglHostState(id, rules) {
         }
         let value = aria2Storage[id] = [...rules];
         chrome.storage.sync.set({ [id]: value });
-        chrome.runtime.sendMessage({ options, params: { id, host } }, () => chrome.runtime.lastError);
     });
 }
 
