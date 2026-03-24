@@ -29,7 +29,7 @@ function menuEventSubmit() {
             params.push({ method: 'aria2.addUri', params: [[src], options] });
         }
     }
-    chrome.runtime.sendMessage({ action: 'jsonrpc_download', params }, close);
+    chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
 
 const menuEventMap = {
