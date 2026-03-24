@@ -115,11 +115,11 @@ function menuEventImport() {
 }
 
 const menuEventMap = {
-    'option_save': menuEventSave,
-    'option_undo': () => changeHistoryLoad(undoes, redoes, undoBtn, redoBtn, 'old_value', 'undo'),
-    'option_redo': () => changeHistoryLoad(redoes, undoes, redoBtn, undoBtn, 'new_value', 'redo'),
-    'option_export': menuEventExport,
-    'option_import': menuEventImport
+    'options_save': menuEventSave,
+    'options_undo': () => changeHistoryLoad(undoes, redoes, undoBtn, redoBtn, 'old_value', 'undo'),
+    'options_redo': () => changeHistoryLoad(redoes, undoes, redoBtn, undoBtn, 'new_value', 'redo'),
+    'options_export': menuEventExport,
+    'options_import': menuEventImport
 };
 
 menuPane.addEventListener('click', (event) => {

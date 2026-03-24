@@ -8,128 +8,128 @@
     </head>
     <body>
         <div id="menu" class="flex">
-            <button i18n="option_save" hotkey="ctrl+s" disabled></button>
-            <button i18n="option_undo" hotkey="ctrl+z" disabled></button>
-            <button i18n="option_redo" hotkey="ctrl+y" disabled></button>
+            <button i18n="options_save" hotkey="Ctrl+S" disabled></button>
+            <button i18n="options_undo" hotkey="Ctrl+Z" disabled></button>
+            <button i18n="options_redo" hotkey="Ctrl+Y" disabled></button>
             <div id="version"></div>
-            <button i18n="option_import"></button>
-            <button i18n="option_export"></button>
+            <button i18n="options_import"></button>
+            <button i18n="options_export"></button>
             <input type="file">
             <a></a>
         </div>
         <div id="options" class="config">
             <h1>JSON-RPC</h1>
             <div class="flex">
-                <div class="flex fl-1" i18n-tips="tips_option_jsonrpc_url">
-                    <h4 i18n="option_jsonrpc_url"></h4>
+                <div class="flex fl-1" i18n-tips="tips_options_jsonrpc_url">
+                    <h4 i18n="options_jsonrpc_url"></h4>
                     <input class="fl-1" name="jsonrpc_url" type="text" placeholder="$$hostname:port/jsonrpc$$">
                 </div>
-                <div class="flex pad-l" i18n-tips="tips_option_jsonrpc_secret">
-                    <h4 i18n="option_jsonrpc_secret"></h4>
+                <div class="flex pad-l" i18n-tips="tips_options_jsonrpc_secret">
+                    <h4 i18n="options_jsonrpc_secret"></h4>
                     <input class="fl-1" name="jsonrpc_secret" type="password" placeholder="$$secret$$">
                 </div>
             </div>
             <div class="flex pad-u">
-                <button id="goto-jsonrpc" i18n="option_aria2"></button>
-                <div class="flex pad-l" i18n-tips="tips_option_jsonrpc_retries">
-                    <h4 i18n="option_jsonrpc_retries"></h4>
+                <button id="goto-jsonrpc" i18n="options_aria2"></button>
+                <div class="flex pad-l" i18n-tips="tips_options_jsonrpc_retries">
+                    <h4 i18n="options_jsonrpc_retries"></h4>
                     <input class="fl-1" name="jsonrpc_retries" type="number" min="-1" max="30" setp="1">
                 </div>
-                <div class="flex fl-1 pad-l" i18n-tips="tips_option_jsonrpc_timeout">
-                    <h4 i18n="option_jsonrpc_timeout"></h4>
+                <div class="flex fl-1 pad-l" i18n-tips="tips_options_jsonrpc_timeout">
+                    <h4 i18n="options_jsonrpc_timeout"></h4>
                     <input class="fl-1" name="jsonrpc_timeout" type="number" min="3" max="20" step="1">
                     <span i18n="time_second_full"></span>
                 </div>
             </div>
-            <h1 i18n="option_task_manager"></h1>
-            <div class="cfg-item" i18n-tips="tips_option_manager_newtab">
+            <h1 i18n="options_task_manager"></h1>
+            <div class="cfg-item" i18n-tips="tips_options_manager_newtab">
                 <input id="manager-newtab" name="manager_newtab" type="checkbox">
-                <label for="manager-newtab" i18n="option_manager_newtab"></label>
+                <label for="manager-newtab" i18n="options_manager_newtab"></label>
             </div>
-            <div class="cfg-item flex" i18n-tips="tips_option_manager_interval">
-                <h4 i18n="option_manager_interval"></h4>
+            <div class="cfg-item flex" i18n-tips="tips_options_manager_interval">
+                <h4 i18n="options_manager_interval"></h4>
                 <input class="fl-1" name="manager_interval" type="number" min="5" max="30" step="1">
                 <span i18n="time_second_full"></span>
             </div>
-            <h1 i18n="option_context"></h1>
-            <div class="cfg-item" i18n-tips="tips_option_ctxmenu_enabled">
+            <h1 i18n="options_context"></h1>
+            <div class="cfg-item" i18n-tips="tips_options_ctxmenu_enabled">
                 <input id="ctxmenu-enabled" name="ctxmenu_enabled" type="checkbox" data-css>
-                <label for="ctxmenu-enabled" i18n="option_ctxmenu_enabled"></label>
+                <label for="ctxmenu-enabled" i18n="options_ctxmenu_enabled"></label>
             </div>
-            <div class="cfg-item e-ctxmenu-enabled" i18n-tips="tips_option_ctxmenu_thisurl">
+            <div class="cfg-item e-ctxmenu-enabled" i18n-tips="tips_options_ctxmenu_thisurl">
                 <input id="ctxmenu-thisurl" name="ctxmenu_thisurl" type="checkbox">
                 <label for="ctxmenu-thisurl" i18n="ctxmenu_thisurl"></label>
             </div>
-            <div class="cfg-item e-ctxmenu-enabled" i18n-tips="tips_option_ctxmenu_cascade">
+            <div class="cfg-item e-ctxmenu-enabled" i18n-tips="tips_options_ctxmenu_cascade">
                 <input id="ctxmenu-cascade" name="ctxmenu_cascade" type="checkbox">
-                <label for="ctxmenu-cascade" i18n="option_ctxmenu_cascade"></label>
+                <label for="ctxmenu-cascade" i18n="options_ctxmenu_cascade"></label>
             </div>
-            <div class="cfg-item e-ctxmenu-enabled" i18n-tips="tips_option_ctxmenu_thisimage">
+            <div class="cfg-item e-ctxmenu-enabled" i18n-tips="tips_options_ctxmenu_thisimage">
                 <input id="ctxmenu-thisimage" name="ctxmenu_thisimage" type="checkbox">
                 <label for="ctxmenu-thisimage" i18n="ctxmenu_thisimage"></label>
             </div>
-            <div class="cfg-item cfg-right e-ctxmenu-enabled" i18n-tips="tips_option_ctxmenu_allimages">
+            <div class="cfg-item cfg-right e-ctxmenu-enabled" i18n-tips="tips_options_ctxmenu_allimages">
                 <input id="ctxmenu-allimages" name="ctxmenu_allimages" type="checkbox">
                 <label for="ctxmenu-allimages" i18n="ctxmenu_allimages"></label>
             </div>
-            <h1 i18n="option_notification"></h1>
-            <div class="cfg-item" i18n-tips="tips_option_notify_start">
+            <h1 i18n="options_notification"></h1>
+            <div class="cfg-item" i18n-tips="tips_options_notify_start">
                 <input id="notify-start" name="notify_start" type="checkbox">
-                <label for="notify-start" i18n="option_notify_start"></label>
+                <label for="notify-start" i18n="options_notify_start"></label>
             </div>
-            <div class="cfg-item" i18n-tips="tips_option_notify_complete">
+            <div class="cfg-item" i18n-tips="tips_options_notify_complete">
                 <input id="notify-complete" name="notify_complete" type="checkbox">
-                <label for="notify-complete" i18n="option_notify_complete"></label>
+                <label for="notify-complete" i18n="options_notify_complete"></label>
             </div>
-            <h1 i18n="option_headers"></h1>
-            <div class="cfg-item" i18n-tips="tips_option_headers_override">
+            <h1 i18n="options_headers"></h1>
+            <div class="cfg-item" i18n-tips="tips_options_headers_override">
                 <input id="headers-override" name="headers_override" type="checkbox" data-css>
-                <label for="headers-override" i18n="option_headers_override"></label>
+                <label for="headers-override" i18n="options_headers_override"></label>
             </div>
-            <div class="cfg-item e-headers-override" i18n-tips="tips_option_headers_useragent">
+            <div class="cfg-item e-headers-override" i18n-tips="tips_options_headers_useragent">
                 <input name="headers_useragent" type="text">
             </div>
-            <div id="headers_hosts" class="flexmenu" i18n-tips="tips_option_headers_hosts">
-                <h4 i18n="option_match_exclude"></h4>
+            <div id="headers_hosts" class="flexmenu" i18n-tips="tips_options_headers_hosts">
+                <h4 i18n="options_match_exclude"></h4>
                 <input type="text">
                 <button i18n-tips="tips_match_add">➕</button>
                 <button i18n-tips="tips_match_resort">🧲</button>
                 <div class="list"></div>
             </div>
-            <h1 i18n="option_folder"></h1>
-            <div class="cfg-item" i18n-tips="tips_option_folder_enabled">
+            <h1 i18n="options_folder"></h1>
+            <div class="cfg-item" i18n-tips="tips_options_folder_enabled">
                 <input id="folder-enabled" name="folder_enabled" type="checkbox" data-css>
-                <label for="folder-enabled" i18n="option_folder_enabled"></label>
+                <label for="folder-enabled" i18n="options_folder_enabled"></label>
             </div>
-            <div class="cfg-item e-firefox e-folder-enabled e-capture-enabled x-capture-webrequest" i18n-tips="tips_option_folder_firefox">
+            <div class="cfg-item e-firefox e-folder-enabled e-capture-enabled x-capture-webrequest" i18n-tips="tips_options_folder_firefox">
                 <input id="folder-firefox" name="folder_firefox" type="checkbox" data-css>
-                <label for="folder-firefox" i18n="option_folder_firefox"></label>
+                <label for="folder-firefox" i18n="options_folder_firefox"></label>
             </div>
-            <div class="pad-u e-folder-enabled x-folder-firefox" i18n-tips="tips_option_folder">
+            <div class="pad-u e-folder-enabled x-folder-firefox" i18n-tips="tips_options_folder">
                 <input name="folder_defined" type="text">
             </div>
-            <h1 i18n="option_proxy"></h1>
-            <div i18n-tips="tips_option_proxy">
+            <h1 i18n="options_proxy"></h1>
+            <div i18n-tips="tips_options_proxy">
                 <input name="proxy_server" type="text" placeholder="http://127.0.0.1:1280/">
             </div>
-            <div id="proxy_hosts" class="flexmenu" i18n-tips="tips_option_proxy_hosts">
-                <h4 i18n="option_match_include"></h4>
+            <div id="proxy_hosts" class="flexmenu" i18n-tips="tips_options_proxy_hosts">
+                <h4 i18n="options_match_include"></h4>
                 <input type="text">
                 <button i18n-tips="tips_match_add">➕</button>
                 <button i18n-tips="tips_match_resort">🧲</button>
                 <div class="list"></div>
             </div>
-            <h1 i18n="option_capture"></h1>
-            <div class="cfg-item" i18n-tips="tips_option_capture_enabled">
+            <h1 i18n="options_capture"></h1>
+            <div class="cfg-item" i18n-tips="tips_options_capture_enabled">
                 <input id="capture-enabled" name="capture_enabled" type="checkbox" data-css>
-                <label for="capture-enabled" i18n="option_capture_enabled"></label>
+                <label for="capture-enabled" i18n="options_capture_enabled"></label>
             </div>
-            <div class="cfg-item e-firefox e-capture-enabled" i18n-tips="tips_option_capture_webrequest">
+            <div class="cfg-item e-firefox e-capture-enabled" i18n-tips="tips_options_capture_webrequest">
                 <input id="capture-webrequest" name="capture_webrequest" type="checkbox" data-css>
-                <label for="capture-webrequest" i18n="option_capture_webrequest"></label>
+                <label for="capture-webrequest" i18n="options_capture_webrequest"></label>
             </div>
-            <div id="capture_hosts" class="flexmenu e-capture-enabled" i18n-tips="tips_option_capture_hosts">
-                <h4 i18n="option_match_exclude"></h4>
+            <div id="capture_hosts" class="flexmenu e-capture-enabled" i18n-tips="tips_options_capture_hosts">
+                <h4 i18n="options_match_exclude"></h4>
                 <input type="text">
                 <button i18n-tips="tips_match_add">➕</button>
                 <button i18n-tips="tips_match_resort">🧲</button>
@@ -139,7 +139,7 @@
         <div id="jsonrpc" class="config">
             <h1 i18n="aria2_options"></h1>
             <div class="cfg-item pad-u">
-                <button id="goto-options" i18n="option_back"></button>
+                <button id="goto-options" i18n="options_back"></button>
             </div>
             <div class="cfg-item" i18n-tips="tips_aria2_down_dir">
                 <h4 i18n="aria2_down_dir"></h4>
@@ -149,7 +149,7 @@
             <div class="cfg-item" i18n-tips="tips_aria2_file_alloc">
                 <h4 i18n="aria2_file_alloc"></h4>
                 <select name="file-allocation">
-                    <option value="none" i18n="option_disabled"></option>
+                    <option value="none" i18n="options_disabled"></option>
                     <option value="prealloc" i18n="aria2_alloc_pre"></option>
                     <option value="falloc" i18n="aria2_alloc_fast"></option>
                     <option value="trunc" i18n="aria2_alloc_trunc"></option>

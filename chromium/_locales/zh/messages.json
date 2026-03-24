@@ -119,193 +119,193 @@
     "tips_proxy_server": {
         "message": "设置预设的代理服务器"
     },
-    "option_save": {
+    "options_save": {
         "message": "保存"
     },
-    "option_undo": {
+    "options_undo": {
         "message": "撤销"
     },
-    "option_redo": {
+    "options_redo": {
         "message": "恢复"
     },
-    "option_export": {
+    "options_export": {
         "message": "导出"
     },
-    "option_import": {
+    "options_import": {
         "message": "导入"
     },
-    "option_default": {
+    "options_default": {
         "message": "默认"
     },
-    "option_disabled": {
+    "options_disabled": {
         "message": "禁用"
     },
-    "option_aria2": {
+    "options_aria2": {
         "message": "前往 JSON-RPC 设置"
     },
-    "option_back": {
+    "options_back": {
         "message": "返回 扩展 设置"
     },
-    "option_sample": {
+    "options_sample": {
         "message": "样例"
     },
-    "option_jsonrpc_url": {
+    "options_jsonrpc_url": {
         "message": "RPC 地址"
     },
-    "tips_option_jsonrpc_url": {
+    "tips_options_jsonrpc_url": {
         "message": "设置 JSON-RPC 的服务地址"
     },
-    "option_jsonrpc_secret": {
+    "options_jsonrpc_secret": {
         "message": "访问密钥"
     },
-    "tips_option_jsonrpc_secret": {
+    "tips_options_jsonrpc_secret": {
         "message": "设置 JSON-RPC 的访问密钥"
     },
-    "option_jsonrpc_retries": {
+    "options_jsonrpc_retries": {
         "message": "重试次数"
     },
-    "tips_option_jsonrpc_retries": {
+    "tips_options_jsonrpc_retries": {
         "message": "设置无法访问 JSON-RPC 时的重试次数\n\n设为\"0\"则不重试\n\n设为\"-1\"则无限重试"
     },
-    "option_jsonrpc_timeout": {
+    "options_jsonrpc_timeout": {
         "message": "重试间隔"
     },
-    "tips_option_jsonrpc_timeout": {
+    "tips_options_jsonrpc_timeout": {
         "message": "设置重试之间的时间间隔"
     },
-    "option_task_manager": {
+    "options_task_manager": {
         "message": "任务管理器"
     },
-    "option_manager_newtab": {
+    "options_manager_newtab": {
         "message": "在新标签页中打开"
     },
-    "tips_option_manager_newtab": {
+    "tips_options_manager_newtab": {
         "message": "设置是否通过新标签页打开任务管理器"
     },
-    "option_manager_interval": {
+    "options_manager_interval": {
         "message": "更新间隔"
     },
-    "tips_option_manager_interval": {
+    "tips_options_manager_interval": {
         "message": "设置任务管理器更新间隔"
     },
-    "option_context": {
+    "options_context": {
         "message": "右键菜单"
     },
-    "option_ctxmenu_enabled": {
+    "options_ctxmenu_enabled": {
         "message": "启用上下文菜单"
     },
-    "tips_option_ctxmenu_enabled": {
+    "tips_options_ctxmenu_enabled": {
         "message": "启用此扩展的右键菜单"
     },
-    "option_ctxmenu_cascade": {
+    "options_ctxmenu_cascade": {
         "message": "层叠式菜单"
     },
-    "tips_option_ctxmenu_cascade": {
+    "tips_options_ctxmenu_cascade": {
         "message": "启用层叠式上下文菜单"
     },
-    "tips_option_ctxmenu_thisurl": {
+    "tips_options_ctxmenu_thisurl": {
         "message": "启用上下文菜单「下载此链接」"
     },
-    "tips_option_ctxmenu_thisimage": {
+    "tips_options_ctxmenu_thisimage": {
         "message": "启用上下文菜单「下载此图像」"
     },
-    "tips_option_ctxmenu_allimages": {
+    "tips_options_ctxmenu_allimages": {
         "message": "启用上下文菜单「下载此页面的所有图像」"
     },
-    "option_notification": {
+    "options_notification": {
         "message": "通知"
     },
-    "option_notify_start": {
+    "options_notify_start": {
         "message": "下载开始时"
     },
-    "tips_option_notify_start": {
+    "tips_options_notify_start": {
         "message": "当下载开始时弹出通知"
     },
-    "option_notify_complete": {
+    "options_notify_complete": {
         "message": "下载完成时"
     },
-    "tips_option_notify_complete": {
+    "tips_options_notify_complete": {
         "message": "当下载完成时弹出通知"
     },
-    "option_match_include": {
+    "options_match_include": {
         "message": "监视域名"
     },
-    "option_match_exclude": {
+    "options_match_exclude": {
         "message": "例外域名"
     },
-    "option_headers": {
+    "options_headers": {
         "message": "转发请求头"
     },
-    "tips_option_headers_hosts": {
+    "tips_options_headers_hosts": {
         "message": "停止为所设置域名的下载转发请求头"
     },
-    "option_headers_override": {
+    "options_headers_override": {
         "message": "覆盖用户代理"
     },
-    "tips_option_headers_override": {
+    "tips_options_headers_override": {
         "message": "将请求头中\"User-Agent\"的值修改为预设的User Agent"
     },
-    "option_headers_useragent": {
+    "options_headers_useragent": {
         "message": "User Agent"
     },
-    "tips_option_headers_useragent": {
+    "tips_options_headers_useragent": {
         "message": "设置预设的User Agent"
     },
-    "option_folder": {
+    "options_folder": {
         "message": "下载路径"
     },
-    "tips_option_folder": {
+    "tips_options_folder": {
         "message": "设置预设的下载路径"
     },
-    "option_folder_enabled": {
+    "options_folder_enabled": {
         "message": "管理下载路径"
     },
-    "tips_option_folder_enabled": {
+    "tips_options_folder_enabled": {
         "message": "将新建下载保存至预设的下载路径中"
     },
-    "option_folder_firefox": {
+    "options_folder_firefox": {
         "message": "遵循浏览器行为"
     },
-    "tips_option_folder_firefox": {
+    "tips_options_folder_firefox": {
         "message": "将新建下载保存至浏览器的下载路径中\n\n此设置会忽略掉预设的下载路径"
     },
-    "option_proxy": {
+    "options_proxy": {
         "message": "代理服务器"
     },
-    "tips_option_proxy": {
+    "tips_options_proxy": {
         "message": "设置预设的代理服务器"
     },
-    "tips_option_proxy_hosts": {
+    "tips_options_proxy_hosts": {
         "message": "为来自下表中域名的下载添加预设的代理服务器"
     },
-    "option_capture": {
+    "options_capture": {
         "message": "捕获浏览器下载"
     },
-    "option_capture_enabled": {
+    "options_capture_enabled": {
         "message": "启用捕获功能"
     },
-    "tips_option_capture_enabled": {
+    "tips_options_capture_enabled": {
         "message": "启用捕获来自浏览器的下载"
     },
-    "option_capture_webrequest": {
+    "options_capture_webrequest": {
         "message": "启用捕获网络请求"
     },
-    "tips_option_capture_webrequest": {
+    "tips_options_capture_webrequest": {
         "message": "捕获网络请求而非下载请求，可能存在问题"
     },
-    "option_capture_filesize": {
+    "options_capture_filesize": {
         "message": "忽略文件大小"
     },
-    "tips_option_capture_filesize": {
+    "tips_options_capture_filesize": {
         "message": "忽略低于所设置文件大小的下载"
     },
-    "tips_option_capture_hosts": {
+    "tips_options_capture_hosts": {
         "message": "忽略来自所设置域名的下载"
     },
-    "option_capture_filename": {
+    "options_capture_filename": {
         "message": "忽略文件后缀"
     },
-    "tips_option_capture_filename": {
+    "tips_options_capture_filename": {
         "message": "忽略满足所设置文件后缀的下载"
     },
     "popup_menu": {
@@ -362,7 +362,7 @@
     "popup_stopped": {
         "message": "停止"
     },
-    "task_add_meta": {
+    "task_addfiles": {
         "message": "添加文件"
     },
     "task_entry": {

@@ -255,7 +255,7 @@ const messageDispatch = {
     'popup_runtime': (response) => response({ storage: aria2Storage, options: aria2Config, version: aria2Version }),
     'popup_queues': queuesFiltered,
     'images_runtime': detectedImages,
-    'newdld_window': () => openPopupWindow(addonDownload, 462),
+    'newdld_window': (response) => response(openPopupWindow(addonDownload, 462)),
     'newdld_runtime': (response) => response({ storage: aria2Storage, options: aria2Config }),
     'remote_status': (response) => response(systemManifest),
     'remote_download': (response, params) => aria2RPC.call(params).then(response).catch(response)

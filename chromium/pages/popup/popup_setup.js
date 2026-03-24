@@ -1,5 +1,5 @@
 downBtn.addEventListener('click', (event) => {
-    chrome.runtime.sendMessage({ action: 'newdld_window' });
+    chrome.runtime.sendMessage({ action: 'newdld_window' }, close);
 });
 
 optionsBtn.addEventListener('click', (event) => {

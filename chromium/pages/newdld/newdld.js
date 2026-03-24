@@ -26,7 +26,7 @@ function menuSubmit() {
 }
 
 const menuEventMap = {
-    'task_add_meta': () => metaFiles.click(),
+    'task_addfiles': () => metaFiles.click(),
     'common_submit': menuSubmit
 };
 

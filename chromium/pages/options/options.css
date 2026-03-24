@@ -115,14 +115,14 @@ i {
 }
 
 .sample::before {
-    content: "__MSG_option_sample__";
+    content: "__MSG_options_sample__";
     text-decoration: underline;
 }
 
 .default::before {
-    content: "__MSG_option_default__: ";
+    content: "__MSG_options_default__: ";
 }
 
 .disabled::before {
-    content: "__MSG_option_disabled__: ";
+    content: "__MSG_options_disabled__: ";
 }
