@@ -35,19 +35,23 @@ jobs:
       - name: 📦 Install Minify Tools
         run: npm install -g html-minifier-terser terser clean-css-cli
 
-      - name: 🏷️ Extract Extension Versions
+      - name: 🏷️ Generate Release Version
         run: |
-          get_version() { jq -r .version "$1/manifest.json"; }
+          COUNT=$(git rev-list --count HEAD)
+
+          get_version() {
+            RAW=$(jq -r .version "$1/manifest.json")
+            echo "$RAW" | awk -F. -v c=$COUNT '{print $1"."$2"."c}'
+          }
 
           MV2_VERSION=$(get_version chromium)
           MV3_VERSION=$(get_version chromium_mv3)
           FF_VERSION=$(get_version firefox)
+          RELEASE_VERSION=$(printf "%s\n%s\n%s" "$MV2_VERSION" "$MV3_VERSION" "$FF_VERSION" | sort -V | tail -n 1)
 
           echo "MV2_VERSION=$MV2_VERSION" >> $GITHUB_ENV
           echo "MV3_VERSION=$MV3_VERSION" >> $GITHUB_ENV
           echo "FF_VERSION=$FF_VERSION" >> $GITHUB_ENV
-
-          RELEASE_VERSION=$(printf "%s\n%s\n%s" "$MV2_VERSION" "$MV3_VERSION" "$FF_VERSION" | sort -V | tail -n 1)
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
 
       - name: ✨ Minify Source Files
