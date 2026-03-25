@@ -1,4 +1,4 @@
-name: build-and-release
+name: Extension Build & Release
 
 on:
   push:
@@ -14,20 +14,28 @@ permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  release-extensions:
     runs-on: ubuntu-latest
 
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Checkout source
+      - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install tools
+      - name: 🔧 Install System Tools
         run: sudo apt-get install -y zip jq
 
-      - name: Extract and define versions
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: 📦 Install Minify Tools
+        run: npm install -g html-minifier-terser terser clean-css-cli
+
+      - name: 🏷️ Extract Extension Versions
         run: |
           get_version() { jq -r .version "$1/manifest.json"; }
 
@@ -42,7 +50,20 @@ jobs:
           RELEASE_VERSION=$(printf "%s\n%s\n%s" "$MV2_VERSION" "$MV3_VERSION" "$FF_VERSION" | sort -V | tail -n 1)
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
 
-      - name: Package Extensions
+      - name: ✨ Minify Source Files
+        run: |
+          minify_dir() {
+            DIR=$1
+            find "$DIR" -type f -name "*.html" -exec html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o {} {} \;
+            find "$DIR" -type f -name "*.js"   -exec terser --compress --mangle -o {} -- {} \;
+            find "$DIR" -type f -name "*.css"  -exec cleancss -o {} {} \;
+          }
+
+          minify_dir chromium
+          minify_dir chromium_mv3
+          minify_dir firefox
+
+      - name: 📦 Package Extensions
         run: |
           package() {
             SRC1="$1"
@@ -63,11 +84,18 @@ jobs:
           package "chromium" "chromium_mv3" "build_mv3" "chromium_mv3-${MV3_VERSION}.zip"
           package "chromium" "firefox" "build_firefox" "firefox-${FF_VERSION}.zip"
 
-      - name: Create GitHub Release
+      - name: 🚀 Create GitHub Release
         run: |
+          if gh release view "${RELEASE_VERSION}" >/dev/null 2>&1; then
+            echo "Release ${RELEASE_VERSION} already exists, appending commit hash..."
+            SHORT_HASH=$(git rev-parse --short HEAD)
+            RELEASE_VERSION="${RELEASE_VERSION}-${SHORT_HASH}"
+            echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          fi
+
           gh release create "${RELEASE_VERSION}" \
             "chromium-${MV2_VERSION}.zip" \
             "chromium_mv3-${MV3_VERSION}.zip" \
             "firefox-${FF_VERSION}.zip" \
-            --title "${RELEASE_VERSION}" \
+            --title "v${RELEASE_VERSION}" \
             --notes "Auto-packaged extensions for version v${RELEASE_VERSION}"
