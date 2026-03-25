@@ -28,8 +28,10 @@ jobs:
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: 🔧 Install System Tools
+      - name: 🔧 Install Zip Tool
         run: sudo apt-get install -y zip jq
 
       - name: ⚙️ Setup Node.js
