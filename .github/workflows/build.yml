@@ -1,4 +1,4 @@
-name: Extension Build & Release
+name: extension-build-release
 
 on:
   push:
@@ -57,6 +57,7 @@ jobs:
             find "$DIR" -type f -name "*.html" -exec html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o {} {} \;
             find "$DIR" -type f -name "*.js"   -exec terser --compress --mangle -o {} -- {} \;
             find "$DIR" -type f -name "*.css"  -exec cleancss -o {} {} \;
+            find "$DIR" -type f -name "*.json" -exec node -e 'const fs=require("fs"); const f=process.argv[1]; const j=JSON.parse(fs.readFileSync(f,"utf8")); fs.writeFileSync(f, JSON.stringify(j));' {} \;
           }
 
           minify_dir chromium
