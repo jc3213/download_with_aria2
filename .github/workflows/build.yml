@@ -5,53 +5,33 @@ on:
     branches:
       - main
     paths:
-      - 'chromium/manifest.json'
-      - 'chromium_mv3/manifest.json'
-      - 'firefox/manifest.json'
+      - 'chromium/**'
+      - 'chromium_mv3/**'
+      - 'firefox/**'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  release-extensions:
+  prepare-script:
     runs-on: ubuntu-latest
-
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+    outputs:
+      script-path: ${{ steps.write-script.outputs.script-path }}
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 🔧 Install System Tools
-        run: sudo apt-get install -y zip jq
-
-      - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-
-      - name: 📦 Install Minify Tools
-        run: npm install -g html-minifier-terser terser clean-css-cli
-
-      - name: 🏷️ Extract Extension Versions
+      - name: 📝 Write build_and_release.sh
+        id: write-script
         run: |
-          get_version() { jq -r .version "$1/manifest.json"; }
+          SCRIPT="$RUNNER_TEMP/build_and_release.sh"
+          cat > "$SCRIPT" <<'EOF'
+          #!/usr/bin/env bash
+          set -e
+          RELEASE_VERSION=$1
+          echo "Building extensions for version: $RELEASE_VERSION"
 
-          MV2_VERSION=$(get_version chromium)
-          MV3_VERSION=$(get_version chromium_mv3)
-          FF_VERSION=$(get_version firefox)
-
-          echo "MV2_VERSION=$MV2_VERSION" >> $GITHUB_ENV
-          echo "MV3_VERSION=$MV3_VERSION" >> $GITHUB_ENV
-          echo "FF_VERSION=$FF_VERSION" >> $GITHUB_ENV
-
-          RELEASE_VERSION=$(printf "%s\n%s\n%s" "$MV2_VERSION" "$MV3_VERSION" "$FF_VERSION" | sort -V | tail -n 1)
-          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
-
-      - name: ✨ Minify Source Files
-        run: |
           minify_dir() {
             DIR=$1
             find "$DIR" -type f -name "*.html" -exec html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o {} {} \;
@@ -64,8 +44,6 @@ jobs:
           minify_dir chromium_mv3
           minify_dir firefox
 
-      - name: 📦 Package Extensions
-        run: |
           package() {
             SRC1="$1"
             SRC2="$2"
@@ -81,22 +59,68 @@ jobs:
             rm -rf "$BUILD_DIR"
           }
 
-          package "chromium" "" "build_mv2" "chromium-${MV2_VERSION}.zip"
-          package "chromium" "chromium_mv3" "build_mv3" "chromium_mv3-${MV3_VERSION}.zip"
-          package "chromium" "firefox" "build_firefox" "firefox-${FF_VERSION}.zip"
-
-      - name: 🚀 Create GitHub Release
-        run: |
-          if gh release view "${RELEASE_VERSION}" >/dev/null 2>&1; then
-            echo "Release ${RELEASE_VERSION} already exists, appending commit hash..."
-            SHORT_HASH=$(git rev-parse --short HEAD)
-            RELEASE_VERSION="${RELEASE_VERSION}-${SHORT_HASH}"
-            echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
-          fi
+          package "chromium" "" "build_mv2" "chromium-${RELEASE_VERSION}.zip"
+          package "chromium" "chromium_mv3" "build_mv3" "chromium_mv3-${RELEASE_VERSION}.zip"
+          package "chromium" "firefox" "build_firefox" "firefox-${RELEASE_VERSION}.zip"
 
           gh release create "${RELEASE_VERSION}" \
-            "chromium-${MV2_VERSION}.zip" \
-            "chromium_mv3-${MV3_VERSION}.zip" \
-            "firefox-${FF_VERSION}.zip" \
+            "chromium-${RELEASE_VERSION}.zip" \
+            "chromium_mv3-${RELEASE_VERSION}.zip" \
+            "firefox-${RELEASE_VERSION}.zip" \
             --title "v${RELEASE_VERSION}" \
             --notes "Auto-packaged extensions for version v${RELEASE_VERSION}"
+          EOF
+          chmod +x "$SCRIPT"
+          echo "script-path=$SCRIPT" >> $GITHUB_OUTPUT
+
+  release-extensions:
+    runs-on: ubuntu-latest
+    needs: prepare-script
+    if: contains(join(github.event.commits.*.modified), 'manifest.json')
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+      - name: 🔧 Install System Tools
+        run: sudo apt-get install -y zip jq
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: 🏷️ Get Release Version (manifest.json)
+        run: |
+          get_version() { jq -r .version "$1/manifest.json"; }
+          MV2_VERSION=$(get_version chromium)
+          MV3_VERSION=$(get_version chromium_mv3)
+          FF_VERSION=$(get_version firefox)
+          RELEASE_VERSION=$(printf "%s\n%s\n%s" "$MV2_VERSION" "$MV3_VERSION" "$FF_VERSION" | sort -V | tail -n 1)
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+      - name: 🚀 Run Release Script
+        run: ${{ needs.prepare-script.outputs.script-path }} "${RELEASE_VERSION}"
+
+  prerelease-extensions:
+    runs-on: ubuntu-latest
+    needs: prepare-script
+    if: ${{ !contains(join(github.event.commits.*.modified), 'manifest.json') }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+      - name: 🔧 Install System Tools
+        run: sudo apt-get install -y zip jq
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: 🏷️ Get Pre-Release Version (commit count + hash)
+        run: |
+          COUNT=$(git rev-list --count HEAD)
+          HASH=$(git rev-parse --short HEAD)
+          RELEASE_VERSION="chromium-nightly-${COUNT}-${HASH}"
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+      - name: 🚀 Run Pre-Release Script
+        run: ${{ needs.prepare-script.outputs.script-path }} "${RELEASE_VERSION}"
