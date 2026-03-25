@@ -12,6 +12,7 @@ on:
       - 'chromium/manifest.json'
       - 'chromium_mv3/manifest.json'
       - 'firefox/manifest.json'
+  workflow_dispatch:
 
 permissions:
   contents: write
