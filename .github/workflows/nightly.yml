@@ -45,8 +45,11 @@ jobs:
           COUNT=$(git rev-list --count HEAD)
 
           get_version() {
-            RAW=$(jq -r .version "$1/manifest.json")
-            echo "$RAW" | awk -F. -v c=$COUNT '{print $1"."$2"."c}'
+            DIR=$1
+            RAW=$(jq -r .version "$DIR/manifest.json")
+            NEW="${RAW}.${COUNT}"
+            jq --arg v "$NEW" '.version=$v' "$DIR/manifest.json" > tmp && mv tmp "$DIR/manifest.json"
+            echo "$NEW"
           }
 
           MV2_VERSION=$(get_version chromium)
@@ -99,9 +102,9 @@ jobs:
           HASH=$(git rev-parse --short HEAD)
 
           gh release create "v${RELEASE_VERSION}-${HASH}" \
-            "chromium-${MV2_VERSION}.zip" \
-            "chromium_mv3-${MV3_VERSION}.zip" \
-            "firefox-${FF_VERSION}.zip" \
+            "chromium-${MV2_VERSION}-${HASH}.zip" \
+            "chromium_mv3-${MV3_VERSION}-${HASH}.zip" \
+            "firefox-${FF_VERSION}-${HASH}.zip" \
             --title "v${RELEASE_VERSION}-${HASH}" \
             --notes "Nightly pre-release build based on commit ${HASH}" \
             --prerelease
