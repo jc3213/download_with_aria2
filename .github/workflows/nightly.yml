@@ -4,15 +4,14 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'chromium/**'
-      - 'chromium_mv3/**'
-      - 'firefox/**'
     paths-ignore:
+      - '.github/**'
+      - 'LICENSE'
+      - 'README.md'
+      - '_config.yml'
       - 'chromium/manifest.json'
       - 'chromium_mv3/manifest.json'
       - 'firefox/manifest.json'
-  workflow_dispatch:
 
 permissions:
   contents: write
