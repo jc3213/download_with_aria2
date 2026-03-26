@@ -62,9 +62,9 @@ jobs:
           FF_VER=$(get_version firefox)
           VERSION=$(printf "%s\n%s\n%s" "$MV2_VER" "$MV3_VER" "$FF_VER" | sort -V | tail -n 1)
 
-          echo "MV2_ZIP=$NAME-$MV2_VER-$HASH" >> $GITHUB_ENV
-          echo "MV3_ZIP=$NAME-$MV3_VER-$HASH" >> $GITHUB_ENV
-          echo "FF_ZIP=$NAME-$FF_VER-$HASH" >> $GITHUB_ENV
+          echo "MV2_ZIP=$NAME-chromium-$MV2_VER-$HASH.zip" >> $GITHUB_ENV
+          echo "MV3_ZIP=$NAME-chromium_mv3-$MV3_VER-$HASH.zip" >> $GITHUB_ENV
+          echo "FF_ZIP=$NAME-firefox_$FF_VER-$HASH.zip" >> $GITHUB_ENV
           echo "VERSION=$VERSION-$HASH" >> $GITHUB_ENV
           echo "HASH=$HASH" >> $GITHUB_ENV
 
@@ -99,24 +99,19 @@ jobs:
             rm -rf "$BUILD_DIR"
           }
 
-          package "chromium" "" "build_mv2" "${MV2_ZIP}.zip"
-          package "chromium" "chromium_mv3" "build_mv3" "${MV3_ZIP}.zip"
-          package "chromium" "firefox" "build_ff" "${FF_ZIP}.zip"
+          package "chromium" "" "build_mv2" "${MV2_ZIP}"
+          package "chromium" "chromium_mv3" "build_mv3" "${MV3_ZIP}"
+          package "chromium" "firefox" "build_ff" "${FF_ZIP}"
 
-      - name: ✅ Check Assets
+      - name: 🔍 Verify Release Assets
         run: ls -lh *.zip
 
       - name: 🚀 Create GitHub Pre-Release
         run: |
           gh release create "${VERSION}" \
+            "${MV2_ZIP}" \
+            "${MV3_ZIP}" \
+            "${FF_ZIP}" \
             --title "${VERSION}" \
             --notes "Nightly pre-release build based on commit ${HASH}" \
             --prerelease
-
-      - name: 📤 Upload Assets
-        run: |
-          gh release upload "${VERSION}" \
-            "${MV2_ZIP}.zip" \
-            "${MV3_ZIP}.zip" \
-            "${FF_ZIP}.zip" \
-            --clobber
