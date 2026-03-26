@@ -102,10 +102,13 @@ jobs:
 
       - name: 🚀 Create GitHub Pre-Release
         run: |
-          gh release create "v${RELEASE_VERSION}" \
-            "chromium-${MV2_VERSION}.zip" \
-            "chromium_mv3-${MV3_VERSION}.zip" \
-            "firefox-${FF_VERSION}.zip" \
+          RAW="${GITHUB_REPOSITORY#*/}"
+          NAME=$(echo "$RAW" | tr '[:upper:]' '[:lower:]' | tr -d '-_')
+
+          gh release create "${RELEASE_VERSION}" \
+            "${NAME}-chromium-${MV2_VERSION}.zip" \
+            "${NAME}-chromium_mv3-${MV3_VERSION}.zip" \
+            "${NAME}-firefox-${FF_VERSION}.zip" \
             --title "${RELEASE_VERSION}" \
             --notes "Nightly pre-release build based on commit ${HASH}" \
             --prerelease
