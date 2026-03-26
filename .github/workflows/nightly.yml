@@ -47,11 +47,13 @@ jobs:
           COUNT=$(git rev-list --count HEAD)
           HASH=$(git rev-parse --short HEAD)
 
+          REPO="${GITHUB_REPOSITORY#*/}"
+          NAME=$(echo "$REPO" | tr '[:upper:]' '[:lower:]' | tr -d '[-_]')
+
           get_version() {
-            DIR=$1
-            RAW=$(jq -r .version "$DIR/manifest.json")
+            RAW=$(jq -r .version "$1/manifest.json")
             NEW="${RAW}.${COUNT}"
-            jq --arg v "$NEW" '.version=$v' "$DIR/manifest.json" > tmp && mv tmp "$DIR/manifest.json"
+            jq --arg v "$NEW" '.version=$v' "$1/manifest.json" > tmp && mv tmp "$1/manifest.json"
             echo "$NEW"
           }
 
@@ -60,10 +62,11 @@ jobs:
           FF_VERSION=$(get_version firefox)
           RELEASE_VERSION=$(printf "%s\n%s\n%s" "$MV2_VERSION" "$MV3_VERSION" "$FF_VERSION" | sort -V | tail -n 1)
 
-          echo "MV2_VERSION=$MV2_VERSION-$HASH" >> $GITHUB_ENV
-          echo "MV3_VERSION=$MV3_VERSION-$HASH" >> $GITHUB_ENV
-          echo "FF_VERSION=$FF_VERSION-$HASH" >> $GITHUB_ENV
+          echo "MV2_ZIP=$NAME-$MV2_VERSION-$HASH.zip" >> $GITHUB_ENV
+          echo "MV3_ZIP=$NAME-$MV3_VERSION-$HASH.zip" >> $GITHUB_ENV
+          echo "FF_ZIP=$NAME-$FF_VERSION-$HASH.zip" >> $GITHUB_ENV
           echo "RELEASE_VERSION=$RELEASE_VERSION-$HASH" >> $GITHUB_ENV
+          echo "HASH=$HASH" >> $GITHUB_ENV
 
       - name: ✨ Minify Source Files
         run: |
@@ -96,19 +99,16 @@ jobs:
             rm -rf "$BUILD_DIR"
           }
 
-          package "chromium" "" "build_mv2" "chromium-${MV2_VERSION}.zip"
-          package "chromium" "chromium_mv3" "build_mv3" "chromium_mv3-${MV3_VERSION}.zip"
-          package "chromium" "firefox" "build_firefox" "firefox-${FF_VERSION}.zip"
+          package "chromium" "" "build_mv2" "${MV2_ZIP}"
+          package "chromium" "chromium_mv3" "build_mv3" "${MV3_ZIP}"
+          package "chromium" "firefox" "build_firefox" "${FF_ZIP}"
 
       - name: 🚀 Create GitHub Pre-Release
         run: |
-          RAW="${GITHUB_REPOSITORY#*/}"
-          NAME=$(echo "$RAW" | tr '[:upper:]' '[:lower:]' | tr -d '[-_]')
-
           gh release create "${RELEASE_VERSION}" \
-            "${NAME}-chromium-${MV2_VERSION}.zip" \
-            "${NAME}-chromium_mv3-${MV3_VERSION}.zip" \
-            "${NAME}-firefox-${FF_VERSION}.zip" \
+            "${MV2_ZIP}" \
+            "${MV3_ZIP}" \
+            "${FF_ZIP}" \
             --title "${RELEASE_VERSION}" \
             --notes "Nightly pre-release build based on commit ${HASH}" \
             --prerelease
