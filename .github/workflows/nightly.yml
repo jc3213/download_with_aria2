@@ -101,10 +101,9 @@ jobs:
       - name: 🚀 Create GitHub Pre-Release
         run: |
           gh release create "${RELEASE_VERSION}" \
-            "${MV2_ZIP}" \
-            "${MV3_ZIP}" \
-            "${FF_ZIP}" \
+            "./${MV2_ZIP}" \
+            "./${MV3_ZIP}" \
+            "./${FF_ZIP}" \
             --title "${RELEASE_VERSION}" \
             --notes "Nightly pre-release build based on commit ${HASH}" \
             --prerelease
-
