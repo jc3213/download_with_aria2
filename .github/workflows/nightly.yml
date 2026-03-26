@@ -46,7 +46,6 @@ jobs:
         run: |
           COUNT=$(git rev-list --count HEAD)
           HASH=$(git rev-parse --short HEAD)
-
           REPO="${GITHUB_REPOSITORY#*/}"
           NAME=$(echo "$REPO" | tr '[:upper:]' '[:lower:]' | tr -d '[-_]')
 
@@ -87,25 +86,25 @@ jobs:
       - name: 📦 Package Extensions
         run: |
           package() {
-            SRC1="$1"
-            SRC2="$2"
-            BUILD_DIR="$3"
-            ZIP_NAME="$4"
+            BASE="$1"
+            APP="$2"
+            OUT="$3"
+            ZIP="$4"
 
-            mkdir -p "$BUILD_DIR"
-            cp -r "$SRC1"/* "$BUILD_DIR/"
-            [ -n "$SRC2" ] && cp -r "$SRC2"/* "$BUILD_DIR/"
-            cd "$BUILD_DIR"
-            zip -r "../$ZIP_NAME" .
+            mkdir -p "$OUT"
+            cp -r "$BASE"/* "$OUT/"
+            [ -n "$APP" ] && cp -r "$APP"/* "$OUT/"
+            cd "$OUT"
+            zip -r "../$ZIP" .
             cd ..
-            rm -rf "$BUILD_DIR"
+            rm -rf "$OUT"
           }
 
           package "chromium" "" "build_mv2" "${MV2_ZIP}"
           package "chromium" "chromium_mv3" "build_mv3" "${MV3_ZIP}"
           package "chromium" "firefox" "build_ff" "${FF_ZIP}"
 
-      - name: 🔍 Verify Release Assets
+      - name: 🔍 Check Release Assets
         run: ls -lh *.zip
 
       - name: 🚀 Create GitHub Pre-Release
