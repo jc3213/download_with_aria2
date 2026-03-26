@@ -62,9 +62,9 @@ jobs:
           FF_VERSION=$(get_version firefox)
           RELEASE_VERSION=$(printf "%s\n%s\n%s" "$MV2_VERSION" "$MV3_VERSION" "$FF_VERSION" | sort -V | tail -n 1)
 
-          echo "MV2_ZIP=$NAME-$MV2_VERSION-$HASH.zip" >> $GITHUB_ENV
-          echo "MV3_ZIP=$NAME-$MV3_VERSION-$HASH.zip" >> $GITHUB_ENV
-          echo "FF_ZIP=$NAME-$FF_VERSION-$HASH.zip" >> $GITHUB_ENV
+          echo "MV2_ZIP=$NAME-$MV2_VERSION-$HASH" >> $GITHUB_ENV
+          echo "MV3_ZIP=$NAME-$MV3_VERSION-$HASH" >> $GITHUB_ENV
+          echo "FF_ZIP=$NAME-$FF_VERSION-$HASH" >> $GITHUB_ENV
           echo "RELEASE_VERSION=$RELEASE_VERSION-$HASH" >> $GITHUB_ENV
           echo "HASH=$HASH" >> $GITHUB_ENV
 
@@ -101,9 +101,9 @@ jobs:
       - name: 🚀 Create GitHub Pre-Release
         run: |
           gh release create "${RELEASE_VERSION}" \
-            "${MV2_ZIP}" \
-            "${MV3_ZIP}" \
-            "${FF_ZIP}" \
+            "${MV2_ZIP}.zip" \
+            "${MV3_ZIP}.zip" \
+            "${FF_ZIP}.zip" \
             --title "${RELEASE_VERSION}" \
             --notes "Nightly pre-release build based on commit ${HASH}" \
             --prerelease
