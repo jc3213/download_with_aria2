@@ -40,24 +40,27 @@ jobs:
       - name: 🏷️ Generate Release Version
         run: |
           COUNT=$(git rev-list --count HEAD)
+          REPO="${GITHUB_REPOSITORY#*/}"
+          NAME=$(echo "$REPO" | tr '[:upper:]' '[:lower:]' | tr -d '[-_]')
 
           get_version() {
-            DIR=$1
+            DIR="$1"
+
             RAW=$(jq -r .version "$DIR/manifest.json")
             NEW="${RAW}.${COUNT}"
             jq --arg v "$NEW" '.version=$v' "$DIR/manifest.json" > tmp && mv tmp "$DIR/manifest.json"
             echo "$NEW"
           }
 
-          MV2_VERSION=$(get_version chromium)
-          MV3_VERSION=$(get_version chromium_mv3)
-          FF_VERSION=$(get_version firefox)
-          RELEASE_VERSION=$(printf "%s\n%s\n%s" "$MV2_VERSION" "$MV3_VERSION" "$FF_VERSION" | sort -V | tail -n 1)
+          MV2_VER=$(get_version chromium)
+          MV3_VER=$(get_version chromium_mv3)
+          FF_VER=$(get_version firefox)
+          VERSION=$(printf "%s\n%s\n%s" "$MV2_VER" "$MV3_VER" "$FF_VER" | sort -V | tail -n 1)
 
-          echo "MV2_VERSION=$MV2_VERSION" >> $GITHUB_ENV
-          echo "MV3_VERSION=$MV3_VERSION" >> $GITHUB_ENV
-          echo "FF_VERSION=$FF_VERSION" >> $GITHUB_ENV
-          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          echo "MV2_ZIP=$NAME-chromium-$MV2_VER.zip" >> $GITHUB_ENV
+          echo "MV3_ZIP=$NAME-chromium_mv3-$MV3_VER.zip" >> $GITHUB_ENV
+          echo "FF_ZIP=$NAME-firefox_$FF_VER.zip" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENVV
 
       - name: ✨ Minify Source Files
         run: |
@@ -90,18 +93,18 @@ jobs:
             rm -rf "$BUILD_DIR"
           }
 
-          package "chromium" "" "build_mv2" "chromium-${MV2_VERSION}.zip"
-          package "chromium" "chromium_mv3" "build_mv3" "chromium_mv3-${MV3_VERSION}.zip"
-          package "chromium" "firefox" "build_firefox" "firefox-${FF_VERSION}.zip"
+          package "chromium" "" "build_mv2" "${MV2_ZIP}"
+          package "chromium" "chromium_mv3" "build_mv3" "${MV3_ZIP}"
+          package "chromium" "firefox" "build_ff" "${FF_ZIP}"
+
+      - name: 🔍 Check Release Assets
+        run: ls -lh *.zip
 
       - name: 🚀 Create GitHub Release
         run: |
-          RAW="${GITHUB_REPOSITORY#*/}"
-          NAME=$(echo "$RAW" | tr '[:upper:]' '[:lower:]' | tr -d '-_')
-
-          gh release create "${RELEASE_VERSION}" \
-            "${NAME}-chromium-${MV2_VERSION}.zip" \
-            "${NAME}-chromium_mv3-${MV3_VERSION}.zip" \
-            "${NAME}-firefox-${FF_VERSION}.zip" \
-            --title "${RELEASE_VERSION}" \
+          gh release create "${VERSION}" \
+            "${MV2_ZIP}" \
+            "${MV3_ZIP}" \
+            "${FF_ZIP}" \
+            --title "${VERSION}" \
             --notes "Auto-packaged extensions for version v${RELEASE_VERSION}"
