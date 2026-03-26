@@ -1,4 +1,4 @@
-name: extension-pre-release
+name: extension-nightly-release
 
 on:
   push:
