@@ -60,7 +60,7 @@ jobs:
           echo "MV2_ZIP=$NAME-chromium-$MV2_VER.zip" >> $GITHUB_ENV
           echo "MV3_ZIP=$NAME-chromium_mv3-$MV3_VER.zip" >> $GITHUB_ENV
           echo "FF_ZIP=$NAME-firefox_$FF_VER.zip" >> $GITHUB_ENV
-          echo "VERSION=$VERSION" >> $GITHUB_ENVV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: ✨ Minify Source Files
         run: |
