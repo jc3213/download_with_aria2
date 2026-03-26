@@ -57,15 +57,15 @@ jobs:
             echo "$NEW"
           }
 
-          MV2_VERSION=$(get_version chromium)
-          MV3_VERSION=$(get_version chromium_mv3)
-          FF_VERSION=$(get_version firefox)
-          RELEASE_VERSION=$(printf "%s\n%s\n%s" "$MV2_VERSION" "$MV3_VERSION" "$FF_VERSION" | sort -V | tail -n 1)
+          MV2_VER=$(get_version chromium)
+          MV3_VER=$(get_version chromium_mv3)
+          FF_VER=$(get_version firefox)
+          VERSION=$(printf "%s\n%s\n%s" "$MV2_VER" "$MV3_VER" "$FF_VER" | sort -V | tail -n 1)
 
-          echo "MV2_ZIP=$NAME-$MV2_VERSION-$HASH" >> $GITHUB_ENV
-          echo "MV3_ZIP=$NAME-$MV3_VERSION-$HASH" >> $GITHUB_ENV
-          echo "FF_ZIP=$NAME-$FF_VERSION-$HASH" >> $GITHUB_ENV
-          echo "RELEASE_VERSION=$RELEASE_VERSION-$HASH" >> $GITHUB_ENV
+          echo "MV2_ZIP=$NAME-$MV2_VER-$HASH" >> $GITHUB_ENV
+          echo "MV3_ZIP=$NAME-$MV3_VER-$HASH" >> $GITHUB_ENV
+          echo "FF_ZIP=$NAME-$FF_VER-$HASH" >> $GITHUB_ENV
+          echo "VERSION=$VERSION-$HASH" >> $GITHUB_ENV
           echo "HASH=$HASH" >> $GITHUB_ENV
 
       - name: ✨ Minify Source Files
@@ -85,25 +85,38 @@ jobs:
       - name: 📦 Package Extensions
         run: |
           package() {
-            mkdir -p "$3"
-            cp -r "$1"/* "$3/"
-            [ -n "$2" ] && cp -r "$2"/* "$3/"
-            cd "$3"
-            zip -r "../$4" .
+            SRC1="$1"
+            SRC2="$2"
+            BUILD_DIR="$3"
+            ZIP_NAME="$4"
+
+            mkdir -p "$BUILD_DIR"
+            cp -r "$SRC1"/* "$BUILD_DIR/"
+            [ -n "$SRC2" ] && cp -r "$SRC2"/* "$BUILD_DIR/"
+            cd "$BUILD_DIR"
+            zip -r "../$ZIP_NAME" .
             cd ..
-            rm -rf "$3"
+            rm -rf "$BUILD_DIR"
           }
 
-          package "chromium" "" "build_mv2" "${MV2_ZIP}"
-          package "chromium" "chromium_mv3" "build_mv3" "${MV3_ZIP}"
-          package "chromium" "firefox" "build_ff" "${FF_ZIP}"
+          package "chromium" "" "build_mv2" "${MV2_ZIP}.zip"
+          package "chromium" "chromium_mv3" "build_mv3" "${MV3_ZIP}.zip"
+          package "chromium" "firefox" "build_ff" "${FF_ZIP}.zip"
+
+      - name: ✅ Check Assets
+        run: ls -lh *.zip
 
       - name: 🚀 Create GitHub Pre-Release
         run: |
-          gh release create "${RELEASE_VERSION}" \
+          gh release create "${VERSION}" \
+            --title "${VERSION}" \
+            --notes "Nightly pre-release build based on commit ${HASH}" \
+            --prerelease
+
+      - name: 📤 Upload Assets
+        run: |
+          gh release upload "${VERSION}" \
             "${MV2_ZIP}.zip" \
             "${MV3_ZIP}.zip" \
             "${FF_ZIP}.zip" \
-            --title "${RELEASE_VERSION}" \
-            --notes "Nightly pre-release build based on commit ${HASH}" \
-            --prerelease
+            --clobber
