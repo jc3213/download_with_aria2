@@ -107,4 +107,4 @@ jobs:
             "${MV3_ZIP}" \
             "${FF_ZIP}" \
             --title "${VERSION}" \
-            --notes "Auto-packaged extensions for version v${RELEASE_VERSION}"
+            --notes "Auto-packaged extensions for version v${VERSION}"
