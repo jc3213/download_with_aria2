@@ -51,9 +51,11 @@ jobs:
           NAME=$(echo "$REPO" | tr '[:upper:]' '[:lower:]' | tr -d '[-_]')
 
           get_version() {
-            RAW=$(jq -r .version "$1/manifest.json")
+            DIR="$1"
+
+            RAW=$(jq -r .version "$DIR/manifest.json")
             NEW="${RAW}.${COUNT}"
-            jq --arg v "$NEW" '.version=$v' "$1/manifest.json" > tmp && mv tmp "$1/manifest.json"
+            jq --arg v "$NEW" '.version=$v' "$DIR/manifest.json" > tmp && mv tmp "$DIR/manifest.json"
             echo "$NEW"
           }
 
@@ -65,7 +67,7 @@ jobs:
           echo "MV2_ZIP=$NAME-chromium-$MV2_VER-$HASH.zip" >> $GITHUB_ENV
           echo "MV3_ZIP=$NAME-chromium_mv3-$MV3_VER-$HASH.zip" >> $GITHUB_ENV
           echo "FF_ZIP=$NAME-firefox_$FF_VER-$HASH.zip" >> $GITHUB_ENV
-          echo "VERSION=$VERSION-$HASH" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "HASH=$HASH" >> $GITHUB_ENV
 
       - name: ✨ Minify Source Files
