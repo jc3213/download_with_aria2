@@ -1,22 +1,30 @@
 :root {
     --color-body: #FFFFFF;
-    --color-item: #F3F3F3;
-    --color-text: #000000;
+    --color-item: #E8EBEE;
+    --color-text: #1F2328;
+    --color-line: #D1D9E0;
     --item-hover: brightness(1.1) contrast(0.8);
     --item-active: brightness(1.0) contrast(0.8);
-    --item-disabled: brightness(0.9) contrast(0.8) opacity(0.8);
+    --item-disabled: brightness(1.1) contrast(0.8) opacity(0.5);
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --color-body: #202124;
-        --color-item: #56585D;
-        --color-text: #FFFFFF;
+        --color-body: #0D1117;
+        --color-item: #2F3742;
+        --color-text: #F0F6FC;
+        --color-line: #3D444D;
     }
 }
 
 * {
-    border-color: #AAB0B6;
+    border-color: var(--color-line);
+    border-radius: 6px;
+}
+
+:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(31, 111, 235, 1);
 }
 
 body, button, input, textarea, select {
@@ -45,7 +53,7 @@ span, label {
 }
 
 input {
-    border-style: inset;
+    border-style: solid;
     border-width: 1px;
     padding: 1px 5px;
     resize: none;
@@ -76,9 +84,9 @@ option:checked {
 }
 
 button {
-    border-style: outset;
+    border-style: solid;
     border-width: 1px;
-    padding: 3px 5px;
+    padding: 3px 6px;
     white-space: nowrap;
 }
 
@@ -88,7 +96,6 @@ button:enabled:hover {
 }
 
 button:enabled:active {
-    border-style: inset;
     filter: var(--item-active);
 }
 
