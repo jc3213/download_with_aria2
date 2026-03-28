@@ -94,11 +94,10 @@ refererEntry.addEventListener('input', (event) => {
 
 function refererModalPopup() {
     let entry = refererEntry.value;
-    let regexp = new RegExp(entry.replace(/[.?/]/g, '\\$&'), 'g');
     for (let referer of aria2Referer.values()) {
         if (referer.title.includes(entry)) {
             referer.classList.remove('hidden');
-            referer.innerHTML = referer.title.replace(regexp, '<mark>$&</mark>');
+            referer.innerHTML = referer.title.replaceAll(entry, '<mark>$&</mark>');
         } else {
             referer.classList.add('hidden');
             referer.textContent = referer.title;
