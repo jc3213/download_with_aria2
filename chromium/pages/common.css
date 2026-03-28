@@ -109,8 +109,8 @@ h1 {
 }
 
 h4 {
-    margin: 0px;
-    padding: 3px 0px;
+    margin: 1px 0px;
+    padding: 1px 0px;
 }
 
 .hidden, .template {
@@ -119,7 +119,7 @@ h4 {
 
 .config {
     display: grid;
-    gap: 0px 5px;
+    gap: 1px 5px;
     grid-template-columns: repeat(2, 1fr);
 }
 
@@ -141,10 +141,6 @@ h4 {
 
 .flex > .fl-1 {
     flex: 1;
-}
-
-.flexmenu > h4 {
-    padding: 2px 0px;
 }
 
 .flexmenu > h4 + input {
