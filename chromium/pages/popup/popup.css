@@ -272,9 +272,9 @@ body.error > #queue > .error {
     border-radius: 50%;
     content: "";
     display: inline-block;
-    height: 16px;
-    margin: 0px 5px 3px 3px;
-    width: 16px;
+    height: 14px;
+    margin: 0px 3px 3px 1px;
+    width: 14px;
     vertical-align: middle;
 }
 

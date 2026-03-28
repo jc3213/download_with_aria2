@@ -40,12 +40,12 @@ chrome.runtime.sendMessage({ action: 'popup_runtime' }, ({ storage }) => {
 if (location.search === '?toolbar') {
     queuePane.addEventListener('contextmenu', (event) => {
         event.preventDefault();
-        let css = event.clientX > 487 ? 'right: 0px;' : 'left: ' + event.clientX + 'px;';
-        css += event.clientY > 391 ? 'bottom: 0px;' : 'top: ' + event.clientY + 'px;';
-        filterPane.style.cssText = css + 'display: block;';
+        let css = event.clientX > 528 ? 'right: 0px;' : 'left: ' + event.clientX + 'px;';
+        css += event.clientY > 365 ? 'bottom: 0px;' : 'top: ' + event.clientY + 'px;';
+        filterPane.style.cssText = css + 'display: flex;';
     });
     queuePane.addEventListener('click', (event) => {
-        filterPane.style.display = 'none';
+        filterPane.style.cssText = '';
     });
     let toolbar = document.createElement('style');
     document.head.appendChild(toolbar);

@@ -211,7 +211,7 @@ function togglHostState(id, rules) {
 
 const commandMap = {
     'open_options': () => chrome.runtime.openOptionsPage(),
-    'open_new_download': () => openPopupWindow(addonDownload, 462),
+    'open_new_download': () => openPopupWindow(addonDownload, 454),
     'toggle_capture': () => togglHostState('capture_hosts', captureHosts),
     'toggle_headers': () => togglHostState('headers_hosts', headersHosts),
     'toggle_proxy': () => togglHostState('proxy_hosts', proxyHosts)
@@ -242,7 +242,7 @@ function queuesFiltered(response, array) {
     chrome.storage.sync.set({ 'manager_filters': array }, response);
 }
 
-function detectedImages(response, id) {
+function imagesRuntime(response, id) {
     let tab = aria2Inspect.get(id);
     let images = tab ? [...tab.images.values()] : [];
     response({ manifest: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
@@ -254,8 +254,9 @@ const messageDispatch = {
     'options_jsonrpc': optionsJsonrpc,
     'popup_runtime': (response) => response({ storage: aria2Storage, options: aria2Config, version: aria2Version }),
     'popup_queues': queuesFiltered,
-    'images_runtime': detectedImages,
-    'newdld_window': (response) => response(openPopupWindow(addonDownload, 462)),
+    'images_runtime': imagesRuntime,
+    'images_reload': (response, params) => response([...aria2Inspect.get(params).images.values()]),
+    'newdld_window': (response) => response(openPopupWindow(addonDownload, 454)),
     'newdld_runtime': (response) => response({ storage: aria2Storage, options: aria2Config }),
     'remote_status': (response) => response(systemManifest),
     'remote_download': (response, params) => aria2RPC.call(params).then(response).catch(response)
@@ -350,8 +351,6 @@ function storageDispatch(json) {
         ctxMenuCreate('ctxmenu_allimages', ['page'], menuId);
     }
 }
-
-chrome.storage.sync.remove(['capture_filename', 'capture_filesize', 'manager_queue']);
 
 chrome.storage.sync.get(null, (json) => {
     storageDispatch({ ...systemStorage, ...json });
