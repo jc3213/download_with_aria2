@@ -45,7 +45,7 @@ if (location.search === '?toolbar') {
         filterPane.style.cssText = css + 'display: flex;';
     });
     queuePane.addEventListener('click', (event) => {
-        filterPane.style.cssText = '';
+        filterPane.style.display = '';
     });
     let toolbar = document.createElement('style');
     document.head.appendChild(toolbar);
