@@ -11,6 +11,10 @@ img.checked {
     border-style: inset;
 }
 
+#menu > :nth-child(4) {
+    margin-left: auto;
+}
+
 #preview {
     height: calc(100vh - 236px);
     width: calc(100vh + 18px);

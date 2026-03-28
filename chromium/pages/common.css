@@ -95,7 +95,7 @@ button:enabled:hover {
 }
 
 button:enabled:active {
-    opacity: 0.8;;
+    opacity: 0.8;
 }
 
 button:disabled {

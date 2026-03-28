@@ -50,7 +50,7 @@ body.error > #queue > .error {
 }
 
 #filter > :active {
-    opacity: 0.8;;
+    opacity: 0.8;
 }
 
 #filter > ::before {
@@ -261,7 +261,7 @@ body.error > #queue > .error {
 .session:is(.active, .waiting, .paused) > .meter > .ratio:active,
 .session.p2p > .files > .file > label:active,
 .session > .uris > .uri > div:active {
-    opacity: 0.8;;
+    opacity: 0.8;
 }
 
 .session > .name {
