@@ -3,8 +3,8 @@
     --color-item: #E8EBEE;
     --color-text: #1F2328;
     --color-line: #D1D9E0;
-    --item-hover: brightness(1.1) contrast(0.8);
-    --item-active: brightness(1.0) contrast(0.8);
+    --item-hover: 0 0 0 1px rgba(31, 111, 235, 1);
+    --item-active: #1F6FEB99; 
     --item-disabled: brightness(1.1) contrast(0.8) opacity(0.5);
 }
 
@@ -24,7 +24,7 @@
 
 :focus {
     outline: none;
-    box-shadow: 0 0 0 1px rgba(31, 111, 235, 1);
+    box-shadow: var(--item-hover);
 }
 
 body, button, input, textarea, select {
@@ -92,11 +92,11 @@ button {
 
 button:enabled:hover {
     cursor: pointer;
-    filter: var(--item-hover);
+    box-shadow: var(--item-hover);
 }
 
 button:enabled:active {
-    filter: var(--item-active);
+    color: var(--item-active);
 }
 
 button:disabled {

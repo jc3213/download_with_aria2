@@ -30,15 +30,18 @@ textarea {
 }
 
 #referer > * {
+    margin: 1px 0px;
+    overflow: hidden;
     padding: 5px;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 #referer > :hover {
-    filter: var(--item-hover);
+    box-shadow: var(--item-hover);
 }
 
 #referer > :active {
-    filter: var(--item-active);
+    color: var(--item-active);
 }
 
