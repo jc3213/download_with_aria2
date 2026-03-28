@@ -4,7 +4,7 @@ img {
 }
 
 img.checked {
-    filter: var(--item-disabled);
+    opacity: 0.3;
 }
 
 .extra > #menu > :last-child {
@@ -36,10 +36,6 @@ img.checked {
 #gallery > img {
     height: 88px;
     width: 88px;
-}
-
-#menu > :nth-child(4) {
-    margin-left: auto;
 }
 
 #jsonrpc {

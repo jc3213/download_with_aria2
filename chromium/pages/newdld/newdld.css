@@ -38,10 +38,10 @@ textarea {
 }
 
 #referer > :hover {
-    box-shadow: var(--item-hover);
+    box-shadow: var(--hover-box);
 }
 
 #referer > :active {
-    color: var(--item-active);
+    opacity: 0.8;;
 }
 
