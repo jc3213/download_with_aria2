@@ -87,13 +87,12 @@ chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, ({ storage,
 
 function populateImages(urls) {
     for (let url of urls) {
-        let img = images.get(url);
-        if (img) {
+        if (images.has(url)) {
             continue;
         }
         let path = url.substring(url.lastIndexOf('/') + 1);
         let idx = path.search(/[?@]/);
-        img = document.createElement('img');
+        let img = document.createElement('img');
         img.alt = idx === -1 ? path : path.substring(0, idx);
         img.src = img.title = url;
         galleryPane.appendChild(img);
