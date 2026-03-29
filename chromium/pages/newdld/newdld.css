@@ -38,7 +38,7 @@ textarea {
 }
 
 #referer > :hover {
-    box-shadow: var(--hover-box);
+    box-shadow: var(--shadows);
 }
 
 #referer > :active {
