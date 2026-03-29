@@ -23,8 +23,6 @@ jobs:
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: 🔧 Install Zip Tool
         run: sudo apt-get install -y zip jq
@@ -39,7 +37,6 @@ jobs:
 
       - name: 🏷️ Generate Release Version
         run: |
-          COUNT=$(git rev-list --count HEAD)
           REPO="${GITHUB_REPOSITORY#*/}"
           NAME=$(echo "$REPO" | tr '[:upper:]' '[:lower:]' | tr -d '[-_]')
 
@@ -47,9 +44,7 @@ jobs:
             DIR="$1"
 
             RAW=$(jq -r .version "$DIR/manifest.json")
-            NEW="${RAW}.${COUNT}"
-            jq --arg v "$NEW" '.version=$v' "$DIR/manifest.json" > tmp && mv tmp "$DIR/manifest.json"
-            echo "$NEW"
+            echo "$RAW"
           }
 
           MV2_VER=$(get_version chromium)
