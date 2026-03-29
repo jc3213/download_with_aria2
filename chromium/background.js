@@ -243,9 +243,13 @@ function queuesFiltered(response, array) {
 }
 
 function imagesRuntime(response, id) {
-    let tab = aria2Inspect.get(id);
-    let images = tab ? [...tab.images.values()] : [];
+    let images = imagesReload(id);
     response({ manifest: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
+}
+
+function imagesReload(id) {
+    let tab = aria2Inspect.get(id);
+    return tab ? [...tab.images.values()] : [];
 }
 
 const messageDispatch = {
@@ -255,7 +259,7 @@ const messageDispatch = {
     'popup_runtime': (response) => response({ storage: aria2Storage, options: aria2Config, version: aria2Version }),
     'popup_queues': queuesFiltered,
     'images_runtime': imagesRuntime,
-    'images_reload': (response, params) => response([...aria2Inspect.get(params).images.values()]),
+    'images_reload': (response, params) => response(imagesReload(params)),
     'newdld_window': (response) => response(openPopupWindow(addonDownload, 454)),
     'newdld_runtime': (response) => response({ storage: aria2Storage, options: aria2Config }),
     'remote_status': (response) => response(systemManifest),
