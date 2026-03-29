@@ -50,7 +50,10 @@ const menuEventMap = {
     },
     'reload_images': () => chrome.runtime.sendMessage({ action: 'images_reload', params: id }, populateImages),
     'common_submit': menuEventSubmit,
-    'popup_options': () => jsonrpcPane.classList.toggle('hidden')
+    'popup_options': () => {
+        optionsBtn.classList.toggle('checked');
+        jsonrpcPane.classList.toggle('hidden');
+    }
 };
 
 menuPane.addEventListener('click', (event) => {

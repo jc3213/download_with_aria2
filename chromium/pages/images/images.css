@@ -7,10 +7,6 @@ img.checked {
     opacity: 0.3;
 }
 
-.extra > #menu > :last-child {
-    border-style: inset;
-}
-
 #preview {
     height: calc(100vh - 236px);
     width: calc(100vh + 18px);

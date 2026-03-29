@@ -188,9 +188,10 @@ async function taskDetailHandler(gid) {
 }
 
 async function taskEventDetail(task, gid) {
-    let { classList, checks, entries, apply } = task;
+    let { classList, details, checks, entries, apply } = task;
     if (classList.contains('expand')) {
         apply.classList.add('hidden');
+        details.classList.remove('checked');
         classList.remove('expand');
     } else {
         let { files, options } = await taskDetailHandler(gid);
@@ -203,6 +204,7 @@ async function taskEventDetail(task, gid) {
             entry.value = config[name] = options[name] ?? '';
         }
         task.config = config;
+        details.classList.add('checked');
         classList.add('expand');
     }
 }
@@ -292,7 +294,7 @@ function createTaskBody(gid, status, bittorrent, files) {
     let task = sessionLET.cloneNode(true);
     let [name, current, time, total, network, download, upload, menu, meter, options, flist, ulist] = task.children;
     let [day, hour, minute, second] = time.children;
-    let apply = menu.children[2];
+    let [remove, details, apply] = menu.children;
     let ratio = meter.children[0];
     let newuri = ulist.children[0].children[1];
     let entries = options.querySelectorAll('[name]');
@@ -307,6 +309,7 @@ function createTaskBody(gid, status, bittorrent, files) {
     task.download = download;
     task.upload = upload;
     task.ratio = ratio;
+    task.details = details;
     task.apply = apply;
     task.entries = entries;
     task.flist = flist;

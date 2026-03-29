@@ -3,7 +3,7 @@
     --color-item: #E8EBEE;
     --color-text: #1F2328;
     --color-line: #D1D9E0;
-    --hover-box: 0 0 0 1px rgba(31, 111, 235, 1);
+    --shadows: 0 0 0 1px rgba(31, 111, 235, 1);
     --disabled: contrast(0.9) opacity(0.5);
 }
 
@@ -23,7 +23,7 @@
 
 :focus {
     outline: none;
-    box-shadow: var(--hover-box);
+    box-shadow: var(--shadows);
 }
 
 body, button, input, textarea, select {
@@ -91,7 +91,7 @@ button {
 
 button:enabled:hover {
     cursor: pointer;
-    box-shadow: var(--hover-box);
+    box-shadow: var(--shadows);
 }
 
 button:enabled:active {
@@ -102,6 +102,11 @@ button:disabled {
     border-width: 0px;
     filter: var(--disabled);
     padding: 4px 6px;
+}
+
+button.checked {
+    border-color: #1f6feb;
+    box-shadow: var(--shadows);
 }
 
 h1 {

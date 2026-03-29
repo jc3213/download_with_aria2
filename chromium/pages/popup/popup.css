@@ -46,7 +46,7 @@ body.error > #queue > .error {
 }
 
 #filter > :hover {
-    box-shadow: var(--hover-box);
+    box-shadow: var(--shadows);
 }
 
 #filter > :active {
@@ -229,7 +229,7 @@ body.error > #queue > .error {
 }
 
 .session > .meter {
-    background-color: #3C3C3C;
+    background-color: var(--color-item);
 }
 
 .session > .meter > .ratio,
@@ -304,10 +304,6 @@ body.error > #queue > .error {
 
 .session > .uris {
     grid-area: 7 / 1 / 8 / 5;
-}
-
-.expand > .menu > :nth-child(2) {
-    border-style: inset;
 }
 
 .session button {
