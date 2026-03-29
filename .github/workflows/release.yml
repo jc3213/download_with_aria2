@@ -40,16 +40,9 @@ jobs:
           REPO="${GITHUB_REPOSITORY#*/}"
           NAME=$(echo "$REPO" | tr '[:upper:]' '[:lower:]' | tr -d '[-_]')
 
-          get_version() {
-            DIR="$1"
-
-            RAW=$(jq -r .version "$DIR/manifest.json")
-            echo "$RAW"
-          }
-
-          MV2_VER=$(get_version chromium)
-          MV3_VER=$(get_version chromium_mv3)
-          FF_VER=$(get_version firefox)
+          MV2_VER=$(jq -r .version chromium/manifest.json)
+          MV3_VER=$(jq -r .version chromium_mv3/manifest.json)
+          FF_VER=$(jq -r .version firefox/manifest.json)
           VERSION=$(printf "%s\n%s\n%s" "$MV2_VER" "$MV3_VER" "$FF_VER" | sort -V | tail -n 1)
 
           echo "MV2_ZIP=$NAME-chromium-$MV2_VER.zip" >> $GITHUB_ENV
