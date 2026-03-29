@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - '.github'
+      - '.github/**'
       - 'LICENSE'
       - 'README.md'
       - '_config.yml'
