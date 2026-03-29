@@ -1,11 +1,11 @@
 const id = location.search.substring(1) | 0;
+const images = new Map();
 
 let aria2Proxy;
 let aria2Config = {};
-let aria2Images = [];
 
 let [imagePane,, galleryPane,, menuPane, jsonrpcPane] = document.body.children;
-let [selectAll, selectNone, selectFlip, submitBtn, optionsBtn] = menu.children;
+let [selectAll, selectNone, selectFlip, reloadBtn, submitBtn, optionsBtn] = menu.children;
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let preview = imagePane.children[0];
 
@@ -23,7 +23,7 @@ galleryPane.addEventListener('mouseover', (event) => {
 
 function menuEventSubmit() {
     let params = [];
-    for (let { src, alt, classList } of aria2Images ) {
+    for (let { src, alt, classList } of images.values() ) {
         if (classList.contains('checked')) {
             let options = { ...aria2Config, out: alt };
             params.push({ method: 'aria2.addUri', params: [[src], options] });
@@ -34,20 +34,21 @@ function menuEventSubmit() {
 
 const menuEventMap = {
     'select_all': () => {
-        for (let img of aria2Images) {
+        for (let img of images.values()) {
             img.classList.add('checked');
         }
     },
     'select_none': () => {
-        for (let img of aria2Images) {
+        for (let img of images.values()) {
             img.classList.remove('checked');
         }
     },
     'select_flip': () => {
-        for (let img of aria2Images) {
+        for (let img of images.values()) {
             img.classList.toggle('checked');
         }
     },
+    'reload_images': () => chrome.runtime.sendMessage({ action: 'images_reload', params: id }, populateImages),
     'common_submit': menuEventSubmit,
     'popup_options': () => jsonrpcPane.classList.toggle('hidden')
 };
@@ -81,16 +82,24 @@ chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, ({ storage,
         let { name } = entry;
         entry.value = aria2Config[name] = options[name] ?? '';
     }
-    for (let src of images) {
-        let pth = src.substring(src.lastIndexOf('/') + 1);
-        let idx = pth.search(/[?#@]/);
-        let img = document.createElement('img');
-        img.alt = idx === -1 ? pth : pth.substring(0, idx);
-        img.src = img.title = src;
-        aria2Images.push(img);
-        galleryPane.appendChild(img);
-    }
+    populateImages(images);
 });
+
+function populateImages(urls) {
+    for (let url of urls) {
+        let img = images.get(url);
+        if (img) {
+            continue;
+        }
+        let path = url.substring(url.lastIndexOf('/') + 1);
+        let idx = path.search(/[?@]/);
+        img = document.createElement('img');
+        img.alt = idx === -1 ? path : path.substring(0, idx);
+        img.src = img.title = url;
+        galleryPane.appendChild(img);
+        images.set(url, img);
+    }
+}
 
 function antiLeechMV2(headers) {
     headers.unshift('blocking');

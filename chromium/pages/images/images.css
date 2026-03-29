@@ -11,10 +11,6 @@ img.checked {
     border-style: inset;
 }
 
-#menu > :nth-child(4) {
-    margin-left: auto;
-}
-
 #preview {
     height: calc(100vh - 236px);
     width: calc(100vh + 18px);
@@ -40,6 +36,22 @@ img.checked {
 #gallery > img {
     height: 88px;
     width: 88px;
+}
+
+#reload {
+    background-color: var(--color-body);
+    border-width: 0px;
+    margin-left: auto;
+    padding: 0px;
+}
+
+#reload::after {
+    content: "♻️";
+    display: inline-block;
+    font-size: 20px;
+    padding: 0px 1px 2px 0px;
+    transform: scaleX(1.07);
+    width: 29px;
 }
 
 #jsonrpc {
