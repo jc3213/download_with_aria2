@@ -54,4 +54,4 @@
 ![New Download](https://github.com/user-attachments/assets/4557eef8-4ab1-4486-8df4-f648116bceb5)
 
 ### Detected Images
-![Detected Images](https://github.com/user-attachments/assets/85e6c3f7-e7cc-472a-a674-c53c85397be9)
+![Detected Images](https://github.com/user-attachments/assets/c5e8d50a-7037-4712-a40c-6cc2a0895d88)
