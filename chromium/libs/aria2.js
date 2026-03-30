@@ -3,7 +3,7 @@ class Aria2 {
     #xml;
     #wsa;
     #secret;
-    #ws;
+    #socket;
     #id = 0;
     #tries = 0;
     #retries = 10;
@@ -78,33 +78,33 @@ class Aria2 {
         return this.#onclose;
     }
 
-    #json(arg) {
-        if (Array.isArray(arg)) {
+    #json(args) {
+        if (Array.isArray(args)) {
             let calls = [];
-            for (let { method, params = [] } of arg) {
+            for (let { method, params = [] } of args) {
                 params.unshift(this.#secret);
                 calls.push({ methodName: method, params });
             }
-            arg = { method: 'system.multicall', params: [calls] };
+            args = { method: 'system.multicall', params: [calls] };
         } else {
-            (arg.params ??= []).unshift(this.#secret);
+            (args.params ??= []).unshift(this.#secret);
         }
-        arg.jsonrpc = '2.0';
-        arg.id = this.#id++;
-        return arg;
+        args.jsonrpc = '2.0';
+        args.id = this.#id++;
+        return args;
     }
 
-    #send(arg) {
+    #send(args) {
         return new Promise((resolve, reject) => {
-            let obj = this.#json(arg);
-            this[obj.id] = resolve;
-            this.#ws.onerror = reject;
-            this.#ws.send(JSON.stringify(obj));
+            let json = this.#json(args);
+            this[json.id] = resolve;
+            this.#socket.onerror = reject;
+            this.#socket.send(JSON.stringify(json));
         });
     }
 
-    #post(arg) {
-        return fetch(this.#xml, { method: 'POST', body: JSON.stringify(this.#json(arg)) }).then((response) => {
+    #post(args) {
+        return fetch(this.#xml, { method: 'POST', body: JSON.stringify(this.#json(args)) }).then((response) => {
             if (response.ok) {
                 return response.json();
             }
@@ -113,23 +113,23 @@ class Aria2 {
     }
 
     connect() {
-        this.#ws = new WebSocket(this.#wsa);
-        this.#ws.onopen = (event) => {
+        this.#socket = new WebSocket(this.#wsa);
+        this.#socket.onopen = (event) => {
             this.call = this.#send;
             this.#tries = 0;
             this.#onopen?.(event);
         };
-        this.#ws.onmessage = (event) => {
-            let obj = JSON.parse(event.data);
-            if (obj.method) {
-                this.#onmessage?.(obj);
+        this.#socket.onmessage = (event) => {
+            let json = JSON.parse(event.data);
+            if (json.method) {
+                this.#onmessage?.(json);
             } else {
-                let { id } = obj;
-                this[id](obj);
+                let { id } = json;
+                this[id](json);
                 delete this[id];
             }
         };
-        this.#ws.onclose = (event) => {
+        this.#socket.onclose = (event) => {
             this.call = this.#post;
             this.#onclose?.(event);
             if (this.#tries++ < this.#retries) {
@@ -142,6 +142,6 @@ class Aria2 {
 
     disconnect() {
         this.#tries = Infinity;
-        this.#ws.close();
+        this.#socket.close();
     }
 }
