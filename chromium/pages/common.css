@@ -101,7 +101,7 @@ button:enabled:active {
 button:disabled {
     border-width: 0px;
     filter: var(--disabled);
-    padding: 4px 6px;
+    padding: 4px 7px;
 }
 
 button.checked {
