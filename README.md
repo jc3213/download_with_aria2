@@ -41,17 +41,17 @@
 ## Screenshot
 
 ### Options: Extension
-![Options - Extension](https://github.com/user-attachments/assets/bd5e3f33-9771-4b7c-86e2-fb73609b9e47)
+![Options - Extension](https://github.com/user-attachments/assets/73253db0-6685-4ace-8a48-5fa37faf3084)
 
 ### Options: JSON-RPC
-![Options - JSON-RPC](https://github.com/user-attachments/assets/6fff2d40-c296-423d-beda-1592cd6a4572)
+![Options - JSON-RPC](https://github.com/user-attachments/assets/b0253dd0-3b62-443d-8002-0d3f158505cb)
 
 ### Task Manager
-![Task Manager - Popup](https://github.com/user-attachments/assets/991c3b4c-1fd1-492d-8f55-7196ab5c1f0a)
-![Task Manager - Open In Tab](https://github.com/user-attachments/assets/ae9f6bf4-b29f-4d6a-9619-905960ecb704)
+![Task Manager - Popup](https://github.com/user-attachments/assets/fb096db0-d421-4b84-a8ee-9719e703e45c)
+![Task Manager - Open In Tab](https://github.com/user-attachments/assets/ba29a63c-15fe-4ded-951d-8bb19bb13614)
 
 ### New Download
-![New Download](https://github.com/user-attachments/assets/032d68b9-fbc7-4b65-91bb-b54cfa8cd198)
+![New Download](https://github.com/user-attachments/assets/4557eef8-4ab1-4486-8df4-f648116bceb5)
 
 ### Detected Images
-![Detected Images](https://github.com/user-attachments/assets/6ee6ffcc-dcd8-465c-9ab1-e3ad3db63bca)
+![Detected Images](https://github.com/user-attachments/assets/85e6c3f7-e7cc-472a-a674-c53c85397be9)
