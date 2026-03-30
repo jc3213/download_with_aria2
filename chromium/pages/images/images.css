@@ -44,9 +44,8 @@ img.checked {
 #reload::after {
     content: "♻️";
     display: inline-block;
-    font-size: 20px;
-    padding: 0px 1px 2px 0px;
-    transform: scaleX(1.07);
+    font-size: 22x;
+    transform: scaleX(1.1);
     width: 29px;
 }
 
