@@ -237,19 +237,15 @@ function optionsJsonrpc(response, json) {
     aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [json] }).then(response).catch(response);
 }
 
-function queuesFiltered(response, array) {
+function popupQueues(response, array) {
     aria2Storage['manager_filters'] = array;
     chrome.storage.sync.set({ 'manager_filters': array }, response);
 }
 
 function imagesRuntime(response, id) {
-    let images = imagesReload(id);
-    response({ manifest: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
-}
-
-function imagesReload(id) {
     let tab = aria2Inspect.get(id);
-    return tab ? [...tab.images.values()] : [];
+    let images = tab ? [...tab.images.values()] : [];
+    response({ manifest: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
 }
 
 const messageDispatch = {
@@ -257,9 +253,8 @@ const messageDispatch = {
     'options_storage': optionsStorage,
     'options_jsonrpc': optionsJsonrpc,
     'popup_runtime': (response) => response({ storage: aria2Storage, options: aria2Config, version: aria2Version }),
-    'popup_queues': queuesFiltered,
+    'popup_queues': popupQueues,
     'images_runtime': imagesRuntime,
-    'images_reload': (response, params) => response(imagesReload(params)),
     'newdld_window': (response) => response(openPopupWindow(addonDownload, 454)),
     'newdld_runtime': (response) => response({ storage: aria2Storage, options: aria2Config }),
     'remote_status': (response) => response(systemManifest),

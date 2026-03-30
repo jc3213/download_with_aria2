@@ -21,7 +21,7 @@ img.checked {
     transform: translate(-50%, -50%);
 }
 
-#gallery {
+#thumbs {
     display: flex;
     flex-wrap: wrap;
     gap: 3px;
@@ -29,24 +29,9 @@ img.checked {
     overflow: auto;
 }
 
-#gallery > img {
+#thumbs > img {
     height: 88px;
     width: 88px;
-}
-
-#reload {
-    background-color: var(--color-body);
-    border-width: 0px;
-    margin-left: auto;
-    padding: 0px;
-}
-
-#reload::after {
-    content: "♻️";
-    display: inline-block;
-    font-size: 22x;
-    transform: scaleX(1.1);
-    width: 29px;
 }
 
 #jsonrpc {
@@ -57,4 +42,8 @@ img.checked {
     position: absolute;
     right: 0px;
     width: 50%;
+}
+
+#menu > :nth-child(4) {
+    margin-left: auto;
 }

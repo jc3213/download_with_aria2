@@ -1,21 +1,21 @@
 const id = location.search.substring(1) | 0;
-const images = new Map();
+const gallery = [];
 
 let aria2Proxy;
 let aria2Config = {};
 
-let [imagePane,, galleryPane,, menuPane, jsonrpcPane] = document.body.children;
-let [selectAll, selectNone, selectFlip, reloadBtn, submitBtn, optionsBtn] = menu.children;
+let [imagePane,, thumbPane,, menuPane, jsonrpcPane] = document.body.children;
+let [selectAll, selectNone, selectFlip, submitBtn, optionsBtn] = menu.children;
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let preview = imagePane.children[0];
 
-galleryPane.addEventListener('click', (event) => {
+thumbPane.addEventListener('click', (event) => {
     if (event.target.localName === 'img') {
         event.target.classList.toggle('checked');
     }
 });
 
-galleryPane.addEventListener('mouseover', (event) => {
+thumbPane.addEventListener('mouseover', (event) => {
     if (event.target.localName === 'img') {
         preview.src = event.target.src;
     }
@@ -23,7 +23,7 @@ galleryPane.addEventListener('mouseover', (event) => {
 
 function menuEventSubmit() {
     let params = [];
-    for (let { src, alt, classList } of images.values() ) {
+    for (let { src, alt, classList } of gallery) {
         if (classList.contains('checked')) {
             let options = { ...aria2Config, out: alt };
             params.push({ method: 'aria2.addUri', params: [[src], options] });
@@ -34,21 +34,20 @@ function menuEventSubmit() {
 
 const menuEventMap = {
     'select_all': () => {
-        for (let img of images.values()) {
+        for (let img of gallery) {
             img.classList.add('checked');
         }
     },
     'select_none': () => {
-        for (let img of images.values()) {
+        for (let img of gallery) {
             img.classList.remove('checked');
         }
     },
     'select_flip': () => {
-        for (let img of images.values()) {
+        for (let img of gallery) {
             img.classList.toggle('checked');
         }
     },
-    'reload_images': () => chrome.runtime.sendMessage({ action: 'images_reload', params: id }, populateImages),
     'common_submit': menuEventSubmit,
     'popup_options': () => {
         optionsBtn.classList.toggle('checked');
@@ -85,23 +84,16 @@ chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, ({ storage,
         let { name } = entry;
         entry.value = aria2Config[name] = options[name] ?? '';
     }
-    populateImages(images);
-});
-
-function populateImages(urls) {
-    for (let url of urls) {
-        if (images.has(url)) {
-            continue;
-        }
+    for (let url of images) {
         let path = url.substring(url.lastIndexOf('/') + 1);
         let idx = path.search(/[?@]/);
         let img = document.createElement('img');
         img.alt = idx === -1 ? path : path.substring(0, idx);
         img.src = img.title = url;
-        galleryPane.appendChild(img);
-        images.set(url, img);
+        thumbPane.appendChild(img);
+        gallery.push(img);
     }
-}
+});
 
 function antiLeechMV2(headers) {
     headers.unshift('blocking');
