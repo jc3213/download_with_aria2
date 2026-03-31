@@ -210,7 +210,7 @@ function togglHostState(id, rules) {
 }
 
 const commandMap = {
-    'open_options': () => chrome.runtime.openOptionsPage(),
+    'open_options': chrome.runtime.openOptionsPage,
     'open_new_download': () => openPopupWindow(addonDownload, 454),
     'toggle_capture': () => togglHostState('capture_hosts', captureHosts),
     'toggle_headers': () => togglHostState('headers_hosts', headersHosts),

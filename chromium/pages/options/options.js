@@ -9,11 +9,11 @@ let redoes = [];
 
 let extension = document.body.classList;
 let [menuPane, storagePane, jsonrpcPane, template] = document.body.children;
-let [saveBtn, undoBtn, redoBtn, tellVer, importBtn, exportBtn, fileEntry, exporter] = menuPane.children;
+let [saveBtn, undoBtn, redoBtn, tellVer, importBtn, exportBtn, fileEntry, exportFile] = menuPane.children;
 let tellUA = document.getElementById('useragent');
 let storageEntries = storagePane.querySelectorAll('[name]');
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
-let matchLET = template.children[0];
+let matchLET = template.firstElementChild;
 
 function changeHistorySave(change) {
     let { id, new_value } = change;
@@ -104,9 +104,9 @@ function menuEventExport() {
         body = [JSON.stringify(aria2Storage, null, 4)];
     }
     let blob = new Blob(body);
-    exporter.href = URL.createObjectURL(blob);
-    exporter.download = name;
-    exporter.click();
+    exportFile.href = URL.createObjectURL(blob);
+    exportFile.download = name;
+    exportFile.click();
 }
 
 function menuEventImport() {
@@ -241,7 +241,7 @@ for (let match of storagePane.querySelectorAll('div.flexmenu')) {
 
 function printMatchPattern(list, id, value) {
     let rule = matchLET.cloneNode(true);
-    rule.title = rule.children[0].textContent = value;
+    rule.title = rule.firstElementChild.textContent = value;
     list.appendChild(rule);
     return rule;
 }

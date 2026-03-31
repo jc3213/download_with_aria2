@@ -13,9 +13,8 @@ let aria2Proxy = '';
 let aria2Delay = 10000;
 let aria2Interval;
 
-let [menuPane, filterPane, statusPane, queuePane, template] = document.body.children;
-let [downBtn, purgeBtn, optionsBtn] = menuPane.children;
-let [i18nEntry, verEntry, ...statEntries] = statusPane.children;
+let [menuPane, filterPane, systemPane, queuePane, template] = document.body.children;
+let [i18nEntry, verEntry, ...statEntries] = systemPane.children;
 let [sessionLET, fileLET, uriLET] = template.children;
 
 for (let stat of statEntries) {
@@ -41,7 +40,7 @@ function taskFilters(array, callback) {
     });
 }
 
-purgeBtn.addEventListener('click', async (event) => {
+async function mainMenuPurge() {
     await aria2RPC.call({ method: 'aria2.purgeDownloadResult' });
     let { stopped } = aria2Queue;
     for (let gid of stopped) {
@@ -50,6 +49,17 @@ purgeBtn.addEventListener('click', async (event) => {
     }
     stopped.clear();
     aria2Stats['stopped'].textContent = '0';
+}
+
+const mainMenu = {
+    'popup_newdld': () => chrome.runtime.sendMessage({ action: 'newdld_window' }),
+    'popup_purge': mainMenuPurge,
+    'popup_options': chrome.runtime.openOptionsPage
+};
+
+menuPane.addEventListener('click', (event) => {
+    let menu = event.target.getAttribute('i18n');
+    mainMenu[menu]?.();
 });
 
 const aria2RPC = new Aria2();
@@ -295,8 +305,8 @@ function createTaskBody(gid, status, bittorrent, files) {
     let [name, current, time, total, network, download, upload, menu, meter, options, flist, ulist] = task.children;
     let [day, hour, minute, second] = time.children;
     let [remove, details, apply] = menu.children;
-    let ratio = meter.children[0];
-    let newuri = ulist.children[0].children[1];
+    let ratio = meter.firstElementChild;
+    let newuri = ulist.firstElementChild.children[1];
     let entries = options.querySelectorAll('[name]');
     task.name = name;
     task.current = current;
@@ -365,7 +375,7 @@ function createTaskFile(task, gid, index, selected, path, length) {
 
 function createTaskUri(task, uri) {
     let url = uriLET.cloneNode(true);
-    url.children[0].textContent = uri;
+    url.firstElementChild.textContent = uri;
     task.ulist.appendChild(url);
     return true;
 }

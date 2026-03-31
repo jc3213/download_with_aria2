@@ -5,9 +5,9 @@ let aria2Proxy;
 let aria2Config = {};
 
 let [imagePane,, thumbPane,, menuPane, jsonrpcPane] = document.body.children;
-let [selectAll, selectNone, selectFlip, submitBtn, optionsBtn] = menu.children;
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
-let preview = imagePane.children[0];
+let preview = imagePane.firstElementChild;
+let optionsBtn = menuPane.lastElementChild;
 
 thumbPane.addEventListener('click', (event) => {
     if (event.target.localName === 'img') {

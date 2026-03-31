@@ -1,11 +1,3 @@
-downBtn.addEventListener('click', (event) => {
-    chrome.runtime.sendMessage({ action: 'newdld_window' });
-});
-
-optionsBtn.addEventListener('click', (event) => {
-    chrome.runtime.openOptionsPage();
-});
-
 i18nEntry.value = chrome.i18n.getMessage('extension_locale');
 i18nEntry.disabled = true;
 

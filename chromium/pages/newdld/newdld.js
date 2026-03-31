@@ -3,10 +3,9 @@ let aria2Config = {};
 let aria2Referer = new Map();
 
 let [menuPane, downEntry, jsonrpcPane] = document.body.children;
-let [, uploadBtn, submitBtn, metaFiles] = menuPane.children;
-let refererPane = document.getElementById('referer');
 let [refererEntry, ...jsonrpcEntries] = jsonrpcPane.querySelectorAll('[name]');
-let limitEntry = jsonrpcEntries.pop();
+let filesEntry = menuPane.lastElementChild;
+let refererPane = document.getElementById('referer');
 
 document.addEventListener('click', (event) => {
     if (event.target !== refererEntry && !refererPane.classList.contains('hidden')) {
@@ -26,7 +25,7 @@ function menuSubmit() {
 }
 
 const menuEventMap = {
-    'task_addfiles': () => metaFiles.click(),
+    'task_addfiles': () => filesEntry.click(),
     'common_submit': menuSubmit
 };
 
@@ -44,7 +43,7 @@ document.addEventListener('drop', (event) => {
     metaFileDownload(event.dataTransfer.files);
 });
 
-metaFiles.addEventListener('change', (event) => {
+filesEntry.addEventListener('change', (event) => {
     metaFileDownload(event.target.files)
 });
 
@@ -145,9 +144,11 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 chrome.runtime.sendMessage({ action: 'newdld_runtime' }, ({ storage, options }) => {
     aria2Proxy = storage['proxy_server'];
-    limitEntry.value = '0';
     for (let entry of jsonrpcEntries) {
         let { name } = entry;
-        entry.value = aria2Config[name] = options[name] ?? '';
+        let value = options[name];
+        if (value) {
+            entry.value = aria2Config[name] = value;
+        }
     }
 });
