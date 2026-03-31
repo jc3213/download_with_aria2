@@ -51,7 +51,7 @@ async function mainMenuPurge() {
     aria2Stats['stopped'].textContent = '0';
 }
 
-const mainMenu = {
+const mainMenus = {
     'popup_newdld': () => chrome.runtime.sendMessage({ action: 'newdld_window' }),
     'popup_purge': mainMenuPurge,
     'popup_options': chrome.runtime.openOptionsPage
@@ -59,7 +59,7 @@ const mainMenu = {
 
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
-    mainMenu[menu]?.();
+    mainMenus[menu]?.();
 });
 
 const aria2RPC = new Aria2();
@@ -71,17 +71,17 @@ aria2RPC.onopen = () => {
         aria2Queue.active  = new Set();
         aria2Queue.waiting = new Set();
         aria2Queue.stopped = new Set();
-        updateTaskManager(stats, active);
+        updateManager(stats, active);
         for (let result of waiting) {
-            updateTaskStats(result);
+            updateTasks(result);
         }
         for (let result of stopped) {
-            updateTaskStats(result);
+            updateTasks(result);
         }
         verEntry.textContent = version.version;
         aria2Interval = setInterval(() => {
             aria2RPC.call([{ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' }])
-                .then(({ result: [[stats], [active]] }) => updateTaskManager(stats, active));
+                .then(({ result: [[stats], [active]] }) => updateManager(stats, active));
         }, aria2Delay);
     }).catch(aria2RPC.onclose);
 };
@@ -100,15 +100,15 @@ aria2RPC.onmessage = ({ method, params }) => {
     }
     let [{ gid }] = params;
     let group = method === 'aria2.onDownloadStart' ? 'waiting' : 'active';
-    updateTaskDetails(gid);
+    reloadTasks(gid);
     removeFromQueue(gid, group);
 };
 
-function updateTaskManager({ downloadSpeed, uploadSpeed }, active) {
+function updateManager({ downloadSpeed, uploadSpeed }, active) {
     aria2Stats.download.textContent = getFileSize(downloadSpeed);
     aria2Stats.upload.textContent = getFileSize(uploadSpeed);
     for (let result of active) {
-        updateTaskStats(result);
+        updateTasks(result);
     }
 }
 
@@ -128,9 +128,9 @@ function addToQueue(task, gid, status) {
     queuePane.appendChild(task);
 }
 
-async function updateTaskDetails(gid) {
+async function reloadTasks(gid) {
     let { result } = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
-    let task = updateTaskStats(result);
+    let task = updateTasks(result);
     if (task.align) {
         task.scrollIntoView({ block: 'start', inline: 'nearest' });
         delete task.align;
@@ -138,7 +138,7 @@ async function updateTaskDetails(gid) {
     addToQueue(task, gid, result.status);
 }
 
-function updateTaskStats({ gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders }) {
+function updateTasks({ gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders }) {
     let task = aria2Tasks[gid] ??= createTaskBody(gid, status, bittorrent, files);
     let time = (totalLength - completedLength) / downloadSpeed;
     let days = time / 86400 | 0;
@@ -174,7 +174,7 @@ async function taskRemoveHandler(task, gid, method, group) {
     task.remove();
 }
 
-const taskRemoveMap = {
+const taskRemove = {
     'active': (task, gid) => aria2RPC.call({ method: 'aria2.forceRemove', params: [gid] }),
     'waiting': (task, gid) => taskRemoveHandler(task, gid, 'aria2.forceRemove', 'waiting'),
     'paused': (task, gid) => taskRemoveHandler(task, gid, 'aria2.forceRemove', 'waiting'),
@@ -183,7 +183,7 @@ const taskRemoveMap = {
     'error': (task, gid) => taskRemoveHandler(task, gid, 'aria2.removeDownloadResult', 'stopped'),
 };
 
-const taskPauseMap = {
+const taskPause = {
     'active': (task, gid) => aria2RPC.call({ 'method': 'aria2.forcePause', 'params': [gid] }),
     'waiting': (task, gid) => aria2RPC.call({ 'method': 'aria2.forcePause', 'params': [gid] }),
     'paused': (task, gid) => aria2RPC.call({ 'method': 'aria2.unpause', 'params': [gid] })
@@ -197,7 +197,7 @@ async function taskDetailHandler(gid) {
     return { files, options };
 }
 
-async function taskEventDetail(task, gid) {
+async function taskDetails(task, gid) {
     let { classList, details, checks, entries, apply } = task;
     if (classList.contains('expand')) {
         apply.classList.add('hidden');
@@ -219,7 +219,7 @@ async function taskEventDetail(task, gid) {
     }
 }
 
-async function taskEventApply(task, gid) {
+async function taskApply(task, gid) {
     let { checks, config, apply } = task;
     let selected = [];
     for (let [index, check] of checks) {
@@ -233,7 +233,7 @@ async function taskEventApply(task, gid) {
     apply.classList.add('hidden');
 }
 
-async function taskEventRetry(task, gid) {
+async function taskRetry(task, gid) {
     let { files, options } = await taskDetailHandler(gid);
     let [{ path, uris }] = files;
     let url = [];
@@ -250,16 +250,16 @@ async function taskEventRetry(task, gid) {
     delete aria2Tasks[gid];
     task.remove();
     if (Array.isArray(add)) {
-        updateTaskDetails(add[0]);
+        reloadTasks(add[0]);
     }
 }
 
-function taskEventProxy(task) {
+function taskProxy(task) {
     task.config['all-proxy'] = task.proxy.value = aria2Proxy;
     task.apply.classList.remove('hidden');
 }
 
-async function taskUriAdded(task, gid) {
+async function taskUriAdd(task, gid) {
     let url = task.newuri.value;
     task.newuri.value = '';
     let { result } = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [url]] });
@@ -269,7 +269,7 @@ async function taskUriAdded(task, gid) {
     }
 }
 
-async function taskUriRemoved(task, gid, event) {
+async function taskUriRemove(task, gid, event) {
     let { files } = await taskDetailHandler(gid);
     let [{ uris }] = files;
     let url = event.target.previousElementSibling.textContent;
@@ -287,16 +287,16 @@ async function taskUriRemoved(task, gid, event) {
     }
 }
 
-const taskEventMap = {
-    'tips_task_remove': (task, gid) => taskRemoveMap[task.status]?.(task, gid),
-    'tips_task_pause': (task, gid) => taskPauseMap[task.status]?.(task, gid),
-    'tips_task_detail': taskEventDetail,
-    'tips_task_apply': taskEventApply,
-    'tips_task_retry': taskEventRetry,
-    'tips_proxy_server': taskEventProxy,
-    'tips_uri_add': taskUriAdded,
+const taskMenus = {
+    'tips_task_remove': (task, gid) => taskRemove[task.status]?.(task, gid),
+    'tips_task_pause': (task, gid) => taskPause[task.status]?.(task, gid),
+    'tips_task_detail': taskDetails,
+    'tips_task_apply': taskApply,
+    'tips_task_retry': taskRetry,
+    'tips_proxy_server': taskProxy,
+    'tips_uri_add': taskUriAdd,
     'tips_uri_copy': ($, _, event) => navigator.clipboard.writeText(event.target.textContent),
-    'tips_uri_remove': taskUriRemoved,
+    'tips_uri_remove': taskUriRemove,
     'tips_file_index': (task) => task.apply.classList.remove('hidden')
 };
 
@@ -331,7 +331,7 @@ function createTaskBody(gid, status, bittorrent, files) {
     task.classList.add(status, bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', (event) => {
         let menu = event.target.getAttribute('i18n-tips');
-        taskEventMap[menu]?.(task, gid, event);
+        taskMenus[menu]?.(task, gid, event);
     });
     task.addEventListener('keydown', (event) => {
         if (event.ctrlKey && event.code === 'KeyS') {
@@ -341,7 +341,7 @@ function createTaskBody(gid, status, bittorrent, files) {
     });
     newuri.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            taskUriAdded(task, gid);
+            taskUriAdd(task, gid);
         }
     });
     options.addEventListener('change', (event) => {
