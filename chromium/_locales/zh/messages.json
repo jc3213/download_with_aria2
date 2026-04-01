@@ -27,7 +27,7 @@
         "message": "下载开始"
     },
     "download_complete": {
-        "message": ""
+        "message": "下载完成"
     },
     "match_add": {
         "message": "已添加\"$1\"至$2"
