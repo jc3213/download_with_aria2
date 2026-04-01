@@ -139,7 +139,7 @@ async function reloadTasks(gid) {
 }
 
 function updateTasks({ gid, status, files, bittorrent, completedLength, totalLength, downloadSpeed, uploadSpeed, connections, numSeeders }) {
-    let task = aria2Tasks[gid] ??= createTaskBody(gid, status, bittorrent, files);
+    let task = aria2Tasks[gid] ??= createTasks(gid, status, bittorrent, files);
     let time = (totalLength - completedLength) / downloadSpeed;
     let days = time / 86400 | 0;
     let hours = time % 86400 / 3600 | 0;
@@ -300,7 +300,7 @@ const taskMenus = {
     'tips_file_index': (task) => task.apply.classList.remove('hidden')
 };
 
-function createTaskBody(gid, status, bittorrent, files) {
+function createTasks(gid, status, bittorrent, files) {
     let task = sessionLET.cloneNode(true);
     let [name, current, time, total, network, download, upload, menu, meter, options, flist, ulist] = task.children;
     let [day, hour, minute, second] = time.children;

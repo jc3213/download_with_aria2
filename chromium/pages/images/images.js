@@ -86,7 +86,7 @@ chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, ({ storage,
     }
     for (let url of images) {
         let path = url.substring(url.lastIndexOf('/') + 1);
-        let idx = path.search(/[?@]/);
+        let idx = path.search(/[?#@]/);
         let img = document.createElement('img');
         img.alt = idx === -1 ? path : path.substring(0, idx);
         img.src = img.title = url;
