@@ -29,6 +29,21 @@
     "download_complete": {
         "message": "Download Complete"
     },
+    "match_add": {
+        "message": "\"$1\" has been added to $2"
+    },
+    "match_remove": {
+        "message": "\"$1\" has been removed from $2"
+    },
+    "capture_hosts": {
+        "message": "download capture exception rules"
+    },
+    "headers_hosts": {
+        "message": "headers forwarding exception rules"
+    },
+    "proxy_hosts": {
+        "message": "auto-proxy includsion rules"
+    },
     "ctxmenu_thisurl": {
         "message": "Download this link"
     },

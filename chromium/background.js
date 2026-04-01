@@ -204,8 +204,11 @@ function togglHostState(id, rules) {
             options = 'match_add';
         }
         let value = aria2Storage[id] = [...rules];
+        let title = chrome.i18n.getMessage('options_' + id.substring(0, id.indexOf('_')));
+        let message = chrome.i18n.getMessage(options, [host, chrome.i18n.getMessage(id)]);
         chrome.storage.sync.set({ [id]: value });
         chrome.runtime.sendMessage({ options, params: { id, host } }, () => chrome.runtime.lastError);
+        chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
     });
 }
 

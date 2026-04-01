@@ -27,7 +27,22 @@
         "message": "下载开始"
     },
     "download_complete": {
-        "message": "下载完成"
+        "message": ""
+    },
+    "match_add": {
+        "message": "已添加\"$1\"至$2"
+    },
+    "match_remove": {
+        "message": "已从$2中移除\"$1\""
+    },
+    "capture_hosts": {
+        "message": "下载捕获例外规则表"
+    },
+    "headers_hosts": {
+        "message": "请求头转发例外规则表"
+    },
+    "proxy_hosts": {
+        "message": "自动代理规则表"
     },
     "ctxmenu_thisurl": {
         "message": "下载此链接"
