@@ -52,9 +52,7 @@ async function mainMenuPurge() {
 }
 
 const mainMenus = {
-    'popup_newdld': () => chrome.runtime.sendMessage({ action: 'newdld_window' }),
-    'popup_purge': mainMenuPurge,
-    'popup_options': chrome.runtime.openOptionsPage
+    'popup_purge': mainMenuPurge
 };
 
 menuPane.addEventListener('click', (event) => {
