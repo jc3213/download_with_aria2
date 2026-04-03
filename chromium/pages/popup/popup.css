@@ -210,8 +210,7 @@ body.error > #queue > .error {
     order: 6;
 }
 
-.session:is(.complete, .removed, .error) input,
-.session:is(.complete, .removed, .error) select {
+.session:is(.complete, .removed, .error) :is(input, select) {
     pointer-events: none;
     filter: var(--disabled);
 }
