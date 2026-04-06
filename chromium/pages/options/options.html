@@ -108,6 +108,26 @@
             <div class="pad-u e-folder-enabled x-folder-firefox" i18n-tips="tips_options_folder">
                 <input name="folder_defined" type="text">
             </div>
+            <h1 i18n="options_file_types"></h1>
+            <div id="file_types" class="flexmenu" i18n-tips="tips_options_file_types">
+                <h4 i18n="options_file_types_title"></h4>
+                <button id="add-file-type" i18n-tips="tips_add_file_type">➕ Add File Type</button>
+                <div class="list"></div>
+            </div>
+            <div id="file-type-modal" class="modal">
+                <div class="modal-content">
+                    <h3 id="modal-title" i18n="options_add_file_type"></h3>
+                    <input type="text" id="file-type-name" placeholder="Type name">
+                    <input type="text" id="file-type-extensions" placeholder="Extensions (comma separated)">
+                    <div class="modal-buttons">
+                        <button id="save-file-type" i18n="options_save"></button>
+                        <button id="cancel-file-type" i18n="options_cancel"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="pad-u" i18n-tips="tips_options_file_types_default">
+                <input name="file_types_default" type="text" placeholder="Default file type name">
+            </div>
             <h1 i18n="options_proxy"></h1>
             <div i18n-tips="tips_options_proxy">
                 <input name="proxy_server" type="text" placeholder="http://127.0.0.1:1280/">

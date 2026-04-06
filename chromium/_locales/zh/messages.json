@@ -580,5 +580,29 @@
     },
     "tips_aria2_bt_seed": {
         "message": "设置每个 BT 任务的做种时间 (分)"
+    },
+    "options_file_types": {
+        "message": "文件类型"
+    },
+    "options_file_types_title": {
+        "message": "文件类型配置"
+    },
+    "tips_options_file_types": {
+        "message": "配置文件类型及其扩展名，用于下载路径分类"
+    },
+    "tips_add_file_type": {
+        "message": "添加新文件类型"
+    },
+    "options_edit_file_type": {
+        "message": "编辑文件类型"
+    },
+    "tips_edit_file_type": {
+        "message": "编辑文件类型"
+    },
+    "options_cancel": {
+        "message": "取消"
+    },
+    "tips_options_file_types_default": {
+        "message": "当没有匹配到扩展名时的默认文件类型名称"
     }
 }

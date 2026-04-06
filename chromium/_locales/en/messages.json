@@ -580,5 +580,29 @@
     },
     "tips_aria2_bt_seed": {
         "message": "Set the share time of each BitTorrent download (MIN)"
+    },
+    "options_file_types": {
+        "message": "File Types"
+    },
+    "options_file_types_title": {
+        "message": "File Type Configuration"
+    },
+    "tips_options_file_types": {
+        "message": "Configure file types and their extensions for download path categorization"
+    },
+    "tips_add_file_type": {
+        "message": "Add new file type"
+    },
+    "options_edit_file_type": {
+        "message": "Edit File Type"
+    },
+    "tips_edit_file_type": {
+        "message": "Edit file type"
+    },
+    "options_cancel": {
+        "message": "Cancel"
+    },
+    "tips_options_file_types_default": {
+        "message": "Default file type name when no extension matches"
     }
 }

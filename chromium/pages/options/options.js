@@ -14,6 +14,20 @@ let tellUA = document.getElementById('useragent');
 let storageEntries = storagePane.querySelectorAll('[name]');
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let matchLET = template.firstElementChild;
+let fileTypeEditor = document.getElementById('file_types');
+let fileTypeNameInput = document.getElementById('file-type-name');
+let fileTypeExtensionsInput = document.getElementById('file-type-extensions');
+let addFileTypeBtn = document.getElementById('add-file-type');
+let fileTypeList = fileTypeEditor.querySelector('.list');
+
+
+let fileTypeModal = document.getElementById('file-type-modal');
+let modalTitle = document.getElementById('modal-title');
+let saveFileTypeBtn = document.getElementById('save-file-type');
+let cancelFileTypeBtn = document.getElementById('cancel-file-type');
+
+let currentFileTypeOperation = null;
+let currentEditType = null;
 
 function changeHistorySave(change) {
     let { id, new_value } = change;
@@ -80,6 +94,11 @@ function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, todo
     } else if (type === 'resort') {
         let order = todo === 'undo' ? sort.old_order : sort.new_order;
         sort.list.append(...order);
+    } else if (type === 'file_types' && fileTypeList) {
+        fileTypeList.innerHTML = '';
+        for (let [typeName, extensions] of Object.entries(value.types)) {
+            printFileType(fileTypeList, typeName, extensions);
+        }
     } else {
         entry.value = value;
     }
@@ -157,6 +176,34 @@ fileEntry.addEventListener('change', (event) => {
         fileEntry.value = '';
     };
     reader.readAsText(file);
+});
+
+addFileTypeBtn.addEventListener('click', addFileType);
+fileTypeExtensionsInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        addFileType();
+    }
+});
+
+fileTypeList.addEventListener('click', (event) => {
+    if (event.target.getAttribute('i18n-tips') === 'tips_match_remove') {
+        removeFileType(event);
+    }
+});
+
+saveFileTypeBtn?.addEventListener('click', saveFileType);
+cancelFileTypeBtn?.addEventListener('click', cancelFileType);
+
+window.addEventListener('click', (event) => {
+    if (event.target === fileTypeModal) {
+        cancelFileType();
+    }
+});
+
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && fileTypeModal && fileTypeModal.style.display === 'block') {
+        cancelFileType();
+    }
 });
 
 function optionsDispatch(options) {
@@ -246,6 +293,101 @@ function printMatchPattern(list, id, value) {
     return rule;
 }
 
+function printFileType(list, typeName, extensions) {
+    let rule = matchLET.cloneNode(true);
+    rule.title = typeName;
+    rule.firstElementChild.textContent = `${typeName}: ${extensions.join(', ')}`;
+    let editButton = document.createElement('button');
+    editButton.textContent = '✏️';
+    editButton.setAttribute('i18n-tips', 'tips_edit_file_type');
+    editButton.style.marginRight = '5px';
+    editButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        editFileType(typeName, extensions);
+    });
+    rule.insertBefore(editButton, rule.lastElementChild);
+    list.appendChild(rule);
+    return rule;
+}
+
+function addFileType() {
+    if (!fileTypeModal) {
+        return;
+    }
+    currentFileTypeOperation = 'add';
+    currentEditType = null;
+    modalTitle.textContent = 'Add File Type';
+    fileTypeNameInput.value = '';
+    fileTypeExtensionsInput.value = '';
+    fileTypeModal.style.display = 'block';
+}
+
+function removeFileType(event) {
+    if (!fileTypeList) {
+        return;
+    }
+    let typeName = event.target.parentNode.title;
+    let old_value = changes['file_types'] || { types: {} };
+    let new_value = JSON.parse(JSON.stringify(old_value));
+    delete new_value.types[typeName];
+    fileTypeList.innerHTML = '';
+    for (let [type, exts] of Object.entries(new_value.types)) {
+        printFileType(fileTypeList, type, exts);
+    }
+    changeHistorySave({ id: 'file_types', new_value, old_value, type: 'file_types' });
+}
+
+function editFileType(typeName, extensions) {
+    if (!fileTypeModal) {
+        return;
+    }
+    currentFileTypeOperation = 'edit';
+    currentEditType = typeName;
+    modalTitle.textContent = 'Edit File Type';
+    fileTypeNameInput.value = typeName;
+    fileTypeExtensionsInput.value = extensions.join(', ');
+    fileTypeModal.style.display = 'block';
+}
+
+function saveFileType() {
+    if (!fileTypeList) {
+        return;
+    }
+    let typeName = fileTypeNameInput.value.trim();
+    let extensionsInput = fileTypeExtensionsInput.value.trim();
+    if (!typeName || !extensionsInput) {
+        return;
+    }
+    let extensions = extensionsInput.split(',').map(ext => ext.trim().toLowerCase()).filter(ext => ext);
+    let old_value = changes['file_types'] || { types: {} };
+    let new_value = JSON.parse(JSON.stringify(old_value));
+    
+    if (currentFileTypeOperation === 'edit' && currentEditType) {
+        delete new_value.types[currentEditType];
+        new_value.types[typeName] = extensions;
+    } else if (currentFileTypeOperation === 'add') {
+        new_value.types[typeName] = extensions;
+    }
+    
+    fileTypeList.innerHTML = '';
+    for (let [type, exts] of Object.entries(new_value.types)) {
+        printFileType(fileTypeList, type, exts);
+    }
+    changeHistorySave({ id: 'file_types', new_value, old_value, type: 'file_types' });
+    cancelFileType();
+}
+
+function cancelFileType() {
+    if (!fileTypeModal) {
+        return;
+    }
+    fileTypeModal.style.display = 'none';
+    currentFileTypeOperation = null;
+    currentEditType = null;
+    fileTypeNameInput.value = '';
+    fileTypeExtensionsInput.value = '';
+}
+
 function storageDispatch() {
     changes = { ...aria2Storage };
     tellVer.textContent = aria2Version;
@@ -262,9 +404,19 @@ function storageDispatch() {
         }
     }
     for (let [id,  { list }] of matchLists) {
-        list.innerHTML = '';
-        for (let value of changes[id]) {
-            printMatchPattern(list, id, value);
+        if (list) {
+            list.innerHTML = '';
+            for (let value of changes[id]) {
+                printMatchPattern(list, id, value);
+            }
+        }
+    }
+
+    if (fileTypeList) {
+        fileTypeList.innerHTML = '';
+        let fileTypes = changes['file_types'] || { types: {} };
+        for (let [type, extensions] of Object.entries(fileTypes.types)) {
+            printFileType(fileTypeList, type, extensions);
         }
     }
 }

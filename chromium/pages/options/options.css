@@ -128,3 +128,50 @@ i {
 .disabled::before {
     content: "__MSG_options_disabled__: ";
 }
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 5px;
+}
+
+.modal-content input {
+    width: 100%;
+    margin: 10px 0;
+    padding: 5px;
+}
+
+.modal-buttons {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.modal-buttons button {
+    margin-left: 10px;
+    padding: 5px 15px;
+}
+
+.rule button {
+    padding: 0 5px;
+    cursor: pointer;
+}
+
+.rule button:hover {
+    background-color: #f0f0f0;
+}
