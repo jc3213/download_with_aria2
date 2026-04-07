@@ -25,7 +25,7 @@ const systemStorage = {
     'headers_hosts': [],
     'folder_defined': '',
     'folder_enabled': false,
-    'folder_override': false,
+    'folder_firefox': false,
     'folder_associate': [
         ["image", ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "ico"]],
         ["video", ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm", "m4v"]],
@@ -161,45 +161,37 @@ function downloadHeaders(tabId, url, referer) {
 }
 
 function downloadDirectory(filename, hostname) {
-    if (!filename) {
-        return {};
-    }
     let dir = null;
     let out = filename;
     let user = aria2Storage['folder_defined'];
-    let idx = Math.max(out.lastIndexOf('/'), out.lastIndexOf('\\')) + 1;
-    if (idx > 0) {
-        dir = filename.substring(0, idx);
-        out = filename.substring(idx);
+    if (out) {
+        let idx = Math.max(out.lastIndexOf('/'), out.lastIndexOf('\\')) + 1;
+        if (idx > 0) {
+            dir = filename.substring(0, idx);
+            out = filename.substring(idx);
+        }
     }
-    if (!aria2Storage['folder_enabled']) {
-        return { out };
-    }
-    if (systemFirefox && aria2Storage['folder_firefox']) {
-        return { dir, out };
-    }
-    if (!user) {
-        return { out };
-    }
-    if (aria2Storage['folder_override']) {
-        dir = getFullPath(user, filename, hostname);
+    if (aria2Storage['folder_enabled'] &&
+        !(systemFirefox && aria2Storage['folder_firefox']) &&
+        user) {
+        dir = getFullPath(user, out, host);
     }
     return { dir, out };
 }
 
 function getFullPath(path, filename, hostname) {
     let now = new Date();
-    let time = now.getFullYear()
+    let date = now.getFullYear()
         + `${now.getMonth() + 1}`.padStart(2, '0')
-        + `${now.getDate()}`.padStart(2, '0')
-        + `${now.getHours()}`.padStart(2, '0')
-        + `${now.getMinutes()}`.padStart(2, '0')
-        + `${now.getSeconds()}`.padStart(2, '0');
+        + `${now.getDate()}`.padStart(2, '0');
+
+    let type = '';
+    if (filename) {
+        let app = filename.substring(filename.lastIndexOf('.') + 1);
+        type = aria2Associate[app] ?? '';
+    }
     
-    let app = filename.substring(filename.lastIndexOf('.') + 1);
-    let type = aria2Associate[app] ?? '';
-    
-    return path.replace('{time}', time)
+    return path.replace('{date}', date)
         .replace('{type}', type)
         .replace('{host}', hostname);
 }
