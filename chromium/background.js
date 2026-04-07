@@ -149,15 +149,16 @@ function downloadHeaders(tabId, url, referer) {
 }
 
 function downloadDirectory(filename) {
+    if (!filename) {
+        return {};
+    }
     let dir = null;
     let out = filename;
     let user = aria2Storage['folder_defined'];
-    if (out) {
-        let idx = Math.max(out.lastIndexOf('/'), out.lastIndexOf('\\')) + 1;
-        if (idx > 0) {
-            dir = filename.substring(0, idx);
-            out = filename.substring(idx);
-        }
+    let idx = Math.max(out.lastIndexOf('/'), out.lastIndexOf('\\')) + 1;
+    if (idx > 0) {
+        dir = filename.substring(0, idx);
+        out = filename.substring(idx);
     }
     if (aria2Storage['folder_enabled'] &&
         !(systemFirefox && aria2Storage['folder_firefox']) &&
