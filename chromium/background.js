@@ -25,26 +25,23 @@ const systemStorage = {
     'headers_hosts': [],
     'folder_defined': '',
     'folder_enabled': false,
-    'folder_firefox': false,
-    'file_types_default': 'other',
+    'folder_override': false,
+    'folder_associate': [
+        ["image", ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "ico"]],
+        ["video", ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm", "m4v"]],
+        ["audio", ["mp3", "wav", "flac", "aac", "ogg", "wma", "m4a"]],
+        ["document", ["pdf", "doc", "docx", "txt", "rtf", "odt", "md"]],
+        ["compressed", ["zip", "rar", "7z", "tar", "gz", "bz2", "xz"]],
+        ["executable", ["exe", "msi", "dmg", "app", "deb", "rpm"]],
+        ["code", ["js", "css", "html", "php", "py", "java", "c", "cpp", "h", "cs", "go", "rb", "swift"]],
+        ["ebook", ["epub", "mobi", "azw", "azw3"]],
+        ["font", ["ttf", "otf", "woff", "woff2"]]
+    ],
     'proxy_server': '',
     'proxy_hosts': [],
     'capture_enabled': false,
     'capture_webrequest': false,
-    'capture_hosts': [],
-    'file_types': {
-        "types": {
-            "image": ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "ico"],
-            "video": ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm", "m4v"],
-            "audio": ["mp3", "wav", "flac", "aac", "ogg", "wma", "m4a"],
-            "document": ["pdf", "doc", "docx", "txt", "rtf", "odt", "md"],
-            "compressed": ["zip", "rar", "7z", "tar", "gz", "bz2", "xz"],
-            "executable": ["exe", "msi", "dmg", "app", "deb", "rpm"],
-            "code": ["js", "css", "html", "php", "py", "java", "c", "cpp", "h", "cs", "go", "rb", "swift"],
-            "ebook": ["epub", "mobi", "azw", "azw3"],
-            "font": ["ttf", "otf", "woff", "woff2"]
-        }
-    }
+    'capture_hosts': []
 };
 
 if (systemManifest.manifest_version === 3) {
@@ -54,6 +51,7 @@ if (systemManifest.manifest_version === 3) {
 
 let aria2Storage = {};
 let aria2Config = {};
+let aria2Associate = {};
 let aria2Version;
 let aria2Active = new Set();
 let aria2Inspect = new Map();
@@ -162,76 +160,53 @@ function downloadHeaders(tabId, url, referer) {
     return result;
 }
 
-function downloadDirectory(filename, url, referer, hostname) {
+function downloadDirectory(filename, hostname) {
+    if (!filename) {
+        return {};
+    }
     let dir = null;
     let out = filename;
     let user = aria2Storage['folder_defined'];
-    if (out) {
-        let idx = Math.max(out.lastIndexOf('/'), out.lastIndexOf('\\')) + 1;
-        if (idx > 0) {
-            dir = filename.substring(0, idx);
-            out = filename.substring(idx);
-        }
+    let idx = Math.max(out.lastIndexOf('/'), out.lastIndexOf('\\')) + 1;
+    if (idx > 0) {
+        dir = filename.substring(0, idx);
+        out = filename.substring(idx);
     }
-    if (aria2Storage['folder_enabled'] &&
-        !(systemFirefox && aria2Storage['folder_firefox']) &&
-        user) {
-        dir = parseVariables(user, hostname, out);
+    if (!aria2Storage['folder_enabled']) {
+        return { out };
+    }
+    if (systemFirefox && aria2Storage['folder_firefox']) {
+        return { dir, out };
+    }
+    if (!user) {
+        return { out };
+    }
+    if (aria2Storage['folder_override']) {
+        dir = getFullPath(user, filename, hostname);
     }
     return { dir, out };
 }
 
-function parseVariables(path, hostname, filename) {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hour = String(now.getHours()).padStart(2, '0');
-    const minute = String(now.getMinutes()).padStart(2, '0');
-    const second = String(now.getSeconds()).padStart(2, '0');
+function getFullPath(path, filename, hostname) {
+    let now = new Date();
+    let time = now.getFullYear()
+        + `${now.getMonth() + 1}`.padStart(2, '0')
+        + `${now.getDate()}`.padStart(2, '0')
+        + `${now.getHours()}`.padStart(2, '0')
+        + `${now.getMinutes()}`.padStart(2, '0')
+        + `${now.getSeconds()}`.padStart(2, '0');
     
-    let domain = hostname;
-    let mainDomain = hostname;
-    if (domain) {
-        const parts = domain.split('.');
-        if (parts.length >= 2) {
-            mainDomain = parts.slice(-2).join('.');
-        }
-    }
+    let app = filename.substring(filename.lastIndexOf('.') + 1);
+    let type = aria2Associate[app] ?? '';
     
-    let fileExt = '';
-    let fileType = aria2Storage['file_types_default'] || 'other';
-    if (filename) {
-        const extIdx = filename.lastIndexOf('.');
-        if (extIdx > 0) {
-            fileExt = filename.substring(extIdx + 1).toLowerCase();
-            const fileTypes = aria2Storage['file_types'] || { types: {} };
-            for (const [type, extensions] of Object.entries(fileTypes.types)) {
-                if (extensions.includes(fileExt)) {
-                    fileType = type;
-                    break;
-                }
-            }
-        }
-    }
-    
-    return path
-        .replace(/\{year\}/g, year)
-        .replace(/\{month\}/g, month)
-        .replace(/\{day\}/g, day)
-        .replace(/\{hour\}/g, hour)
-        .replace(/\{minute\}/g, minute)
-        .replace(/\{second\}/g, second)
-        .replace(/\{domain\}/g, domain || '')
-        .replace(/\{mainDomain\}/g, mainDomain || '')
-        .replace(/\{filename\}/g, filename || '')
-        .replace(/\{fileext\}/g, fileExt || '')
-        .replace(/\{filetype\}/g, fileType);
+    return path.replace('{time}', time)
+        .replace('{type}', type)
+        .replace('{host}', hostname);
 }
 
 function downloadHandler(url, referer, filename, hostname, tabId) {
     hostname ??= getHostname(referer);
-    let options = downloadDirectory(filename, url, referer, hostname);
+    let options = downloadDirectory(filename, hostname);
     if (matchHostname(proxyHosts, hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
@@ -397,6 +372,12 @@ function storageDispatch(json) {
     let popup = json['manager_newtab'] ? '' : '/pages/popup/popup.html?toolbar';
     chrome.action.setPopup({ popup });
     chrome.contextMenus.removeAll();
+    aria2Associate = {};
+    for (let [type, apps] of json['folder_associate']) {
+        for (let app of apps) {
+            aria2Associate[app] = type;
+        }
+    }
     if (!json['ctxmenu_enabled']) {
         return;
     }
