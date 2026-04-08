@@ -1,6 +1,8 @@
 let aria2Storage = {};
 let aria2Config = {};
+let aria2Associate = new Map();
 let aria2Version;
+let activeFileType;
 
 let toggle = false;
 let changes = {};
@@ -13,21 +15,10 @@ let [saveBtn, undoBtn, redoBtn, tellVer, importBtn, exportBtn, fileEntry, export
 let tellUA = document.getElementById('useragent');
 let storageEntries = storagePane.querySelectorAll('[name]');
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
-let matchLET = template.firstElementChild;
-let fileTypeEditor = document.getElementById('file_types');
-let fileTypeNameInput = document.getElementById('file-type-name');
-let fileTypeExtensionsInput = document.getElementById('file-type-extensions');
-let addFileTypeBtn = document.getElementById('add-file-type');
-let fileTypeList = fileTypeEditor.querySelector('.list');
-
-
-let fileTypeModal = document.getElementById('file-type-modal');
-let modalTitle = document.getElementById('modal-title');
-let saveFileTypeBtn = document.getElementById('save-file-type');
-let cancelFileTypeBtn = document.getElementById('cancel-file-type');
-
-let currentFileTypeOperation = null;
-let currentEditType = null;
+let [assocPane, ...matchPanes] = storagePane.querySelectorAll('div.flexmenu');
+let [, addFileTypeBtn, fileTypeList, fileTypeModal] = assocPane.children;
+let [, fileTypeNameInput, fileTypeExtensionsInput] = fileTypeModal.children;
+let [matchLET, assocLET] = template.children;
 
 function changeHistorySave(change) {
     let { id, new_value } = change;
@@ -94,9 +85,9 @@ function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, todo
     } else if (type === 'resort') {
         let order = todo === 'undo' ? sort.old_order : sort.new_order;
         sort.list.append(...order);
-    } else if (type === 'file_types' && fileTypeList) {
+    } else if (type === 'associate') {
         fileTypeList.innerHTML = '';
-        for (let [typeName, extensions] of Object.entries(value.types)) {
+        for (let [typeName, extensions] of value) {
             printFileType(fileTypeList, typeName, extensions);
         }
     } else {
@@ -178,33 +169,13 @@ fileEntry.addEventListener('change', (event) => {
     reader.readAsText(file);
 });
 
-addFileTypeBtn.addEventListener('click', addFileType);
-fileTypeExtensionsInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        addFileType();
-    }
-});
-
-fileTypeList.addEventListener('click', (event) => {
-    if (event.target.getAttribute('i18n-tips') === 'tips_match_remove') {
-        removeFileType(event);
-    }
-});
-
-saveFileTypeBtn?.addEventListener('click', saveFileType);
-cancelFileTypeBtn?.addEventListener('click', cancelFileType);
-
-window.addEventListener('click', (event) => {
-    if (event.target === fileTypeModal) {
-        cancelFileType();
-    }
-});
-
-window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && fileTypeModal && fileTypeModal.style.display === 'block') {
-        cancelFileType();
-    }
-});
+const fileTypes = {
+    'tips_add_file_type': addFileType,
+    'tips_save_file_type': saveFileType,
+    'tips_cancel_file_type': cancelFileType,
+    'tips_edit_file_type': editFileType,
+    'tips_remove_file_type': removeFileType
+};
 
 function optionsDispatch(options) {
     for (let entry of jsonrpcEntries) {
@@ -271,7 +242,7 @@ const matchEvents = {
     'tips_match_remove': matchEventRemove,
 };
 
-for (let match of storagePane.querySelectorAll('div.flexmenu')) {
+for (let match of matchPanes) {
     let { id } = match;
     let [h4, entry, b1, b2, list] = match.children;
     matchLists.set(id, { list, entry });
@@ -294,102 +265,101 @@ function printMatchPattern(list, id, value) {
 }
 
 function printFileType(list, typeName, extensions) {
-    let rule = matchLET.cloneNode(true);
-    rule.title = typeName;
-    rule.firstElementChild.textContent = `${typeName}: ${extensions.join(', ')}`;
-    let editButton = document.createElement('button');
-    editButton.textContent = '✏️';
-    editButton.setAttribute('i18n-tips', 'tips_edit_file_type');
-    editButton.style.marginRight = '5px';
-    editButton.addEventListener('click', (event) => {
-        event.stopPropagation();
-        editFileType(typeName, extensions);
-    });
-    rule.insertBefore(editButton, rule.lastElementChild);
+    let rule = assocLET.cloneNode(true);
+    let [type, apps] = rule.children;
+    type.textContent = typeName;
+    apps.textContent = extensions.join(', ');
     list.appendChild(rule);
     return rule;
 }
 
 function addFileType() {
-    if (!fileTypeModal) {
-        return;
-    }
-    currentFileTypeOperation = 'add';
-    currentEditType = null;
-    modalTitle.textContent = 'Add File Type';
-    fileTypeNameInput.value = '';
-    fileTypeExtensionsInput.value = '';
-    fileTypeModal.style.display = 'block';
-}
-
-function removeFileType(event) {
-    if (!fileTypeList) {
-        return;
-    }
-    let typeName = event.target.parentNode.title;
-    let old_value = changes['file_types'] || { types: {} };
-    let new_value = JSON.parse(JSON.stringify(old_value));
-    delete new_value.types[typeName];
-    fileTypeList.innerHTML = '';
-    for (let [type, exts] of Object.entries(new_value.types)) {
-        printFileType(fileTypeList, type, exts);
-    }
-    changeHistorySave({ id: 'file_types', new_value, old_value, type: 'file_types' });
-}
-
-function editFileType(typeName, extensions) {
-    if (!fileTypeModal) {
-        return;
-    }
-    currentFileTypeOperation = 'edit';
-    currentEditType = typeName;
-    modalTitle.textContent = 'Edit File Type';
-    fileTypeNameInput.value = typeName;
-    fileTypeExtensionsInput.value = extensions.join(', ');
-    fileTypeModal.style.display = 'block';
-}
-
-function saveFileType() {
-    if (!fileTypeList) {
-        return;
-    }
-    let typeName = fileTypeNameInput.value.trim();
-    let extensionsInput = fileTypeExtensionsInput.value.trim();
-    if (!typeName || !extensionsInput) {
-        return;
-    }
-    let extensions = extensionsInput.split(',').map(ext => ext.trim().toLowerCase()).filter(ext => ext);
-    let old_value = changes['file_types'] || { types: {} };
-    let new_value = JSON.parse(JSON.stringify(old_value));
-    
-    if (currentFileTypeOperation === 'edit' && currentEditType) {
-        delete new_value.types[currentEditType];
-        new_value.types[typeName] = extensions;
-    } else if (currentFileTypeOperation === 'add') {
-        new_value.types[typeName] = extensions;
-    }
-    
-    fileTypeList.innerHTML = '';
-    for (let [type, exts] of Object.entries(new_value.types)) {
-        printFileType(fileTypeList, type, exts);
-    }
-    changeHistorySave({ id: 'file_types', new_value, old_value, type: 'file_types' });
-    cancelFileType();
+    fileTypeModal.classList.remove('hidden');
+    fileTypeNameInput.value = fileTypeExtensionsInput.value = '';
 }
 
 function cancelFileType() {
-    if (!fileTypeModal) {
+    fileTypeModal.classList.add('hidden');
+}
+
+function removeFileType(button) {
+    let rule = button.parentNode;
+    let typeName = rule.firstElementChild.textContent;
+    let old_value = changes['folder_associate'];
+    let new_value = old_value.slice();
+    let index = aria2Storage['folder_associate'].findIndex((i) => i[0] === typeName);
+    new_value.splice(index, 1);
+    rule.remove();
+    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'associate' });
+}
+
+function editFileType(button) {
+    let rule = button.parentNode;
+    let [{ textContent: typeName }, { textContent: extensions }] = rule.children;
+    activeFileType = changes['folder_associate'].findIndex((i) => i[0] === typeName);
+    fileTypeNameInput.value = typeName;
+    fileTypeExtensionsInput.value = extensions;
+    fileTypeModal.classList.remove('hidden');
+}
+
+function saveFileType() {
+    let typeName = fileTypeNameInput.value.trim();
+    let extensionsInput = fileTypeExtensionsInput.value.trim().toLowerCase();
+    if (!typeName || !extensionsInput) {
         return;
     }
-    fileTypeModal.style.display = 'none';
-    currentFileTypeOperation = null;
-    currentEditType = null;
-    fileTypeNameInput.value = '';
-    fileTypeExtensionsInput.value = '';
+    let extensions = extensionsInput.split(',').map(ext => ext.trim()).filter(Boolean);
+    let old_value = changes['folder_associate'];
+    let new_value = old_value.slice();
+    
+    if (Number.isInteger(activeFileType)) {
+        new_value[activeFileType] = [typeName, extensions];
+        activeFileType = null;
+    } else {
+        new_value.push([typeName, extensions]);
+    }
+    
+    fileTypeList.innerHTML = '';
+    for (let [type, exts] of new_value) {
+        printFileType(fileTypeList, type, exts);
+    }
+    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'associate' });
+    fileTypeModal.classList.add('hidden');
+    fileTypeList.scrollTop = fileTypeList.scrollHeight;
 }
+
+assocPane.addEventListener('click', (event) => {
+    let menu = event.target.getAttribute('i18n-tips');
+    fileTypes[menu]?.(event.target);
+});
+
+fileTypeExtensionsInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        addFileType();
+    }
+});
+
+fileTypeList.addEventListener('click', (event) => {
+    if (event.target.getAttribute('i18n-tips') === 'tips_match_remove') {
+        removeFileType(event);
+    }
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === fileTypeModal) {
+        cancelFileType();
+    }
+});
+
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && fileTypeModal && fileTypeModal.style.display === 'block') {
+        cancelFileType();
+    }
+});
 
 function storageDispatch() {
     changes = { ...aria2Storage };
+    aria2Associate = new Map(changes['folder_associate']);
     tellVer.textContent = aria2Version;
     for (let entry of storageEntries) {
         let { name, type } = entry;
@@ -404,20 +374,15 @@ function storageDispatch() {
         }
     }
     for (let [id,  { list }] of matchLists) {
-        if (list) {
-            list.innerHTML = '';
-            for (let value of changes[id]) {
-                printMatchPattern(list, id, value);
-            }
+        list.innerHTML = '';
+        for (let value of changes[id]) {
+            printMatchPattern(list, id, value);
         }
     }
 
-    if (fileTypeList) {
-        fileTypeList.innerHTML = '';
-        let fileTypes = changes['file_types'] || { types: {} };
-        for (let [type, extensions] of Object.entries(fileTypes.types)) {
-            printFileType(fileTypeList, type, extensions);
-        }
+    fileTypeList.innerHTML = '';
+    for (let [type, extensions] of aria2Associate) {
+        printFileType(fileTypeList, type, extensions);
     }
 }
 

@@ -81,6 +81,35 @@
                 <input id="notify-complete" name="notify_complete" type="checkbox">
                 <label for="notify-complete" i18n="options_notify_complete"></label>
             </div>
+            <h1 i18n="options_folder"></h1>
+            <div class="cfg-item" i18n-tips="tips_options_folder_enabled">
+                <input id="folder-enabled" name="folder_enabled" type="checkbox" data-css>
+                <label for="folder-enabled" i18n="options_folder_enabled"></label>
+            </div>
+            <div class="cfg-item e-firefox e-folder-enabled e-capture-enabled x-capture-webrequest" i18n-tips="tips_options_folder_firefox">
+                <input id="folder-firefox" name="folder_firefox" type="checkbox" data-css>
+                <label for="folder-firefox" i18n="options_folder_firefox"></label>
+            </div>
+            <div class="pad-u e-folder-enabled x-folder-firefox" i18n-tips="tips_options_folder">
+                <input name="folder_defined" type="text">
+            </div>
+            <div id="folder-associate" class="flexmenu e-capture-enabled" i18n-tips="tips_options_file_types">
+                <h4 i18n="options_file_types_title"></h4>
+                <button id="add-file-type" i18n-tips="tips_add_file_type">➕ Add File Type</button>
+                <div class="list list-l"></div>
+                <div class="modal hidden">
+                    <h3 i18n="options_file_types_title"></h3>
+                    <input type="text" id="file-type-name" placeholder="Type name">
+                    <input type="text" id="file-type-extensions" placeholder="Extensions (comma separated)">
+                    <div class="modal-menu">
+                        <button id="save-file-type" i18n="options_save" i18n-tips="tips_save_file_type"></button>
+                        <button id="cancel-file-type" i18n="options_cancel" i18n-tips="tips_cancel_file_type"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="pad-u" i18n-tips="tips_options_file_types_default">
+                <input name="file_types_default" type="text" placeholder="Default file type name">
+            </div>
             <h1 i18n="options_headers"></h1>
             <div class="cfg-item" i18n-tips="tips_options_headers_override">
                 <input id="headers-override" name="headers_override" type="checkbox" data-css>
@@ -95,38 +124,6 @@
                 <button i18n-tips="tips_match_add">➕</button>
                 <button i18n-tips="tips_match_resort">🧲</button>
                 <div class="list"></div>
-            </div>
-            <h1 i18n="options_folder"></h1>
-            <div class="cfg-item" i18n-tips="tips_options_folder_enabled">
-                <input id="folder-enabled" name="folder_enabled" type="checkbox" data-css>
-                <label for="folder-enabled" i18n="options_folder_enabled"></label>
-            </div>
-            <div class="cfg-item e-firefox e-folder-enabled e-capture-enabled x-capture-webrequest" i18n-tips="tips_options_folder_firefox">
-                <input id="folder-firefox" name="folder_firefox" type="checkbox" data-css>
-                <label for="folder-firefox" i18n="options_folder_firefox"></label>
-            </div>
-            <div class="pad-u e-folder-enabled x-folder-firefox" i18n-tips="tips_options_folder">
-                <input name="folder_defined" type="text">
-            </div>
-            <h1 i18n="options_file_types"></h1>
-            <div id="file_types" class="flexmenu" i18n-tips="tips_options_file_types">
-                <h4 i18n="options_file_types_title"></h4>
-                <button id="add-file-type" i18n-tips="tips_add_file_type">➕ Add File Type</button>
-                <div class="list"></div>
-            </div>
-            <div id="file-type-modal" class="modal">
-                <div class="modal-content">
-                    <h3 id="modal-title" i18n="options_add_file_type"></h3>
-                    <input type="text" id="file-type-name" placeholder="Type name">
-                    <input type="text" id="file-type-extensions" placeholder="Extensions (comma separated)">
-                    <div class="modal-buttons">
-                        <button id="save-file-type" i18n="options_save"></button>
-                        <button id="cancel-file-type" i18n="options_cancel"></button>
-                    </div>
-                </div>
-            </div>
-            <div class="pad-u" i18n-tips="tips_options_file_types_default">
-                <input name="file_types_default" type="text" placeholder="Default file type name">
             </div>
             <h1 i18n="options_proxy"></h1>
             <div i18n-tips="tips_options_proxy">
@@ -311,6 +308,12 @@
             <div class="rule">
                 <div></div>
                 <button i18n-tips="tips_match_remove">❌</button>
+            </div>
+            <div class="assoc">
+                <div></div>
+                <div></div>
+                <button i18n-tips="tips_edit_file_type">✏️</button>
+                <button i18n-tips="tips_remove_file_type">❌</button>
             </div>
         </div>
         <script src="../common.js"></script>
