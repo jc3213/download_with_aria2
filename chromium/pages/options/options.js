@@ -90,7 +90,7 @@ function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, todo
             todo === 'undo' ? added.remove() : fileTypeList.insertBefore(add.rule, added);
         } else if (modify) {
             let [key, list] = value[modify.index];
-            let [type, apps] = fileTypeList.children[modify.index].children;
+            let [type, apps] = modify.rule.children;
             type.textContent = key;
             apps.textContent = list.join(', ');
         } else {
