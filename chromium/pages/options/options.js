@@ -1,6 +1,5 @@
 let aria2Storage = {};
 let aria2Config = {};
-let aria2Associate = new Map();
 let aria2Version;
 let activeFileType;
 
@@ -290,7 +289,7 @@ function removeFileType(button) {
     let index = aria2Storage['folder_associate'].findIndex((i) => i[0] === typeName);
     new_value.splice(index, 1);
     rule.remove();
-    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'associate' });
+    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'associate', remove: { index } });
 }
 
 function editFileType(button) {
@@ -311,19 +310,21 @@ function saveFileType() {
     let extensions = extensionsInput.split(',').map(ext => ext.trim()).filter(Boolean);
     let old_value = changes['folder_associate'];
     let new_value = old_value.slice();
+    let index = activeFileType;;
     
     if (Number.isInteger(activeFileType)) {
         new_value[activeFileType] = [typeName, extensions];
         activeFileType = null;
+        let [type, apps] = fileTypeList.children[index].children;
+        type.textContent = typeName;
+        apps.textContent = extensionsInput;
     } else {
+        index = new_value.length;
         new_value.push([typeName, extensions]);
+        printFileType(fileTypeList, typeName, extensionsInput);
     }
-    
-    fileTypeList.innerHTML = '';
-    for (let [type, exts] of new_value) {
-        printFileType(fileTypeList, type, exts);
-    }
-    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'associate' });
+
+    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'associate', modify: { index } });
     fileTypeModal.classList.add('hidden');
     fileTypeList.scrollTop = fileTypeList.scrollHeight;
 }
@@ -333,33 +334,23 @@ assocPane.addEventListener('click', (event) => {
     fileTypes[menu]?.(event.target);
 });
 
-fileTypeExtensionsInput.addEventListener('keydown', (event) => {
+function enterFileType(event) {
     if (event.key === 'Enter') {
-        addFileType();
+        saveFileType();
     }
-});
+}
 
-fileTypeList.addEventListener('click', (event) => {
-    if (event.target.getAttribute('i18n-tips') === 'tips_match_remove') {
-        removeFileType(event);
-    }
-});
-
-window.addEventListener('click', (event) => {
-    if (event.target === fileTypeModal) {
-        cancelFileType();
-    }
-});
+fileTypeNameInput.addEventListener('keydown', enterFileType);
+fileTypeExtensionsInput.addEventListener('keydown', enterFileType);
 
 window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && fileTypeModal && fileTypeModal.style.display === 'block') {
+    if (event.key === 'Escape' && !fileTypeModal.classList.contains('hiddden')) {
         cancelFileType();
     }
 });
 
 function storageDispatch() {
     changes = { ...aria2Storage };
-    aria2Associate = new Map(changes['folder_associate']);
     tellVer.textContent = aria2Version;
     for (let entry of storageEntries) {
         let { name, type } = entry;
@@ -381,7 +372,7 @@ function storageDispatch() {
     }
 
     fileTypeList.innerHTML = '';
-    for (let [type, extensions] of aria2Associate) {
+    for (let [type, extensions] of changes['folder_associate']) {
         printFileType(fileTypeList, type, extensions);
     }
 }
