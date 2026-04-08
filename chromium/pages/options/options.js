@@ -85,7 +85,7 @@ function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, todo
     } else if (type === 'resort') {
         let order = todo === 'undo' ? sort.old_order : sort.new_order;
         sort.list.append(...order);
-    } else if (type === 'folder_associate' && fileTypeList) {
+    } else if (type === 'associate') {
         fileTypeList.innerHTML = '';
         for (let [typeName, extensions] of value) {
             printFileType(fileTypeList, typeName, extensions);
@@ -290,7 +290,7 @@ function removeFileType(button) {
     let index = aria2Storage['folder_associate'].findIndex((i) => i[0] === typeName);
     new_value.splice(index, 1);
     rule.remove();
-    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'folder_associate' });
+    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'associate' });
 }
 
 function editFileType(button) {
@@ -323,7 +323,7 @@ function saveFileType() {
     for (let [type, exts] of new_value) {
         printFileType(fileTypeList, type, exts);
     }
-    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'folder_associate' });
+    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'associate' });
     fileTypeModal.classList.add('hidden');
     fileTypeList.scrollTop = fileTypeList.scrollHeight;
 }
