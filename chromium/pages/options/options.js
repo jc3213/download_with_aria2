@@ -2,6 +2,7 @@ let aria2Storage = {};
 let aria2Config = {};
 let aria2Associate = new Map();
 let aria2Version;
+let activeFileType;
 
 let toggle = false;
 let changes = {};
@@ -86,7 +87,7 @@ function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, todo
         sort.list.append(...order);
     } else if (type === 'folder_associate' && fileTypeList) {
         fileTypeList.innerHTML = '';
-        for (let [typeName, extensions] of Object.entries(value.types)) {
+        for (let [typeName, extensions] of value) {
             printFileType(fileTypeList, typeName, extensions);
         }
     } else {
@@ -303,27 +304,28 @@ function editFileType(rule) {
 
 function saveFileType() {
     let typeName = fileTypeNameInput.value.trim();
-    let extensionsInput = fileTypeExtensionsInput.value.trim();
+    let extensionsInput = fileTypeExtensionsInput.value.trim().toLowerCase();
     if (!typeName || !extensionsInput) {
         return;
     }
-    let extensions = extensionsInput.split(',').map(ext => ext.trim().toLowerCase()).filter(ext => ext);
-    let old_value = changes['folder_associate'] || { types: {} };
-    let new_value = JSON.parse(JSON.stringify(old_value));
+    let extensions = extensionsInput.split(',').map(ext => ext.trim()).filter(Boolean);
+    let old_value = changes['folder_associate'];
+    let new_value = old_value.slice();
     
-    if (currentFileTypeOperation === 'edit' && currentEditType) {
-        delete new_value.types[currentEditType];
-        new_value.types[typeName] = extensions;
-    } else if (currentFileTypeOperation === 'add') {
-        new_value.types[typeName] = extensions;
+    if (Number.isInteger(activeFileType)) {
+        new_value[activeFileType] = [typeName, extensions];
+        activeFileType = null;
+    } else {
+        new_value.push([typeName, extensions]);
     }
     
     fileTypeList.innerHTML = '';
-    for (let [type, exts] of Object.entries(new_value.types)) {
+    for (let [type, exts] of new_value) {
         printFileType(fileTypeList, type, exts);
     }
     changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'folder_associate' });
     fileTypeModal.classList.add('hidden');
+    fileTypeList.scrollTop = fileTypeList.scrollHeight;
 }
 
 assocPane.addEventListener('click', (event) => {
