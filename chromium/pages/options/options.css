@@ -142,13 +142,13 @@ i {
 }
 
 .modal input {
-    width: 100%;
+    width: calc(100% - 15px);
     margin: 10px 0;
     padding: 5px;
 }
 
 .modal-menu {
-    margin-top: 20px;
+    margin: 10px 3px 0px 0px;
     text-align: right;
 }
 
