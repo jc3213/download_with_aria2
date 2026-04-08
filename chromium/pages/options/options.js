@@ -274,17 +274,21 @@ function printFileType(list, typeName, extensions) {
 
 function addFileType() {
     fileTypeModal.classList.remove('hidden');
+    fileTypeNameInput.value = fileTypeExtensionsInput.value = '';
 }
 
-function removeFileType(rule) {
-    let typeName = event.target.parentNode.title;
-    let old_value = changes['folder_associate'] || { types: {} };
-    let new_value = JSON.parse(JSON.stringify(old_value));
-    delete new_value.types[typeName];
-    fileTypeList.innerHTML = '';
-    for (let [type, exts] of Object.entries(new_value.types)) {
-        printFileType(fileTypeList, type, exts);
-    }
+function cancelFileType() {
+    fileTypeModal.classList.add('hidden');
+}
+
+function removeFileType(button) {
+    let rule = button.parentNode;
+    let type = rule.firstElementChild.textContent;
+    let old_value = changes['folder_associate'];
+    let new_value = old_value.slice();
+    let index = aria2Storage['folder_associate'].findIndex((i) => i[0] === type);
+    new_value.splice(index, 1);
+    rule.remove();
     changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'folder_associate' });
 }
 
@@ -319,12 +323,7 @@ function saveFileType() {
         printFileType(fileTypeList, type, exts);
     }
     changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'folder_associate' });
-    cancelFileType();
-}
-
-function cancelFileType() {
     fileTypeModal.classList.add('hidden');
-    fileTypeNameInput.value = fileTypeExtensionsInput.value = '';
 }
 
 assocPane.addEventListener('click', (event) => {
