@@ -96,7 +96,7 @@ function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, todo
         sort.list.append(...order);
     } else if (type === 'file_types' && fileTypeList) {
         fileTypeList.innerHTML = '';
-        for (let [typeName, extensions] of Object.entries(value.types)) {
+        for (let [typeName, extensions] of value) {
             printFileType(fileTypeList, typeName, extensions);
         }
     } else {
@@ -178,31 +178,55 @@ fileEntry.addEventListener('change', (event) => {
     reader.readAsText(file);
 });
 
-addFileTypeBtn.addEventListener('click', addFileType);
+const fileTypeEvents = {
+    'add': addFileType,
+    'save': saveFileType,
+    'cancel': cancelFileType,
+    'remove': removeFileType,
+    'edit': editFileType
+};
+
+// 绑定事件监听器
+addFileTypeBtn.addEventListener('click', fileTypeEvents.add);
 fileTypeExtensionsInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
-        addFileType();
+        fileTypeEvents.add();
     }
 });
 
 fileTypeList.addEventListener('click', (event) => {
-    if (event.target.getAttribute('i18n-tips') === 'tips_match_remove') {
-        removeFileType(event);
+    const target = event.target;
+    
+    if (target.getAttribute('i18n-tips') === 'tips_match_remove') {
+        event.stopPropagation();
+        fileTypeEvents.remove(event);
+    }
+    
+    if (target.getAttribute('i18n-tips') === 'tips_edit_file_type') {
+        event.stopPropagation();
+        const rule = target.closest('.rule');
+        if (rule) {
+            const typeName = rule.title;
+            const textContent = rule.firstElementChild.textContent;
+            const extensionsStr = textContent.replace(`${typeName}: `, '');
+            const extensions = extensionsStr.split(', ');
+            fileTypeEvents.edit(typeName, extensions);
+        }
     }
 });
 
-saveFileTypeBtn?.addEventListener('click', saveFileType);
-cancelFileTypeBtn?.addEventListener('click', cancelFileType);
+saveFileTypeBtn?.addEventListener('click', fileTypeEvents.save);
+cancelFileTypeBtn?.addEventListener('click', fileTypeEvents.cancel);
 
 window.addEventListener('click', (event) => {
     if (event.target === fileTypeModal) {
-        cancelFileType();
+        fileTypeEvents.cancel();
     }
 });
 
 window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && fileTypeModal && fileTypeModal.style.display === 'block') {
-        cancelFileType();
+        fileTypeEvents.cancel();
     }
 });
 
@@ -301,10 +325,6 @@ function printFileType(list, typeName, extensions) {
     editButton.textContent = '✏️';
     editButton.setAttribute('i18n-tips', 'tips_edit_file_type');
     editButton.style.marginRight = '5px';
-    editButton.addEventListener('click', (event) => {
-        event.stopPropagation();
-        editFileType(typeName, extensions);
-    });
     rule.insertBefore(editButton, rule.lastElementChild);
     list.appendChild(rule);
     return rule;
@@ -327,11 +347,11 @@ function removeFileType(event) {
         return;
     }
     let typeName = event.target.parentNode.title;
-    let old_value = changes['file_types'] || { types: {} };
+    let old_value = changes['file_types'] || [];
     let new_value = JSON.parse(JSON.stringify(old_value));
-    delete new_value.types[typeName];
+    new_value = new_value.filter(([type]) => type !== typeName);
     fileTypeList.innerHTML = '';
-    for (let [type, exts] of Object.entries(new_value.types)) {
+    for (let [type, exts] of new_value) {
         printFileType(fileTypeList, type, exts);
     }
     changeHistorySave({ id: 'file_types', new_value, old_value, type: 'file_types' });
@@ -359,18 +379,18 @@ function saveFileType() {
         return;
     }
     let extensions = extensionsInput.split(',').map(ext => ext.trim().toLowerCase()).filter(ext => ext);
-    let old_value = changes['file_types'] || { types: {} };
+    let old_value = changes['file_types'] || [];
     let new_value = JSON.parse(JSON.stringify(old_value));
     
     if (currentFileTypeOperation === 'edit' && currentEditType) {
-        delete new_value.types[currentEditType];
-        new_value.types[typeName] = extensions;
+        new_value = new_value.filter(([type]) => type !== currentEditType);
+        new_value.push([typeName, extensions]);
     } else if (currentFileTypeOperation === 'add') {
-        new_value.types[typeName] = extensions;
+        new_value.push([typeName, extensions]);
     }
     
     fileTypeList.innerHTML = '';
-    for (let [type, exts] of Object.entries(new_value.types)) {
+    for (let [type, exts] of new_value) {
         printFileType(fileTypeList, type, exts);
     }
     changeHistorySave({ id: 'file_types', new_value, old_value, type: 'file_types' });
@@ -414,8 +434,8 @@ function storageDispatch() {
 
     if (fileTypeList) {
         fileTypeList.innerHTML = '';
-        let fileTypes = changes['file_types'] || { types: {} };
-        for (let [type, extensions] of Object.entries(fileTypes.types)) {
+        let fileTypes = changes['file_types'] || [];
+        for (let [type, extensions] of fileTypes) {
             printFileType(fileTypeList, type, extensions);
         }
     }
