@@ -133,10 +133,9 @@ i {
     position: absolute;
     z-index: 9;
     left: 10%;
-    top: -300%;
+    top: -100%;
     overflow: auto;
-    margin: 15% auto;
-    padding: 30px;
+    padding: 15px;
     width: 80%;
     border-width: 1px;
     border-style: solid;

@@ -284,22 +284,22 @@ function cancelFileType() {
 
 function removeFileType(button) {
     let rule = button.parentNode;
-    let type = rule.firstElementChild.textContent;
+    let typeName = rule.firstElementChild.textContent;
     let old_value = changes['folder_associate'];
     let new_value = old_value.slice();
-    let index = aria2Storage['folder_associate'].findIndex((i) => i[0] === type);
+    let index = aria2Storage['folder_associate'].findIndex((i) => i[0] === typeName);
     new_value.splice(index, 1);
     rule.remove();
     changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'folder_associate' });
 }
 
-function editFileType(rule) {
-    currentFileTypeOperation = 'edit';
-    currentEditType = typeName;
-    modalTitle.textContent = 'Edit File Type';
+function editFileType(button) {
+    let rule = button.parentNode;
+    let [{ textContent: typeName }, { textContent: extensions }] = rule.children;
+    activeFileType = changes['folder_associate'].findIndex((i) => i[0] === typeName);
     fileTypeNameInput.value = typeName;
-    fileTypeExtensionsInput.value = extensions.join(', ');
-    fileTypeModal.style.display = 'block';
+    fileTypeExtensionsInput.value = extensions;
+    fileTypeModal.classList.remove('hidden');
 }
 
 function saveFileType() {
