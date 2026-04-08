@@ -37,6 +37,7 @@ const systemStorage = {
         ["ebook", ["epub", "mobi", "azw", "azw3"]],
         ["font", ["ttf", "otf", "woff", "woff2"]]
     ],
+    'file_types_default': 'other',
     'proxy_server': '',
     'proxy_hosts': [],
     'capture_enabled': false,
@@ -161,7 +162,42 @@ function downloadHeaders(tabId, url, referer) {
     return result;
 }
 
-function downloadDirectory(filename, hostname) {
+function getFilenameFromUrl(url) {
+    if (!url) return 'unknown';
+    try {
+        let path = url.split('#')[0].split('?')[0];
+        const segments = path.split('/').filter(seg => seg.length > 0);
+        if (segments.length === 0) return 'unknown';
+        let filename = segments[segments.length - 1];
+        try {
+            filename = decodeURIComponent(filename);
+        } catch (e) {
+        }
+        filename = filename.trim().replace(/[\\/:*?"<>|]/g, '_');
+        if (!filename || /^_+$/.test(filename)) return 'unknown';
+        return filename;
+    } catch (e) {
+        return 'unknown';
+    }
+}
+
+const getMainDomain = (hostname) => {
+    try {
+        if (!hostname) return 'unknown';
+        let host = hostname.split(':')[0].replace(/\.$/, '').toLowerCase();
+        if (!host) return 'unknown';
+        const parts = hostname.split('.');
+        if (parts.length <= 2) return host;
+        return parts.length >= 2 ? parts.slice(-2).join('.') : hostname;
+    } catch (error) {
+        return 'unknown';
+    }
+};
+
+function downloadDirectory(filename, hostname, url) {
+    if (!filename && url) {
+        filename = getFilenameFromUrl(url);
+    }
     let dir = null;
     let out = filename;
     let user = aria2Storage['folder_defined'];
@@ -175,31 +211,36 @@ function downloadDirectory(filename, hostname) {
     if (aria2Storage['folder_enabled'] &&
         !(systemFirefox && aria2Storage['folder_firefox']) &&
         user) {
-        dir = getFullPath(user, out, host);
+        dir = getFullPath(user, out, hostname);
     }
     return { dir, out };
 }
 
 function getFullPath(path, filename, hostname) {
+    let mainDomain = getMainDomain(hostname);
     let now = new Date();
     let date = now.getFullYear()
         + `${now.getMonth() + 1}`.padStart(2, '0')
         + `${now.getDate()}`.padStart(2, '0');
 
-    let type = '';
+    let type = aria2Storage.file_types_default || 'other';
     if (filename) {
-        let app = filename.substring(filename.lastIndexOf('.') + 1);
-        type = aria2Associate[app] ?? '';
+        const dotIndex = filename.lastIndexOf('.');
+        if (dotIndex > 0) {
+            let ext = filename.substring(dotIndex + 1).toLowerCase();
+            type = aria2Associate[ext] ?? type;
+        }
     }
     
     return path.replace('{date}', date)
         .replace('{type}', type)
+        .replace('{mainDomain}', mainDomain)
         .replace('{host}', hostname);
 }
 
 function downloadHandler(url, referer, filename, hostname, tabId) {
     hostname ??= getHostname(referer);
-    let options = downloadDirectory(filename, hostname);
+    let options = downloadDirectory(filename, hostname, url);
     if (matchHostname(proxyHosts, hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
