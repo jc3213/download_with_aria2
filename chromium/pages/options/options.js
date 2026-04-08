@@ -67,7 +67,7 @@ function menuEventSave() {
 
 function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, todo) {
     let change = loadList.pop();
-    let { id, type, [key]: value, entry, add, remove, sort } = change;
+    let { id, type, [key]: value, entry, add, remove, sort, modify } = change;
     if (type === 'checkbox') {
         if (entry.hasAttribute('data-css')) {
             extension.toggle(id);
@@ -85,9 +85,17 @@ function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, todo
         let order = todo === 'undo' ? sort.old_order : sort.new_order;
         sort.list.append(...order);
     } else if (type === 'associate') {
-        fileTypeList.innerHTML = '';
-        for (let [typeName, extensions] of value) {
-            printFileType(fileTypeList, typeName, extensions);
+        if (add) {
+            let added = fileTypeList.children[add.index];
+            todo === 'undo' ? added.remove() : fileTypeList.insertBefore(add.rule, added);
+        } else if (modify) {
+            let [key, list] = value[modify.index];
+            let [type, apps] = fileTypeList.children[modify.index].children;
+            type.textContent = key;
+            apps.textContent = list.join(', ');
+        } else {
+            let removed = fileTypeList.children[remove.index];
+            todo === 'undo' ? fileTypeList.insertBefore(remove.rule, removed) : removed.remove();
         }
     } else {
         entry.value = value;
@@ -275,6 +283,7 @@ function printFileType(list, typeName, extensions) {
 function addFileType() {
     fileTypeModal.classList.remove('hidden');
     fileTypeNameInput.value = fileTypeExtensionsInput.value = '';
+    activeFileType = null;
 }
 
 function cancelFileType() {
@@ -289,7 +298,7 @@ function removeFileType(button) {
     let index = aria2Storage['folder_associate'].findIndex((i) => i[0] === typeName);
     new_value.splice(index, 1);
     rule.remove();
-    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'associate', remove: { index } });
+    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'associate', remove: { index, rule } });
 }
 
 function editFileType(button) {
@@ -310,23 +319,29 @@ function saveFileType() {
     let extensions = extensionsInput.split(',').map(ext => ext.trim()).filter(Boolean);
     let old_value = changes['folder_associate'];
     let new_value = old_value.slice();
-    let index = activeFileType;;
+    let changeLog = { id: 'folder_associate', old_value, new_value, type: 'associate' };
+    let rule;
     
     if (Number.isInteger(activeFileType)) {
+        let modify = {};
+        modify.rule = rule = fileTypeList.children[activeFileType];
+        modify.index = activeFileType;
+        changeLog.modify = modify;
         new_value[activeFileType] = [typeName, extensions];
-        activeFileType = null;
-        let [type, apps] = fileTypeList.children[index].children;
+        let [type, apps] = rule.children;
         type.textContent = typeName;
-        apps.textContent = extensionsInput;
+        apps.textContent = extensions.join(', ');
     } else {
-        index = new_value.length;
+        let add = {};
+        add.index = new_value.length;
+        add.rule = rule = printFileType(fileTypeList, typeName, extensions);
+        changeLog.add = add;
         new_value.push([typeName, extensions]);
-        printFileType(fileTypeList, typeName, extensionsInput);
     }
 
-    changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'associate', modify: { index } });
+    changeHistorySave(changeLog);
     fileTypeModal.classList.add('hidden');
-    fileTypeList.scrollTop = fileTypeList.scrollHeight;
+    fileTypeList.scrollTop = rule.scrollHeight;
 }
 
 assocPane.addEventListener('click', (event) => {
