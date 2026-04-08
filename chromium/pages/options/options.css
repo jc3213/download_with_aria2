@@ -161,3 +161,12 @@ i {
 .list-l {
     grid-template-columns: 100%;
 }
+
+.assoc {
+    display: grid;
+    grid-template-columns: 120px 1fr 25px 25px;
+}
+
+.assoc button {
+    padding: 0px;
+}

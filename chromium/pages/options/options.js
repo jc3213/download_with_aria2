@@ -17,7 +17,7 @@ let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let [assocPane, ...matchPanes] = storagePane.querySelectorAll('div.flexmenu');
 let [, addFileTypeBtn, fileTypeList, fileTypeModal] = assocPane.children;
 let [, fileTypeNameInput, fileTypeExtensionsInput] = fileTypeModal.children;
-let matchLET = template.firstElementChild;
+let [matchLET, assocLET] = template.children;
 
 function changeHistorySave(change) {
     let { id, new_value } = change;
@@ -170,38 +170,11 @@ fileEntry.addEventListener('change', (event) => {
 
 const fileTypes = {
     'tips_add_file_type': addFileType,
-    'tips_options_save_file_type': saveFileType,
-    'tips_options_save_file_cancel': cancelFileType
+    'tips_save_file_type': saveFileType,
+    'tips_cancel_file_type': cancelFileType,
+    'tips_edit_file_type': editFileType,
+    'tips_remove_file_type': removeFileType
 };
-
-assocPane.addEventListener('click', (event) => {
-    let menu = event.target.getAttribute('i18n-tips');
-    fileTypes[menu]?.(event.target);
-});
-
-fileTypeExtensionsInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        addFileType();
-    }
-});
-
-fileTypeList.addEventListener('click', (event) => {
-    if (event.target.getAttribute('i18n-tips') === 'tips_match_remove') {
-        removeFileType(event);
-    }
-});
-
-window.addEventListener('click', (event) => {
-    if (event.target === fileTypeModal) {
-        cancelFileType();
-    }
-});
-
-window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && fileTypeModal && fileTypeModal.style.display === 'block') {
-        cancelFileType();
-    }
-});
 
 function optionsDispatch(options) {
     for (let entry of jsonrpcEntries) {
@@ -291,18 +264,10 @@ function printMatchPattern(list, id, value) {
 }
 
 function printFileType(list, typeName, extensions) {
-    let rule = matchLET.cloneNode(true);
-    rule.title = typeName;
-    rule.firstElementChild.textContent = `${typeName}: ${extensions.join(', ')}`;
-    let editButton = document.createElement('button');
-    editButton.textContent = '✏️';
-    editButton.setAttribute('i18n-tips', 'tips_edit_file_type');
-    editButton.style.marginRight = '5px';
-    editButton.addEventListener('click', (event) => {
-        event.stopPropagation();
-        editFileType(typeName, extensions);
-    });
-    rule.insertBefore(editButton, rule.lastElementChild);
+    let rule = assocLET.cloneNode(true);
+    let [type, apps] = rule.children;
+    type.textContent = typeName;
+    apps.textContent = extensions.join(', ');
     list.appendChild(rule);
     return rule;
 }
@@ -311,10 +276,7 @@ function addFileType() {
     fileTypeModal.classList.remove('hidden');
 }
 
-function removeFileType(event) {
-    if (!fileTypeList) {
-        return;
-    }
+function removeFileType(rule) {
     let typeName = event.target.parentNode.title;
     let old_value = changes['folder_associate'] || { types: {} };
     let new_value = JSON.parse(JSON.stringify(old_value));
@@ -326,8 +288,7 @@ function removeFileType(event) {
     changeHistorySave({ id: 'folder_associate', new_value, old_value, type: 'folder_associate' });
 }
 
-function editFileType(typeName, extensions) {
-
+function editFileType(rule) {
     currentFileTypeOperation = 'edit';
     currentEditType = typeName;
     modalTitle.textContent = 'Edit File Type';
@@ -337,9 +298,6 @@ function editFileType(typeName, extensions) {
 }
 
 function saveFileType() {
-    if (!fileTypeList) {
-        return;
-    }
     let typeName = fileTypeNameInput.value.trim();
     let extensionsInput = fileTypeExtensionsInput.value.trim();
     if (!typeName || !extensionsInput) {
@@ -368,6 +326,35 @@ function cancelFileType() {
     fileTypeModal.classList.add('hidden');
     fileTypeNameInput.value = fileTypeExtensionsInput.value = '';
 }
+
+assocPane.addEventListener('click', (event) => {
+    let menu = event.target.getAttribute('i18n-tips');
+    fileTypes[menu]?.(event.target);
+});
+
+fileTypeExtensionsInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        addFileType();
+    }
+});
+
+fileTypeList.addEventListener('click', (event) => {
+    if (event.target.getAttribute('i18n-tips') === 'tips_match_remove') {
+        removeFileType(event);
+    }
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === fileTypeModal) {
+        cancelFileType();
+    }
+});
+
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && fileTypeModal && fileTypeModal.style.display === 'block') {
+        cancelFileType();
+    }
+});
 
 function storageDispatch() {
     changes = { ...aria2Storage };
