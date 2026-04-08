@@ -55,7 +55,6 @@ input {
     border-style: solid;
     border-width: 1px;
     padding: 1px 5px;
-    resize: none;
     width: calc(100% - 12px);
 }
 
