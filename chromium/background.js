@@ -59,6 +59,7 @@ let aria2Inspect = new Map();
 let captureHosts;
 let proxyHosts;
 let headersHosts;
+let fileTypeMap;
 
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
