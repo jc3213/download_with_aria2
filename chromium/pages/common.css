@@ -69,10 +69,6 @@ input:focus + span {
     display: block;
 }
 
-input[type="file"], a {
-    display: none;
-}
-
 input[type="number"] + span {
     right: 24px;
 }
