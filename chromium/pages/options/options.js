@@ -2,7 +2,7 @@ let aria2Storage = {};
 let aria2Config = {};
 let aria2Version;
 
-let toggle = false;
+let remote = false;
 let changes = {};
 let undoes = [];
 let redoes = [];
@@ -13,9 +13,10 @@ let [saveBtn, undoBtn, redoBtn, tellVer, importBtn, exportBtn, fileEntry, export
 let tellUA = document.getElementById('useragent');
 let storageEntries = storagePane.querySelectorAll('[name]');
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
+let controlEntries = new Set(storagePane.querySelectorAll('input.control'));
 let matchLET = template.firstElementChild;
 
-function changeHistorySave(change) {
+function saveChanges(change) {
     let { id, new_value } = change;
     changes[id] = new_value;
     undoes.push(change);
@@ -34,17 +35,17 @@ storagePane.addEventListener('change', (event) => {
         value = value | 0;
     } else if (type === 'checkbox') {
         value = checked;
-        if (entry.hasAttribute('data-css')) {
+        if (controlEntries.has(entry)) {
             extension.toggle(id);
         }
     }
-    changeHistorySave({ id, new_value: value, old_value: changes[id], type, entry });
+    saveChanges({ id, new_value: value, old_value: changes[id], type, entry });
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
     let entry = event.target;
     let { name: id, value: new_value } = event.target;
-    changeHistorySave({ id, new_value, old_value: changes[id], type: 'text', entry });
+    saveChanges({ id, new_value, old_value: changes[id], type: 'text', entry });
 });
 
 function storageUpdate() {
@@ -52,20 +53,20 @@ function storageUpdate() {
     chrome.runtime.sendMessage({ action: 'options_storage', params: changes });
 }
 
-function menuEventSave() {
+function menuSave() {
     saveBtn.disabled = true;
-    if (toggle) {
+    if (remote) {
         chrome.runtime.sendMessage({ action: 'options_jsonrpc', params: changes });
     } else {
         storageUpdate();
     }
 }
 
-function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, todo) {
+function loadChanges(loadList, saveList, loadButton, saveButton, key, todo) {
     let change = loadList.pop();
     let { id, type, [key]: value, entry, add, remove, sort } = change;
     if (type === 'checkbox') {
-        if (entry.hasAttribute('data-css')) {
+        if (controlEntries.has(entry)) {
             extension.toggle(id);
         }
         entry.checked = value;
@@ -89,11 +90,11 @@ function changeHistoryLoad(loadList, saveList, loadButton, saveButton, key, todo
     saveButton.disabled = saveBtn.disabled = false;
 }
 
-function menuEventExport() {
+function menuExport() {
     let name;
     let body;
     let time = new Date().toLocaleString('ja').replace(/[/ :]/g, '_');
-    if (toggle) {
+    if (remote) {
         name = 'aria2_jsonrpc-' + time + '.conf';
         body = [];
         for (let key of Object.keys(aria2Config)) {
@@ -109,22 +110,22 @@ function menuEventExport() {
     exportFile.click();
 }
 
-function menuEventImport() {
-    fileEntry.accept = toggle ? '.conf' : '.json';
+function menuImport() {
+    fileEntry.accept = remote ? '.conf' : '.json';
     fileEntry.click();
 }
 
-const menuEventMap = {
-    'options_save': menuEventSave,
-    'options_undo': () => changeHistoryLoad(undoes, redoes, undoBtn, redoBtn, 'old_value', 'undo'),
-    'options_redo': () => changeHistoryLoad(redoes, undoes, redoBtn, undoBtn, 'new_value', 'redo'),
-    'options_export': menuEventExport,
-    'options_import': menuEventImport
+const menuEvents = {
+    'options_save': menuSave,
+    'options_undo': () => loadChanges(undoes, redoes, undoBtn, redoBtn, 'old_value', 'undo'),
+    'options_redo': () => loadChanges(redoes, undoes, redoBtn, undoBtn, 'new_value', 'redo'),
+    'options_export': menuExport,
+    'options_import': menuImport
 };
 
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
-    menuEventMap[menu]?.();
+    menuEvents[menu]?.();
 });
 
 function importJson(file) {
@@ -182,7 +183,7 @@ document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
         optionsDispatch(options);
         changeHistoryFlush();
         extension.add('jsonrpc');
-        toggle = true;
+        remote = true;
     });
 });
 
@@ -190,7 +191,7 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
     storageDispatch();
     changeHistoryFlush();
     extension.remove('jsonrpc');
-    toggle = false;
+    remote = false;
 });
 
 function matchEventAdd(id) {
@@ -209,7 +210,7 @@ function matchEventResort(id) {
     let old_order = [...list.children];
     let new_order = old_order.slice().sort((a, b) => a.textContent.localeCompare(b.textContent));
     list.append(...new_order);
-    changeHistorySave({ id, new_value, old_value, type: 'resort', sort: { list, new_order, old_order } });
+    saveChanges({ id, new_value, old_value, type: 'resort', sort: { list, new_order, old_order } });
 }
 
 function matchEventRemove(id, event) {
@@ -253,7 +254,7 @@ function storageDispatch() {
         let { name, type } = entry;
         let value = changes[name];
         if (type === 'checkbox') {
-            if (entry.hasAttribute('data-css')) {
+            if (controlEntries.has(entry)) {
                 value ? extension.add(name) : extension.remove(name);
             }
             entry.checked = value;
@@ -283,7 +284,7 @@ function matchAddToList(add) {
     let rule = printMatchPattern(list, id, host);
     new_value.push(host);
     list.scrollTop = list.scrollHeight;
-    changeHistorySave({ id, new_value, old_value, type: 'rules', add: { list, index: old_value.length, rule } });
+    saveChanges({ id, new_value, old_value, type: 'rules', add: { list, index: old_value.length, rule } });
 }
 
 function matchRemoveFromList(remove) {
@@ -298,7 +299,7 @@ function matchRemoveFromList(remove) {
     let rule = list.querySelector('[title="' + host + '"]');
     new_value.splice(index, 1);
     rule.remove();
-    changeHistorySave({ id, new_value, old_value, type: 'rules', remove: { list, index, rule } });
+    saveChanges({ id, new_value, old_value, type: 'rules', remove: { list, index, rule } });
 }
 
 const messageDispatch = {
