@@ -26,7 +26,7 @@ input[type="checkbox"] + label {
     font-weight: bold;
 }
 
-input[type="file"], a {
+input[type="file"] {
     display: none;
 }
 

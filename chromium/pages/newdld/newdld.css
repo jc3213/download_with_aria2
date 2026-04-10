@@ -8,7 +8,7 @@ textarea {
     width: calc(100% - 8px);
 }
 
-input[type="file"], a {
+input[type="file"] {
     display: none;
 }
 
