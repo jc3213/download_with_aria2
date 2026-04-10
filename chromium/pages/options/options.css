@@ -26,10 +26,6 @@ input[type="checkbox"] + label {
     font-weight: bold;
 }
 
-input[type="file"] {
-    display: none;
-}
-
 input.fl-1 {
     height: 21px;
 }
