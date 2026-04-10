@@ -9,9 +9,8 @@ let redoes = [];
 
 let extension = document.body.classList;
 let [menuPane, storagePane, jsonrpcPane, template] = document.body.children;
-let [saveBtn, undoBtn, redoBtn, tellVer, importBtn, exportBtn, fileEntry] = menuPane.children;
+let [saveBtn, undoBtn, redoBtn, tellVer, importBtn, exportBtn, fileEntry, exportFile] = menuPane.children;
 let tellUA = document.getElementById('useragent');
-let exportFile = document.createElement('a');
 let storageEntries = storagePane.querySelectorAll('[name]');
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let matchLET = template.firstElementChild;
