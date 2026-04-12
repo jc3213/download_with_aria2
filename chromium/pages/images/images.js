@@ -32,7 +32,7 @@ function menuEventSubmit() {
     chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
 
-const menuEventMap = {
+const menuEvents = {
     'select_all': () => {
         for (let img of gallery) {
             img.classList.add('checked');
@@ -57,7 +57,7 @@ const menuEventMap = {
 
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
-    menuEventMap[menu]?.();
+    menuEvents[menu]?.();
 });
 
 jsonrpcPane.addEventListener('change', (event) => {

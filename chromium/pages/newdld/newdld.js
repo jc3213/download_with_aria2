@@ -24,14 +24,14 @@ function menuSubmit() {
     chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
 
-const menuEventMap = {
+const menuEvents = {
     'task_addfiles': () => filesEntry.click(),
     'common_submit': menuSubmit
 };
 
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
-    menuEventMap[menu]?.(event);
+    menuEvents[menu]?.(event);
 });
 
 document.addEventListener('dragover', (event) => {
