@@ -143,11 +143,6 @@ h4 {
     flex: 1;
 }
 
-.flexmenu > h4 + input {
-    margin-left: auto;
-    width: 50%;
-}
-
 .flexmenu > button {
     padding: 1px;
     width: 25px;
