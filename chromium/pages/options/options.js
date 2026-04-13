@@ -199,7 +199,7 @@ function matchAdd(id) {
     let host = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9]+)(?=\/|$)/)?.[1];
     entry.value = '';
     if (host) {
-        matchAddToList({ id, host });
+        addToList({ id, host });
     }
 }
 
@@ -215,7 +215,7 @@ function matchResort(id) {
 
 function matchRemove(id, event) {
     let host = event.target.parentNode.title;
-    matchRemoveFromList({ id, host });
+    removeFromList({ id, host });
 }
 
 const matchLists = new Map();
@@ -270,7 +270,7 @@ function storageDispatch() {
     }
 }
 
-function matchAddToList(add) {
+function addToList(add) {
     if (toggle) {
         return;
     }
@@ -287,7 +287,7 @@ function matchAddToList(add) {
     saveChanges({ id, new_value, old_value, type: 'rules', add: { list, index: old_value.length, rule } });
 }
 
-function matchRemoveFromList(remove) {
+function removeFromList(remove) {
     if (toggle) {
         return;
     }
@@ -303,8 +303,8 @@ function matchRemoveFromList(remove) {
 }
 
 const messageDispatch = {
-    'match_add': matchAddToList,
-    'match_remove': matchRemoveFromList
+    'match_add': addToList,
+    'match_remove': removeFromList
 };
 
 chrome.runtime.onMessage.addListener(({ options, params }) => {
