@@ -26,15 +26,15 @@
     box-shadow: var(--shadows);
 }
 
+body {
+    margin: 8px;
+}
+
 body, div {
     background-color: var(--color-body);
     color: var(--color-text);
     user-select: none;
     position: relative;
-}
-
-body {
-    margin: 8px;
 }
 
 body, button, input, textarea, select {
