@@ -92,10 +92,14 @@ i {
     width: 50%;
 }
 
-.list {
-    background-color: var(--color-item);
+.list,
+.rule {
     border-style: solid;
     border-width: 1px;
+}
+
+.list {
+    background-color: var(--color-item);
     display: grid;
     flex-basis: 100%;
     grid-auto-rows: 25px;
@@ -107,8 +111,6 @@ i {
 }
 
 .rule {
-    border-style: solid;
-    border-width: 1px;
     display: flex;
     gap: 1px;
 }
