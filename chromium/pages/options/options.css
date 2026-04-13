@@ -131,9 +131,9 @@ i {
 }
 
 .default::before {
-    content: "__MSG_options_default__: ";
+    content: "__MSG_options_default__ = ";
 }
 
 .disabled::before {
-    content: "__MSG_options_disabled__: ";
+    content: "__MSG_options_disabled__ = ";
 }
