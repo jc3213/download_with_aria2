@@ -1,8 +1,8 @@
 i18nEntry.value = chrome.i18n.getMessage('extension_locale');
 i18nEntry.disabled = true;
 
-mainMenus['popup_newdld'] = () => chrome.runtime.sendMessage({ action: 'newdld_window' });
-mainMenus['popup_options'] = chrome.runtime.openOptionsPage;
+menuEvents['popup_newdld'] = () => chrome.runtime.sendMessage({ action: 'newdld_window' });
+menuEvents['popup_options'] = chrome.runtime.openOptionsPage;
 
 chrome.runtime.onMessage.addListener(({ action, params }) => {
     if (action !== 'options_storage') {

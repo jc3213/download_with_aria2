@@ -40,7 +40,7 @@ function taskFilters(array, callback) {
     });
 }
 
-async function mainMenuPurge() {
+async function menuPurge() {
     await aria2RPC.call({ method: 'aria2.purgeDownloadResult' });
     let { stopped } = aria2Queue;
     for (let gid of stopped) {
@@ -51,13 +51,13 @@ async function mainMenuPurge() {
     aria2Stats['stopped'].textContent = '0';
 }
 
-const mainMenus = {
-    'popup_purge': mainMenuPurge
+const menuEvents = {
+    'popup_purge': menuPurge
 };
 
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
-    mainMenus[menu]?.();
+    menuEvents[menu]?.();
 });
 
 const aria2RPC = new Aria2();
@@ -165,7 +165,7 @@ function updateTasks({ gid, status, files, bittorrent, completedLength, totalLen
     return task;
 }
 
-async function taskRemoveHandler(task, gid, method, group) {
+async function removeHandler(task, gid, method, group) {
     await aria2RPC.call({ method, params: [gid] });
     removeFromQueue(gid, group);
     delete aria2Tasks[gid];
@@ -174,11 +174,11 @@ async function taskRemoveHandler(task, gid, method, group) {
 
 const taskRemove = {
     'active': (task, gid) => aria2RPC.call({ method: 'aria2.forceRemove', params: [gid] }),
-    'waiting': (task, gid) => taskRemoveHandler(task, gid, 'aria2.forceRemove', 'waiting'),
-    'paused': (task, gid) => taskRemoveHandler(task, gid, 'aria2.forceRemove', 'waiting'),
-    'complete': (task, gid) => taskRemoveHandler(task, gid, 'aria2.removeDownloadResult', 'stopped'),
-    'removed': (task, gid) => taskRemoveHandler(task, gid, 'aria2.removeDownloadResult', 'stopped'),
-    'error': (task, gid) => taskRemoveHandler(task, gid, 'aria2.removeDownloadResult', 'stopped'),
+    'waiting': (task, gid) => removeHandler(task, gid, 'aria2.forceRemove', 'waiting'),
+    'paused': (task, gid) => removeHandler(task, gid, 'aria2.forceRemove', 'waiting'),
+    'complete': (task, gid) => removeHandler(task, gid, 'aria2.removeDownloadResult', 'stopped'),
+    'removed': (task, gid) => removeHandler(task, gid, 'aria2.removeDownloadResult', 'stopped'),
+    'error': (task, gid) => removeHandler(task, gid, 'aria2.removeDownloadResult', 'stopped'),
 };
 
 const taskPause = {
@@ -187,7 +187,7 @@ const taskPause = {
     'paused': (task, gid) => aria2RPC.call({ 'method': 'aria2.unpause', 'params': [gid] })
 };
 
-async function taskDetailHandler(gid) {
+async function getDetails(gid) {
     let { result: [[files], [options]] } = await aria2RPC.call([{ method: 'aria2.getFiles', params: [gid] }, { method: 'aria2.getOption', params: [gid] }]);
     options['min-split-size'] = getFileSize(options['min-split-size']);
     options['max-download-limit'] = getFileSize(options['max-download-limit']);
@@ -202,7 +202,7 @@ async function taskDetails(task, gid) {
         details.classList.remove('checked');
         classList.remove('expand');
     } else {
-        let { files, options } = await taskDetailHandler(gid);
+        let { files, options } = await getDetails(gid);
         let config = {};
         for (let { index, selected } of files) {
             checks.get(index).checked = selected === 'true';
@@ -232,7 +232,7 @@ async function taskApply(task, gid) {
 }
 
 async function taskRetry(task, gid) {
-    let { files, options } = await taskDetailHandler(gid);
+    let { files, options } = await getDetails(gid);
     let [{ path, uris }] = files;
     let url = [];
     for (let { uri } of uris) {
@@ -268,7 +268,7 @@ async function taskUriAdd(task, gid) {
 }
 
 async function taskUriRemove(task, gid, event) {
-    let { files } = await taskDetailHandler(gid);
+    let { files } = await getDetails(gid);
     let [{ uris }] = files;
     let url = event.target.previousElementSibling.textContent;
     let removed = [];
@@ -285,7 +285,7 @@ async function taskUriRemove(task, gid, event) {
     }
 }
 
-const taskMenus = {
+const taskEvents = {
     'tips_task_remove': (task, gid) => taskRemove[task.status]?.(task, gid),
     'tips_task_pause': (task, gid) => taskPause[task.status]?.(task, gid),
     'tips_task_detail': taskDetails,
@@ -329,7 +329,7 @@ function createTasks(gid, status, bittorrent, files) {
     task.classList.add(status, bittorrent ? 'p2p' : 'http');
     task.addEventListener('click', (event) => {
         let menu = event.target.getAttribute('i18n-tips');
-        taskMenus[menu]?.(task, gid, event);
+        taskEvents[menu]?.(task, gid, event);
     });
     task.addEventListener('keydown', (event) => {
         if (event.ctrlKey && event.code === 'KeyS') {

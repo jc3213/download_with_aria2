@@ -194,7 +194,7 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
     remote = false;
 });
 
-function matchEventAdd(id) {
+function matchAdd(id) {
     let { entry } = matchLists.get(id);
     let host = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9]+)(?=\/|$)/)?.[1];
     entry.value = '';
@@ -203,7 +203,7 @@ function matchEventAdd(id) {
     }
 }
 
-function matchEventResort(id) {
+function matchResort(id) {
     let { list } = matchLists.get(id);
     let old_value = changes[id];
     let new_value = old_value.slice().sort();
@@ -213,16 +213,16 @@ function matchEventResort(id) {
     saveChanges({ id, new_value, old_value, type: 'resort', sort: { list, new_order, old_order } });
 }
 
-function matchEventRemove(id, event) {
+function matchRemove(id, event) {
     let host = event.target.parentNode.title;
     matchRemoveFromList({ id, host });
 }
 
 const matchLists = new Map();
-const matchEvents = {
-    'tips_match_add': matchEventAdd,
-    'tips_match_resort': matchEventResort,
-    'tips_match_remove': matchEventRemove,
+const matchs = {
+    'tips_match_add': matchAdd,
+    'tips_match_resort': matchResort,
+    'tips_match_remove': matchRemove,
 };
 
 for (let match of storagePane.querySelectorAll('div.flexmenu')) {
@@ -231,11 +231,11 @@ for (let match of storagePane.querySelectorAll('div.flexmenu')) {
     matchLists.set(id, { list, entry });
     match.addEventListener('click', (event) => {
         let menu = event.target.getAttribute('i18n-tips');
-        matchEvents[menu]?.(id, event);
+        matchs[menu]?.(id, event);
     });
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            matchEventAdd(id);
+            matchAdd(id);
         }
     });
 }
