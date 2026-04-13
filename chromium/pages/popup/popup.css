@@ -178,7 +178,7 @@ body.error > #queue > .error {
 }
 
 .session {
-    border-style: outset;
+    border-style: solid;
     border-width: 1px;
     display: grid;
     padding: 3px;

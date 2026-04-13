@@ -16,7 +16,7 @@ body.capture_webrequest .x-capture-webrequest {
 }
 
 input[type="checkbox"] {
-    accent-color: #006cbe;
+    accent-color: #1F6FEB;
     transform: scale(1.5) translateY(1px);
     width: auto;
 }

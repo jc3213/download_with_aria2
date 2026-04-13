@@ -42,12 +42,18 @@ if (location.search === '?toolbar') {
     queuePane.addEventListener('click', (event) => {
         filterPane.style.display = '';
     });
+    let divider = document.createElement('hr');
     let toolbar = document.createElement('style');
-    document.head.appendChild(toolbar);
+    document.body.append(divider, toolbar);
     toolbar.textContent = `
 body {
     margin: 4px;
     width: 680px;
+}
+
+hr {
+    grid-area: 2 / 1 / 3 / 4;
+    margin: 0px 0px 1px;
 }
 
 #menu::before,
@@ -84,12 +90,8 @@ body {
 }
 
 #queue {
-    border-radius: 0px;
-    border-style: solid;
-    border-width: 2px 0px 0px;
-    grid-area: 2 / 1 / 3 / 4;
+    grid-area: 3 / 1 / 4 / 4;
     height: 540px;
-    padding-top: 4px;
 }
 `;
 }

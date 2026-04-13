@@ -31,8 +31,10 @@ body, button, input, textarea, select {
     font-size: 16px;
 }
 
-button, input, textarea, select, option {
+button, input, textarea, select {
     background-color: var(--color-item);
+    border-style: solid;
+    border-width: 1px;
     color: var(--color-text);
 }
 
@@ -52,8 +54,6 @@ span, label {
 }
 
 input {
-    border-style: solid;
-    border-width: 1px;
     padding: 1px 5px;
     width: calc(100% - 12px);
 }
@@ -78,8 +78,6 @@ option:checked {
 }
 
 button {
-    border-style: solid;
-    border-width: 1px;
     padding: 3px 6px;
     white-space: nowrap;
 }

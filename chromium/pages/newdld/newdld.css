@@ -1,6 +1,4 @@
 textarea {
-    border-style: solid;
-    border-width: 1px;
     margin-top: 3px;
     overflow: hidden auto;
     padding: 3px;
@@ -21,7 +19,7 @@ textarea {
     border-style: solid;
     border-width: 2px;
     left: 0px;
-    max-height: 162px;
+    max-height: 151px;
     overflow: hidden auto;
     position: absolute;
     top: 100%;
@@ -30,9 +28,9 @@ textarea {
 }
 
 #referer > * {
-    margin: 1px 0px;
+    margin: 1px;
     overflow: hidden;
-    padding: 5px;
+    padding: 4px;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
