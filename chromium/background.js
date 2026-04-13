@@ -179,14 +179,14 @@ function downloadHandler(url, referer, filename, hostname, tabId) {
     aria2RPC.call({ method: 'aria2.addUri', params: [[url], options] });
 }
 
-const ctxMenuMap = {
+const ctxEvents = {
     'ctxmenu_thisurl': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, null, null, id),
     'ctxmenu_thisimage': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, null, null, id),
     'ctxmenu_allimages': ({ id }) => openPopupWindow(addonImages + '?' + id, 680)
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    ctxMenuMap[info.menuItemId]?.(tab, info);
+    ctxEvents[info.menuItemId]?.(tab, info);
 });
 
 function togglHostState(id, rules) {
@@ -212,7 +212,7 @@ function togglHostState(id, rules) {
     });
 }
 
-const commandMap = {
+const cmdEvents = {
     'open_options': chrome.runtime.openOptionsPage,
     'open_new_download': () => openPopupWindow(addonDownload, 454),
     'toggle_capture': () => togglHostState('capture_hosts', captureHosts),
@@ -221,7 +221,7 @@ const commandMap = {
 };
 
 chrome.commands.onCommand.addListener((command) => {
-    commandMap[command]?.();
+    cmdEvents[command]?.();
 });
 
 function optionsStorage(response, json) {
