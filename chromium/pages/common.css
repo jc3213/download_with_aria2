@@ -26,18 +26,6 @@
     box-shadow: var(--shadows);
 }
 
-body, button, input, textarea, select {
-    font-family: "Segoe UI", Arial, sans-serif;
-    font-size: 16px;
-}
-
-button, input, textarea, select {
-    background-color: var(--color-item);
-    border-style: solid;
-    border-width: 1px;
-    color: var(--color-text);
-}
-
 body, div {
     background-color: var(--color-body);
     color: var(--color-text);
@@ -49,8 +37,19 @@ body {
     margin: 8px;
 }
 
-span, label {
-    display: inline-block;
+body, button, input, textarea, select {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 16px;
+}
+
+button, input, textarea, select, option {
+    background-color: var(--color-item);
+    color: var(--color-text);
+}
+
+button, input, textarea, select {
+    border-style: solid;
+    border-width: 1px;
 }
 
 input {
@@ -98,7 +97,7 @@ button:disabled {
 }
 
 button.checked {
-    border-color: #1f6feb;
+    border-color: #1F6FEB;
     box-shadow: var(--shadows);
 }
 
@@ -135,10 +134,6 @@ h4 {
 
 .flex {
     gap: 3px;
-}
-
-.flex > .fl-1 {
-    flex: 1;
 }
 
 .flexmenu > button {

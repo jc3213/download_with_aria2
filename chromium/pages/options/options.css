@@ -22,12 +22,9 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"] + label {
+    display: inline-block;
     padding: 3px 0px;
     font-weight: bold;
-}
-
-input.fl-1 {
-    height: 21px;
 }
 
 i {
@@ -56,6 +53,15 @@ i {
 
 #aria2ua::before {
     content: "aria2/";
+}
+
+.align input {
+    flex: 1;
+    height: 21px;
+}
+
+.flex > .fl-1 {
+    flex: 1;
 }
 
 .pad-u {

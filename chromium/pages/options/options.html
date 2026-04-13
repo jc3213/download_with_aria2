@@ -19,25 +19,25 @@
         </div>
         <div id="options" class="config">
             <h1>JSON-RPC</h1>
-            <div class="flex">
+            <div class="flex align">
                 <div class="flex fl-1" i18n-tips="tips_options_jsonrpc_url">
                     <h4 i18n="options_jsonrpc_url"></h4>
-                    <input class="fl-1" name="jsonrpc_url" type="text" placeholder="$$hostname:port/jsonrpc$$">
+                    <input name="jsonrpc_url" type="text" placeholder="$$hostname:port/jsonrpc$$">
                 </div>
                 <div class="flex pad-l" i18n-tips="tips_options_jsonrpc_secret">
                     <h4 i18n="options_jsonrpc_secret"></h4>
-                    <input class="fl-1" name="jsonrpc_secret" type="password" placeholder="$$secret$$">
+                    <input name="jsonrpc_secret" type="password" placeholder="$$secret$$">
                 </div>
             </div>
-            <div class="flex pad-u">
+            <div class="flex pad-u align">
                 <button id="goto-jsonrpc" i18n="options_aria2"></button>
                 <div class="flex pad-l" i18n-tips="tips_options_jsonrpc_retries">
                     <h4 i18n="options_jsonrpc_retries"></h4>
-                    <input class="fl-1" name="jsonrpc_retries" type="number" min="-1" max="30" setp="1">
+                    <input name="jsonrpc_retries" type="number" min="-1" max="30" setp="1">
                 </div>
                 <div class="flex fl-1 pad-l" i18n-tips="tips_options_jsonrpc_timeout">
                     <h4 i18n="options_jsonrpc_timeout"></h4>
-                    <input class="fl-1" name="jsonrpc_timeout" type="number" min="3" max="20" step="1">
+                    <input name="jsonrpc_timeout" type="number" min="3" max="20" step="1">
                     <span i18n="time_second_full"></span>
                 </div>
             </div>
@@ -46,9 +46,9 @@
                 <input id="manager-newtab" name="manager_newtab" type="checkbox">
                 <label for="manager-newtab" i18n="options_manager_newtab"></label>
             </div>
-            <div class="cfg-item flex" i18n-tips="tips_options_manager_interval">
+            <div class="cfg-item flex align" i18n-tips="tips_options_manager_interval">
                 <h4 i18n="options_manager_interval"></h4>
-                <input class="fl-1" name="manager_interval" type="number" min="5" max="30" step="1">
+                <input name="manager_interval" type="number" min="5" max="30" step="1">
                 <span i18n="time_second_full"></span>
             </div>
             <h1 i18n="options_context"></h1>
