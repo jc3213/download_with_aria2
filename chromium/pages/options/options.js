@@ -219,7 +219,7 @@ function matchRemove(id, event) {
 }
 
 const matchLists = new Map();
-const matchs = {
+const matchEvents = {
     'tips_match_add': matchAdd,
     'tips_match_resort': matchResort,
     'tips_match_remove': matchRemove,
@@ -231,7 +231,7 @@ for (let match of storagePane.querySelectorAll('div.flexmenu')) {
     matchLists.set(id, { list, entry });
     match.addEventListener('click', (event) => {
         let menu = event.target.getAttribute('i18n-tips');
-        matchs[menu]?.(id, event);
+        matchEvents[menu]?.(id, event);
     });
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
