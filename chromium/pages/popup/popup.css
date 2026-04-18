@@ -305,6 +305,10 @@ body.error > #queue > .error {
     grid-area: 7 / 1 / 8 / 5;
 }
 
+.session > .uris input {
+    width: 40%;
+}
+
 .session button {
     padding: 1px;
     width: 25px;
