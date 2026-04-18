@@ -89,7 +89,7 @@ i {
 .flexmenu > input {
     height: 21px;
     margin-left: auto;
-    width: 50%;
+    width: 40%;
 }
 
 .list,
@@ -104,7 +104,7 @@ i {
     flex-basis: 100%;
     grid-auto-rows: 25px;
     grid-template-columns: repeat(3, 33.33%);
-    margin-top: 3px;
+    margin-top: 1px;
     max-height: 125px;
     min-height: 50px;
     overflow-y: auto;
