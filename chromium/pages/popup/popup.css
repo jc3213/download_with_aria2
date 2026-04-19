@@ -306,6 +306,7 @@ body.error > #queue > .error {
 }
 
 .session > .uris input {
+    margin-left: auto;
     width: 40%;
 }
 
