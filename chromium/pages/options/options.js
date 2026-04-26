@@ -271,7 +271,7 @@ function storageDispatch() {
 }
 
 function addToList(add) {
-    if (toggle) {
+    if (remote) {
         return;
     }
     let { id, host } = add;
@@ -288,7 +288,7 @@ function addToList(add) {
 }
 
 function removeFromList(remove) {
-    if (toggle) {
+    if (remote) {
         return;
     }
     let { id, host } = remove;
