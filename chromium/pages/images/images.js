@@ -76,8 +76,8 @@ chrome.tabs.getCurrent((tab) => {
     tabId = tab.id;
 });
 
-chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, ({ storage, options, manifest, images, headers }) => {
-    manifest.manifest_version === 2 ? antiLeechMV2(headers) : antiLeechMV3();
+chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, ({ system, storage, options, images, headers }) => {
+    system.manifest_version === 2 ? antiLeechMV2(headers) : antiLeechMV3();
     aria2Proxy = storage['proxy_server'];
     aria2Config['referer'] = referer;
     for (let entry of jsonrpcEntries) {

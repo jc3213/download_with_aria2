@@ -212,7 +212,7 @@ function togglHostState(id, rules) {
     });
 }
 
-const cmdEvents = {
+const commandMap = {
     'open_options': chrome.runtime.openOptionsPage,
     'open_new_download': () => openPopupWindow(addonDownload, 454),
     'toggle_capture': () => togglHostState('capture_hosts', captureHosts),
@@ -221,16 +221,16 @@ const cmdEvents = {
 };
 
 chrome.commands.onCommand.addListener((command) => {
-    cmdEvents[command]?.();
+    commandMap[command]?.();
 });
 
-function optionsStorage(response, json) {
+function updateStorage(response, json) {
     aria2RPC.disconnect();
     storageDispatch(json);
     chrome.storage.sync.set(json, response);
 }
 
-function optionsJsonrpc(response, json) {
+function updateJsonrpc(response, json) {
     for (let key of RawKeys) {
         aria2Config[key] = json[key];
     }
@@ -248,19 +248,20 @@ function popupQueues(response, array) {
 function imagesRuntime(response, id) {
     let tab = aria2Inspect.get(id);
     let images = tab ? [...tab.images.values()] : [];
-    response({ manifest: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
+    response({ system: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
 }
 
 const messageDispatch = {
-    'options_runtime': (response) => response({ manifest: systemManifest, storage: aria2Storage, options: aria2Config, version: aria2Version }),
-    'options_storage': optionsStorage,
-    'options_jsonrpc': optionsJsonrpc,
+    'options_runtime': (response) => response({ system: systemManifest, storage: aria2Storage }),
+    'options_jsonrpc': (response) => response({ options: aria2Config, version: aria2Version }),
+    'update_storage': updateStorage,
+    'update_jsonrpc': updateJsonrpc,
     'popup_runtime': (response) => response({ storage: aria2Storage, options: aria2Config, version: aria2Version }),
     'popup_queues': popupQueues,
     'images_runtime': imagesRuntime,
     'newdld_window': (response) => response(openPopupWindow(addonDownload, 454)),
     'newdld_runtime': (response) => response({ storage: aria2Storage, options: aria2Config }),
-    'remote_status': (response) => response(systemManifest),
+    'remote_status': (response) => response({ system: systemManifest, options: aria2Config }),
     'remote_download': (response, params) => aria2RPC.call(params).then(response).catch(response)
 };
 
