@@ -12,6 +12,7 @@ let aria2Group = {
 let aria2Proxy = '';
 let aria2Delay = 10000;
 let aria2Interval;
+let aria2Drag = null;
 
 let [menuPane, filterPane, systemPane, queuePane, template] = document.body.children;
 let [i18nEntry, verEntry, ...statEntries] = systemPane.children;
@@ -119,10 +120,11 @@ function removeFromQueue(gid, group) {
 function addToQueue(task, gid, status) {
     let group = aria2Group[status];
     let queue = aria2Queue[group];
-    queue.add(gid);
     aria2Stats[group].textContent = queue.size;
     task.classList.replace(task.status, status);
     task.status = status;
+    task.draggable = group === 'waiting';
+    queue.add(gid);
     queuePane.appendChild(task);
 }
 
@@ -396,3 +398,47 @@ function getFileSize(bytes) {
     }
     return (bytes / 10995116277.76 | 0) / 100 + 'T';
 }
+
+queuePane.addEventListener("dragstart", (event) => {
+    aria2Drag = event.target;
+});
+
+queuePane.addEventListener("dragover", (event) => {
+    event.preventDefault();
+});
+
+queuePane.addEventListener('drop', async (event) => {
+    if (!aria2Drag) {
+        return;
+    }
+    event.preventDefault();
+    let target = event.target.closest(".session");
+    if (!target || aria2Drag === target) {
+        return;
+    }
+    let { id } = aria2Drag;
+    let group = aria2Group[target.status];
+    let waiting = [...aria2Queue['waiting']];
+    let index = waiting.indexOf(id);
+    let pos;
+    if (group === 'waiting') {
+        pos = waiting.indexOf(target.id);
+        if (pos > index) {
+            pos++;
+            target = target.nextElementSibling;
+        }
+    } else if (group === 'active') {
+        pos = 0;
+        target = queuePane.querySelector('.waiting, .paused');
+    } else if (group === 'stopped') {
+        pos = waiting.length - 1;
+        target = null;
+    }
+    aria2RPC.call({ method: 'aria2.changePosition', params: [id, pos, 'POS_SET']})
+        .then(() => {
+            waiting.splice(index, 1);
+            waiting.splice(pos, 0, id);
+            queuePane.insertBefore(aria2Drag, target);
+            aria2Queue['waiting'] = new Set(waiting);
+        });
+});
