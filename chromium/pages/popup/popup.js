@@ -49,7 +49,7 @@ async function menuPurge() {
         delete aria2Tasks[gid];
     }
     stopped.clear();
-    aria2Stats['stopped'].textContent = '0';
+    aria2Stats.stopped.textContent = '0';
 }
 
 const menuEvents = {
@@ -418,7 +418,7 @@ queuePane.addEventListener('drop', async (event) => {
     }
     let { id } = aria2Drag;
     let group = aria2Group[target.status];
-    let waiting = [...aria2Queue['waiting']];
+    let waiting = [...aria2Queue.waiting];
     let index = waiting.indexOf(id);
     let pos;
     if (group === 'waiting') {
