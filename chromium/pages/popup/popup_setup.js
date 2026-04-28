@@ -5,7 +5,7 @@ menuEvents['popup_newdld'] = () => chrome.runtime.sendMessage({ action: 'newdld_
 menuEvents['popup_options'] = chrome.runtime.openOptionsPage;
 
 chrome.runtime.onMessage.addListener(({ action, params }) => {
-    if (action !== 'options_storage') {
+    if (action !== 'update_storage') {
         return;
     }
     if (!params['manager_newtab']) {
