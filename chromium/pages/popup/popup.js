@@ -424,7 +424,6 @@ queuePane.addEventListener('drop', async (event) => {
     if (group === 'waiting') {
         pos = waiting.indexOf(target.id);
         if (pos > index) {
-            pos++;
             target = target.nextElementSibling;
         }
     } else if (group === 'active') {
