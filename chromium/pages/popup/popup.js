@@ -63,7 +63,7 @@ menuPane.addEventListener('click', (event) => {
 
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
-    aria2RPC.call([
+    aria2RPC.multicall([
         { method: 'aria2.getGlobalStat' }, { method: 'aria2.getVersion' },
         { method: 'aria2.tellActive' }, { method: 'aria2.tellWaiting', params: [0, 999] }, { method: 'aria2.tellStopped', params: [0, 999] }
     ]).then(({ result: [[stats], [version], [active], [waiting], [stopped]] }) => {
@@ -79,7 +79,7 @@ aria2RPC.onopen = () => {
         }
         verEntry.textContent = version.version;
         aria2Interval = setInterval(() => {
-            aria2RPC.call([{ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' }])
+            aria2RPC.multicall([{ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' }])
                 .then(({ result: [[stats], [active]] }) => updateManager(stats, active));
         }, aria2Delay);
     }).catch(aria2RPC.onclose);
@@ -190,7 +190,7 @@ const taskPause = {
 };
 
 async function getDetails(gid) {
-    let { result: [[files], [options]] } = await aria2RPC.call([{ method: 'aria2.getFiles', params: [gid] }, { method: 'aria2.getOption', params: [gid] }]);
+    let { result: [[files], [options]] } = await aria2RPC.multicall([{ method: 'aria2.getFiles', params: [gid] }, { method: 'aria2.getOption', params: [gid] }]);
     options['min-split-size'] = getFileSize(options['min-split-size']);
     options['max-download-limit'] = getFileSize(options['max-download-limit']);
     options['max-upload-limit'] = getFileSize(options['max-upload-limit']);
@@ -245,7 +245,7 @@ async function taskRetry(task, gid) {
         options['dir'] = match[1];
         options['out'] = match[2];
     }
-    let { result: [add] } = await aria2RPC.call([{ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] }]);
+    let { result: [add] } = await aria2RPC.multicall([{ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] }]);
     removeFromQueue(gid, 'stopped');
     delete aria2Tasks[gid];
     task.remove();

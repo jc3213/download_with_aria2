@@ -2,6 +2,7 @@ class Aria2 {
     #url;
     #xml;
     #wsa;
+    #call;
     #secret;
     #socket;
     #id = 0;
@@ -16,7 +17,7 @@ class Aria2 {
         let rpc = url.split('#');
         this.url = rpc[0];
         this.secret = rpc[1] ?? secret;
-        this.call = this.#post;
+        this.#call = this.#post;
     }
 
     set url(string) {
@@ -78,33 +79,16 @@ class Aria2 {
         return this.#onclose;
     }
 
-    #json(args) {
-        if (Array.isArray(args)) {
-            let calls = [];
-            for (let { method, params = [] } of args) {
-                params.unshift(this.#secret);
-                calls.push({ methodName: method, params });
-            }
-            args = { method: 'system.multicall', params: [calls] };
-        } else {
-            (args.params ??= []).unshift(this.#secret);
-        }
-        args.jsonrpc = '2.0';
-        args.id = this.#id++;
-        return args;
-    }
-
-    #send(args) {
+    #send(json) {
         return new Promise((resolve, reject) => {
-            let json = this.#json(args);
             this[json.id] = resolve;
             this.#socket.onerror = reject;
             this.#socket.send(JSON.stringify(json));
         });
     }
 
-    #post(args) {
-        return fetch(this.#xml, { method: 'POST', body: JSON.stringify(this.#json(args)) }).then((response) => {
+    #post(json) {
+        return fetch(this.#xml, { method: 'POST', body: JSON.stringify(json) }).then((response) => {
             if (response.ok) {
                 return response.json();
             }
@@ -112,10 +96,26 @@ class Aria2 {
         });
     }
 
+    call(arg) {
+        let { method, params = [] } = arg;
+        params.unshift(this.#secret);
+        return this.#call({ jsonrpc: '2.0', id: this.#id++, method, params });
+    }
+
+    multicall(args) {
+        let calls = [];
+        for (let i = 0, l = args.length; i < l; i++) {
+            let { method, params = [] } = args[i];
+            params.unshift(this.#secret);
+            calls[i] = { methodName: method, params };
+        }
+        return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [calls] });
+    }
+
     connect() {
         this.#socket = new WebSocket(this.#wsa);
         this.#socket.onopen = (event) => {
-            this.call = this.#send;
+            this.#call = this.#send;
             this.#tries = 0;
             this.#onopen?.(event);
         };
@@ -130,7 +130,7 @@ class Aria2 {
             }
         };
         this.#socket.onclose = (event) => {
-            this.call = this.#post;
+            this.#call = this.#post;
             this.#onclose?.(event);
             if (this.#tries++ < this.#retries) {
                 setTimeout(() => this.connect(), this.#timeout);

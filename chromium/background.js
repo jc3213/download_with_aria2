@@ -50,7 +50,7 @@ let headersHosts;
 
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
-    aria2RPC.call([
+    aria2RPC.multicall([
         { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
     ]).then(({ result: [[options], [version], [active]] }) => {
         for (let key of RawKeys) {
@@ -262,7 +262,7 @@ const messageDispatch = {
     'newdld_window': (response) => response(openPopupWindow(addonDownload, 454)),
     'newdld_runtime': (response) => response({ storage: aria2Storage, options: aria2Config }),
     'remote_status': (response) => response({ system: systemManifest, options: aria2Config }),
-    'remote_download': (response, params) => aria2RPC.call(params).then(response).catch(response)
+    'remote_download': (response, params) => aria2RPC.multicall(params).then(response).catch(response)
 };
 
 chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
