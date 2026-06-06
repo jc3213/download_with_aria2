@@ -2,7 +2,6 @@ class Aria2 {
     #url;
     #xml;
     #wsa;
-    #call;
     #secret;
     #socket;
     #id = 0;
@@ -12,6 +11,7 @@ class Aria2 {
     #onopen = null;
     #onmessage = null;
     #onclose = null;
+    #call;
 
     constructor(url = 'http://localhost:6800/jsonrpc', secret = '') {
         let rpc = url.split('#');
@@ -103,13 +103,12 @@ class Aria2 {
     }
 
     multicall(args) {
-        let calls = [];
         for (let i = 0, l = args.length; i < l; i++) {
             let { method, params = [] } = args[i];
             params.unshift(this.#secret);
-            calls[i] = { methodName: method, params };
+            args[i] = { methodName: method, params };
         }
-        return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [calls] });
+        return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [args] });
     }
 
     connect() {
