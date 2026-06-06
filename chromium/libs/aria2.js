@@ -98,17 +98,16 @@ class Aria2 {
 
     call(arg) {
         let { method, params = [] } = arg;
-        params.unshift(this.#secret);
-        return this.#call({ jsonrpc: '2.0', id: this.#id++, method, params });
+        return this.#call({ jsonrpc: '2.0', id: this.#id++, method, params: [ this.#secret, ...params ] });
     }
 
     multicall(args) {
+        let calls = [];
         for (let i = 0, l = args.length; i < l; i++) {
             let { method, params = [] } = args[i];
-            params.unshift(this.#secret);
-            args[i] = { methodName: method, params };
+            calls.push({ methodName: method, params: [ this.#secret, ...params ] });
         }
-        return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [args] });
+        return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [calls] });
     }
 
     connect() {
