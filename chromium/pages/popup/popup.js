@@ -42,7 +42,7 @@ function taskFilters(array, callback) {
 }
 
 async function menuPurge() {
-    await aria2RPC.call({ method: 'aria2.purgeDownloadResult' });
+    await aria2RPC.call('aria2.purgeDownloadResult');
     let { stopped } = aria2Queue;
     for (let gid of stopped) {
         aria2Tasks[gid].remove();
@@ -129,7 +129,7 @@ function addToQueue(task, gid, status) {
 }
 
 async function reloadTasks(gid) {
-    let { result } = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
+    let { result } = await aria2RPC.call('aria2.tellStatus', [gid]);
     let task = updateTasks(result);
     if (task.align) {
         task.scrollIntoView({ block: 'start', inline: 'nearest' });
@@ -168,14 +168,14 @@ function updateTasks({ gid, status, files, bittorrent, completedLength, totalLen
 }
 
 async function removeHandler(task, gid, method, group) {
-    await aria2RPC.call({ method, params: [gid] });
+    await aria2RPC.call(method, [gid]);
     removeFromQueue(gid, group);
     delete aria2Tasks[gid];
     task.remove();
 }
 
 const taskRemove = {
-    'active': (task, gid) => aria2RPC.call({ method: 'aria2.forceRemove', params: [gid] }),
+    'active': (task, gid) => aria2RPC.call('aria2.forceRemove', [gid]),
     'waiting': (task, gid) => removeHandler(task, gid, 'aria2.forceRemove', 'waiting'),
     'paused': (task, gid) => removeHandler(task, gid, 'aria2.forceRemove', 'waiting'),
     'complete': (task, gid) => removeHandler(task, gid, 'aria2.removeDownloadResult', 'stopped'),
@@ -184,9 +184,9 @@ const taskRemove = {
 };
 
 const taskPause = {
-    'active': (task, gid) => aria2RPC.call({ 'method': 'aria2.forcePause', 'params': [gid] }),
-    'waiting': (task, gid) => aria2RPC.call({ 'method': 'aria2.forcePause', 'params': [gid] }),
-    'paused': (task, gid) => aria2RPC.call({ 'method': 'aria2.unpause', 'params': [gid] })
+    'active': (task, gid) => aria2RPC.call({'aria2.forcePause', [gid]),
+    'waiting': (task, gid) => aria2RPC.call('aria2.forcePause', [gid]),
+    'paused': (task, gid) => aria2RPC.call('aria2.unpause', [gid])
 };
 
 async function getDetails(gid) {
@@ -229,7 +229,7 @@ async function taskApply(task, gid) {
     }
     config['select-file'] = selected.join(',');
     task.align = true;
-    await aria2RPC.call({ method: 'aria2.changeOption', params: [gid, config] });
+    await aria2RPC.call('aria2.changeOption', [gid, config]);
     apply.classList.add('hidden');
 }
 
@@ -262,7 +262,7 @@ function taskProxy(task) {
 async function taskUriAdd(task, gid) {
     let url = task.newuri.value;
     task.newuri.value = '';
-    let { result } = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, [], [url]] });
+    let { result } = await aria2RPC.call'aria2.changeUri', [gid, 1, [], [url]]);
     if (result?.[1] === 1) {
         task.align = true;
         task[url] ??= createTaskUri(task, url);
@@ -279,7 +279,7 @@ async function taskUriRemove(task, gid, event) {
             removed.push(uri);
         }
     }
-    let { result } = await aria2RPC.call({ method: 'aria2.changeUri', params: [gid, 1, removed, []] });
+    let { result } = await aria2RPC.call('aria2.changeUri', [gid, 1, removed, []]);
     if (result?.[0] === removed.length) {
         task.align = true;
         delete task[url];
@@ -433,7 +433,7 @@ queuePane.addEventListener('drop', async (event) => {
         pos = waiting.length - 1;
         target = null;
     }
-    aria2RPC.call({ method: 'aria2.changePosition', params: [id, pos, 'POS_SET']})
+    aria2RPC.call('aria2.changePosition', [id, pos, 'POS_SET'])
         .then(() => {
             waiting.splice(index, 1);
             waiting.splice(pos, 0, id);

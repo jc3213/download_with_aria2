@@ -115,7 +115,7 @@ async function downloadNotify(type, gid) {
     if (!aria2Storage['notify_' + type]) {
         return;
     }
-    let { result: { bittorrent, files: [{ path, uris }] } } = await aria2RPC.call({ method: 'aria2.tellStatus', params: [gid] });
+    let { result: { bittorrent, files: [{ path, uris }] } } = await aria2RPC.call('aria2.tellStatus', [gid]);
     let title = chrome.i18n.getMessage('download_' + type);
     let message = bittorrent?.info?.name ?? path?.substring(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
     chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
@@ -176,7 +176,7 @@ function downloadHandler(url, referer, filename, hostname, tabId) {
     if (!matchHostname(headersHosts, hostname)) {
         options['header'] = downloadHeaders(tabId, url, referer);
     }
-    aria2RPC.call({ method: 'aria2.addUri', params: [[url], options] });
+    aria2RPC.call('aria2.addUri', [[url], options]);
 }
 
 const ctxMenus = {
@@ -237,7 +237,7 @@ function updateJsonrpc(response, json) {
     for (let key of SizeKeys) {
         aria2Config[key] = json[key];
     }
-    aria2RPC.call({ method: 'aria2.changeGlobalOption', params: [json] }).then(response).catch(response);
+    aria2RPC.call('aria2.changeGlobalOption', [json]).then(response).catch(response);
 }
 
 function popupQueues(response, array) {
