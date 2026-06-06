@@ -184,7 +184,7 @@ const taskRemove = {
 };
 
 const taskPause = {
-    'active': (task, gid) => aria2RPC.call({'aria2.forcePause', [gid]),
+    'active': (task, gid) => aria2RPC.call('aria2.forcePause', [gid]),
     'waiting': (task, gid) => aria2RPC.call('aria2.forcePause', [gid]),
     'paused': (task, gid) => aria2RPC.call('aria2.unpause', [gid])
 };
@@ -262,7 +262,7 @@ function taskProxy(task) {
 async function taskUriAdd(task, gid) {
     let url = task.newuri.value;
     task.newuri.value = '';
-    let { result } = await aria2RPC.call'aria2.changeUri', [gid, 1, [], [url]]);
+    let { result } = await aria2RPC.call('aria2.changeUri', [gid, 1, [], [url]]);
     if (result?.[1] === 1) {
         task.align = true;
         task[url] ??= createTaskUri(task, url);
