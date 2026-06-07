@@ -51,7 +51,9 @@ let headersHosts;
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
     aria2RPC.multicall([
-        { method: 'aria2.tellActive' }, { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }
+        { methodName: 'aria2.tellActive' },
+        { methodName: 'aria2.getGlobalOption' },
+        { methodName: 'aria2.getVersion' }
     ]).then((response) => {
         let result = response.result;
         let active = result[0][0];
