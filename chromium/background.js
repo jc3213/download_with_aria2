@@ -212,7 +212,8 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 });
 
 function togglHostState(id, rules) {
-    chrome.tabs.query({ url: systemURLs, active: true, currentWindow: true }, ([tab]) => {
+    chrome.tabs.query({ url: systemURLs, active: true, currentWindow: true }, (tabs) => {
+        let tab = tabs[0];
         if (!tab) {
             return;
         }
@@ -343,7 +344,8 @@ if (!chrome.action) {
 }
 
 chrome.action.onClicked.addListener(() => {
-    chrome.tabs.query({ url: addonManager, currentWindow: true }, ([tab]) => {
+    chrome.tabs.query({ url: addonManager, currentWindow: true }, (tabs) => {
+        let tab = tabs[0];
         if (tab) {
             chrome.tabs.update(tab.id, { active: true });
         } else {
@@ -442,7 +444,8 @@ function openPopupWindow(url, height) {
         let top = (window.top + window.height - height) / 2 | 0;
         let left = (window.left + window.width - 710) / 2 | 0;
         width = 698;
-        chrome.tabs.query({ url }, ([tab]) => {
+        chrome.tabs.query({ url }, (tabs) => {
+            let tab = tabs[0];
             if (tab) {
                 chrome.windows.update(tab.windowId, { focused: true, left, width, top, height });
                 chrome.tabs.update(tab.id, { url, active: true });
