@@ -205,7 +205,10 @@ const ctxMenus = {
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    ctxMenus[info.menuItemId]?.(tab, info);
+    let handler = ctxMenus[info.menuItemId];
+    if (handler) {
+        handler(tab, info);
+    }
 });
 
 function togglHostState(id, rules) {
@@ -240,7 +243,10 @@ const shortcuts = {
 };
 
 chrome.commands.onCommand.addListener((command) => {
-    shortcuts[command]?.();
+    let handler = shortcuts[command];
+    if (handler) {
+        handler();
+    }
 });
 
 function updateStorage(response, json) {
@@ -287,8 +293,11 @@ const messageDispatch = {
 };
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
-    messageDispatch[message.action]?.(response, message.params);
-    return true;
+    let handler = messageDispatch[message.action];
+    if (handler) {
+        handler(response, message.params);
+        return true;
+    }
 });
 
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {
@@ -299,7 +308,11 @@ chrome.webNavigation.onBeforeNavigate.addListener((details) => {
 
 chrome.tabs.onUpdated.addListener((tabId, tab) => {
     let url = tab.url;
-    if (url && url !== aria2Inspect.get(tabId)?.url) {
+    if (!url) {
+        return;
+    }
+    let inspect = aria2Inspect.get(tabId);
+    if (!inspect || inspect.url !== url) {
         aria2Inspect.set(tabId, { images: new Map(), url });
     }
 });
