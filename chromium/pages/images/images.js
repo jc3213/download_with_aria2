@@ -5,7 +5,11 @@ let aria2Proxy;
 let aria2Config = {};
 let aria2Counts;
 
-let [imagePane,, thumbPane,, menuPane, jsonrpcPane] = document.body.children;
+let mainPane = document.body.children;
+let imagePane = mainPane[0];
+let thumbPane = mainPane[2];
+let menuPane = mainPane[4];
+let jsonrpcPane = mainPane[5];
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
 let preview = imagePane.firstElementChild;
 let optionsBtn = menuPane.lastElementChild;
