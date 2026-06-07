@@ -16,72 +16,60 @@ function captureDisabled() {
     browser.webRequest.onHeadersReceived.removeListener(captureWebRequest);
 }
 
-async function captureDownloads(downloadItem) {
-    let url = downloadItem.url;
+async function captureDownloads({ id, url, referrer, filename }) {
     if (url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
-    let referer = downloadItem.referrer;
-    let hostname = getHostname(referer);
+    let hostname = getHostname(referrer);
     if (matchHostname(captureHosts, hostname)) {
         return;
     }
-    let id = downloadItem.id;
     await browser.downloads.cancel(id);
     await browser.downloads.erase({ id });
-    downloadHandler(url, referer, downloadItem.filename, hostname);
+    downloadHandler(url, referrer, filename, hostname);
 }
 
-async function captureWebRequest(details) {
-    if (details.statusCode !== 200) {
+async function captureWebRequest({ statusCode, url, originUrl, responseHeaders, tabId }) {
+    if (statusCode !== 200) {
         return;
     }
-    let referer = details.originUrl;
-    let hostname = getHostname(referer);
+    let hostname = getHostname(originUrl);
     if (matchHostname(captureHosts, hostname)) {
         return;
     }
-    let responseHeaders = details.responseHeaders;
     let result = {};
-    for (let i = 0, l = responseHeaders.length; i < l; i++) {
-        let header = responseHeaders[i];
-        let name = header.name.toLowerCase();
+    for (let { name, value } of responseHeaders) {
+        name = name.toLowerCase();
         if (firefoxHeaders.has(name)) {
-            result[name] = header.value;
+            result[name] = value;
         }
     }
-    let contentType = result['content-type'];
-    if (!contentType || !contentType.startsWith('application')) {
+    if (!result['content-type']?.startsWith('application')) {
         return;
     }
     let filename = decodeFileName(result['content-disposition']);
     if (!filename || filename.startsWith('attachment')) {
         filename = null;
     }
-    downloadHandler(details.url, referer, filename, hostname, details.tabId);
+    downloadHandler(url, originUrl, filename, hostname, tabId);
     return { cancel: true };
 }
 
-function decodeRFC2047(args) {
+function decodeRFC2047(array) {
     let result = '';
-    for (let i = 0, l = args.length; i < l; i++) {
+    for (let i of array) {
         let bytes = [];
-        let arr = args[i].split('?');
-        let charset = arr[1];
-        let type = arr[2];
-        let string = arr[3];
+        let [, charset, type, string] = i.split('?');
         if (type.toLowerCase() === 'b') {
-            let text = atob(string);
-            for (let i = 0, l = text.length; i < l; i++) {
-                bytes.push(text[i].charCodeAt(0));
+            for (let c of atob(string)) {
+                bytes.push(c.charCodeAt(0));
             }
         } else {
             let parts = string.match(/=[0-9a-fA-F]{2}|[^=]/g);
             if (!parts) {
                 continue;
             }
-            for (let i = 0, l = parts.length; i < l; i++) {
-                let q = parts[i];
+            for (let q of parts) {
                 if (q.startsWith('=') && q.length === 3) {
                     bytes.push(parseInt(q.substring(1), 16));
                 } else if (q === '_') {
@@ -97,6 +85,11 @@ function decodeRFC2047(args) {
     return result;
 }
 
+function decodeRFC5987(array) {
+    let [, charset, string] = array;
+    return decodePlainText(charset, string);
+}
+
 function decodeISO8859(charset, string) {
     let bytes = Uint8Array.from(string.split(''), (c) => c.charCodeAt(0));
     return new TextDecoder(charset).decode(bytes);
@@ -110,7 +103,7 @@ function decodePlainText(charset, string) {
 
 function decodeFileName(disposition) {
     console.log(disposition);
-    if (!disposition || !disposition.startsWith('attachment')) {
+    if (!disposition?.startsWith('attachment')) {
         return;
     }
     let RFC2047 = disposition.match(/=\?[^?]+\?[bqBQ]\?[^?]+\?=/g);
@@ -119,9 +112,8 @@ function decodeFileName(disposition) {
     }
     let RFC5987 = disposition.match(/filename\*\s*=\s*"?([^']+)''([^";]+)"?/i);
     if (RFC5987) {
-        return decodePlainText(RFC5987[1], RFC5987[2]);
+        return decodeRFC5987(RFC5987);
     }
-    let UNKNOWN = disposition.match(/filename="?([^";]+);?/);
-    let string = UNKNOWN ? UNKNOWN[1] : disposition;
+    let string = disposition.match(/filename="?([^";]+);?/)?.[1] ?? disposition;
     return decodePlainText('UTF-8', string);
 }

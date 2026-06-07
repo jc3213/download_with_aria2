@@ -1,46 +1,39 @@
-const i18nText = document.querySelectorAll('[i18n]');
-const i18nTips = document.querySelectorAll('[i18n-tips]');
+const hotkeys = {};
 
-for (let i = 0, l = i18nText.length; i < l; i++) {
-    let el = i18nText[i];
+for (let el of document.querySelectorAll('[i18n]')) {
     let i18n = el.getAttribute('i18n');
     el.textContent = chrome.i18n.getMessage(i18n);
 }
 
-for (let i = 0, l = i18nTips.length; i < l; i++) {
-    let el = i18nTips[i];
+for (let el of document.querySelectorAll('[i18n-tips]')) {
     let tips = el.getAttribute('i18n-tips')
     el.title = chrome.i18n.getMessage(tips);
 }
 
-const hotkeyMap = document.querySelectorAll('[hotkey]')
-const hotkeyCombo = {};
-
-for (let i = 0, l = hotkeyMap.length; i < l; i++) {
-    let el = hotkeyMap[i];
-    let keys = el.getAttribute('hotkey').toLowerCase().split('\n');
-    for (let j = 0, m = keys.length; j < m; j++) {
-        let k = keys[j].trim();
-        if (k) {
-            hotkeyCombo[k] = el;
+for (let el of document.querySelectorAll('[hotkey]')) {
+    for (let keys of el.getAttribute('hotkey').toLowerCase().split('\n')) {
+        let combo = keys.trim();
+        if (combo) {
+            hotkeys[combo] = el;
         }
     }
 }
 
 document.addEventListener('keydown', (event) => {
+    let { ctrlKey, altKey, shiftKey, key } = event;
     let keys = [];
-    if (event.ctrlKey) {
+    if (ctrlKey) {
         keys.push('ctrl');
     }
-    if (event.altKey) {
+    if (altKey) {
         keys.push('alt');
     }
-    if (event.shiftKey) {
+    if (shiftKey) {
         keys.push('shift');
     }
-    keys.push(event.key.toLowerCase());
+    keys.push(key.toLowerCase());
     let combo = keys.join('+');
-    let hotkey = hotkeyCombo[combo];
+    let hotkey = hotkeys[combo];
     if (hotkey) {
         event.preventDefault();
         hotkey.click();

@@ -3,16 +3,9 @@ const gallery = [];
 
 let aria2Proxy;
 let aria2Config = {};
-let aria2Counts;
 
-let mainTree = document.body.children;
-let imagePane = mainTree[0];
-let thumbPane = mainTree[2];
-let menuPane = mainTree[4];
-let jsonrpcPane = mainTree[5];
-
+let [imagePane,, thumbPane,, menuPane, jsonrpcPane] = document.body.children;
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
-
 let preview = imagePane.firstElementChild;
 let optionsBtn = menuPane.lastElementChild;
 
@@ -30,34 +23,33 @@ thumbPane.addEventListener('mouseover', (event) => {
 
 function menuEventSubmit() {
     let params = [];
-    for (let i = 0; i < aria2Counts; i++) {
-        let img = gallery[i];
-        if (img.classList.contains('checked')) {
-            let options = { ...aria2Config, out: img.alt };
-            params.push({ method: 'aria2.addUri', params: [[img.src], options] });
+    for (let { src, alt, classList } of gallery) {
+        if (classList.contains('checked')) {
+            let options = { ...aria2Config, out: alt };
+            params.push({ method: 'aria2.addUri', params: [[src], options] });
         }
     }
     chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
 
 const menuEvents = {
-    'select_all'() {
-        for (let i = 0; i < aria2Counts; i++) {
-            gallery[i].classList.add('checked');
+    'select_all': () => {
+        for (let img of gallery) {
+            img.classList.add('checked');
         }
     },
-    'select_none'() {
-        for (let i = 0; i < aria2Counts; i++) {
-            gallery[i].classList.remove('checked');
+    'select_none': () => {
+        for (let img of gallery) {
+            img.classList.remove('checked');
         }
     },
-    'select_flip'() {
-        for (let i = 0; i < aria2Counts; i++) {
-            gallery[i].classList.toggle('checked');
+    'select_flip': () => {
+        for (let img of gallery) {
+            img.classList.toggle('checked');
         }
     },
     'common_submit': menuEventSubmit,
-    'popup_options'() {
+    'popup_options': () => {
         optionsBtn.classList.toggle('checked');
         jsonrpcPane.classList.toggle('hidden');
     }
@@ -65,10 +57,7 @@ const menuEvents = {
 
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
-    let handler = menuEvents[menu];
-    if (handler) {
-        handler();
-    }
+    menuEvents[menu]?.();
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
@@ -87,20 +76,15 @@ chrome.tabs.getCurrent((tab) => {
     tabId = tab.id;
 });
 
-chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, (message) => {
-    let config = message.options;
-    let images = message.images;
-    message.system.manifest_version === 2 ? antiLeechMV2(message.headers) : antiLeechMV3();
-    aria2Proxy = message.storage['proxy_server'];
+chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, ({ system, storage, options, images, headers }) => {
+    system.manifest_version === 2 ? antiLeechMV2(headers) : antiLeechMV3();
+    aria2Proxy = storage['proxy_server'];
     aria2Config['referer'] = referer;
-    aria2Counts = images.length;
-    for (let i = 0, l = jsonrpcEntries.length; i < l; i ++) {
-        let entry = jsonrpcEntries[i];
-        let name = entry.name;
-        entry.value = aria2Config[name] = config[name] || '';
+    for (let entry of jsonrpcEntries) {
+        let { name } = entry;
+        entry.value = aria2Config[name] = options[name] ?? '';
     }
-    for (let i = 0; i < aria2Counts; i++) {
-        let url = images[i];
+    for (let url of images) {
         let path = url.substring(url.lastIndexOf('/') + 1);
         let idx = path.search(/[?#@]/);
         let img = document.createElement('img');
@@ -113,8 +97,7 @@ chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, (message) =
 
 function antiLeechMV2(headers) {
     headers.unshift('blocking');
-    chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
-        let requestHeaders = details.requestHeaders;
+    chrome.webRequest.onBeforeSendHeaders.addListener(({ requestHeaders }) => {
         requestHeaders.push({ name: 'Referer', value: referer });;
         return { requestHeaders };
     }, { urls: ['http://*/*', 'https://*/*'], tabId, types: ['image'] }, headers);

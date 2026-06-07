@@ -2,18 +2,8 @@ let aria2Proxy;
 let aria2Config = {};
 let aria2Referer = new Map();
 
-let mainTree = document.body.children;
-let menuPane = mainTree[0];
-let downEntry = mainTree[1];
-let jsonrpcPane = mainTree[2];
-
-let entries = jsonrpcPane.querySelectorAll('[name]');
-let refererEntry = entries[0];
-let jsonrpcEntries = [];
-for (let i = 1, l = entries.length; i < l; i++) {
-    jsonrpcEntries.push(entries[i]);
-}
-
+let [menuPane, downEntry, jsonrpcPane] = document.body.children;
+let [refererEntry, ...jsonrpcEntries] = jsonrpcPane.querySelectorAll('[name]');
 let filesEntry = menuPane.lastElementChild;
 let refererPane = document.getElementById('referer');
 
@@ -24,16 +14,12 @@ document.addEventListener('click', (event) => {
 });
 
 function menuSubmit() {
-    let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
-    if (!urls) {
-        close();
-    }
-    let l = urls.length;
-    let out = aria2Config.out;
-    aria2Config['out'] = l !== 1 || !out ? null : out.replace(/[\\/:*?"<>|]/g, '_');
+    let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g) ?? [];
+    let { out } = aria2Config;
+    aria2Config['out'] = urls.length !== 1 || !out ? null : out.replace(/[\\/:*?"<>|]/g, '_');
     let params = [];
-    for (let i = 0; i < l; i++) {
-        params.push({ method: 'aria2.addUri', params: [[urls[i]], aria2Config] });
+    for (let url of urls) {
+        params.push({ method: 'aria2.addUri', params: [[url], aria2Config] });
     }
     chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
@@ -45,10 +31,7 @@ const menuEvents = {
 
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
-    let handler = menuEvents[menu];
-    if (handler) {
-        handler();
-    }
+    menuEvents[menu]?.(event);
 });
 
 document.addEventListener('dragover', (event) => {
@@ -67,9 +50,8 @@ filesEntry.addEventListener('change', (event) => {
 async function metaFileDownload(files) {
     aria2Config['out'] = aria2Config['referer'] = aria2Config['user-agent'] = null;
     let tasks = [];
-    for (let i = 0, l = files.length; i < l; i++) {
-        let file = files[i];
-        let name = file.name;
+    for (let file of files) {
+        let { name } = file;
         let method;
         let params;
         if (name.endsWith('.torrent')) {
@@ -84,7 +66,7 @@ async function metaFileDownload(files) {
         tasks.push(new Promise((resolve) => {
             let reader = new FileReader();
             reader.onload = (event) => {
-                let result = reader.result;
+                let { result } = reader;
                 params.unshift(result.substring(result.indexOf(',') + 1));
                 resolve({ method, params });
             };
@@ -96,8 +78,8 @@ async function metaFileDownload(files) {
 }
 
 jsonrpcPane.addEventListener('change', (event) => {
-    let entry = event.target;
-    aria2Config[entry.name] = entry.value;
+    let { name, value } = event.target;
+    aria2Config[name] = value;
 });
 
 refererEntry.addEventListener('click', (event) => {
@@ -131,7 +113,7 @@ document.getElementById('proxy').addEventListener('click', (event) => {
 });
 
 function refererModalList(id, url) {
-    if (!url.startsWith('http')) {
+    if (!url?.startsWith('http')) {
         return;
     }
     let referer = aria2Referer.get(id);
@@ -144,16 +126,13 @@ function refererModalList(id, url) {
 }
 
 chrome.tabs.query({}, (tabs) => {
-    for (let i = 0, l = tabs.length; i < l; i++) {
-        let tab = tabs[i];
-        refererModalList(tab.id, tab.url);
+    for (let { id, url } of tabs) {
+        refererModalList(id, url);
     }
 });
 
-chrome.tabs.onUpdated.addListener((tabId, tab) => {
-    if (tab.url) {
-        refererModalList(tabId, tab.url);
-    }
+chrome.tabs.onUpdated.addListener((tabId, { url }) => {
+    refererModalList(tabId, url);
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
@@ -163,13 +142,11 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     }
 });
 
-chrome.runtime.sendMessage({ action: 'newdld_runtime' }, (message) => {
-    let config = message.options;
-    aria2Proxy = message.storage['proxy_server'];
-    for (let i = 0, l = jsonrpcEntries.length; i < l; i++) {
-        let entry = jsonrpcEntries[i];
-        let name = entry.name;
-        let value = config[name];
+chrome.runtime.sendMessage({ action: 'newdld_runtime' }, ({ storage, options }) => {
+    aria2Proxy = storage['proxy_server'];
+    for (let entry of jsonrpcEntries) {
+        let { name } = entry;
+        let value = options[name];
         if (value) {
             entry.value = aria2Config[name] = value;
         }

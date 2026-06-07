@@ -16,16 +16,16 @@ class Aria2 {
     constructor(url = 'http://localhost:6800/jsonrpc', secret = '') {
         let rpc = url.split('#');
         this.url = rpc[0];
-        this.secret = rpc[1] || secret;
+        this.secret = rpc[1] ?? secret;
         this.#call = this.#post;
     }
 
     set url(string) {
         if (string.startsWith('http://') || string.startsWith('https://')) {
             this.#url = this.#xml = string;
-            this.#wsa = 'ws' + string.substring(4);
+            this.#wsa = string.replace('http', 'ws');
         } else if (string.startsWith('ws://') || string.startsWith('wss://')) {
-            this.#xml = 'http' + string.substring(2);
+            this.#xml = string.replace('ws', 'http');
             this.#url = this.#wsa = string;
         } else {
             throw new TypeError('Invalid JSON-RPC Endpoint: expected http(s):// or ws(s)://');
@@ -103,10 +103,8 @@ class Aria2 {
     multicall(args) {
         let calls = [];
         for (let i = 0, l = args.length; i < l; i++) {
-            let arg = args[i];
-            let methodName = arg.methodName || arg.method;
-            let params = arg.params ? [ this.#secret, ...arg.params ] : [ this.#secret ];
-            calls[i] = { methodName, params };
+            let { method, params = [] } = args[i];
+            calls[i] = { methodName: method, params: [ this.#secret, ...params ] };
         }
         return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [calls] });
     }
@@ -116,27 +114,21 @@ class Aria2 {
         this.#socket.onopen = (event) => {
             this.#call = this.#send;
             this.#tries = 0;
-            if (this.#onopen) {
-                this.#onopen(event);
-            }
+            this.#onopen?.(event);
         };
         this.#socket.onmessage = (event) => {
             let json = JSON.parse(event.data);
             if (json.method) {
-                if (this.#onmessage) {
-                    this.#onmessage(json);
-                }
+                this.#onmessage?.(json);
             } else {
-                let id = json.id;
+                let { id } = json;
                 this[id](json);
                 delete this[id];
             }
         };
         this.#socket.onclose = (event) => {
             this.#call = this.#post;
-            if (this.#onclose) {
-                this.#onclose(event);
-            }
+            this.#onclose?.(event);
             if (this.#tries++ < this.#retries) {
                 setTimeout(() => this.connect(), this.#timeout);
             } else {

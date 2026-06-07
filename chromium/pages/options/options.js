@@ -8,23 +8,8 @@ let undoes = [];
 let redoes = [];
 
 let extension = document.body.classList;
-
-let mainTree = document.body.children;
-let menuPane = mainTree[0];
-let storagePane = mainTree[1];
-let jsonrpcPane = mainTree[2];
-let template = mainTree[3];
-
-let menuTree = menuPane.children;
-let saveBtn = menuTree[0];
-let undoBtn = menuTree[1];
-let redoBtn = menuTree[2];
-let tellVer = menuTree[3];
-let importBtn = menuTree[4];
-let exportBtn = menuTree[5];
-let fileEntry = menuTree[6];
-let exportFile = menuTree[7];
-
+let [menuPane, storagePane, jsonrpcPane, template] = document.body.children;
+let [saveBtn, undoBtn, redoBtn, tellVer, importBtn, exportBtn, fileEntry, exportFile] = menuPane.children;
 let tellUA = document.getElementById('useragent');
 let storageEntries = storagePane.querySelectorAll('[name]');
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
@@ -32,8 +17,7 @@ let controlEntries = new Set(storagePane.querySelectorAll('input.control'));
 let matchLET = template.firstElementChild;
 
 function saveChanges(change) {
-    let id = change.id;
-    let new_value = change.new_value;
+    let { id, new_value } = change;
     changes[id] = new_value;
     undoes.push(change);
     saveBtn.disabled = undoBtn.disabled = false;
@@ -43,27 +27,24 @@ function saveChanges(change) {
 
 storagePane.addEventListener('change', (event) => {
     let entry = event.target;
-    let id = entry.name;
+    let { name: id, type, value, checked } = entry;
     if (!id) {
         return;
     }
-    let type = entry.type;
-    let new_value = entry.value;
     if (type === 'number') {
-        new_value = new_value | 0;
+        value = value | 0;
     } else if (type === 'checkbox') {
-        new_value = entry.checked;
+        value = checked;
         if (controlEntries.has(entry)) {
             extension.toggle(id);
         }
     }
-    saveChanges({ id, new_value, old_value: changes[id], type, entry });
+    saveChanges({ id, new_value: value, old_value: changes[id], type, entry });
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
     let entry = event.target;
-    let id = entry.name;
-    let new_value = entry.value;
+    let { name: id, value: new_value } = event.target;
     saveChanges({ id, new_value, old_value: changes[id], type: 'text', entry });
 });
 
@@ -83,37 +64,24 @@ function menuSave() {
 
 function loadChanges(loadList, saveList, loadButton, saveButton, key, todo) {
     let change = loadList.pop();
-    let id = change.id;
-    let type = change.type;
-    let value = change[key];
+    let { id, type, [key]: value, entry, add, remove, sort } = change;
     if (type === 'checkbox') {
-        let entry = change.entry;
         if (controlEntries.has(entry)) {
             extension.toggle(id);
         }
         entry.checked = value;
     } else if (type === 'rules') {
-        let add = change.add;
-        let remove = change.remove;
         if (todo === 'undo') {
-            if (add) {
-                add.rule.remove();
-            } else {
-                remove.list.insertBefore(remove.rule, remove.list.children[remove.index]);
-            }
+            add?.rule?.remove();
+            remove?.list?.insertBefore(remove.rule, remove.list.children[remove.index]);
         } else {
-            if (add) {
-                add.list.insertBefore(add.rule, add.list.children[add.index]);
-            } else {
-                remove.rule.remove();
-            }
+            add?.list?.insertBefore(add.rule, add.list.children[add.index]);
+            remove?.rule?.remove();
         }
     } else if (type === 'resort') {
-        let sort = change.sort;
         let order = todo === 'undo' ? sort.old_order : sort.new_order;
         sort.list.append(...order);
     } else {
-        let entry = change.entry;
         entry.value = value;
     }
     changes[id] = value;
@@ -129,8 +97,7 @@ function menuExport() {
     if (remote) {
         name = 'aria2_jsonrpc-' + time + '.conf';
         body = [];
-        for (let i = 0, l = jsonrpcEntries.length; i < l; i++) {
-            let key = jsonrpcEntries[i].name;
+        for (let key of Object.keys(aria2Config)) {
             body.push(key + '=' + aria2Config[key] + '\n');
         }
     } else {
@@ -158,10 +125,7 @@ const menuEvents = {
 
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
-    let handler = menuEvents[menu];
-    if (handler) {
-        handler();
-    }
+    menuEvents[menu]?.();
 });
 
 function importJson(file) {
@@ -172,15 +136,11 @@ function importJson(file) {
 
 function importConf(file) {
     let options = {};
-    let lines = file.split('\n');
-    for (let i = 0, l = lines.length; i < l; i++) {
-        let line = lines[i];
+    for (let line of file.split('\n')) {
         if (!line || line[0] === '#') {
             continue;
         }
-        let arr = line.split('=');
-        let key = arr[0];
-        let value = arr[1];
+        let [key, value] = line.split('=');
         if (key in aria2Config && value) {
             options[key] = value.split('#')[0].trim();
         }
@@ -190,7 +150,7 @@ function importConf(file) {
 }
 
 fileEntry.addEventListener('change', (event) => {
-    let file = fileEntry.files[0];
+    let [file] = fileEntry.files;
     let reader = new FileReader();
     reader.onload = () => {
         changeHistoryFlush();
@@ -201,10 +161,9 @@ fileEntry.addEventListener('change', (event) => {
 });
 
 function optionsDispatch(options) {
-    for (let i = 0, l = jsonrpcEntries.length; i < l; i++) {
-        let entry = jsonrpcEntries[i];
-        let name = entry.name;
-        entry.value = aria2Config[name] = options[name] || '';
+    for (let entry of jsonrpcEntries) {
+        let { name } = entry;
+        entry.value = aria2Config[name] = options[name] ?? '';
     }
     changes = { ...aria2Config };
 }
@@ -216,13 +175,12 @@ function changeHistoryFlush() {
 }
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
-    chrome.runtime.sendMessage({ action: 'options_jsonrpc' }, (message) => {
-        let version = message.version;
+    chrome.runtime.sendMessage({ action: 'options_jsonrpc' }, ({ options, version }) => {
         if (!version) {
             return;
         }
         tellVer.textContent = tellUA.textContent = version.version;
-        optionsDispatch(message.options);
+        optionsDispatch(options);
         changeHistoryFlush();
         extension.add('jsonrpc');
         remote = true;
@@ -237,17 +195,16 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
 });
 
 function matchAdd(id) {
-    let entry = matchLists.get(id).entry;
-    let match = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9]+)(?=\/|$)/);
+    let { entry } = matchLists.get(id);
+    let host = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9]+)(?=\/|$)/)?.[1];
     entry.value = '';
-    if (!match) {
-        return;
+    if (host) {
+        addToList({ id, host });
     }
-    addToList({ id, host: match[1] });
 }
 
 function matchResort(id) {
-    let list = matchLists.get(id).list;
+    let { list } = matchLists.get(id);
     let old_value = changes[id];
     let new_value = old_value.slice().sort();
     let old_order = [...list.children];
@@ -261,7 +218,6 @@ function matchRemove(id, event) {
     removeFromList({ id, host });
 }
 
-const matchNodes = storagePane.querySelectorAll('div.flexmenu');
 const matchLists = new Map();
 const matchEvents = {
     'tips_match_add': matchAdd,
@@ -269,19 +225,13 @@ const matchEvents = {
     'tips_match_remove': matchRemove,
 };
 
-for (let i = 0, l = matchNodes.length; i < l; i++) {
-    let match = matchNodes[i];
-    let id = match.id;
-    let tree = match.children;
-    let entry = tree[1];
-    let list = tree[4];
+for (let match of storagePane.querySelectorAll('div.flexmenu')) {
+    let { id } = match;
+    let [h4, entry, b1, b2, list] = match.children;
     matchLists.set(id, { list, entry });
     match.addEventListener('click', (event) => {
         let menu = event.target.getAttribute('i18n-tips');
-        let handler = matchEvents[menu];
-        if (handler) {
-            handler(id, event);
-        }
+        matchEvents[menu]?.(id, event);
     });
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
@@ -300,10 +250,8 @@ function printMatchPattern(list, id, value) {
 function storageDispatch() {
     changes = { ...aria2Storage };
     tellVer.textContent = aria2Version;
-    for (let i = 0, l = storageEntries.length; i < l; i++) {
-        let entry = storageEntries[i];
-        let type = entry.type;
-        let name = entry.name;
+    for (let entry of storageEntries) {
+        let { name, type } = entry;
         let value = changes[name];
         if (type === 'checkbox') {
             if (controlEntries.has(entry)) {
@@ -314,13 +262,10 @@ function storageDispatch() {
             entry.value = value;
         }
     }
-    for (let entries of matchLists) {
-        let id = entries[0];
-        let list = entries[1].list;
+    for (let [id,  { list }] of matchLists) {
         list.innerHTML = '';
-        let rules = changes[id];
-        for (let i = 0, l = rules.length; i < l; i++) {
-            printMatchPattern(list, id, rules[i]);
+        for (let value of changes[id]) {
+            printMatchPattern(list, id, value);
         }
     }
 }
@@ -329,13 +274,12 @@ function addToList(add) {
     if (remote) {
         return;
     }
-    let id = add.id;
-    let host = add.host;
+    let { id, host } = add;
     let old_value = changes[id];
     if (old_value.includes(host)) {
         return;
     }
-    let list = matchLists.get(id).list;
+    let { list } = matchLists.get(id);
     let new_value = old_value.slice();
     let rule = printMatchPattern(list, id, host);
     new_value.push(host);
@@ -347,9 +291,8 @@ function removeFromList(remove) {
     if (remote) {
         return;
     }
-    let id = remove.id;
-    let host = remove.host;
-    let list = matchLists.get(id).list;
+    let { id, host } = remove;
+    let { list } = matchLists.get(id);
     let old_value = changes[id];
     let index = old_value.indexOf(host);
     let new_value = old_value.slice();
@@ -364,19 +307,15 @@ const messageDispatch = {
     'match_remove': removeFromList
 };
 
-chrome.runtime.onMessage.addListener((message) => {
-    let handler = messageDispatch[message.options];
-    if (handler) {
-        handler(message.params);
-    }
+chrome.runtime.onMessage.addListener(({ options, params }) => {
+    messageDispatch[options]?.(params);
 });
 
-chrome.runtime.sendMessage({ action: 'options_runtime'}, (message) => {
-    let system = message.system;
-    aria2Storage = message.storage;
-    aria2Version = system.version;
+chrome.runtime.sendMessage({ action: 'options_runtime'}, ({ system, storage }) => {
     if (system.browser_specific_settings) {
         extension.add('firefox');
     }
+    aria2Storage = storage;
+    aria2Version = system.version;
     storageDispatch();
 });

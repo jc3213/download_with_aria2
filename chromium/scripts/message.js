@@ -4,14 +4,13 @@ function systemStatus(id) {
     });
 }
 
-function jsonrpcDownload(id, args) {
+function jsonrpcDownload(id, array) {
     let params = [];
-    for (let i = 0, l = args.length; i < l; i++) {
-        let arg = args[i];
-        if (typeof args === 'string') {
-            params.push({ method: 'aria2.addUri', params: [[args]] });
-        } else if (args.url) {
-            params.push({ method: 'aria2.addUri', params: [[args.url], args.options ?? {}] });
+    for (let i of array) {
+        if (typeof i === 'string') {
+            params.push({ method: 'aria2.addUri', params: [[i]] });
+        } else if (i?.url) {
+            params.push({ method: 'aria2.addUri', params: [[i.url], i.options ?? {}] });
         }
     }
     chrome.runtime.sendMessage({ action: 'remote_download', params }, (result) => {
@@ -25,9 +24,6 @@ const messageDispatch = {
 };
 
 window.addEventListener('message', (event) => {
-    let message = event.data;
-    let handler = messageDispatch[message.aria2c];
-    if (handler) {
-        handler(message.id, message.params);
-    }
+    let { aria2c, id, params } = event.data;
+    messageDispatch[aria2c]?.(id, params);
 });
