@@ -33,7 +33,7 @@ function menuSubmit() {
     aria2Config['out'] = l !== 1 || !out ? null : out.replace(/[\\/:*?"<>|]/g, '_');
     let params = [];
     for (let i = 0; i < l; i++) {
-        params.push({ method: 'aria2.addUri', params: [[urls[i]], aria2Config] });
+        params.push({ methodName: 'aria2.addUri', params: [[urls[i]], aria2Config] });
     }
     chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
@@ -70,13 +70,13 @@ async function metaFileDownload(files) {
     for (let i = 0, l = files.length; i < l; i++) {
         let file = files[i];
         let name = file.name;
-        let method;
+        let methodName;
         let params;
         if (name.endsWith('.torrent')) {
-            method = 'aria2.addTorrent';
+            methodName = 'aria2.addTorrent';
             params = [[], aria2Config];
         } else if (name.endsWith('.meta4') || name.endsWith('.metalink')) {
-            method = 'aria2.addMetalink';
+            methodName = 'aria2.addMetalink';
             params = [aria2Config];
         } else {
             continue;
@@ -86,7 +86,7 @@ async function metaFileDownload(files) {
             reader.onload = (event) => {
                 let result = reader.result;
                 params.unshift(result.substring(result.indexOf(',') + 1));
-                resolve({ method, params });
+                resolve({ methodName, params });
             };
             reader.readAsDataURL(file);
         }));
