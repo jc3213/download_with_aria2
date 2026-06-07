@@ -66,7 +66,7 @@ aria2RPC.onopen = () => {
             aria2Config[key] = RawToSize(options[key]);
         }
         for (let i = 0, l = active.length; i < l; i++) {
-            let { gid } = active[i];
+            let gid = active[i].gid;
             aria2Active.add(gid);
         }
         captureHooking();
@@ -83,11 +83,10 @@ aria2RPC.onclose = () => {
 };
 aria2RPC.onmessage = (response) => {
     let method = response.method;
-    let params = response.params;
     if (method === 'aria2.onBtDownloadComplete') {
         return;
     }
-    let gid = params[0].gid;
+    let gid = response.params[0].gid;
     if (method === 'aria2.onDownloadStart') {
         if (!aria2Active.has(gid)) {
             aria2Active.add(gid);
@@ -123,9 +122,16 @@ async function downloadNotify(type, gid) {
     if (!aria2Storage['notify_' + type]) {
         return;
     }
-    let { result: { bittorrent, files: [{ path, uris }] } } = await aria2RPC.call('aria2.tellStatus', [gid]);
+    let response = await aria2RPC.call('aria2.tellStatus', [gid]);
+    let bittorrent = response.result.bittorrent;
+    let file = response.result.files[0];
+    let path = file.path;
+    let uris = file.uris;
     let title = chrome.i18n.getMessage('download_' + type);
-    let message = bittorrent?.info?.name || path?.substring(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
+    let message = (bittorrent && bittorrent.info && bittorrent.info.name) ||
+        (path && path.substring(path.lastIndexOf('/') + 1)) ||
+        (uris && uris[0] && uris[0].uri) ||
+        gid;
     chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
 }
 
@@ -141,12 +147,14 @@ function searchHeaders(url, referer) {
 
 function downloadHeaders(tabId, url, referer) {
     let result = [];
-    let headers = aria2Inspect.get(tabId)?.[url] || searchHeaders(url, referer);
+    let inspect = aria2Inspect.get(tabId);
+    let headers = (inspect && inspect[url]) || searchHeaders(url, referer);
     let oldUA = navigator.userAgent;
     for (let i = 0, l = headers.length; i < l; i++) {
-        let { name, value } = headers[i];
-        let lower = name.toLowerCase();
-        if (lower === 'user-agent') {
+        let header = headers[i];
+        let name = header.name;
+        let value = header.value;
+        if (name.length === 10 && name.toLowerCase() === 'user-agent') {
             oldUA = value;
         } else {
             result.push(name + ': ' + value);
