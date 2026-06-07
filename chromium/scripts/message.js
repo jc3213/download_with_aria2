@@ -8,10 +8,10 @@ function jsonrpcDownload(id, args) {
     let params = [];
     for (let i = 0, l = args.length; i < l; i++) {
         let arg = args[i];
-        if (typeof args === 'string') {
-            params.push({ method: 'aria2.addUri', params: [[args]] });
-        } else if (args.url) {
-            params.push({ method: 'aria2.addUri', params: [[args.url], args.options ?? {}] });
+        if (typeof arg === 'string') {
+            params.push({ method: 'aria2.addUri', params: [[arg]] });
+        } else if (arg.url) {
+            params.push({ method: 'aria2.addUri', params: [[arg.url], arg.options ?? {}] });
         }
     }
     chrome.runtime.sendMessage({ action: 'remote_download', params }, (result) => {
