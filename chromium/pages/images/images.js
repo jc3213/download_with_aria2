@@ -3,6 +3,7 @@ const gallery = [];
 
 let aria2Proxy;
 let aria2Config = {};
+let aria2Counts;
 
 let [imagePane,, thumbPane,, menuPane, jsonrpcPane] = document.body.children;
 let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
@@ -23,7 +24,7 @@ thumbPane.addEventListener('mouseover', (event) => {
 
 function menuEventSubmit() {
     let params = [];
-    for (let i = 0, l = gallery.length; i < l; i++) {
+    for (let i = 0; i < aria2Counts; i++) {
         let img = gallery[i];
         if (img.classList.contains('checked')) {
             let options = { ...aria2Config, out: img.alt };
@@ -35,17 +36,17 @@ function menuEventSubmit() {
 
 const menuEvents = {
     'select_all'() {
-        for (let i = 0, l = gallery.length; i < l; i++) {
+        for (let i = 0; i < aria2Counts; i++) {
             gallery[i].classList.add('checked');
         }
     },
     'select_none'() {
-        for (let i = 0, l = gallery.length; i < l; i++) {
+        for (let i = 0; i < aria2Counts; i++) {
             gallery[i].classList.remove('checked');
         }
     },
     'select_flip'() {
-        for (let i = 0, l = gallery.length; i < l; i++) {
+        for (let i = 0; i < aria2Counts; i++) {
             gallery[i].classList.toggle('checked');
         }
     },
@@ -78,17 +79,18 @@ chrome.tabs.getCurrent((tab) => {
 });
 
 chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, (message) => {
+    let config = message.options;
+    let images = message.images;
     message.system.manifest_version === 2 ? antiLeechMV2(message.headers) : antiLeechMV3();
     aria2Proxy = message.storage['proxy_server'];
     aria2Config['referer'] = referer;
-    let config = message.options;
-    let images = message.images;
+    aria2Counts = images.length;
     for (let i = 0, l = jsonrpcEntries.length; i < l; i ++) {
         let entry = jsonrpcEntries[i];
         let { name } = entry;
         entry.value = aria2Config[name] = config[name] || '';
     }
-    for (let i = 0, l = images.length; i < l; i++) {
+    for (let i = 0; i < aria2Counts; i++) {
         let url = images[i];
         let path = url.substring(url.lastIndexOf('/') + 1);
         let idx = path.search(/[?#@]/);
