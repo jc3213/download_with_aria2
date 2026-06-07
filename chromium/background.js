@@ -51,16 +51,22 @@ let headersHosts;
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
     aria2RPC.multicall([
-        { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
-    ]).then(({ result: [[options], [version], [active]] }) => {
-        for (let key of RawKeys) {
+        { method: 'aria2.tellActive' }, { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }
+    ]).then((response) => {
+        let result = response.result;
+        let active = result[0][0];
+        let options = result[1][0];
+        aria2Version = result[2][0];
+        for (let i = 0, l = RawKeys.length; i < l; i++) {
+            let key = RawKeys[i];
             aria2Config[key] = options[key];
         }
-        for (let key of SizeKeys) {
+        for (let i = 0, l = SizeKeys.length; i < l; i++) {
+            let key = SizeKeys[i];
             aria2Config[key] = RawToSize(options[key]);
         }
-        aria2Version = version;
-        for (let { gid } of active) {
+        for (let i = 0, l = active.length; i < l; i++) {
+            let gid = active[i].gid;
             aria2Active.add(gid);
         }
         captureHooking();
@@ -75,11 +81,12 @@ aria2RPC.onclose = () => {
     chrome.action.setBadgeText({ text: 'E' });
     chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
 };
-aria2RPC.onmessage = ({ method, params }) => {
+aria2RPC.onmessage = (response) => {
+    let method = response.method;
     if (method === 'aria2.onBtDownloadComplete') {
         return;
     }
-    let [{ gid }] = params;
+    let gid = response.params[0].gid;
     if (method === 'aria2.onDownloadStart') {
         if (!aria2Active.has(gid)) {
             aria2Active.add(gid);
@@ -115,9 +122,16 @@ async function downloadNotify(type, gid) {
     if (!aria2Storage['notify_' + type]) {
         return;
     }
-    let { result: { bittorrent, files: [{ path, uris }] } } = await aria2RPC.call('aria2.tellStatus', [gid]);
+    let response = await aria2RPC.call('aria2.tellStatus', [gid]);
+    let bittorrent = response.result.bittorrent;
+    let file = response.result.files[0];
+    let path = file.path;
+    let uris = file.uris;
     let title = chrome.i18n.getMessage('download_' + type);
-    let message = bittorrent?.info?.name ?? path?.substring(path.lastIndexOf('/') + 1) ?? uris[0]?.uri ?? gid;
+    let message = (bittorrent && bittorrent.info && bittorrent.info.name) ||
+        (path && path.substring(path.lastIndexOf('/') + 1)) ||
+        (uris && uris[0] && uris[0].uri) ||
+        gid;
     chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
 }
 
@@ -133,11 +147,14 @@ function searchHeaders(url, referer) {
 
 function downloadHeaders(tabId, url, referer) {
     let result = [];
-    let headers = aria2Inspect.get(tabId)?.[url] ?? searchHeaders(url, referer);
+    let inspect = aria2Inspect.get(tabId);
+    let headers = (inspect && inspect[url]) || searchHeaders(url, referer);
     let oldUA = navigator.userAgent;
-    for (let { name, value } of headers) {
-        let lower = name.toLowerCase();
-        if (lower === 'user-agent') {
+    for (let i = 0, l = headers.length; i < l; i++) {
+        let header = headers[i];
+        let name = header.name;
+        let value = header.value;
+        if (name.length === 10 && name.toLowerCase() === 'user-agent') {
             oldUA = value;
         } else {
             result.push(name + ': ' + value);
@@ -169,7 +186,9 @@ function downloadDirectory(filename) {
 
 function downloadHandler(url, referer, filename, hostname, tabId) {
     let options = downloadDirectory(filename);
-    hostname ??= getHostname(referer);
+    if (!hostname) {
+        hostname = getHostname(referer);
+    }
     if (matchHostname(proxyHosts, hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
@@ -180,17 +199,21 @@ function downloadHandler(url, referer, filename, hostname, tabId) {
 }
 
 const ctxMenus = {
-    'ctxmenu_thisurl': ({ id, url }, { linkUrl }) => downloadHandler(linkUrl, url, null, null, id),
-    'ctxmenu_thisimage': ({ id, url }, { srcUrl }) => downloadHandler(srcUrl, url, null, null, id),
-    'ctxmenu_allimages': ({ id }) => openPopupWindow(addonImages + '?' + id, 680)
+    'ctxmenu_thisurl': (tab, info) => downloadHandler(info.linkUrl, tab.url, null, null, tab.id),
+    'ctxmenu_thisimage': (tab, info) => downloadHandler(info.srcUrl, tab.url, null, null, tab.id),
+    'ctxmenu_allimages': (tab) => openPopupWindow(addonImages + '?' + tab.id, 680)
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    ctxMenus[info.menuItemId]?.(tab, info);
+    let handler = ctxMenus[info.menuItemId];
+    if (handler) {
+        handler(tab, info);
+    }
 });
 
 function togglHostState(id, rules) {
-    chrome.tabs.query({ url: systemURLs, active: true, currentWindow: true }, ([tab]) => {
+    chrome.tabs.query({ url: systemURLs, active: true, currentWindow: true }, (tabs) => {
+        let tab = tabs[0];
         if (!tab) {
             return;
         }
@@ -221,7 +244,10 @@ const shortcuts = {
 };
 
 chrome.commands.onCommand.addListener((command) => {
-    shortcuts[command]?.();
+    let handler = shortcuts[command];
+    if (handler) {
+        handler();
+    }
 });
 
 function updateStorage(response, json) {
@@ -231,10 +257,12 @@ function updateStorage(response, json) {
 }
 
 function updateJsonrpc(response, json) {
-    for (let key of RawKeys) {
+    for (let i = 0, l = RawKeys.length; i < l; i++) {
+        let key = RawKeys[i];
         aria2Config[key] = json[key];
     }
-    for (let key of SizeKeys) {
+    for (let i = 0, l = SizeKeys.length; i < l; i++) {
+        let key = SizeKeys[i];
         aria2Config[key] = json[key];
     }
     aria2RPC.call('aria2.changeGlobalOption', [json]).then(response).catch(response);
@@ -265,19 +293,27 @@ const messageDispatch = {
     'remote_download': (response, params) => aria2RPC.multicall(params).then(response).catch(response)
 };
 
-chrome.runtime.onMessage.addListener(({ action, params }, sender, response) => {
-    messageDispatch[action]?.(response, params);
-    return true;
-});
-
-chrome.webNavigation.onBeforeNavigate.addListener(({ tabId, url, frameId }) => {
-    if (frameId === 0) {
-        aria2Inspect.set(tabId, { images: new Map(), url });
+chrome.runtime.onMessage.addListener((message, sender, response) => {
+    let handler = messageDispatch[message.action];
+    if (handler) {
+        handler(response, message.params);
+        return true;
     }
 });
 
-chrome.tabs.onUpdated.addListener((tabId, { url }) => {
-    if (url && url !== aria2Inspect.get(tabId)?.url) {
+chrome.webNavigation.onBeforeNavigate.addListener((details) => {
+    if (details.frameId === 0) {
+        aria2Inspect.set(details.tabId, { images: new Map(), url: details.url });
+    }
+});
+
+chrome.tabs.onUpdated.addListener((tabId, tab) => {
+    let url = tab.url;
+    if (!url) {
+        return;
+    }
+    let inspect = aria2Inspect.get(tabId);
+    if (!inspect || inspect.url !== url) {
         aria2Inspect.set(tabId, { images: new Map(), url });
     }
 });
@@ -286,25 +322,30 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     aria2Inspect.delete(tabId);
 });
 
-chrome.webRequest.onBeforeSendHeaders.addListener(({ tabId, url, type, requestHeaders }) => {
+chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
+    let tabId = details.tabId;
+    let url = details.url;
     let tab = aria2Inspect.get(tabId);
     if (!tab) {
         tab = { images: new Map(), url };
         aria2Inspect.set(tabId, tab);
     }
-    if (type === 'image') {
+    if (details.type === 'image') {
         let idx = url.search(/[?#@]/);
         let img = idx === -1 ? url : url.substring(0, idx);
         tab.images.set(img, url);
     } else {
-        tab[url] = requestHeaders;
+        tab[url] = details.requestHeaders;
     }
 }, { urls: systemURLs, types: ['main_frame', 'sub_frame', 'image', 'other'] }, systemHeaders);
 
-chrome.action ??= chrome.browserAction;
+if (!chrome.action) {
+    chrome.action = chrome.browserAction;
+}
 
 chrome.action.onClicked.addListener(() => {
-    chrome.tabs.query({ url: addonManager, currentWindow: true }, ([tab]) => {
+    chrome.tabs.query({ url: addonManager, currentWindow: true }, (tabs) => {
+        let tab = tabs[0];
         if (tab) {
             chrome.tabs.update(tab.id, { active: true });
         } else {
@@ -398,13 +439,13 @@ function toolbarCounter() {
     chrome.action.setBadgeText({ text: !number ? '' : `${number}` });
 }
 
-function openPopupWindow(url, winSize) {
-    chrome.windows.getCurrent(({ top, left, height, width }) => {
-        top = (top + height - winSize) / 2 | 0;
-        left = (left + width - 710) / 2 | 0;
-        height = winSize;
+function openPopupWindow(url, height) {
+    chrome.windows.getCurrent((window) => {
+        let top = (window.top + window.height - height) / 2 | 0;
+        let left = (window.left + window.width - 710) / 2 | 0;
         width = 698;
-        chrome.tabs.query({ url }, ([tab]) => {
+        chrome.tabs.query({ url }, (tabs) => {
+            let tab = tabs[0];
             if (tab) {
                 chrome.windows.update(tab.windowId, { focused: true, left, width, top, height });
                 chrome.tabs.update(tab.id, { url, active: true });

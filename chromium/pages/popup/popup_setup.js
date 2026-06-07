@@ -4,10 +4,11 @@ i18nEntry.disabled = true;
 menuEvents['popup_newdld'] = () => chrome.runtime.sendMessage({ action: 'newdld_window' });
 menuEvents['popup_options'] = chrome.runtime.openOptionsPage;
 
-chrome.runtime.onMessage.addListener(({ action, params }) => {
-    if (action !== 'update_storage') {
+chrome.runtime.onMessage.addListener((message) => {
+    if (message.action !== 'update_storage') {
         return;
     }
+    let params = message.params;
     if (!params['manager_newtab']) {
         close();
     }
@@ -25,7 +26,8 @@ function aria2StorageChanged(json) {
     aria2RPC.connect();
 }
 
-chrome.runtime.sendMessage({ action: 'popup_runtime' }, ({ storage }) => {
+chrome.runtime.sendMessage({ action: 'popup_runtime' }, (message) => {
+    let storage = message.storage;
     taskFilters(storage['manager_filters'], (params) => {
         chrome.runtime.sendMessage({ action: 'popup_queues', params });
     });
