@@ -51,12 +51,12 @@ let headersHosts;
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
     aria2RPC.multicall([
-        { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }, { method: 'aria2.tellActive' }
+        { method: 'aria2.tellActive' }, { method: 'aria2.getGlobalOption' }, { method: 'aria2.getVersion' }
     ]).then((response) => {
         let result = response.result;
-        let options = result[0][0];
-        let active = result[2][0];
-        aria2Version = result[1][0];
+        let active = result[0][0];
+        let options = result[1][0];
+        aria2Version = result[2][0];
         for (let i = 0, l = RawKeys.length; i < l; i++) {
             let key = RawKeys[i];
             aria2Config[key] = options[key];
@@ -186,7 +186,9 @@ function downloadDirectory(filename) {
 
 function downloadHandler(url, referer, filename, hostname, tabId) {
     let options = downloadDirectory(filename);
-    hostname ||= getHostname(referer);
+    if (!hostname) {
+        hostname = getHostname(referer);
+    }
     if (matchHostname(proxyHosts, hostname)) {
         options['all-proxy'] = aria2Storage['proxy_server'];
     }
@@ -323,7 +325,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
     }
 }, { urls: systemURLs, types: ['main_frame', 'sub_frame', 'image', 'other'] }, systemHeaders);
 
-chrome.action ||= chrome.browserAction;
+if (!chrome.action) {
+    chrome.action = chrome.browserAction;
+}
 
 chrome.action.onClicked.addListener(() => {
     chrome.tabs.query({ url: addonManager, currentWindow: true }, ([tab]) => {
