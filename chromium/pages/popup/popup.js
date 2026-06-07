@@ -80,8 +80,11 @@ menuPane.addEventListener('click', (event) => {
 const aria2RPC = new Aria2();
 aria2RPC.onopen = () => {
     aria2RPC.multicall([
-        { method: 'aria2.getGlobalStat' }, { method: 'aria2.getVersion' },
-        { method: 'aria2.tellActive' }, { method: 'aria2.tellWaiting', params: [0, 999] }, { method: 'aria2.tellStopped', params: [0, 999] }
+        { methodName: 'aria2.getGlobalStat' },
+        { methodName: 'aria2.getVersion' },
+        { methodName: 'aria2.tellActive' },
+        { methodName: 'aria2.tellWaiting', params: [0, 999] },
+        { methodName: 'aria2.tellStopped', params: [0, 999] }
     ]).then((response) => {
         let result = response.result;
         let waiting = result[3][0];
@@ -98,11 +101,13 @@ aria2RPC.onopen = () => {
             updateTasks(stopped[i]);
         }
         aria2Interval = setInterval(() => {
-            aria2RPC.multicall([{ method: 'aria2.getGlobalStat' }, { method: 'aria2.tellActive' }])
-                .then((response) => {
-                    let result = response.result;
-                    updateManager(result[0][0], result[1][0]);
-                });
+            aria2RPC.multicall([
+                { methodName: 'aria2.getGlobalStat' },
+                { methodName: 'aria2.tellActive' }
+            ]).then((response) => {
+                let result = response.result;
+                updateManager(result[0][0], result[1][0]);
+            });
         }, aria2Delay);
     }).catch(aria2RPC.onclose);
 };
@@ -235,7 +240,10 @@ const taskPause = {
 };
 
 async function getDetails(gid) {
-    let response = await aria2RPC.multicall([{ method: 'aria2.getFiles', params: [gid] }, { method: 'aria2.getOption', params: [gid] }]);
+    let response = await aria2RPC.multicall([
+        { methodName: 'aria2.getFiles', params: [gid] },
+        { methodName: 'aria2.getOption', params: [gid] }
+    ]);
     let result = response.result;
     let files = result[0][0];
     let options = result[1][0];
@@ -308,7 +316,10 @@ async function taskRetry(task, gid) {
             options['out'] = match[2];
         }
     }
-    let response = await aria2RPC.multicall([{ method: 'aria2.addUri', params: [url, options] }, { method: 'aria2.removeDownloadResult', params: [gid] }]);
+    let response = await aria2RPC.multicall([
+        { methodName: 'aria2.addUri', params: [url, options] },
+        { methodName: 'aria2.removeDownloadResult', params: [gid] }
+    ]);
     let added = response.result[0][0];
     removeFromQueue(gid, 'stopped');
     delete aria2Tasks[gid];
