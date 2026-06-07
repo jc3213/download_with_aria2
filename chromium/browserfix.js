@@ -1,15 +1,18 @@
-function captureDownloads({ id, finalUrl, referrer, filename }) {
-    if (finalUrl.startsWith('data') || finalUrl.startsWith('blob')) {
+function captureDownloads(downloadItem) {
+    let url = downloadItem.finalUrl;
+    if (url.startsWith('data') || url.startsWith('blob')) {
         return;
     }
-    let hostname = getHostname(referrer || finalUrl);
+    let referer = downloadItem.referrer;
+    let hostname = getHostname(referer || url);
     if (matchHostname(captureHosts, hostname)) {
         return;
     }
+    let id = downloadItem.id;
     chrome.downloads.search({ id }, () => {
         chrome.downloads.erase({ id });
     });
-    downloadHandler(finalUrl, referrer, filename, hostname);
+    downloadHandler(url, referer, downloadItem.filename, hostname);
 }
 
 function captureHooking() {

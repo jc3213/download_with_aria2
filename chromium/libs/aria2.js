@@ -16,7 +16,7 @@ class Aria2 {
     constructor(url = 'http://localhost:6800/jsonrpc', secret = '') {
         let rpc = url.split('#');
         this.url = rpc[0];
-        this.secret = rpc[1] ?? secret;
+        this.secret = rpc[1] || secret;
         this.#call = this.#post;
     }
 
@@ -103,8 +103,10 @@ class Aria2 {
     multicall(args) {
         let calls = [];
         for (let i = 0, l = args.length; i < l; i++) {
-            let { method, params = [] } = args[i];
-            calls[i] = { methodName: method, params: [ this.#secret, ...params ] };
+            let arg = args[i];
+            let methodName = arg.methodName || arg.method;
+            let params = arg.params ? [ this.#secret, ...arg.params ] : [ this.#secret ];
+            calls[i] = { methodName, params };
         }
         return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [calls] });
     }
