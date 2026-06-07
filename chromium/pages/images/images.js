@@ -23,33 +23,34 @@ thumbPane.addEventListener('mouseover', (event) => {
 
 function menuEventSubmit() {
     let params = [];
-    for (let { src, alt, classList } of gallery) {
-        if (classList.contains('checked')) {
-            let options = { ...aria2Config, out: alt };
-            params.push({ method: 'aria2.addUri', params: [[src], options] });
+    for (let i = 0, l = gallery.length; i < l; i++) {
+        let img = gallery[i];
+        if (img.classList.contains('checked')) {
+            let options = { ...aria2Config, out: img.alt };
+            params.push({ method: 'aria2.addUri', params: [[img.src], options] });
         }
     }
     chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
 
 const menuEvents = {
-    'select_all': () => {
-        for (let img of gallery) {
-            img.classList.add('checked');
+    'select_all'() {
+        for (let i = 0, l = gallery.length; i < l; i++) {
+            gallery[i].classList.add('checked');
         }
     },
-    'select_none': () => {
-        for (let img of gallery) {
-            img.classList.remove('checked');
+    'select_none'() {
+        for (let i = 0, l = gallery.length; i < l; i++) {
+            gallery[i].classList.remove('checked');
         }
     },
-    'select_flip': () => {
-        for (let img of gallery) {
-            img.classList.toggle('checked');
+    'select_flip'() {
+        for (let i = 0, l = gallery.length; i < l; i++) {
+            gallery[i].classList.toggle('checked');
         }
     },
     'common_submit': menuEventSubmit,
-    'popup_options': () => {
+    'popup_options'() {
         optionsBtn.classList.toggle('checked');
         jsonrpcPane.classList.toggle('hidden');
     }
@@ -76,15 +77,19 @@ chrome.tabs.getCurrent((tab) => {
     tabId = tab.id;
 });
 
-chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, ({ system, storage, options, images, headers }) => {
-    system.manifest_version === 2 ? antiLeechMV2(headers) : antiLeechMV3();
-    aria2Proxy = storage['proxy_server'];
+chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, (message) => {
+    message.system.manifest_version === 2 ? antiLeechMV2(message.headers) : antiLeechMV3();
+    aria2Proxy = message.storage['proxy_server'];
     aria2Config['referer'] = referer;
-    for (let entry of jsonrpcEntries) {
+    let config = message.options;
+    let images = message.images;
+    for (let i = 0, l = jsonrpcEntries.length; i < l; i ++) {
+        let entry = jsonrpcEntries[i];
         let { name } = entry;
-        entry.value = aria2Config[name] = options[name] ?? '';
+        entry.value = aria2Config[name] = config[name] || '';
     }
-    for (let url of images) {
+    for (let i = 0, l = images.length; i < l; i++) {
+        let url = images[i];
         let path = url.substring(url.lastIndexOf('/') + 1);
         let idx = path.search(/[?#@]/);
         let img = document.createElement('img');
