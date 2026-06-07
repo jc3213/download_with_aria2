@@ -65,7 +65,10 @@ const menuEvents = {
 
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
-    menuEvents[menu]?.();
+    let handler = menuEvents[menu];
+    if (handler) {
+        handler();
+    }
 });
 
 jsonrpcPane.addEventListener('change', (event) => {
@@ -93,7 +96,7 @@ chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, (message) =
     aria2Counts = images.length;
     for (let i = 0, l = jsonrpcEntries.length; i < l; i ++) {
         let entry = jsonrpcEntries[i];
-        let { name } = entry;
+        let name = entry.name;
         entry.value = aria2Config[name] = config[name] || '';
     }
     for (let i = 0; i < aria2Counts; i++) {
@@ -110,7 +113,8 @@ chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, (message) =
 
 function antiLeechMV2(headers) {
     headers.unshift('blocking');
-    chrome.webRequest.onBeforeSendHeaders.addListener(({ requestHeaders }) => {
+    chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
+        let requestHeaders = details.requestHeaders;
         requestHeaders.push({ name: 'Referer', value: referer });;
         return { requestHeaders };
     }, { urls: ['http://*/*', 'https://*/*'], tabId, types: ['image'] }, headers);

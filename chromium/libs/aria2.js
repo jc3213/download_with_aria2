@@ -23,9 +23,9 @@ class Aria2 {
     set url(string) {
         if (string.startsWith('http://') || string.startsWith('https://')) {
             this.#url = this.#xml = string;
-            this.#wsa = string.replace('http', 'ws');
+            this.#wsa = 'ws' + string.substring(4);
         } else if (string.startsWith('ws://') || string.startsWith('wss://')) {
-            this.#xml = string.replace('ws', 'http');
+            this.#xml = 'http' + string.substring(2);
             this.#url = this.#wsa = string;
         } else {
             throw new TypeError('Invalid JSON-RPC Endpoint: expected http(s):// or ws(s)://');
@@ -116,21 +116,27 @@ class Aria2 {
         this.#socket.onopen = (event) => {
             this.#call = this.#send;
             this.#tries = 0;
-            this.#onopen?.(event);
+            if (this.#onopen) {
+                this.#onopen(event);
+            }
         };
         this.#socket.onmessage = (event) => {
             let json = JSON.parse(event.data);
             if (json.method) {
-                this.#onmessage?.(json);
+                if (this.#onmessage) {
+                    this.#onmessage(json);
+                }
             } else {
-                let { id } = json;
+                let id = json.id;
                 this[id](json);
                 delete this[id];
             }
         };
         this.#socket.onclose = (event) => {
             this.#call = this.#post;
-            this.#onclose?.(event);
+            if (this.#onclose) {
+                this.#onclose(event);
+            }
             if (this.#tries++ < this.#retries) {
                 setTimeout(() => this.connect(), this.#timeout);
             } else {

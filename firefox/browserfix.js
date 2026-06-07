@@ -110,7 +110,7 @@ function decodePlainText(charset, string) {
 
 function decodeFileName(disposition) {
     console.log(disposition);
-    if (!disposition?.startsWith('attachment')) {
+    if (!disposition || !disposition.startsWith('attachment')) {
         return;
     }
     let RFC2047 = disposition.match(/=\?[^?]+\?[bqBQ]\?[^?]+\?=/g);
@@ -121,6 +121,7 @@ function decodeFileName(disposition) {
     if (RFC5987) {
         return decodePlainText(RFC5987[1], RFC5987[2]);
     }
-    let string = disposition.match(/filename="?([^";]+);?/)?.[1] || disposition;
+    let UNKNOWN = disposition.match(/filename="?([^";]+);?/);
+    let string = UNKNOWN ? UNKNOWN[1] : disposition;
     return decodePlainText('UTF-8', string);
 }

@@ -28,18 +28,17 @@ for (let i = 0, l = hotkeyMap.length; i < l; i++) {
 }
 
 document.addEventListener('keydown', (event) => {
-    let { ctrlKey, altKey, shiftKey, key } = event;
     let keys = [];
-    if (ctrlKey) {
+    if (event.ctrlKey) {
         keys.push('ctrl');
     }
-    if (altKey) {
+    if (event.altKey) {
         keys.push('alt');
     }
-    if (shiftKey) {
+    if (event.shiftKey) {
         keys.push('shift');
     }
-    keys.push(key.toLowerCase());
+    keys.push(event.key.toLowerCase());
     let combo = keys.join('+');
     let hotkey = hotkeyCombo[combo];
     if (hotkey) {

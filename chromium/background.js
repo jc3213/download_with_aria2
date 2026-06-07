@@ -437,11 +437,10 @@ function toolbarCounter() {
     chrome.action.setBadgeText({ text: !number ? '' : `${number}` });
 }
 
-function openPopupWindow(url, winSize) {
-    chrome.windows.getCurrent(({ top, left, height, width }) => {
-        top = (top + height - winSize) / 2 | 0;
-        left = (left + width - 710) / 2 | 0;
-        height = winSize;
+function openPopupWindow(url, height) {
+    chrome.windows.getCurrent((window) => {
+        let top = (window.top + window.height - height) / 2 | 0;
+        let left = (window.left + window.width - 710) / 2 | 0;
         width = 698;
         chrome.tabs.query({ url }, ([tab]) => {
             if (tab) {
