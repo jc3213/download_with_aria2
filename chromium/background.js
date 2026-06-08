@@ -83,12 +83,12 @@ aria2RPC.onclose = () => {
     chrome.action.setBadgeText({ text: 'E' });
     chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
 };
-aria2RPC.onmessage = (response) => {
-    let method = response.method;
+aria2RPC.onmessage = (message) => {
+    let method = message.method;
     if (method === 'aria2.onBtDownloadComplete') {
         return;
     }
-    let gid = response.params[0].gid;
+    let gid = message.params[0].gid;
     if (method === 'aria2.onDownloadStart') {
         if (!aria2Active.has(gid)) {
             aria2Active.add(gid);

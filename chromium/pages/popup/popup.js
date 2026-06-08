@@ -120,12 +120,12 @@ aria2RPC.onclose = () => {
         systemTree[i].textContent = '0';
     }
 };
-aria2RPC.onmessage = (response) => {
-    let method = response.method;
+aria2RPC.onmessage = (message) => {
+    let method = message.method;
     if (method === 'aria2.onBtDownloadComplete') {
         return;
     }
-    let gid = response.params[0].gid;
+    let gid = message.params[0].gid;
     let group = method === 'aria2.onDownloadStart' ? 'waiting' : 'active';
     reloadTasks(gid);
     removeFromQueue(gid, group);
@@ -287,10 +287,9 @@ async function taskApply(task, gid) {
     let config = task.config;
     let selected = [];
     for (let entries of checks) {
-        let index = entries[0];
         let check = entries[1];
         if (check.checked) {
-            selected.push(index);
+            selected.push(entries[0]);
         }
     }
     config['select-file'] = selected.join(',');
