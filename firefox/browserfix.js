@@ -66,22 +66,22 @@ function decodeRFC2047(args) {
     let result = '';
     for (let i = 0, l = args.length; i < l; i++) {
         let bytes = [];
-        let arr = args[i].split('?');
-        let charset = arr[1];
-        let type = arr[2];
-        let string = arr[3];
+        let parts = args[i].split('?');
+        let charset = parts[1];
+        let type = parts[2];
+        let string = parts[3];
         if (type.toLowerCase() === 'b') {
             let text = atob(string);
             for (let i = 0, l = text.length; i < l; i++) {
                 bytes.push(text[i].charCodeAt(0));
             }
         } else {
-            let parts = string.match(/=[0-9a-fA-F]{2}|[^=]/g);
-            if (!parts) {
+            let sets = string.match(/=[0-9a-fA-F]{2}|[^=]/g);
+            if (!sets) {
                 continue;
             }
-            for (let i = 0, l = parts.length; i < l; i++) {
-                let q = parts[i];
+            for (let i = 0, l = sets.length; i < l; i++) {
+                let q = sets[i];
                 if (q.startsWith('=') && q.length === 3) {
                     bytes.push(parseInt(q.substring(1), 16));
                 } else if (q === '_') {
@@ -122,6 +122,8 @@ function decodeFileName(disposition) {
         return decodePlainText(RFC5987[1], RFC5987[2]);
     }
     let UNKNOWN = disposition.match(/filename="?([^";]+);?/);
-    let string = UNKNOWN ? UNKNOWN[1] : disposition;
-    return decodePlainText('UTF-8', string);
+    if (UNKNOWN) {
+        return decodePlainText('UTF-8', UNKNOWN[1]);
+    }
+    return decodePlainText('UTF-8', disposition);
 }
