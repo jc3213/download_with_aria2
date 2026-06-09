@@ -124,7 +124,12 @@ class Aria2 {
         let calls = [];
         for (let i = 0, l = args.length; i < l; i++) {
             let arg = args[i];
-            let params = arg.params ? [ this.#secret, ...arg.params ] : [ this.#secret ];
+            let params = arg.params;
+            if (params) {
+                params = [ this.#secret, ...params ];
+            } else {
+                params = [ this.#secret ];
+            }
             calls[i] = { methodName: arg.methodName, params };
         }
         return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [calls] });
