@@ -335,12 +335,13 @@ function addToList(add) {
     if (old_value.includes(host)) {
         return;
     }
-    let list = matchLists.get(id).list;
     let new_value = old_value.slice();
+    let index = new_value.length;
+    let list = matchLists.get(id).list;
     let rule = printMatchPattern(list, id, host);
-    new_value.push(host);
+    new_value[index] = host;
     list.scrollTop = list.scrollHeight;
-    saveChanges({ id, new_value, old_value, type: 'rules', add: { list, index: old_value.length, rule } });
+    saveChanges({ id, new_value, old_value, type: 'rules', add: { list, index, rule } });
 }
 
 function removeFromList(remove) {
