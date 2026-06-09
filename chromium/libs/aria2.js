@@ -44,7 +44,11 @@ class Aria2 {
 
     set retries(number) {
         let n = number | 0;
-        this.#retries = n >= 0 ? n : Infinity;
+        if (n >= 0) {
+            this.#retries = n;
+        } else {
+            this.#retries = Infinity;
+        }
     }
     get retries() {
         return this.#retries;
@@ -52,28 +56,44 @@ class Aria2 {
 
     set timeout(number) {
         let n = number | 0;
-        this.#timeout = n <= 1 ? 1000 : n * 1000;
+        if (n <= 1) {
+            this.#timeout = 1000;
+        } else {
+            this.#timeout = n * 1000;
+        }
     }
     get timeout() {
         return this.#timeout / 1000;
     }
 
     set onopen(callback) {
-        this.#onopen = typeof callback === 'function' ? callback : null;
+        if (typeof callback === 'function') {
+            this.#onopen = callback;
+        } else {
+            this.#onopen = null;
+        }
     }
     get onopen() {
         return this.#onopen;
     }
 
     set onmessage(callback) {
-        this.#onmessage = typeof callback === 'function' ? callback : null;
+        if (typeof callback === 'function') {
+            this.#onmessage = callback;
+        } else {
+            this.#onmessage = null;
+        }
     }
     get onmessage() {
         return this.#onmessage;
     }
 
     set onclose(callback) {
-        this.#onclose = typeof callback === 'function' ? callback : null;
+        if (typeof callback === 'function') {
+            this.#onclose = callback;
+        } else {
+            this.#onclose = null;
+        }
     }
     get onclose() {
         return this.#onclose;
@@ -104,9 +124,8 @@ class Aria2 {
         let calls = [];
         for (let i = 0, l = args.length; i < l; i++) {
             let arg = args[i];
-            let methodName = arg.methodName || arg.method;
             let params = arg.params ? [ this.#secret, ...arg.params ] : [ this.#secret ];
-            calls[i] = { methodName, params };
+            calls[i] = { methodName: arg.methodName, params };
         }
         return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [calls] });
     }
