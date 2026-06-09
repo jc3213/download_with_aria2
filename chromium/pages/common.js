@@ -3,14 +3,14 @@ const i18nTips = document.querySelectorAll('[i18n-tips]');
 
 for (let i = 0, l = i18nText.length; i < l; i++) {
     let el = i18nText[i];
-    let i18n = el.getAttribute('i18n');
-    el.textContent = chrome.i18n.getMessage(i18n);
+    let key = el.getAttribute('i18n');
+    el.textContent = chrome.i18n.getMessage(key);
 }
 
 for (let i = 0, l = i18nTips.length; i < l; i++) {
     let el = i18nTips[i];
-    let tips = el.getAttribute('i18n-tips')
-    el.title = chrome.i18n.getMessage(tips);
+    let key = el.getAttribute('i18n-tips')
+    el.title = chrome.i18n.getMessage(key);
 }
 
 const hotkeyMap = document.querySelectorAll('[hotkey]')
