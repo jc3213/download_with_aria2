@@ -107,7 +107,7 @@ chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, (message) =
         img.alt = idx === -1 ? path : path.substring(0, idx);
         img.src = img.title = url;
         thumbPane.appendChild(img);
-        gallery.push(img);
+        gallery[i] = img;
     }
 });
 

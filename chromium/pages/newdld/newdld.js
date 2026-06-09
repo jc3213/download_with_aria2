@@ -33,7 +33,7 @@ function menuSubmit() {
     aria2Config['out'] = l !== 1 || !out ? null : out.replace(/[\\/:*?"<>|]/g, '_');
     let params = [];
     for (let i = 0; i < l; i++) {
-        params.push({ methodName: 'aria2.addUri', params: [[urls[i]], aria2Config] });
+        params[i] = { methodName: 'aria2.addUri', params: [[urls[i]], aria2Config] };
     }
     chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
