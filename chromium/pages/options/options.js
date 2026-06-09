@@ -113,8 +113,7 @@ function loadChanges(loadList, saveList, loadButton, saveButton, key, todo) {
         let order = todo === 'undo' ? sort.old_order : sort.new_order;
         sort.list.append(...order);
     } else {
-        let entry = change.entry;
-        entry.value = value;
+        change.entry.value = value;
     }
     changes[id] = value;
     saveList.push(change);
@@ -131,7 +130,7 @@ function menuExport() {
         body = [];
         for (let i = 0, l = jsonrpcEntries.length; i < l; i++) {
             let key = jsonrpcEntries[i].name;
-            body.push(key + '=' + aria2Config[key] + '\n');
+            body[i] = key + '=' + aria2Config[key] + '\n';
         }
     } else {
         name = 'downwitharia2-' + time + '.json';
