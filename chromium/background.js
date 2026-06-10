@@ -134,20 +134,24 @@ async function downloadNotify(type, gid) {
     chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
 }
 
-function searchHeaders(url, referer) {
-    for (let tab of aria2Inspect.values()) {
-        let headers = tab[url];
-        if (headers) {
-            return headers;
-        }
-    }
-    return [{ name: 'Referer', value: referer }];
-}
-
 function downloadHeaders(tabId, url, referer) {
     let result = [];
+    let headers;
     let inspect = aria2Inspect.get(tabId);
-    let headers = inspect?.[url] || searchHeaders(url, referer);
+    if (inspect) {
+        headers = inspect[url];
+    }
+    if (!headers) {
+        for (let tab of aria2Inspect.values()) {
+            let value = tab[url];
+            if (value) {
+                headers = value;
+            }
+        }
+    }
+    if (!headers) {
+        headers = [{ name: 'Referer', value: referer }];
+    }
     let oldUA = navigator.userAgent;
     for (let i = 0, l = headers.length; i < l; i++) {
         let header = headers[i];
