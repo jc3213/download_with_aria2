@@ -174,6 +174,7 @@ function updateTasks(result) {
     let task = aria2Tasks[gid];
     if (!task) {
         task = createTasks(gid, result.status, bittorrent, files);
+        aria2Tasks[gid] = task;
     }
     let completedLength = result.completedLength;
     let totalLength = result.totalLength;
@@ -189,10 +190,7 @@ function updateTasks(result) {
     let path = file.path;
     let uris = file.uris;
     if (!task.name.textContent) {
-        task.name.textContent = (bittorrent && bittorrent.info && bittorrent.info.name) ||
-        (path && path.substring(path.lastIndexOf('/') + 1)) ||
-        (uris && uris[0] && uris[0].uri) ||
-        gid;
+        task.name.textContent = bittorrent?.info?.name || path?.substring(path.lastIndexOf('/') + 1) || uris?.[0]?.uri || gid;
     }
     task.current.textContent = getFileSize(completedLength);
     task.total.textContent = getFileSize(totalLength);
@@ -391,7 +389,6 @@ function createTasks(gid, status, bittorrent, files) {
     let menus = tree[7].children;
     let options = tree[9];
     let newuri = tree[11].firstElementChild.children[1];
-    aria2Tasks[gid] = task;
     task.name = tree[0];
     task.current = tree[1];
     task.day = times[0];
