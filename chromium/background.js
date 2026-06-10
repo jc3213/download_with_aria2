@@ -445,7 +445,7 @@ function openPopupWindow(url, height) {
     chrome.windows.getCurrent((window) => {
         let top = (window.top + window.height - height) / 2 | 0;
         let left = (window.left + window.width - 710) / 2 | 0;
-        width = 698;
+        let width = 698;
         chrome.tabs.query({ url }, (tabs) => {
             let tab = tabs[0];
             if (tab) {
