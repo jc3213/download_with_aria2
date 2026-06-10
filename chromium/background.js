@@ -68,8 +68,7 @@ aria2RPC.onopen = () => {
             aria2Config[key] = RawToSize(options[key]);
         }
         for (let i = 0, l = active.length; i < l; i++) {
-            let gid = active[i].gid;
-            aria2Active.add(gid);
+            aria2Active.add(active[i].gid);
         }
         captureHooking();
         toolbarCounter();
