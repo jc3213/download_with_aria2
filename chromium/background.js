@@ -309,8 +309,8 @@ chrome.webNavigation.onBeforeNavigate.addListener((details) => {
     }
 });
 
-chrome.tabs.onUpdated.addListener((tabId, tab) => {
-    let url = tab.url;
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+    let url = changeInfo.url;
     if (!url) {
         return;
     }
