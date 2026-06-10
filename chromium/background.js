@@ -125,8 +125,9 @@ async function downloadNotify(type, gid) {
         return;
     }
     let response = await aria2RPC.call('aria2.tellStatus', [gid]);
-    let bittorrent = response.result.bittorrent;
-    let file = response.result.files[0];
+    let result = response.result;
+    let bittorrent = result.bittorrent;
+    let file = result.files[0];
     let path = file.path;
     let uris = file.uris;
     let title = chrome.i18n.getMessage('download_' + type);
@@ -313,7 +314,7 @@ chrome.tabs.onUpdated.addListener((tabId, tab) => {
     }
     let inspect = aria2Inspect.get(tabId);
     if (!inspect || inspect.url !== url) {
-        aria2Inspect.set(tabId, { images: new Map(), url });
+        aria2Inspect.set(tabId, { images: [], url });
     }
 });
 
