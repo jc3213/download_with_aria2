@@ -277,8 +277,7 @@ function popupQueues(response, array) {
 }
 
 function imagesRuntime(response, id) {
-    let tab = aria2Inspect.get(id);
-    let images = tab?.images || [];
+    let images = aria2Inspect.get(id)?.images || [];
     response({ system: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
 }
 
