@@ -190,7 +190,7 @@ function updateTasks(result) {
     let path = file.path;
     let uris = file.uris;
     if (!task.name.textContent) {
-        task.name.textContent = bittorrent?.info?.name || path?.substring(path.lastIndexOf('/') + 1) || uris?.[0]?.uri || gid;
+        task.name.textContent = bittorrent?.info?.name || path?.substring(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
     }
     task.current.textContent = getFileSize(completedLength);
     task.total.textContent = getFileSize(totalLength);

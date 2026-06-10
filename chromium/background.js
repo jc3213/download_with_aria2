@@ -130,7 +130,7 @@ async function downloadNotify(type, gid) {
     let path = file.path;
     let uris = file.uris;
     let title = chrome.i18n.getMessage('download_' + type);
-    let message = bittorrent?.info?.name || path?.substring(path.lastIndexOf('/') + 1) || uris?.[0]?.uri || gid;
+    let message = bittorrent?.info?.name || path?.substring(path.lastIndexOf('/') + 1) || uris[0]?.uri || gid;
     chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
 }
 
