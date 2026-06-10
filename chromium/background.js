@@ -130,10 +130,7 @@ async function downloadNotify(type, gid) {
     let path = file.path;
     let uris = file.uris;
     let title = chrome.i18n.getMessage('download_' + type);
-    let message = (bittorrent && bittorrent.info && bittorrent.info.name) ||
-        (path && path.substring(path.lastIndexOf('/') + 1)) ||
-        (uris && uris[0] && uris[0].uri) ||
-        gid;
+    let message = bittorrent?.info?.name || path?.substring(path.lastIndexOf('/') + 1) || uris?.[0]?.uri || gid;
     chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
 }
 
@@ -150,7 +147,7 @@ function searchHeaders(url, referer) {
 function downloadHeaders(tabId, url, referer) {
     let result = [];
     let inspect = aria2Inspect.get(tabId);
-    let headers = (inspect && inspect[url]) || searchHeaders(url, referer);
+    let headers = inspect?.[url] || searchHeaders(url, referer);
     let oldUA = navigator.userAgent;
     for (let i = 0, l = headers.length; i < l; i++) {
         let header = headers[i];
@@ -277,7 +274,7 @@ function popupQueues(response, array) {
 
 function imagesRuntime(response, id) {
     let tab = aria2Inspect.get(id);
-    let images = tab ? [...tab.images.values()] : [];
+    let images = tab?.images || [];
     response({ system: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
 }
 
@@ -305,7 +302,7 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {
     if (details.frameId === 0) {
-        aria2Inspect.set(details.tabId, { images: new Map(), url: details.url });
+        aria2Inspect.set(details.tabId, { images: [], url: details.url });
     }
 });
 
@@ -329,13 +326,17 @@ chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
     let url = details.url;
     let tab = aria2Inspect.get(tabId);
     if (!tab) {
-        tab = { images: new Map(), url };
+        tab = { images: [], url };
         aria2Inspect.set(tabId, tab);
     }
     if (details.type === 'image') {
         let idx = url.search(/[?#@]/);
         let img = idx === -1 ? url : url.substring(0, idx);
-        tab.images.set(img, url);
+        if (img in tab) {
+            return;
+        }
+        tab[img] = url;
+        tab.images.push(url);
     } else {
         tab[url] = details.requestHeaders;
     }
