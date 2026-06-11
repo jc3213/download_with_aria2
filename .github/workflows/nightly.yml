@@ -56,14 +56,15 @@ jobs:
         id: check
         run: |
           if gh release view "${{ steps.version.outputs.version }}" --json tagName >/dev/null 2>&1; then
-            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "SKIP_RELEASE=true" >> $GITHUB_ENV
           else
-            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "SKIP_RELEASE=false" >> $GITHUB_ENV
           fi
+          echo "skip=$SKIP_RELEASE" >> $GITHUB_OUTPUT
 
   nightly:
     needs: prepare
-    if: needs.prepare.outputs.skip != 'true'
+    if: needs.prepare.outputs.skip == 'false'
     runs-on: ubuntu-latest
 
     env:
