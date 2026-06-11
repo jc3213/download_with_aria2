@@ -12,7 +12,7 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      skip: ${{ steps.final.outputs.skip }}
+      skip: ${{ steps.check.outputs.skip }}
       version: ${{ steps.version.outputs.version }}
       hash: ${{ steps.version.outputs.hash }}
       mv2_zip: ${{ steps.version.outputs.mv2_zip }}
@@ -54,17 +54,14 @@ jobs:
 
       - name: 🛑 Check if Release Exists
         id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if gh release view "${{ steps.version.outputs.version }}" --json tagName >/dev/null 2>&1; then
-            echo "SKIP_RELEASE=true" >> $GITHUB_ENV
+            echo "skip=true" >> $GITHUB_OUTPUT
           else
-            echo "SKIP_RELEASE=false" >> $GITHUB_ENV
+            echo "skip=false" >> $GITHUB_OUTPUT
           fi
-
-      - name: 🔄 Finalize skip output
-        id: final
-        run: |
-          echo "skip=$SKIP_RELEASE" >> $GITHUB_OUTPUT
 
   nightly:
     needs: prepare
