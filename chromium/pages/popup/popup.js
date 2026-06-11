@@ -102,10 +102,7 @@ aria2RPC.onopen = () => {
         aria2Interval = setInterval(() => {
             aria2RPC.multicall([
                 { methodName: 'aria2.getGlobalStat' },
-                { methodName: 'aria2.tellActive' },
-                        { methodName: 'aria2.getVersion' },
-                                { methodName: 'aria2.tellWaiting', params: [0, 999] },
-        { methodName: 'aria2.tellStopped', params: [0, 999] }
+                { methodName: 'aria2.tellActive' }
             ]).then((response) => {
                 let result = response.result;
                 updateManager(result[0][0], result[1][0]);
