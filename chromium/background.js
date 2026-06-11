@@ -229,7 +229,7 @@ function togglHostState(id, rules) {
             rules.add(host);
             options = 'match_add';
         }
-        let value = aria2Storage[id] = [...rules];
+        let value = aria2Storage[id] = Array.from(rules);
         let title = chrome.i18n.getMessage('options_' + id.substring(0, id.indexOf('_')));
         let message = chrome.i18n.getMessage(options, [host, chrome.i18n.getMessage(id)]);
         chrome.storage.sync.set({ [id]: value });
@@ -403,7 +403,8 @@ function storageDispatch(json) {
 }
 
 chrome.storage.sync.get(null, (json) => {
-    storageDispatch({ ...systemStorage, ...json });
+    let storage = Object.assign({}, systemStorage, json);
+    storageDispatch(storage);
 });
 
 function getHostname(url) {

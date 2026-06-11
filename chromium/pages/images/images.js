@@ -33,7 +33,8 @@ function menuEventSubmit() {
     for (let i = 0; i < aria2Counts; i++) {
         let img = gallery[i];
         if (img.classList.contains('checked')) {
-            let options = { ...aria2Config, out: img.alt };
+            let options = Object.assign({}, aria2Config);
+            options.out = alt;
             params.push({ method: 'aria2.addUri', params: [[img.src], options] });
         }
     }

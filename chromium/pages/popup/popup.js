@@ -35,22 +35,21 @@ let fileLET = templateTree[1];
 let uriLET = templateTree[2];
 
 function taskFilters(array, callback) {
-    let filters = new Set(array);
     let manager = document.body.classList;
-
     manager.add(...array);
 
     filterPane.addEventListener('click', (event) => {
         let id = event.target.id.substring(2);
-        if (filters.has(id)) {
-            filters.delete(id);
-            manager.remove(id);
-        } else {
-            filters.add(id);
+        let index = array.indexOf(id);
+        if (index === -1) {
+            array.push(id);
             manager.add(id);
+        } else {
+            array.splice(index, 1);
+            manager.remove(id);
         }
         if (callback) {
-            callback([...filters]);
+            callback(array);
         }
     });
 }
@@ -103,7 +102,10 @@ aria2RPC.onopen = () => {
         aria2Interval = setInterval(() => {
             aria2RPC.multicall([
                 { methodName: 'aria2.getGlobalStat' },
-                { methodName: 'aria2.tellActive' }
+                { methodName: 'aria2.tellActive' },
+                        { methodName: 'aria2.getVersion' },
+                                { methodName: 'aria2.tellWaiting', params: [0, 999] },
+        { methodName: 'aria2.tellStopped', params: [0, 999] }
             ]).then((response) => {
                 let result = response.result;
                 updateManager(result[0][0], result[1][0]);
@@ -515,7 +517,7 @@ queuePane.addEventListener('drop', async (event) => {
     }
     let id = aria2Drag.id;
     let group = aria2Group[target.status];
-    let waiting = [...aria2Queue.waiting];
+    let waiting = Array.from(aria2Queue.waiting);
     let index = waiting.indexOf(id);
     let pos;
     if (group === 'waiting') {
