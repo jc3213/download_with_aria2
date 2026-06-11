@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  prerelease-extensions:
+  release-extensions-nightly:
     runs-on: ubuntu-latest
 
     env:
