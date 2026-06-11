@@ -12,7 +12,7 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      skip: ${{ steps.check.outputs.skip }}
+      skip: ${{ steps.final.outputs.skip }}
       version: ${{ steps.version.outputs.version }}
       hash: ${{ steps.version.outputs.hash }}
       mv2_zip: ${{ steps.version.outputs.mv2_zip }}
@@ -60,6 +60,10 @@ jobs:
           else
             echo "SKIP_RELEASE=false" >> $GITHUB_ENV
           fi
+
+      - name: 🔄 Finalize skip output
+        id: final
+        run: |
           echo "skip=$SKIP_RELEASE" >> $GITHUB_OUTPUT
 
   nightly:
