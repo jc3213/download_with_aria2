@@ -20,8 +20,8 @@ class Aria2 {
         } else {
             let i = url.indexOf('#');
             if (i !== -1) {
-                this.url = url.slice(0, i);
-                this.secret = url.slice(i + 1);
+                this.url = url.substring(0, i);
+                this.secret = url.substring(i + 1);
             } else {
                 this.url = url;
                 this.secret = secret || '';
