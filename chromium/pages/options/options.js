@@ -68,7 +68,7 @@ jsonrpcPane.addEventListener('change', (event) => {
 });
 
 function storageUpdate() {
-    aria2Storage = Object.assign({}, changes);
+    aria2Storage = { ...changes };
     chrome.runtime.sendMessage({ action: 'update_storage', params: changes });
 }
 
@@ -205,7 +205,7 @@ function optionsDispatch(options) {
         let name = entry.name;
         entry.value = aria2Config[name] = options[name] || '';
     }
-    changes = Object.assign({}, aria2Config);
+    changes = { ...aria2Config };
 }
 
 function changeHistoryFlush() {
@@ -297,7 +297,7 @@ function printMatchPattern(list, id, value) {
 }
 
 function storageDispatch() {
-    changes = Object.assign({}, aria2Storage);
+    changes = { ...aria2Storage };
     tellVer.textContent = aria2Version;
     for (let i = 0, l = storageEntries.length; i < l; i++) {
         let entry = storageEntries[i];

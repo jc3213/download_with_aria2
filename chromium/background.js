@@ -403,7 +403,7 @@ function storageDispatch(json) {
 }
 
 chrome.storage.sync.get(null, (json) => {
-    let storage = Object.assign({}, systemStorage, json);
+    let storage = { ...systemStorage, ...json };
     storageDispatch(storage);
 });
 
