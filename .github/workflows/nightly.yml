@@ -35,15 +35,14 @@ jobs:
 
           get_version() {
             DIR="$1"
-            RAW=$(jq -r .version "$DIR/manifest.json")
-            NEW="${RAW}.${COUNT}"
-            jq --arg v "$NEW" '.version=$v' "$DIR/manifest.json" > tmp && mv tmp "$DIR/manifest.json"
-            echo "$NEW"
+            RAW=$(jq -r '.version' "$DIR/manifest.json")
+            echo "${RAW}.${COUNT}"
           }
 
           MV2_VER=$(get_version chromium)
           MV3_VER=$(get_version chromium_mv3)
           FF_VER=$(get_version firefox)
+
           VERSION=$(printf "%s\n%s\n%s" "$MV2_VER" "$MV3_VER" "$FF_VER" | sort -V | tail -n 1)
 
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -51,6 +50,7 @@ jobs:
           echo "mv2_zip=$NAME-chromium-$MV2_VER-$HASH.zip" >> $GITHUB_OUTPUT
           echo "mv3_zip=$NAME-chromium_mv3-$MV3_VER-$HASH.zip" >> $GITHUB_OUTPUT
           echo "ff_zip=$NAME-firefox_$FF_VER-$HASH.zip" >> $GITHUB_OUTPUT
+
 
       - name: 🛑 Check if Release Exists
         id: check
@@ -79,6 +79,18 @@ jobs:
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v5
+
+      - name: 🏷️ Apply Version to Manifests
+        run: |
+          apply_version() {
+            DIR="$1"
+            VERSION="${{ env.VERSION }}"
+            jq --arg v "$VERSION" '.version=$v' "$DIR/manifest.json" > tmp && mv tmp "$DIR/manifest.json"
+          }
+
+          apply_version chromium
+          apply_version chromium_mv3
+          apply_version firefox
 
       - name: 🔧 Install Zip Tool
         run: sudo apt-get install -y zip jq
