@@ -22,3 +22,7 @@ function captureHooking() {
         chrome.downloads.onDeterminingFilename.addListener(captureDownloads)
     }
 }
+
+function captureDisabled() {
+    chrome.downloads.onDeterminingFilename.removeListener(captureDownloads);
+}
