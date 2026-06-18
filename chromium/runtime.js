@@ -535,7 +535,7 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     }
 
     if (action === 'images_runtime') {
-        let images = aria2Inspect.get(id)?.images || [];
+        let images = aria2Inspect.get(params)?.images || [];
         response({ system: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
         return true;
     }
