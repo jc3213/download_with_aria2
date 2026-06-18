@@ -38,7 +38,7 @@ class Aria2 {
             this.#xml = 'http' + string.substring(2);
             this.#url = this.#wsa = string;
         } else {
-            throw new TypeError('Invalid JSON-RPC Endpoint: expected http(s):// or ws(s)://');
+            throw new TypeError('Invalid URL: expected a valid http(s):// or ws(s):// URL');
         }
     }
     get url() {
@@ -111,9 +111,10 @@ class Aria2 {
 
     #send(json) {
         return new Promise((resolve, reject) => {
+            let socket = this.#socket;
             this[json.id] = resolve;
-            this.#socket.onerror = reject;
-            this.#socket.send(JSON.stringify(json));
+            socket.onerror = reject;
+            socket.send(JSON.stringify(json));
         });
     }
 
@@ -137,13 +138,14 @@ class Aria2 {
 
     multicall(args) {
         let calls = [];
+        let secret = this.#secret;
         for (let i = 0, l = args.length; i < l; i++) {
             let arg = args[i];
             let params = arg.params;
             if (params) {
-                params = [this.#secret].concat(params);
+                params = [secret].concat(params);
             } else {
-                params = [this.#secret];
+                params = [secret];
             }
             calls[i] = { methodName: arg.methodName, params };
         }
@@ -151,19 +153,32 @@ class Aria2 {
     }
 
     connect() {
-        this.#socket = new WebSocket(this.#wsa);
-        this.#socket.onopen = (event) => {
+        let socket = this.#socket;
+        let url = this.#wsa;
+        if (socket) {
+            let readyState = socket.readyState;
+            if (readyState === 0) {
+                throw new Error('WebSocket error: connection is still in CONNECTING state');
+            }
+            if (readyState === 1 && socket.url === url) {
+                return;
+            }
+        }
+        socket = new WebSocket(url);
+        socket.onopen = (event) => {
             this.#call = this.#send;
             this.#tries = 0;
-            if (this.#onopen) {
-                this.#onopen(event);
+            let onopen = this.#onopen;
+            if (onopen) {
+                onopen(event);
             }
         };
-        this.#socket.onmessage = (event) => {
+        socket.onmessage = (event) => {
             let json = JSON.parse(event.data);
             if (json.method) {
-                if (this.#onmessage) {
-                    this.#onmessage(json);
+                let onmessage = this.#onmessage;
+                if (onmessage) {
+                    onmessage(json);
                 }
             } else {
                 let id = json.id;
@@ -173,8 +188,9 @@ class Aria2 {
         };
         this.#socket.onclose = (event) => {
             this.#call = this.#post;
-            if (this.#onclose) {
-                this.#onclose(event);
+            let onclose = this.#onclose;
+            if (onclose) {
+                onclose(event);
             }
             if (this.#tries++ < this.#retries) {
                 setTimeout(() => this.connect(), this.#timeout);
@@ -182,10 +198,14 @@ class Aria2 {
                 this.#tries = 0;
             }
         };
+        this.#socket = socket;
     }
 
     disconnect() {
-        this.#tries = Infinity;
-        this.#socket.close();
+        let socket = this.#socket;
+        if (socket && socket.readyState === 1) {
+            this.#tries = Infinity;
+            this.#socket.close();
+        }
     }
 }
