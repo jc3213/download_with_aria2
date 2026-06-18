@@ -2,26 +2,24 @@
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
     "version": "4.27.0",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "permissions": [
         "contextMenus",
+        "declarativeNetRequest",
         "downloads",
         "notifications",
         "storage",
         "tabs",
         "webNavigation",
-        "webRequest",
-        "webRequestBlocking",
+        "webRequest"
+    ],
+    "host_permissions": [
         "http://*/*",
         "https://*/*"
     ],
     "default_locale": "en",
     "background": {
-        "scripts": [
-            "libs/aria2.js",
-            "background.js",
-            "application.js"
-        ]
+        "service_worker": "platform.js"
     },
     "content_scripts": [
         {
@@ -35,7 +33,7 @@
             "run_at": "document_start"
         }
     ],
-    "browser_action": {
+    "action": {
         "default_icon": {
             "24": "icons/24.png"
         }

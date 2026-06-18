@@ -57,10 +57,10 @@ class Aria2 {
     set retries(number) {
         let n = number | 0;
 
-        if (n >= 0) {
-            this.#retries = n;
-        } else {
+        if (n < 0) {
             this.#retries = Infinity;
+        } else {
+            this.#retries = n;
         }
     }
     get retries() {
@@ -70,10 +70,10 @@ class Aria2 {
     set timeout(number) {
         let n = number | 0;
 
-        if (n <= 1) {
-            this.#timeout = 1000;
-        } else {
+        if (n > 1) {
             this.#timeout = n * 1000;
+        } else {
+            this.#timeout = 1000;
         }
     }
     get timeout() {

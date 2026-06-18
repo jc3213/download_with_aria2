@@ -50,6 +50,8 @@
         "open_in_tab": true
     },
     "commands": {
+        "_execute_browser_action": {
+        },
         "open_options": {
             "description": "__MSG_shortcut_options__"
         },
@@ -65,5 +67,14 @@
         "toggle_proxy": {
             "description": "__MSG_shortcut_proxy__"
         }
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "firefox@downloadWithAria2"
+        }
+    },
+    "developer": {
+        "name": "jc3213",
+        "url": "https://github.com/jc3213/download_with_aria2"
     }
 }
