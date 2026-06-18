@@ -50,8 +50,6 @@
         "open_in_tab": true
     },
     "commands": {
-        "_execute_browser_action": {
-        },
         "open_options": {
             "description": "__MSG_shortcut_options__"
         },
