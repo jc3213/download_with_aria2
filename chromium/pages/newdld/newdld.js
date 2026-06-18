@@ -10,6 +10,7 @@ let jsonrpcPane = mainTree[2];
 let entries = jsonrpcPane.querySelectorAll('[name]');
 let refererEntry = entries[0];
 let jsonrpcEntries = [];
+
 for (let i = 1, l = entries.length; i < l; i++) {
     jsonrpcEntries.push(entries[i]);
 }
@@ -25,29 +26,39 @@ document.addEventListener('click', (event) => {
 
 function menuSubmit() {
     let urls = downEntry.value.match(/(https?:\/\/|ftp:\/\/|magnet:\?)[^\s\n]+/g);
+
     if (!urls) {
         close();
     }
-    let l = urls.length;
-    let out = aria2Config.out;
-    aria2Config['out'] = l !== 1 || !out ? null : out.replace(/[\\/:*?"<>|]/g, '_');
+
     let params = [];
-    for (let i = 0; i < l; i++) {
+    let index = urls.length;
+    let out = aria2Config.out;
+
+    if (index !== 1 || !out) {
+        aria2Config['out'] = null;
+    } else {
+        aria2Config['out'] = out.replace(/[\\/:*?"<>|]/g, '_');
+    }
+
+    for (let i = 0; i < index; i++) {
         params[i] = { methodName: 'aria2.addUri', params: [[urls[i]], aria2Config] };
     }
+
     chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
 
-const menuEvents = {
-    'task_addfiles': () => filesEntry.click(),
-    'common_submit': menuSubmit
-};
-
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
-    let handler = menuEvents[menu];
-    if (handler) {
-        handler();
+
+    if (menu === 'task_addfiles') {
+        filesEntry.click();
+        return;
+    }
+
+    if (menu === 'common_submit') {
+        menuSubmit();
+        return;
     }
 });
 
@@ -65,13 +76,18 @@ filesEntry.addEventListener('change', (event) => {
 });
 
 async function metaFileDownload(files) {
-    aria2Config['out'] = aria2Config['referer'] = aria2Config['user-agent'] = null;
     let tasks = [];
+    let config = aria2Config;
+    config['out'] = null;
+    config['referer'] = null;
+    config['user-agent'] = null;
+
     for (let i = 0, l = files.length; i < l; i++) {
         let file = files[i];
         let name = file.name;
         let methodName;
         let params;
+
         if (name.endsWith('.torrent')) {
             methodName = 'aria2.addTorrent';
             params = [[], aria2Config];
@@ -81,16 +97,21 @@ async function metaFileDownload(files) {
         } else {
             continue;
         }
+
         tasks.push(new Promise((resolve) => {
             let reader = new FileReader();
+
             reader.onload = (event) => {
                 let result = reader.result;
-                params.unshift(result.substring(result.indexOf(',') + 1));
+                let base64 = result.substring(result.indexOf(',') + 1);
+                params.unshift(base64);
                 resolve({ methodName, params });
             };
+
             reader.readAsDataURL(file);
         }));
     }
+
     let params = await Promise.all(tasks);
     chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
@@ -111,6 +132,7 @@ refererEntry.addEventListener('input', (event) => {
 
 function refererModalPopup() {
     let entry = refererEntry.value;
+
     for (let referer of aria2Referer.values()) {
         if (referer.title.includes(entry)) {
             referer.classList.remove('hidden');
@@ -123,23 +145,29 @@ function refererModalPopup() {
 }
 
 refererPane.addEventListener('click', (event) => {
-    aria2Config['referer'] = refererEntry.value = event.target.title;
+    let referer = event.target.title;
+    refererEntry.value = referer;
+    aria2Config['referer'] = referer;
 });
 
 document.getElementById('proxy').addEventListener('click', (event) => {
-    aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Proxy;
+    event.target.previousElementSibling.value = aria2Proxy;
+    aria2Config['all-proxy'] = aria2Proxy;
 });
 
 function refererModalList(id, url) {
     if (!url.startsWith('http')) {
         return;
     }
+
     let referer = aria2Referer.get(id);
+
     if (!referer) {
         referer = document.createElement('div');
         refererPane.appendChild(referer);
         aria2Referer.set(id, referer);
     }
+
     referer.title = referer.textContent = url;
 }
 
@@ -166,10 +194,12 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 chrome.runtime.sendMessage({ action: 'newdld_runtime' }, (message) => {
     let config = message.options;
     aria2Proxy = message.storage['proxy_server'];
+    
     for (let i = 0, l = jsonrpcEntries.length; i < l; i++) {
         let entry = jsonrpcEntries[i];
         let name = entry.name;
         let value = config[name];
+
         if (value) {
             entry.value = aria2Config[name] = value;
         }
