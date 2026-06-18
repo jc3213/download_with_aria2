@@ -19,6 +19,7 @@ class Aria2 {
             this.secret = '';
         } else {
             let i = url.indexOf('#');
+
             if (i !== -1) {
                 this.url = url.substring(0, i);
                 this.secret = url.substring(i + 1);
@@ -27,6 +28,7 @@ class Aria2 {
                 this.secret = secret || '';
             }
         }
+
         this.#call = this.#post;
     }
 
@@ -54,6 +56,7 @@ class Aria2 {
 
     set retries(number) {
         let n = number | 0;
+
         if (n >= 0) {
             this.#retries = n;
         } else {
@@ -66,6 +69,7 @@ class Aria2 {
 
     set timeout(number) {
         let n = number | 0;
+
         if (n <= 1) {
             this.#timeout = 1000;
         } else {
@@ -133,15 +137,18 @@ class Aria2 {
         } else {
             params = [this.#secret];
         }
+
         return this.#call({ jsonrpc: '2.0', id: this.#id++, method, params });
     }
 
     multicall(args) {
         let calls = [];
         let secret = this.#secret;
+
         for (let i = 0, l = args.length; i < l; i++) {
             let arg = args[i];
             let params = arg.params;
+
             if (params) {
                 params = [secret].concat(params);
             } else {
@@ -149,22 +156,29 @@ class Aria2 {
             }
             calls[i] = { methodName: arg.methodName, params };
         }
+
         return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [calls] });
     }
 
     connect() {
         let socket = this.#socket;
         let url = this.#wsa;
+
         if (socket) {
             let readyState = socket.readyState;
+
             if (readyState === 0) {
                 throw new Error('WebSocket error: connection is still in CONNECTING state');
             }
+
             if (readyState === 1 && socket.url === url) {
                 return;
             }
         }
+
         socket = new WebSocket(url);
+        this.#socket = socket;
+
         socket.onopen = (event) => {
             this.#call = this.#send;
             this.#tries = 0;
@@ -173,8 +187,10 @@ class Aria2 {
                 onopen(event);
             }
         };
+
         socket.onmessage = (event) => {
             let json = JSON.parse(event.data);
+
             if (json.method) {
                 let onmessage = this.#onmessage;
                 if (onmessage) {
@@ -186,23 +202,26 @@ class Aria2 {
                 delete this[id];
             }
         };
+
         socket.onclose = (event) => {
             this.#call = this.#post;
             let onclose = this.#onclose;
+
             if (onclose) {
                 onclose(event);
             }
+
             if (this.#tries++ < this.#retries) {
                 setTimeout(() => this.connect(), this.#timeout);
             } else {
                 this.#tries = 0;
             }
         };
-        this.#socket = socket;
     }
 
     disconnect() {
         let socket = this.#socket;
+
         if (socket && socket.readyState === 1) {
             this.#tries = Infinity;
             this.#socket.close();
