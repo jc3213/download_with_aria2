@@ -30,6 +30,7 @@ thumbPane.addEventListener('mouseover', (event) => {
 
 function menuEventSubmit() {
     let params = [];
+
     for (let i = 0; i < aria2Counts; i++) {
         let img = gallery[i];
         if (img.classList.contains('checked')) {
@@ -37,37 +38,43 @@ function menuEventSubmit() {
             params.push({ method: 'aria2.addUri', params: [[img.src], options] });
         }
     }
+
     chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
 }
 
-const menuEvents = {
-    'select_all'() {
+menuPane.addEventListener('click', (event) => {
+    let menu = event.target.getAttribute('i18n');
+
+    if (menu === 'select_all') {
         for (let i = 0; i < aria2Counts; i++) {
             gallery[i].classList.add('checked');
         }
-    },
-    'select_none'() {
+        return;
+    }
+
+    if (menu === 'select_none') {
         for (let i = 0; i < aria2Counts; i++) {
             gallery[i].classList.remove('checked');
         }
-    },
-    'select_flip'() {
+        return;
+    }
+
+    if (menu === 'select_flip') {
         for (let i = 0; i < aria2Counts; i++) {
             gallery[i].classList.toggle('checked');
         }
-    },
-    'common_submit': menuEventSubmit,
-    'popup_options'() {
+        return;
+    }
+
+    if (menu === 'common_submit') {
+        menuEventSubmit();
+        return;
+    }
+
+    if (menu === 'popup_options') {
         optionsBtn.classList.toggle('checked');
         jsonrpcPane.classList.toggle('hidden');
-    }
-};
-
-menuPane.addEventListener('click', (event) => {
-    let menu = event.target.getAttribute('i18n');
-    let handler = menuEvents[menu];
-    if (handler) {
-        handler();
+        return;
     }
 });
 
@@ -76,7 +83,8 @@ jsonrpcPane.addEventListener('change', (event) => {
 });
 
 document.getElementById('proxy').addEventListener('click', (event) => {
-    aria2Config['all-proxy'] = event.target.previousElementSibling.value = aria2Proxy;
+    event.target.previousElementSibling.value = aria2Proxy;
+    aria2Config['all-proxy'] = aria2Proxy;
 });
 
 chrome.tabs.get(id, (tab) => {
@@ -90,15 +98,24 @@ chrome.tabs.getCurrent((tab) => {
 chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, (message) => {
     let config = message.options;
     let images = message.images;
-    message.system.manifest_version === 2 ? antiLeechMV2(message.headers) : antiLeechMV3();
+
+    if (message.system.manifest_version === 2) {
+        let headers = ['blocking'].concat(message.headers);
+        antiLeechMV2(headers);
+    } else {
+        antiLeechMV3();
+    }
+
     aria2Proxy = message.storage['proxy_server'];
     aria2Config['referer'] = referer;
     aria2Counts = images.length;
+
     for (let i = 0, l = jsonrpcEntries.length; i < l; i ++) {
         let entry = jsonrpcEntries[i];
         let name = entry.name;
         entry.value = aria2Config[name] = config[name] || '';
     }
+
     for (let i = 0; i < aria2Counts; i++) {
         let url = images[i];
         let path = url.substring(url.lastIndexOf('/') + 1);
@@ -112,7 +129,6 @@ chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, (message) =
 });
 
 function antiLeechMV2(headers) {
-    headers.unshift('blocking');
     chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
         let requestHeaders = details.requestHeaders;
         requestHeaders.push({ name: 'Referer', value: referer });;
