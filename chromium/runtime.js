@@ -394,20 +394,50 @@ chrome.commands.onCommand.addListener((command) => {
     }
 
     if (command === 'toggle_capture') {
-        ommandToggleHost('capture_hosts', captureHosts);
+        commandToggleHost('capture_hosts', captureHosts);
         return;
     }
 
     if (command === 'toggle_headers') {
-        ommandToggleHost('headers_hosts', headersHosts);
+        commandToggleHost('headers_hosts', headersHosts);
         return;
     }
 
     if (command === 'toggle_proxy') {
-        ommandToggleHost('proxy_hosts', proxyHosts);
+        commandToggleHost('proxy_hosts', proxyHosts);
         return;
     }
 });
+
+function commandToggleHost(id, rules) {
+    chrome.tabs.query({ url: systemURLs, active: true, currentWindow: true }, (tabs) => {
+        let tab = tabs[0];
+
+        if (!tab) {
+            return;
+        }
+
+        let host = getHostname(tab.url);
+        let options;
+
+        if (rules.has(host)) {
+            rules.delete(host);
+            options = 'match_remove';
+        } else {
+            rules.add(host);
+            options = 'match_add';
+        }
+
+        let title = chrome.i18n.getMessage('options_' + id.substring(0, id.indexOf('_')));
+        let message = chrome.i18n.getMessage(options, [host, chrome.i18n.getMessage(id)]);
+        let value = Array.from(rules);
+        aria2Storage[id] = value;
+
+        chrome.storage.sync.set({ [id]: value });
+        chrome.runtime.sendMessage({ options, params: { id, host } }, () => chrome.runtime.lastError);
+        chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
+    });
+}
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     let id = info.menuItemId;
@@ -427,14 +457,6 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         return;
     }
 });
-
-function popupMenuEnabler(json) {
-    if (json['manager_newtab']) {
-        chrome.action.setPopup({ popup: '' });
-    } else {
-        chrome.action.setPopup({ popup: '/pages/popup/popup.html?toolbar' });
-    }
-}
 
 function contextMenusEnabler(json) {
     chrome.contextMenus.removeAll();
@@ -473,32 +495,21 @@ function contextMenusAdd(id, contexts, parentId) {
     });
 }
 
-function commandToggleHost(id, rules) {
-    chrome.tabs.query({ url: systemURLs, active: true, currentWindow: true }, (tabs) => {
-        let tab = tabs[0];
-        if (!tab) {
-            return;
-        }
-        let host = getHostname(tab.url);
-        let options;
-        if (rules.has(host)) {
-            rules.delete(host);
-            options = 'match_remove';
-        } else {
-            rules.add(host);
-            options = 'match_add';
-        }
-        let value = aria2Storage[id] = Array.from(rules);
-        let title = chrome.i18n.getMessage('options_' + id.substring(0, id.indexOf('_')));
-        let message = chrome.i18n.getMessage(options, [host, chrome.i18n.getMessage(id)]);
-        chrome.storage.sync.set({ [id]: value });
-        chrome.runtime.sendMessage({ options, params: { id, host } }, () => chrome.runtime.lastError);
-        chrome.notifications.create({ title, message, type: 'basic', iconUrl: '/icons/48.png' });
-    });
+function popupMenuEnabler(json) {
+    if (json['manager_newtab']) {
+        chrome.action.setPopup({ popup: '' });
+    } else {
+        chrome.action.setPopup({ popup: '/pages/popup/popup.html?toolbar' });
+    }
 }
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
     let action = message.action;
+
+    if (!action) {
+        return;
+    }
+
     let params = message.params;
 
     if (action === 'options_runtime') {

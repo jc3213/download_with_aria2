@@ -127,6 +127,7 @@ class Aria2 {
             if (response.ok) {
                 return response.json();
             }
+
             throw new Error('Network error: ' + response.status + ' ' + response.statusText);
         });
     }
@@ -154,6 +155,7 @@ class Aria2 {
             } else {
                 params = [secret];
             }
+
             calls[i] = { methodName: arg.methodName, params };
         }
 

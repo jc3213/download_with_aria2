@@ -34,12 +34,14 @@ let matchLET = template.firstElementChild;
 function saveChanges(change) {
     let id = change.id;
     let new_value = change.new_value;
+
     changes[id] = new_value;
     undoes.push(change);
     redoes = [];
 
-    saveBtn.disabled = undoBtn.disabled = false;
+    undoBtn.disabled = false;
     redoBtn.disabled = true;
+    saveBtn.disabled = false;
 }
 
 storagePane.addEventListener('change', (event) => {
@@ -120,7 +122,8 @@ function loadChanges(loadList, saveList, loadButton, saveButton, key, todo) {
     changes[id] = value;
     saveList.push(change);
     loadButton.disabled = loadList.length === 0;
-    saveButton.disabled = saveBtn.disabled = false;
+    saveButton.disabled = false;
+    saveBtn.disabled = false;
 }
 
 function menuExport() {
@@ -131,6 +134,7 @@ function menuExport() {
     if (remote) {
         name = 'aria2_jsonrpc-' + time + '.conf';
         body = [];
+
         for (let i = 0, l = jsonrpcEntries.length; i < l; i++) {
             let key = jsonrpcEntries[i].name;
             body[i] = key + '=' + aria2Config[key] + '\n';
@@ -148,6 +152,10 @@ function menuExport() {
 
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
+
+    if (!menu) {
+        return;
+    }
 
     if (menu === 'options_save') {
         if (remote) {
@@ -229,7 +237,12 @@ function optionsDispatch(options) {
     for (let i = 0, l = jsonrpcEntries.length; i < l; i++) {
         let entry = jsonrpcEntries[i];
         let name = entry.name;
-        entry.value = aria2Config[name] = options[name] || '';
+        let value = options[name];
+
+        if (value) {
+            entry.value = value;
+            aria2Config[name] = value;
+        }
     }
 
     changes = { ...aria2Config };
@@ -238,7 +251,9 @@ function optionsDispatch(options) {
 function changeHistoryFlush() {
     undoes = [];
     redoes = [];
-    saveBtn.disabled = undoBtn.disabled = redoBtn.disabled = true;
+    saveBtn.disabled = true;
+    undoBtn.disabled = true;
+    redoBtn.disabled = true;
 }
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
@@ -249,10 +264,13 @@ document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
             return;
         }
 
-        tellVer.textContent = tellUA.textContent = version.version;
+        let result = version.verson;
+        tellUA.textContent = result;
+        tellVer.textContent = result;
+        extension.add('jsonrpc');
+
         optionsDispatch(message.options);
         changeHistoryFlush();
-        extension.add('jsonrpc');
         remote = true;
     });
 });
@@ -300,6 +318,10 @@ for (let i = 0, l = matchNodes.length; i < l; i++) {
     match.addEventListener('click', (event) => {
         let menu = event.target.getAttribute('i18n-tips');
 
+        if (!menu) {
+            return;
+        }
+
         if (menu === 'tips_match_add') {
             matchAdd(id, entry);
             return;
@@ -326,7 +348,8 @@ for (let i = 0, l = matchNodes.length; i < l; i++) {
 
 function printMatchPattern(list, id, value) {
     let rule = matchLET.cloneNode(true);
-    rule.title = rule.firstElementChild.textContent = value;
+    rule.firstElementChild.textContent = value;
+    rule.title = value;
     list.appendChild(rule);
     return rule;
 }
@@ -408,6 +431,11 @@ function removeFromList(remove) {
 
 chrome.runtime.onMessage.addListener((message) => {
     let action = message.options;
+
+    if (!action) {
+        return;
+    }
+
     let params = message.params;
 
     if (action === 'match_add') {

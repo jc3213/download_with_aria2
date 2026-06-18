@@ -51,6 +51,10 @@ function menuSubmit() {
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
 
+    if (!menu) {
+        return;
+    }
+
     if (menu === 'task_addfiles') {
         filesEntry.click();
         return;
@@ -78,6 +82,7 @@ filesEntry.addEventListener('change', (event) => {
 async function metaFileDownload(files) {
     let tasks = [];
     let config = aria2Config;
+
     config['out'] = null;
     config['referer'] = null;
     config['user-agent'] = null;
@@ -168,7 +173,8 @@ function refererModalList(id, url) {
         aria2Referer.set(id, referer);
     }
 
-    referer.title = referer.textContent = url;
+    referer.textContent = url;
+    referer.title = url;
 }
 
 chrome.tabs.query({}, (tabs) => {
@@ -201,7 +207,8 @@ chrome.runtime.sendMessage({ action: 'newdld_runtime' }, (message) => {
         let value = config[name];
 
         if (value) {
-            entry.value = aria2Config[name] = value;
+            entry.value = value;
+            aria2Config[name] = value;
         }
     }
 });

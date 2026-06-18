@@ -45,6 +45,10 @@ function menuEventSubmit() {
 menuPane.addEventListener('click', (event) => {
     let menu = event.target.getAttribute('i18n');
 
+    if (!menu) {
+        return;
+    }
+
     if (menu === 'select_all') {
         for (let i = 0; i < aria2Counts; i++) {
             gallery[i].classList.add('checked');
@@ -113,16 +117,23 @@ chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, (message) =
     for (let i = 0, l = jsonrpcEntries.length; i < l; i ++) {
         let entry = jsonrpcEntries[i];
         let name = entry.name;
-        entry.value = aria2Config[name] = config[name] || '';
+        let value = config[name];
+
+        if (value) {
+            entry.value = value;
+            aria2Config[name] = value;
+        }
     }
 
     for (let i = 0; i < aria2Counts; i++) {
         let url = images[i];
         let path = url.substring(url.lastIndexOf('/') + 1);
         let idx = path.search(/[?#@]/);
+
         let img = document.createElement('img');
         img.alt = idx === -1 ? path : path.substring(0, idx);
         img.src = img.title = url;
+
         thumbPane.appendChild(img);
         gallery[i] = img;
     }
