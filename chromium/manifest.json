@@ -19,8 +19,8 @@
     "background": {
         "scripts": [
             "libs/aria2.js",
-            "browserfix.js",
-            "background.js"
+            "platform.js",
+            "runtime.js"
         ]
     },
     "content_scripts": [
@@ -50,6 +50,8 @@
         "open_in_tab": true
     },
     "commands": {
+        "_execute_browser_action": {
+        },
         "open_options": {
             "description": "__MSG_shortcut_options__"
         },

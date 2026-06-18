@@ -8,6 +8,7 @@
         "declarativeNetRequest",
         "downloads",
         "notifications",
+        "offscreen",
         "storage",
         "tabs",
         "webNavigation",
@@ -19,7 +20,7 @@
     ],
     "default_locale": "en",
     "background": {
-        "service_worker": "background.js"
+        "service_worker": "platform.js"
     },
     "content_scripts": [
         {

@@ -26,4 +26,4 @@ function captureDisabled() {
 }
 
 setInterval(chrome.runtime.getPlatformInfo, 28000);
-importScripts('libs/aria2.js', 'runtime.js', 'events.js');
+importScripts('libs/aria2.js', 'runtime.js');

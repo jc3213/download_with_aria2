@@ -19,8 +19,8 @@
     "background": {
         "scripts": [
             "libs/aria2.js",
-            "browserfix.js",
-            "background.js"
+            "platform.js",
+            "runtime.js"
         ]
     },
     "content_scripts": [

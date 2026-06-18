@@ -1,3 +1,5 @@
+chrome.action = chrome.browserAction;
+
 function captureDownloads(downloadItem) {
     let url = downloadItem.finalUrl;
     if (url.startsWith('data') || url.startsWith('blob')) {
@@ -20,10 +22,3 @@ function captureHooking() {
         chrome.downloads.onDeterminingFilename.addListener(captureDownloads)
     }
 }
-
-function captureDisabled() {
-    chrome.downloads.onDeterminingFilename.removeListener(captureDownloads);
-}
-
-setInterval(chrome.runtime.getPlatformInfo, 28000);
-importScripts('libs/aria2.js', 'runtime.js', 'events.js');

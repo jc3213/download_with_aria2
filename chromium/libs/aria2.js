@@ -186,7 +186,7 @@ class Aria2 {
                 delete this[id];
             }
         };
-        this.#socket.onclose = (event) => {
+        socket.onclose = (event) => {
             this.#call = this.#post;
             let onclose = this.#onclose;
             if (onclose) {
