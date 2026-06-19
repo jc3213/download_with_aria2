@@ -1,33 +1,39 @@
-function systemStatus(id) {
-    chrome.runtime.sendMessage({ action: 'remote_status' } , (result) => {
-        window.postMessage({ aria2c: 'aria2c_response', id, result });
-    });
-}
+window.addEventListener('message', (event) => {
+    let message = event.data;
+    let id = message.id;
+    let aria2c = message.aria2c;
 
-function jsonrpcDownload(id, args) {
+    if (!aria2c) {
+        return;
+    }
+
+    if (aria2c === 'aria2c_status') {
+        chrome.runtime.sendMessage({ action: 'remote_status' } , (result) => {
+            window.postMessage({ aria2c: 'aria2c_response', id, result });
+        });
+        return;
+    }
+
+    if (aria2c === 'aria2c_download') {
+        remoteDownload(id, message.params);
+        return;
+    }
+});
+
+function remoteDownload(id, args) {
     let params = [];
+
     for (let i = 0, l = args.length; i < l; i++) {
         let arg = args[i];
+
         if (typeof arg === 'string') {
             params.push({ methodName: 'aria2.addUri', params: [[arg]] });
         } else if (arg.url) {
             params.push({ methodName: 'aria2.addUri', params: [[arg.url], arg.options || {}] });
         }
     }
+
     chrome.runtime.sendMessage({ action: 'remote_download', params }, (result) => {
         window.postMessage({ aria2c: 'aria2c_response', id, result });
     });
 }
-
-const messageDispatch = {
-    'aria2c_status': systemStatus,
-    'aria2c_download': jsonrpcDownload
-};
-
-window.addEventListener('message', (event) => {
-    let message = event.data;
-    let handler = messageDispatch[message.aria2c];
-    if (handler) {
-        handler(message.id, message.params);
-    }
-});
