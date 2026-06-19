@@ -195,6 +195,7 @@ class Aria2 {
 
             if (json.method) {
                 let onmessage = this.#onmessage;
+
                 if (onmessage) {
                     onmessage(json);
                 }
