@@ -184,7 +184,9 @@ class Aria2 {
         socket.onopen = (event) => {
             this.#call = this.#send;
             this.#tries = 0;
+
             let onopen = this.#onopen;
+
             if (onopen) {
                 onopen(event);
             }
