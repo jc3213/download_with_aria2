@@ -579,6 +579,7 @@ queuePane.addEventListener('drop', async (event) => {
 
     if (group === 'waiting') {
         pos = waiting.indexOf(target.id);
+
         if (pos > index) {
             target = target.nextElementSibling;
         }
@@ -594,7 +595,7 @@ queuePane.addEventListener('drop', async (event) => {
         waiting.splice(index, 1);
         waiting.splice(pos, 0, id);
         queuePane.insertBefore(aria2Drag, target);
-        aria2Queue['waiting'] = new Set(waiting);
+        aria2Queue.waiting = new Set(waiting);
     });
 });
 
@@ -609,6 +610,9 @@ aria2RPC.onopen = () => {
         { methodName: 'aria2.tellStopped', params: [0, 999] }
     ]).then((response) => {
         let result = response.result;
+        let global = result[0][0];
+        let version = result[1][0];
+        let active = result[2][0];
         let waiting = result[3][0];
         let stopped = result[4][0];
 
@@ -616,7 +620,7 @@ aria2RPC.onopen = () => {
         aria2Queue.waiting = new Set();
         aria2Queue.stopped = new Set();
 
-        verEntry.textContent = result[1][0].version;
+        verEntry.textContent = version.version;
         updateManager(result[0][0], result[2][0]);
 
         for (let i = 0, l = waiting.length; i < l; i++) {
@@ -633,7 +637,9 @@ aria2RPC.onopen = () => {
                 { methodName: 'aria2.tellActive' }
             ]).then((response) => {
                 let result = response.result;
-                updateManager(result[0][0], result[1][0]);
+                let global = result[0][0];
+                let active = result[1][0];
+                updateManager(global, active);
             });
         }, aria2Delay);
     }).catch(aria2RPC.onclose);
