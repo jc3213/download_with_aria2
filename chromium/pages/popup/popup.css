@@ -1,0 +1,341 @@
+body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3px;
+    margin: 8px auto;
+    width: 1280px;
+}
+
+body > ::before {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+body.active > #filter > #x-active::before,
+body.waiting > #filter > #x-waiting::before,
+body.paused > #filter > #x-paused::before,
+body.complete > #filter > #x-complete::before,
+body.removed > #filter > #x-removed::before,
+body.error > #filter > #x-error::before {
+    visibility: hidden;
+}
+
+body.active > #queue > .active,
+body.waiting > #queue > .waiting,
+body.paused > #queue > .paused,
+body.complete > #queue > .complete,
+body.removed > #queue > .removed,
+body.error > #queue > .error {
+    display: none;
+}
+
+#menu, #filter, #system {
+    border-style: solid;
+    border-width: 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px;
+}
+
+#filter > div,
+#system > div {
+    padding: 5px;
+}
+
+#filter > :hover {
+    box-shadow: var(--shadows);
+}
+
+#filter > :active {
+    opacity: 0.8;
+}
+
+#filter > ::before {
+    content: "✔️";
+    margin-right: 5px;
+}
+
+#system > ::before {
+    display: inline-block;
+    margin: 0px 8px;
+    width: 40%;
+}
+
+#locale {
+    text-align: center;
+}
+
+#queue {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    grid-area: 1 / 2 / 5 / 3;
+    height: calc(100vh - 16px);
+    overflow-y: auto;
+}
+
+#menu::before {
+    content: "__MSG_popup_menu__";
+}
+
+#filter::before {
+    content: "__MSG_popup_queue__";
+}
+
+#system::before {
+    content: "__MSG_popup_status__";
+}
+
+#version::before {
+    content: "__MSG_popup_version__";
+}
+
+#download::before {
+    content: "__MSG_popup_download__";
+}
+
+#upload::before {
+    content: "__MSG_popup_upload__";
+}
+
+#active::before {
+    content: "__MSG_popup_active__";
+}
+
+#waiting::before {
+    content: "__MSG_popup_waiting__";
+}
+
+#stopped::before {
+    content: "__MSG_popup_stopped__";
+}
+
+.day:not(:empty)::after {
+    content: "__MSG_time_day__";
+}
+
+.hour:not(:empty)::after {
+    content: "__MSG_time_hour__";
+}
+
+.minute:not(:empty)::after {
+    content: "__MSG_time_minute__";
+}
+
+.second:not(:empty)::after {
+    content: "__MSG_time_second__";
+}
+
+.speed::after {
+    content: "B/s";
+}
+
+.filesize::after {
+    content: "B";
+}
+
+.ratio::after {
+    content: "%";
+}
+
+.infinite {
+    display: none;
+}
+
+.estimated > ::after {
+    vertical-align: sub;
+}
+
+.day:empty + .hour:empty + .minute:empty + .second:empty + .infinite {
+    display: inline-block;
+}
+
+.completed::before {
+    content: "🖥️ ";
+}
+
+.estimated::before {
+    content: "⏲️ ";
+}
+
+.fulllength::before {
+    content: "📦 ";
+}
+
+.network::before {
+    content: "📶️ ";
+}
+
+.download::before {
+    content: "⏬ ";
+}
+
+.upload::before {
+    content: "⏫ ";
+}
+
+.session {
+    border-style: solid;
+    border-width: 1px;
+    display: grid;
+    padding: 3px;
+    gap: 5px;
+    grid-template-columns: repeat(3, 1fr) auto;
+}
+
+.session.active   {
+    order: 1;
+}
+
+.session.waiting  {
+    order: 2;
+}
+
+.session.paused   {
+    order: 3;
+}
+
+.session.complete {
+    order: 4;
+}
+
+.session.removed  {
+    order: 5;
+}
+
+.session.error    {
+    order: 6;
+}
+
+.session:is(.complete, .removed, .error) :is(input, select) {
+    pointer-events: none;
+    filter: var(--disabled);
+}
+
+.session:is(.complete, .removed, .error, .http) label {
+    pointer-events: none;
+}
+
+.session:is(.complete, .removed, .error) > :is(.config, .files, .uris) button,
+.session:is(.active, .waiting, .paused, .p2p) > .menu > :nth-child(4),
+.session:not(.expand) > :is(.config, .files, .uris),
+.session.http .e-p2p,
+.session.p2p .e-http {
+    display: none;
+}
+
+.session > .meter {
+    background-color: var(--color-item);
+}
+
+.session > .meter > .ratio,
+.session > .files > .file > :checked + label {
+    background-color: #59A8FF;
+    color: #FFFFFF;
+}
+
+.session.active > .name::before {
+    background-color: #59A8FF;
+}
+
+.session:is(.waiting, .paused) > .name::before,
+.session.paused > .meter > .ratio {
+    background-color: #E9C769;
+}
+
+.session.complete > .name::before,
+.session.complete > .meter > .ratio {
+    background-color: #2C7D2C;
+}
+
+.session:is(.removed, .error) > .name::before,
+.session.error > .meter > .ratio {
+    background-color: #D44B31;
+}
+
+.session:is(.active, .waiting, .paused) > .meter:active > .ratio,
+.session:is(.active, .waiting, .paused) > .meter > .ratio:active,
+.session.p2p > .files > .file > label:active,
+.session > .uris > .uri > div:active {
+    opacity: 0.8;
+}
+
+.session > .name {
+    display: flex;
+    grid-area: 1 / 1 / 1 / 4;
+    word-break: break-word;
+}
+
+.session > .name::before {
+    border-radius: 50%;
+    content: "";
+    flex-shrink: 0;
+    margin: 6px 4px 0px 4px;
+    height: 15px;
+    width: 15px;
+}
+
+.session > :not([class]) {
+    margin: 1px 0px;
+}
+
+.session > .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    grid-area: 1 / 4 / 4 / 5;
+}
+
+.session > .meter {
+    grid-area: 4 / 1 / 5 / 5;
+    text-align: center;
+}
+
+.session > .config {
+    grid-area: 5 / 1 / 6 / 5;
+}
+
+.session > .files {
+    grid-area: 6 / 1 / 7 / 5;
+}
+
+.session > .uris {
+    grid-area: 7 / 1 / 8 / 5;
+}
+
+.session > .uris input {
+    margin-left: auto;
+    width: 40%;
+}
+
+.session button {
+    padding: 1px;
+    width: 25px;
+}
+
+.file > *,
+.uri > div {
+    border-style: solid;
+    border-width: 1px;
+    overflow: hidden;
+    padding: 1px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file {
+    display: grid;
+    grid-template-columns: 0px 40px 1fr 80px 60px;
+}
+
+.file > :not(:nth-child(3)) {
+    text-align: center;
+}
+
+.uri {
+    display: grid;
+    grid-template-columns: 1fr auto;
+}

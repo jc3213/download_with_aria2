@@ -1,0 +1,69 @@
+{
+    "name": "__MSG_extension_name__",
+    "description": "__MSG_extension_description__",
+    "version": "4.27.0",
+    "manifest_version": 2,
+    "permissions": [
+        "contextMenus",
+        "downloads",
+        "notifications",
+        "storage",
+        "tabs",
+        "webNavigation",
+        "webRequest",
+        "webRequestBlocking",
+        "http://*/*",
+        "https://*/*"
+    ],
+    "default_locale": "en",
+    "background": {
+        "scripts": [
+            "libs/aria2.js",
+            "background.js",
+            "application.js"
+        ]
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "js": [
+                "scripts/message.js"
+            ],
+            "run_at": "document_start"
+        }
+    ],
+    "browser_action": {
+        "default_icon": {
+            "24": "icons/24.png"
+        }
+    },
+    "icons": {
+        "16": "icons/16.png",
+        "48": "icons/48.png",
+        "128": "icons/128.png"
+    },
+    "options_ui": {
+        "page": "pages/options/options.html",
+        "open_in_tab": true
+    },
+    "commands": {
+        "open_options": {
+            "description": "__MSG_shortcut_options__"
+        },
+        "open_new_download": {
+            "description": "__MSG_shortcut_newdld__"
+        },
+        "toggle_capture": {
+            "description": "__MSG_shortcut_capture__"
+        },
+        "toggle_headers": {
+            "description": "__MSG_shortcut_headers__"
+        },
+        "toggle_proxy": {
+            "description": "__MSG_shortcut_proxy__"
+        }
+    }
+}
