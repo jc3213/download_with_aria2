@@ -265,16 +265,18 @@ body.error > #queue > .error {
 
 .session > .name {
     grid-area: 1 / 1 / 1 / 4;
+    padding-left: 22px;
+    word-break: break-word;
 }
 
 .session > .name::before {
-    border-radius: 50%;
     content: "";
-    display: inline-block;
-    height: 14px;
-    margin: 0px 3px 3px 1px;
-    width: 14px;
-    vertical-align: middle;
+    position: absolute;
+    left: 4px;
+    top: 6px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
 }
 
 .session > :not([class]) {
