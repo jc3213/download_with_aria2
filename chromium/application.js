@@ -1,6 +1,7 @@
 const addonManager = chrome.runtime.getURL('/pages/popup/popup.html');
 const addonImages = chrome.runtime.getURL('/pages/images/images.html');
 const addonDownload = chrome.runtime.getURL('/pages/newdld/newdld.html');
+
 const systemManifest = chrome.runtime.getManifest();
 const systemFirefox = systemManifest.browser_specific_settings;
 const systemHeaders = systemFirefox ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
@@ -94,7 +95,8 @@ aria2RPC.onopen = () => {
         }
 
         for (let i = 0, l = active.length; i < l; i++) {
-            aria2Active.add(active[i].gid);
+            let gid = active[i].gid;
+            aria2Active.add(gid);
         }
 
         captureHooking();
@@ -261,6 +263,7 @@ function commandOpenPopup(url, height) {
 
         chrome.tabs.query({ url }, (tabs) => {
             let tab = tabs[0];
+
             if (tab) {
                 chrome.windows.update(tab.windowId, { focused: true, left, width, top, height });
                 chrome.tabs.update(tab.id, { url, active: true });
