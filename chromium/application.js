@@ -71,10 +71,39 @@ const jsonrpcSize = [
     'max-overall-upload-limit'
 ];
 
-const aria2RPC = new Aria2();
+const aria2 = new Aria2();
 
-aria2RPC.onopen = () => {
-    aria2RPC.multicall([
+aria2.onopen = jsonrpcStart;
+
+aria2.onclose = jsonrpcError;
+
+aria2.onmessage = (message) => {
+    let method = message.method;
+
+    if (method === 'aria2.onBtDownloadComplete') {
+        return;
+    }
+
+    let gid = message.params[0].gid;
+
+    if (method === 'aria2.onDownloadStart') {
+        if (!aria2Active.has(gid)) {
+            aria2Active.add(gid);
+            downloadNotify('start', gid);
+        }
+    } else {
+        aria2Active.delete(gid);
+
+        if (method === 'aria2.onDownloadComplete') {
+            downloadNotify('complete', gid);
+        }
+    }
+
+    jsonrpcActivity();
+};
+
+function jsonrpcStart() {
+    aria2.multicall([
         { methodName: 'aria2.tellActive' },
         { methodName: 'aria2.getGlobalOption' },
         { methodName: 'aria2.getVersion' }
@@ -102,41 +131,16 @@ aria2RPC.onopen = () => {
         captureHooking();
         jsonrpcActivity();
         chrome.action.setBadgeBackgroundColor({ color: '#1C4CD4' });
-    }).catch(aria2RPC.onclose);
-};
+    }).catch(jsonrpcError);
+}
 
-aria2RPC.onclose = () => {
+function jsonrpcError() {
     aria2Version = null;
     aria2Active = new Set();
     captureDisabled();
     chrome.action.setBadgeText({ text: 'E' });
     chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
-};
-
-aria2RPC.onmessage = (message) => {
-    let method = message.method;
-
-    if (method === 'aria2.onBtDownloadComplete') {
-        return;
-    }
-
-    let gid = message.params[0].gid;
-
-    if (method === 'aria2.onDownloadStart') {
-        if (!aria2Active.has(gid)) {
-            aria2Active.add(gid);
-            downloadNotify('start', gid);
-        }
-    } else {
-        aria2Active.delete(gid);
-
-        if (method === 'aria2.onDownloadComplete') {
-            downloadNotify('complete', gid);
-        }
-    }
-
-    jsonrpcActivity();
-};
+}
 
 function jsonrpcActivity() {
     let number = aria2Active.size;
@@ -395,7 +399,7 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 
     if (action === 'update_jsonrpc') {
         jsonrpcDispatch(params);
-        aria2RPC.call('aria2.changeGlobalOption', [params]).then(response).catch(response);
+        aria2.call('aria2.changeGlobalOption', [params]).then(response).catch(response);
         return true;
     }
 
@@ -432,7 +436,7 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     }
 
     if (action === 'remote_download') {
-        aria2RPC.multicall(params).then(response).catch(response);
+        aria2.multicall(params).then(response).catch(response);
         return true;
     }
 });
@@ -445,11 +449,11 @@ chrome.storage.sync.get(null, (json) => {
 function storageDispatch(json) {
     aria2Storage = json;
 
-    aria2RPC.url = json['jsonrpc_url'];
-    aria2RPC.secret = json['jsonrpc_secret'];
-    aria2RPC.retries = json['jsonrpc_retries'];
-    aria2RPC.timeout = json['jsonrpc_timeout'];
-    aria2RPC.connect();
+    aria2.url = json['jsonrpc_url'];
+    aria2.secret = json['jsonrpc_secret'];
+    aria2.retries = json['jsonrpc_retries'];
+    aria2.timeout = json['jsonrpc_timeout'];
+    aria2.connect();
 
     headersHosts = new Set(json['headers_hosts']);
     proxyHosts = new Set(json['proxy_hosts']);
@@ -474,7 +478,7 @@ function downloadHandler(url, referer, filename, hostname, tabId) {
         options['header'] = downloadHeaders(tabId, url, referer);
     }
 
-    aria2RPC.call('aria2.addUri', [[url], options]);
+    aria2.call('aria2.addUri', [[url], options]);
 }
 
 function downloadHeaders(tabId, url, referer) {
@@ -548,7 +552,7 @@ async function downloadNotify(type, gid) {
         return;
     }
 
-    let response = await aria2RPC.call('aria2.tellStatus', [gid]);
+    let response = await aria2.call('aria2.tellStatus', [gid]);
     let result = response.result;
     let bittorrent = result.bittorrent;
     let file = result.files[0];

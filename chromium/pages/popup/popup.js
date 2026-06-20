@@ -59,7 +59,7 @@ function taskFilters(array, callback) {
 }
 
 async function menuPurge() {
-    await aria2RPC.call('aria2.purgeDownloadResult');
+    await aria2.call('aria2.purgeDownloadResult');
 
     for (let gid of aria2Queue.stopped) {
         aria2Tasks[gid].remove();
@@ -97,7 +97,7 @@ function addToQueue(task, gid, status) {
 }
 
 async function reloadTasks(gid) {
-    let response = await aria2RPC.call('aria2.tellStatus', [gid]);
+    let response = await aria2.call('aria2.tellStatus', [gid]);
     let result = response.result;
     let task = updateTasks(result);
 
@@ -166,7 +166,7 @@ function updateTasks(result) {
 }
 
 async function removeHandler(task, gid, method, group) {
-    await aria2RPC.call(method, [gid]);
+    await aria2.call(method, [gid]);
     removeFromQueue(gid, group);
     delete aria2Tasks[gid];
     task.remove();
@@ -176,7 +176,7 @@ async function taskRemove(task, gid) {
     let status = task.status;
 
     if (status === 'active') {
-        await aria2RPC.call('aria2.forceRemove', [gid]);
+        await aria2.call('aria2.forceRemove', [gid]);
         return;
     }
 
@@ -210,23 +210,23 @@ async function taskPause(task, gid) {
     let status = task.status;
 
     if (status === 'active') {
-        await aria2RPC.call('aria2.forcePause', [gid]);
+        await aria2.call('aria2.forcePause', [gid]);
         return;
     }
 
     if (status === 'waiting') {
-        await aria2RPC.call('aria2.forcePause', [gid]);
+        await aria2.call('aria2.forcePause', [gid]);
         return;
     }
 
     if (status === 'paused') {
-        await aria2RPC.call('aria2.unpause', [gid]);
+        await aria2.call('aria2.unpause', [gid]);
         return;
     }
 }
 
 async function getDetails(gid) {
-    let response = await aria2RPC.multicall([
+    let response = await aria2.multicall([
         { methodName: 'aria2.getFiles', params: [gid] },
         { methodName: 'aria2.getOption', params: [gid] }
     ]);
@@ -290,7 +290,7 @@ async function taskApply(task, gid, config, checks) {
 
     config['select-file'] = selected.join(',');
     task.align = true;
-    await aria2RPC.call('aria2.changeOption', [gid, config]);
+    await aria2.call('aria2.changeOption', [gid, config]);
 }
 
 async function taskRetry(task, gid) {
@@ -313,7 +313,7 @@ async function taskRetry(task, gid) {
         }
     }
 
-    let response = await aria2RPC.multicall([
+    let response = await aria2.multicall([
         { methodName: 'aria2.addUri', params: [url, options] },
         { methodName: 'aria2.removeDownloadResult', params: [gid] }
     ]);
@@ -332,7 +332,7 @@ async function taskUriAdd(task, gid, entry) {
     let url = entry.value;
     entry.value = '';
 
-    let response = await aria2RPC.call('aria2.changeUri', [gid, 1, [], [url]]);
+    let response = await aria2.call('aria2.changeUri', [gid, 1, [], [url]]);
 
     if (response.result && response.result[1] === 1) {
         task.align = true;
@@ -352,7 +352,7 @@ async function taskUriRemove(task, gid, event) {
         }
     }
 
-    let response = await aria2RPC.call('aria2.changeUri', [gid, 1, removed, []]);
+    let response = await aria2.call('aria2.changeUri', [gid, 1, removed, []]);
 
     if (response.result && response.result[0] === removed.length) {
         task.align = true;
@@ -591,7 +591,7 @@ queuePane.addEventListener('drop', async (event) => {
         target = null;
     }
 
-    aria2RPC.call('aria2.changePosition', [id, pos, 'POS_SET']).then(() => {
+    aria2.call('aria2.changePosition', [id, pos, 'POS_SET']).then(() => {
         waiting.splice(index, 1);
         waiting.splice(pos, 0, id);
         queuePane.insertBefore(aria2Drag, target);
@@ -599,10 +599,27 @@ queuePane.addEventListener('drop', async (event) => {
     });
 });
 
-const aria2RPC = new Aria2();
+const aria2 = new Aria2();
 
-aria2RPC.onopen = () => {
-    aria2RPC.multicall([
+aria2.onopen = jsonrpcStart;
+
+aria2.onclose = jsonrpcError;
+
+aria2.onmessage = (message) => {
+    let method = message.method;
+
+    if (method === 'aria2.onBtDownloadComplete') {
+        return;
+    }
+
+    let gid = message.params[0].gid;
+    let group = method === 'aria2.onDownloadStart' ? 'waiting' : 'active';
+    reloadTasks(gid);
+    removeFromQueue(gid, group);
+};
+
+function jsonrpcStart() {
+    aria2.multicall([
         { methodName: 'aria2.getGlobalStat' },
         { methodName: 'aria2.getVersion' },
         { methodName: 'aria2.tellActive' },
@@ -632,7 +649,7 @@ aria2RPC.onopen = () => {
         }
 
         aria2Interval = setInterval(() => {
-            aria2RPC.multicall([
+            aria2.multicall([
                 { methodName: 'aria2.getGlobalStat' },
                 { methodName: 'aria2.tellActive' }
             ]).then((response) => {
@@ -642,10 +659,10 @@ aria2RPC.onopen = () => {
                 updateManager(global, active);
             });
         }, aria2Delay);
-    }).catch(aria2RPC.onclose);
-};
+    }).catch(jsonrpcError);
+}
 
-aria2RPC.onclose = () => {
+function jsonrpcError() {
     clearInterval(aria2Interval);
     aria2Tasks = {};
 
@@ -655,17 +672,4 @@ aria2RPC.onclose = () => {
     for (let i = 2, l = systemTree.length; i < l; i++) {
         systemTree[i].textContent = '0';
     }
-};
-
-aria2RPC.onmessage = (message) => {
-    let method = message.method;
-
-    if (method === 'aria2.onBtDownloadComplete') {
-        return;
-    }
-
-    let gid = message.params[0].gid;
-    let group = method === 'aria2.onDownloadStart' ? 'waiting' : 'active';
-    reloadTasks(gid);
-    removeFromQueue(gid, group);
-};
+}
