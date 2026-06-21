@@ -282,29 +282,9 @@ document.getElementById('goto-options').addEventListener('click', (event) => {
     remote = false;
 });
 
-function matchAdd(id, entry) {
-    let match = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9]+)(?=\/|$)/);
-    entry.value = '';
-
-    if (!match) {
-        return;
-    }
-
-    addToList({ id, host: match[1] });
-}
-
-function matchResort(id, list) {
-    let old_value = changes[id];
-    let new_value = old_value.slice().sort();
-    let old_order = Array.from(list.children);
-    let new_order = old_order.slice().sort((a, b) => a.textContent.localeCompare(b.textContent));
-    list.append(...new_order);
-    saveChanges({ id, new_value, old_value, type: 'resort', sort: { list, new_order, old_order } });
-}
-
 const matchNodes = storagePane.querySelectorAll('div.flexmenu');
-const matchLists = new Map();
 
+const matchLists = new Map();
 
 for (let i = 0, l = matchNodes.length; i < l; i++) {
     let match = matchNodes[i];
@@ -323,7 +303,7 @@ for (let i = 0, l = matchNodes.length; i < l; i++) {
         }
 
         if (menu === 'tips_match_add') {
-            matchAdd(id, entry);
+            matchAdd(id, entry, list);
             return;
         }
 
@@ -333,17 +313,36 @@ for (let i = 0, l = matchNodes.length; i < l; i++) {
         }
 
         if (menu === 'tips_match_remove') {
-            let host = event.target.parentNode.title;
-            removeFromList({ id, host });
+            removeFromList(id, event.target.parentNode.title, list);
             return;
         }
     });
 
     entry.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            matchAdd(id, entry);
+            matchAdd(id, entry, list);
         }
     });
+}
+
+function matchAdd(id, entry, list) {
+    let match = entry.value.match(/^(?:https?:\/\/|\/\/)?(\*|(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9]+)(?=\/|$)/);
+    entry.value = '';
+
+    if (!match) {
+        return;
+    }
+
+    addToList(id, match[1], list);
+}
+
+function matchResort(id, list) {
+    let old_value = changes[id];
+    let new_value = old_value.slice().sort();
+    let old_order = Array.from(list.children);
+    let new_order = old_order.slice().sort((a, b) => a.textContent.localeCompare(b.textContent));
+    list.append(...new_order);
+    saveChanges({ id, new_value, old_value, type: 'resort', sort: { list, new_order, old_order } });
 }
 
 function printMatchPattern(list, id, value) {
@@ -388,47 +387,6 @@ function storageDispatch() {
     }
 }
 
-function addToList(add) {
-    if (remote) {
-        return;
-    }
-
-    let id = add.id;
-    let host = add.host;
-    let old_value = changes[id];
-
-    if (old_value.includes(host)) {
-        return;
-    }
-
-    let new_value = old_value.slice();
-    let index = new_value.length;
-    let list = matchLists.get(id).list;
-    let rule = printMatchPattern(list, id, host);
-    new_value[index] = host;
-
-    list.scrollTop = list.scrollHeight;
-    saveChanges({ id, new_value, old_value, type: 'rules', add: { list, index, rule } });
-}
-
-function removeFromList(remove) {
-    if (remote) {
-        return;
-    }
-
-    let id = remove.id;
-    let host = remove.host;
-    let list = matchLists.get(id).list;
-    let old_value = changes[id];
-    let index = old_value.indexOf(host);
-    let new_value = old_value.slice();
-    let rule = list.querySelector('[title="' + host + '"]');
-    new_value.splice(index, 1);
-
-    rule.remove();
-    saveChanges({ id, new_value, old_value, type: 'rules', remove: { list, index, rule } });
-}
-
 chrome.runtime.onMessage.addListener((message) => {
     let action = message.options;
 
@@ -437,18 +395,55 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 
     let params = message.params;
+    let id = params.id;
+    let host = params.host;
+    let list = matchLists.get(id);
 
     if (action === 'match_add') {
-        addToList(params);
+        addToList(id, host, list);
         return;
     }
 
     if (action === 'match_remove') {
-        removeFromList(params);
+        removeFromList(id, host, list);
         return;
     }
 });
 
+function addToList(id, host, list) {
+    if (remote) {
+        return;
+    }
+
+    let old_value = changes[id];
+
+    if (old_value.includes(host)) {
+        return;
+    }
+
+    let new_value = old_value.slice();
+    let index = new_value.length;
+    let rule = printMatchPattern(list, id, host);
+
+    new_value[index] = host;
+    list.scrollTop = list.scrollHeight;
+    saveChanges({ id, new_value, old_value, type: 'rules', add: { list, index, rule } });
+}
+
+function removeFromList(id, host, list) {
+    if (remote) {
+        return;
+    }
+
+    let old_value = changes[id];
+    let index = old_value.indexOf(host);
+    let new_value = old_value.slice();
+    let rule = list.querySelector('[title="' + host + '"]');
+
+    new_value.splice(index, 1);
+    rule.remove();
+    saveChanges({ id, new_value, old_value, type: 'rules', remove: { list, index, rule } });
+}
 
 chrome.runtime.sendMessage({ action: 'options_runtime'}, (message) => {
     let system = message.system;
