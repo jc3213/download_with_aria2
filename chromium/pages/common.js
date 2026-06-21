@@ -24,6 +24,7 @@ for (let i = 0, l = hotkeyMap.length; i < l; i++) {
 
     for (let j = 0, m = keys.length; j < m; j++) {
         let k = keys[j].trim();
+
         if (k) {
             hotkeyCombo[k] = el;
         }
