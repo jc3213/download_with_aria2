@@ -49,7 +49,11 @@ chrome.runtime.onMessage.addListener((message) => {
 function storageDispatch(json) {
     aria2Delay = json['manager_interval'] * 1000;
     aria2Proxy = json['proxy_server'];
-    jsonrpcStart();
+    aria2.url = json['jsonrpc_url'];
+    aria2.secret = json['jsonrpc_secret'];
+    aria2.retries = json['jsonrpc_retries'];
+    aria2.timeout = json['jsonrpc_timeout'];
+    aria2.connect();
 }
 
 chrome.runtime.sendMessage({ action: 'popup_runtime' }, (message) => {

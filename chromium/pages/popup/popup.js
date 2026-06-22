@@ -587,6 +587,12 @@ queuePane.addEventListener('drop', async (event) => {
     });
 });
 
+const aria2 = new Aria2();
+
+aria2.onopen = jsonrpcStart;
+
+aria2.onclose = jsonrpcError;
+
 aria2.onmessage = (message) => {
     let method = message.method;
 
