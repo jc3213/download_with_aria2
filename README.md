@@ -10,8 +10,9 @@
     - Read [Wiki: Installation](//github.com/jc3213/download_with_aria2/wiki#first-of-all) for usage
     - Send feedback at [issues page](//github.com/jc3213/download_with_aria2/issues/new/)
 - Built-in Task Manager
-    - Try the manager [HERE](//jc3213.github.io/aria2.js/app)
-    - Get the [Source code](//github.com/jc3213/aria2.js/tree/main/app)
+    - [Webpage](//jc3213.github.io/aria2.app/)
+    - [Electron App](//github.com/jc3213/aria2.app/releases/latest)
+    - [Source code](//github.com/jc3213/aria2.app/tree/main/)
 - Context menus
     - Download this link
     - Download this image
