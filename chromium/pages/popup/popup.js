@@ -58,18 +58,6 @@ function taskFilters(array, callback) {
     });
 }
 
-async function menuPurge() {
-    await aria2.call('aria2.purgeDownloadResult');
-
-    for (let gid of aria2Queue.stopped) {
-        aria2Tasks[gid].remove();
-        delete aria2Tasks[gid];
-    }
-
-    aria2Queue.stopped = new Set();
-    aria2Stats.stopped.textContent = '0';
-}
-
 function updateManager(stats, active) {
     aria2Stats.download.textContent = getFileSize(stats.downloadSpeed);
     aria2Stats.upload.textContent = getFileSize(stats.uploadSpeed);
@@ -598,12 +586,6 @@ queuePane.addEventListener('drop', async (event) => {
         aria2Queue.waiting = new Set(waiting);
     });
 });
-
-const aria2 = new Aria2();
-
-aria2.onopen = jsonrpcStart;
-
-aria2.onclose = jsonrpcError;
 
 aria2.onmessage = (message) => {
     let method = message.method;

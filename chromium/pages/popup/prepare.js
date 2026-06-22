@@ -1,7 +1,7 @@
 i18nEntry.value = chrome.i18n.getMessage('extension_locale');
 i18nEntry.disabled = true;
 
-menuPane.addEventListener('click', (event) => {
+menuPane.addEventListener('click', async (event) => {
     let menu = event.target.getAttribute('i18n');
 
     if (!menu) {
@@ -9,7 +9,15 @@ menuPane.addEventListener('click', (event) => {
     }
 
     if (menu === 'popup_purge') {
-        menuPurge();
+        await aria2.call('aria2.purgeDownloadResult');
+
+        for (let gid of aria2Queue.stopped) {
+            aria2Tasks[gid].remove();
+            delete aria2Tasks[gid];
+        }
+
+        aria2Queue.stopped = new Set();
+        aria2Stats.stopped.textContent = '0';
         return;
     }
 
@@ -41,11 +49,7 @@ chrome.runtime.onMessage.addListener((message) => {
 function storageDispatch(json) {
     aria2Delay = json['manager_interval'] * 1000;
     aria2Proxy = json['proxy_server'];
-    aria2.url = json['jsonrpc_url'];
-    aria2.secret = json['jsonrpc_secret'];
-    aria2.retries = json['jsonrpc_retries'];
-    aria2.timeout = json['jsonrpc_timeout'];
-    aria2.connect();
+    jsonrpcStart();
 }
 
 chrome.runtime.sendMessage({ action: 'popup_runtime' }, (message) => {
