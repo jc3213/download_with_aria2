@@ -1,0 +1,34 @@
+async function captureDownloads(downloadItem) {
+    let url = downloadItem.finalUrl;
+
+    if (url.startsWith('data') || url.startsWith('blob')) {
+        return;
+    }
+
+    let referer = downloadItem.referrer;
+    let hostname = getHostname(referer || url);
+
+    if (matchHostname(captureHosts, hostname)) {
+        return;
+    }
+
+    let id = downloadItem.id;
+
+    await chrome.downloads.search({ id });
+    await chrome.downloads.erase({ id });
+
+    downloadHandler(url, referer, downloadItem.filename, hostname);
+}
+
+function captureHooking() {
+    if (aria2Storage['capture_enabled']) {
+        chrome.downloads.onDeterminingFilename.addListener(captureDownloads)
+    }
+}
+
+function captureDisabled() {
+    chrome.downloads.onDeterminingFilename.removeListener(captureDownloads);
+}
+
+setInterval(chrome.runtime.getPlatformInfo, 28000);
+importScripts('libs/aria2.js', 'application.js');
