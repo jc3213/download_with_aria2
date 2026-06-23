@@ -24,18 +24,7 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v5
 
-      - name: 🔧 Install Zip Tool
-        run: sudo apt-get install -y zip jq
-
-      - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-
-      - name: 📦 Install Minify Tools
-        run: npm install -g html-minifier-terser terser clean-css-cli
-
-      - name: 🏷️ Generate Release Version
+      - name: 🏷️ Generate Version
         run: |
           REPO="${GITHUB_REPOSITORY#*/}"
           NAME=$(echo "$REPO" | tr '[:upper:]' '[:lower:]' | tr -d '[-_]')
@@ -49,6 +38,17 @@ jobs:
           echo "MV3_ZIP=$NAME-chromium_mv3-$MV3_VER.zip" >> $GITHUB_ENV
           echo "FF_ZIP=$NAME-firefox_$FF_VER.zip" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: 🔧 Install Zip Tool
+        run: sudo apt-get install -y zip jq
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: 📦 Install Minify Tools
+        run: npm install -g html-minifier-terser terser clean-css-cli
 
       - name: ✨ Minify Source Files
         run: |
