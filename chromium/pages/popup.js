@@ -587,7 +587,7 @@ queuePane.addEventListener('drop', async (event) => {
     });
 });
 
-const aria2 = new Aria2();
+aria2.subscribe();
 
 aria2.onopen = jsonrpcStart;
 
@@ -607,6 +607,7 @@ aria2.onmessage = (message) => {
 };
 
 function jsonrpcStart() {
+    console.log(1);
     aria2.multicall([
         { methodName: 'aria2.getGlobalStat' },
         { methodName: 'aria2.getVersion' },
@@ -614,6 +615,7 @@ function jsonrpcStart() {
         { methodName: 'aria2.tellWaiting', params: [0, 999] },
         { methodName: 'aria2.tellStopped', params: [0, 999] }
     ]).then((response) => {
+        console.log(response);
         let result = response.result;
         let global = result[0][0];
         let version = result[1][0];
@@ -650,7 +652,8 @@ function jsonrpcStart() {
     }).catch(jsonrpcError);
 }
 
-function jsonrpcError() {
+function jsonrpcError(e) {
+    console.log(e);
     clearInterval(aria2Interval);
     aria2Tasks = {};
 

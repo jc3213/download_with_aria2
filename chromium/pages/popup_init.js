@@ -1,3 +1,7 @@
+window.addEventListener('unload', () => {
+    aria2.unsubscribe();
+});
+
 i18nEntry.value = chrome.i18n.getMessage('extension_locale');
 i18nEntry.disabled = true;
 
@@ -43,18 +47,9 @@ chrome.runtime.onMessage.addListener((message) => {
         close();
     }
 
-    storageDispatch(params);
+    aria2Delay = params['manager_interval'] * 1000;
+    aria2Proxy = params['proxy_server'];
 });
-
-function storageDispatch(json) {
-    aria2Delay = json['manager_interval'] * 1000;
-    aria2Proxy = json['proxy_server'];
-    aria2.url = json['jsonrpc_url'];
-    aria2.secret = json['jsonrpc_secret'];
-    aria2.retries = json['jsonrpc_retries'];
-    aria2.timeout = json['jsonrpc_timeout'];
-    aria2.connect();
-}
 
 chrome.runtime.sendMessage({ action: 'popup_runtime' }, (message) => {
     let storage = message.storage;
@@ -63,7 +58,8 @@ chrome.runtime.sendMessage({ action: 'popup_runtime' }, (message) => {
         chrome.runtime.sendMessage({ action: 'popup_queues', params });
     });
 
-    storageDispatch(storage);
+    aria2Delay = storage['manager_interval'] * 1000;
+    aria2Proxy = storage['proxy_server'];
 });
 
 if (location.search === '?toolbar') {

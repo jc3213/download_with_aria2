@@ -7,42 +7,31 @@ const aria2 = (() => {
     let timeout = 10000;
     let events = {};
 
-    let offscreen;
+    let shared = document.currentScript.src.replace('worker.js', 'shared.js');
+    let worker = new SharedWorker(shared, { name: 'aria2-socket-worker' });
+    let port = worker.port;
 
-    let onhold = new Promise((resolve) => {
-        chrome.runtime.onConnect.addListener((port) => {
-            if (port.name !== 'offscreen') {
-                return;
-            }
+    port.start();
 
-            port.onMessage.addListener((message) => {
-                let func = events[message.type];
+    port.onmessage = (event) => {
+        let data = event.data;
+        let func = events[data.type];
 
-                if (func) {
-                    func(message.details);
-                    return;
-                }
+        if (func) {
+            func(data.details);
+            return;
+        }
 
-                let id = message.id;
-                func = pending[id];
+        let id = data.id;
+        func = pending[id];
 
-                if (func) {
-                    func(message.result);
-                    delete pending[id];
-                }
-            });
+        if (func) {
+            func(data.result);
+            delete pending[id];
+        }
+    };
 
-            resolve(port);
-        });
-    });
-
-    chrome.offscreen.createDocument({
-        url: 'offscreen.html',
-        reasons: ['WORKERS'],
-        justification: 'Host of SharedWorker'
-    });
-
-    function forecast(type, payload) {
+    function broadcast(type, payload) {
         let id = type + 
             '-' +
             index++ +
@@ -53,17 +42,8 @@ const aria2 = (() => {
 
         return new Promise((resolve) => {
             pending[id] = resolve;
-            offscreen.postMessage({ id, type, payload });
+            port.postMessage({ id, type, payload });
         });
-    }
-
-    async function broadcast(type, payload) {
-        if (!offscreen) {
-            offscreen = await onhold;
-            broadcast = forecast;
-        }
-
-        return forecast(type, payload);
     }
 
     async function connect(jsonrpc, secret) {
@@ -176,38 +156,3 @@ const aria2 = (() => {
 
     return aria2;
 })();
-
-async function captureDownloads(downloadItem) {
-    let url = downloadItem.finalUrl;
-
-    if (url.startsWith('data') || url.startsWith('blob')) {
-        return;
-    }
-
-    let referer = downloadItem.referrer;
-    let hostname = getHostname(referer || url);
-
-    if (matchHostname(captureHosts, hostname)) {
-        return;
-    }
-
-    let id = downloadItem.id;
-
-    await chrome.downloads.search({ id });
-    await chrome.downloads.erase({ id });
-
-    downloadHandler(url, referer, downloadItem.filename, hostname);
-}
-
-function captureHooking() {
-    if (aria2Storage['capture_enabled']) {
-        chrome.downloads.onDeterminingFilename.addListener(captureDownloads)
-    }
-}
-
-function captureDisabled() {
-    chrome.downloads.onDeterminingFilename.removeListener(captureDownloads);
-}
-
-setInterval(chrome.runtime.getPlatformInfo, 28000);
-importScripts('application.js');
