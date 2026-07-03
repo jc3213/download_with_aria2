@@ -7,9 +7,7 @@ const aria2 = (() => {
     let timeout = 10000;
     let events = {};
 
-    let offscreen;
-
-    let onhold = new Promise((resolve) => {
+    let offscreen = new Promise((resolve) => {
         chrome.runtime.onConnect.addListener((port) => {
             if (port.name !== 'offscreen') {
                 return;
@@ -58,11 +56,8 @@ const aria2 = (() => {
     }
 
     async function broadcast(type, payload) {
-        if (!offscreen) {
-            offscreen = await onhold;
-            broadcast = forecast;
-        }
-
+        offscreen = await offscreen;
+        broadcast = forecast;
         return forecast(type, payload);
     }
 
