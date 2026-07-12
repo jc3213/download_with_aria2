@@ -1,0 +1,49 @@
+img {
+    border-style: solid;
+    border-width: 1px;
+}
+
+img.checked {
+    opacity: 0.3;
+}
+
+#preview {
+    height: calc(100vh - 236px);
+    width: calc(100vh + 18px);
+}
+
+#preview > img {
+    left: 50%;
+    max-height: 100%;
+    max-width: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    height: 155px;
+    overflow: auto;
+}
+
+#thumbs > img {
+    height: 88px;
+    width: 88px;
+}
+
+#jsonrpc {
+    border-style: solid;
+    border-width: 1px;
+    bottom: 38px;
+    padding: 5px;
+    position: absolute;
+    right: 0px;
+    width: 50%;
+}
+
+#menu > :nth-child(4) {
+    margin-left: auto;
+}

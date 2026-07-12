@@ -1,0 +1,44 @@
+textarea {
+    margin-top: 3px;
+    overflow: hidden auto;
+    padding: 3px;
+    resize: none;
+    width: calc(100% - 8px);
+}
+
+#menu > h4 {
+    margin-right: auto;
+}
+
+#menu > button {
+    padding: 1px 5px;
+    width: auto;
+}
+
+#referer {
+    border-style: solid;
+    border-width: 2px;
+    left: 0px;
+    max-height: 151px;
+    overflow: hidden auto;
+    position: absolute;
+    top: 100%;
+    width: calc(100% - 4px);
+    z-index: 9;
+}
+
+#referer > * {
+    margin: 1px;
+    overflow: hidden;
+    padding: 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#referer > :hover {
+    box-shadow: var(--shadows);
+}
+
+#referer > :active {
+    opacity: 0.8;
+}
