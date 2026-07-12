@@ -119,11 +119,14 @@ function updateTasks(result) {
     let minutes = time % 3600 / 60 | 0;
     let seconds = time % 60 | 0;
     let percent = (completedLength / totalLength * 10000 | 0) / 100;
-    let path = files[0].path;
 
-    if (task.placeholder && path) {
-        task.name.textContent = path.substring(path.lastIndexOf('/') + 1);
-        delete task.placeholder;
+    if (task.placeholder) {
+        let path = files[0].path;
+
+        if (path) {
+            task.name.textContent = path.substring(path.lastIndexOf('/') + 1);
+            delete task.placeholder;
+        }
     }
 
     task.current.textContent = getFileSize(completedLength);
@@ -140,11 +143,15 @@ function updateTasks(result) {
 
     for (let i = 0, l = files.length; i < l; i++) {
         let file = files[i];
-        let path = file.path;
         let el = task[file.index];
 
-        if (!el.name.textContent && path) {
-            el.name.textContent = path.substring(path.lastIndexOf('/') + 1);
+        if (el.placeholder) {
+            let path = file.path;
+
+            if (path) {
+                el.name.textContent = path.substring(path.lastIndexOf('/') + 1);
+                delete el.placeholder;
+            }
         }
 
         el.ratio.textContent = (file.completedLength / file.length * 10000 | 0) / 100;
@@ -485,13 +492,19 @@ function createTaskFile(task, gid, list, checks, index, selected, path, length) 
     let size = tree[3];
     let ratio = tree[4];
 
-    check.id = gid + '_' + index;
+    let id = gid + '-' + index;
+    check.id = id;
     check.checked = selected === 'true';
     label.textContent = index;
-    label.setAttribute('for', check.id);
-    name.textContent = path.substring(path.lastIndexOf('/') + 1);
-    name.title = path;
+    label.setAttribute('for', id);
     size.textContent = getFileSize(length);
+
+    if (path) {
+        name.textContent = path.substring(path.lastIndexOf('/') + 1);
+        name.title = path;
+    } else {
+        file.placeholder = true;
+    }
 
     list.appendChild(file);
     checks.set(index, check);
