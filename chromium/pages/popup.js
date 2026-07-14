@@ -229,7 +229,7 @@ async function taskDetails(task, gid, config, checks, entries, detail, apply) {
 
         for (let i = 0, l = files.length; i < l; i++) {
             let file = files[i];
-            checks.get(file.index).checked = file.selected === 'true';
+            checks[file.index].checked = file.selected === 'true';
         }
 
         for (let i = 0, l = entries.length; i < l; i++) {
@@ -252,11 +252,11 @@ async function taskDetails(task, gid, config, checks, entries, detail, apply) {
 async function taskApply(task, gid, config, checks) {
     let selected = [];
 
-    for (let entries of checks) {
-        let check = entries[1];
+    for (let i = 1, l = checks.length; i < l; i++) {
+        let check = checks[i];;
 
         if (check.checked) {
-            selected.push(entries[0]);
+            selected.push(i);
         }
     }
 
@@ -279,6 +279,7 @@ async function taskRetry(task, gid) {
 
     if (path) {
         let match = path.match(/^((?:[A-Z]:)?(?:\/[^/]+)*)\/([^/]+)$/);
+
         if (match) {
             options['dir'] = match[1];
             options['out'] = match[2];
@@ -352,7 +353,7 @@ function createTasks(gid, status, bittorrent, files) {
     let file = files[0];
     let path = file.path;
     let config = {};
-    let checks = new Map();
+    let checks = [];
 
     task.id = gid;
     task.name = tree[0];
@@ -485,6 +486,7 @@ function createTasks(gid, status, bittorrent, files) {
 
 function createTaskFile(task, gid, list, checks, index, selected, path, length) {
     let file = fileLET.cloneNode(true);
+    let placeholder = false;
     let tree = file.children;
     let check = tree[0];
     let label = tree[1];
@@ -503,12 +505,12 @@ function createTaskFile(task, gid, list, checks, index, selected, path, length) 
         name.textContent = path.substring(path.lastIndexOf('/') + 1);
         name.title = path;
     } else {
-        file.placeholder = true;
+        placeholder = true;
     }
 
     list.appendChild(file);
-    checks.set(index, check);
-    return { name, ratio };
+    checks[index] = check;
+    return { name, ratio, placeholder };
 }
 
 function createTaskUri(task, list, uri) {
