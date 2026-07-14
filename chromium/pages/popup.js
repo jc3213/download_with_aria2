@@ -79,9 +79,8 @@ function addToQueue(task, gid, status) {
     aria2Stats[group].textContent = queue.size;
     task.classList.replace(task.status, status);
     task.status = status;
-    task.draggable = group === 'waiting';
+    task.draggable = status === 'waiting';
     queue.add(gid);
-    queuePane.appendChild(task);
 }
 
 async function reloadTasks(gid) {
@@ -101,14 +100,6 @@ function updateTasks(result) {
     let gid = result.gid;
     let bittorrent = result.bittorrent;
     let files = result.files;
-
-    let task = aria2Tasks[gid];
-
-    if (!task) {
-        task = createTasks(gid, result.status, bittorrent, files);
-        aria2Tasks[gid] = task;
-    }
-
     let completedLength = result.completedLength;
     let totalLength = result.totalLength;
     let downloadSpeed = result.downloadSpeed;
@@ -119,6 +110,30 @@ function updateTasks(result) {
     let minutes = time % 3600 / 60 | 0;
     let seconds = time % 60 | 0;
     let percent = (completedLength / totalLength * 10000 | 0) / 100;
+
+    let task = aria2Tasks[gid];
+
+    if (!task) {
+        task = createTasks(gid, result.status, bittorrent, files);
+        queuePane.appendChild(task);
+        aria2Tasks[gid] = task;
+    } else {
+        for (let i = 0, l = files.length; i < l; i++) {
+            let file = files[i];
+            let fileEl = task[file.index];
+
+            if (fileEl.placeholder) {
+                let path = file.path;
+
+                if (path) {
+                    fileEl.name.textContent = path.substring(path.lastIndexOf('/') + 1);
+                    delete fileEl.placeholder;
+                }
+            }
+
+            fileEl.ratio.textContent = (file.completedLength / file.length * 10000 | 0) / 100;
+        }
+    }
 
     if (task.placeholder) {
         let path = files[0].path;
@@ -141,23 +156,195 @@ function updateTasks(result) {
     task.ratio.textContent = percent;
     task.ratio.style.width = percent + '%';
 
-    for (let i = 0, l = files.length; i < l; i++) {
-        let file = files[i];
-        let el = task[file.index];
+    return task;
+}
 
-        if (el.placeholder) {
-            let path = file.path;
+function createTasks(gid, status, bittorrent, files) {
+    let task = sessionLET.cloneNode(true);
+    let tree = task.children;
 
-            if (path) {
-                el.name.textContent = path.substring(path.lastIndexOf('/') + 1);
-                delete el.placeholder;
-            }
+    let times = tree[2].children;
+    let menus = tree[7].children;
+    let options = tree[9];
+    let newuri = tree[11].firstElementChild.children[1];
+    let fileList = tree[10];
+    let uriList = tree[11];
+
+    let entries = options.querySelectorAll('[name]');
+    let proxy = entries[2];
+    let detail = menus[1];
+    let apply = menus[2];
+
+    let file = files[0];
+    let path = file.path;
+    let config = {};
+    let checks = [];
+
+    task.id = gid;
+    task.name = tree[0];
+    task.current = tree[1];
+    task.day = times[0];
+    task.hour = times[1];
+    task.minute = times[2];
+    task.second = times[3];
+    task.total = tree[3];
+    task.network = tree[4];
+    task.download = tree[5];
+    task.upload = tree[6];
+    task.ratio = tree[8].firstElementChild;
+
+    if (bittorrent) {
+        task.classList.add(status, 'p2p');
+        task.name.textContent = bittorrent.info ? bittorrent.info.name : path;
+    } else {
+        task.classList.add(status, 'http');
+
+        if (path) {
+            task.name.textContent = path.substring(path.lastIndexOf('/') + 1);
+        } else {
+            task.name.textContent = file.uris[0].uri;
+            task.placeholder = true;
         }
-
-        el.ratio.textContent = (file.completedLength / file.length * 10000 | 0) / 100;
     }
 
+    task.addEventListener('click', (event) => {
+        let menu = event.target.getAttribute('i18n-tips');
+        
+        if (!menu) {
+            return;
+        }
+
+        if (menu === 'tips_task_remove') {
+            taskRemove(task, gid);
+            return;
+        }
+
+        if (menu === 'tips_task_pause') {
+            taskPause(task, gid);
+            return;
+        }
+
+        if (menu === 'tips_task_detail') {
+            taskDetails(task, gid, config, checks, entries, detail, apply);
+            return;
+        }
+
+        if (menu === 'tips_task_apply') {
+            taskApply(task, gid, config, checks);
+            apply.classList.add('hidden');
+            return;
+        }
+
+        if (menu === 'tips_task_retry') {
+            taskRetry(task, gid);
+            return;
+        }
+
+        if (menu === 'tips_proxy_server') {
+            proxy.value = aria2Proxy;
+            config['all-proxy'] = aria2Proxy;
+            apply.classList.remove('hidden');
+            return;
+        }
+
+        if (menu === 'tips_uri_add') {
+            taskUriAdd(task, gid, newuri);
+            return;
+        }
+
+        if (menu === 'tips_uri_copy') {
+            let url = event.target.textContent;
+            navigator.clipboard.writeText(url);
+            return;
+        }
+
+        if (menu === 'tips_uri_remove') {
+            taskUriRemove(task, gid, event);
+            return;
+        }
+
+        if (menu === 'tips_file_index') {
+            apply.classList.remove('hidden');
+            return;
+        }
+    });
+    
+    task.addEventListener('keydown', (event) => {
+        if (event.ctrlKey && event.code === 'KeyS') {
+            event.preventDefault();
+            apply.click();
+        }
+    });
+
+    newuri.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            taskUriAdd(task, gid, newuri);
+        }
+    });
+
+    options.addEventListener('change', (event) => {
+        config[event.target.name] = event.target.value;
+        apply.classList.remove('hidden');
+    });
+
+    for (let i = 0, l = files.length; i < l; i++) {
+        let file = files[i];
+        let index = file.index;
+
+        if (!task[index]) {
+            createTaskFile(task, gid, index, file, checks, fileList, uriList);
+        }
+    }
+
+    addToQueue(task, gid, status);
     return task;
+}
+
+function createTaskFile(task, gid, index, file, checks, fileList, uriList) {
+    let fileEl = fileLET.cloneNode(true);
+    let tree = fileEl.children;
+    let check = tree[0];
+    let label = tree[1];
+    let name = tree[2];
+    let size = tree[3];
+    let ratio = tree[4];
+
+    let id = gid + '-' + index;
+    let path = file.path;
+    let uris = file.uris;
+
+    if (path) {
+        name.textContent = path.substring(path.lastIndexOf('/') + 1);
+        name.title = path;
+    } else {
+        fileEl.placeholder = true;
+    }
+
+    for (let i = 0, l = uris.length; i < l; i++) {
+        let uri = uris[i].uri;
+
+        if (task[uri]) {
+            continue;
+        }
+
+        let uriEl = uriLET.cloneNode(true);
+        uriEl.firstElementChild.textContent = uri;
+        uriList.appendChild(uriEl);
+        task[uri] = uriEl;
+    }
+
+    check.id = id;
+    check.checked = file.selected === 'true';
+    checks[index] = check;
+    label.textContent = index;
+    label.setAttribute('for', id);
+    size.textContent = getFileSize(file.length);
+    ratio.textContent = (file.completedLength / file.length * 10000 | 0) / 100;
+
+    fileEl.name = name;
+    fileEl.ratio = ratio;
+    fileList.appendChild(fileEl);
+    task[index] = fileEl;
 }
 
 const taskRemoveMap = {
@@ -334,193 +521,6 @@ async function taskUriRemove(task, gid, event) {
     }
 }
 
-function createTasks(gid, status, bittorrent, files) {
-    let task = sessionLET.cloneNode(true);
-    let tree = task.children;
-
-    let times = tree[2].children;
-    let menus = tree[7].children;
-    let options = tree[9];
-    let newuri = tree[11].firstElementChild.children[1];
-    let fileList = tree[10];
-    let uriList = tree[11];
-
-    let entries = options.querySelectorAll('[name]');
-    let proxy = entries[2];
-    let detail = menus[1];
-    let apply = menus[2];
-
-    let file = files[0];
-    let path = file.path;
-    let config = {};
-    let checks = [];
-
-    task.id = gid;
-    task.name = tree[0];
-    task.current = tree[1];
-    task.day = times[0];
-    task.hour = times[1];
-    task.minute = times[2];
-    task.second = times[3];
-    task.total = tree[3];
-    task.network = tree[4];
-    task.download = tree[5];
-    task.upload = tree[6];
-    task.ratio = tree[8].firstElementChild;
-
-    if (bittorrent) {
-        task.classList.add(status, 'p2p');
-        task.name.textContent = bittorrent.info ? bittorrent.info.name : path;
-    } else {
-        task.classList.add(status, 'http');
-
-        if (path) {
-            task.name.textContent = path.substring(path.lastIndexOf('/') + 1);
-        } else {
-            task.name.textContent = file.uris[0].uri;
-            task.placeholder = true;
-        }
-    }
-
-    task.addEventListener('click', (event) => {
-        let menu = event.target.getAttribute('i18n-tips');
-        
-        if (!menu) {
-            return;
-        }
-
-        if (menu === 'tips_task_remove') {
-            taskRemove(task, gid);
-            return;
-        }
-
-        if (menu === 'tips_task_pause') {
-            taskPause(task, gid);
-            return;
-        }
-
-        if (menu === 'tips_task_detail') {
-            taskDetails(task, gid, config, checks, entries, detail, apply);
-            return;
-        }
-
-        if (menu === 'tips_task_apply') {
-            taskApply(task, gid, config, checks);
-            apply.classList.add('hidden');
-            return;
-        }
-
-        if (menu === 'tips_task_retry') {
-            taskRetry(task, gid);
-            return;
-        }
-
-        if (menu === 'tips_proxy_server') {
-            proxy.value = aria2Proxy;
-            config['all-proxy'] = aria2Proxy;
-            apply.classList.remove('hidden');
-            return;
-        }
-
-        if (menu === 'tips_uri_add') {
-            taskUriAdd(task, gid, newuri);
-            return;
-        }
-
-        if (menu === 'tips_uri_copy') {
-            let url = event.target.textContent;
-            navigator.clipboard.writeText(url);
-            return;
-        }
-
-        if (menu === 'tips_uri_remove') {
-            taskUriRemove(task, gid, event);
-            return;
-        }
-
-        if (menu === 'tips_file_index') {
-            apply.classList.remove('hidden');
-            return;
-        }
-    });
-    
-    task.addEventListener('keydown', (event) => {
-        if (event.ctrlKey && event.code === 'KeyS') {
-            event.preventDefault();
-            apply.click();
-        }
-    });
-
-    newuri.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            taskUriAdd(task, gid, newuri);
-        }
-    });
-
-    options.addEventListener('change', (event) => {
-        config[event.target.name] = event.target.value;
-        apply.classList.remove('hidden');
-    });
-
-    for (let i = 0, l = files.length; i < l; i++) {
-        let file = files[i];
-        let uris = file.uris;
-        let index = file.index;
-
-        if (!task[index]) {
-            task[index] = createTaskFile(task, gid, fileList, checks, index, file.selected, file.path, file.length);
-        }
-
-        for (let j = 0, m = uris.length; j < m; j++) {
-            let uri = uris[j].uri;
-
-            if (!task[uri]) {
-                task[uri] = createTaskUri(task, uriList, uri);
-            }
-        }
-    }
-
-    addToQueue(task, gid, status);
-    return task;
-}
-
-function createTaskFile(task, gid, list, checks, index, selected, path, length) {
-    let file = fileLET.cloneNode(true);
-    let placeholder = false;
-    let tree = file.children;
-    let check = tree[0];
-    let label = tree[1];
-    let name = tree[2];
-    let size = tree[3];
-    let ratio = tree[4];
-
-    let id = gid + '-' + index;
-    check.id = id;
-    check.checked = selected === 'true';
-    label.textContent = index;
-    label.setAttribute('for', id);
-    size.textContent = getFileSize(length);
-
-    if (path) {
-        name.textContent = path.substring(path.lastIndexOf('/') + 1);
-        name.title = path;
-    } else {
-        placeholder = true;
-    }
-
-    list.appendChild(file);
-    checks[index] = check;
-    return { name, ratio, placeholder };
-}
-
-function createTaskUri(task, list, uri) {
-    let url = uriLET.cloneNode(true);
-    url.firstElementChild.textContent = uri;
-
-    list.appendChild(url);
-    return url;
-}
-
 function getFileSize(bytes) {
     if (isNaN(bytes)) {
         return '??';
@@ -567,30 +567,32 @@ queuePane.addEventListener('drop', async (event) => {
     }
 
     let id = aria2Drag.id;
-    let group = aria2Group[target.status];
-    let waiting = Array.from(aria2Queue.waiting);
-    let index = waiting.indexOf(id);
+    let index = waiting.indexOf(aria2Drag);
     let pos;
+    let insert;
 
-    if (group === 'waiting') {
-        pos = waiting.indexOf(target.id);
+    let status = target.status;
+    let waiting = Array.from(queuePane.querySelectorAll('.waiting'));
+
+    if (status === 'waiting') {
+        pos = waiting.indexOf(target);
 
         if (pos > index) {
-            target = target.nextElementSibling;
+            insert = target.nextElementSibling;
+        } else {
+            insert = target;
         }
-    } else if (group === 'active') {
+    } else if (status === 'active' || status === 'paused') {
         pos = 0;
-        target = queuePane.querySelector('.waiting, .paused');
-    } else if (group === 'stopped') {
+        insert = waiting[0];
+    } else {
         pos = waiting.length - 1;
-        target = null;
     }
 
     aria2.call('aria2.changePosition', [id, pos, 'POS_SET']).then(() => {
         waiting.splice(index, 1);
         waiting.splice(pos, 0, id);
-        queuePane.insertBefore(aria2Drag, target);
-        aria2Queue.waiting = new Set(waiting);
+        queuePane.insertBefore(aria2Drag, insert);
     });
 });
 
