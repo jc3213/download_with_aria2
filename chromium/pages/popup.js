@@ -566,7 +566,7 @@ queuePane.addEventListener('drop', async (event) => {
         return;
     }
 
-    let id = aria2Drag.id;
+    let gid = aria2Drag.id;
     let pos;
     let insert;
 
@@ -582,18 +582,15 @@ queuePane.addEventListener('drop', async (event) => {
         } else {
             insert = target;
         }
-    } else if (status === 'active' || status === 'paused') {
+    } else if (status === 'active') {
         pos = 0;
         insert = waiting[0];
     } else {
         pos = waiting.length - 1;
     }
 
-    aria2.call('aria2.changePosition', [id, pos, 'POS_SET']).then(() => {
-        waiting.splice(index, 1);
-        waiting.splice(pos, 0, id);
-        queuePane.insertBefore(aria2Drag, insert);
-    });
+    await aria2.call('aria2.changePosition', [gid, pos, 'POS_SET']);
+    queuePane.insertBefore(aria2Drag, insert);
 });
 
 const aria2 = new Aria2();
