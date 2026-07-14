@@ -567,12 +567,12 @@ queuePane.addEventListener('drop', async (event) => {
     }
 
     let id = aria2Drag.id;
-    let index = waiting.indexOf(aria2Drag);
     let pos;
     let insert;
 
     let status = target.status;
     let waiting = Array.from(queuePane.querySelectorAll('.waiting'));
+    let index = waiting.indexOf(aria2Drag);
 
     if (status === 'waiting') {
         pos = waiting.indexOf(target);
