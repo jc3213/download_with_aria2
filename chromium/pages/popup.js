@@ -115,8 +115,6 @@ function updateTasks(result) {
 
     if (!task) {
         task = createTasks(gid, result.status, bittorrent, files);
-        queuePane.appendChild(task);
-        aria2Tasks[gid] = task;
     } else {
         for (let i = 0, l = files.length; i < l; i++) {
             let file = files[i];
@@ -297,6 +295,8 @@ function createTasks(gid, status, bittorrent, files) {
     }
 
     addToQueue(task, gid, status);
+    queuePane.appendChild(task);
+    aria2Tasks[gid] = task;
     return task;
 }
 
