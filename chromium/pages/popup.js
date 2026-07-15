@@ -620,8 +620,8 @@ aria2.onmessage = (message) => {
 
     let gid = message.params[0].gid;
     let group = method === 'aria2.onDownloadStart' ? 'waiting' : 'active';
-    reloadTasks(gid);
     removeFromQueue(gid, group);
+    reloadTasks(gid);
 };
 
 function jsonrpcStart() {
