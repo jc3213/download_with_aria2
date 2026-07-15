@@ -76,11 +76,16 @@ function removeFromQueue(gid, group) {
 function addToQueue(task, gid, status) {
     let group = aria2Group[status];
     let queue = aria2Queue[group];
+    queue.add(gid);
     aria2Stats[group].textContent = queue.size;
+
+    task.draggable = status === 'waiting';
     task.classList.replace(task.status, status);
     task.status = status;
-    task.draggable = status === 'waiting';
-    queue.add(gid);
+
+    if (status === 'active') {
+        queuePane.appendChild(task);
+    }
 }
 
 async function reloadTasks(gid) {
@@ -639,7 +644,7 @@ function jsonrpcStart() {
         aria2Queue.stopped = new Set();
 
         verEntry.textContent = version.version;
-        updateManager(result[0][0], result[2][0]);
+        updateManager(global, active);
 
         for (let i = 0, l = waiting.length; i < l; i++) {
             updateTasks(waiting[i]);
