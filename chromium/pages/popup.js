@@ -82,10 +82,6 @@ function addToQueue(task, gid, status) {
     task.draggable = status === 'waiting';
     task.classList.replace(task.status, status);
     task.status = status;
-
-    if (status === 'active') {
-        queuePane.appendChild(task);
-    }
 }
 
 async function reloadTasks(gid) {
@@ -98,7 +94,12 @@ async function reloadTasks(gid) {
         delete task.align;
     }
 
-    addToQueue(task, gid, result.status);
+    let newsts = result.status;
+    addToQueue(task, gid, newsts);
+
+    if (newsts === 'active') {
+        queuePane.appendChild(task);
+    }
 }
 
 function updateTasks(result) {
