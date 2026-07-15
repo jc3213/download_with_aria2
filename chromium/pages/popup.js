@@ -583,7 +583,7 @@ queuePane.addEventListener('drop', async (event) => {
     let insert;
 
     let status = target.status;
-    let waiting = Array.from(queuePane.querySelectorAll('.waiting'));
+    let waiting = Array.from(queuePane.querySelectorAll(':scope > .waiting'));
     let index = waiting.indexOf(aria2Drag);
 
     if (status === 'waiting') {
