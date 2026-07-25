@@ -7,13 +7,8 @@ let menuPane = mainTree[0];
 let downEntry = mainTree[1];
 let jsonrpcPane = mainTree[2];
 
-let entries = jsonrpcPane.querySelectorAll('[name]');
-let refererEntry = entries[0];
-let jsonrpcEntries = [];
-
-for (let i = 1, l = entries.length; i < l; i++) {
-    jsonrpcEntries.push(entries[i]);
-}
+let jsonrpcEntries = jsonrpcPane.querySelectorAll('[name]');
+let refererEntry = jsonrpcEntries[0];
 
 let filesEntry = menuPane.lastElementChild;
 let refererPane = document.getElementById('referer');
@@ -200,7 +195,7 @@ chrome.runtime.sendMessage({ action: 'newdld_runtime' }, (message) => {
     let config = message.options;
     aria2Proxy = message.storage['proxy_server'];
     
-    for (let i = 0, l = jsonrpcEntries.length; i < l; i++) {
+    for (let i = 1, l = jsonrpcEntries.length; i < l; i++) {
         let entry = jsonrpcEntries[i];
         let name = entry.name;
         let value = config[name];
