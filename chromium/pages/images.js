@@ -149,7 +149,7 @@ function antiLeechMV2(headers) {
 
 function antiLeechMV3() {
     let addRules = [{
-        id: 1,
+        id: tabId,
         priority: 1,
         action: {
             type: 'modifyHeaders',
@@ -160,5 +160,5 @@ function antiLeechMV3() {
             resourceTypes: ['image']
         }
     }];
-    chrome.declarativeNetRequest.updateSessionRules({ addRules, removeRuleIds: [1] });
+    chrome.declarativeNetRequest.updateSessionRules({ addRules, removeRuleIds: [tabId] });
 }
