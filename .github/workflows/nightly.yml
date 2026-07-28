@@ -139,13 +139,16 @@ jobs:
           package "chromium" "firefox" "build_ff" "${FF_ZIP}"
 
       - name: 🚀 Create GitHub Pre-Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          LATEST_TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+          LATEST_TAG=$(gh api repos/${GITHUB_REPOSITORY}/releases \
+            --jq 'map(select(.prerelease == false and .draft == false))[0].tag_name')
 
           gh release create "${VERSION}" \
             "${MV2_ZIP}" \
             "${MV3_ZIP}" \
             "${FF_ZIP}" \
             --title "${VERSION}" \
-            --notes "Nightly pre-release build based on commit ${HASH}\n\nChanges: https://github.com/${GITHUB_REPOSITORY}/compare/${LATEST_TAG}...${HASH}" \
+            --notes "Changes: https://github.com/${GITHUB_REPOSITORY}/compare/${LATEST_TAG}...${HASH}" \
             --prerelease
