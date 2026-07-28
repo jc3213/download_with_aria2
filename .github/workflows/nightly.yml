@@ -140,10 +140,12 @@ jobs:
 
       - name: 🚀 Create GitHub Pre-Release
         run: |
+          LATEST_TAG=$(gh release view --latest --json tagName --jq '.tagName')
+        
           gh release create "${VERSION}" \
             "${MV2_ZIP}" \
             "${MV3_ZIP}" \
             "${FF_ZIP}" \
             --title "${VERSION}" \
-            --notes "Nightly pre-release build based on commit ${HASH}" \
+            --notes "Nightly pre-release build based on commit ${HASH}\n\nChanges: https://github.com/${GITHUB_REPOSITORY}/compare/${LATEST_TAG}...${HASH}" \
             --prerelease
