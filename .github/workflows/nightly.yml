@@ -148,5 +148,5 @@ jobs:
             "${MV3_ZIP}" \
             "${FF_ZIP}" \
             --title "${VERSION}" \
-            --notes "Nightly build based on commit ${HASH}. [See all changes](https://github.com/${GITHUB_REPOSITORY}/compare/${LATEST_TAG}...${HASH})" \
+            --notes "Nightly build based on commit ${HASH}, read all [changes](https://github.com/${GITHUB_REPOSITORY}/compare/${LATEST_TAG}...${HASH})" \
             --prerelease
