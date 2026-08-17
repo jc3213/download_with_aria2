@@ -247,7 +247,11 @@ chrome.commands.onCommand.addListener((command) => {
     }
 
     if (command === 'toggle_capture') {
-        commandToggleHost('capture_include', captInclude);
+        if (captInclude.has('*')) {
+            commandToggleHost('capture_exclude', captExclude);
+        } else {
+            commandToggleHost('capture_include', captInclude);
+        }
         return;
     }
 
@@ -459,7 +463,7 @@ function storageDispatch(json) {
         json['capture_exclude'] = json['capture_hosts'];
         json['capture_include'] = ['*'];
         delete json['capture_hosts'];
-        chrome.storage.sync.remove(‘capture_hosts');
+        chrome.storage.sync.remove('capture_hosts');
         chrome.storage.sync.set(json);
     }
 
