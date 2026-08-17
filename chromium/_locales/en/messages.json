@@ -311,17 +311,11 @@
     "tips_options_capture_webrequest": {
         "message": "Enable capture web requests instead of downloads, may be buggy"
     },
-    "options_capture_filesize": {
-        "message": "Exclude File Size"
-    },
-    "tips_options_capture_filesize": {
-        "message": "Ignore browser downloads those are below the size"
-    },
     "tips_options_capture_exclude": {
-        "message": "Ignore browser downloads from the hosts listed below"
+        "message": "Do not capture downloads from the hosts listed below"
     },
     "tips_options_capture_include": {
-        "message": "Capture browser downloads from the hosts listed below"
+        "message": "Capture download requests from the hosts listed below"
     },
     "popup_menu": {
         "message": "Main Menu"
