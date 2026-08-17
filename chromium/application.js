@@ -247,7 +247,7 @@ chrome.commands.onCommand.addListener((command) => {
     }
 
     if (command === 'toggle_capture') {
-        commandToggleHost('capture_hosts', captureHosts);
+        commandToggleHost('capture_include', captInclude);
         return;
     }
 

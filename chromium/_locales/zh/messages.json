@@ -30,19 +30,19 @@
         "message": "下载完成"
     },
     "match_add": {
-        "message": "已添加\"$1\"至$2"
+        "message": "已将 \"$1\" 添加到 $2"
     },
     "match_remove": {
-        "message": "已从$2中移除\"$1\""
+        "message": "已从 $2 中移除 \"$1\""
     },
-    "capture_hosts": {
-        "message": "下载捕获例外规则表"
+    "capture_include": {
+        "message": "下载捕获规则"
     },
     "headers_hosts": {
-        "message": "请求头转发例外规则表"
+        "message": "请求头转发例外规则"
     },
     "proxy_hosts": {
-        "message": "自动代理规则表"
+        "message": "自动代理规则"
     },
     "ctxmenu_thisurl": {
         "message": "下载此链接"

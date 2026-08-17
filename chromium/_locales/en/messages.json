@@ -35,14 +35,14 @@
     "match_remove": {
         "message": "\"$1\" has been removed from $2"
     },
-    "capture_hosts": {
-        "message": "download capture exception rules"
+    "capture_include": {
+        "message": "capture include rules"
     },
     "headers_hosts": {
-        "message": "headers forwarding exception rules"
+        "message": "header forwarding exception rules"
     },
     "proxy_hosts": {
-        "message": "auto-proxy includsion rules"
+        "message": "auto-proxy include rules"
     },
     "ctxmenu_thisurl": {
         "message": "Download this link"
