@@ -128,8 +128,15 @@
                 <input id="capture-webrequest" name="capture_webrequest" type="checkbox" class="control">
                 <label for="capture-webrequest" i18n="options_capture_webrequest"></label>
             </div>
-            <div id="capture_hosts" class="flexmenu e-capture-enabled" i18n-tips="tips_options_capture_hosts">
+            <div id="capture_exclude" class="flexmenu e-capture-enabled" i18n-tips="tips_options_capture_exclude">
                 <h4 i18n="options_match_exclude"></h4>
+                <input type="text">
+                <button i18n-tips="tips_match_add">➕</button>
+                <button i18n-tips="tips_match_resort">🧲</button>
+                <div class="list"></div>
+            </div>
+            <div id="capture_include" class="flexmenu e-capture-enabled" i18n-tips="tips_options_capture_include">
+                <h4 i18n="options_match_include"></h4>
                 <input type="text">
                 <button i18n-tips="tips_match_add">➕</button>
                 <button i18n-tips="tips_match_resort">🧲</button>
