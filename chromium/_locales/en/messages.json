@@ -318,10 +318,10 @@
         "message": "Ignore browser downloads those are below the size"
     },
     "tips_options_capture_exclude": {
-        "message": "Ignore browser downloads from hosts below"
+        "message": "Ignore browser downloads from the hosts listed below"
     },
     "tips_options_capture_include": {
-        "message": "Capture browser downloads from hosts below"
+        "message": "Capture browser downloads from the hosts listed below"
     },
     "popup_menu": {
         "message": "Main Menu"

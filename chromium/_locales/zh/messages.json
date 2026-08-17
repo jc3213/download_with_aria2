@@ -318,10 +318,10 @@
         "message": "忽略文件大小低于所设置大小的下载"
     },
     "tips_options_capture_exclude": {
-        "message": "忽略来自所设置域名的下载"
+        "message": "忽略来自下列主机的的下载"
     },
     "tips_options_capture_include": {
-        "message": "捕获来自所设置域名的下载"
+        "message": "捕获来自下列主机的的下载"
     },
     "popup_menu": {
         "message": "功能菜单"
