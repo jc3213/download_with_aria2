@@ -29,7 +29,7 @@ async function captureDownloads(downloadItem) {
     let referer = downloadItem.referrer;
     let hostname = getHostname(referer);
 
-    if (matchHostname(captureHosts, hostname)) {
+    if (matchHostname(captExclude, hostname) || !matchHostname(captInclude, hostname)) {
         return;
     }
 
@@ -49,7 +49,7 @@ async function captureWebRequest(details) {
     let referer = details.originUrl;
     let hostname = getHostname(referer);
 
-    if (matchHostname(captureHosts, hostname)) {
+    if (matchHostname(captExclude, hostname) || !matchHostname(captInclude, hostname)) {
         return;
     }
 

@@ -10,7 +10,7 @@ function captureDownloads(downloadItem) {
     let referer = downloadItem.referrer;
     let hostname = getHostname(referer || url);
 
-    if (matchHostname(captureHosts, hostname)) {
+    if (matchHostname(captExclude, hostname) || !matchHostname(captInclude, hostname)) {
         return;
     }
 

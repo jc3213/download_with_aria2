@@ -32,7 +32,8 @@ const systemStorage = {
     'proxy_hosts': [],
     'capture_enabled': false,
     'capture_webrequest': false,
-    'capture_hosts': []
+    'capture_include': [],
+    'capture_exclude': []
 };
 
 let aria2Storage = {};
@@ -41,7 +42,8 @@ let aria2Version;
 let aria2Active = new Set();
 let aria2Inspect = new Map();
 
-let captureHosts;
+let captInclude;
+let captExclude;
 let proxyHosts;
 let headersHosts;
 
@@ -453,6 +455,14 @@ chrome.storage.sync.get(null, (json) => {
 });
 
 function storageDispatch(json) {
+    if (json['capture_hosts'] !== undefined) {
+        json['capture_exclude'] = json['capture_hosts'];
+        json['capture_include'] = ['*'];
+        delete json['capture_hosts'];
+        chrome.storage.sync.remove(‘capture_hosts');
+        chrome.storage.sync.set(json);
+    }
+
     aria2Storage = json;
 
     aria2.url = json['jsonrpc_url'];
@@ -463,7 +473,8 @@ function storageDispatch(json) {
 
     headersHosts = new Set(json['headers_hosts']);
     proxyHosts = new Set(json['proxy_hosts']);
-    captureHosts = new Set(json['capture_hosts']);
+    captInclude = new Set(json['capture_include']);
+    captExclude = new Set(json['capture_exclude']);
 
     popupMenuEnabler(json);
     contextMenusEnabler(json);
