@@ -38,6 +38,9 @@
     "capture_include": {
         "message": "capture include rules"
     },
+    "capture_exclude": {
+        "message": "capture exclude rules"
+    },
     "headers_hosts": {
         "message": "header forwarding exception rules"
     },

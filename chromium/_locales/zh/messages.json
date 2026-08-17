@@ -38,6 +38,9 @@
     "capture_include": {
         "message": "下载捕获规则"
     },
+    "capture_exclude": {
+        "message": "下载捕获例外规则"
+    },
     "headers_hosts": {
         "message": "请求头转发例外规则"
     },
