@@ -27,7 +27,7 @@ menuPane.addEventListener('click', async (event) => {
     }
 
     if (menu === 'popup_options') {
-        chrome.runtime.openOptionsPage();
+        chrome.runtime.sendMessage({ action: 'options_window' });
         return;
     }
 });

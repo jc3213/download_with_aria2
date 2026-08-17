@@ -1,6 +1,7 @@
 const addonManager = chrome.runtime.getURL('/pages/popup.html');
 const addonImages = chrome.runtime.getURL('/pages/images.html');
 const addonDownload = chrome.runtime.getURL('/pages/newdld.html');
+const addonOptions = chrome.runtime.getURL('/pages/options.html');
 
 const systemManifest = chrome.runtime.getManifest();
 const systemFirefox = systemManifest.browser_specific_settings;
@@ -234,7 +235,7 @@ chrome.action.onClicked.addListener(() => {
 
 chrome.commands.onCommand.addListener((command) => {
     if (command === 'open_options') {
-        chrome.runtime.openOptionsPage();
+        commandOpenPopup(addonOptions, 800);
         return;
     }
 
@@ -262,8 +263,8 @@ chrome.commands.onCommand.addListener((command) => {
 function commandOpenPopup(url, height) {
     chrome.windows.getCurrent((window) => {
         let top = (window.top + window.height - height) / 2 | 0;
-        let left = (window.left + window.width - 710) / 2 | 0;
-        let width = 698;
+        let left = (window.left + window.width - 740) / 2 | 0;
+        let width = 728;
 
         chrome.tabs.query({ url }, (tabs) => {
             let tab = tabs[0];
@@ -381,16 +382,6 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 
     let params = message.params;
 
-    if (action === 'options_runtime') {
-        response({ system: systemManifest, storage: aria2Storage });
-        return;
-    }
-
-    if (action === 'options_jsonrpc') {
-        response({ options: aria2Config, version: aria2Version });
-        return;
-    }
-
     if (action === 'update_storage') {
         storageDispatch(params);
         chrome.storage.sync.set(params, response);
@@ -418,6 +409,21 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
         let images = aria2Inspect.get(params)?.images || [];
         response({ system: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
         return true;
+    }
+
+    if (action === 'options_window') {
+        commandOpenPopup(addonOptions, 800);
+        return;
+    }
+
+    if (action === 'options_runtime') {
+        response({ system: systemManifest, storage: aria2Storage });
+        return;
+    }
+
+    if (action === 'options_jsonrpc') {
+        response({ options: aria2Config, version: aria2Version });
+        return;
     }
 
     if (action === 'newdld_window') {
