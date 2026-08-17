@@ -255,7 +255,7 @@
         "message": "Request Headers"
     },
     "tips_options_headers_hosts": {
-        "message": "Don't forward request headers for downloads from hosts below"
+        "message": "Do not forward request headers for downloads from the hosts listed below"
     },
     "options_headers_override": {
         "message": "Override User Agent"
@@ -294,7 +294,7 @@
         "message": "Set preset proxy server"
     },
     "tips_options_proxy_hosts": {
-        "message": "Add preset proxy server to new downloads from hosts below"
+        "message": "Add the preset proxy server to downloads from the hosts listed below"
     },
     "options_capture": {
         "message": "Capture Browser Downloads"
@@ -303,7 +303,7 @@
         "message": "Enable Capture Downloads"
     },
     "tips_options_capture_enabled": {
-        "message": "Enable capture downloads from browser"
+        "message": "Capture downloads from browser based on configuration"
     },
     "options_capture_webrequest": {
         "message": "Enable Capture Web Requests"
@@ -317,14 +317,11 @@
     "tips_options_capture_filesize": {
         "message": "Ignore browser downloads those are below the size"
     },
-    "tips_options_capture_hosts": {
+    "tips_options_capture_exclude": {
         "message": "Ignore browser downloads from hosts below"
     },
-    "options_capture_filename": {
-        "message": "Exclude File Extensions"
-    },
-    "tips_options_capture_filename": {
-        "message": "Ignore browser downloads with file extensions below"
+    "tips_options_capture_include": {
+        "message": "Capture browser downloads from hosts below"
     },
     "popup_menu": {
         "message": "Main Menu"

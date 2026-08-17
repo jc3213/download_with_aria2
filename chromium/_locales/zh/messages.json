@@ -255,7 +255,7 @@
         "message": "转发请求头"
     },
     "tips_options_headers_hosts": {
-        "message": "停止为所设置域名的下载转发请求头"
+        "message": "不要为来自下列主机的下载请求转发请求头"
     },
     "options_headers_override": {
         "message": "覆盖用户代理"
@@ -294,7 +294,7 @@
         "message": "设置预设的代理服务器"
     },
     "tips_options_proxy_hosts": {
-        "message": "为来自下表中域名的下载添加预设的代理服务器"
+        "message": "为来自下列主机的下载添加预设的代理服务器"
     },
     "options_capture": {
         "message": "捕获浏览器下载"
@@ -303,7 +303,7 @@
         "message": "启用捕获功能"
     },
     "tips_options_capture_enabled": {
-        "message": "启用捕获来自浏览器的下载"
+        "message": "启用后将自动捕获来自浏览器的下载"
     },
     "options_capture_webrequest": {
         "message": "启用捕获网络请求"
@@ -315,16 +315,13 @@
         "message": "忽略文件大小"
     },
     "tips_options_capture_filesize": {
-        "message": "忽略低于所设置文件大小的下载"
+        "message": "忽略文件大小低于所设置大小的下载"
     },
-    "tips_options_capture_hosts": {
+    "tips_options_capture_exclude": {
         "message": "忽略来自所设置域名的下载"
     },
-    "options_capture_filename": {
-        "message": "忽略文件后缀"
-    },
-    "tips_options_capture_filename": {
-        "message": "忽略满足所设置文件后缀的下载"
+    "tips_options_capture_include": {
+        "message": "捕获来自所设置域名的下载"
     },
     "popup_menu": {
         "message": "功能菜单"
