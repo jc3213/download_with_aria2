@@ -15,13 +15,13 @@
         "message": "Open new download"
     },
     "shortcut_capture": {
-        "message": "Toggle download capture exception for current host"
+        "message": "Toggle download capture feature for current host"
     },
     "shortcut_headers": {
-        "message": "Toggle headers forwarding exception for current host"
+        "message": "Toggle header forwarding feature for current host"
     },
     "shortcut_proxy": {
-        "message": "Toggle auto-proxy inclusion for current host"
+        "message": "Toggle auto proxy feature for current host"
     },
     "download_start": {
         "message": "Download Start"

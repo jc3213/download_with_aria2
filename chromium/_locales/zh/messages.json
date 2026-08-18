@@ -15,13 +15,13 @@
         "message": "打开新下载"
     },
     "shortcut_capture": {
-        "message": "切换当前域名的下载捕获例外"
+        "message": "切换当前主机的下载捕获功能"
     },
     "shortcut_headers": {
-        "message": "切换当前域名的请求头转发例外"
+        "message": "切换当前主机的请求头转发功能"
     },
     "shortcut_proxy": {
-        "message": "切换当前域名的自动代理规则"
+        "message": "切换当前主机的自动代理功能"
     },
     "download_start": {
         "message": "下载开始"
