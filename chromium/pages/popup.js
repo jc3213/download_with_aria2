@@ -50,6 +50,7 @@ hotkeyCombo['ctrl+f'] = {
 
         for (let task of aria2Tasks.values()) {
             task.classList.remove('hidden');
+            task.name.textContent = task.name.title;
         }
 
         filterEntry.value = '';
@@ -63,8 +64,10 @@ filterEntry.addEventListener('input', (event) => {
     for (let task of aria2Tasks.values()) {
         if (task.name.textContent.includes(keyword)) {
             task.classList.remove('hidden');
+            task.name.innerHTML = task.name.title.replaceAll(keyword, '<mark>$&</mark>');
         } else {
             task.classList.add('hidden');
+            task.name.textContent = task.name.title;
         }
     }
 });
