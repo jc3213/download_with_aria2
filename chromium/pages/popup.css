@@ -3,7 +3,6 @@ body {
     grid-template-columns: 200px 1fr;
     gap: 3px;
     margin: 8px auto;
-    position: relative;
     width: 1280px;
 }
 
