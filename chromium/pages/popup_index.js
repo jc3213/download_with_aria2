@@ -12,8 +12,8 @@ menuPane.addEventListener('click', async (event) => {
         await aria2.call('aria2.purgeDownloadResult');
 
         for (let gid of aria2Queue.stopped) {
-            aria2Tasks[gid].remove();
-            delete aria2Tasks[gid];
+            aria2Tasks.get(gid).remove();
+            aria2Tasks.delete(gid);
         }
 
         aria2Queue.stopped = new Set();
