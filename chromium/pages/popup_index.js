@@ -59,7 +59,7 @@ function storageDispatch(json) {
 chrome.runtime.sendMessage({ action: 'popup_runtime' }, (message) => {
     let storage = message.storage;
 
-    toggleTaskQueue(storage['manager_filters'], (params) => {
+    taskQueues(storage['manager_filters'], (params) => {
         chrome.runtime.sendMessage({ action: 'popup_queues', params });
     });
 

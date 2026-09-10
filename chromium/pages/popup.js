@@ -72,7 +72,7 @@ filterEntry.addEventListener('input', (event) => {
     }
 });
 
-function toggleTaskQueue(array, callback) {
+function taskQueues(array, callback) {
     let manager = document.body.classList;
 
     manager.add(...array);
