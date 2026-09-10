@@ -3,6 +3,7 @@ body {
     grid-template-columns: 200px 1fr;
     gap: 3px;
     margin: 8px auto;
+    position: relative;
     width: 1280px;
 }
 
@@ -13,25 +14,25 @@ body > ::before {
     text-align: center;
 }
 
-body.active > #filter > #x-active::before,
-body.waiting > #filter > #x-waiting::before,
-body.paused > #filter > #x-paused::before,
-body.complete > #filter > #x-complete::before,
-body.removed > #filter > #x-removed::before,
-body.error > #filter > #x-error::before {
+body.active > #queues > #x-active::before,
+body.waiting > #queues > #x-waiting::before,
+body.paused > #queues > #x-paused::before,
+body.complete > #queues > #x-complete::before,
+body.removed > #queues > #x-removed::before,
+body.error > #queues > #x-error::before {
     visibility: hidden;
 }
 
-body.active > #queue > .active,
-body.waiting > #queue > .waiting,
-body.paused > #queue > .paused,
-body.complete > #queue > .complete,
-body.removed > #queue > .removed,
-body.error > #queue > .error {
+body.active > #tasks > .active,
+body.waiting > #tasks > .waiting,
+body.paused > #tasks > .paused,
+body.complete > #tasks > .complete,
+body.removed > #tasks > .removed,
+body.error > #tasks > .error {
     display: none;
 }
 
-#menu, #filter, #system {
+#menu, #queues, #system {
     border-style: solid;
     border-width: 1px;
     display: flex;
@@ -40,20 +41,32 @@ body.error > #queue > .error {
     padding: 8px;
 }
 
-#filter > div,
+#queues > div,
 #system > div {
     padding: 5px;
 }
 
-#filter > :hover {
+#filter {
+    border-style: solid;
+    border-width: 1px;
+    left: 50%;
+    padding: 8px;
+    position: absolute;
+    top: 1%;
+    transform: translateX(-50%);
+    width: 33%;
+    z-index: 9;
+}
+
+#queues > :hover {
     box-shadow: var(--shadows);
 }
 
-#filter > :active {
+#queues > :active {
     opacity: 0.8;
 }
 
-#filter > ::before {
+#queues > ::before {
     content: "✔️";
     margin-right: 5px;
 }
@@ -68,7 +81,7 @@ body.error > #queue > .error {
     text-align: center;
 }
 
-#queue {
+#tasks {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -81,7 +94,7 @@ body.error > #queue > .error {
     content: "__MSG_popup_menu__";
 }
 
-#filter::before {
+#queues::before {
     content: "__MSG_popup_queue__";
 }
 

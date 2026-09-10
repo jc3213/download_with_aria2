@@ -1,4 +1,4 @@
-let aria2Tasks = {};
+let aria2Tasks = new Map();
 let aria2Stats = {};
 let aria2Queue = {};
 let aria2Group = {
@@ -17,9 +17,12 @@ let aria2Drag = null;
 let mainTree = document.body.children;
 let menuPane = mainTree[0];
 let filterPane = mainTree[1];
-let systemPane = mainTree[2];
-let queuePane = mainTree[3];
-let template = mainTree[4];
+let queuePane = mainTree[2];
+let systemPane = mainTree[3];
+let tasksPane = mainTree[4];
+let template = mainTree[5];
+
+let filterEntry = filterPane.children[0];
 
 let systemTree = systemPane.children;
 let i18nEntry = systemTree[0];
@@ -35,12 +38,43 @@ let sessionLET = templateTree[0];
 let fileLET = templateTree[1];
 let uriLET = templateTree[2];
 
-function taskFilters(array, callback) {
+hotkeyCombo['ctrl+f'] = {
+    click() {
+        let classList = filterPane.classList;
+
+        if (classList.contains('hidden')) {
+            classList.remove('hidden');
+            filterEntry.focus();
+            return;
+        }
+
+        for (let task of aria2Tasks.values()) {
+            task.classList.remove('hidden');
+        }
+
+        filterEntry.value = '';
+        classList.add('hidden');
+    }
+};
+
+filterEntry.addEventListener('input', (event) => {
+    let keyword = event.target.value;
+
+    for (let task of aria2Tasks.values()) {
+        if (task.name.textContent.includes(keyword)) {
+            task.classList.remove('hidden');
+        } else {
+            task.classList.add('hidden');
+        }
+    }
+});
+
+function toggleTaskQueue(array, callback) {
     let manager = document.body.classList;
 
     manager.add(...array);
 
-    filterPane.addEventListener('click', (event) => {
+    queuePane.addEventListener('click', (event) => {
         let id = event.target.id.substring(2);
         let index = array.indexOf(id);
 
@@ -98,7 +132,7 @@ async function reloadTasks(gid) {
     addToQueue(task, gid, newsts);
 
     if (newsts === 'active') {
-        queuePane.appendChild(task);
+        tasksPane.appendChild(task);
     }
 }
 
@@ -117,10 +151,11 @@ function updateTasks(result) {
     let seconds = time % 60 | 0;
     let percent = (completedLength / totalLength * 10000 | 0) / 100;
 
-    let task = aria2Tasks[gid];
+    let task = aria2Tasks.get(gid);
 
     if (!task) {
         task = createTasks(gid, result.status, bittorrent, files);
+        aria2Tasks.set(gid, task);
     } else {
         for (let i = 0, l = files.length; i < l; i++) {
             let file = files[i];
@@ -143,7 +178,9 @@ function updateTasks(result) {
         let path = files[0].path;
 
         if (path) {
-            task.name.textContent = path.substring(path.lastIndexOf('/') + 1);
+            let name = path.substring(path.lastIndexOf('/') + 1);
+            task.name.textContent = name;
+            task.name.title = name;
             delete task.placeholder;
         }
     }
@@ -198,13 +235,17 @@ function createTasks(gid, status, bittorrent, files) {
     task.ratio = tree[8].firstElementChild;
 
     if (bittorrent) {
+        let name = bittorrent.info ? bittorrent.info.name : path;
+        task.name.textContent = name;
+        task.name.title = name;
         task.classList.add(status, 'p2p');
-        task.name.textContent = bittorrent.info ? bittorrent.info.name : path;
     } else {
         task.classList.add(status, 'http');
 
         if (path) {
-            task.name.textContent = path.substring(path.lastIndexOf('/') + 1);
+            let name = path.substring(path.lastIndexOf('/') + 1);
+            task.name.textContent = name;
+            task.name.title = name;
         } else {
             task.name.textContent = file.uris[0].uri;
             task.placeholder = true;
@@ -301,8 +342,7 @@ function createTasks(gid, status, bittorrent, files) {
     }
 
     addToQueue(task, gid, status);
-    queuePane.appendChild(task);
-    aria2Tasks[gid] = task;
+    tasksPane.appendChild(task);
     return task;
 }
 
@@ -371,7 +411,7 @@ async function taskRemove(task, gid) {
 
     if (queue) {
         removeFromQueue(gid, queue);
-        delete aria2Tasks[gid];
+        aria2Tasks.delete(gid);
         task.remove();
     }
 }
@@ -493,7 +533,7 @@ async function taskRetry(task, gid) {
 
     let added = response.result[0][0];
     removeFromQueue(gid, 'stopped');
-    delete aria2Tasks[gid];
+    aria2Tasks.delete(gid);
     task.remove();
 
     if (Array.isArray(added)) {
@@ -558,15 +598,15 @@ function getFileSize(bytes) {
     return (bytes / 10995116277.76 | 0) / 100 + 'T';
 }
 
-queuePane.addEventListener("dragstart", (event) => {
+tasksPane.addEventListener("dragstart", (event) => {
     aria2Drag = event.target;
 });
 
-queuePane.addEventListener("dragover", (event) => {
+tasksPane.addEventListener("dragover", (event) => {
     event.preventDefault();
 });
 
-queuePane.addEventListener('drop', async (event) => {
+tasksPane.addEventListener('drop', async (event) => {
     if (!aria2Drag) {
         return;
     }
@@ -584,7 +624,7 @@ queuePane.addEventListener('drop', async (event) => {
     let insert;
 
     let status = target.status;
-    let waiting = Array.from(queuePane.querySelectorAll(':scope > .waiting'));
+    let waiting = Array.from(tasksPane.querySelectorAll(':scope > .waiting'));
     let index = waiting.indexOf(aria2Drag);
 
     if (status === 'waiting') {
@@ -603,7 +643,7 @@ queuePane.addEventListener('drop', async (event) => {
     }
 
     await aria2.call('aria2.changePosition', [gid, pos, 'POS_SET']);
-    queuePane.insertBefore(aria2Drag, insert);
+    tasksPane.insertBefore(aria2Drag, insert);
 });
 
 const aria2 = new Aria2();
@@ -671,10 +711,10 @@ function jsonrpcStart() {
 
 function jsonrpcError() {
     clearInterval(aria2Interval);
-    aria2Tasks = {};
+    aria2Tasks = new Map();
 
     verEntry.textContent = 'N/A';
-    queuePane.innerHTML = '';
+    tasksPane.innerHTML = '';
 
     for (let i = 2, l = systemTree.length; i < l; i++) {
         systemTree[i].textContent = '0';

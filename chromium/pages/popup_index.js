@@ -59,7 +59,7 @@ function storageDispatch(json) {
 chrome.runtime.sendMessage({ action: 'popup_runtime' }, (message) => {
     let storage = message.storage;
 
-    taskFilters(storage['manager_filters'], (params) => {
+    toggleTaskQueue(storage['manager_filters'], (params) => {
         chrome.runtime.sendMessage({ action: 'popup_queues', params });
     });
 
@@ -95,7 +95,7 @@ hr {
 }
 
 #menu::before,
-#filter::before,
+#queues::before,
 #system::before,
 #locale, #version,
 #system > :nth-child(n+5) {
@@ -121,13 +121,13 @@ hr {
     margin: 0px;
 }
 
-#filter {
+#queues {
     display: none;
     position: fixed;
     z-index: 9;
 }
 
-#queue {
+#tasks {
     grid-area: 3 / 1 / 4 / 4;
     height: 540px;
 }

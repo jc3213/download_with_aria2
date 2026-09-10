@@ -12,7 +12,10 @@
             <button i18n="popup_purge" hotkey="Ctrl+E"></button>
             <button i18n="popup_options" hotkey="Ctrl+Q"></button>
         </div>
-        <div id="filter">
+        <div id="filter" class="hidden">
+            <input type="text"></input>
+        </div>
+        <div id="queues">
             <div id="x-active" i18n="popup_active_queue"></div>
             <div id="x-waiting" i18n="popup_waiting_queue"></div>
             <div id="x-paused" i18n="popup_paused_queue"></div>
@@ -32,7 +35,7 @@
             <div id="waiting">0</div>
             <div id="stopped">0</div>
         </div>
-        <div id="queue"></div>
+        <div id="tasks"></div>
         <div class="template">
             <div class="session">
                 <div class="name"></div>
