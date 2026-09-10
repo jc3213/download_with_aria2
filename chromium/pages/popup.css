@@ -276,17 +276,18 @@ body.error > #tasks > .error {
 }
 
 .session > .name {
-    display: flex;
     grid-area: 1 / 1 / 1 / 4;
+    margin-left: 23px;
     word-break: break-word;
 }
 
 .session > .name::before {
     border-radius: 50%;
     content: "";
-    flex-shrink: 0;
-    margin: 6px 4px 0px 4px;
+    position: absolute;
     height: 15px;
+    left: -20px;
+    top: 6px;
     width: 15px;
 }
 
