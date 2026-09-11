@@ -94,6 +94,11 @@ hr {
     margin: 0px 0px 1px;
 }
 
+
+#filter {
+    top: 1%;
+}
+
 #menu::before,
 #queues::before,
 #system::before,

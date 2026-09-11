@@ -51,7 +51,7 @@ body.error > #tasks > .error {
     left: 50%;
     padding: 8px;
     position: absolute;
-    top: 1%;
+    top: 2%;
     transform: translateX(-50%);
     width: 33%;
     z-index: 9;
