@@ -277,7 +277,7 @@ body.error > #tasks > .error {
 
 .session > .name {
     grid-area: 1 / 1 / 1 / 4;
-    margin-left: 23px;
+    text-indent: 24px;
     word-break: break-word;
 }
 
@@ -286,7 +286,7 @@ body.error > #tasks > .error {
     content: "";
     position: absolute;
     height: 15px;
-    left: -20px;
+    left: 4px;
     top: 6px;
     width: 15px;
 }
