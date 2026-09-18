@@ -116,12 +116,12 @@ class Aria2 {
     }
 
     #send(json) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             if (!this.#ready) {
                 throw new Error('WebSocket error: failed to send message');
             }
 
-            this.#pending.set(json.id, resolve);
+            this.#pending.set(json.id, { resolve, reject });
             this.#socket.send(JSON.stringify(json));
         });
     }
@@ -203,11 +203,11 @@ class Aria2 {
 
             if (id !== undefined) {
                 let pending = this.#pending;
-                let resolve = pending.get(id);
+                let session = pending.get(id);
 
-                if (resolve) {
+                if (session) {
                     pending.delete(id);
-                    resolve(json);
+                    session.resolve(json);
                 }
             } else {
                 let onmessage = this.#onmessage;
@@ -221,6 +221,14 @@ class Aria2 {
         socket.onclose = (event) => {
             this.#call = this.#post;
             this.#ready = false;
+
+            let pending = this.#pending;
+
+            for (let session of pending.values()) {
+                session.reject(new Error('WebSocket connection closed'));
+            }
+
+            this.#pending.clear();
 
             let onclose = this.#onclose;
 
