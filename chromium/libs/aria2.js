@@ -121,9 +121,8 @@ class Aria2 {
                 throw new Error('WebSocket error: failed to send message');
             }
 
-            let socket = this.#socket;
             this.#pending.set(json.id, resolve);
-            socket.send(JSON.stringify(json));
+            this.#socket.send(JSON.stringify(json));
         });
     }
 
