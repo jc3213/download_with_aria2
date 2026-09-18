@@ -224,11 +224,13 @@ class Aria2 {
 
             let pending = this.#pending;
 
-            for (let session of pending.values()) {
-                session.reject(new Error('WebSocket connection closed'));
-            }
+            if (pending.size > 0) {
+                for (let session of pending.values()) {
+                    session.reject(new Error('WebSocket error: connection closed'));
+                }
 
-            pending.clear();
+                pending.clear();
+            }
 
             let onclose = this.#onclose;
 
