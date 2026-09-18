@@ -228,7 +228,7 @@ class Aria2 {
                 session.reject(new Error('WebSocket connection closed'));
             }
 
-            this.#pending.clear();
+            pending.clear();
 
             let onclose = this.#onclose;
 
