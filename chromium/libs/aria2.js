@@ -8,6 +8,7 @@ class Aria2 {
     #tries = 0;
     #retries = 10;
     #timeout = 10000;
+    #pending = new Map();
     #onopen = null;
     #onmessage = null;
     #onclose = null;
@@ -121,7 +122,7 @@ class Aria2 {
             }
 
             let socket = this.#socket;
-            this[json.id] = resolve;
+            this.#pending.set(json.id, resolve);
             socket.send(JSON.stringify(json));
         });
     }
@@ -199,17 +200,22 @@ class Aria2 {
 
         socket.onmessage = (event) => {
             let json = JSON.parse(event.data);
+            let id = json.id;
 
-            if (json.method) {
+            if (id !== undefined) {
+                let pending = this.#pending;
+                let resolve = pending.get(id);
+
+                if (resolve) {
+                    pending.delete(id);
+                    resolve(json);
+                }
+            } else {
                 let onmessage = this.#onmessage;
 
                 if (onmessage) {
                     onmessage(json);
                 }
-            } else {
-                let id = json.id;
-                this[id](json);
-                delete this[id];
             }
         };
 
