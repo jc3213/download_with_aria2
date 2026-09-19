@@ -8,6 +8,7 @@ class Aria2 {
     #tries = 0;
     #retries = 10;
     #timeout = 10000;
+    #timer;
     #pending = new Map();
     #onopen = null;
     #onmessage = null;
@@ -115,71 +116,26 @@ class Aria2 {
         return this.#onclose;
     }
 
-    #send(json) {
-        return new Promise((resolve, reject) => {
-            if (!this.#ready) {
-                throw new Error('WebSocket error: failed to send message');
-            }
-
-            this.#pending.set(json.id, { resolve, reject });
-            this.#socket.send(JSON.stringify(json));
-        });
-    }
-
-    #post(json) {
-        return fetch(this.#xml, { method: 'POST', body: JSON.stringify(json) }).then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-
-            throw new Error('Network error: ' + response.status + ' ' + response.statusText);
-        });
-    }
-
-    call(method, params) {
-        if (params) {
-            params = [this.#secret].concat(params);
-        } else {
-            params = [this.#secret];
-        }
-
-        return this.#call({ jsonrpc: '2.0', id: this.#id++, method, params });
-    }
-
-    multicall(args) {
-        let calls = [];
-        let secret = this.#secret;
-
-        for (let i = 0, l = args.length; i < l; i++) {
-            let arg = args[i];
-            let params = arg.params;
-
-            if (params) {
-                params = [secret].concat(params);
-            } else {
-                params = [secret];
-            }
-
-            calls[i] = { methodName: arg.methodName, params };
-        }
-
-        return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [calls] });
-    }
-
-    connect() {
+    #open() {
         let socket = this.#socket;
         let url = this.#wsa;
 
         if (socket) {
             let readyState = socket.readyState;
 
-            if (readyState === 0) {
-                throw new Error('WebSocket error: connection is still in CONNECTING state');
+            if (socket.url === url) {
+                if (readyState === 0) {
+                    throw new Error('WebSocket error: connection is still in CONNECTING state');
+                }
+                if (readyState === 1) {
+                    return;
+                }
             }
 
-            if (readyState === 1 && socket.url === url) {
-                return;
-            }
+            socket.onopen = null;
+            socket.onmessage = null;
+            socket.onclose = null;
+            socket.close();
         }
 
         socket = new WebSocket(url);
@@ -239,16 +195,75 @@ class Aria2 {
             }
 
             if (this.#tries++ < this.#retries) {
-                setTimeout(() => this.connect(), this.#timeout);
+                this.#timer = setTimeout(() => this.#open(), this.#timeout);
             } else {
                 this.#tries = 0;
             }
         };
     }
 
+    #send(json) {
+        return new Promise((resolve, reject) => {
+            if (!this.#ready) {
+                throw new Error('WebSocket error: failed to send message');
+            }
+
+            this.#pending.set(json.id, { resolve, reject });
+            this.#socket.send(JSON.stringify(json));
+        });
+    }
+
+    #post(json) {
+        return fetch(this.#xml, { method: 'POST', body: JSON.stringify(json) }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+
+            throw new Error('Network error: ' + response.status + ' ' + response.statusText);
+        });
+    }
+
+    call(method, params) {
+        if (params) {
+            params = [this.#secret].concat(params);
+        } else {
+            params = [this.#secret];
+        }
+
+        return this.#call({ jsonrpc: '2.0', id: this.#id++, method, params });
+    }
+
+    multicall(args) {
+        let calls = [];
+        let secret = this.#secret;
+
+        for (let i = 0, l = args.length; i < l; i++) {
+            let arg = args[i];
+            let params = arg.params;
+
+            if (params) {
+                params = [secret].concat(params);
+            } else {
+                params = [secret];
+            }
+
+            calls[i] = { methodName: arg.methodName, params };
+        }
+
+        return this.#call({ jsonrpc: '2.0', id: this.#id++, method: 'system.multicall', params: [calls] });
+    }
+
+    connect() {
+        clearTimeout(this.#timer);
+        this.#tries = 0;
+        this.#open();
+    }
+
     disconnect() {
+        clearTimeout(this.#timer);
+        this.#tries = Infinity;
+
         if (this.#ready) {
-            this.#tries = Infinity;
             this.#socket.close();
         }
     }
