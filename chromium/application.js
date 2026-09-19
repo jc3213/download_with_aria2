@@ -139,7 +139,7 @@ function jsonrpcStart() {
 
 function jsonrpcError() {
     aria2Version = null;
-    aria2Active = new Set();
+    aria2Active.clear();
     captureDisabled();
     chrome.action.setBadgeText({ text: 'E' });
     chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
