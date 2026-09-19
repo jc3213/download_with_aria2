@@ -1,6 +1,10 @@
 let aria2Tasks = new Map();
 let aria2Stats = {};
-let aria2Queue = {};
+let aria2Queue = {
+    active: new Set(),
+    waiting: new Set(),
+    stopped: new Set()
+};
 let aria2Group = {
     active: 'active',
     paused: 'waiting',
@@ -683,10 +687,6 @@ function jsonrpcStart() {
         let waiting = result[3][0];
         let stopped = result[4][0];
 
-        aria2Queue.active  = new Set();
-        aria2Queue.waiting = new Set();
-        aria2Queue.stopped = new Set();
-
         verEntry.textContent = version.version;
         updateManager(global, active);
 
@@ -707,14 +707,22 @@ function jsonrpcStart() {
                 let global = result[0][0];
                 let active = result[1][0];
                 updateManager(global, active);
-            });
+            }).catch(jsonrpcError);
         }, aria2Delay);
     }).catch(jsonrpcError);
 }
 
 function jsonrpcError() {
+    if (aria2Interval) {
+        clearInterval(aria2Interval);
+    }
+
     clearInterval(aria2Interval);
-    aria2Tasks = new Map();
+
+    aria2Tasks.clear();
+    aria2Queue.active.clear();
+    aria2Queue.waiting.clear();
+    aria2Queue.stopped.clear();
 
     verEntry.textContent = 'N/A';
     tasksPane.innerHTML = '';
