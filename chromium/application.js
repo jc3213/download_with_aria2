@@ -371,7 +371,7 @@ function contextMenusAdd(id, contexts, parentId) {
     });
 }
 
-function popupMenuEnabler(json) {
+function managerInTabEnabler(json) {
     if (json['manager_newtab']) {
         chrome.action.setPopup({ popup: '' });
     } else {
@@ -466,7 +466,7 @@ async function storageDispatch(json) {
     captInclude = new Set(json['capture_include']);
     captExclude = new Set(json['capture_exclude']);
 
-    popupMenuEnabler(json);
+    managerInTabEnabler(json);
     contextMenusEnabler(json);
 
     await aria2.retries(json['jsonrpc_retries']);
