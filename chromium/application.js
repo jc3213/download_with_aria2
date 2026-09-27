@@ -74,7 +74,7 @@ const jsonrpcSize = [
     'max-overall-upload-limit'
 ];
 
-const aria2 = new Aria2();
+aria2.subscribe();
 
 aria2.onopen = jsonrpcStart;
 
@@ -458,22 +458,8 @@ chrome.storage.sync.get(null, (json) => {
     storageDispatch(storage);
 });
 
-function storageDispatch(json) {
-    if (json['capture_hosts'] !== undefined) {
-        json['capture_exclude'] = json['capture_hosts'];
-        json['capture_include'] = ['*'];
-        delete json['capture_hosts'];
-        chrome.storage.sync.remove('capture_hosts');
-        chrome.storage.sync.set(json);
-    }
-
+async function storageDispatch(json) {
     aria2Storage = json;
-
-    aria2.url = json['jsonrpc_url'];
-    aria2.secret = json['jsonrpc_secret'];
-    aria2.retries = json['jsonrpc_retries'];
-    aria2.timeout = json['jsonrpc_timeout'];
-    aria2.connect();
 
     headersHosts = new Set(json['headers_hosts']);
     proxyHosts = new Set(json['proxy_hosts']);
@@ -482,6 +468,10 @@ function storageDispatch(json) {
 
     popupMenuEnabler(json);
     contextMenusEnabler(json);
+
+    await aria2.retries(json['jsonrpc_retries']);
+    await aria2.timeout(json['jsonrpc_timeout']);
+    await aria2.connect(json['jsonrpc_url'], json['jsonrpc_secret']);
 }
 
 function downloadHandler(url, referer, filename, hostname, tabId) {

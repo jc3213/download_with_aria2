@@ -653,7 +653,7 @@ tasksPane.addEventListener('drop', async (event) => {
     tasksPane.insertBefore(aria2Drag, insert);
 });
 
-const aria2 = new Aria2();
+aria2.subscribe();
 
 aria2.onopen = jsonrpcStart;
 

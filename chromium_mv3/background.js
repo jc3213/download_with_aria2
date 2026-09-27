@@ -31,4 +31,4 @@ function captureDisabled() {
 }
 
 setInterval(chrome.runtime.getPlatformInfo, 28000);
-importScripts('libs/aria2.js', 'application.js');
+importScripts('aria2-worker-client.js', 'application.js');
