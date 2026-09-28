@@ -653,13 +653,7 @@ tasksPane.addEventListener('drop', async (event) => {
     tasksPane.insertBefore(aria2Drag, insert);
 });
 
-aria2.subscribe();
-
-aria2.onopen = jsonrpcStart;
-
-aria2.onclose = jsonrpcError;
-
-aria2.onmessage = (message) => {
+function jsonrpcMessage(message) {
     let method = message.method;
 
     if (method === 'aria2.onBtDownloadComplete') {
