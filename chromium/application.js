@@ -74,36 +74,10 @@ const jsonrpcSize = [
     'max-overall-upload-limit'
 ];
 
-aria2.subscribe();
-
 aria2.onopen = jsonrpcStart;
-
 aria2.onclose = jsonrpcError;
-
-aria2.onmessage = (message) => {
-    let method = message.method;
-
-    if (method === 'aria2.onBtDownloadComplete') {
-        return;
-    }
-
-    let gid = message.params[0].gid;
-
-    if (method === 'aria2.onDownloadStart') {
-        if (!aria2Active.has(gid)) {
-            aria2Active.add(gid);
-            downloadNotify('start', gid);
-        }
-    } else {
-        aria2Active.delete(gid);
-
-        if (method === 'aria2.onDownloadComplete') {
-            downloadNotify('complete', gid);
-        }
-    }
-
-    jsonrpcActivity();
-};
+aria2.onmessage = jsonrpcMessage;
+aria2.subscribe();
 
 function jsonrpcStart() {
     aria2.multicall([
@@ -144,6 +118,31 @@ function jsonrpcError() {
     chrome.action.setBadgeText({ text: 'E' });
     chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
 }
+
+function jsonrpcMessage(message) {
+    let method = message.method;
+
+    if (method === 'aria2.onBtDownloadComplete') {
+        return;
+    }
+
+    let gid = message.params[0].gid;
+
+    if (method === 'aria2.onDownloadStart') {
+        if (!aria2Active.has(gid)) {
+            aria2Active.add(gid);
+            downloadNotify('start', gid);
+        }
+    } else {
+        aria2Active.delete(gid);
+
+        if (method === 'aria2.onDownloadComplete') {
+            downloadNotify('complete', gid);
+        }
+    }
+
+    jsonrpcActivity();
+};
 
 function jsonrpcActivity() {
     let number = aria2Active.size;

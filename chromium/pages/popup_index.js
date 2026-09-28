@@ -61,13 +61,10 @@ chrome.runtime.sendMessage({ action: 'popup_runtime' }, (message) => {
     storageDispatch(storage);
 });
 
-aria2.subscribe();
-
 aria2.onopen = jsonrpcStart;
-
 aria2.onclose = jsonrpcError;
-
 aria2.onmessage = jsonrpcMessage;
+aria2.subscribe();
 
 if (location.search === '?toolbar') {
     let divider = document.createElement('hr');
