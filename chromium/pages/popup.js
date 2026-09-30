@@ -128,6 +128,7 @@ function addToQueue(task, gid, status) {
 async function reloadTasks(gid) {
     let response = await aria2.call('aria2.tellStatus', [gid]);
     let result = response.result;
+    let status = result.status;
     let task = updateTasks(result);
 
     if (task.align) {
@@ -135,10 +136,8 @@ async function reloadTasks(gid) {
         delete task.align;
     }
 
-    let newsts = result.status;
-    addToQueue(task, gid, newsts);
-
-    if (newsts === 'active') {
+    if (task.status !== status) {
+        addToQueue(task, gid, status);
         tasksPane.appendChild(task);
     }
 }
@@ -542,10 +541,6 @@ async function taskRetry(task, gid) {
     removeFromQueue(gid, 'stopped');
     aria2Tasks.delete(gid);
     task.remove();
-
-    if (Array.isArray(added)) {
-        reloadTasks(added[0]);
-    }
 }
 
 async function taskUriAdd(task, gid, entry) {
