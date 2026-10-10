@@ -6,7 +6,7 @@ const aria2 = (() => {
     let options = new Set(['retries', 'timeout'])
     let pending = new Map();
 
-    let port = new Promise(async (resolve, reject) => {
+    let connect = new Promise((resolve, reject) => {
         if (typeof window !== 'undefined' && typeof SharedWorker !== 'undefined') {
             let worker = new SharedWorker('/aria2-socket-worker.js', { name: 'aria2-socket-worker' });
             let port = worker.port;
@@ -15,6 +15,10 @@ const aria2 = (() => {
             window.addEventListener('pagehide', () => {
                 aria2.unsubscribe();
             });
+
+            port.onmessage = (event) => {
+                transmit(event.data);
+            };
 
             resolve(port);
             return;
@@ -25,6 +29,7 @@ const aria2 = (() => {
 
             chrome.runtime.onConnect.addListener((port) => {
                 if (port.name === 'offscreen') {
+                    port.onMessage.addListener(transmit);
                     resolve(port);
                 }
             });
@@ -41,28 +46,30 @@ const aria2 = (() => {
         reject(new Error('Unsupported runtime environment'));
     });
     
-    let message = port.then((port) => {
-        port.onmessage = (event) => {
-            let data = event.data;
-            let id = data.id;
 
-            let func = pending.get(id);
+    function transmit(message) {
+        let id = message.id;
 
-            if (func) {
-                pending.delete(id);
-                func(data.result);
-                return;
-            }
+        let func = pending.get(id);
 
-            let post = events[data.type];
+        if (func) {
+            pending.delete(id);
+            func(message.result);
+            return;
+        }
 
-            if (post) {
-                post(data.details);
-                return;
-            }
-        };
+        let post = events[message.type];
 
-        return function(type, payload) {
+        if (post) {
+            post(message.details);
+            return;
+        }
+    }
+
+    async function broadcast(type, payload) {
+        let port = await connect;
+
+        broadcast = (type, payload) => {
             let id = hash + '-' + index++ + '-' + type;
 
             return new Promise((resolve) => {
@@ -70,10 +77,7 @@ const aria2 = (() => {
                 port.postMessage({ id, type, payload });
             });
         };
-    });
 
-    async function broadcast(type, payload) {
-        broadcast = await message;
         return broadcast(type, payload);
     }
 
