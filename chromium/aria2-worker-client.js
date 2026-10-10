@@ -6,7 +6,7 @@ const aria2 = (() => {
     let options = new Set(['retries', 'timeout'])
     let pending = new Map();
 
-    let port = new Promise(async (resolve, reject) => {
+    let port = new Promise((resolve, reject) => {
         if (typeof window !== 'undefined' && typeof SharedWorker !== 'undefined') {
             let worker = new SharedWorker('/aria2-socket-worker.js', { name: 'aria2-socket-worker' });
             let port = worker.port;
@@ -20,12 +20,19 @@ const aria2 = (() => {
             return;
         }
 
-        if (typeof chrome !== 'undefined' && chrome.offscreen !== 'undefined') {
+        if (typeof chrome !== 'undefined' && typeof chrome.offscreen !== 'undefined') {
             let offscreen = chrome.runtime.getURL('/offscreen.html');
 
             chrome.runtime.onConnect.addListener((port) => {
                 if (port.name === 'offscreen') {
-                    resolve(port);
+                    resolve({
+                        postMessage(message) {
+                            port.postMessage(message);
+                        },
+                        set onmessage(handler) {
+                            port.onMessage.addListener((data) => handler({ data }));
+                        }
+                    });
                 }
             });
 
