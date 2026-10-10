@@ -17,7 +17,7 @@ const aria2 = (() => {
             });
 
             port.onmessage = (event) => {
-                transmit(event.data);
+                dispatch(event.data);
             };
 
             resolve(port);
@@ -29,7 +29,7 @@ const aria2 = (() => {
 
             chrome.runtime.onConnect.addListener((port) => {
                 if (port.name === 'offscreen') {
-                    port.onMessage.addListener(transmit);
+                    port.onMessage.addListener(dispatch);
                     resolve(port);
                 }
             });
@@ -47,7 +47,7 @@ const aria2 = (() => {
     });
     
 
-    function transmit(message) {
+    function dispatch(message) {
         let id = message.id;
 
         let func = pending.get(id);
