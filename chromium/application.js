@@ -175,7 +175,7 @@ function jsonrpcDispatch(json) {
 
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {
     if (details.frameId === 0) {
-        aria2Inspect.set(details.tabId, { images: [], url: details.url });
+        aria2Inspect.set(details.tabId, { images: new Map(), url: details.url });
     }
 });
 
@@ -189,7 +189,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
     let inspect = aria2Inspect.get(tabId);
 
     if (!inspect || inspect.url !== url) {
-        aria2Inspect.set(tabId, { images: [], url });
+        aria2Inspect.set(tabId, { images: new Map(), url });
     }
 });
 
@@ -203,20 +203,14 @@ chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
     let tab = aria2Inspect.get(tabId);
 
     if (!tab) {
-        tab = { images: [], url };
+        tab = { images: new Map(), url };
         aria2Inspect.set(tabId, tab);
     }
 
     if (details.type === 'image') {
         let idx = url.search(/[?#@]/);
         let img = idx === -1 ? url : url.substring(0, idx);
-
-        if (img in tab) {
-            return;
-        }
-
-        tab[img] = url;
-        tab.images.push(url);
+        tab.images.set(img, url);
     } else {
         tab[url] = details.requestHeaders;
     }
@@ -411,9 +405,10 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     }
 
     if (action === 'images_runtime') {
-        let images = aria2Inspect.get(params)?.images || [];
-        response({ system: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
-        return true;
+        let images = aria2Inspect.get(params)?.images;
+        let result = images ? [...images.values()] : [];
+        response({ system: systemManifest, headers: systemHeaders, images: result, storage: aria2Storage, options: aria2Config });
+        return;
     }
 
     if (action === 'options_window') {
