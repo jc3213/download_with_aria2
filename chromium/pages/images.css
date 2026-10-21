@@ -9,7 +9,7 @@ img.checked {
 
 #preview {
     height: calc(100vh - 236px);
-    width: calc(100vh + 18px);
+    width: calc(100vh + 56px);
 }
 
 #preview > img {
@@ -30,8 +30,8 @@ img.checked {
 }
 
 #thumbs > img {
-    height: 88px;
-    width: 88px;
+    height: 80px;
+    width: 80px;
 }
 
 #jsonrpc {
