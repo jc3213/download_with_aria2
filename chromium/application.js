@@ -405,9 +405,9 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     }
 
     if (action === 'images_runtime') {
-        let images = aria2Inspect.get(params)?.images;
-        let result = images ? [...images.values()] : [];
-        response({ system: systemManifest, headers: systemHeaders, images: result, storage: aria2Storage, options: aria2Config });
+        let tab = aria2Inspect.get(params);
+        let images = tab ? Array.from(tab.images.values()) : [];
+        response({ system: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
         return;
     }
 
