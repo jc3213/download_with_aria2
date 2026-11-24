@@ -423,9 +423,9 @@ async function taskRemove(task, gid) {
 }
 
 const taskPauseMap = {
-    'active': { method: 'aria2.forcePause', status: 'paused' },
-    'waiting': { method: 'aria2.pause', status: 'paused' },
-    'paused': { method: 'aria2.unpause', status: 'waiting' }
+    'active': 'aria2.forcePause',
+    'waiting': 'aria2.pause',
+    'paused': 'aria2.unpause'
 };
 
 async function taskPause(task, gid) {
@@ -436,11 +436,14 @@ async function taskPause(task, gid) {
         return;
     }
 
-    let method = action.method;
-    let newsts = action.status;
+    let response = await aria2.multicall([
+        { methodName: action, params: [gid] },
+        { methodName: 'aria2.tellStatus', params: [gid, ['status']] }
+    ]);
+
+    let newsts = response.result[1][0].status;
     task.classList.replace(oldsts, newsts);
     task.status = newsts;
-    await aria2.call(method, [gid]);
 }
 
 async function getDetails(gid) {
