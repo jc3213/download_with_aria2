@@ -72,15 +72,15 @@ if (location.search === '?toolbar') {
 
     document.body.append(divider, toolbar);
 
-    queuePane.addEventListener('contextmenu', (event) => {
+    tasksPane.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         let css = event.clientX > 528 ? 'right: 0px;' : 'left: ' + event.clientX + 'px;';
         css += event.clientY > 365 ? 'bottom: 0px;' : 'top: ' + event.clientY + 'px;';
-        filterPane.style.cssText = css + 'display: flex;';
+        queuePane.style.cssText = css + 'display: flex;';
     });
 
-    queuePane.addEventListener('click', (event) => {
-        filterPane.style.display = '';
+    tasksPane.addEventListener('click', (event) => {
+        queuePane.style.display = '';
     });
 
     toolbar.textContent = `
