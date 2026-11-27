@@ -8,7 +8,6 @@
         "declarativeNetRequest",
         "downloads",
         "notifications",
-        "offscreen",
         "storage",
         "tabs",
         "webNavigation",
