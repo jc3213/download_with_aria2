@@ -12,14 +12,7 @@ const aria2 = (() => {
     let onmessage = null;
     let onclose = null;
 
-    function open() {
-        if (socket && socket.readyState === WebSocket.OPEN) {
-            socket.onopen = null;
-            socket.onmessage = null;
-            socket.onclose = null;
-            socket.close();
-        }
-
+    function connect() {
         socket = new WebSocket(url);
 
         socket.onopen = (event) => {
@@ -67,6 +60,25 @@ const aria2 = (() => {
                 tries = 0;
             }
         };
+    }
+
+    function disconnect() {
+        if (!socket) {
+            return;
+        }
+
+        let state = socket.readyState;
+
+        if (state !== WebSocket.CLOSED) {
+            socket.onopen = null;
+            socket.onmessage = null;
+            socket.onclose = null;
+            socket.onerror = null;
+        }
+
+        if (state === WebSocket.OPEN || state === WebSocket.CONNECTING) {
+            socket.close();
+        }
     }
 
     return {
@@ -159,7 +171,7 @@ const aria2 = (() => {
 
         send(json) {
             return new Promise((resolve, reject) => {
-                if (socket.readyState !== WebSocket.OPEN) {
+                if (!this.ready) {
                     throw new Error('WebSocket error: failed to send message');
                 }
 
@@ -200,16 +212,13 @@ const aria2 = (() => {
         connect() {
             clearTimeout(tick);
             tries = 0;
-            open();
+            connect();
         },
 
         disconnect() {
             clearTimeout(tick);
             tries = Infinity;
-
-            if (socket.readyState === WebSocket.OPEN) {
-                socket.close();
-            }
+            disconnect();
         }
     };
 })();
