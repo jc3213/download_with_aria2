@@ -39,7 +39,7 @@ function menuEventSubmit() {
         }
     }
 
-    chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
+    chrome.runtime.sendMessage({ action: 'jsonrpc_multicall', params }, close);
 }
 
 menuPane.addEventListener('click', (event) => {
@@ -99,7 +99,7 @@ chrome.tabs.getCurrent((tab) => {
     tabId = tab.id;
 });
 
-chrome.runtime.sendMessage({ action: 'images_runtime', params: id }, (message) => {
+chrome.runtime.sendMessage({ action: 'state_images', params: id }, (message) => {
     let config = message.options;
     let images = message.images;
 

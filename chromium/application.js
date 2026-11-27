@@ -77,9 +77,10 @@ const jsonrpcSize = [
 aria2.onopen = jsonrpcStart;
 aria2.onclose = jsonrpcError;
 aria2.onmessage = jsonrpcMessage;
-aria2.subscribe();
 
 function jsonrpcStart() {
+    chrome.runtime.sendMessage({ action: 'jsonrpc_start' }, () => chrome.runtime.lastError);
+
     aria2.multicall([
         { methodName: 'aria2.tellActive' },
         { methodName: 'aria2.getGlobalOption' },
@@ -112,14 +113,15 @@ function jsonrpcStart() {
 }
 
 function jsonrpcError() {
-    aria2Version = null;
-    aria2Active.clear();
-    captureDisabled();
+    chrome.runtime.sendMessage({ action: 'jsonrpc_error' }, () => chrome.runtime.lastError);
     chrome.action.setBadgeText({ text: 'E' });
     chrome.action.setBadgeBackgroundColor({ color: '#D33A26' });
+    captureDisabled();
 }
 
 function jsonrpcMessage(message) {
+    chrome.runtime.sendMessage({ action: 'jsonrpc_message', params: message }, () => chrome.runtime.lastError);
+
     let method = message.method;
 
     if (method === 'aria2.onBtDownloadComplete') {
@@ -381,69 +383,74 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 
     let params = message.params;
 
-    if (action === 'update_storage') {
-        storageDispatch(params);
-        chrome.storage.sync.set(params, response);
+    if (action === 'jsonrpc_multicall') {
+        aria2.multicall(params).then(response).catch(response);
         return true;
     }
 
-    if (action === 'update_jsonrpc') {
-        jsonrpcDispatch(params);
-        aria2.call('aria2.changeGlobalOption', [params]).then(response).catch(response);
-        return true;
-    }
-
-    if (action === 'popup_runtime') {
-        response({ storage: aria2Storage, options: aria2Config, version: aria2Version });
+    if (action === 'state_popup') {
+        response({ storage: aria2Storage, options: aria2Config, version: aria2Version, isReady: aria2.ready });
         return;
     }
 
-    if (action === 'popup_queues') {
-        aria2Storage['manager_filters'] = params;
-        chrome.storage.sync.set({ 'manager_filters': params }, response);
+    if (action === 'jsonrpc_call') {
+        aria2.call(params.method, params.params).then(response).catch(response);
         return true;
     }
 
-    if (action === 'images_runtime') {
+    if (action === 'state_options') {
+        response({ system: systemManifest, storage: aria2Storage });
+        return;
+    }
+
+    if (action === 'state_jsonrpc') {
+        response({ options: aria2Config, version: aria2Version, isReady: aria2.ready });
+        return;
+    }
+
+    if (action === 'state_newdld') {
+        response({ storage: aria2Storage, options: aria2Config });
+        return;
+    }
+
+    if (action === 'state_images') {
         let tab = aria2Inspect.get(params);
         let images = tab ? Array.from(tab.images.values()) : [];
         response({ system: systemManifest, headers: systemHeaders, images, storage: aria2Storage, options: aria2Config });
         return;
     }
 
-    if (action === 'options_window') {
-        commandOpenPopup(addonOptions, 800);
-        return;
-    }
-
-    if (action === 'options_runtime') {
-        response({ system: systemManifest, storage: aria2Storage });
-        return;
-    }
-
-    if (action === 'options_jsonrpc') {
-        response({ options: aria2Config, version: aria2Version });
-        return;
-    }
-
-    if (action === 'newdld_window') {
-        commandOpenPopup(addonDownload, 454);
-        return;
-    }
-
-    if (action === 'newdld_runtime') {
-        response({ storage: aria2Storage, options: aria2Config });
-        return;
-    }
-
-    if (action === 'remote_status') {
+    if (action === 'state_remote') {
         response({ system: systemManifest, options: aria2Config });
         return;
     }
 
-    if (action === 'remote_download') {
-        aria2.multicall(params).then(response).catch(response);
+    if (action === 'commit_queues') {
+        aria2Storage['manager_filters'] = params;
+        chrome.storage.sync.set({ 'manager_filters': params }, response);
         return true;
+    }
+
+    if (action === 'commit_options') {
+        storageDispatch(params);
+        chrome.storage.sync.set(params, response);
+        return true;
+    }
+
+    if (action === 'commit_jsonrpc') {
+        jsonrpcDispatch(params);
+        aria2.call('aria2.changeGlobalOption', [params]).then(response).catch(response);
+        return true;
+    }
+
+    if (action === 'window_options') {
+        commandOpenPopup(addonOptions, 800);
+        return;
+    }
+
+    if (action === 'window_newdld') {
+        commandOpenPopup(addonDownload, 454);
+        return;
     }
 });
 
@@ -452,7 +459,7 @@ chrome.storage.sync.get(null, (json) => {
     storageDispatch(storage);
 });
 
-async function storageDispatch(json) {
+function storageDispatch(json) {
     aria2Storage = json;
 
     headersHosts = new Set(json['headers_hosts']);
@@ -463,9 +470,11 @@ async function storageDispatch(json) {
     managerInTabEnabler(json);
     contextMenusEnabler(json);
 
-    await aria2.retries(json['jsonrpc_retries']);
-    await aria2.timeout(json['jsonrpc_timeout']);
-    await aria2.connect(json['jsonrpc_url'], json['jsonrpc_secret']);
+    aria2.url = json['jsonrpc_url'];
+    aria2.secret = json['jsonrpc_secret'];
+    aria2.retries = json['jsonrpc_retries'];
+    aria2.timeout = json['jsonrpc_timeout'];
+    aria2.connect();
 }
 
 function downloadHandler(url, referer, filename, hostname, tabId) {

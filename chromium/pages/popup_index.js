@@ -1,3 +1,23 @@
+const aria2 = {
+    call(method, params) {
+        return aria2.broadcast('jsonrpc_call', { method, params });
+    },
+    multicall(params) {
+        return aria2.broadcast('jsonrpc_multicall', params);
+    },
+    broadcast(action, params) {
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage({ action, params }, (response) => {
+                if (response.result || response.error) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+        });
+    }
+};
+
 i18nEntry.value = chrome.i18n.getMessage('extension_locale');
 i18nEntry.disabled = true;
 
@@ -22,49 +42,64 @@ menuPane.addEventListener('click', async (event) => {
     }
 
     if (menu === 'popup_newdld') {
-        chrome.runtime.sendMessage({ action: 'newdld_window' });
+        chrome.runtime.sendMessage({ action: 'window_newdld' });
         return;
     }
 
     if (menu === 'popup_options') {
-        chrome.runtime.sendMessage({ action: 'options_window' });
+        chrome.runtime.sendMessage({ action: 'window_options' });
         return;
     }
 });
 
 chrome.runtime.onMessage.addListener((message) => {
-    if (message.action !== 'update_storage') {
+    let action = message.action;
+
+    if (!action) {
         return;
     }
 
     let params = message.params;
 
-    if (!params['manager_newtab']) {
-        close();
+    if (action === 'jsonrpc_message') {
+        jsonrpcMessage(params);
+        return;
     }
 
-    storageDispatch(params);
+    if (action === 'jsonrpc_start') {
+        jsonrpcStart();
+        return;
+    }
+
+    if (action === 'jsonrpc_error') {
+        jsonrpcError();
+        return;
+    }
+
+    if (action === 'commit_options') {
+        if (!params['manager_newtab']) {
+            close();
+        }
+
+        aria2Delay = params['manager_interval'] * 1000;
+        aria2Proxy = params['proxy_server'];
+        return;
+    }
 });
 
-function storageDispatch(json) {
-    aria2Delay = json['manager_interval'] * 1000;
-    aria2Proxy = json['proxy_server'];
-}
-
-chrome.runtime.sendMessage({ action: 'popup_runtime' }, (message) => {
+chrome.runtime.sendMessage({ action: 'state_popup' }, (message) => {
     let storage = message.storage;
+    aria2Delay = storage['manager_interval'] * 1000;
+    aria2Proxy = storage['proxy_server'];
 
     taskQueues(storage['manager_filters'], (params) => {
-        chrome.runtime.sendMessage({ action: 'popup_queues', params });
+        chrome.runtime.sendMessage({ action: 'commit_queues', params });
     });
 
-    storageDispatch(storage);
+    if (message.isReady) {
+        jsonrpcStart();
+    }
 });
-
-aria2.onopen = jsonrpcStart;
-aria2.onclose = jsonrpcError;
-aria2.onmessage = jsonrpcMessage;
-aria2.subscribe();
 
 if (location.search === '?toolbar') {
     let divider = document.createElement('hr');
@@ -77,6 +112,7 @@ if (location.search === '?toolbar') {
         let css = event.clientX > 528 ? 'right: 0px;' : 'left: ' + event.clientX + 'px;';
         css += event.clientY > 365 ? 'bottom: 0px;' : 'top: ' + event.clientY + 'px;';
         queuePane.style.cssText = css + 'display: flex;';
+        console.log(css);
     });
 
     tasksPane.addEventListener('click', (event) => {

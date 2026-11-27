@@ -18,7 +18,7 @@
     "default_locale": "en",
     "background": {
         "scripts": [
-            "aria2-worker-client.js",
+            "aria2.js",
             "background.js",
             "application.js"
         ]

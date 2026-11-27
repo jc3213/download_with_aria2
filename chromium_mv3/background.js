@@ -30,5 +30,5 @@ function captureDisabled() {
     chrome.downloads.onDeterminingFilename.removeListener(captureDownloads);
 }
 
+importScripts('aria2.js', 'application.js');
 setInterval(chrome.runtime.getPlatformInfo, 28000);
-importScripts('aria2-worker-client.js', 'application.js');

@@ -77,7 +77,7 @@ jsonrpcPane.addEventListener('change', (event) => {
 
 function storageUpdate() {
     aria2Storage = { ...changes };
-    chrome.runtime.sendMessage({ action: 'update_storage', params: changes });
+    chrome.runtime.sendMessage({ action: 'commit_options', params: changes });
 }
 
 function loadChanges(loadList, saveList, loadButton, saveButton, key, todo) {
@@ -159,7 +159,7 @@ menuPane.addEventListener('click', (event) => {
 
     if (menu === 'options_save') {
         if (remote) {
-            chrome.runtime.sendMessage({ action: 'update_jsonrpc', params: changes });
+            chrome.runtime.sendMessage({ action: 'commit_jsonrpc', params: changes });
         } else {
             storageUpdate();
         }
@@ -217,7 +217,7 @@ function importConf(file) {
     }
 
     optionsDispatch(options);
-    chrome.runtime.sendMessage({ action: 'update_jsonrpc', params: changes });
+    chrome.runtime.sendMessage({ action: 'commit_jsonrpc', params: changes });
 }
 
 fileEntry.addEventListener('change', (event) => {
@@ -257,21 +257,19 @@ function changeHistoryFlush() {
 }
 
 document.getElementById('goto-jsonrpc').addEventListener('click', (event) => {
-    chrome.runtime.sendMessage({ action: 'options_jsonrpc' }, (message) => {
-        let version = message.version;
-
-        if (!version) {
+    chrome.runtime.sendMessage({ action: 'state_jsonrpc' }, (message) => {
+        if (!message.isReady) {
             return;
         }
 
-        let result = version.version;
-        tellUA.textContent = result;
-        tellVer.textContent = result;
-        extension.add('jsonrpc');
-
+        let version = message.version.version;
+        tellUA.textContent = version;
+        tellVer.textContent = version;
         optionsDispatch(message.options);
+
         changeHistoryFlush();
         remote = true;
+        extension.add('jsonrpc');
     });
 });
 
@@ -445,7 +443,7 @@ function removeFromList(id, host, list) {
     saveChanges({ id, new_value, old_value, type: 'rules', remove: { list, index, rule } });
 }
 
-chrome.runtime.sendMessage({ action: 'options_runtime'}, (message) => {
+chrome.runtime.sendMessage({ action: 'state_options'}, (message) => {
     let system = message.system;
     aria2Storage = message.storage;
     aria2Version = system.version;

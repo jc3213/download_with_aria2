@@ -40,7 +40,7 @@ function menuSubmit() {
         params[i] = { methodName: 'aria2.addUri', params: [[urls[i]], aria2Config] };
     }
 
-    chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
+    chrome.runtime.sendMessage({ action: 'jsonrpc_multicall', params }, close);
 }
 
 menuPane.addEventListener('click', (event) => {
@@ -112,7 +112,7 @@ async function metaFileDownload(files) {
     }
 
     let params = await Promise.all(tasks);
-    chrome.runtime.sendMessage({ action: 'remote_download', params }, close);
+    chrome.runtime.sendMessage({ action: 'jsonrpc_multicall', params }, close);
 }
 
 jsonrpcPane.addEventListener('change', (event) => {
@@ -191,7 +191,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     }
 });
 
-chrome.runtime.sendMessage({ action: 'newdld_runtime' }, (message) => {
+chrome.runtime.sendMessage({ action: 'state_newdld' }, (message) => {
     let config = message.options;
     aria2Proxy = message.storage['proxy_server'];
     
