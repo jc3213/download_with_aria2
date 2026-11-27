@@ -13,18 +13,7 @@ const aria2 = (() => {
     let onclose = null;
 
     function open() {
-        if (socket) {
-            let readyState = socket.readyState;
-
-            if (socket.url === url) {
-                if (readyState === 0) {
-                    throw new Error('WebSocket error: connection is still in CONNECTING state');
-                }
-                if (readyState === 1) {
-                    return;
-                }
-            }
-
+        if (socket && socket.readyState === WebSocket.OPEN) {
             socket.onopen = null;
             socket.onmessage = null;
             socket.onclose = null;
