@@ -470,7 +470,6 @@ function storageDispatch(json) {
     managerInTabEnabler(json);
     contextMenusEnabler(json);
 
-    aria2.disconnect();
     aria2.url = json['jsonrpc_url'];
     aria2.secret = json['jsonrpc_secret'];
     aria2.retries = json['jsonrpc_retries'];
