@@ -55,7 +55,7 @@ const aria2 = (() => {
             }
 
             if (tries++ < retries) {
-                tick = setTimeout(open, timeout);
+                tick = setTimeout(connect, timeout);
             } else {
                 tries = 0;
             }
@@ -171,7 +171,7 @@ const aria2 = (() => {
 
         send(json) {
             return new Promise((resolve, reject) => {
-                if (!this.ready) {
+                if (socket.readyState !== WebSocket.OPEN) {
                     throw new Error('WebSocket error: failed to send message');
                 }
 
